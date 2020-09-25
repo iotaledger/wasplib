@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8f80115f-6a90-4804-b5ab-13a44028a65e" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="C:\Go" />
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="zlz0y80j" />
+  </component>
+  <component name="ProjectId" id="1i1LuT7PUywwE9z8u5QLJThh4N2" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/copy_rust_wasm.bat" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Work\Go\src\github.com\iotaledger\wasplib" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.main">
+    <configuration name="main" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="wasplib" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="github.com/iotaledger/wasplib" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="copy rust wasm" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/copy_rust_wasm.bat" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="donatewithfeedback" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/tinygo_build.bat" />
+      <option name="SCRIPT_OPTIONS" value="donatewithfeedback" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="fairroulette" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/tinygo_build.bat" />
+      <option name="SCRIPT_OPTIONS" value="fairroulette" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="increment" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/tinygo_build.bat" />
+      <option name="SCRIPT_OPTIONS" value="increment" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="tokenregistry" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/tinygo_build.bat" />
+      <option name="SCRIPT_OPTIONS" value="tokenregistry" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.main" />
+      <item itemvalue="Shell Script.copy rust wasm" />
+      <item itemvalue="Shell Script.donatewithfeedback" />
+      <item itemvalue="Shell Script.fairroulette" />
+      <item itemvalue="Shell Script.increment" />
+      <item itemvalue="Shell Script.tokenregistry" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2582" y="322" key="#Go_Modules" timestamp="1601070390926">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state x="2582" y="322" key="#Go_Modules/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601070390926" />
+    <state x="2245" y="143" width="1089" height="764" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601071488660">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state x="2245" y="143" width="1089" height="764" key="#com.intellij.execution.impl.EditConfigurationsDialog/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601071488660" />
+    <state x="2570" y="266" key="FileChooserDialogImpl" timestamp="1601071387339">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state x="2570" y="266" key="FileChooserDialogImpl/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601071387339" />
+    <state width="1695" height="256" key="GridCell.Tab.0.bottom" timestamp="1601070531060">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state width="1695" height="256" key="GridCell.Tab.0.bottom/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601070531060" />
+    <state width="1695" height="256" key="GridCell.Tab.0.center" timestamp="1601070531060">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state width="1695" height="256" key="GridCell.Tab.0.center/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601070531060" />
+    <state width="1695" height="256" key="GridCell.Tab.0.left" timestamp="1601070531060">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state width="1695" height="256" key="GridCell.Tab.0.left/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601070531060" />
+    <state width="1695" height="256" key="GridCell.Tab.0.right" timestamp="1601070531060">
+      <screen x="1920" y="0" width="1739" height="978" />
+    </state>
+    <state width="1695" height="256" key="GridCell.Tab.0.right/62.0.1677.978/1920.0.1739.978/-1920.0.1739.978@1920.0.1739.978" timestamp="1601070531060" />
+  </component>
+</project>
