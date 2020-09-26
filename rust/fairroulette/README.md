@@ -1,0 +1,3 @@
+## fairroulette
+
+Sample smart contract

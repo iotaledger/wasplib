@@ -1,0 +1,3 @@
+## tokenregistry
+
+Sample smart contract

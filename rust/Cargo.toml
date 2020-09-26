@@ -1,0 +1,7 @@
+[workspace]
+members = ["wasplib", "donatewithfeedback", "fairroulette", "increment", "tokenregistry"]
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"
+

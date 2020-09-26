@@ -1,0 +1,57 @@
+{
+  "error": "errorTextOrEmptyStringWhenNoError",
+  "contract": {
+    "id": "smartContractId",
+    "name": "smartContractName",
+    "description": "whateverDescribesTheSmartContract",
+    "address": "smartContractAccountAddress",
+    "color": "smartContractColor",
+    "owner": "smartContractOwnerAddress"
+  },
+  "account": {
+    "colors": ["iota", "colorX"],
+    "balance": {
+      "iota": 1000000,
+      "colorX": 27
+    }
+  },
+  "request": {
+    "address": "senderAddress",
+    "colors": ["iota", "colorX"],
+    "balance": {
+      "iota": 1000,
+      "colorX": 27
+    },
+    "params": {
+      "param1": 100,
+      "paramX": "someValue"
+    },
+    "timestamp": 1234567890,
+    "hash": "transactionHash"
+  },
+  "state": {
+    "intVar": 123,
+    "stringVar": "blabla",
+    "mapVar": {
+      "key1": 987,
+      "keyX": "foo"
+    },
+    "intArrayVar": [1, 2, 3],
+    "stringArrayVar": ["a", "b", "c"]
+  },
+  "transfers": [
+    {"color": "iota", "amount": 10, "address": "targetAddress"},
+    {"color": "colorX", "amount": 1, "address": "targetAddress"}
+  ],
+  "events": [
+    {
+      "contract": "smartContractIdOrEmptyWhenSelf",
+      "function": "functionName",
+      "delay": 120000000000,
+      "params": {
+        "param1": 100,
+        "paramX": "someValue"
+      }
+    }
+  ]
+}

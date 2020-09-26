@@ -1,0 +1,6 @@
+.idea/
+*/.idea/
+*/out/
+*/pkg/
+*/target/
+wasm/
