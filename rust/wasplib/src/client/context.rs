@@ -173,10 +173,15 @@ pub struct ScUtility {
 }
 
 impl ScUtility {
-    pub fn hash(&self, value: &str) -> String {
-        let hash = self.utility.get_string("hash");
+    pub fn hash(&self, value: &[u8]) -> Vec<u8> {
+        let hash = self.utility.get_bytes("hash");
         hash.set_value(value);
         hash.value()
+    }
+
+    pub fn random(&self, max: i64) -> i64 {
+        let rnd = self.utility.get_int("random").value();
+        (rnd as u64 % max as u64) as i64
     }
 }
 
@@ -225,11 +230,6 @@ impl ScContext {
 
     pub fn log(&self, text: &str) {
         set_string(1, key_log(), text)
-    }
-
-    pub fn random(&self, max: i64) -> i64 {
-        let rnd = self.root.get_int("random").value();
-        (rnd as u64 % max as u64) as i64
     }
 
     pub fn request(&self) -> ScRequest {

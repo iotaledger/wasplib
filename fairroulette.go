@@ -89,7 +89,7 @@ func payWinners() {
 		return
 	}
 
-	winningColor := ctx.Random(5) + 1
+	winningColor := ctx.Utility().Random(5) + 1
 	state := ctx.State()
 	state.GetInt("lastWinningColor").SetValue(winningColor)
 

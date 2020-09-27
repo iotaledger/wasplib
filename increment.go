@@ -26,12 +26,6 @@ func test() {
 	client.SetString(1, keyId2, s3)
 }
 
-//export nothing
-func nothing() {
-	ctx := client.NewScContext()
-	ctx.Log("Doing nothing as requested. Oh, wait...")
-}
-
 //export increment
 func increment() {
 	ctx := client.NewScContext()

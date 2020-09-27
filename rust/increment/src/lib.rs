@@ -23,12 +23,6 @@ pub fn test() {
 }
 
 #[no_mangle]
-pub fn nothing() {
-    let ctx = ScContext::new();
-    ctx.log("Doing nothing as requested. Oh, wait...");
-}
-
-#[no_mangle]
 pub fn increment() {
     let ctx = ScContext::new();
     let counter = ctx.state().get_int("counter");

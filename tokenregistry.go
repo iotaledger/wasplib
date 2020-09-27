@@ -4,9 +4,6 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
-func main() {
-}
-
 type TokenInfo struct {
 	supply      int64
 	mintedBy    string
@@ -15,6 +12,9 @@ type TokenInfo struct {
 	updated     int64
 	description string
 	userDefined string
+}
+
+func main() {
 }
 
 //export mintSupply

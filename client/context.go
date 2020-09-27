@@ -141,10 +141,14 @@ type ScUtility struct {
 	utility ScMutableMap
 }
 
-func (ctx ScUtility) Hash(value string) string {
-	hash := ctx.utility.GetString("hash")
+func (ctx ScUtility) Hash(value []byte) []byte {
+	hash := ctx.utility.GetBytes("hash")
 	hash.SetValue(value)
 	return hash.Value()
+}
+
+func (ctx ScUtility) Random(max int64) int64 {
+	return int64(uint64(ctx.utility.GetInt("random").Value()) % uint64(max))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -190,10 +194,6 @@ func (ctx ScContext) EventWithCode(contract string, code int64, delay int64) ScM
 
 func (ctx ScContext) Log(text string) {
 	SetString(1, KeyLog(), text)
-}
-
-func (ctx ScContext) Random(max int64) int64 {
-	return int64(uint64(ctx.root.GetInt("random").Value()) % uint64(max))
 }
 
 func (ctx ScContext) Request() ScRequest {

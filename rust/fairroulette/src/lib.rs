@@ -87,7 +87,7 @@ pub fn payWinners() {
         return;
     }
 
-    let winning_color = ctx.random(5) + 1;
+    let winning_color = ctx.utility().random(5) + 1;
     let state = ctx.state();
     state.get_int("lastWinningColor").set_value(winning_color);
 

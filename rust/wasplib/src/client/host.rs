@@ -1,3 +1,5 @@
+use super::context::ScContext;
+
 // all const values should exactly match the counterpart values on the host!
 pub const TYPE_BYTES: i32 = 0;
 pub const TYPE_BYTES_ARRAY: i32 = 1;
@@ -27,6 +29,12 @@ extern {
     pub fn hostSetInt(obj_id: i32, key_id: i32, value: i64);
 }
 
+
+#[no_mangle]
+pub fn nothing() {
+    let ctx = ScContext::new();
+    ctx.log("Doing nothing as requested. Oh, wait...");
+}
 
 pub fn get_bytes(obj_id: i32, key_id: i32) -> Vec<u8> {
     unsafe {

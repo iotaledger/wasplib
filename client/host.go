@@ -37,6 +37,14 @@ func hostSetIntRef(objId int32, keyId int32, value *int64)
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+//export nothing
+func nothing() {
+	ctx := NewScContext()
+	ctx.Log("Doing nothing as requested. Oh, wait...")
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 func GetBytes(objId int32, keyId int32) []byte {
 	// first query length of bytes array
 	size := hostGetBytes(objId, keyId, nil, 0)

@@ -18,6 +18,7 @@ func main() {
 	contract.SetString(ctx.GetKeyId("address"), "smartContractAddress")
 	request := ctx.Object(nil, "request", objtype.OBJTYPE_MAP)
 	request.SetString(ctx.GetKeyId("hash"), "requestTransactionHash")
+	request.SetString(ctx.GetKeyId("id"), "requestTransactionID")
 	request.SetString(ctx.GetKeyId("address"), "requestInitiatorAddress")
 	params := ctx.Object(request, "params", objtype.OBJTYPE_MAP)
 	params.SetInt(ctx.GetKeyId("color"), 3)
