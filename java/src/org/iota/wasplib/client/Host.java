@@ -1,5 +1,7 @@
 package org.iota.wasplib.client;
 
+import org.iota.wasplib.client.context.ScContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class Host {
@@ -28,6 +30,12 @@ public class Host {
 	}
 
 	public static void hostSetInt(int objId, int keyId, long value) {
+	}
+
+	//export nothing
+	public static void nothing() {
+		ScContext ctx = new ScContext();
+		ctx.Log("Doing nothing as requested. Oh, wait...");
 	}
 
 	public static byte[] GetBytes(int objId, int keyId) {

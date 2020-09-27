@@ -24,30 +24,30 @@ pub fn test() {
 
 #[no_mangle]
 pub fn increment() {
-    let ctx = ScContext::new();
-    let counter = ctx.state().get_int("counter");
+    let sc = ScContext::new();
+    let counter = sc.state().get_int("counter");
     counter.set_value(counter.value() + 1);
 }
 
 #[no_mangle]
 pub fn incrementRepeat1() {
-    let ctx = ScContext::new();
-    let counter = ctx.state().get_int("counter");
+    let sc = ScContext::new();
+    let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        ctx.event("", "increment", 5);
+        sc.event("", "increment", 5);
     }
 }
 
 #[no_mangle]
 pub fn incrementRepeatMany() {
-    let ctx = ScContext::new();
-    let counter = ctx.state().get_int("counter");
+    let sc = ScContext::new();
+    let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
-    let mut repeats = ctx.request().params().get_int("numrepeats").value();
-    let state_repeats = ctx.state().get_int("numrepeats");
+    let mut repeats = sc.request().params().get_int("numRepeats").value();
+    let state_repeats = sc.state().get_int("numRepeats");
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {
@@ -55,5 +55,5 @@ pub fn incrementRepeatMany() {
         }
     }
     state_repeats.set_value(repeats - 1);
-    ctx.event("", "incrementRepeatMany", 3);
+    sc.event("", "incrementRepeatMany", 3);
 }

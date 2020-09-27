@@ -17,27 +17,27 @@ struct TokenInfo {
 
 #[no_mangle]
 pub fn mintSupply() {
-    let ctx = ScContext::new();
-    let request = ctx.request();
+    let sc = ScContext::new();
+    let request = sc.request();
     let color = request.hash();
-    let state = ctx.state();
+    let state = sc.state();
     let registry = state.get_map("tr");
     if !registry.get_string(&color).value().is_empty() {
-        ctx.log("TokenRegistry: Color already exists");
+        sc.log("TokenRegistry: Color already exists");
         return;
     }
-    let reqParams = request.params();
+    let params = request.params();
     let mut token = TokenInfo {
         supply: request.balance(&color),
         minted_by: request.address(),
         owner: request.address(),
         created: request.timestamp(),
         updated: request.timestamp(),
-        description: reqParams.get_string("dscr").value(),
-        user_defined: reqParams.get_string("ud").value(),
+        description: params.get_string("dscr").value(),
+        user_defined: params.get_string("ud").value(),
     };
     if token.supply <= 0 {
-        ctx.log("TokenRegistry: Insufficient supply");
+        sc.log("TokenRegistry: Insufficient supply");
         return;
     }
     if token.description.is_empty() {
@@ -56,18 +56,18 @@ pub fn mintSupply() {
 
 #[no_mangle]
 pub fn updateMetadata() {
-    //let ctx = ScContext::new();
+    //let sc = ScContext::new();
     //TODO
 }
 
 #[no_mangle]
 pub fn transferOwnership() {
-    //let ctx = ScContext::new();
+    //let sc = ScContext::new();
     //TODO
 }
 
-fn decodeTokenInfo(data: &[u8]) -> TokenInfo {
-    let mut decoder = BytesDecoder::new(data);
+fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
+    let mut decoder = BytesDecoder::new(bytes);
     TokenInfo {
         supply: decoder.int(),
         minted_by: decoder.string(),
@@ -79,14 +79,14 @@ fn decodeTokenInfo(data: &[u8]) -> TokenInfo {
     }
 }
 
-fn encodeTokenInfo(data: &TokenInfo) -> Vec<u8> {
+fn encodeTokenInfo(token: &TokenInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.int(data.supply);
-    encoder.string(&data.minted_by);
-    encoder.string(&data.owner);
-    encoder.int(data.created);
-    encoder.int(data.updated);
-    encoder.string(&data.description);
-    encoder.string(&data.user_defined);
+    encoder.int(token.supply);
+    encoder.string(&token.minted_by);
+    encoder.string(&token.owner);
+    encoder.int(token.created);
+    encoder.int(token.updated);
+    encoder.string(&token.description);
+    encoder.string(&token.user_defined);
     encoder.data()
 }

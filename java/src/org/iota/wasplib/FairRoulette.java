@@ -15,20 +15,20 @@ public class FairRoulette {
 
 	//export placeBet
 	public static void placeBet() {
-		ScContext ctx = new ScContext();
-		ScRequest request = ctx.Request();
+		ScContext sc = new ScContext();
+		ScRequest request = sc.Request();
 		long amount = request.Balance("iota");
 		if (amount == 0) {
-			ctx.Log("Empty bet...");
+			sc.Log("Empty bet...");
 			return;
 		}
 		long color = request.Params().GetInt("color").Value();
 		if (color == 0) {
-			ctx.Log("No color...");
+			sc.Log("No color...");
 			return;
 		}
 		if (color < 1 || color > NUM_COLORS) {
-			ctx.Log("Invalid color...");
+			sc.Log("Invalid color...");
 			return;
 		}
 
@@ -38,64 +38,64 @@ public class FairRoulette {
 		bet.color = color;
 		bet.amount = amount;
 
-		ScMutableMap state = ctx.State();
+		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
 		int betNr = bets.Length();
-		byte[] data = encodeBetInfo(bet);
-		bets.GetBytes(betNr).SetValue(data);
+		byte[] bytes = encodeBetInfo(bet);
+		bets.GetBytes(betNr).SetValue(bytes);
 		if (betNr == 0) {
 			long playPeriod = state.GetInt("playPeriod").Value();
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			ctx.Event("", "lockBets", playPeriod);
+			sc.Event("", "lockBets", playPeriod);
 		}
 	}
 
 	//export lockBets
 	public static void lockBets() {
 		// can only be sent by SC itself
-		ScContext ctx = new ScContext();
-		if (!ctx.Request().Address().equals(ctx.Contract().Address())) {
-			ctx.Log("Cancel spoofed request");
+		ScContext sc = new ScContext();
+		if (!sc.Request().Address().equals(sc.Contract().Address())) {
+			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		ScMutableMap state = ctx.State();
+		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
 		for (int i = 0; i < bets.Length(); i++) {
-			byte[] bet = bets.GetBytes(i).Value();
-			lockedBets.GetBytes(i).SetValue(bet);
+			byte[] bytes = bets.GetBytes(i).Value();
+			lockedBets.GetBytes(i).SetValue(bytes);
 		}
 		bets.Clear();
 
-		ctx.Event("", "payWinners", 0);
+		sc.Event("", "payWinners", 0);
 	}
 
 	//export payWinners
 	public static void payWinners() {
 		// can only be sent by SC itself
-		ScContext ctx = new ScContext();
-		String scAddress = ctx.Contract().Address();
-		if (!ctx.Request().Address().equals(scAddress)) {
-			ctx.Log("Cancel spoofed request");
+		ScContext sc = new ScContext();
+		String scAddress = sc.Contract().Address();
+		if (!sc.Request().Address().equals(scAddress)) {
+			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		long winningcolor = ctx.Random(5) + 1;
-		ScMutableMap state = ctx.State();
-		state.GetInt("lastWinningColor").SetValue(winningcolor);
+		long winningColor = sc.Random(5) + 1;
+		ScMutableMap state = sc.State();
+		state.GetInt("lastWinningColor").SetValue(winningColor);
 
 		long totalBetAmount = 0;
 		long totalWinAmount = 0;
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
 		ArrayList<BetInfo> winners = new ArrayList<>();
 		for (int i = 0; i < lockedBets.Length(); i++) {
-			byte[] betData = lockedBets.GetBytes(i).Value();
-			BetInfo bet = decodeBetInfo(betData);
+			byte[] bytes = lockedBets.GetBytes(i).Value();
+			BetInfo bet = decodeBetInfo(bytes);
 			totalBetAmount += bet.amount;
-			if (bet.color == winningcolor) {
+			if (bet.color == winningColor) {
 				totalWinAmount += bet.amount;
 				winners.add(bet);
 			}
@@ -103,9 +103,9 @@ public class FairRoulette {
 		lockedBets.Clear();
 
 		if (winners.size() == 0) {
-			ctx.Log("Nobody wins!");
+			sc.Log("Nobody wins!");
 			// compact separate UTXOs into a single one
-			ctx.Transfer(scAddress, "iota", totalBetAmount);
+			sc.Transfer(scAddress, "iota", totalBetAmount);
 			return;
 		}
 
@@ -115,40 +115,40 @@ public class FairRoulette {
 			long payout = totalBetAmount * bet.amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
-				ctx.Transfer(bet.sender, "iota", payout);
+				sc.Transfer(bet.sender, "iota", payout);
 			}
 			String text = "Pay " + payout + " to " + bet.sender;
-			ctx.Log(text);
+			sc.Log(text);
 		}
 
 		if (totalPayout != totalBetAmount) {
 			long remainder = totalBetAmount - totalPayout;
 			String text = "Remainder is " + remainder;
-			ctx.Log(text);
-			ctx.Transfer(scAddress, "iota", remainder);
+			sc.Log(text);
+			sc.Transfer(scAddress, "iota", remainder);
 		}
 	}
 
 	//export playPeriod
 	public static void playPeriod() {
 		// can only be sent by SC owner
-		ScContext ctx = new ScContext();
-		if (!ctx.Request().Address().equals(ctx.Contract().Owner())) {
-			ctx.Log("Cancel spoofed request");
+		ScContext sc = new ScContext();
+		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
+			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		long playPeriod = ctx.Request().Params().GetInt("playPeriod").Value();
+		long playPeriod = sc.Request().Params().GetInt("playPeriod").Value();
 		if (playPeriod < 10) {
-			ctx.Log("Invalid play period...");
+			sc.Log("Invalid play period...");
 			return;
 		}
 
-		ctx.State().GetInt("playPeriod").SetValue(playPeriod);
+		sc.State().GetInt("playPeriod").SetValue(playPeriod);
 	}
 
-	public static BetInfo decodeBetInfo(byte[] data) {
-		BytesDecoder decoder = new BytesDecoder(data);
+	public static BetInfo decodeBetInfo(byte[] bytes) {
+		BytesDecoder decoder = new BytesDecoder(bytes);
 		BetInfo bet = new BetInfo();
 		bet.id = decoder.String();
 		bet.sender = decoder.String();

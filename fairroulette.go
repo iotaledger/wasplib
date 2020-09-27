@@ -20,20 +20,20 @@ func main() {
 
 //export placeBet
 func placeBet() {
-	ctx := client.NewScContext()
-	request := ctx.Request()
+	sc := client.NewScContext()
+	request := sc.Request()
 	amount := request.Balance("iota")
 	if amount == 0 {
-		ctx.Log("Empty bet...")
+		sc.Log("Empty bet...")
 		return
 	}
 	color := request.Params().GetInt("color").Value()
 	if color == 0 {
-		ctx.Log("No color...")
+		sc.Log("No color...")
 		return
 	}
 	if color < 1 || color > NUM_COLORS {
-		ctx.Log("Invalid color...")
+		sc.Log("Invalid color...")
 		return
 	}
 
@@ -44,53 +44,53 @@ func placeBet() {
 		amount: amount,
 	}
 
-	state := ctx.State()
+	state := sc.State()
 	bets := state.GetBytesArray("bets")
 	betNr := bets.Length()
-	data := encodeBetInfo(&bet)
-	bets.GetBytes(betNr).SetValue(data)
+	bytes := encodeBetInfo(&bet)
+	bets.GetBytes(betNr).SetValue(bytes)
 	if betNr == 0 {
 		playPeriod := state.GetInt("playPeriod").Value()
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		ctx.Event("", "lockBets", playPeriod)
+		sc.Event("", "lockBets", playPeriod)
 	}
 }
 
 //export lockBets
 func lockBets() {
 	// can only be sent by SC itself
-	ctx := client.NewScContext()
-	if ctx.Request().Address() != ctx.Contract().Address() {
-		ctx.Log("Cancel spoofed request")
+	sc := client.NewScContext()
+	if sc.Request().Address() != sc.Contract().Address() {
+		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	state := ctx.State()
+	state := sc.State()
 	bets := state.GetStringArray("bets")
 	lockedBets := state.GetStringArray("lockedBets")
 	for i := int32(0); i < bets.Length(); i++ {
-		bet := bets.GetString(i).Value()
-		lockedBets.GetString(i).SetValue(bet)
+		bytes := bets.GetString(i).Value()
+		lockedBets.GetString(i).SetValue(bytes)
 	}
 	bets.Clear()
 
-	ctx.Event("", "payWinners", 0)
+	sc.Event("", "payWinners", 0)
 }
 
 //export payWinners
 func payWinners() {
 	// can only be sent by SC itself
-	ctx := client.NewScContext()
-	scAddress := ctx.Contract().Address()
-	if ctx.Request().Address() != scAddress {
-		ctx.Log("Cancel spoofed request")
+	sc := client.NewScContext()
+	scAddress := sc.Contract().Address()
+	if sc.Request().Address() != scAddress {
+		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	winningColor := ctx.Utility().Random(5) + 1
-	state := ctx.State()
+	winningColor := sc.Utility().Random(5) + 1
+	state := sc.State()
 	state.GetInt("lastWinningColor").SetValue(winningColor)
 
 	totalBetAmount := int64(0)
@@ -98,8 +98,8 @@ func payWinners() {
 	lockedBets := state.GetBytesArray("lockedBets")
 	winners := make([]*BetInfo, 0)
 	for i := int32(0); i < lockedBets.Length(); i++ {
-		betData := lockedBets.GetBytes(i).Value()
-		bet := decodeBetInfo(betData)
+		bytes := lockedBets.GetBytes(i).Value()
+		bet := decodeBetInfo(bytes)
 		totalBetAmount += bet.amount
 		if bet.color == winningColor {
 			totalWinAmount += bet.amount
@@ -109,9 +109,9 @@ func payWinners() {
 	lockedBets.Clear()
 
 	if len(winners) == 0 {
-		ctx.Log("Nobody wins!")
+		sc.Log("Nobody wins!")
 		// compact separate UTXOs into a single one
-		ctx.Transfer(scAddress, "iota", totalBetAmount)
+		sc.Transfer(scAddress, "iota", totalBetAmount)
 		return
 	}
 
@@ -121,36 +121,36 @@ func payWinners() {
 		payout := totalBetAmount * bet.amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			ctx.Transfer(bet.sender, "iota", payout)
+			sc.Transfer(bet.sender, "iota", payout)
 		}
 		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender
-		ctx.Log(text)
+		sc.Log(text)
 	}
 
 	if totalPayout != totalBetAmount {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + strconv.FormatInt(remainder, 10)
-		ctx.Log(text)
-		ctx.Transfer(scAddress, "iota", remainder)
+		sc.Log(text)
+		sc.Transfer(scAddress, "iota", remainder)
 	}
 }
 
 //export playPeriod
 func playPeriod() {
 	// can only be sent by SC owner
-	ctx := client.NewScContext()
-	if ctx.Request().Address() != ctx.Contract().Owner() {
-		ctx.Log("Cancel spoofed request")
+	sc := client.NewScContext()
+	if sc.Request().Address() != sc.Contract().Owner() {
+		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	playPeriod := ctx.Request().Params().GetInt("playPeriod").Value()
+	playPeriod := sc.Request().Params().GetInt("playPeriod").Value()
 	if playPeriod < 10 {
-		ctx.Log("Invalid play period...")
+		sc.Log("Invalid play period...")
 		return
 	}
 
-	ctx.State().GetInt("playPeriod").SetValue(playPeriod)
+	sc.State().GetInt("playPeriod").SetValue(playPeriod)
 }
 
 func decodeBetInfo(bytes []byte) *BetInfo {
@@ -163,11 +163,11 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 	}
 }
 
-func encodeBetInfo(data *BetInfo) []byte {
+func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
-		String(data.id).
-		String(data.sender).
-		Int(data.amount).
-		Int(data.color).
+		String(bet.id).
+		String(bet.sender).
+		Int(bet.amount).
+		Int(bet.color).
 		Data()
 }

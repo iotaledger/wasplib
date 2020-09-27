@@ -16,10 +16,10 @@ struct DonationInfo {
 
 #[no_mangle]
 pub fn donate() {
-    let ctx = ScContext::new();
-    let tlog = ctx.timestamped_log("l");
-    let request = ctx.request();
-    let mut di = DonationInfo {
+    let sc = ScContext::new();
+    let tlog = sc.timestamped_log("l");
+    let request = sc.request();
+    let mut donation = DonationInfo {
         seq: tlog.length() as i64,
         id: request.id(),
         amount: request.balance("iota"),
@@ -27,49 +27,49 @@ pub fn donate() {
         feedback: request.params().get_string("f").value(),
         error: String::new(),
     };
-    if di.amount == 0 || di.feedback.len() == 0 {
-        di.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
-        if di.amount > 0 {
-            ctx.transfer(&di.sender, "iota", di.amount);
-            di.amount = 0;
+    if donation.amount == 0 || donation.feedback.len() == 0 {
+        donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
+        if donation.amount > 0 {
+            sc.transfer(&donation.sender, "iota", donation.amount);
+            donation.amount = 0;
         }
     }
-    let data = encodeDonationInfo(&di);
-    tlog.append(request.timestamp(), &data);
+    let bytes = encodeDonationInfo(&donation);
+    tlog.append(request.timestamp(), &bytes);
 
-    let state = ctx.state();
-    let maxd = state.get_int("maxd");
-    let total = state.get_int("total");
-    if di.amount > maxd.value() { maxd.set_value(di.amount); }
-    total.set_value(total.value() + di.amount);
+    let state = sc.state();
+    let largest_donation = state.get_int("maxd");
+    let total_donated = state.get_int("total");
+    if donation.amount > largest_donation.value() { largest_donation.set_value(donation.amount); }
+    total_donated.set_value(total_donated.value() + donation.amount);
 }
 
 #[no_mangle]
 pub fn withdraw() {
-    let ctx = ScContext::new();
-    let owner = ctx.contract().owner();
-    let request = ctx.request();
+    let sc = ScContext::new();
+    let owner = sc.contract().owner();
+    let request = sc.request();
     if request.address() != owner {
-        ctx.log("Cancel spoofed request");
+        sc.log("Cancel spoofed request");
         return;
     }
 
-    let account = ctx.account();
-    let bal = account.balance("iota");
-    let mut withdrawSum = request.params().get_int("s").value();
-    if withdrawSum == 0 || withdrawSum > bal {
-        withdrawSum = bal;
+    let account = sc.account();
+    let amount = account.balance("iota");
+    let mut withdraw_amount = request.params().get_int("s").value();
+    if withdraw_amount == 0 || withdraw_amount > amount {
+        withdraw_amount = amount;
     }
-    if withdrawSum == 0 {
-        ctx.log("DonateWithFeedback: withdraw. nothing to withdraw");
+    if withdraw_amount == 0 {
+        sc.log("DonateWithFeedback: withdraw. nothing to withdraw");
         return;
     }
 
-    ctx.transfer(&owner, "iota", withdrawSum);
+    sc.transfer(&owner, "iota", withdraw_amount);
 }
 
-fn decodeDonationInfo(data: &[u8]) -> DonationInfo {
-    let mut decoder = BytesDecoder::new(data);
+fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
+    let mut decoder = BytesDecoder::new(bytes);
     DonationInfo {
         seq: decoder.int(),
         id: decoder.string(),
@@ -80,12 +80,12 @@ fn decodeDonationInfo(data: &[u8]) -> DonationInfo {
     }
 }
 
-fn encodeDonationInfo(data: &DonationInfo) -> Vec<u8> {
+fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.int(data.seq);
-    encoder.string(&data.id);
-    encoder.int(data.amount);
-    encoder.string(&data.feedback);
-    encoder.string(&data.error);
+    encoder.int(donation.seq);
+    encoder.string(&donation.id);
+    encoder.int(donation.amount);
+    encoder.string(&donation.feedback);
+    encoder.string(&donation.error);
     encoder.data()
 }

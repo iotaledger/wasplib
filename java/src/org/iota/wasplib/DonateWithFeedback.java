@@ -12,66 +12,66 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 public class DonateWithFeedback {
 	//export donate
 	public static void donate() {
-		ScContext ctx = new ScContext();
-		ScLog tlog = ctx.TimestampedLog("l");
-		ScRequest request = ctx.Request();
-		DonationInfo di = new DonationInfo();
-		di.seq = tlog.Length();
-		di.id = request.Id();
-		di.amount = request.Balance("iota");
-		di.sender = request.Address();
-		di.feedback = request.Params().GetString("f").Value();
-		di.error = "";
-		if (di.amount == 0 || di.feedback.length() == 0) {
-			di.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
-			if (di.amount > 0) {
-				ctx.Transfer(di.sender, "iota", di.amount);
-				di.amount = 0;
+		ScContext sc = new ScContext();
+		ScLog tlog = sc.TimestampedLog("l");
+		ScRequest request = sc.Request();
+		DonationInfo donation = new DonationInfo();
+		donation.seq = tlog.Length();
+		donation.id = request.Id();
+		donation.amount = request.Balance("iota");
+		donation.sender = request.Address();
+		donation.feedback = request.Params().GetString("f").Value();
+		donation.error = "";
+		if (donation.amount == 0 || donation.feedback.length() == 0) {
+			donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
+			if (donation.amount > 0) {
+				sc.Transfer(donation.sender, "iota", donation.amount);
+				donation.amount = 0;
 			}
 		}
-		byte[] data = encodeDonationInfo(di);
-		tlog.Append(request.Timestamp(), data);
+		byte[] bytes = encodeDonationInfo(donation);
+		tlog.Append(request.Timestamp(), bytes);
 
-		ScMutableMap state = ctx.State();
-		ScMutableInt maxd = state.GetInt("maxd");
-		ScMutableInt total = state.GetInt("total");
-		if (di.amount > maxd.Value()) {
-			maxd.SetValue(di.amount);
+		ScMutableMap state = sc.State();
+		ScMutableInt largestDonation = state.GetInt("maxd");
+		ScMutableInt totalDonated = state.GetInt("total");
+		if (donation.amount > largestDonation.Value()) {
+			largestDonation.SetValue(donation.amount);
 		}
-		total.SetValue(total.Value() + di.amount);
+		totalDonated.SetValue(totalDonated.Value() + donation.amount);
 	}
 
 	//export withdraw
 	public static void withdraw() {
-		ScContext ctx = new ScContext();
+		ScContext sc = new ScContext();
+		String owner = sc.Contract().Owner();
+		ScRequest request = sc.Request();
+		if (!request.Address().equals(owner)) {
+			sc.Log("Cancel spoofed request");
+			return;
+		}
+
+		ScAccount account = sc.Account();
+		long amount = account.Balance("iota");
+		long withdrawAmount = request.Params().GetInt("s").Value();
+		if (withdrawAmount == 0 || withdrawAmount > amount) {
+			withdrawAmount = amount;
+		}
+		if (withdrawAmount == 0) {
+			sc.Log("DonateWithFeedback: withdraw. nothing to withdraw");
+			return;
+		}
+
+		sc.Transfer(owner, "iota", withdrawAmount);
 	}
 
 	//export transferOwnership
 	public static void transferOwnership() {
-		ScContext ctx = new ScContext();
-		String owner = ctx.Contract().Owner();
-		ScRequest request = ctx.Request();
-		if (!request.Address().equals(owner)) {
-			ctx.Log("Cancel spoofed request");
-			return;
-		}
-
-		ScAccount account = ctx.Account();
-		long bal = account.Balance("iota");
-		long withdrawSum = request.Params().GetInt("s").Value();
-		if (withdrawSum == 0 || withdrawSum > bal) {
-			withdrawSum = bal;
-		}
-		if (withdrawSum == 0) {
-			ctx.Log("DonateWithFeedback: withdraw. nothing to withdraw");
-			return;
-		}
-
-		ctx.Transfer(owner, "iota", withdrawSum);
+		//ScContext sc = new ScContext();
 	}
 
-	public static DonationInfo decodeDonationInfo(byte[] data) {
-		BytesDecoder decoder = new BytesDecoder(data);
+	public static DonationInfo decodeDonationInfo(byte[] bytes) {
+		BytesDecoder decoder = new BytesDecoder(bytes);
 		DonationInfo bet = new DonationInfo();
 		bet.seq = decoder.Int();
 		bet.id = decoder.String();
@@ -82,14 +82,14 @@ public class DonateWithFeedback {
 		return bet;
 	}
 
-	public static byte[] encodeDonationInfo(DonationInfo bet) {
+	public static byte[] encodeDonationInfo(DonationInfo donation) {
 		return new BytesEncoder().
-				Int(bet.seq).
-				String(bet.id).
-				Int(bet.amount).
-				String(bet.sender).
-				String(bet.feedback).
-				String(bet.error).
+				Int(donation.seq).
+				String(donation.id).
+				Int(donation.amount).
+				String(donation.sender).
+				String(donation.feedback).
+				String(donation.error).
 				Data();
 	}
 

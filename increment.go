@@ -28,30 +28,30 @@ func test() {
 
 //export increment
 func increment() {
-	ctx := client.NewScContext()
-	counter := ctx.State().GetInt("counter")
+	sc := client.NewScContext()
+	counter := sc.State().GetInt("counter")
 	counter.SetValue(counter.Value() + 1)
 }
 
 //export incrementRepeat1
 func incrementRepeat1() {
-	ctx := client.NewScContext()
-	counter := ctx.State().GetInt("counter")
+	sc := client.NewScContext()
+	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		ctx.Event("", "increment", 5)
+		sc.Event("", "increment", 5)
 	}
 }
 
 //export incrementRepeatMany
 func incrementRepeatMany() {
-	ctx := client.NewScContext()
-	counter := ctx.State().GetInt("counter")
+	sc := client.NewScContext()
+	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
-	repeats := ctx.Request().Params().GetInt("numrepeats").Value()
-	stateRepeats := ctx.State().GetInt("numrepeats")
+	repeats := sc.Request().Params().GetInt("numRepeats").Value()
+	stateRepeats := sc.State().GetInt("numRepeats")
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -59,5 +59,5 @@ func incrementRepeatMany() {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	ctx.Event("", "incrementRepeatMany", 3)
+	sc.Event("", "incrementRepeatMany", 3)
 }

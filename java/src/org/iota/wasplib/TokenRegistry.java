@@ -11,33 +11,33 @@ import org.iota.wasplib.client.mutable.ScMutableString;
 public class TokenRegistry {
 	//export mintSupply
 	public static void mintSupply() {
-		ScContext ctx = new ScContext();
-		ScRequest request = ctx.Request();
+		ScContext sc = new ScContext();
+		ScRequest request = sc.Request();
 		String color = request.Hash();
-		ScMutableMap state = ctx.State();
+		ScMutableMap state = sc.State();
 		ScMutableMap registry = state.GetMap("tr");
 		if (!registry.GetString(color).Value().isEmpty()) {
-			ctx.Log("TokenRegistry: Color already exists");
+			sc.Log("TokenRegistry: Color already exists");
 			return;
 		}
-		ScImmutableMap reqParams = request.Params();
+		ScImmutableMap params = request.Params();
 		TokenInfo token = new TokenInfo();
 		token.supply = request.Balance(color);
 		token.mintedBy = request.Address();
 		token.owner = request.Address();
 		token.created = request.Timestamp();
 		token.updated = request.Timestamp();
-		token.description = reqParams.GetString("dscr").Value();
-		token.userDefined = reqParams.GetString("ud").Value();
+		token.description = params.GetString("dscr").Value();
+		token.userDefined = params.GetString("ud").Value();
 		if (token.supply <= 0) {
-			ctx.Log("TokenRegistry: Insufficient supply");
+			sc.Log("TokenRegistry: Insufficient supply");
 			return;
 		}
 		if (token.description.isEmpty()) {
 			token.description += "no dscr";
 		}
-		byte[] data = encodeTokenInfo(token);
-		registry.GetBytes(color).SetValue(data);
+		byte[] bytes = encodeTokenInfo(token);
+		registry.GetBytes(color).SetValue(bytes);
 		ScMutableString colors = state.GetString("lc");
 		String list = colors.Value();
 		if (!list.isEmpty()) {
@@ -49,16 +49,16 @@ public class TokenRegistry {
 
 	//export updateMetadata
 	public static void updateMetadata() {
-		ScContext ctx = new ScContext();
+		//ScContext sc = new ScContext();
 	}
 
 	//export transferOwnership
 	public static void transferOwnership() {
-		ScContext ctx = new ScContext();
+		//ScContext sc = new ScContext();
 	}
 
-	public static TokenInfo decodeTokenInfo(byte[] data) {
-		BytesDecoder decoder = new BytesDecoder(data);
+	public static TokenInfo decodeTokenInfo(byte[] bytes) {
+		BytesDecoder decoder = new BytesDecoder(bytes);
 		TokenInfo token = new TokenInfo();
 		token.supply = decoder.Int();
 		token.mintedBy = decoder.String();
@@ -70,15 +70,15 @@ public class TokenRegistry {
 		return token;
 	}
 
-	public static byte[] encodeTokenInfo(TokenInfo data) {
+	public static byte[] encodeTokenInfo(TokenInfo token) {
 		return new BytesEncoder().
-				Int(data.supply).
-				String(data.mintedBy).
-				String(data.owner).
-				Int(data.created).
-				Int(data.updated).
-				String(data.description).
-				String(data.userDefined).
+				Int(token.supply).
+				String(token.mintedBy).
+				String(token.owner).
+				Int(token.created).
+				Int(token.updated).
+				String(token.description).
+				String(token.userDefined).
 				Data();
 	}
 

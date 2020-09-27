@@ -18,10 +18,10 @@ func main() {
 
 //export donate
 func donate() {
-	ctx := client.NewScContext()
-	tlog := ctx.TimestampedLog("l")
-	request := ctx.Request()
-	di := &DonationInfo{
+	sc := client.NewScContext()
+	tlog := sc.TimestampedLog("l")
+	request := sc.Request()
+	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
 		id:       request.Hash(),
 		amount:   request.Balance("iota"),
@@ -29,47 +29,47 @@ func donate() {
 		feedback: request.Params().GetString("f").Value(),
 		error:    "",
 	}
-	if di.amount == 0 || len(di.feedback) == 0 {
-		di.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
-		if di.amount > 0 {
-			ctx.Transfer(di.sender, "iota", di.amount)
-			di.amount = 0
+	if donation.amount == 0 || len(donation.feedback) == 0 {
+		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
+		if donation.amount > 0 {
+			sc.Transfer(donation.sender, "iota", donation.amount)
+			donation.amount = 0
 		}
 	}
-	data := encodeDonationInfo(di)
-	tlog.Append(request.Timestamp(), data)
+	bytes := encodeDonationInfo(donation)
+	tlog.Append(request.Timestamp(), bytes)
 
-	state := ctx.State()
-	maxd := state.GetInt("maxd")
-	total := state.GetInt("total")
-	if di.amount > maxd.Value() {
-		maxd.SetValue(di.amount)
+	state := sc.State()
+	largestDonation := state.GetInt("maxd")
+	totalDonated := state.GetInt("total")
+	if donation.amount > largestDonation.Value() {
+		largestDonation.SetValue(donation.amount)
 	}
-	total.SetValue(total.Value() + di.amount)
+	totalDonated.SetValue(totalDonated.Value() + donation.amount)
 }
 
 //export withdraw
 func withdraw() {
-	ctx := client.NewScContext()
-	owner := ctx.Contract().Owner()
-	request := ctx.Request()
+	sc := client.NewScContext()
+	owner := sc.Contract().Owner()
+	request := sc.Request()
 	if request.Address() != owner {
-		ctx.Log("Cancel spoofed request")
+		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	account := ctx.Account()
-	bal := account.Balance("iota")
-	withdrawSum := request.Params().GetInt("s").Value()
-	if withdrawSum == 0 || withdrawSum > bal {
-		withdrawSum = bal
+	account := sc.Account()
+	amount := account.Balance("iota")
+	withdrawAmount := request.Params().GetInt("s").Value()
+	if withdrawAmount == 0 || withdrawAmount > amount {
+		withdrawAmount = amount
 	}
-	if withdrawSum == 0 {
-		ctx.Log("DonateWithFeedback: withdraw. nothing to withdraw")
+	if withdrawAmount == 0 {
+		sc.Log("DonateWithFeedback: withdraw. nothing to withdraw")
 		return
 	}
 
-	ctx.Transfer(owner, "iota", withdrawSum)
+	sc.Transfer(owner, "iota", withdrawAmount)
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {
@@ -84,13 +84,13 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	return data
 }
 
-func encodeDonationInfo(data *DonationInfo) []byte {
+func encodeDonationInfo(donation *DonationInfo) []byte {
 	return client.NewBytesEncoder().
-		Int(data.seq).
-		String(data.id).
-		Int(data.amount).
-		String(data.sender).
-		String(data.error).
-		String(data.feedback).
+		Int(donation.seq).
+		String(donation.id).
+		Int(donation.amount).
+		String(donation.sender).
+		String(donation.error).
+		String(donation.feedback).
 		Data()
 }
