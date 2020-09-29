@@ -1,57 +1,72 @@
 {
   "error": "errorTextOrEmptyStringWhenNoError",
   "contract": {
-    "id": "smartContractId",
-    "name": "smartContractName",
-    "description": "whateverDescribesTheSmartContract",
-    "address": "smartContractAccountAddress",
-    "color": "smartContractColor",
-    "owner": "smartContractOwnerAddress"
+    "id": "base58HashOfSmartContractId",
+    "name": "nameOfSmartContract",
+    "description": "descriptionOfSmartContract",
+    "address": "base58HashOfSmartContractAccountAddress",
+    "color": "base58HashOfSmartContractColor",
+    "owner": "base58HashOfSmartContractOwnerAddress"
   },
   "account": {
-    "colors": ["iota", "colorX"],
+    "colors": ["iota", "base58HashOfColor"],
     "balance": {
       "iota": 1000000,
-      "colorX": 27
+      "base58HashOfColor": 27
     }
   },
   "request": {
-    "address": "senderAddress",
-    "colors": ["iota", "colorX"],
+    "address": "base58HashOfSenderAddress",
+    "colors": ["iota", "base58HashOfColor"],
     "balance": {
       "iota": 1000,
-      "colorX": 27
+      "base58HashOfColor": 27
     },
     "params": {
-      "param1": 100,
-      "paramX": "someValue"
+      "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+      "paramInt": 987654321,
+      "paramString": "someValue"
     },
     "timestamp": 1234567890,
-    "hash": "transactionHash"
+    "id": "[nr]base58HashOfTransaction",
+    "hash": "base58HashOfTransaction"
   },
+  "logs": [
+    {"timestamp": 20191231235559, "data": "0x[fe dc ba 98 76 54 32 10]"},
+    {"timestamp": 20191231235959, "data": "0x[fe dc ba 98 76 54 32 10]"}
+  ],
   "state": {
+    "bytesVar": "0x[fe dc ba 98 76 54 32 10]",
+    "bytesArrayVar": ["0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]"],
     "intVar": 123,
     "stringVar": "blabla",
     "mapVar": {
-      "key1": 987,
-      "keyX": "foo"
+      "keyBytes": "0x[fe dc ba 98 76 54 32 10]",
+      "keyInt": 987,
+      "keyString": "foo"
     },
     "intArrayVar": [1, 2, 3],
     "stringArrayVar": ["a", "b", "c"]
   },
   "transfers": [
-    {"color": "iota", "amount": 10, "address": "targetAddress"},
-    {"color": "colorX", "amount": 1, "address": "targetAddress"}
+    {"address": "base58HashOfTargetAddress", "color": "iota", "amount": 10},
+    {"address": "base58HashOfTargetAddress", "color": "base58HashOfColor", "amount": 1}
   ],
   "events": [
     {
-      "contract": "smartContractIdOrEmptyWhenSelf",
+      "contract": "base58HashOfSmartContractId",
+      "code": 0,
       "function": "functionName",
       "delay": 120000000000,
       "params": {
-        "param1": 100,
-        "paramX": "someValue"
+        "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+        "paramInt": 987654321,
+        "paramString": "someValue"
       }
     }
-  ]
+  ],
+  "utility": {
+    "random": 123456789,
+    "hash": "0x[fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10]"
+  }
 }

@@ -1,29 +1,34 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/iotaledger/wasplib/host"
-	"github.com/iotaledger/wasplib/host/interfaces/objtype"
+	"github.com/iotaledger/wasplib/jsontest"
+	"os"
 )
 
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
+	file, err := os.Open("increment.json")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	testData := &jsontest.JsonTest{}
+	err = json.NewDecoder(file).Decode(&testData)
+	if err != nil {
+		panic(err)
+	}
+
 	ctx := host.NewHostImpl()
-	ctx.LoadWasm("wasm/fairroulette_bg.wasm")
+	err = ctx.LoadWasm("wasm/increment_bg.wasm")
+	if err != nil {
+		panic(err)
+	}
 
-	//set up placeBet
-	host.EnableImmutableChecks = false
-	contract := ctx.Object(nil, "contract", objtype.OBJTYPE_MAP)
-	contract.SetString(ctx.GetKeyId("address"), "smartContractAddress")
-	request := ctx.Object(nil, "request", objtype.OBJTYPE_MAP)
-	request.SetString(ctx.GetKeyId("hash"), "requestTransactionHash")
-	request.SetString(ctx.GetKeyId("id"), "requestTransactionID")
-	request.SetString(ctx.GetKeyId("address"), "requestInitiatorAddress")
-	params := ctx.Object(request, "params", objtype.OBJTYPE_MAP)
-	params.SetInt(ctx.GetKeyId("color"), 3)
-	ctx.AddBalance(request, "iota", 500)
-	host.EnableImmutableChecks = true
-
-	ctx.RunWasmFunction("placeBet")
+	for name, t := range testData.Tests {
+		ctx.RunTest(name, t, testData)
+	}
 }

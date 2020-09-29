@@ -1,0 +1,100 @@
+{
+  "setups": {
+    "increment": {
+      "contract": {
+        "name": "increment",
+        "description": "Test basic functionality",
+        "id": "incrementId",
+        "address": "incrementAddress",
+        "color": "incrementColor",
+        "owner": "incrementOwner"
+      },
+      "account": {},
+      "request": {
+        "timestamp": 20200928112900,
+        "id": "[0]transaction1",
+        "hash": "transaction1",
+        "address": "senderAddress"
+      }
+    }
+  },
+  "tests": {
+    "incrementFirstTime": {
+      "setup": "increment",
+      "request": {
+        "params": {
+          "fn": "increment"
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 1
+        },
+        "logs": [],
+        "events": [],
+        "transfers": []
+      }
+    },
+    "incrementSecondTime": {
+      "setup": "increment",
+      "state": {
+        "counter": 1
+      },
+      "request": {
+        "params": {
+          "fn": "increment"
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": [],
+        "events": [],
+        "transfers": []
+      }
+    },
+    "incrementAgainByChainingToIncrement": {
+      "setup": "increment",
+      "request": {
+        "params": {
+          "fn": "incrementRepeat1"
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": [],
+        "events": [
+          {"contract": "", "function": "increment", "delay": 5}
+        ],
+        "transfers": []
+      }
+    },
+    "increment5TimesByChainingToSelf": {
+      "setup": "increment",
+      "request": {
+        "params": {
+          "fn": "incrementRepeatMany",
+          "numRepeats": 5
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 6,
+          "numRepeats": 0
+        },
+        "logs": [],
+        "events": [
+          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
+          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
+          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
+          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
+          {"contract": "", "function": "incrementRepeatMany", "delay": 3}
+        ],
+        "transfers": []
+      }
+    }
+  }
+}

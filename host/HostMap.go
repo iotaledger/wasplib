@@ -105,6 +105,21 @@ func (h *HostMap) SetInt(keyId int32, value int64) {
 		h.ctx.SetError("Map.SetInt: Immutable")
 		return
 	}
+	if keyId == interfaces.KeyLength {
+		for k, v := range h.types {
+			switch v {
+			case objtype.OBJTYPE_MAP,
+				objtype.OBJTYPE_BYTES_ARRAY,
+				objtype.OBJTYPE_INT_ARRAY,
+				objtype.OBJTYPE_STRING_ARRAY:
+				// tell object to clear itself
+				h.ctx.SetInt(h.fields[k].(int32), keyId, 0)
+				//TODO move to pool for reuse of transfers
+			}
+		}
+		h.fields = make(map[int32]interface{})
+		return
+	}
 	if !h.valid(keyId, objtype.OBJTYPE_INT) {
 		return
 	}
@@ -137,4 +152,19 @@ func (h *HostMap) valid(keyId int32, typeId int32) bool {
 		return false
 	}
 	return true
+}
+
+func (h *HostMap) CopyDataTo(other interfaces.HostObject) {
+	for k, v := range h.fields {
+		switch h.types[k] {
+		case objtype.OBJTYPE_BYTES:
+			other.SetBytes(k, v.([]byte))
+		case objtype.OBJTYPE_INT:
+			other.SetInt(k, v.(int64))
+		case objtype.OBJTYPE_STRING:
+			other.SetString(k, v.(string))
+		default:
+			panic("Implement types")
+		}
+	}
 }

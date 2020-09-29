@@ -144,9 +144,9 @@ func (h *HostBase) LoadWasm(wasmFile string) error {
 }
 
 func (h *HostBase) Log(logLevel int, text string) {
-	//if logLevel >= level.TRACE {
-	fmt.Println(text)
-	//}
+	if logLevel >= level.MSG {
+		fmt.Println(text)
+	}
 }
 
 func (h *HostBase) AddObject(obj interfaces.HostObject) int32 {

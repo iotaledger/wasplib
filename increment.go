@@ -50,8 +50,8 @@ func incrementRepeatMany() {
 	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
-	repeats := sc.Request().Params().GetInt("numRepeats").Value()
 	stateRepeats := sc.State().GetInt("numRepeats")
+	repeats := sc.Request().Params().GetInt("numRepeats").Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
