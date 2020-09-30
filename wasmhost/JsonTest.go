@@ -1,11 +1,11 @@
-package jsontest
+package wasmhost
 
-type JsonTest struct {
-	Setups map[string]*JsonModel `json:"setups"`
-	Tests  map[string]*JsonModel `json:"tests"`
+type JsonTests struct {
+	Setups map[string]*JsonDataModel `json:"setups"`
+	Tests  map[string]*JsonDataModel `json:"tests"`
 }
 
-type JsonModel struct {
+type JsonDataModel struct {
 	Setup     string                 `json:"setup"`
 	Contract  map[string]interface{} `json:"contract"`
 	Account   map[string]interface{} `json:"account"`
@@ -14,5 +14,5 @@ type JsonModel struct {
 	Logs      []interface{}          `json:"logs"`
 	Events    []interface{}          `json:"events"`
 	Transfers []interface{}          `json:"transfers"`
-	Expect    *JsonModel             `json:"expect"`
+	Expect    *JsonDataModel         `json:"expect"`
 }

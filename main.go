@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/iotaledger/wasplib/wasmhost"
-	"github.com/iotaledger/wasplib/jsontest"
 	"os"
 )
 
@@ -16,19 +15,19 @@ func main() {
 		panic(err)
 	}
 	defer file.Close()
-	testData := &jsontest.JsonTest{}
-	err = json.NewDecoder(file).Decode(&testData)
+	jsonTests := &wasmhost.JsonTests{}
+	err = json.NewDecoder(file).Decode(&jsonTests)
 	if err != nil {
 		panic(err)
 	}
 
-	ctx := wasmhost.NewHostImpl()
-	err = ctx.LoadWasm("wasm/increment_bg.wasm")
+	host := wasmhost.NewHostImpl()
+	err = host.LoadWasm("wasm/increment_bg.wasm")
 	if err != nil {
 		panic(err)
 	}
 
-	for name, t := range testData.Tests {
-		ctx.RunTest(name, t, testData)
+	for name, jsonModel := range jsonTests.Tests {
+		host.RunTest(name, jsonModel, jsonTests)
 	}
 }

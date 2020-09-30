@@ -2,7 +2,6 @@ package wasmhost
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasplib/jsontest"
 )
 
 var EnableImmutableChecks = true
@@ -18,43 +17,38 @@ func NewHostImpl() *SimpleWasmHost {
 }
 
 func (host *SimpleWasmHost) AddBalance(obj HostObject, color string, amount int64) {
-	colors := host.Object(obj, "colors", OBJTYPE_STRING_ARRAY)
+	colors := host.FindSubObject(obj, "colors", OBJTYPE_STRING_ARRAY)
 	length := colors.GetInt(KeyLength)
 	colors.SetString(int32(length), color)
 	colorId := host.GetKeyId(color)
-	balance := host.Object(obj, "balance", OBJTYPE_MAP)
+	balance := host.FindSubObject(obj, "balance", OBJTYPE_MAP)
 	balance.SetInt(colorId, amount)
 }
 
 func (host *SimpleWasmHost) ClearData() {
-	host.ClearMapData("contract")
-	host.ClearMapData("account")
-	host.ClearMapData("request")
-	host.ClearMapData("state")
-	host.ClearArrayData("logs")
-	host.ClearArrayData("events")
-	host.ClearArrayData("transfers")
+	host.ClearObjectData(OBJTYPE_MAP, "contract")
+	host.ClearObjectData(OBJTYPE_MAP, "account")
+	host.ClearObjectData(OBJTYPE_MAP, "request")
+	host.ClearObjectData(OBJTYPE_MAP, "state")
+	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "logs")
+	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "events")
+	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "transfers")
 }
 
-func (host *SimpleWasmHost) ClearArrayData(key string) {
-	data := host.Object(nil, key, OBJTYPE_MAP_ARRAY)
-	data.SetInt(KeyLength, 0)
-}
-
-func (host *SimpleWasmHost) ClearMapData(key string) {
-	data := host.Object(nil, key, OBJTYPE_MAP)
-	data.SetInt(KeyLength, 0)
+func (host *SimpleWasmHost) ClearObjectData(typeId int32, key string) {
+	object := host.FindSubObject(nil, key, typeId)
+	object.SetInt(KeyLength, 0)
 }
 
 func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bool {
-	data := host.Object(nil, key, OBJTYPE_MAP_ARRAY)
-	if data.GetInt(KeyLength) != int64(len(array)) {
+	arrayObject := host.FindSubObject(nil, key, OBJTYPE_MAP_ARRAY)
+	if arrayObject.GetInt(KeyLength) != int64(len(array)) {
 		fmt.Printf("FAIL: array %s length\n", key)
 		return false
 	}
 	for i := range array {
-		submap := host.FindObject(data.GetObjectId(int32(i), OBJTYPE_MAP))
-		if !host.CompareSubMapData(submap, array[i].(map[string]interface{})) {
+		mapObject := host.FindObject(arrayObject.GetObjectId(int32(i), OBJTYPE_MAP))
+		if !host.CompareSubMapData(mapObject, array[i].(map[string]interface{})) {
 			fmt.Printf("      map %s\n", key)
 			return false
 		}
@@ -62,76 +56,84 @@ func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bo
 	return true
 }
 
-func (host *SimpleWasmHost) CompareData(expect *jsontest.JsonModel) bool {
-	return host.CompareMapData("state", expect.State) &&
-		host.CompareArrayData("logs", expect.Logs) &&
-		host.CompareArrayData("events", expect.Events) &&
-		host.CompareArrayData("transfers", expect.Transfers)
+func (host *SimpleWasmHost) CompareData(expectData *JsonDataModel) bool {
+	return host.CompareMapData("state", expectData.State) &&
+		host.CompareArrayData("logs", expectData.Logs) &&
+		host.CompareArrayData("events", expectData.Events) &&
+		host.CompareArrayData("transfers", expectData.Transfers)
 }
 
 func (host *SimpleWasmHost) CompareMapData(key string, values map[string]interface{}) bool {
-	data := host.Object(nil, key, OBJTYPE_MAP)
-	if !host.CompareSubMapData(data, values) {
+	mapObject := host.FindSubObject(nil, key, OBJTYPE_MAP)
+	if !host.CompareSubMapData(mapObject, values) {
 		fmt.Printf("      map %s\n", key)
 		return false
 	}
 	return true
 }
 
-func (host *SimpleWasmHost) CompareSubMapData(data HostObject, values map[string]interface{}) bool {
-	for k, v := range values {
-		switch c := v.(type) {
+func (host *SimpleWasmHost) CompareSubMapData(mapObject HostObject, values map[string]interface{}) bool {
+	for key, field := range values {
+		switch t := field.(type) {
 		case string:
-			got := data.GetString(host.GetKeyId(k))
-			exp := v.(string)
-			if got != exp {
-				fmt.Printf("FAIL: string %s, expected '%s', got '%s'\n", k, exp, got)
+			value := mapObject.GetString(host.GetKeyId(key))
+			expect := field.(string)
+			if value != expect {
+				fmt.Printf("FAIL: string %s, expected '%s', got '%s'\n", key, expect, value)
 				return false
 			}
 		case float64:
-			got := data.GetInt(host.GetKeyId(k))
-			exp := int64(v.(float64))
-			if exp != got {
-				fmt.Printf("FAIL: int %s, expected %d, got %d\n", k, exp, got)
+			value := mapObject.GetInt(host.GetKeyId(key))
+			expect := int64(field.(float64))
+			if value != expect {
+				fmt.Printf("FAIL: int %s, expected %d, got %d\n", key, expect, value)
 				return false
 			}
 		case map[string]interface{}:
-			submap := host.Object(data, k, OBJTYPE_MAP)
-			if !host.CompareSubMapData(submap, v.(map[string]interface{})) {
-				fmt.Printf("      map %s\n", k)
+			subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
+			if !host.CompareSubMapData(subMapObject, field.(map[string]interface{})) {
+				fmt.Printf("      map %s\n", key)
 				return false
 			}
 		default:
-			panic(fmt.Sprintf("Invalid type: %T", c))
+			panic(fmt.Sprintf("Invalid type: %T", t))
 		}
 	}
 	return true
 }
 
-func (host *SimpleWasmHost) LoadData(model *jsontest.JsonModel) {
-	host.LoadMapData("contract", model.Contract)
-	host.LoadMapData("account", model.Account)
-	host.LoadMapData("request", model.Request)
-	host.LoadMapData("state", model.State)
+func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int32) HostObject {
+	if obj == nil {
+		// use root object
+		obj = host.FindObject(1)
+	}
+	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
+}
+
+func (host *SimpleWasmHost) LoadData(jsonData *JsonDataModel) {
+	host.LoadMapData("contract", jsonData.Contract)
+	host.LoadMapData("account", jsonData.Account)
+	host.LoadMapData("request", jsonData.Request)
+	host.LoadMapData("state", jsonData.State)
 }
 
 func (host *SimpleWasmHost) LoadMapData(key string, values map[string]interface{}) {
-	data := host.Object(nil, key, OBJTYPE_MAP)
-	host.LoadSubMapData(data, values)
+	mapObject := host.FindSubObject(nil, key, OBJTYPE_MAP)
+	host.LoadSubMapData(mapObject, values)
 }
 
-func (host *SimpleWasmHost) LoadSubMapData(data HostObject, values map[string]interface{}) {
-	for k, v := range values {
-		switch c := v.(type) {
+func (host *SimpleWasmHost) LoadSubMapData(mapObject HostObject, values map[string]interface{}) {
+	for key, field := range values {
+		switch t := field.(type) {
 		case string:
-			data.SetString(host.GetKeyId(k), v.(string))
+			mapObject.SetString(host.GetKeyId(key), field.(string))
 		case float64:
-			data.SetInt(host.GetKeyId(k), int64(v.(float64)))
+			mapObject.SetInt(host.GetKeyId(key), int64(field.(float64)))
 		case map[string]interface{}:
-			submap := host.Object(data, k, OBJTYPE_MAP)
-			host.LoadSubMapData(submap, v.(map[string]interface{}))
+			subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
+			host.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		default:
-			panic(fmt.Sprintf("Invalid type: %T", c))
+			panic(fmt.Sprintf("Invalid type: %T", t))
 		}
 	}
 }
@@ -151,31 +153,23 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	}
 }
 
-func (host *SimpleWasmHost) Object(obj HostObject, key string, typeId int32) HostObject {
-	if obj == nil {
-		// use root object
-		obj = host.FindObject(1)
-	}
-	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
-}
-
-func (host *SimpleWasmHost) RunTest(name string, t *jsontest.JsonModel, testData *jsontest.JsonTest) {
+func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTests *JsonTests) {
 	fmt.Printf("Test: %s\n", name)
-	if t.Expect == nil {
+	if jsonData.Expect == nil {
 		fmt.Printf("FAIL: Missing expect model data\n")
 		return
 	}
 	host.ClearData()
-	if t.Setup != "" {
-		s, ok := testData.Setups[t.Setup]
+	if jsonData.Setup != "" {
+		setupData, ok := jsonTests.Setups[jsonData.Setup]
 		if !ok {
-			fmt.Printf("FAIL: Missing setup: %s\n", t.Setup)
+			fmt.Printf("FAIL: Missing setup: %s\n", jsonData.Setup)
 			return
 		}
-		host.LoadData(s)
+		host.LoadData(setupData)
 	}
-	host.LoadData(t)
-	function, ok := t.Request["function"]
+	host.LoadData(jsonData)
+	function, ok := jsonData.Request["function"]
 	if !ok {
 		fmt.Printf("FAIL: Missing request.function\n")
 		return
@@ -186,11 +180,11 @@ func (host *SimpleWasmHost) RunTest(name string, t *jsontest.JsonModel, testData
 		return
 	}
 
-	request := host.Object(nil, "request", OBJTYPE_MAP)
-	reqParams := host.Object(request, "params", OBJTYPE_MAP)
-	events := host.Object(nil, "events", OBJTYPE_MAP_ARRAY)
+	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
+	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
+	events := host.FindSubObject(nil, "events", OBJTYPE_MAP_ARRAY)
 	i := int64(0)
-	expectedEvents := int64(len(t.Expect.Events))
+	expectedEvents := int64(len(jsonData.Expect.Events))
 	for i < events.GetInt(KeyLength) {
 		event := host.FindObject(events.GetObjectId(int32(i), OBJTYPE_MAP))
 		contract := event.GetString(host.GetKeyId("contract"))
@@ -216,8 +210,8 @@ func (host *SimpleWasmHost) RunTest(name string, t *jsontest.JsonModel, testData
 		i++
 	}
 
-	// now compare the expect data model to the actual data model
-	if host.CompareData(t.Expect) {
+	// now compare the expected json data model to the actual host data model
+	if host.CompareData(jsonData.Expect) {
 		fmt.Printf("PASS\n")
 	}
 }
