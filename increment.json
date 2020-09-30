@@ -22,9 +22,7 @@
     "incrementFirstTime": {
       "setup": "increment",
       "request": {
-        "params": {
-          "fn": "increment"
-        }
+        "function": "increment"
       },
       "expect": {
         "state": {
@@ -41,9 +39,7 @@
         "counter": 1
       },
       "request": {
-        "params": {
-          "fn": "increment"
-        }
+        "function": "increment"
       },
       "expect": {
         "state": {
@@ -57,9 +53,7 @@
     "incrementAgainByChainingToIncrement": {
       "setup": "increment",
       "request": {
-        "params": {
-          "fn": "incrementRepeat1"
-        }
+        "function": "incrementRepeat1"
       },
       "expect": {
         "state": {
@@ -75,8 +69,8 @@
     "increment5TimesByChainingToSelf": {
       "setup": "increment",
       "request": {
+        "function": "incrementRepeatMany",
         "params": {
-          "fn": "incrementRepeatMany",
           "numRepeats": 5
         }
       },

@@ -1,47 +1,41 @@
-package host
-
-import "github.com/iotaledger/wasplib/host/interfaces"
+package wasmhost
 
 type NullObject struct {
-	ctx interfaces.HostInterface
+	host *WasmHost
 }
 
-func NewNullObject(h interfaces.HostInterface) interfaces.HostObject {
-	return &NullObject{ctx: h}
-}
-
-func (n *NullObject) error(text string) {
-	n.ctx.SetBytes(1, interfaces.KeyError, []byte(text))
+func NewNullObject(host *WasmHost) HostObject {
+	return &NullObject{host: host}
 }
 
 func (n *NullObject) GetBytes(keyId int32) []byte {
-	n.error("Null.GetBytes")
+	n.host.SetError("Null.GetBytes")
 	return nil
 }
 
 func (n *NullObject) GetInt(keyId int32) int64 {
-	n.error("Null.GetInt")
+	n.host.SetError("Null.GetInt")
 	return 0
 }
 
 func (n *NullObject) GetString(keyId int32) string {
-	n.error("Null.GetString")
+	n.host.SetError("Null.GetString")
 	return ""
 }
 
 func (n *NullObject) GetObjectId(keyId int32, typeId int32) int32 {
-	n.error("Null.GetObjectId")
+	n.host.SetError("Null.GetObjectId")
 	return 0
 }
 
 func (n *NullObject) SetBytes(keyId int32, value []byte) {
-	n.error("Null.SetBytes")
+	n.host.SetError("Null.SetBytes")
 }
 
 func (n *NullObject) SetInt(keyId int32, value int64) {
-	n.error("Null.SetInt")
+	n.host.SetError("Null.SetInt")
 }
 
 func (n *NullObject) SetString(keyId int32, value string) {
-	n.error("Null.SetString")
+	n.host.SetError("Null.SetString")
 }

@@ -1,0 +1,49 @@
+{
+  "setups": {
+    "fairroulette": {
+      "contract": {
+        "name": "fairroulette",
+        "description": "Simple gambling app",
+        "id": "fairrouletteId",
+        "address": "fairrouletteAddress",
+        "color": "fairrouletteColor",
+        "owner": "fairrouletteOwner"
+      },
+      "account": {
+        "colors": ["iota"],
+        "balance": {"iota": 100}
+      },
+      "request": {
+        "timestamp": 20200928112900,
+        "id": "[0]transaction1",
+        "hash": "transaction1",
+        "address": "senderAddress"
+      }
+    }
+  },
+  "tests": {
+    "placeOneBet": {
+      "setup": "fairroulette",
+      "request": {
+        "function": "placeBet",
+        "colors": ["iota"],
+        "balance": {"iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 1
+        },
+        "account": {
+          "colors": ["iota"],
+          "balance": {"iota": 200}
+        },
+        "logs": [],
+        "events": [ {"contract": "", "function":  "lockBets", "delay": 120 }],
+        "transfers": []
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/iotaledger/wasplib/host"
+	"github.com/iotaledger/wasplib/wasmhost"
 	"github.com/iotaledger/wasplib/jsontest"
 	"os"
 )
@@ -22,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	ctx := host.NewHostImpl()
+	ctx := wasmhost.NewHostImpl()
 	err = ctx.LoadWasm("wasm/increment_bg.wasm")
 	if err != nil {
 		panic(err)
