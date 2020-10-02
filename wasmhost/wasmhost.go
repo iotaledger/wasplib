@@ -76,6 +76,7 @@ func (host *WasmHost) Init(root HostObject, keyMap *map[string]int32, logger Log
 	elements := len(*keyMap) + 1
 	host.error = ""
 	host.logger = logger
+	host.objIdToObj = nil
 	host.keyIdToKey = []string{"<null>"}
 	host.keyMapToKeyId = keyMap
 	host.keyToKeyId = make(map[string]int32)
