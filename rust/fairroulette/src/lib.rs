@@ -4,6 +4,7 @@
 use wasplib::client::BytesDecoder;
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
+use wasplib::client::ScExports;
 
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
@@ -13,6 +14,16 @@ struct BetInfo {
     sender: String,
     color: i64,
     amount: i64,
+}
+
+#[no_mangle]
+pub fn onLoad() {
+    let mut exports = ScExports::new();
+    exports.add("nothing");
+    exports.add("placeBet");
+    exports.add("lockBets");
+    exports.add("payWinners");
+    exports.add_protected("playPeriod");
 }
 
 #[no_mangle]

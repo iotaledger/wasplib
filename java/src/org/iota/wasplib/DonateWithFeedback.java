@@ -2,14 +2,19 @@ package org.iota.wasplib;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.context.ScAccount;
-import org.iota.wasplib.client.context.ScContext;
-import org.iota.wasplib.client.context.ScLog;
-import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.context.*;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class DonateWithFeedback {
+	//export onLoad
+	public static void onLoad() {
+		ScExports exports = new ScExports();
+		exports.Add("nothing");
+		exports.Add("donate");
+		exports.AddProtected("withdraw");
+	}
+
 	//export donate
 	public static void donate() {
 		ScContext sc = new ScContext();

@@ -21,8 +21,17 @@ func main() {
 		panic(err)
 	}
 
-	host := wasmhost.NewHostImpl()
-	err = host.LoadWasm("wasm/increment_bg.wasm")
+	host := &wasmhost.SimpleWasmHost{}
+	err = host.Init(wasmhost.NewNullObject(host), wasmhost.NewHostMap(host), nil, host)
+	if err != nil {
+		panic(err)
+	}
+	host.ExportsId = host.GetKeyId("exports")
+	err = host.LoadWasmFile("wasm/increment_bg.wasm")
+	if err != nil {
+		panic(err)
+	}
+	err = host.RunWasmFunction("onLoad")
 	if err != nil {
 		panic(err)
 	}

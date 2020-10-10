@@ -69,7 +69,7 @@ type WasmHost struct {
 	store         *wasmtime.Store
 }
 
-func (host *WasmHost) Init(root HostObject, keyMap *map[string]int32, logger LogInterface) {
+func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]int32, logger LogInterface) error {
 	if keyMap == nil {
 		keyMap = &baseKeyMap
 	}
@@ -84,9 +84,9 @@ func (host *WasmHost) Init(root HostObject, keyMap *map[string]int32, logger Log
 	for k, v := range *keyMap {
 		host.keyIdToKeyMap[-v] = k
 	}
-	host.TrackObject(NewNullObject(host))
+	host.TrackObject(null)
 	host.TrackObject(root)
-	host.initWasm()
+	return host.initWasm()
 }
 
 func (host *WasmHost) initWasm() error {
@@ -153,7 +153,7 @@ func (host *WasmHost) fdWrite(fd int32, iovs int32, size int32, written int32) i
 func (host *WasmHost) FindObject(objId int32) HostObject {
 	if objId < 0 || objId >= int32(len(host.objIdToObj)) {
 		host.SetError("Invalid objId")
-		return NewNullObject(host)
+		objId = 0
 	}
 	return host.objIdToObj[objId]
 }
@@ -254,14 +254,8 @@ func (host *WasmHost) HasError() bool {
 	return host.error != ""
 }
 
-func (host *WasmHost) LoadWasm(wasmFile string) error {
+func (host *WasmHost) linkWasmHost() error {
 	var err error
-	host.module, err = wasmtime.NewModuleFromFile(host.store.Engine, wasmFile)
-	if err != nil {
-		return err
-	}
-	//TODO: Does this instantiate fresh memory instance or only link externals?
-	//      Same question for start() function. We need a *clean* instance!
 	host.instance, err = host.linker.Instantiate(host.module)
 	if err != nil {
 		return err
@@ -290,6 +284,24 @@ func (host *WasmHost) LoadWasm(wasmFile string) error {
 		copy(host.memoryCopy, ptr[host.memoryNonZero:])
 	}
 	return nil
+}
+
+func (host *WasmHost) LoadWasm(wasmData []byte) error {
+	var err error
+	host.module, err = wasmtime.NewModule(host.store.Engine, wasmData)
+	if err != nil {
+		return err
+	}
+	return host.linkWasmHost()
+}
+
+func (host *WasmHost) LoadWasmFile(wasmFile string) error {
+	var err error
+	host.module, err = wasmtime.NewModuleFromFile(host.store.Engine, wasmFile)
+	if err != nil {
+		return err
+	}
+	return host.linkWasmHost()
 }
 
 func (host *WasmHost) RunWasmFunction(functionName string) error {

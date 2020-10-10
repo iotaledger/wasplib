@@ -17,6 +17,13 @@ type TokenInfo struct {
 func main() {
 }
 
+//export onLoad
+func onLoadTokenRegistry() {
+	exports := client.NewScFunctions()
+	exports.Add("nothing")
+	exports.Add("mintSupply")
+}
+
 //export mintSupply
 func mintSupply() {
 	sc := client.NewScContext()

@@ -3,12 +3,20 @@ package org.iota.wasplib;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableString;
 
 public class TokenRegistry {
+	//export onLoad
+	public static void onLoad() {
+		ScExports exports = new ScExports();
+		exports.Add("nothing");
+		exports.Add("mintSupply");
+	}
+
 	//export mintSupply
 	public static void mintSupply() {
 		ScContext sc = new ScContext();

@@ -8,7 +8,11 @@ type HostMap struct {
 }
 
 func NewHostMap(host *SimpleWasmHost) *HostMap {
-	return &HostMap{host: host, fields: make(map[int32]interface{}), types: make(map[int32]int32)}
+	return &HostMap{
+		host:   host,
+		fields: make(map[int32]interface{}),
+		types:  make(map[int32]int32),
+	}
 }
 
 func (m *HostMap) GetBytes(keyId int32) []byte {
@@ -63,6 +67,10 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	case OBJTYPE_MAP_ARRAY:
 		o = NewHostArray(m.host, OBJTYPE_MAP)
 	case OBJTYPE_STRING_ARRAY:
+		if keyId == m.host.ExportsId {
+			o = NewHostExports(m.host)
+			break
+		}
 		o = NewHostArray(m.host, OBJTYPE_STRING)
 	default:
 		m.host.SetError("Map.GetObjectId: Invalid type id")

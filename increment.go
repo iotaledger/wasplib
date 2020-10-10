@@ -7,6 +7,16 @@ import (
 func main() {
 }
 
+//export onLoad
+func onLoadIncrement() {
+	exports := client.NewScFunctions()
+	exports.Add("nothing")
+	exports.Add("test")
+	exports.Add("increment")
+	exports.Add("incrementRepeat1")
+	exports.Add("incrementRepeatMany")
+}
+
 //export test
 func test() {
 	keyId := client.GetKeyId("timestamp")

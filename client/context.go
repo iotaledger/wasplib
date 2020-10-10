@@ -70,6 +70,28 @@ func (ctx ScEvent) Params() ScMutableMap {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScExports struct {
+	exports ScMutableStringArray
+	next    int32
+}
+
+func NewScFunctions() ScExports {
+	root := ScMutableMap{objId: 1}
+	return ScExports{root.GetStringArray("exports"), 0}
+}
+
+func (ctx ScExports) Add(name string) {
+	ctx.next++
+	ctx.exports.GetString(ctx.next).SetValue(name)
+}
+
+func (ctx ScExports) AddProtected(name string) {
+	ctx.next++
+	ctx.exports.GetString(ctx.next | 0x4000).SetValue(name)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScLog struct {
 	log ScMutableMap
 }

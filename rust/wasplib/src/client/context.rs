@@ -7,6 +7,7 @@ use super::keys::key_log;
 use super::keys::key_trace;
 use super::mutable::ScMutableMap;
 use super::mutable::ScMutableString;
+use super::mutable::ScMutableStringArray;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -84,6 +85,32 @@ impl ScEvent {
 
     pub fn params(&self) -> ScMutableMap {
         self.event.get_map("params")
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+
+#[derive(Copy, Clone)]
+pub struct ScExports {
+    exports: ScMutableStringArray,
+    next: i32,
+}
+
+impl ScExports {
+    pub fn new() -> ScExports {
+        let root = ScMutableMap::new(1);
+        ScExports { exports: root.get_string_array("exports"), next: 0 }
+    }
+
+    pub fn add(&mut self, name: &str) {
+        self.next += 1;
+        self.exports.get_string(self.next).set_value(name);
+    }
+
+    pub fn add_protected(&mut self, name: &str) {
+        self.next += 1;
+        self.exports.get_string(self.next | 0x4000).set_value(name);
     }
 }
 

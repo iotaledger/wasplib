@@ -8,12 +8,7 @@ var EnableImmutableChecks = true
 
 type SimpleWasmHost struct {
 	WasmHost
-}
-
-func NewHostImpl() *SimpleWasmHost {
-	host := &SimpleWasmHost{}
-	host.Init(NewHostMap(host), nil, host)
-	return host
+	ExportsId int32
 }
 
 func (host *SimpleWasmHost) AddBalance(obj HostObject, color string, amount int64) {

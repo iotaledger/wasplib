@@ -3,6 +3,17 @@
 
 use wasplib::client::host::{get_int, get_key_id, get_string, set_int, set_string};
 use wasplib::client::ScContext;
+use wasplib::client::ScExports;
+
+#[no_mangle]
+pub fn onLoad() {
+    let mut exports = ScExports::new();
+    exports.add("nothing");
+    exports.add("test");
+    exports.add("increment");
+    exports.add("incrementRepeat1");
+    exports.add("incrementRepeatMany");
+}
 
 #[no_mangle]
 pub fn test() {

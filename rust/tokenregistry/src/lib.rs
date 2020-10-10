@@ -4,6 +4,7 @@
 use wasplib::client::BytesDecoder;
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
+use wasplib::client::ScExports;
 
 struct TokenInfo {
     supply: i64,
@@ -13,6 +14,13 @@ struct TokenInfo {
     updated: i64,
     description: String,
     user_defined: String,
+}
+
+#[no_mangle]
+pub fn onLoad() {
+    let mut exports = ScExports::new();
+    exports.add("nothing");
+    exports.add("mintSupply");
 }
 
 #[no_mangle]

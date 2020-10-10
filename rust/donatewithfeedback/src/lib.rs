@@ -4,6 +4,7 @@
 use wasplib::client::BytesDecoder;
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
+use wasplib::client::ScExports;
 
 struct DonationInfo {
     seq: i64,
@@ -12,6 +13,14 @@ struct DonationInfo {
     sender: String,
     feedback: String,
     error: String,
+}
+
+#[no_mangle]
+pub fn onLoad() {
+    let mut exports = ScExports::new();
+    exports.add("nothing");
+    exports.add("donate");
+    exports.add_protected("withdraw");
 }
 
 #[no_mangle]

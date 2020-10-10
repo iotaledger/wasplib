@@ -18,6 +18,16 @@ type BetInfo struct {
 func main() {
 }
 
+//export onLoad
+func onLoadFairRoulette() {
+	exports := client.NewScFunctions()
+	exports.Add("nothing")
+	exports.Add("placeBet")
+	exports.Add("lockBets")   //TODO sc internal only
+	exports.Add("payWinners") //TODO sc internal only
+	exports.AddProtected("playPeriod")
+}
+
 //export placeBet
 func placeBet() {
 	sc := client.NewScContext()

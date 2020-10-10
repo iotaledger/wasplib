@@ -1,10 +1,10 @@
 package wasmhost
 
 type NullObject struct {
-	host *WasmHost
+	host *SimpleWasmHost
 }
 
-func NewNullObject(host *WasmHost) HostObject {
+func NewNullObject(host *SimpleWasmHost) HostObject {
 	return &NullObject{host: host}
 }
 

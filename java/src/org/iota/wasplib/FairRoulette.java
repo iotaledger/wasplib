@@ -3,6 +3,7 @@ package org.iota.wasplib;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -12,6 +13,16 @@ import java.util.ArrayList;
 public class FairRoulette {
 	private static long NUM_COLORS = 5;
 	private static long PLAY_PERIOD = 120;
+
+	//export onLoad
+	public static void onLoad() {
+		ScExports exports = new ScExports();
+		exports.Add("nothing");
+		exports.Add("placeBet");
+		exports.Add("lockBets");
+		exports.Add("payWinners");
+		exports.AddProtected("playPeriod");
+	}
 
 	//export placeBet
 	public static void placeBet() {
