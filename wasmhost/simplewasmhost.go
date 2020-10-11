@@ -169,7 +169,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		fmt.Printf("FAIL: Missing request.function\n")
 		return
 	}
-	err := host.RunWasmFunction(function.(string))
+	err := host.RunFunction(function.(string))
 	if err != nil {
 		fmt.Printf("FAIL: Unknown function: %v\n", function)
 		return
@@ -197,7 +197,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		reqParams.SetInt(KeyLength, 0)
 		params := host.FindObject(event.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
 		params.(*HostMap).CopyDataTo(reqParams)
-		err = host.RunWasmFunction(function)
+		err = host.RunFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Unknown event function: %s\n", function)
 			return

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/iotaledger/wasplib/wasmhost"
+	"io/ioutil"
 	"os"
 )
 
@@ -27,11 +28,15 @@ func main() {
 		panic(err)
 	}
 	host.ExportsId = host.GetKeyId("exports")
-	err = host.LoadWasmFile("wasm/increment_bg.wasm")
+	wasmData, err := ioutil.ReadFile("wasm/increment_bg.wasm")
 	if err != nil {
 		panic(err)
 	}
-	err = host.RunWasmFunction("onLoad")
+	err = host.LoadWasm(wasmData)
+	if err != nil {
+		panic(err)
+	}
+	err = host.RunFunction("onLoad")
 	if err != nil {
 		panic(err)
 	}
