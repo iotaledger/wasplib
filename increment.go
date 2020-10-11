@@ -9,7 +9,7 @@ func main() {
 
 //export onLoad
 func onLoadIncrement() {
-	exports := client.NewScFunctions()
+	exports := client.NewScExports()
 	exports.Add("nothing")
 	exports.Add("test")
 	exports.Add("increment")

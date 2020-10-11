@@ -75,17 +75,17 @@ type ScExports struct {
 	next    int32
 }
 
-func NewScFunctions() ScExports {
+func NewScExports() ScExports {
 	root := ScMutableMap{objId: 1}
 	return ScExports{root.GetStringArray("exports"), 0}
 }
 
-func (ctx ScExports) Add(name string) {
+func (ctx *ScExports) Add(name string) {
 	ctx.next++
 	ctx.exports.GetString(ctx.next).SetValue(name)
 }
 
-func (ctx ScExports) AddProtected(name string) {
+func (ctx *ScExports) AddProtected(name string) {
 	ctx.next++
 	ctx.exports.GetString(ctx.next | 0x4000).SetValue(name)
 }
