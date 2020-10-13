@@ -17,7 +17,9 @@ func NewWartVM() *WartVM {
 }
 
 func (vm *WartVM) LinkHost(host *WasmHost) error {
-	_ = executors.DefineFunction("wasplib", "hostGetBytes",
+	m := executors.DefineModule("wasplib")
+	lnk := executors.NewWasmLinker(m)
+	_ = lnk.DefineFunction("hostGetBytes",
 		[]value.DataType{value.I32, value.I32, value.I32, value.I32},
 		[]value.DataType{value.I32},
 		func(ctx *sections.HostContext) error {
@@ -32,7 +34,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			ctx.Frame[ctx.SP].I32 = host.vmSetBytes(stringRef, size, []byte(host.GetString(-objId, keyId)))
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostGetInt",
+	_ = lnk.DefineFunction("hostGetInt",
 		[]value.DataType{value.I32, value.I32},
 		[]value.DataType{value.I64},
 		func(ctx *sections.HostContext) error {
@@ -41,7 +43,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			ctx.Frame[ctx.SP].I64 = host.GetInt(objId, keyId)
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostGetIntRef",
+	_ = lnk.DefineFunction("hostGetIntRef",
 		[]value.DataType{value.I32, value.I32, value.I32},
 		nil,
 		func(ctx *sections.HostContext) error {
@@ -51,7 +53,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			host.vmSetInt(intRef, host.GetInt(objId, keyId))
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostGetKeyId",
+	_ = lnk.DefineFunction("hostGetKeyId",
 		[]value.DataType{value.I32, value.I32},
 		[]value.DataType{value.I32},
 		func(ctx *sections.HostContext) error {
@@ -60,7 +62,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			ctx.Frame[ctx.SP].I32 = host.GetKeyId(string(host.vmGetBytes(keyRef, size)))
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostGetObjectId",
+	_ = lnk.DefineFunction("hostGetObjectId",
 		[]value.DataType{value.I32, value.I32, value.I32},
 		[]value.DataType{value.I32},
 		func(ctx *sections.HostContext) error {
@@ -70,7 +72,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			ctx.Frame[ctx.SP].I32 = host.GetObjectId(objId, keyId, typeId)
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostSetBytes",
+	_ = lnk.DefineFunction("hostSetBytes",
 		[]value.DataType{value.I32, value.I32, value.I32, value.I32},
 		nil,
 		func(ctx *sections.HostContext) error {
@@ -85,7 +87,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			host.SetString(-objId, keyId, string(host.vmGetBytes(stringRef, size)))
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostSetInt",
+	_ = lnk.DefineFunction("hostSetInt",
 		[]value.DataType{value.I32, value.I32, value.I64},
 		nil,
 		func(ctx *sections.HostContext) error {
@@ -95,7 +97,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			host.SetInt(objId, keyId, value)
 			return nil
 		})
-	_ = executors.DefineFunction("wasplib", "hostSetIntRef",
+	_ = lnk.DefineFunction("hostSetIntRef",
 		[]value.DataType{value.I32, value.I32, value.I32},
 		nil,
 		func(ctx *sections.HostContext) error {
@@ -105,8 +107,11 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			host.SetInt(objId, keyId, host.vmGetInt(intRef))
 			return nil
 		})
+
 	// go implementation uses this one to write panic message
-	_ = executors.DefineFunction("wasi_unstable", "fd_write",
+	m = executors.DefineModule("wasi_unstable")
+	lnk = executors.NewWasmLinker(m)
+	_ = lnk.DefineFunction("fd_write",
 		[]value.DataType{value.I32, value.I32, value.I32, value.I32},
 		[]value.DataType{value.I32},
 		func(ctx *sections.HostContext) error {

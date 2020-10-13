@@ -87,7 +87,7 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	}
 	host.TrackObject(null)
 	host.TrackObject(root)
-	host.vm = NewWartVM()
+	host.vm = NewWasmTimeVM()
 	return host.vm.LinkHost(host)
 }
 
