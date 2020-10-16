@@ -1,5 +1,5 @@
 [package]
-name = "donatewithfeedback"
+name = "fairauction"
 version = "0.1.0"
 authors = ["Eric Hop <eric@iota.org>"]
 edition = "2018"

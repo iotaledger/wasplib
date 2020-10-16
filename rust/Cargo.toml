@@ -1,5 +1,5 @@
 [workspace]
-members = ["wasplib", "donatewithfeedback", "fairroulette", "increment", "tokenregistry"]
+members = ["wasplib", "donatewithfeedback", "fairauction", "fairroulette", "increment", "tokenregistry"]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

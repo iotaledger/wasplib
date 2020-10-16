@@ -9,11 +9,11 @@ public class Increment {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("nothing");
-		exports.Add("test");
 		exports.Add("increment");
 		exports.Add("incrementRepeat1");
 		exports.Add("incrementRepeatMany");
+		exports.Add("test");
+		exports.Add("nothing");
 	}
 
 	//export test

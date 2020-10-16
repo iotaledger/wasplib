@@ -10,22 +10,21 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 
 import java.util.ArrayList;
 
-public class FairRoulette {
+public class FairAuction {
 	private static long NUM_COLORS = 5;
 	private static long PLAY_PERIOD = 120;
 
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("placeBet");
-		exports.Add("lockBets");
-		exports.Add("payWinners");
-		exports.AddProtected("playPeriod");
-		exports.Add("nothing");
+		exports.Add("startAuction");
+		exports.Add("finalizeAuction");
+		exports.Add("placeBid");
+		exports.AddProtected("setOwnerMargin");
 	}
 
-	//export placeBet
-	public static void placeBet() {
+	//export startAuction
+	public static void startAuction() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
 		long amount = request.Balance("iota");
@@ -43,7 +42,7 @@ public class FairRoulette {
 			return;
 		}
 
-		BetInfo bet = new BetInfo();
+		BidInfo bet = new BidInfo();
 		bet.id = request.Hash();
 		bet.sender = request.Address();
 		bet.color = color;
@@ -52,7 +51,7 @@ public class FairRoulette {
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
 		int betNr = bets.Length();
-		byte[] bytes = encodeBetInfo(bet);
+		byte[] bytes = encodeBidInfo(bet);
 		bets.GetBytes(betNr).SetValue(bytes);
 		if (betNr == 0) {
 			long playPeriod = state.GetInt("playPeriod").Value();
@@ -63,8 +62,8 @@ public class FairRoulette {
 		}
 	}
 
-	//export lockBets
-	public static void lockBets() {
+	//export finalizeAuction
+	public static void finalizeAuction() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		if (!sc.Request().Address().equals(sc.Contract().Address())) {
@@ -84,8 +83,8 @@ public class FairRoulette {
 		sc.Event("", "payWinners", 0);
 	}
 
-	//export payWinners
-	public static void payWinners() {
+	//export placeBid
+	public static void placeBid() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		String scAddress = sc.Contract().Address();
@@ -101,10 +100,10 @@ public class FairRoulette {
 		long totalBetAmount = 0;
 		long totalWinAmount = 0;
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
-		ArrayList<BetInfo> winners = new ArrayList<>();
+		ArrayList<BidInfo> winners = new ArrayList<>();
 		for (int i = 0; i < lockedBets.Length(); i++) {
 			byte[] bytes = lockedBets.GetBytes(i).Value();
-			BetInfo bet = decodeBetInfo(bytes);
+			BidInfo bet = decodeBidInfo(bytes);
 			totalBetAmount += bet.amount;
 			if (bet.color == winningColor) {
 				totalWinAmount += bet.amount;
@@ -122,7 +121,7 @@ public class FairRoulette {
 
 		long totalPayout = 0;
 		for (int i = 0; i < winners.size(); i++) {
-			BetInfo bet = winners.get(i);
+			BidInfo bet = winners.get(i);
 			long payout = totalBetAmount * bet.amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
@@ -140,8 +139,8 @@ public class FairRoulette {
 		}
 	}
 
-	//export playPeriod
-	public static void playPeriod() {
+	//export setOwnerMargin
+	public static void setOwnerMargin() {
 		// can only be sent by SC owner
 		ScContext sc = new ScContext();
 		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
@@ -158,9 +157,9 @@ public class FairRoulette {
 		sc.State().GetInt("playPeriod").SetValue(playPeriod);
 	}
 
-	public static BetInfo decodeBetInfo(byte[] bytes) {
+	public static BidInfo decodeBidInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
-		BetInfo bet = new BetInfo();
+		BidInfo bet = new BidInfo();
 		bet.id = decoder.String();
 		bet.sender = decoder.String();
 		bet.color = decoder.Int();
@@ -168,7 +167,7 @@ public class FairRoulette {
 		return bet;
 	}
 
-	public static byte[] encodeBetInfo(BetInfo bet) {
+	public static byte[] encodeBidInfo(BidInfo bet) {
 		return new BytesEncoder().
 				String(bet.id).
 				String(bet.sender).
@@ -177,7 +176,7 @@ public class FairRoulette {
 				Data();
 	}
 
-	public static class BetInfo {
+	public static class BidInfo {
 		String id;
 		String sender;
 		long color;

@@ -19,7 +19,6 @@ func main() {
 //export onLoad
 func onLoadDonateWithFeedback() {
 	exports := client.NewScExports()
-	exports.Add("nothing")
 	exports.Add("donate")
 	exports.AddProtected("withdraw")
 }

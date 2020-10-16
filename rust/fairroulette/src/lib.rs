@@ -19,11 +19,11 @@ struct BetInfo {
 #[no_mangle]
 pub fn onLoad() {
     let mut exports = ScExports::new();
-    exports.add("nothing");
     exports.add("placeBet");
     exports.add("lockBets");
     exports.add("payWinners");
     exports.add_protected("playPeriod");
+    exports.add("nothing");
 }
 
 #[no_mangle]

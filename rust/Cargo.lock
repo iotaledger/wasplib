@@ -27,8 +27,17 @@ name = "donatewithfeedback"
 version = "0.1.0"
 dependencies = [
     "console_error_panic_hook",
-    "serde",
-    "serde_json",
+    "wasm-bindgen",
+    "wasm-bindgen-test",
+    "wasplib",
+    "wee_alloc",
+]
+
+[[package]]
+name = "fairauction"
+version = "0.1.0"
+dependencies = [
+    "console_error_panic_hook",
     "wasm-bindgen",
     "wasm-bindgen-test",
     "wasplib",
@@ -40,8 +49,6 @@ name = "fairroulette"
 version = "0.1.0"
 dependencies = [
     "console_error_panic_hook",
-    "serde",
-    "serde_json",
     "wasm-bindgen",
     "wasm-bindgen-test",
     "wasplib",
@@ -58,12 +65,6 @@ dependencies = [
     "wasplib",
     "wee_alloc",
 ]
-
-[[package]]
-name = "itoa"
-version = "0.4.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc6f3ad7b9d11a0c00842ff8de1b60ee58661048eb8049ed33c73594f359d7e6"
 
 [[package]]
 name = "js-sys"
@@ -120,47 +121,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "ryu"
-version = "1.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "71d301d4193d031abdd79ff7e3dd721168a9572ef3fe51a1517aba235bd8f86e"
-
-[[package]]
 name = "scoped-tls"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea6a9290e3c9cf0f18145ef7ffa62d68ee0bf5fcd651017e586dc7fd5da448c2"
-
-[[package]]
-name = "serde"
-version = "1.0.116"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96fe57af81d28386a513cbc6858332abc6117cfdb5999647c6444b8f43a370a5"
-dependencies = [
-    "serde_derive",
-]
-
-[[package]]
-name = "serde_derive"
-version = "1.0.116"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f630a6370fd8e457873b4bd2ffdae75408bc291ba72be773772a4c2a065d9ae8"
-dependencies = [
-    "proc-macro2",
-    "quote",
-    "syn",
-]
-
-[[package]]
-name = "serde_json"
-version = "1.0.57"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "164eacbdb13512ec2745fb09d51fd5b22b0d65ed294a1dcf7285a360c80a675c"
-dependencies = [
-    "itoa",
-    "ryu",
-    "serde",
-]
 
 [[package]]
 name = "syn"
@@ -178,8 +142,6 @@ name = "tokenregistry"
 version = "0.1.0"
 dependencies = [
     "console_error_panic_hook",
-    "serde",
-    "serde_json",
     "wasm-bindgen",
     "wasm-bindgen-test",
     "wasplib",

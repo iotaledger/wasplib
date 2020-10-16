@@ -10,11 +10,11 @@ func main() {
 //export onLoad
 func onLoadIncrement() {
 	exports := client.NewScExports()
-	exports.Add("nothing")
-	exports.Add("test")
 	exports.Add("increment")
 	exports.Add("incrementRepeat1")
 	exports.Add("incrementRepeatMany")
+	exports.Add("test")
+	exports.Add("nothing")
 }
 
 //export test

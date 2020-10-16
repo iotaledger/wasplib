@@ -19,8 +19,9 @@ struct TokenInfo {
 #[no_mangle]
 pub fn onLoad() {
     let mut exports = ScExports::new();
-    exports.add("nothing");
     exports.add("mintSupply");
+    exports.add("updateMetadata");
+    exports.add("transferOwnership");
 }
 
 #[no_mangle]

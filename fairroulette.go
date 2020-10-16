@@ -21,11 +21,11 @@ func main() {
 //export onLoad
 func onLoadFairRoulette() {
 	exports := client.NewScExports()
-	exports.Add("nothing")
 	exports.Add("placeBet")
 	exports.Add("lockBets")   //TODO sc internal only
 	exports.Add("payWinners") //TODO sc internal only
 	exports.AddProtected("playPeriod")
+	exports.Add("nothing")
 }
 
 //export placeBet

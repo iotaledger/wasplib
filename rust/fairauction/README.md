@@ -1,0 +1,3 @@
+## fairauction
+
+Sample smart contract

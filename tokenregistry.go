@@ -20,8 +20,9 @@ func main() {
 //export onLoad
 func onLoadTokenRegistry() {
 	exports := client.NewScExports()
-	exports.Add("nothing")
 	exports.Add("mintSupply")
+	exports.Add("updateMetadata")
+	exports.Add("transferOwnership")
 }
 
 //export mintSupply

@@ -8,11 +8,11 @@ use wasplib::client::ScExports;
 #[no_mangle]
 pub fn onLoad() {
     let mut exports = ScExports::new();
-    exports.add("nothing");
-    exports.add("test");
     exports.add("increment");
     exports.add("incrementRepeat1");
     exports.add("incrementRepeatMany");
+    exports.add("test");
+    exports.add("nothing");
 }
 
 #[no_mangle]

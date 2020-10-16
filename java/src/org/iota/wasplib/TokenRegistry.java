@@ -13,8 +13,9 @@ public class TokenRegistry {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("nothing");
 		exports.Add("mintSupply");
+        exports.Add("updateMetadata");
+        exports.Add("transferOwnership");
 	}
 
 	//export mintSupply
