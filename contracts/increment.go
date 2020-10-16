@@ -17,25 +17,6 @@ func onLoadIncrement() {
 	exports.Add("nothing")
 }
 
-//export test
-func test() {
-	keyId := client.GetKeyId("timestamp")
-	client.SetInt(1, keyId, 123456789)
-	timestamp := client.GetInt(1, keyId)
-	client.SetInt(1, keyId, timestamp)
-
-	keyId2 := client.GetKeyId("string")
-	client.SetString(1, keyId2, "Test")
-	s1 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Bleep")
-	s2 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Klunky")
-	s3 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, s1)
-	client.SetString(1, keyId2, s2)
-	client.SetString(1, keyId2, s3)
-}
-
 //export increment
 func increment() {
 	sc := client.NewScContext()
@@ -70,4 +51,23 @@ func incrementRepeatMany() {
 	}
 	stateRepeats.SetValue(repeats - 1)
 	sc.Event("", "incrementRepeatMany", 3)
+}
+
+//export test
+func test() {
+	keyId := client.GetKeyId("timestamp")
+	client.SetInt(1, keyId, 123456789)
+	timestamp := client.GetInt(1, keyId)
+	client.SetInt(1, keyId, timestamp)
+
+	keyId2 := client.GetKeyId("string")
+	client.SetString(1, keyId2, "Test")
+	s1 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, "Bleep")
+	s2 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, "Klunky")
+	s3 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, s1)
+	client.SetString(1, keyId2, s2)
+	client.SetString(1, keyId2, s3)
 }

@@ -1,4 +1,4 @@
-package org.iota.wasplib;
+package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;

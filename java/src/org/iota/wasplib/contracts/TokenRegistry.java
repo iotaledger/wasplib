@@ -1,4 +1,4 @@
-package org.iota.wasplib;
+package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
@@ -14,8 +14,8 @@ public class TokenRegistry {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.Add("mintSupply");
-        exports.Add("updateMetadata");
-        exports.Add("transferOwnership");
+		exports.Add("updateMetadata");
+		exports.Add("transferOwnership");
 	}
 
 	//export mintSupply

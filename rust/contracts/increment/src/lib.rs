@@ -16,24 +16,6 @@ pub fn onLoad() {
 }
 
 #[no_mangle]
-pub fn test() {
-    let key_id = get_key_id("timestamp");
-    set_int(1, key_id, 123456789);
-    let timestamp = get_int(1, key_id);
-    set_int(1, key_id, timestamp);
-    let key_id2 = get_key_id("string");
-    set_string(1, key_id2, "Test");
-    let s1 = get_string(1, key_id2);
-    set_string(1, key_id2, "Bleep");
-    let s2 = get_string(1, key_id2);
-    set_string(1, key_id2, "Klunky");
-    let s3 = get_string(1, key_id2);
-    set_string(1, key_id2, &s1);
-    set_string(1, key_id2, &s2);
-    set_string(1, key_id2, &s3);
-}
-
-#[no_mangle]
 pub fn increment() {
     let sc = ScContext::new();
     let counter = sc.state().get_int("counter");
@@ -67,4 +49,22 @@ pub fn incrementRepeatMany() {
     }
     state_repeats.set_value(repeats - 1);
     sc.event("", "incrementRepeatMany", 3);
+}
+
+#[no_mangle]
+pub fn test() {
+    let key_id = get_key_id("timestamp");
+    set_int(1, key_id, 123456789);
+    let timestamp = get_int(1, key_id);
+    set_int(1, key_id, timestamp);
+    let key_id2 = get_key_id("string");
+    set_string(1, key_id2, "Test");
+    let s1 = get_string(1, key_id2);
+    set_string(1, key_id2, "Bleep");
+    let s2 = get_string(1, key_id2);
+    set_string(1, key_id2, "Klunky");
+    let s3 = get_string(1, key_id2);
+    set_string(1, key_id2, &s1);
+    set_string(1, key_id2, &s2);
+    set_string(1, key_id2, &s3);
 }
