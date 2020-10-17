@@ -1,15 +1,15 @@
 ## WaspLib for Java
 
 `NOTE: This is just for educational purposes until we have a proper Java to
-Wasm compiler. It will allow us to compare identical Rust/Go/Java smart contracts
+Wasm compiler. It allows us to compare identical Rust/Go/Java smart contracts
 to highlight the simplicity and consistency along different programming languages.`
 
 `WaspLib` allows developers to create Java smart contracts that compile into Wasm.
 The interface provided by `WaspLib` hides the underlying complexities of the 
 Iota Smart Contract Protocol (ISCP) as implemented by Iota's ISCP-enabled Wasp nodes. 
-`WaspLib` treats the programming of stmart contracts as simple access to a key/value
+`WaspLib` treats the programming of smart contracts as simple access to a key/value
 data storage where smart contract properties, request parameters, and the smart
-contract state can be accessed in a universal consistent way.
+contract state can be accessed in a universal, consistent way.
 
 The _wasplib/clients_ folder provides the interface to the ISCP through _ScContext_.
 

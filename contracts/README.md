@@ -1,4 +1,4 @@
-## Java Smart Contracts
+## Go Smart Contracts
 
 Sample smart contracts:
 
@@ -39,16 +39,21 @@ Sample smart contracts:
 
 ### How to create your own smart contracts
 
-Building a Java smart contract is very simple when using an IntelliJ based
-Java development environment. Open the _java_ sub folder in your IntelliJ,
-which then provides you with the Java workspace.
+Building a Go smart contract is very simple when using the GoLand
+IntelliJ based development environment. Open the _wasplib_ folder in your
+Goland, which then provides you with the Go workspace.
  
-The easiest way to create a new contract is to copy the _HelloWorld.java_ file
-in the _contracts_ package to a properly named new Java file within
-the _contracts_ package.
+The easiest way to create a new contract is to copy the _helloworld.go_ file
+in the _contracts_ sub folder to a properly named new Go file within
+the _contracts_ sub folder.
 
-Building the project will compile all smart contracts.
+To build the new smart contract select _Run->Edit Configurations_.
+Add a new configuration based on the _Shell Script_ template,
+type the _name_ of the new configuration, select _tinygo_build.bat_ in the
+_wasplib_ root as the _Script Path_, and enter the name of the new contract
+as the _script options_, and select the _wasplib_ root as the _Working Directory_.
+the new folder as the _working directory_.
+You can now run this configuration to compile the smart contract directly to Wasm.
+Once compilation is successful you will find the resulting Wasm file in the
+_wasplib/wasm_ folder.
 
-`NOTE: currently there is no way to compile the Java contracts into Wasm.
-Once this becomes available the intention is that the contracts will simply work
-unchanged by implementing the Host calls in the client package.`
