@@ -1,4 +1,4 @@
-## Rust Smart Contracts
+## Java Smart Contracts
 
 Sample smart contracts:
 
@@ -39,22 +39,16 @@ Sample smart contracts:
 
 ### How to create your own smart contracts
 
-Building a Rust smart contract is very simple when using the Rust plugin in any
-IntelliJ based development environment. Open the _rust_ sub folder in your
-IntelliJ, which then provides you with the Rust workspace.
+Building a Java smart contract is very simple when using an IntelliJ based
+Java development environment. Open the _java_ sub folder in your IntelliJ,
+which then provides you with the Java workspace.
  
-The easiest way to create a new contract is to copy the _helloworld_ folder
-in the _contracts_ sub folder to a properly named new folder within
-the _contracts_ sub folder.
-Next, change the fields in the first section of the new folder's _cargo.toml_
-file to match your preferences. Finally, add the new folder to the workspace in
-the _cargo.toml_ in the _rust_ sub folder.
+The easiest way to create a new contract is to copy the _HelloWorld.java_ file
+in the _contracts_ package to a properly named new java file within
+the _contracts_ package.
 
-To build the new smart contract select _Run->Edit Configurations_.
-Add a new configuration based on the _wasmpack_ template,
-type the _name_ of the new configuration, type the _command_ `build`, and select
-the new folder as the _working directory_.
-You can now run this configuration to compile the smart contract directly to Wasm.
-Once compilation is successful you will find the resulting Wasm file in the _pkg_
-sub folder of the new folder.
+Building the project will compile all smart contracts.
 
+`NOTE: currently there is no way to compile the Java contracts into Wasm.
+Once this becomes available the intention is that the contracts will simply work
+unchanged by implementing the Host calls in the client package.`
