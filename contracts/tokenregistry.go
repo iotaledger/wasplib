@@ -32,7 +32,7 @@ func mintSupply() {
 	color := request.Hash()
 	state := sc.State()
 	registry := state.GetMap("tr")
-	if registry.GetString(color).Value() != "" {
+	if len(registry.GetBytes(color).Value()) != 0 {
 		sc.Log("TokenRegistry: Color already exists")
 		return
 	}

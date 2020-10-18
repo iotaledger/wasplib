@@ -25,7 +25,7 @@ public class TokenRegistry {
 		String color = request.Hash();
 		ScMutableMap state = sc.State();
 		ScMutableMap registry = state.GetMap("tr");
-		if (!registry.GetString(color).Value().isEmpty()) {
+		if (registry.GetBytes(color).Value().length != 0) {
 			sc.Log("TokenRegistry: Color already exists");
 			return;
 		}
