@@ -6,7 +6,9 @@ members = [
     "contracts/fairroulette",
     "contracts/helloworld",
     "contracts/increment",
-    "contracts/tokenregistry"]
+    "contracts/tokenregistry",
+    "contracts/erc20",
+]
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
