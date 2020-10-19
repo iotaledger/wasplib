@@ -4,10 +4,10 @@
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
 
-const VAR_SUPPLY:          &str = "s";
-const VAR_BALANCES:        &str = "b";
-const VAR_TARGET_ADDRESS:  &str = "addr";
-const VAR_AMOUNT:          &str = "amount";
+const VAR_SUPPLY: &str = "s";
+const VAR_BALANCES: &str = "b";
+const VAR_TARGET_ADDRESS: &str = "addr";
+const VAR_AMOUNT: &str = "amount";
 
 #[no_mangle]
 pub fn onLoad() {
@@ -31,7 +31,7 @@ pub fn initSC() {
     }
     let params = sc.request().params();
     let supplyParam = params.get_int(VAR_SUPPLY);
-    if supplyParam.value() == 0{
+    if supplyParam.value() == 0 {
         sc.log("initSC.fail: wrong 'supply' parameter");
         return;
     }
@@ -62,18 +62,18 @@ pub fn transfer() {
     let params = request.params();
     let amount = params.get_int(VAR_AMOUNT);
 
-    if amount.value() == 0{
+    if amount.value() == 0 {
         sc.log("transfer.fail: wrong 'amount' parameter");
         return;
     }
-    if amount.value() > source_balance.value(){
+    if amount.value() > source_balance.value() {
         sc.log("transfer.fail: not enough balance");
         return;
     }
     let target_addr = params.get_string(VAR_TARGET_ADDRESS);
     // TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
-    let target_balance =  balances.get_int(&target_addr.value());
+    let target_balance = balances.get_int(&target_addr.value());
 
     target_balance.set_value(target_balance.value() + amount.value());
     source_balance.set_value(source_balance.value() - amount.value());

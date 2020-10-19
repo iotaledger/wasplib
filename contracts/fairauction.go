@@ -4,8 +4,6 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
-//const NUM_COLORS int64 = 5
-//const PLAY_PERIOD int64 = 120
 const (
 	durationDefault      = 60
 	durationMin          = 1
