@@ -6,10 +6,11 @@ use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
 
+const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
-const DURATION_MAX: i64 = 1;
-const DURATION_DEFAULT: i64 = 1;
+const DURATION_MAX: i64 = 120;
 const MAX_DESCRIPTION_LENGTH: usize = 150;
+const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
@@ -66,10 +67,9 @@ pub fn startAuction() {
     }
 
     let state = sc.state();
-    let ownerMargin = state.get_int("ownerMargin").value();
+    let mut ownerMargin = state.get_int("ownerMargin").value();
     if ownerMargin == 0 {
-        refund(deposit, "Undefined owner margin...");
-        return;
+        ownerMargin = OWNER_MARGIN_DEFAULT;
     }
 
     let params = request.params();

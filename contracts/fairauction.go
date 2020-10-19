@@ -7,10 +7,11 @@ import (
 //const NUM_COLORS int64 = 5
 //const PLAY_PERIOD int64 = 120
 const (
+	durationDefault      = 60
 	durationMin          = 1
 	durationMax          = 120
-	durationDefault      = 60
 	maxDescriptionLength = 150
+	ownerMarginDefault   = 50
 	ownerMarginMin       = 5
 	ownerMarginMax       = 100
 )
@@ -73,8 +74,7 @@ func startAuction() {
 	state := sc.State()
 	ownerMargin := state.GetInt("ownerMargin").Value()
 	if ownerMargin == 0 {
-		refund(deposit, "Undefined owner margin...")
-		return
+		ownerMargin = ownerMarginDefault
 	}
 
 	params := request.Params()
