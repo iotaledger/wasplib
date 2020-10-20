@@ -31,7 +31,7 @@ pub fn mintSupply() {
     let color = request.hash();
     let state = sc.state();
     let registry = state.get_map("tr");
-    if !registry.get_string(&color).value().is_empty() {
+    if registry.get_bytes(&color).value().len() != 0 {
         sc.log("TokenRegistry: Color already exists");
         return;
     }

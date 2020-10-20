@@ -4,13 +4,12 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
-//const NUM_COLORS int64 = 5
-//const PLAY_PERIOD int64 = 120
 const (
+	durationDefault      = 60
 	durationMin          = 1
 	durationMax          = 120
-	durationDefault      = 60
 	maxDescriptionLength = 150
+	ownerMarginDefault   = 50
 	ownerMarginMin       = 5
 	ownerMarginMax       = 100
 )
@@ -73,8 +72,7 @@ func startAuction() {
 	state := sc.State()
 	ownerMargin := state.GetInt("ownerMargin").Value()
 	if ownerMargin == 0 {
-		refund(deposit, "Undefined owner margin...")
-		return
+		ownerMargin = ownerMarginDefault
 	}
 
 	params := request.Params()
@@ -193,7 +191,8 @@ func finalizeAuction() {
 		if ownerFee == 0 {
 			ownerFee = 1
 		}
-		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee)
+		// finalizeAuction request token was probably not confirmed yet
+		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1)
 		sc.Transfer(auction.auctionOwner, "iota", auction.deposit-ownerFee)
 		return
 	}
@@ -218,7 +217,8 @@ func finalizeAuction() {
 		}
 	}
 
-	sc.Transfer(sc.Contract().Owner(), "iota", ownerFee)
+	// finalizeAuction request token was probably not confirmed yet
+	sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1)
 	sc.Transfer(winner.address, auction.color, auction.numTokens)
 	sc.Transfer(auction.auctionOwner, "iota", auction.deposit+winner.amount-ownerFee)
 }

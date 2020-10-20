@@ -13,10 +13,11 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 import java.util.ArrayList;
 
 public class FairAuction {
+	private static final int durationDefault = 60;
 	private static final int durationMin = 1;
 	private static final int durationMax = 120;
-	private static final int durationDefault = 60;
 	private static final int maxDescriptionLength = 150;
+	private static final int ownerMarginDefault = 50;
 	private static final int ownerMarginMin = 5;
 	private static final int ownerMarginMax = 100;
 
@@ -42,8 +43,7 @@ public class FairAuction {
 		ScMutableMap state = sc.State();
 		long ownerMargin = state.GetInt("ownerMargin").Value();
 		if (ownerMargin == 0) {
-			refund(deposit, "Undefined owner margin...");
-			return;
+			ownerMargin = ownerMarginDefault;
 		}
 
 		ScImmutableMap params = request.Params();
@@ -162,7 +162,8 @@ public class FairAuction {
 			if (ownerFee == 0) {
 				ownerFee = 1;
 			}
-			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee);
+	        // finalizeAuction request token was probably not confirmed yet
+			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 			sc.Transfer(auction.auctionOwner, "iota", auction.deposit - ownerFee);
 			return;
 		}
@@ -187,7 +188,8 @@ public class FairAuction {
 			}
 		}
 
-		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee);
+	    // finalizeAuction request token was probably not confirmed yet
+		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 		sc.Transfer(winner.address, auction.color, auction.numTokens);
 		sc.Transfer(auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
 	}

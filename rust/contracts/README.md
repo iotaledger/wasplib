@@ -47,8 +47,8 @@ The easiest way to create a new contract is to copy the _helloworld_ folder
 in the _contracts_ sub folder to a properly named new folder within
 the _contracts_ sub folder.
 Next, change the fields in the first section of the new folder's _cargo.toml_
-file to match your preferences. Finally, add the new folder to the workspace in
-the _cargo.toml_ in the _rust_ sub folder.
+file to match your preferences. Make sure the package name equals the folder name.
+Finally, add the new folder to the workspace in the _cargo.toml_ in the _rust_ sub folder.
 
 To build the new smart contract select _Run->Edit Configurations_.
 Add a new configuration based on the _wasmpack_ template,

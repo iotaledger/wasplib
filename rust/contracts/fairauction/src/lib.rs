@@ -6,10 +6,11 @@ use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
 
+const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
-const DURATION_MAX: i64 = 1;
-const DURATION_DEFAULT: i64 = 1;
+const DURATION_MAX: i64 = 120;
 const MAX_DESCRIPTION_LENGTH: usize = 150;
+const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
@@ -66,10 +67,9 @@ pub fn startAuction() {
     }
 
     let state = sc.state();
-    let ownerMargin = state.get_int("ownerMargin").value();
+    let mut ownerMargin = state.get_int("ownerMargin").value();
     if ownerMargin == 0 {
-        refund(deposit, "Undefined owner margin...");
-        return;
+        ownerMargin = OWNER_MARGIN_DEFAULT;
     }
 
     let params = request.params();
@@ -190,7 +190,8 @@ pub fn finalizeAuction() {
         if ownerFee == 0 {
             ownerFee = 1
         }
-        sc.transfer(&sc.contract().owner(), "iota", ownerFee);
+        // finalizeAuction request token was probably not confirmed yet
+        sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
         sc.transfer(&auction.auctionOwner, "iota", auction.deposit - ownerFee);
         return;
     }
@@ -221,7 +222,8 @@ pub fn finalizeAuction() {
         }
     }
 
-    sc.transfer(&sc.contract().owner(), "iota", ownerFee);
+    // finalizeAuction request token was probably not confirmed yet
+    sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
     sc.transfer(&winner.address, &auction.color, auction.numTokens);
     sc.transfer(&auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
 }
