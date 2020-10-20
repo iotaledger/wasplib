@@ -162,7 +162,8 @@ public class FairAuction {
 			if (ownerFee == 0) {
 				ownerFee = 1;
 			}
-			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee);
+	        // finalizeAuction request token was probably not confirmed yet
+			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 			sc.Transfer(auction.auctionOwner, "iota", auction.deposit - ownerFee);
 			return;
 		}
@@ -187,7 +188,8 @@ public class FairAuction {
 			}
 		}
 
-		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee);
+	    // finalizeAuction request token was probably not confirmed yet
+		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 		sc.Transfer(winner.address, auction.color, auction.numTokens);
 		sc.Transfer(auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
 	}

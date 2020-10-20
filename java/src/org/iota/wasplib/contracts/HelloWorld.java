@@ -1,9 +1,7 @@
 package org.iota.wasplib.contracts;
 
-import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
-import org.iota.wasplib.client.mutable.ScMutableInt;
 
 public class HelloWorld {
 	//export onLoad

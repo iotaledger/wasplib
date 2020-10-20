@@ -190,7 +190,8 @@ pub fn finalizeAuction() {
         if ownerFee == 0 {
             ownerFee = 1
         }
-        sc.transfer(&sc.contract().owner(), "iota", ownerFee);
+        // finalizeAuction request token was probably not confirmed yet
+        sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
         sc.transfer(&auction.auctionOwner, "iota", auction.deposit - ownerFee);
         return;
     }
@@ -221,7 +222,8 @@ pub fn finalizeAuction() {
         }
     }
 
-    sc.transfer(&sc.contract().owner(), "iota", ownerFee);
+    // finalizeAuction request token was probably not confirmed yet
+    sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
     sc.transfer(&winner.address, &auction.color, auction.numTokens);
     sc.transfer(&auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
 }
