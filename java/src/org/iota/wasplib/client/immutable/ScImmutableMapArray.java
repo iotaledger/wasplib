@@ -11,6 +11,11 @@ public class ScImmutableMapArray {
 		this.objId = objId;
 	}
 
+	public ScImmutableKeyMap GetKeyMap(int index) {
+		int mapId = Host.GetObjectId(objId, index, ScType.OBJTYPE_MAP);
+		return new ScImmutableKeyMap(mapId);
+	}
+
 	public ScImmutableMap GetMap(int index) {
 		int mapId = Host.GetObjectId(objId, index, ScType.OBJTYPE_MAP);
 		return new ScImmutableMap(mapId);

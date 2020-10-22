@@ -56,11 +56,14 @@ pub fn get_int(obj_id: i32, key_id: i32) -> i64 {
     }
 }
 
-pub fn get_key_id(key: &str) -> i32 {
+pub fn get_key(bytes: &[u8]) -> i32 {
     unsafe {
-        let utf8_bytes = key.as_bytes();
-        hostGetKeyId(utf8_bytes.as_ptr(), utf8_bytes.len() as i32)
+        hostGetKeyId(bytes.as_ptr(), bytes.len() as i32)
     }
+}
+
+pub fn get_key_id(key: &str) -> i32 {
+    get_key(key.as_bytes())
 }
 
 pub fn get_object_id(obj_id: i32, key_id: i32, type_id: i32) -> i32 {

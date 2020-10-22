@@ -11,7 +11,6 @@ use super::mutable::ScMutableStringArray;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScAccount {
     account: ScImmutableMap,
 }
@@ -28,7 +27,6 @@ impl ScAccount {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScContract {
     contract: ScImmutableMap,
 }
@@ -61,7 +59,6 @@ impl ScContract {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScExports {
     exports: ScMutableStringArray,
     next: i32,
@@ -86,7 +83,6 @@ impl ScExports {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScLog {
     log: ScMutableMap,
 }
@@ -104,7 +100,6 @@ impl ScLog {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScPostedRequest {
     request: ScMutableMap,
 }
@@ -133,7 +128,6 @@ impl ScPostedRequest {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScRequest {
     request: ScImmutableMap,
 }
@@ -170,7 +164,6 @@ impl ScRequest {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScTransfer {
     transfer: ScMutableMap,
 }
@@ -191,7 +184,6 @@ impl ScTransfer {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScUtility {
     utility: ScMutableMap,
 }
@@ -211,7 +203,6 @@ impl ScUtility {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScContext {
     root: ScMutableMap,
 }

@@ -68,14 +68,17 @@ func GetInt(objId int32, keyId int32) int64 {
 	return value
 }
 
-func GetKeyId(key string) int32 {
-	utf8Bytes := []byte(key)
-	utf8Size := int32(len(utf8Bytes))
+func GetKey(bytes []byte) int32 {
+	size := int32(len(bytes))
 	var ptr *byte = nil
-	if utf8Size != 0 {
-		ptr = &utf8Bytes[0]
+	if size != 0 {
+		ptr = &bytes[0]
 	}
-	return hostGetKeyId(ptr, utf8Size)
+	return hostGetKeyId(ptr, size)
+}
+
+func GetKeyId(key string) int32 {
+	return GetKey([]byte(key))
 }
 
 func GetObjectId(objId int32, keyId int32, typeId int32) int32 {

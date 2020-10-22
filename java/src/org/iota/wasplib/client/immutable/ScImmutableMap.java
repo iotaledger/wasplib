@@ -29,6 +29,11 @@ public class ScImmutableMap {
 		return new ScImmutableIntArray(arrId);
 	}
 
+	public ScImmutableKeyMap GetKeyMap(String key) {
+		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
+		return new ScImmutableKeyMap(mapId);
+	}
+
 	public ScImmutableMap GetMap(String key) {
 		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
 		return new ScImmutableMap(mapId);

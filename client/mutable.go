@@ -74,6 +74,62 @@ func (o ScMutableIntArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScMutableKeyMap struct {
+	objId int32
+}
+
+func (o ScMutableKeyMap) Clear() {
+	SetInt(o.objId, KeyLength(), 0)
+}
+
+func (o ScMutableKeyMap) GetBytes(key []byte) ScMutableBytes {
+	return ScMutableBytes{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScMutableKeyMap) GetBytesArray(key []byte) ScMutableBytesArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScMutableBytesArray{objId: arrId}
+}
+
+func (o ScMutableKeyMap) GetInt(key []byte) ScMutableInt {
+	return ScMutableInt{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScMutableKeyMap) GetIntArray(key []byte) ScMutableIntArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_INT_ARRAY)
+	return ScMutableIntArray{objId: arrId}
+}
+
+func (o ScMutableKeyMap) GetKeyMap(key []byte) ScMutableKeyMap {
+	mapId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP)
+	return ScMutableKeyMap{objId: mapId}
+}
+
+func (o ScMutableKeyMap) GetMap(key []byte) ScMutableMap {
+	mapId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP)
+	return ScMutableMap{objId: mapId}
+}
+
+func (o ScMutableKeyMap) GetMapArray(key []byte) ScMutableMapArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP_ARRAY)
+	return ScMutableMapArray{objId: arrId}
+}
+
+func (o ScMutableKeyMap) GetString(key []byte) ScMutableString {
+	return ScMutableString{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScMutableKeyMap) GetStringArray(key []byte) ScMutableStringArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_STRING_ARRAY)
+	return ScMutableStringArray{objId: arrId}
+}
+
+func (o ScMutableKeyMap) Immutable() ScImmutableKeyMap {
+	return ScImmutableKeyMap{objId: o.objId}
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScMutableMap struct {
 	objId int32
 }
@@ -98,6 +154,11 @@ func (o ScMutableMap) GetInt(key string) ScMutableInt {
 func (o ScMutableMap) GetIntArray(key string) ScMutableIntArray {
 	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_INT_ARRAY)
 	return ScMutableIntArray{objId: arrId}
+}
+
+func (o ScMutableMap) GetKeyMap(key string) ScMutableKeyMap {
+	mapId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_MAP)
+	return ScMutableKeyMap{objId: mapId}
 }
 
 func (o ScMutableMap) GetMap(key string) ScMutableMap {
@@ -131,6 +192,11 @@ type ScMutableMapArray struct {
 
 func (o ScMutableMapArray) Clear() {
 	SetInt(o.objId, KeyLength(), 0)
+}
+
+func (o ScMutableMapArray) GetKeyMap(index int32) ScMutableKeyMap {
+	mapId := GetObjectId(o.objId, index, OBJTYPE_MAP)
+	return ScMutableKeyMap{objId: mapId}
 }
 
 func (o ScMutableMapArray) GetMap(index int32) ScMutableMap {

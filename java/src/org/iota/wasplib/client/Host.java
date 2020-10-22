@@ -52,9 +52,12 @@ public class Host {
 		return hostGetInt(objId, keyId);
 	}
 
+	public static int GetKey(byte[] key) {
+		return hostGetKeyId(key, key.length);
+	}
+
 	public static int GetKeyId(String key) {
-		byte[] bytes = key.getBytes(StandardCharsets.UTF_8);
-		return hostGetKeyId(bytes, bytes.length);
+		return GetKey(key.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public static int GetObjectId(int objId, int keyId, int typeId) {

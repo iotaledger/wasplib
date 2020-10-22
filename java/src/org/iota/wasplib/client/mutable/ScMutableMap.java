@@ -34,6 +34,11 @@ public class ScMutableMap {
 		return new ScMutableIntArray(arrId);
 	}
 
+	public ScMutableKeyMap GetKeyMap(String key) {
+		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
+		return new ScMutableKeyMap(mapId);
+	}
+
 	public ScMutableMap GetMap(String key) {
 		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
 		return new ScMutableMap(mapId);
