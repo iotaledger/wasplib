@@ -22,7 +22,7 @@ public class ScRequest {
 		return request.GetStringArray("colors");
 	}
 
-	public String Hash() {
+	public String MintedColor() {
 		return request.GetString("hash").Value();
 	}
 

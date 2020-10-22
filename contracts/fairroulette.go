@@ -64,7 +64,7 @@ func placeBet() {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.Event("", "lockBets", playPeriod)
+		sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod)
 	}
 }
 
@@ -72,7 +72,8 @@ func placeBet() {
 func lockBets() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
-	if sc.Request().Address() != sc.Contract().Address() {
+	scAddress := sc.Contract().Address()
+	if sc.Request().Address() != scAddress {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -86,7 +87,7 @@ func lockBets() {
 	}
 	bets.Clear()
 
-	sc.Event("", "payWinners", 0)
+	sc.PostRequest(scAddress, "payWinners", 0)
 }
 
 //export payWinners

@@ -22,7 +22,7 @@ public class TokenRegistry {
 	public static void mintSupply() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		String color = request.Hash();
+		String color = request.MintedColor();
 		ScMutableMap state = sc.State();
 		ScMutableMap registry = state.GetMap("tr");
 		if (registry.GetBytes(color).Value().length != 0) {

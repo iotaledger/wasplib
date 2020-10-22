@@ -62,7 +62,7 @@ pub fn placeBet() {
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.event("", "lockBets", play_period);
+        sc.post_request(&sc.contract().address(), "lockBets", play_period);
     }
 }
 
@@ -70,7 +70,8 @@ pub fn placeBet() {
 pub fn lockBets() {
     // can only be sent by SC itself
     let sc = ScContext::new();
-    if sc.request().address() != sc.contract().address() {
+    let sc_address = sc.contract().address();
+    if sc.request().address() != sc_address {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -85,7 +86,7 @@ pub fn lockBets() {
     }
     bets.clear();
 
-    sc.event("", "payWinners", 0);
+    sc.post_request(&sc_address, "payWinners", 0);
 }
 
 #[no_mangle]

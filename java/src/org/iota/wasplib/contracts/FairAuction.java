@@ -125,7 +125,7 @@ public class FairAuction {
 		byte[] bytes = encodeAuctionInfo(auction);
 		currentAuction.SetValue(bytes);
 
-		ScMutableMap finalizeParams = sc.Event("", "finalizeAuction", auction.duration * 60);
+		ScMutableMap finalizeParams = sc.PostRequest(sc.Contract().Address(), "finalizeAuction", auction.duration * 60);
 		finalizeParams.GetString("color").SetValue(auction.color);
 		sc.Log("New auction started...");
 	}
@@ -162,7 +162,7 @@ public class FairAuction {
 			if (ownerFee == 0) {
 				ownerFee = 1;
 			}
-	        // finalizeAuction request token was probably not confirmed yet
+			// finalizeAuction request token was probably not confirmed yet
 			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 			sc.Transfer(auction.auctionOwner, "iota", auction.deposit - ownerFee);
 			return;
@@ -188,7 +188,7 @@ public class FairAuction {
 			}
 		}
 
-	    // finalizeAuction request token was probably not confirmed yet
+		// finalizeAuction request token was probably not confirmed yet
 		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
 		sc.Transfer(winner.address, auction.color, auction.numTokens);
 		sc.Transfer(auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);

@@ -62,36 +62,6 @@ impl ScContract {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Copy, Clone)]
-pub struct ScEvent {
-    event: ScMutableMap,
-}
-
-impl ScEvent {
-    pub fn code(&self, code: i64) {
-        self.event.get_int("code").set_value(code);
-    }
-
-    pub fn contract(&self, contract: &str) {
-        self.event.get_string("contract").set_value(contract);
-    }
-
-    pub fn delay(&self, delay: i64) {
-        self.event.get_int("delay").set_value(delay);
-    }
-
-    pub fn function(&self, function: &str) {
-        self.event.get_string("function").set_value(function);
-    }
-
-    pub fn params(&self) -> ScMutableMap {
-        self.event.get_map("params")
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-
-#[derive(Copy, Clone)]
 pub struct ScExports {
     exports: ScMutableStringArray,
     next: i32,
@@ -116,7 +86,6 @@ impl ScExports {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-
 #[derive(Copy, Clone)]
 pub struct ScLog {
     log: ScMutableMap,
@@ -130,6 +99,35 @@ impl ScLog {
 
     pub fn length(&self) -> i32 {
         self.log.get_int("length").value() as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Copy, Clone)]
+pub struct ScPostedRequest {
+    request: ScMutableMap,
+}
+
+impl ScPostedRequest {
+    pub fn code(&self, code: i64) {
+        self.request.get_int("code").set_value(code);
+    }
+
+    pub fn contract(&self, contract: &str) {
+        self.request.get_string("contract").set_value(contract);
+    }
+
+    pub fn delay(&self, delay: i64) {
+        self.request.get_int("delay").set_value(delay);
+    }
+
+    pub fn function(&self, function: &str) {
+        self.request.get_string("function").set_value(function);
+    }
+
+    pub fn params(&self) -> ScMutableMap {
+        self.request.get_map("params")
     }
 }
 
@@ -153,7 +151,7 @@ impl ScRequest {
         self.request.get_string_array("colors")
     }
 
-    pub fn hash(&self) -> String {
+    pub fn minted_color(&self) -> String {
         self.request.get_string("hash").value()
     }
 
@@ -190,7 +188,6 @@ impl ScTransfer {
         self.transfer.get_string("color").set_value(color);
     }
 }
-
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -236,27 +233,27 @@ impl ScContext {
         self.root.get_string("error")
     }
 
-    pub fn event(&self, contract: &str, function: &str, delay: i64) -> ScMutableMap {
-        let events = self.root.get_map_array("events");
-        let evt = ScEvent { event: events.get_map(events.length()) };
-        evt.contract(contract);
-        evt.function(function);
-        evt.delay(delay);
-        evt.params()
+    pub fn log(&self, text: &str) {
+        set_string(1, key_log(), text)
+    }
+
+    pub fn post_request(&self, contract: &str, function: &str, delay: i64) -> ScMutableMap {
+        let posted_requests = self.root.get_map_array("postedRequests");
+        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
+        request.contract(contract);
+        request.function(function);
+        request.delay(delay);
+        request.params()
     }
 
     // just for compatibility with old hardcoded SCs
-    pub fn event_with_code(&self, contract: &str, code: i64, delay: i64) -> ScMutableMap {
-        let events = self.root.get_map_array("events");
-        let evt = ScEvent { event: events.get_map(events.length()) };
-        evt.contract(contract);
-        evt.code(code);
-        evt.delay(delay);
-        evt.params()
-    }
-
-    pub fn log(&self, text: &str) {
-        set_string(1, key_log(), text)
+    pub fn post_request_with_code(&self, contract: &str, code: i64, delay: i64) -> ScMutableMap {
+        let posted_requests = self.root.get_map_array("postedRequests");
+        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
+        request.contract(contract);
+        request.code(code);
+        request.delay(delay);
+        request.params()
     }
 
     pub fn request(&self) -> ScRequest {

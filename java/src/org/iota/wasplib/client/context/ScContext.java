@@ -25,26 +25,26 @@ public class ScContext {
 		return root.GetString("error");
 	}
 
-	public ScMutableMap Event(String contract, String function, long delay) {
-		ScMutableMapArray events = root.GetMapArray("events");
-		ScEvent evt = new ScEvent(events.GetMap(events.Length()));
-		evt.Contract(contract);
-		evt.Function(function);
-		evt.Delay(delay);
-		return evt.Params();
-	}
-
-	public ScMutableMap EventWithCode(String contract, long code, long delay) {
-		ScMutableMapArray events = root.GetMapArray("events");
-		ScEvent evt = new ScEvent(events.GetMap(events.Length()));
-		evt.Contract(contract);
-		evt.Code(code);
-		evt.Delay(delay);
-		return evt.Params();
-	}
-
 	public void Log(String text) {
 		Host.SetString(1, Keys.KeyLog(), text);
+	}
+
+	public ScMutableMap PostRequest(String contract, String function, long delay) {
+		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
+		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
+		request.Contract(contract);
+		request.Function(function);
+		request.Delay(delay);
+		return request.Params();
+	}
+
+	public ScMutableMap PostRequestWithCode(String contract, long code, long delay) {
+		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
+		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
+		request.Contract(contract);
+		request.Code(code);
+		request.Delay(delay);
+		return request.Params();
 	}
 
 	public long Random(long max) {

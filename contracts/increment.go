@@ -31,7 +31,7 @@ func incrementRepeat1() {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.Event("", "increment", 5)
+		sc.PostRequest(sc.Contract().Address(), "increment", 5)
 	}
 }
 
@@ -50,7 +50,7 @@ func incrementRepeatMany() {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	sc.Event("", "incrementRepeatMany", 3)
+	sc.PostRequest(sc.Contract().Address(), "incrementRepeatMany", 3)
 }
 
 //export test

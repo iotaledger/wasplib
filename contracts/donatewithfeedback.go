@@ -30,7 +30,7 @@ func donate() {
 	request := sc.Request()
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
-		id:       request.Hash(),
+		id:       request.Id(),
 		amount:   request.Balance("iota"),
 		sender:   request.Address(),
 		feedback: request.Params().GetString("f").Value(),

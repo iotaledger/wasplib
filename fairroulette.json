@@ -41,7 +41,7 @@
           "balance": {"iota": 200}
         },
         "logs": [],
-        "events": [{"contract": "", "function": "lockBets", "delay": 120}],
+        "postedRequests": [{"contract": "fairrouletteAddress", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
     }

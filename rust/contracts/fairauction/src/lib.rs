@@ -154,7 +154,7 @@ pub fn startAuction() {
     let bytes = encodeAuctionInfo(auction);
     currentAuction.set_value(&bytes);
 
-    let finalizeparams = sc.event("", "finalizeAuction", duration * 60);
+    let finalizeparams = sc.post_request(&sc.contract().address(), "finalizeAuction", duration * 60);
     finalizeparams.get_string("color").set_value(&auction.color);
     sc.log("New auction started...");
 }

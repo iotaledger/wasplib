@@ -44,7 +44,7 @@ public class FairRoulette {
 		}
 
 		BetInfo bet = new BetInfo();
-		bet.id = request.Hash();
+		bet.id = request.Id();
 		bet.sender = request.Address();
 		bet.color = color;
 		bet.amount = amount;
@@ -59,7 +59,7 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.Event("", "lockBets", playPeriod);
+			sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod);
 		}
 	}
 
@@ -67,7 +67,8 @@ public class FairRoulette {
 	public static void lockBets() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Address())) {
+		String scAddress = sc.Contract().Address();
+		if (!sc.Request().Address().equals(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -81,7 +82,7 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		sc.Event("", "payWinners", 0);
+		sc.PostRequest(scAddress, "payWinners", 0);
 	}
 
 	//export payWinners

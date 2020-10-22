@@ -44,32 +44,6 @@ func (ctx ScContract) Owner() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScEvent struct {
-	event ScMutableMap
-}
-
-func (ctx ScEvent) Code(code int64) {
-	ctx.event.GetInt("code").SetValue(code)
-}
-
-func (ctx ScEvent) Contract(contract string) {
-	ctx.event.GetString("contract").SetValue(contract)
-}
-
-func (ctx ScEvent) Delay(delay int64) {
-	ctx.event.GetInt("delay").SetValue(delay)
-}
-
-func (ctx ScEvent) Function(function string) {
-	ctx.event.GetString("function").SetValue(function)
-}
-
-func (ctx ScEvent) Params() ScMutableMap {
-	return ctx.event.GetMap("params")
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScExports struct {
 	exports ScMutableStringArray
 	next    int32
@@ -107,6 +81,32 @@ func (ctx ScLog) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScPostedRequest struct {
+	request ScMutableMap
+}
+
+func (ctx ScPostedRequest) Code(code int64) {
+	ctx.request.GetInt("code").SetValue(code)
+}
+
+func (ctx ScPostedRequest) Contract(contract string) {
+	ctx.request.GetString("contract").SetValue(contract)
+}
+
+func (ctx ScPostedRequest) Delay(delay int64) {
+	ctx.request.GetInt("delay").SetValue(delay)
+}
+
+func (ctx ScPostedRequest) Function(function string) {
+	ctx.request.GetString("function").SetValue(function)
+}
+
+func (ctx ScPostedRequest) Params() ScMutableMap {
+	return ctx.request.GetMap("params")
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScRequest struct {
 	request ScImmutableMap
 }
@@ -123,12 +123,12 @@ func (ctx ScRequest) Colors() ScImmutableStringArray {
 	return ctx.request.GetStringArray("colors")
 }
 
-func (ctx ScRequest) Hash() string {
-	return ctx.request.GetString("hash").Value()
-}
-
 func (ctx ScRequest) Id() string {
 	return ctx.request.GetString("id").Value()
+}
+
+func (ctx ScRequest) MintedColor() string {
+	return ctx.request.GetString("hash").Value()
 }
 
 func (ctx ScRequest) Params() ScImmutableMap {
@@ -195,27 +195,27 @@ func (ctx ScContext) Error() ScMutableString {
 	return ctx.root.GetString("error")
 }
 
-func (ctx ScContext) Event(contract string, function string, delay int64) ScMutableMap {
-	events := ctx.root.GetMapArray("events")
-	evt := ScEvent{events.GetMap(events.Length())}
-	evt.Contract(contract)
-	evt.Function(function)
-	evt.Delay(delay)
-	return evt.Params()
+func (ctx ScContext) Log(text string) {
+	SetString(1, KeyLog(), text)
+}
+
+func (ctx ScContext) PostRequest(contract string, function string, delay int64) ScMutableMap {
+	postedRequests := ctx.root.GetMapArray("postedRequests")
+	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
+	request.Contract(contract)
+	request.Function(function)
+	request.Delay(delay)
+	return request.Params()
 }
 
 // just for compatibility with old hardcoded SCs
-func (ctx ScContext) EventWithCode(contract string, code int64, delay int64) ScMutableMap {
-	events := ctx.root.GetMapArray("events")
-	evt := ScEvent{events.GetMap(events.Length())}
-	evt.Contract(contract)
-	evt.Code(code)
-	evt.Delay(delay)
-	return evt.Params()
-}
-
-func (ctx ScContext) Log(text string) {
-	SetString(1, KeyLog(), text)
+func (ctx ScContext) PostRequestWithCode(contract string, code int64, delay int64) ScMutableMap {
+	postedRequests := ctx.root.GetMapArray("postedRequests")
+	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
+	request.Contract(contract)
+	request.Code(code)
+	request.Delay(delay)
+	return request.Params()
 }
 
 func (ctx ScContext) Request() ScRequest {

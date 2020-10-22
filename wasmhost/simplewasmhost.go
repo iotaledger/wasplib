@@ -26,7 +26,7 @@ func (host *SimpleWasmHost) ClearData() {
 	host.ClearObjectData(OBJTYPE_MAP, "request")
 	host.ClearObjectData(OBJTYPE_MAP, "state")
 	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "logs")
-	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "events")
+	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "postedRequests")
 	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "transfers")
 }
 
@@ -54,7 +54,7 @@ func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bo
 func (host *SimpleWasmHost) CompareData(expectData *JsonDataModel) bool {
 	return host.CompareMapData("state", expectData.State) &&
 		host.CompareArrayData("logs", expectData.Logs) &&
-		host.CompareArrayData("events", expectData.Events) &&
+		host.CompareArrayData("postedRequests", expectData.PostedRequests) &&
 		host.CompareArrayData("transfers", expectData.Transfers)
 }
 
@@ -171,35 +171,35 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	}
 	err := host.RunFunction(function.(string))
 	if err != nil {
-		fmt.Printf("FAIL: Unknown function: %v\n", function)
+		fmt.Printf("FAIL: function %s: %v\n", function, err)
 		return
 	}
 
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
-	events := host.FindSubObject(nil, "events", OBJTYPE_MAP_ARRAY)
+	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
 	i := int64(0)
-	expectedEvents := int64(len(jsonData.Expect.Events))
-	for i < events.GetInt(KeyLength) {
-		event := host.FindObject(events.GetObjectId(int32(i), OBJTYPE_MAP))
-		contract := event.GetString(host.GetKeyId("contract"))
-		if contract != "" {
-			fmt.Printf("FAIL: Expected empty contract name: %s\n", contract)
+	expectedpostedRequests := int64(len(jsonData.Expect.PostedRequests))
+	for i < postedRequests.GetInt(KeyLength) {
+		request := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
+		contractAddress := request.GetString(host.GetKeyId("contract"))
+		if contractAddress != host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address")) {
+			fmt.Printf("FAIL: Expected contract address: %s\n", contractAddress)
 			return
 		}
-		function := event.GetString(host.GetKeyId("function"))
-		if i >= expectedEvents {
-			fmt.Printf("FAIL: Unexpected event function call: %s\n", function)
+		function := request.GetString(host.GetKeyId("function"))
+		if i >= expectedpostedRequests {
+			fmt.Printf("FAIL: Unexpected request function call: %s\n", function)
 			return
 		}
 		//TODO set request parameters for new request
 		request.SetString(host.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
-		params := host.FindObject(event.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
+		params := host.FindObject(request.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
 		params.(*HostMap).CopyDataTo(reqParams)
 		err = host.RunFunction(function)
 		if err != nil {
-			fmt.Printf("FAIL: Unknown event function: %s\n", function)
+			fmt.Printf("FAIL: request function %s: %v\n", function, err)
 			return
 		}
 		i++

@@ -29,7 +29,7 @@ func onLoadTokenRegistry() {
 func mintSupply() {
 	sc := client.NewScContext()
 	request := sc.Request()
-	color := request.Hash()
+	color := request.MintedColor()
 	state := sc.State()
 	registry := state.GetMap("tr")
 	if len(registry.GetBytes(color).Value()) != 0 {

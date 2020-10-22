@@ -28,7 +28,7 @@ pub fn onLoad() {
 pub fn mintSupply() {
     let sc = ScContext::new();
     let request = sc.request();
-    let color = request.hash();
+    let color = request.minted_color();
     let state = sc.state();
     let registry = state.get_map("tr");
     if registry.get_bytes(&color).value().len() != 0 {

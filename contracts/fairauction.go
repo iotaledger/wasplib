@@ -155,7 +155,7 @@ func startAuction() {
 	bytes := encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
 
-	finalizeParams := sc.Event("", "finalizeAuction", auction.duration*60)
+	finalizeParams := sc.PostRequest(sc.Contract().Address(), "finalizeAuction", auction.duration*60)
 	finalizeParams.GetString("color").SetValue(auction.color)
 	sc.Log("New auction started...")
 }
@@ -192,7 +192,7 @@ func finalizeAuction() {
 			ownerFee = 1
 		}
 		// finalizeAuction request token was probably not confirmed yet
-		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1)
+		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee-1)
 		sc.Transfer(auction.auctionOwner, "iota", auction.deposit-ownerFee)
 		return
 	}
@@ -218,7 +218,7 @@ func finalizeAuction() {
 	}
 
 	// finalizeAuction request token was probably not confirmed yet
-	sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1)
+	sc.Transfer(sc.Contract().Owner(), "iota", ownerFee-1)
 	sc.Transfer(winner.address, auction.color, auction.numTokens)
 	sc.Transfer(auction.auctionOwner, "iota", auction.deposit+winner.amount-ownerFee)
 }

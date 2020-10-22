@@ -29,7 +29,7 @@ pub fn incrementRepeat1() {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.event("", "increment", 5);
+        sc.post_request(&sc.contract().address(), "increment", 5);
     }
 }
 
@@ -48,7 +48,7 @@ pub fn incrementRepeatMany() {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.event("", "incrementRepeatMany", 3);
+    sc.post_request(&sc.contract().address(), "incrementRepeatMany", 3);
 }
 
 #[no_mangle]
