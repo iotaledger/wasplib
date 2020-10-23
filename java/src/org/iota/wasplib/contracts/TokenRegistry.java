@@ -5,9 +5,11 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.mutable.ScMutableBytes;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableString;
+import org.iota.wasplib.client.mutable.ScMutableStringArray;
 
 public class TokenRegistry {
 	//export onLoad
@@ -22,10 +24,10 @@ public class TokenRegistry {
 	public static void mintSupply() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		String color = request.MintedColor();
+		ScColor color = request.MintedColor();
 		ScMutableMap state = sc.State();
-		ScMutableMap registry = state.GetMap("tr");
-		if (registry.GetBytes(color).Value().length != 0) {
+		ScMutableBytes registry = state.GetMap("tr").GetBytes(color.toBytes());
+		if (registry.Value().length != 0) {
 			sc.Log("TokenRegistry: Color already exists");
 			return;
 		}
@@ -46,14 +48,9 @@ public class TokenRegistry {
 			token.description += "no dscr";
 		}
 		byte[] bytes = encodeTokenInfo(token);
-		registry.GetBytes(color).SetValue(bytes);
-		ScMutableString colors = state.GetString("lc");
-		String list = colors.Value();
-		if (!list.isEmpty()) {
-			list += ",";
-		}
-		list += color;
-		colors.SetValue(list);
+		registry.SetValue(bytes);
+		ScMutableStringArray colors = state.GetStringArray("lc");
+		colors.GetString(colors.Length()).SetValue(color.toBytes());
 	}
 
 	//export updateMetadata

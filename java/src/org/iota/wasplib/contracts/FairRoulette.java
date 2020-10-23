@@ -5,6 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -28,7 +29,7 @@ public class FairRoulette {
 	public static void placeBet() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		long amount = request.Balance("iota");
+		long amount = request.Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Log("Empty bet...");
 			return;
@@ -117,7 +118,7 @@ public class FairRoulette {
 		if (winners.size() == 0) {
 			sc.Log("Nobody wins!");
 			// compact separate UTXOs into a single one
-			sc.Transfer(scAddress, "iota", totalBetAmount);
+			sc.Transfer(scAddress, ScColor.IOTA, totalBetAmount);
 			return;
 		}
 
@@ -127,7 +128,7 @@ public class FairRoulette {
 			long payout = totalBetAmount * bet.amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
-				sc.Transfer(bet.sender, "iota", payout);
+				sc.Transfer(bet.sender, ScColor.IOTA, payout);
 			}
 			String text = "Pay " + payout + " to " + bet.sender;
 			sc.Log(text);
@@ -137,7 +138,7 @@ public class FairRoulette {
 			long remainder = totalBetAmount - totalPayout;
 			String text = "Remainder is " + remainder;
 			sc.Log(text);
-			sc.Transfer(scAddress, "iota", remainder);
+			sc.Transfer(scAddress, ScColor.IOTA, remainder);
 		}
 	}
 

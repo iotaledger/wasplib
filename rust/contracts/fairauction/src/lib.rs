@@ -3,6 +3,7 @@
 
 use wasplib::client::BytesDecoder;
 use wasplib::client::BytesEncoder;
+use wasplib::client::ScColor;
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
 
@@ -16,7 +17,7 @@ const OWNER_MARGIN_MAX: i64 = 100;
 
 struct AuctionInfo {
     // color of tokens for sale
-    color: String,
+    color: ScColor,
     // number of tokens for sale
     numTokens: i64,
     // minimum bid. Set by the auction initiator
@@ -60,7 +61,7 @@ pub fn onLoad() {
 pub fn startAuction() {
     let sc = ScContext::new();
     let request = sc.request();
-    let deposit = request.balance("iota");
+    let deposit = request.balance(&ScColor::iota());
     if deposit < 1 {
         sc.log("Empty deposit...");
         return;
@@ -73,18 +74,14 @@ pub fn startAuction() {
     }
 
     let params = request.params();
-    let color = params.get_string("color").value();
-    if color == "" {
+    let bytes = params.get_string("color").value();
+    if bytes.len() == 0 {
         refund(deposit / 2, "Missing token color...");
         return;
     }
-    //TODO check if valid base58 string
-    if color == "InvalidBase58" {
-        refund(deposit / 2, "Invalid token color...");
-        return;
-    }
-    //TODO determine appropriate color hashes
-    if color == "iota" || color == "new" {
+    let color = ScColor::from_bytes(&bytes);
+
+    if color == ScColor::iota() || color == ScColor::mint() {
         refund(deposit / 2, "Reserved token color...");
         return;
     }
@@ -133,7 +130,7 @@ pub fn startAuction() {
     }
 
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color);
+    let currentAuction = auctions.get_bytes(&color.as_bytes());
     if currentAuction.value().len() != 0 {
         refund(deposit / 2, "Auction for this token already exists...");
         return;
@@ -155,7 +152,7 @@ pub fn startAuction() {
     currentAuction.set_value(&bytes);
 
     let finalizeparams = sc.post_request(&sc.contract().address(), "finalizeAuction", duration * 60);
-    finalizeparams.get_string("color").set_value(&auction.color);
+    finalizeparams.get_string("color").set_value(&auction.color.as_bytes());
     sc.log("New auction started...");
 }
 
@@ -169,15 +166,16 @@ pub fn finalizeAuction() {
         return;
     }
 
-    let color = request.params().get_string("color").value();
-    if color == "" {
+    let bytes = request.params().get_string("color").value();
+    if bytes.len() == 0 {
         sc.log("INTERNAL INCONSISTENCY: missing color");
         return;
     }
+    let color = ScColor::from_bytes(&bytes);
 
     let state = sc.state();
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color);
+    let currentAuction = auctions.get_bytes(&color.as_bytes());
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         sc.log("INTERNAL INCONSISTENCY missing auction info");
@@ -185,14 +183,14 @@ pub fn finalizeAuction() {
     }
     let auction = decodeAuctionInfo(&bytes);
     if auction.bids.len() == 0 {
-        sc.log(&("No one bid on ".to_string() + &color));
+        sc.log(&("No one bid on ".to_string() + &color.as_string()));
         let mut ownerFee = auction.minimumBid * auction.ownerMargin / 1000;
         if ownerFee == 0 {
             ownerFee = 1
         }
         // finalizeAuction request token was probably not confirmed yet
-        sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
-        sc.transfer(&auction.auctionOwner, "iota", auction.deposit - ownerFee);
+        sc.transfer(&sc.contract().owner(), &ScColor::iota(), ownerFee - 1);
+        sc.transfer(&auction.auctionOwner, &ScColor::iota(), auction.deposit - ownerFee);
         return;
     }
 
@@ -218,35 +216,36 @@ pub fn finalizeAuction() {
     // return staked bids to losers
     for bidder in auction.bids {
         if bidder.address != winner.address {
-            sc.transfer(&bidder.address, "iota", bidder.amount);
+            sc.transfer(&bidder.address, &ScColor::iota(), bidder.amount);
         }
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    sc.transfer(&sc.contract().owner(), "iota", ownerFee - 1);
+    sc.transfer(&sc.contract().owner(), &ScColor::iota(), ownerFee - 1);
     sc.transfer(&winner.address, &auction.color, auction.numTokens);
-    sc.transfer(&auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
+    sc.transfer(&auction.auctionOwner, &ScColor::iota(), auction.deposit + winner.amount - ownerFee);
 }
 
 #[no_mangle]
 pub fn placeBid() {
     let sc = ScContext::new();
     let request = sc.request();
-    let bidAmount = request.balance("iota");
+    let bidAmount = request.balance(&ScColor::iota());
     if bidAmount == 0 {
         sc.log("Insufficient bid amount");
         return;
     }
 
-    let color = request.params().get_string("color").value();
-    if color == "" {
+    let bytes = request.params().get_string("color").value();
+    if bytes.len() == 0 {
         refund(bidAmount, "Missing token color");
         return;
     }
+    let color = ScColor::from_bytes(&bytes);
 
     let state = sc.state();
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color);
+    let currentAuction = auctions.get_bytes(&color.as_bytes());
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         refund(bidAmount, "Missing auction");
@@ -295,7 +294,7 @@ pub fn setOwnerMargin() {
 fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
     let mut decoder = BytesDecoder::new(bytes);
     let mut auction = AuctionInfo {
-        color: decoder.string(),
+        color: ScColor::from_bytes(&decoder.string()),
         numTokens: decoder.int(),
         minimumBid: decoder.int(),
         description: decoder.string(),
@@ -326,7 +325,7 @@ fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
 
 fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.string(&auction.color);
+    encoder.string(&auction.color.as_bytes());
     encoder.int(auction.numTokens);
     encoder.int(auction.minimumBid);
     encoder.string(&auction.description);
@@ -357,19 +356,19 @@ fn refund(amount: i64, reason: &str) {
     let request = sc.request();
     let sender = request.address();
     if amount != 0 {
-        sc.transfer(&sender, "iota", amount);
+        sc.transfer(&sender, &ScColor::iota(), amount);
     }
-    let deposit = request.balance("iota");
+    let deposit = request.balance(&ScColor::iota());
     if deposit - amount != 0 {
-        sc.transfer(&sc.contract().owner(), "iota", deposit - amount);
+        sc.transfer(&sc.contract().owner(), &ScColor::iota(), deposit - amount);
     }
 
     // refund all other token colors, don't keep tokens that were to be auctioned
     let colors = request.colors();
     let items = colors.length();
     for i in 0..items {
-        let color = colors.get_string(i).value();
-        if color != "iota" {
+        let color = colors.get_color(i);
+        if color != ScColor::iota() {
             sc.transfer(&sender, &color, request.balance(&color));
         }
     }

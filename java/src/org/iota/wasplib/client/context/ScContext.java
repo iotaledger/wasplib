@@ -2,6 +2,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
@@ -68,7 +69,7 @@ public class ScContext {
 		Host.SetString(1, Keys.KeyTrace(), text);
 	}
 
-	public void Transfer(String address, String color, long amount) {
+	public void Transfer(String address, ScColor color, long amount) {
 		ScMutableMapArray transfers = root.GetMapArray("transfers");
 		ScTransfer xfer = new ScTransfer(transfers.GetMap(transfers.Length()));
 		xfer.Address(address);

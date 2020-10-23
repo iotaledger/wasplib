@@ -31,7 +31,7 @@ func donate() {
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
 		id:       request.Id(),
-		amount:   request.Balance("iota"),
+		amount:   request.Balance(client.IOTA),
 		sender:   request.Address(),
 		feedback: request.Params().GetString("f").Value(),
 		error:    "",
@@ -39,7 +39,7 @@ func donate() {
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
 		if donation.amount > 0 {
-			sc.Transfer(donation.sender, "iota", donation.amount)
+			sc.Transfer(donation.sender, client.IOTA, donation.amount)
 			donation.amount = 0
 		}
 	}
@@ -66,7 +66,7 @@ func withdraw() {
 	}
 
 	account := sc.Account()
-	amount := account.Balance("iota")
+	amount := account.Balance(client.IOTA)
 	withdrawAmount := request.Params().GetInt("s").Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
@@ -76,7 +76,7 @@ func withdraw() {
 		return
 	}
 
-	sc.Transfer(owner, "iota", withdrawAmount)
+	sc.Transfer(owner, client.IOTA, withdrawAmount)
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {

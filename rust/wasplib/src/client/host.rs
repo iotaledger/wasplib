@@ -12,7 +12,7 @@ pub const TYPE_STRING_ARRAY: i32 = 7;
 
 // all token colors must be encoded as a 64-byte hex string,
 // except for the following two special cases:
-// default color, encoded as "iota" (COLOR_IOTA)
+// default color, encoded as client.IOTA (COLOR_IOTA)
 // new color, encoded as "new" (COLOR_NEW)
 
 // any host function that gets called once the current request has

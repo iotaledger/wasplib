@@ -30,8 +30,8 @@ pub fn mintSupply() {
     let request = sc.request();
     let color = request.minted_color();
     let state = sc.state();
-    let registry = state.get_map("tr");
-    if registry.get_bytes(&color).value().len() != 0 {
+    let registry = state.get_map("tr").get_bytes(&color.as_bytes());
+    if registry.value().len() != 0 {
         sc.log("TokenRegistry: Color already exists");
         return;
     }
@@ -53,14 +53,9 @@ pub fn mintSupply() {
         token.description += "no dscr";
     }
     let data = encodeTokenInfo(&token);
-    registry.get_bytes(&color).set_value(&data);
-    let colors = state.get_string("lc");
-    let mut list = colors.value();
-    if !list.is_empty() {
-        list += ",";
-    }
-    list += &color;
-    colors.set_value(&list);
+    registry.set_value(&data);
+    let colors = state.get_string_array("lc");
+    colors.get_string(colors.length()).set_value(&color.as_bytes());
 }
 
 #[no_mangle]

@@ -1,5 +1,6 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 
 public class ScContract {
@@ -13,8 +14,8 @@ public class ScContract {
 		return contract.GetString("address").Value();
 	}
 
-	public String Color() {
-		return contract.GetString("color").Value();
+	public ScColor Color() {
+		return new ScColor(contract.GetString("color").Value());
 	}
 
 	public String Description() {

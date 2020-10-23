@@ -3,6 +3,7 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.*;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -22,14 +23,14 @@ public class DonateWithFeedback {
 		DonationInfo donation = new DonationInfo();
 		donation.seq = tlog.Length();
 		donation.id = request.Id();
-		donation.amount = request.Balance("iota");
+		donation.amount = request.Balance(ScColor.IOTA);
 		donation.sender = request.Address();
 		donation.feedback = request.Params().GetString("f").Value();
 		donation.error = "";
 		if (donation.amount == 0 || donation.feedback.length() == 0) {
 			donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
 			if (donation.amount > 0) {
-				sc.Transfer(donation.sender, "iota", donation.amount);
+				sc.Transfer(donation.sender, ScColor.IOTA, donation.amount);
 				donation.amount = 0;
 			}
 		}
@@ -56,7 +57,7 @@ public class DonateWithFeedback {
 		}
 
 		ScAccount account = sc.Account();
-		long amount = account.Balance("iota");
+		long amount = account.Balance(ScColor.IOTA);
 		long withdrawAmount = request.Params().GetInt("s").Value();
 		if (withdrawAmount == 0 || withdrawAmount > amount) {
 			withdrawAmount = amount;
@@ -66,7 +67,7 @@ public class DonateWithFeedback {
 			return;
 		}
 
-		sc.Transfer(owner, "iota", withdrawAmount);
+		sc.Transfer(owner, ScColor.IOTA, withdrawAmount);
 	}
 
 	//export transferOwnership

@@ -1,5 +1,6 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScTransfer {
@@ -17,7 +18,7 @@ public class ScTransfer {
 		transfer.GetInt("amount").SetValue(amount);
 	}
 
-	public void Color(String color) {
-		transfer.GetString("color").SetValue(color);
+	public void Color(ScColor color) {
+		transfer.GetString("color").SetValue(color.toBytes());
 	}
 }

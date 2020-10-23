@@ -10,8 +10,8 @@
         "owner": "fairrouletteOwner"
       },
       "account": {
-        "colors": ["iota"],
-        "balance": {"iota": 100}
+        "colors": [client.IOTA],
+        "balance": {client.IOTA: 100}
       },
       "request": {
         "timestamp": 20200928112900,
@@ -26,8 +26,8 @@
       "setup": "fairroulette",
       "request": {
         "function": "placeBet",
-        "colors": ["iota"],
-        "balance": {"iota": 100},
+        "colors": [client.IOTA],
+        "balance": {client.IOTA: 100},
         "params": {
           "color": 3
         }
@@ -37,8 +37,8 @@
           "counter": 1
         },
         "account": {
-          "colors": ["iota"],
-          "balance": {"iota": 200}
+          "colors": [client.IOTA],
+          "balance": {client.IOTA: 200}
         },
         "logs": [],
         "postedRequests": [{"contract": "fairrouletteAddress", "function": "lockBets", "delay": 120}],

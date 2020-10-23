@@ -4,12 +4,26 @@ type ScAccount struct {
 	account ScImmutableMap
 }
 
-func (ctx ScAccount) Balance(color string) int64 {
-	return ctx.account.GetMap("balance").GetInt(color).Value()
+func (ctx ScAccount) Balance(color *ScColor) int64 {
+	return ctx.account.GetMap("balance").GetInt(color.Bytes()).Value()
 }
 
-func (ctx ScAccount) Colors() ScImmutableStringArray {
-	return ctx.account.GetStringArray("colors")
+func (ctx ScAccount) Colors() ScColors {
+	return ScColors{colors: ctx.account.GetStringArray("colors")}
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScColors struct {
+	colors ScImmutableStringArray
+}
+
+func (ctx ScColors) GetColor(index int32) *ScColor {
+	return NewScColor(ctx.colors.GetString(index).Value())
+}
+
+func (ctx ScColors) Length() int32 {
+	return ctx.colors.Length()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -115,20 +129,20 @@ func (ctx ScRequest) Address() string {
 	return ctx.request.GetString("address").Value()
 }
 
-func (ctx ScRequest) Balance(color string) int64 {
-	return ctx.request.GetMap("balance").GetInt(color).Value()
+func (ctx ScRequest) Balance(color *ScColor) int64 {
+	return ctx.request.GetMap("balance").GetInt(color.Bytes()).Value()
 }
 
-func (ctx ScRequest) Colors() ScImmutableStringArray {
-	return ctx.request.GetStringArray("colors")
+func (ctx ScRequest) Colors() ScColors {
+	return ScColors{colors: ctx.request.GetStringArray("colors")}
 }
 
 func (ctx ScRequest) Id() string {
 	return ctx.request.GetString("id").Value()
 }
 
-func (ctx ScRequest) MintedColor() string {
-	return ctx.request.GetString("hash").Value()
+func (ctx ScRequest) MintedColor() *ScColor {
+	return &ScColor{color: ctx.request.GetString("hash").Value()}
 }
 
 func (ctx ScRequest) Params() ScImmutableMap {
@@ -153,8 +167,8 @@ func (ctx ScTransfer) Amount(amount int64) {
 	ctx.transfer.GetInt("amount").SetValue(amount)
 }
 
-func (ctx ScTransfer) Color(color string) {
-	ctx.transfer.GetString("color").SetValue(color)
+func (ctx ScTransfer) Color(color *ScColor) {
+	ctx.transfer.GetString("color").SetValue(color.Bytes())
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -234,7 +248,7 @@ func (ctx ScContext) Trace(text string) {
 	SetString(1, KeyTrace(), text)
 }
 
-func (ctx ScContext) Transfer(address string, color string, amount int64) {
+func (ctx ScContext) Transfer(address string, color *ScColor, amount int64) {
 	transfers := ctx.root.GetMapArray("transfers")
 	xfer := ScTransfer{transfers.GetMap(transfers.Length())}
 	xfer.Address(address)

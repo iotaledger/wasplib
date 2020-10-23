@@ -31,8 +31,8 @@ func mintSupply() {
 	request := sc.Request()
 	color := request.MintedColor()
 	state := sc.State()
-	registry := state.GetMap("tr")
-	if len(registry.GetBytes(color).Value()) != 0 {
+	registry := state.GetMap("tr").GetBytes(color.Bytes())
+	if len(registry.Value()) != 0 {
 		sc.Log("TokenRegistry: Color already exists")
 		return
 	}
@@ -54,14 +54,9 @@ func mintSupply() {
 		token.description += "no dscr"
 	}
 	bytes := encodeTokenInfo(token)
-	registry.GetBytes(color).SetValue(bytes)
-	colors := state.GetString("lc")
-	list := colors.Value()
-	if list != "" {
-		list += ","
-	}
-	list += color
-	colors.SetValue(list)
+	registry.SetValue(bytes)
+	colors := state.GetStringArray("lc")
+	colors.GetString(colors.Length()).SetValue(color.Bytes())
 }
 
 //export updateMetadata

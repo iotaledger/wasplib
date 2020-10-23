@@ -1,13 +1,10 @@
 // encapsulates standard host entities into a simple interface
 
+use super::hashtypes::ScColor;
 use super::host::set_string;
-use super::immutable::ScImmutableMap;
-use super::immutable::ScImmutableStringArray;
-use super::keys::key_log;
-use super::keys::key_trace;
-use super::mutable::ScMutableMap;
-use super::mutable::ScMutableString;
-use super::mutable::ScMutableStringArray;
+use super::immutable::{ScImmutableMap, ScImmutableStringArray};
+use super::keys::{key_log, key_trace};
+use super::mutable::{ScMutableMap, ScMutableString, ScMutableStringArray};
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -16,12 +13,29 @@ pub struct ScAccount {
 }
 
 impl ScAccount {
-    pub fn balance(&self, color: &str) -> i64 {
-        self.account.get_map("balance").get_int(color).value()
+    pub fn balance(&self, color: &ScColor) -> i64 {
+        self.account.get_map("balance").get_int(color.as_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScImmutableStringArray {
-        self.account.get_string_array("colors")
+    pub fn colors(&self) -> ScColors {
+        ScColors { colors: self.account.get_string_array("colors") }
+    }
+}
+
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScColors {
+    colors: ScImmutableStringArray,
+}
+
+impl ScColors {
+    pub fn get_color(&self, index: i32) -> ScColor {
+        ScColor::from_bytes(&self.colors.get_string(index).value())
+    }
+
+    pub fn length(&self) -> i32 {
+        self.colors.length()
     }
 }
 
@@ -137,16 +151,16 @@ impl ScRequest {
         self.request.get_string("address").value()
     }
 
-    pub fn balance(&self, color: &str) -> i64 {
-        self.request.get_map("balance").get_int(color).value()
+    pub fn balance(&self, color: &ScColor) -> i64 {
+        self.request.get_map("balance").get_int(color.as_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScImmutableStringArray {
-        self.request.get_string_array("colors")
+    pub fn colors(&self) -> ScColors {
+        ScColors { colors: self.request.get_string_array("colors") }
     }
 
-    pub fn minted_color(&self) -> String {
-        self.request.get_string("hash").value()
+    pub fn minted_color(&self) -> ScColor {
+        ScColor::from_bytes(&self.request.get_string("hash").value())
     }
 
     pub fn id(&self) -> String {
@@ -177,8 +191,8 @@ impl ScTransfer {
         self.transfer.get_int("amount").set_value(amount);
     }
 
-    pub fn color(&self, color: &str) {
-        self.transfer.get_string("color").set_value(color);
+    pub fn color(&self, color: &ScColor) {
+        self.transfer.get_string("color").set_value(color.as_bytes());
     }
 }
 
@@ -262,7 +276,7 @@ impl ScContext {
         set_string(1, key_trace(), text)
     }
 
-    pub fn transfer(&self, address: &str, color: &str, amount: i64) {
+    pub fn transfer(&self, address: &str, color: &ScColor, amount: i64) {
         let transfers = self.root.get_map_array("transfers");
         let xfer = ScTransfer { transfer: transfers.get_map(transfers.length()) };
         xfer.address(address);

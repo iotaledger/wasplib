@@ -9,17 +9,17 @@
     "owner": "base58HashOfSmartContractOwnerAddress"
   },
   "account": {
-    "colors": ["iota", "base58HashOfColor"],
+    "colors": [client.IOTA, "base58HashOfColor"],
     "balance": {
-      "iota": 1000000,
+      client.IOTA: 1000000,
       "base58HashOfColor": 27
     }
   },
   "request": {
     "address": "base58HashOfSenderAddress",
-    "colors": ["iota", "base58HashOfColor"],
+    "colors": [client.IOTA, "base58HashOfColor"],
     "balance": {
-      "iota": 1000,
+      client.IOTA: 1000,
       "base58HashOfColor": 27
     },
     "params": {
@@ -50,7 +50,7 @@
     "stringArrayVar": ["a", "b", "c"]
   },
   "transfers": [
-    {"address": "base58HashOfTargetAddress", "color": "iota", "amount": 10},
+    {"address": "base58HashOfTargetAddress", "color": client.IOTA, "amount": 10},
     {"address": "base58HashOfTargetAddress", "color": "base58HashOfColor", "amount": 1}
   ],
   "postedRequests": [

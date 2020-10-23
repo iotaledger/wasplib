@@ -3,6 +3,7 @@
 
 use wasplib::client::BytesDecoder;
 use wasplib::client::BytesEncoder;
+use wasplib::client::ScColor;
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
 
@@ -30,7 +31,7 @@ pub fn donate() {
     let mut donation = DonationInfo {
         seq: tlog.length() as i64,
         id: request.id(),
-        amount: request.balance("iota"),
+        amount: request.balance(&ScColor::iota()),
         sender: request.address(),
         feedback: request.params().get_string("f").value(),
         error: String::new(),
@@ -38,7 +39,7 @@ pub fn donate() {
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
         if donation.amount > 0 {
-            sc.transfer(&donation.sender, "iota", donation.amount);
+            sc.transfer(&donation.sender, &ScColor::iota(), donation.amount);
             donation.amount = 0;
         }
     }
@@ -63,7 +64,7 @@ pub fn withdraw() {
     }
 
     let account = sc.account();
-    let amount = account.balance("iota");
+    let amount = account.balance(&ScColor::iota());
     let mut withdraw_amount = request.params().get_int("s").value();
     if withdraw_amount == 0 || withdraw_amount > amount {
         withdraw_amount = amount;
@@ -73,7 +74,7 @@ pub fn withdraw() {
         return;
     }
 
-    sc.transfer(&owner, "iota", withdraw_amount);
+    sc.transfer(&owner, &ScColor::iota(), withdraw_amount);
 }
 
 fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {

@@ -32,7 +32,7 @@ func onLoadFairRoulette() {
 func placeBet() {
 	sc := client.NewScContext()
 	request := sc.Request()
-	amount := request.Balance("iota")
+	amount := request.Balance(client.IOTA)
 	if amount == 0 {
 		sc.Log("Empty bet...")
 		return
@@ -122,7 +122,7 @@ func payWinners() {
 	if len(winners) == 0 {
 		sc.Log("Nobody wins!")
 		// compact separate UTXOs into a single one
-		sc.Transfer(scAddress, "iota", totalBetAmount)
+		sc.Transfer(scAddress, client.IOTA, totalBetAmount)
 		return
 	}
 
@@ -132,7 +132,7 @@ func payWinners() {
 		payout := totalBetAmount * bet.amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.Transfer(bet.sender, "iota", payout)
+			sc.Transfer(bet.sender, client.IOTA, payout)
 		}
 		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender
 		sc.Log(text)
@@ -142,7 +142,7 @@ func payWinners() {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + strconv.FormatInt(remainder, 10)
 		sc.Log(text)
-		sc.Transfer(scAddress, "iota", remainder)
+		sc.Transfer(scAddress, client.IOTA, remainder)
 	}
 }
 
