@@ -8,6 +8,10 @@ func NewBytesDecoder(data []byte) *BytesDecoder {
 	return &BytesDecoder{data: data}
 }
 
+func (d *BytesDecoder) Address() *ScAddress {
+	return NewScAddress(d.String())
+}
+
 func (d *BytesDecoder) Bytes() []byte {
 	size := d.Int()
 	if len(d.data) < int(size) {
@@ -16,6 +20,10 @@ func (d *BytesDecoder) Bytes() []byte {
 	value := d.data[:size]
 	d.data = d.data[size:]
 	return value
+}
+
+func (d *BytesDecoder) Color() *ScColor {
+	return NewScColor(d.String())
 }
 
 func (d *BytesDecoder) Int() int64 {
@@ -58,10 +66,18 @@ func NewBytesEncoder() *BytesEncoder {
 	return &BytesEncoder{data: make([]byte, 0, 128)}
 }
 
+func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
+	return e.String(value.Bytes())
+}
+
 func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 	e.Int(int64(len(value)))
 	e.data = append(e.data, value...)
 	return e
+}
+
+func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
+	return e.String(value.Bytes())
 }
 
 func (e *BytesEncoder) Data() []byte {

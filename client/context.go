@@ -8,22 +8,8 @@ func (ctx ScAccount) Balance(color *ScColor) int64 {
 	return ctx.account.GetMap("balance").GetInt(color.Bytes()).Value()
 }
 
-func (ctx ScAccount) Colors() ScColors {
-	return ScColors{colors: ctx.account.GetStringArray("colors")}
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScColors struct {
-	colors ScImmutableStringArray
-}
-
-func (ctx ScColors) GetColor(index int32) *ScColor {
-	return NewScColor(ctx.colors.GetString(index).Value())
-}
-
-func (ctx ScColors) Length() int32 {
-	return ctx.colors.Length()
+func (ctx ScAccount) Colors() ScImmutableColorArray {
+	return ctx.account.GetColorArray("colors")
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -32,12 +18,12 @@ type ScContract struct {
 	contract ScImmutableMap
 }
 
-func (ctx ScContract) Address() string {
-	return ctx.contract.GetString("address").Value()
+func (ctx ScContract) Address() *ScAddress {
+	return ctx.contract.GetAddress("address").Value()
 }
 
-func (ctx ScContract) Color() string {
-	return ctx.contract.GetString("color").Value()
+func (ctx ScContract) Color() *ScColor {
+	return ctx.contract.GetColor("color").Value()
 }
 
 func (ctx ScContract) Description() string {
@@ -52,8 +38,8 @@ func (ctx ScContract) Name() string {
 	return ctx.contract.GetString("name").Value()
 }
 
-func (ctx ScContract) Owner() string {
-	return ctx.contract.GetString("owner").Value()
+func (ctx ScContract) Owner() *ScAddress {
+	return ctx.contract.GetAddress("owner").Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -103,8 +89,8 @@ func (ctx ScPostedRequest) Code(code int64) {
 	ctx.request.GetInt("code").SetValue(code)
 }
 
-func (ctx ScPostedRequest) Contract(contract string) {
-	ctx.request.GetString("contract").SetValue(contract)
+func (ctx ScPostedRequest) Contract(address *ScAddress) {
+	ctx.request.GetAddress("contract").SetValue(address)
 }
 
 func (ctx ScPostedRequest) Delay(delay int64) {
@@ -125,16 +111,16 @@ type ScRequest struct {
 	request ScImmutableMap
 }
 
-func (ctx ScRequest) Address() string {
-	return ctx.request.GetString("address").Value()
+func (ctx ScRequest) Address() *ScAddress {
+	return ctx.request.GetAddress("address").Value()
 }
 
 func (ctx ScRequest) Balance(color *ScColor) int64 {
 	return ctx.request.GetMap("balance").GetInt(color.Bytes()).Value()
 }
 
-func (ctx ScRequest) Colors() ScColors {
-	return ScColors{colors: ctx.request.GetStringArray("colors")}
+func (ctx ScRequest) Colors() ScImmutableColorArray {
+	return ctx.request.GetColorArray("colors")
 }
 
 func (ctx ScRequest) Id() string {
@@ -142,7 +128,7 @@ func (ctx ScRequest) Id() string {
 }
 
 func (ctx ScRequest) MintedColor() *ScColor {
-	return &ScColor{color: ctx.request.GetString("hash").Value()}
+	return ctx.request.GetColor("hash").Value()
 }
 
 func (ctx ScRequest) Params() ScImmutableMap {
@@ -159,8 +145,8 @@ type ScTransfer struct {
 	transfer ScMutableMap
 }
 
-func (ctx ScTransfer) Address(address string) {
-	ctx.transfer.GetString("address").SetValue(address)
+func (ctx ScTransfer) Address(address *ScAddress) {
+	ctx.transfer.GetAddress("address").SetValue(address)
 }
 
 func (ctx ScTransfer) Amount(amount int64) {
@@ -168,7 +154,7 @@ func (ctx ScTransfer) Amount(amount int64) {
 }
 
 func (ctx ScTransfer) Color(color *ScColor) {
-	ctx.transfer.GetString("color").SetValue(color.Bytes())
+	ctx.transfer.GetColor("color").SetValue(color)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -177,7 +163,24 @@ type ScUtility struct {
 	utility ScMutableMap
 }
 
+func (ctx ScUtility) Base58Decode(value string) []byte {
+	//TODO atomic set/get
+	decode := ctx.utility.GetString("base58")
+	encode := ctx.utility.GetBytes("base58")
+	decode.SetValue(value)
+	return encode.Value()
+}
+
+func (ctx ScUtility) Base58Encode(value []byte) string {
+	//TODO atomic set/get
+	decode := ctx.utility.GetBytes("base58")
+	encode := ctx.utility.GetString("base58")
+	decode.SetValue(value)
+	return encode.Value()
+}
+
 func (ctx ScUtility) Hash(value []byte) []byte {
+	//TODO atomic set/get
 	hash := ctx.utility.GetBytes("hash")
 	hash.SetValue(value)
 	return hash.Value()
@@ -213,7 +216,7 @@ func (ctx ScContext) Log(text string) {
 	SetString(1, KeyLog(), text)
 }
 
-func (ctx ScContext) PostRequest(contract string, function string, delay int64) ScMutableMap {
+func (ctx ScContext) PostRequest(contract *ScAddress, function string, delay int64) ScMutableMap {
 	postedRequests := ctx.root.GetMapArray("postedRequests")
 	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
 	request.Contract(contract)
@@ -223,7 +226,7 @@ func (ctx ScContext) PostRequest(contract string, function string, delay int64) 
 }
 
 // just for compatibility with old hardcoded SCs
-func (ctx ScContext) PostRequestWithCode(contract string, code int64, delay int64) ScMutableMap {
+func (ctx ScContext) PostRequestWithCode(contract *ScAddress, code int64, delay int64) ScMutableMap {
 	postedRequests := ctx.root.GetMapArray("postedRequests")
 	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
 	request.Contract(contract)
@@ -248,7 +251,7 @@ func (ctx ScContext) Trace(text string) {
 	SetString(1, KeyTrace(), text)
 }
 
-func (ctx ScContext) Transfer(address string, color *ScColor, amount int64) {
+func (ctx ScContext) Transfer(address *ScAddress, color *ScColor, amount int64) {
 	transfers := ctx.root.GetMapArray("transfers")
 	xfer := ScTransfer{transfers.GetMap(transfers.Length())}
 	xfer.Address(address)

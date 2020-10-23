@@ -36,11 +36,18 @@ pub fn nothing() {
     ctx.log("Doing nothing as requested. Oh, wait...");
 }
 
+pub fn exists(obj_id: i32, key_id: i32) -> bool {
+    unsafe {
+        // query length of bytes array, negative means error or does not exist
+        hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) >= 0_i32
+    }
+}
+
 pub fn get_bytes(obj_id: i32, key_id: i32) -> Vec<u8> {
     unsafe {
         // first query length of bytes array
         let size = hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) as usize;
-        if size == 0 { return vec![0_u8; 0]; }
+        if size <= 0 { return vec![0_u8; 0]; }
 
         // allocate a byte array in Wasm memory and
         // copy the actual data bytes to Wasm byte array

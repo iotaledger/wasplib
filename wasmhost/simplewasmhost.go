@@ -11,15 +11,6 @@ type SimpleWasmHost struct {
 	ExportsId int32
 }
 
-func (host *SimpleWasmHost) AddBalance(obj HostObject, color string, amount int64) {
-	colors := host.FindSubObject(obj, "colors", OBJTYPE_STRING_ARRAY)
-	length := colors.GetInt(KeyLength)
-	colors.SetString(int32(length), color)
-	colorId := host.GetKeyId(color)
-	balance := host.FindSubObject(obj, "balance", OBJTYPE_MAP)
-	balance.SetInt(colorId, amount)
-}
-
 func (host *SimpleWasmHost) ClearData() {
 	host.ClearObjectData(OBJTYPE_MAP, "contract")
 	host.ClearObjectData(OBJTYPE_MAP, "account")
@@ -105,6 +96,10 @@ func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int
 	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
 }
 
+func (host *SimpleWasmHost) GetKeyId(key string) int32 {
+	return host.WasmHost.GetKeyId([]byte(key))
+}
+
 func (host *SimpleWasmHost) LoadData(jsonData *JsonDataModel) {
 	host.LoadMapData("contract", jsonData.Contract)
 	host.LoadMapData("account", jsonData.Account)
@@ -171,7 +166,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	}
 	err := host.RunFunction(function.(string))
 	if err != nil {
-		fmt.Printf("FAIL: function %s: %v\n", function, err)
+		fmt.Printf("FAIL: Function %v: %v\n", function, err)
 		return
 	}
 
@@ -179,27 +174,27 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
 	i := int64(0)
-	expectedpostedRequests := int64(len(jsonData.Expect.PostedRequests))
+	expectedPostedRequests := int64(len(jsonData.Expect.PostedRequests))
 	for i < postedRequests.GetInt(KeyLength) {
-		request := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
-		contractAddress := request.GetString(host.GetKeyId("contract"))
+		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
+		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
 		if contractAddress != host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address")) {
 			fmt.Printf("FAIL: Expected contract address: %s\n", contractAddress)
 			return
 		}
-		function := request.GetString(host.GetKeyId("function"))
-		if i >= expectedpostedRequests {
-			fmt.Printf("FAIL: Unexpected request function call: %s\n", function)
+		function := postedRequest.GetString(host.GetKeyId("function"))
+		if i >= expectedPostedRequests {
+			fmt.Printf("FAIL: Unexpected posted request: %s\n", function)
 			return
 		}
-		//TODO set request parameters for new request
+
 		request.SetString(host.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
-		params := host.FindObject(request.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
+		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
 		params.(*HostMap).CopyDataTo(reqParams)
 		err = host.RunFunction(function)
 		if err != nil {
-			fmt.Printf("FAIL: request function %s: %v\n", function, err)
+			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
 			return
 		}
 		i++

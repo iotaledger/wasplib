@@ -9,11 +9,11 @@ impl ScAddress {
         //ScAddress { address: bytes.try_into().expect("address should be 33 bytes") }
     }
 
-    pub fn as_bytes(&self) -> &str {
+    pub fn to_bytes(&self) -> &str {
         &self.address
     }
 
-    pub fn as_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.address.to_string()
     }
 }
@@ -39,11 +39,11 @@ impl ScColor {
         //ScColor { color: bytes.try_into().expect("color should be 32 bytes") }
     }
 
-    pub fn as_bytes(&self) -> &str {
+    pub fn to_bytes(&self) -> &str {
         &self.color
     }
 
-    pub fn as_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.color.to_string()
     }
 }
@@ -61,11 +61,11 @@ impl ScRequestId {
         //ScRequestId { id: bytes.try_into().expect("request id should be 34 bytes") }
     }
 
-    pub fn as_bytes(&self) -> &str {
+    pub fn to_bytes(&self) -> &str {
         &self.id
     }
 
-    pub fn as_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.id.to_string()
     }
 
@@ -87,11 +87,11 @@ impl ScTransactionId {
         //ScTransactionId { id: bytes.try_into().expect("transaction id should be 32 bytes") }
     }
 
-    pub fn as_bytes(&self) -> &str {
+    pub fn to_bytes(&self) -> &str {
         &self.id
     }
 
-    pub fn as_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.id.to_string()
     }
 }

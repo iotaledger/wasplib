@@ -59,7 +59,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 		func(ctx *sections.HostContext) error {
 			keyRef := ctx.Frame[ctx.SP].I32
 			size := ctx.Frame[ctx.SP+1].I32
-			ctx.Frame[ctx.SP].I32 = host.GetKeyId(string(host.vmGetBytes(keyRef, size)))
+			ctx.Frame[ctx.SP].I32 = host.GetKeyId(host.vmGetBytes(keyRef, size))
 			return nil
 		})
 	_ = lnk.DefineFunction("hostGetObjectId",

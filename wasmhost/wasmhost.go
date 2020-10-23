@@ -58,9 +58,11 @@ type WasmVM interface {
 
 type WasmHost struct {
 	vm            WasmVM
+	codeToFunc    map[int32]string
 	error         string
-	keyIdToKey    []string
-	keyIdToKeyMap []string
+	funcToCode    map[string]int32
+	keyIdToKey    [][]byte
+	keyIdToKeyMap [][]byte
 	keyMapToKeyId *map[string]int32
 	keyToKeyId    map[string]int32
 	logger        LogInterface
@@ -75,15 +77,17 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 		keyMap = &baseKeyMap
 	}
 	elements := len(*keyMap) + 1
+	host.codeToFunc = make(map[int32]string)
 	host.error = ""
+	host.funcToCode = make(map[string]int32)
 	host.logger = logger
 	host.objIdToObj = nil
-	host.keyIdToKey = []string{"<null>"}
+	host.keyIdToKey = [][]byte{[]byte("<null>")}
 	host.keyMapToKeyId = keyMap
 	host.keyToKeyId = make(map[string]int32)
-	host.keyIdToKeyMap = make([]string, elements, elements)
+	host.keyIdToKeyMap = make([][]byte, elements, elements)
 	for k, v := range *keyMap {
-		host.keyIdToKeyMap[-v] = k
+		host.keyIdToKeyMap[-v] = []byte(k)
 	}
 	host.TrackObject(null)
 	host.TrackObject(root)
@@ -133,13 +137,18 @@ func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
 	return value
 }
 
-func (host *WasmHost) GetKey(keyId int32) string {
+func (host *WasmHost) GetKey(keyId int32) []byte {
 	key := host.getKey(keyId)
-	host.Trace("GetKey k%d='%s'", keyId, key)
+	if len(key) < 32 {
+		// anything less than hash size is probably a string
+		host.Trace("GetKey k%d='%s'", keyId, string(key))
+		return key
+	}
+	host.Trace("GetKey k%d='%v'", keyId, key)
 	return key
 }
 
-func (host *WasmHost) getKey(keyId int32) string {
+func (host *WasmHost) getKey(keyId int32) []byte {
 	// find predefined key
 	if keyId < 0 {
 		return host.keyIdToKeyMap[-keyId]
@@ -151,31 +160,41 @@ func (host *WasmHost) getKey(keyId int32) string {
 	}
 
 	// unknown key
-	return ""
+	return nil
 }
 
-func (host *WasmHost) GetKeyId(key string) int32 {
+func (host *WasmHost) GetKeyId(key []byte) int32 {
 	keyId := host.getKeyId(key)
-	host.Trace("GetKeyId '%s'=k%d", key, keyId)
+	if len(key) < 32 {
+		// anything less than hash size is probably a string
+		host.Trace("GetKeyId '%s'=k%d", string(key), keyId)
+		return keyId
+	}
+	host.Trace("GetKeyId '%v'=k%d", key, keyId)
 	return keyId
 }
 
-func (host *WasmHost) getKeyId(key string) int32 {
+func (host *WasmHost) getKeyId(key []byte) int32 {
+	// cannot use []byte as key in maps
+	// so we will convert to (non-utf8) string
+	// most will have started out as string anyway
+	keyString := string(key)
+
 	// first check predefined key map
-	keyId, ok := (*host.keyMapToKeyId)[key]
+	keyId, ok := (*host.keyMapToKeyId)[keyString]
 	if ok {
 		return keyId
 	}
 
 	// check additional user-defined keys
-	keyId, ok = host.keyToKeyId[key]
+	keyId, ok = host.keyToKeyId[keyString]
 	if ok {
 		return keyId
 	}
 
 	// unknown key, add it to user-defined key map
 	keyId = int32(len(host.keyIdToKey))
-	host.keyToKeyId[key] = keyId
+	host.keyToKeyId[keyString] = keyId
 	host.keyIdToKey = append(host.keyIdToKey, key)
 	return keyId
 }
@@ -262,6 +281,19 @@ func (host *WasmHost) SetError(text string) {
 	}
 }
 
+func (host *WasmHost) SetExport(keyId int32, value string) {
+	_, ok := host.codeToFunc[keyId]
+	if ok {
+		host.SetError("SetExport: duplicate code")
+	}
+	_, ok = host.funcToCode[value]
+	if ok {
+		host.SetError("SetExport: duplicate function")
+	}
+	host.funcToCode[value] = keyId
+	host.codeToFunc[keyId] = value
+}
+
 func (host *WasmHost) SetInt(objId int32, keyId int32, value int64) {
 	if host.HasError() {
 		return
@@ -311,8 +343,7 @@ func (host *WasmHost) vmGetInt(offset int32) int64 {
 	return int64(binary.LittleEndian.Uint64(ptr[offset : offset+8]))
 }
 
-func (host *WasmHost) vmSetBytes(offset int32, size int32, value []byte) int32 {
-	bytes := []byte(value)
+func (host *WasmHost) vmSetBytes(offset int32, size int32, bytes []byte) int32 {
 	if size != 0 {
 		ptr := host.vm.UnsafeMemory()
 		copy(ptr[offset:offset+size], bytes)

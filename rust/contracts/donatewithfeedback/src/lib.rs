@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
+use wasplib::client::{BytesDecoder, ScAddress};
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScColor;
 use wasplib::client::ScContext;
@@ -11,7 +11,7 @@ struct DonationInfo {
     seq: i64,
     id: String,
     amount: i64,
-    sender: String,
+    sender: ScAddress,
     feedback: String,
     error: String,
 }
@@ -83,7 +83,7 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
         seq: decoder.int(),
         id: decoder.string(),
         amount: decoder.int(),
-        sender: decoder.string(),
+        sender: decoder.address(),
         feedback: decoder.string(),
         error: decoder.string(),
     }
@@ -94,6 +94,7 @@ fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     encoder.int(donation.seq);
     encoder.string(&donation.id);
     encoder.int(donation.amount);
+    encoder.address(&donation.sender);
     encoder.string(&donation.feedback);
     encoder.string(&donation.error);
     encoder.data()

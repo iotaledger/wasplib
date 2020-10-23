@@ -1,8 +1,41 @@
 package client
 
+type ScImmutableAddress struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScImmutableAddress) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableAddress) Value() *ScAddress {
+	return NewScAddress(GetString(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableAddressArray struct {
+	objId int32
+}
+
+func (o ScImmutableAddressArray) GetAddress(index int32) ScImmutableAddress {
+	return ScImmutableAddress{objId: o.objId, keyId: index}
+}
+
+func (o ScImmutableAddressArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScImmutableBytes struct {
 	objId int32
 	keyId int32
+}
+
+func (o ScImmutableBytes) Exists() bool {
+	return Exists(o.objId, o.keyId)
 }
 
 func (o ScImmutableBytes) Value() []byte {
@@ -25,11 +58,41 @@ func (o ScImmutableBytesArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScImmutableColor struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScImmutableColor) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableColor) Value() *ScColor {
+	return NewScColor(GetString(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableColorArray struct {
+	objId int32
+}
+
+func (o ScImmutableColorArray) GetColor(index int32) ScImmutableColor {
+	return ScImmutableColor{objId: o.objId, keyId: index}
+}
+
+func (o ScImmutableColorArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScImmutableInt struct {
 	objId int32
 	keyId int32
 }
 
+//TODO exists?
 func (o ScImmutableInt) Value() int64 {
 	return GetInt(o.objId, o.keyId)
 }
@@ -54,6 +117,15 @@ type ScImmutableKeyMap struct {
 	objId int32
 }
 
+func (o ScImmutableKeyMap) GetAddress(key []byte) ScImmutableAddress {
+	return ScImmutableAddress{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScImmutableKeyMap) GetAddressArray(key []byte) ScImmutableAddressArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableAddressArray{objId: arrId}
+}
+
 func (o ScImmutableKeyMap) GetBytes(key []byte) ScImmutableBytes {
 	return ScImmutableBytes{objId: o.objId, keyId: GetKey(key)}
 }
@@ -61,6 +133,15 @@ func (o ScImmutableKeyMap) GetBytes(key []byte) ScImmutableBytes {
 func (o ScImmutableKeyMap) GetBytesArray(key []byte) ScImmutableBytesArray {
 	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
 	return ScImmutableBytesArray{objId: arrId}
+}
+
+func (o ScImmutableKeyMap) GetColor(key []byte) ScImmutableColor {
+	return ScImmutableColor{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScImmutableKeyMap) GetColorArray(key []byte) ScImmutableColorArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableColorArray{objId: arrId}
 }
 
 func (o ScImmutableKeyMap) GetInt(key []byte) ScImmutableInt {
@@ -82,7 +163,7 @@ func (o ScImmutableKeyMap) GetMap(key []byte) ScImmutableMap {
 	return ScImmutableMap{objId: mapId}
 }
 
-func (o ScImmutableKeyMap) GetMaprray(key []byte) ScImmutableMapArray {
+func (o ScImmutableKeyMap) GetMapArray(key []byte) ScImmutableMapArray {
 	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP_ARRAY)
 	return ScImmutableMapArray{objId: arrId}
 }
@@ -102,6 +183,15 @@ type ScImmutableMap struct {
 	objId int32
 }
 
+func (o ScImmutableMap) GetAddress(key string) ScImmutableAddress {
+	return ScImmutableAddress{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScImmutableMap) GetAddressArray(key string) ScImmutableAddressArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableAddressArray{objId: arrId}
+}
+
 func (o ScImmutableMap) GetBytes(key string) ScImmutableBytes {
 	return ScImmutableBytes{objId: o.objId, keyId: GetKeyId(key)}
 }
@@ -109,6 +199,15 @@ func (o ScImmutableMap) GetBytes(key string) ScImmutableBytes {
 func (o ScImmutableMap) GetBytesArray(key string) ScImmutableBytesArray {
 	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
 	return ScImmutableBytesArray{objId: arrId}
+}
+
+func (o ScImmutableMap) GetColor(key string) ScImmutableColor {
+	return ScImmutableColor{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScImmutableMap) GetColorArray(key string) ScImmutableColorArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableColorArray{objId: arrId}
 }
 
 func (o ScImmutableMap) GetInt(key string) ScImmutableInt {
@@ -130,7 +229,7 @@ func (o ScImmutableMap) GetMap(key string) ScImmutableMap {
 	return ScImmutableMap{objId: mapId}
 }
 
-func (o ScImmutableMap) GetMaprray(key string) ScImmutableMapArray {
+func (o ScImmutableMap) GetMapArray(key string) ScImmutableMapArray {
 	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_MAP_ARRAY)
 	return ScImmutableMapArray{objId: arrId}
 }
@@ -169,6 +268,10 @@ func (o ScImmutableMapArray) Length() int32 {
 type ScImmutableString struct {
 	objId int32
 	keyId int32
+}
+
+func (o ScImmutableString) Exists() bool {
+	return Exists(o.objId, o.keyId)
 }
 
 func (o ScImmutableString) Value() string {

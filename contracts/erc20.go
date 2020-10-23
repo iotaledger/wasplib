@@ -43,7 +43,7 @@ func initSC() {
 	}
 	supply := supplyParam.Value()
 	supplyState.SetValue(supply)
-	state.GetMap(varBalances).GetInt(sc.Contract().Owner()).SetValue(supply)
+	state.GetMap(varBalances).GetInt(sc.Contract().Owner().Bytes()).SetValue(supply)
 
 	sc.Log("initSC: success")
 }
@@ -59,9 +59,9 @@ func transfer() {
 
 	sender := request.Address()
 
-	sc.Log("sender address: " + sender)
+	sc.Log("sender address: " + sender.String())
 
-	sourceBalance := balances.GetInt(sender)
+	sourceBalance := balances.GetInt(sender.Bytes())
 
 	sc.Log("source balance: " + strconv.FormatInt(sourceBalance.Value(), 10))
 

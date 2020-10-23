@@ -1,10 +1,10 @@
 // encapsulates standard host entities into a simple interface
 
-use super::hashtypes::ScColor;
+use super::hashtypes::*;
 use super::host::set_string;
-use super::immutable::{ScImmutableMap, ScImmutableStringArray};
-use super::keys::{key_log, key_trace};
-use super::mutable::{ScMutableMap, ScMutableString, ScMutableStringArray};
+use super::immutable::*;
+use super::keys::*;
+use super::mutable::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -14,28 +14,11 @@ pub struct ScAccount {
 
 impl ScAccount {
     pub fn balance(&self, color: &ScColor) -> i64 {
-        self.account.get_map("balance").get_int(color.as_bytes()).value()
+        self.account.get_map("balance").get_int(color.to_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScColors {
-        ScColors { colors: self.account.get_string_array("colors") }
-    }
-}
-
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScColors {
-    colors: ScImmutableStringArray,
-}
-
-impl ScColors {
-    pub fn get_color(&self, index: i32) -> ScColor {
-        ScColor::from_bytes(&self.colors.get_string(index).value())
-    }
-
-    pub fn length(&self) -> i32 {
-        self.colors.length()
+    pub fn colors(&self) -> ScImmutableColorArray {
+        self.account.get_color_array("colors")
     }
 }
 
@@ -46,12 +29,12 @@ pub struct ScContract {
 }
 
 impl ScContract {
-    pub fn address(&self) -> String {
-        self.contract.get_string("address").value()
+    pub fn address(&self) -> ScAddress {
+        self.contract.get_address("address").value()
     }
 
-    pub fn color(&self) -> String {
-        self.contract.get_string("color").value()
+    pub fn color(&self) -> ScColor {
+        self.contract.get_color("color").value()
     }
 
     pub fn description(&self) -> String {
@@ -66,8 +49,8 @@ impl ScContract {
         self.contract.get_string("name").value()
     }
 
-    pub fn owner(&self) -> String {
-        self.contract.get_string("owner").value()
+    pub fn owner(&self) -> ScAddress {
+        self.contract.get_address("owner").value()
     }
 }
 
@@ -123,8 +106,8 @@ impl ScPostedRequest {
         self.request.get_int("code").set_value(code);
     }
 
-    pub fn contract(&self, contract: &str) {
-        self.request.get_string("contract").set_value(contract);
+    pub fn contract(&self, address: &ScAddress) {
+        self.request.get_address("contract").set_value(address);
     }
 
     pub fn delay(&self, delay: i64) {
@@ -147,20 +130,20 @@ pub struct ScRequest {
 }
 
 impl ScRequest {
-    pub fn address(&self) -> String {
-        self.request.get_string("address").value()
+    pub fn address(&self) -> ScAddress {
+        self.request.get_address("address").value()
     }
 
     pub fn balance(&self, color: &ScColor) -> i64 {
-        self.request.get_map("balance").get_int(color.as_bytes()).value()
+        self.request.get_map("balance").get_int(color.to_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScColors {
-        ScColors { colors: self.request.get_string_array("colors") }
+    pub fn colors(&self) -> ScImmutableColorArray {
+        self.request.get_color_array("colors")
     }
 
     pub fn minted_color(&self) -> ScColor {
-        ScColor::from_bytes(&self.request.get_string("hash").value())
+        self.request.get_color("hash").value()
     }
 
     pub fn id(&self) -> String {
@@ -183,8 +166,8 @@ pub struct ScTransfer {
 }
 
 impl ScTransfer {
-    pub fn address(&self, address: &str) {
-        self.transfer.get_string("address").set_value(address);
+    pub fn address(&self, address: &ScAddress) {
+        self.transfer.get_address("address").set_value(address);
     }
 
     pub fn amount(&self, amount: i64) {
@@ -192,7 +175,7 @@ impl ScTransfer {
     }
 
     pub fn color(&self, color: &ScColor) {
-        self.transfer.get_string("color").set_value(color.as_bytes());
+        self.transfer.get_color("color").set_value(color);
     }
 }
 
@@ -203,7 +186,24 @@ pub struct ScUtility {
 }
 
 impl ScUtility {
+    pub fn base58decode(&self, value: &str) -> Vec<u8> {
+        //TODO atomic set/get
+        let decode = self.utility.get_string("base58");
+        decode.set_value(value);
+        let encode = self.utility.get_bytes("base58");
+        encode.value()
+    }
+
+    pub fn base58encode(&self, value: &[u8]) -> String {
+        //TODO atomic set/get
+        let encode = self.utility.get_bytes("base58");
+        encode.set_value(value);
+        let decode = self.utility.get_string("base58");
+        decode.value()
+    }
+
     pub fn hash(&self, value: &[u8]) -> Vec<u8> {
+        //TODO atomic set/get
         let hash = self.utility.get_bytes("hash");
         hash.set_value(value);
         hash.value()
@@ -242,7 +242,7 @@ impl ScContext {
         set_string(1, key_log(), text)
     }
 
-    pub fn post_request(&self, contract: &str, function: &str, delay: i64) -> ScMutableMap {
+    pub fn post_request(&self, contract: &ScAddress, function: &str, delay: i64) -> ScMutableMap {
         let posted_requests = self.root.get_map_array("postedRequests");
         let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
         request.contract(contract);
@@ -252,7 +252,7 @@ impl ScContext {
     }
 
     // just for compatibility with old hardcoded SCs
-    pub fn post_request_with_code(&self, contract: &str, code: i64, delay: i64) -> ScMutableMap {
+    pub fn post_request_with_code(&self, contract: &ScAddress, code: i64, delay: i64) -> ScMutableMap {
         let posted_requests = self.root.get_map_array("postedRequests");
         let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
         request.contract(contract);
@@ -276,7 +276,7 @@ impl ScContext {
         set_string(1, key_trace(), text)
     }
 
-    pub fn transfer(&self, address: &str, color: &ScColor, amount: i64) {
+    pub fn transfer(&self, address: &ScAddress, color: &ScColor, amount: i64) {
         let transfers = self.root.get_map_array("transfers");
         let xfer = ScTransfer { transfer: transfers.get_map(transfers.length()) };
         xfer.address(address);

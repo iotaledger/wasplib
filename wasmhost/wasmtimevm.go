@@ -47,7 +47,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetKeyId",
 		func(keyRef int32, size int32) int32 {
-			return host.GetKeyId(string(host.vmGetBytes(keyRef, size)))
+			return host.GetKeyId(host.vmGetBytes(keyRef, size))
 		})
 	if err != nil {
 		return err

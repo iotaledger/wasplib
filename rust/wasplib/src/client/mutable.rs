@@ -1,6 +1,10 @@
 // types encapsulating mutable host objects
+// ScMutableAddress      : refers to mutable address on host
+// ScMutableAddressArray : refers to mutable array of mutable address on host
 // ScMutableBytes        : refers to mutable byte array on host
 // ScMutableBytesArray   : refers to mutable array of mutable byte arrays on host
+// ScMutableColor        : refers to mutable color on host
+// ScMutableColorArray   : refers to mutable array of mutable color on host
 // ScMutableInt          : refers to mutable integer on host
 // ScMutableIntArray     : refers to mutable array of mutable integers on host
 // ScMutableKeyMap       : refers to mutable map of mutable values on host
@@ -9,10 +13,66 @@
 // ScMutableString       : refers to mutable string on host
 // ScMutableStringArray  : refers to mutable array of mutable strings on host
 
-use super::host::{TYPE_BYTES_ARRAY, TYPE_INT_ARRAY, TYPE_MAP, TYPE_MAP_ARRAY, TYPE_STRING_ARRAY};
-use super::host::{get_bytes, get_int, get_key, get_key_id, get_object_id, get_string, set_bytes, set_int, set_string};
-use super::immutable::{ScImmutableBytesArray, ScImmutableIntArray, ScImmutableKeyMap, ScImmutableMap, ScImmutableMapArray, ScImmutableStringArray};
+use super::hashtypes::*;
+use super::host::*;
+use super::immutable::*;
 use super::keys::key_length;
+
+pub struct ScMutableAddress {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScMutableAddress {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableAddress {
+        ScMutableAddress { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: &ScAddress) {
+        set_string(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn value(&self) -> ScAddress {
+        ScAddress::from_bytes(&get_string(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableAddressArray {
+    obj_id: i32
+}
+
+impl ScMutableAddressArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableAddressArray {
+        ScMutableAddressArray { obj_id }
+    }
+
+    pub fn clear(&self) {
+        set_int(self.obj_id, key_length(), 0);
+    }
+
+    //TODO exists on arrays?
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_address(&self, index: i32) -> ScMutableAddress {
+        ScMutableAddress { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn immutable(&self) -> ScImmutableAddressArray {
+        ScImmutableAddressArray::new(self.obj_id)
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScMutableBytes {
     obj_id: i32,
@@ -22,6 +82,10 @@ pub struct ScMutableBytes {
 impl ScMutableBytes {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableBytes {
         ScMutableBytes { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
     }
 
     pub fn set_value(&self, val: &[u8]) {
@@ -64,6 +128,60 @@ impl ScMutableBytesArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScMutableColor {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScMutableColor {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableColor {
+        ScMutableColor { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: &ScColor) {
+        set_string(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn value(&self) -> ScColor {
+        ScColor::from_bytes(&get_string(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableColorArray {
+    obj_id: i32
+}
+
+impl ScMutableColorArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableColorArray {
+        ScMutableColorArray { obj_id }
+    }
+
+    pub fn clear(&self) {
+        set_int(self.obj_id, key_length(), 0);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_color(&self, index: i32) -> ScMutableColor {
+        ScMutableColor { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn immutable(&self) -> ScImmutableColorArray {
+        ScImmutableColorArray::new(self.obj_id)
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScMutableInt {
     obj_id: i32,
     key_id: i32,
@@ -73,6 +191,8 @@ impl ScMutableInt {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableInt {
         ScMutableInt { obj_id, key_id }
     }
+
+    //TODO exists?
 
     pub fn set_value(&self, val: i64) {
         set_int(self.obj_id, self.key_id, val);
@@ -127,6 +247,15 @@ impl ScMutableKeyMap {
         set_int(self.obj_id, key_length(), 0);
     }
 
+    pub fn get_address(&self, key: &[u8]) -> ScMutableAddress {
+        ScMutableAddress { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_address_array(&self, key: &[u8]) -> ScMutableAddressArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScMutableAddressArray { obj_id: arr_id }
+    }
+
     pub fn get_bytes(&self, key: &[u8]) -> ScMutableBytes {
         ScMutableBytes { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -134,6 +263,15 @@ impl ScMutableKeyMap {
     pub fn get_bytes_array(&self, key: &[u8]) -> ScMutableBytesArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
         ScMutableBytesArray { obj_id: arr_id }
+    }
+
+    pub fn get_color(&self, key: &[u8]) -> ScMutableColor {
+        ScMutableColor { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_color_array(&self, key: &[u8]) -> ScMutableColorArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScMutableColorArray { obj_id: arr_id }
     }
 
     pub fn get_int(&self, key: &[u8]) -> ScMutableInt {
@@ -189,6 +327,15 @@ impl ScMutableMap {
         set_int(self.obj_id, key_length(), 0);
     }
 
+    pub fn get_address(&self, key: &str) -> ScMutableAddress {
+        ScMutableAddress { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_address_array(&self, key: &str) -> ScMutableAddressArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScMutableAddressArray { obj_id: arr_id }
+    }
+
     pub fn get_bytes(&self, key: &str) -> ScMutableBytes {
         ScMutableBytes { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -196,6 +343,15 @@ impl ScMutableMap {
     pub fn get_bytes_array(&self, key: &str) -> ScMutableBytesArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
         ScMutableBytesArray { obj_id: arr_id }
+    }
+
+    pub fn get_color(&self, key: &str) -> ScMutableColor {
+        ScMutableColor { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_color_array(&self, key: &str) -> ScMutableColorArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScMutableColorArray { obj_id: arr_id }
     }
 
     pub fn get_int(&self, key: &str) -> ScMutableInt {
@@ -207,9 +363,9 @@ impl ScMutableMap {
         ScMutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_key_map(&self, key: &str) -> ScMutableKeyMap {
+    pub fn get_key_id_map(&self, key: &str) -> ScMutableMap {
         let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
-        ScMutableKeyMap { obj_id: map_id }
+        ScMutableMap { obj_id: map_id }
     }
 
     pub fn get_map(&self, key: &str) -> ScMutableMap {
@@ -257,7 +413,7 @@ impl ScMutableMapArray {
         ScMutableKeyMap { obj_id: map_id }
     }
 
-    // index 0..length(), winclusive, hen length() a new one is appended
+    // index 0..length(), inclusive, hen length() a new one is appended
     pub fn get_map(&self, index: i32) -> ScMutableMap {
         let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
         ScMutableMap { obj_id: map_id }
@@ -282,6 +438,10 @@ pub struct ScMutableString {
 impl ScMutableString {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableString {
         ScMutableString { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
     }
 
     pub fn set_value(&self, val: &str) {

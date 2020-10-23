@@ -6,8 +6,8 @@ import (
 
 type TokenInfo struct {
 	supply      int64
-	mintedBy    string
-	owner       string
+	mintedBy    *client.ScAddress
+	owner       *client.ScAddress
 	created     int64
 	updated     int64
 	description string
@@ -31,8 +31,8 @@ func mintSupply() {
 	request := sc.Request()
 	color := request.MintedColor()
 	state := sc.State()
-	registry := state.GetMap("tr").GetBytes(color.Bytes())
-	if len(registry.Value()) != 0 {
+	registry := state.GetMap("registry").GetBytes(color.Bytes())
+	if registry.Exists() {
 		sc.Log("TokenRegistry: Color already exists")
 		return
 	}
@@ -50,13 +50,13 @@ func mintSupply() {
 		sc.Log("TokenRegistry: Insufficient supply")
 		return
 	}
-	if token.description == "" {
+	if len(token.description) == 0 {
 		token.description += "no dscr"
 	}
 	bytes := encodeTokenInfo(token)
 	registry.SetValue(bytes)
-	colors := state.GetStringArray("lc")
-	colors.GetString(colors.Length()).SetValue(color.Bytes())
+	colors := state.GetColorArray("colorList")
+	colors.GetColor(colors.Length()).SetValue(color)
 }
 
 //export updateMetadata
@@ -75,8 +75,8 @@ func decodeTokenInfo(bytes []byte) *TokenInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &TokenInfo{}
 	data.supply = decoder.Int()
-	data.mintedBy = decoder.String()
-	data.owner = decoder.String()
+	data.mintedBy = decoder.Address()
+	data.owner = decoder.Address()
 	data.created = decoder.Int()
 	data.updated = decoder.Int()
 	data.description = decoder.String()
@@ -87,8 +87,8 @@ func decodeTokenInfo(bytes []byte) *TokenInfo {
 func encodeTokenInfo(token *TokenInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(token.supply).
-		String(token.mintedBy).
-		String(token.owner).
+		Address(token.mintedBy).
+		Address(token.owner).
 		Int(token.created).
 		Int(token.updated).
 		String(token.description).

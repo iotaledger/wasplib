@@ -10,7 +10,7 @@ const PLAY_PERIOD int64 = 120
 
 type BetInfo struct {
 	id     string
-	sender string
+	sender *client.ScAddress
 	color  int64
 	amount int64
 }
@@ -134,7 +134,7 @@ func payWinners() {
 			totalPayout += payout
 			sc.Transfer(bet.sender, client.IOTA, payout)
 		}
-		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender
+		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender.String()
 		sc.Log(text)
 	}
 
@@ -168,7 +168,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BetInfo{
 		id:     decoder.String(),
-		sender: decoder.String(),
+		sender: decoder.Address(),
 		amount: decoder.Int(),
 		color:  decoder.Int(),
 	}
@@ -177,7 +177,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
 		String(bet.id).
-		String(bet.sender).
+		Address(bet.sender).
 		Int(bet.amount).
 		Int(bet.color).
 		Data()

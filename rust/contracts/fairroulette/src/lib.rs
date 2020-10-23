@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
+use wasplib::client::{BytesDecoder, ScAddress};
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScColor;
 use wasplib::client::ScContext;
@@ -12,7 +12,7 @@ const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
     id: String,
-    sender: String,
+    sender: ScAddress,
     color: i64,
     amount: i64,
 }
@@ -136,7 +136,7 @@ pub fn payWinners() {
             total_payout += payout;
             sc.transfer(&bet.sender, &ScColor::iota(), payout);
         }
-        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender;
+        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender.to_string();
         sc.log(&text);
     }
 
@@ -172,7 +172,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
         id: decoder.string(),
-        sender: decoder.string(),
+        sender: decoder.address(),
         amount: decoder.int(),
         color: decoder.int(),
     }
@@ -181,7 +181,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.string(&bet.id);
-    encoder.string(&bet.sender);
+    encoder.address(&bet.sender);
     encoder.int(bet.amount);
     encoder.int(bet.color);
     encoder.data()

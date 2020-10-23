@@ -8,7 +8,7 @@ type DonationInfo struct {
 	seq      int64
 	id       string
 	amount   int64
-	sender   string
+	sender   *client.ScAddress
 	feedback string
 	error    string
 }
@@ -85,7 +85,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	data.seq = decoder.Int()
 	data.id = decoder.String()
 	data.amount = decoder.Int()
-	data.sender = decoder.String()
+	data.sender = decoder.Address()
 	data.error = decoder.String()
 	data.feedback = decoder.String()
 	return data
@@ -96,7 +96,7 @@ func encodeDonationInfo(donation *DonationInfo) []byte {
 		Int(donation.seq).
 		String(donation.id).
 		Int(donation.amount).
-		String(donation.sender).
+		Address(donation.sender).
 		String(donation.error).
 		String(donation.feedback).
 		Data()

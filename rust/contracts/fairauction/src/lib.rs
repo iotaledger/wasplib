@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
+use wasplib::client::{BytesDecoder, ScAddress};
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScColor;
 use wasplib::client::ScContext;
@@ -29,7 +29,7 @@ struct AuctionInfo {
     // duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
     duration: i64,
     // address which issued StartAuction transaction
-    auctionOwner: String,
+    auctionOwner: ScAddress,
     // deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
     // transaction.
     deposit: i64,
@@ -41,7 +41,7 @@ struct AuctionInfo {
 
 struct BidInfo {
     // originator of the bid
-    address: String,
+    address: ScAddress,
     // the amount is a cumulative sum of all bids from the same bidder
     amount: i64,
     // most recent bid update time
@@ -74,12 +74,12 @@ pub fn startAuction() {
     }
 
     let params = request.params();
-    let bytes = params.get_string("color").value();
-    if bytes.len() == 0 {
+    let colorParam = params.get_color("color");
+    if !colorParam.exists() {
         refund(deposit / 2, "Missing token color...");
         return;
     }
-    let color = ScColor::from_bytes(&bytes);
+    let color = colorParam.value();
 
     if color == ScColor::iota() || color == ScColor::mint() {
         refund(deposit / 2, "Reserved token color...");
@@ -130,7 +130,7 @@ pub fn startAuction() {
     }
 
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color.as_bytes());
+    let currentAuction = auctions.get_bytes(&color.to_bytes());
     if currentAuction.value().len() != 0 {
         refund(deposit / 2, "Auction for this token already exists...");
         return;
@@ -152,7 +152,7 @@ pub fn startAuction() {
     currentAuction.set_value(&bytes);
 
     let finalizeparams = sc.post_request(&sc.contract().address(), "finalizeAuction", duration * 60);
-    finalizeparams.get_string("color").set_value(&auction.color.as_bytes());
+    finalizeparams.get_string("color").set_value(&auction.color.to_bytes());
     sc.log("New auction started...");
 }
 
@@ -166,16 +166,16 @@ pub fn finalizeAuction() {
         return;
     }
 
-    let bytes = request.params().get_string("color").value();
-    if bytes.len() == 0 {
+    let colorParam = request.params().get_color("color");
+    if !colorParam.exists() {
         sc.log("INTERNAL INCONSISTENCY: missing color");
         return;
     }
-    let color = ScColor::from_bytes(&bytes);
+    let color = colorParam.value();
 
     let state = sc.state();
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color.as_bytes());
+    let currentAuction = auctions.get_bytes(&color.to_bytes());
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         sc.log("INTERNAL INCONSISTENCY missing auction info");
@@ -183,7 +183,7 @@ pub fn finalizeAuction() {
     }
     let auction = decodeAuctionInfo(&bytes);
     if auction.bids.len() == 0 {
-        sc.log(&("No one bid on ".to_string() + &color.as_string()));
+        sc.log(&("No one bid on ".to_string() + &color.to_string()));
         let mut ownerFee = auction.minimumBid * auction.ownerMargin / 1000;
         if ownerFee == 0 {
             ownerFee = 1
@@ -196,14 +196,14 @@ pub fn finalizeAuction() {
 
     let mut winner = BidInfo {
         amount: 0,
-        address: String::new(),
+        address: ScAddress::from_bytes(""),
         when: 0,
     };
     for bidder in &auction.bids {
         if bidder.amount >= winner.amount {
             if bidder.amount > winner.amount || bidder.when < winner.when {
                 winner.amount = bidder.amount;
-                winner.address = bidder.address.to_string();
+                winner.address = ScAddress::from_bytes(bidder.address.to_bytes());
                 winner.when = bidder.when;
             }
         }
@@ -236,16 +236,16 @@ pub fn placeBid() {
         return;
     }
 
-    let bytes = request.params().get_string("color").value();
-    if bytes.len() == 0 {
+    let colorParam = request.params().get_color("color");
+    if !colorParam.exists() {
         refund(bidAmount, "Missing token color");
         return;
     }
-    let color = ScColor::from_bytes(&bytes);
+    let color = colorParam.value();
 
     let state = sc.state();
     let auctions = state.get_map("auctions");
-    let currentAuction = auctions.get_bytes(&color.as_bytes());
+    let currentAuction = auctions.get_bytes(&color.to_bytes());
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         refund(bidAmount, "Missing auction");
@@ -256,7 +256,7 @@ pub fn placeBid() {
     let mut auction = decodeAuctionInfo(&bytes);
     let mut bidIndex = auction.bids.iter().position(|b| b.address == sender);
     if bidIndex == None {
-        sc.log(&("New bid from: ".to_string() + &sender));
+        sc.log(&("New bid from: ".to_string() + &sender.to_string()));
         let bid = BidInfo { address: sender, amount: 0, when: 0 };
         bidIndex = Some(auction.bids.len());
         auction.bids.push(bid);
@@ -294,13 +294,13 @@ pub fn setOwnerMargin() {
 fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
     let mut decoder = BytesDecoder::new(bytes);
     let mut auction = AuctionInfo {
-        color: ScColor::from_bytes(&decoder.string()),
+        color: decoder.color(),
         numTokens: decoder.int(),
         minimumBid: decoder.int(),
         description: decoder.string(),
         whenStarted: decoder.int(),
         duration: decoder.int(),
-        auctionOwner: decoder.string(),
+        auctionOwner: decoder.address(),
         deposit: decoder.int(),
         ownerMargin: decoder.int(),
         bids: Vec::new(),
@@ -317,7 +317,7 @@ fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
 fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BidInfo {
-        address: decoder.string(),
+        address: decoder.address(),
         amount: decoder.int(),
         when: decoder.int(),
     }
@@ -325,13 +325,13 @@ fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
 
 fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.string(&auction.color.as_bytes());
+    encoder.color(&auction.color);
     encoder.int(auction.numTokens);
     encoder.int(auction.minimumBid);
     encoder.string(&auction.description);
     encoder.int(auction.whenStarted);
     encoder.int(auction.duration);
-    encoder.string(&auction.auctionOwner);
+    encoder.address(&auction.auctionOwner);
     encoder.int(auction.deposit);
     encoder.int(auction.ownerMargin);
     encoder.int(auction.bids.len() as i64);
@@ -344,7 +344,7 @@ fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
 
 fn encodeBidInfo(bid: &BidInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.string(&bid.address);
+    encoder.address(&bid.address);
     encoder.int(bid.amount);
     encoder.int(bid.when);
     encoder.data()
@@ -367,7 +367,7 @@ fn refund(amount: i64, reason: &str) {
     let colors = request.colors();
     let items = colors.length();
     for i in 0..items {
-        let color = colors.get_color(i);
+        let color = colors.get_color(i).value();
         if color != ScColor::iota() {
             sc.transfer(&sender, &color, request.balance(&color));
         }

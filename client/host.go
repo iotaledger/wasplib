@@ -45,10 +45,14 @@ func nothing() {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+func Exists(objId int32, keyId int32) bool {
+	return hostGetBytes(objId, keyId, nil, 0) >= 0
+}
+
 func GetBytes(objId int32, keyId int32) []byte {
 	// first query length of bytes array
 	size := hostGetBytes(objId, keyId, nil, 0)
-	if size == 0 {
+	if size <= 0 {
 		return []byte(nil)
 	}
 

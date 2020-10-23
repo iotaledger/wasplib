@@ -1,3 +1,5 @@
+use super::hashtypes::*;
+
 pub struct BytesDecoder<'a> {
     data: &'a [u8],
 }
@@ -5,6 +7,10 @@ pub struct BytesDecoder<'a> {
 impl BytesDecoder<'_> {
     pub fn new(data: &[u8]) -> BytesDecoder {
         BytesDecoder { data: data }
+    }
+
+    pub fn address(&mut self) -> ScAddress {
+        ScAddress::from_bytes(&self.string())
     }
 
     pub fn bytes(&mut self) -> &[u8] {
@@ -15,6 +21,10 @@ impl BytesDecoder<'_> {
         let value = &self.data[..size];
         self.data = &self.data[size..];
         value
+    }
+
+    pub fn color(&mut self) -> ScColor {
+        ScColor::from_bytes(&self.string())
     }
 
     pub fn int(&mut self) -> i64 {
@@ -59,9 +69,19 @@ impl BytesEncoder {
         BytesEncoder { data: Vec::new() }
     }
 
+    pub fn address(&mut self, value: &ScAddress) -> &BytesEncoder {
+        self.string(&value.to_bytes());
+        self
+    }
+
     pub fn bytes(&mut self, value: &[u8]) -> &BytesEncoder {
         self.int(value.len() as i64);
         self.data.extend_from_slice(value);
+        self
+    }
+
+    pub fn color(&mut self, value: &ScColor) -> &BytesEncoder {
+        self.string(&value.to_bytes());
         self
     }
 

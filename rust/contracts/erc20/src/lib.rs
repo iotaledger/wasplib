@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
+use wasplib::client::{BytesDecoder, ScAddress};
 use wasplib::client::BytesEncoder;
 use wasplib::client::ScContext;
 use wasplib::client::ScExports;
@@ -14,7 +14,7 @@ const VAR_TARGET_ADDRESS: &str = "addr";
 const VAR_AMOUNT: &str = "amount";
 
 struct Delegation {
-    delegated_to: String,
+    delegated_to: ScAddress,
     amount: i64,
 }
 
@@ -48,10 +48,10 @@ pub fn initSC() {
     let supply = supplyParam.value();
     supplyState.set_value(supply);
     let owner = sc.contract().owner();
-    state.get_map(VAR_BALANCES).get_int(&owner).set_value(supply);
+    state.get_map(VAR_BALANCES).get_int(&owner.to_bytes()).set_value(supply);
 
     sc.log(&("initSC.success. Supply = ".to_string() + &supply.to_string()));
-    sc.log(&("initSC.success. Owner = ".to_string() + &owner));
+    sc.log(&("initSC.success. Owner = ".to_string() + &owner.to_string()));
 }
 
 #[no_mangle]
@@ -62,10 +62,10 @@ pub fn transfer() {
     let request = sc.request();
     let params = request.params();
     let sender = request.address();
-    sc.log(&("sender address: ".to_string() + &sender));
+    sc.log(&("sender address: ".to_string() + &sender.to_string()));
 
     // TODO validate parameter address
-    let target_addr = params.get_string(VAR_TARGET_ADDRESS).value();
+    let target_addr = params.get_address(VAR_TARGET_ADDRESS).value();
     let amount = params.get_int(VAR_AMOUNT).value();
     if amount <= 0 {
         sc.log("transfer.fail: wrong 'amount' parameter");
@@ -83,7 +83,7 @@ pub fn approve() {
     let state = sc.state();
     let request = sc.request();
     let sender = request.address();
-    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&sender);
+    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&sender.to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
 
     let params = request.params();
@@ -92,9 +92,9 @@ pub fn approve() {
         sc.log("approve.fail: wrong 'amount' parameter");
         return;
     }
-    let target_addr = params.get_string(VAR_TARGET_ADDRESS);
+    let target_addr = params.get_address(VAR_TARGET_ADDRESS);
 
-    add_delegation(&mut delegations, &target_addr.value(), amount.value());
+    add_delegation(&mut delegations, target_addr.value(), amount.value());
 
     delegations_data.set_value(encode_delegations(&delegations).as_slice());
 
@@ -118,13 +118,13 @@ pub fn transfer_from() {
         return;
     }
     // TODO parameter validation
-    let source_addr = params.get_string(VAR_SOURCE_ADDRESS);
-    let target_addr = params.get_string(VAR_TARGET_ADDRESS);
+    let source_addr = params.get_address(VAR_SOURCE_ADDRESS);
+    let target_addr = params.get_address(VAR_TARGET_ADDRESS);
 
-    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&source_addr.value());
+    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&source_addr.value().to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
 
-    if !sub_delegation(&mut delegations, &sender, amount.value()) {
+    if !sub_delegation(&mut delegations, sender, amount.value()) {
         sc.log("transfer_from.fail: wrong delegation, possibly over the limit");
         return;
     }
@@ -136,14 +136,14 @@ pub fn transfer_from() {
     sc.log("transfer_from.success");
 }
 
-fn transfer_internal(source_addr: &String, target_addr: &String, amount: i64) -> bool {
+fn transfer_internal(source_addr: &ScAddress, target_addr: &ScAddress, amount: i64) -> bool {
     let sc = ScContext::new();
     let balances = sc.state().get_map(VAR_BALANCES);
-    let source_balance = balances.get_int(&source_addr);
+    let source_balance = balances.get_int(&source_addr.to_bytes());
     sc.log(&("transfer_internal: source addr: = ".to_string() + &source_addr.to_string()));
     sc.log(&("transfer_internal: source balance: = ".to_string() + &source_balance.value().to_string()));
 
-    let target_balance = balances.get_int(&target_addr);
+    let target_balance = balances.get_int(&target_addr.to_bytes());
     sc.log(&("transfer_internal: target addr: = ".to_string() + &target_addr.to_string()));
     sc.log(&("transfer_internal: target balance: = ".to_string() + &target_balance.value().to_string()));
 
@@ -155,22 +155,22 @@ fn transfer_internal(source_addr: &String, target_addr: &String, amount: i64) ->
     true
 }
 
-fn add_delegation(lst: &mut Vec<Delegation>, delegate: &String, amount: i64) {
+fn add_delegation(lst: &mut Vec<Delegation>, delegate: ScAddress, amount: i64) {
     for d in lst.iter_mut() {
-        if d.delegated_to == *delegate {
+        if d.delegated_to == delegate {
             d.amount = amount;
             return;
         }
     }
     lst.push(Delegation {
-        delegated_to: delegate.to_string(),
+        delegated_to: delegate,
         amount: amount,
     })
 }
 
-fn sub_delegation(lst: &mut Vec<Delegation>, delegate: &String, amount: i64) -> bool {
+fn sub_delegation(lst: &mut Vec<Delegation>, delegate: ScAddress, amount: i64) -> bool {
     for d in lst {
-        if d.delegated_to == *delegate {
+        if d.delegated_to == delegate {
             return if d.amount >= amount {
                 d.amount -= amount;
                 true
@@ -196,7 +196,7 @@ fn encode_delegations(delegations: &Vec<Delegation>) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(delegations.len() as i64);
     for d in delegations {
-        encoder.string(&*d.delegated_to);
+        encoder.address(&d.delegated_to);
         encoder.int(d.amount);
     }
     return encoder.data();
@@ -211,7 +211,7 @@ fn decode_delegations(bytes: &[u8]) -> Vec<Delegation> {
     let mut ret: Vec<Delegation> = Vec::with_capacity(size as usize);
     for _ in 0..size {
         ret.push(Delegation {
-            delegated_to: decoder.string(),
+            delegated_to: decoder.address(),
             amount: decoder.int(),
         })
     }

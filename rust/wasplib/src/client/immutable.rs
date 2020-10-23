@@ -1,6 +1,10 @@
 // types encapsulating immutable host objects
+// ScImmutableAddress      : refers to immutable address on host
+// ScImmutableAddressArray : refers to immutable array of immutable address on host
 // ScImmutableBytes        : refers to immutable byte array on host
 // ScImmutableBytesArray   : refers to immutable array of immutable byte arrays on host
+// ScImmutableColor        : refers to immutable color on host
+// ScImmutableColorArray   : refers to immutable array of immutable color on host
 // ScImmutableInt          : refers to immutable integer on host
 // ScImmutableIntArray     : refers to immutable array of immutable integers on host
 // ScImmutableKeyMap       : refers to immutable map of immutable values on host
@@ -9,9 +13,53 @@
 // ScImmutableString       : refers to immutable string on host
 // ScImmutableStringArray  : refers to immutable array of immutable strings on host
 
-use super::host::{TYPE_BYTES_ARRAY, TYPE_INT_ARRAY, TYPE_MAP, TYPE_MAP_ARRAY, TYPE_STRING_ARRAY};
-use super::host::{get_bytes, get_int, get_key, get_key_id, get_object_id, get_string};
+use super::hashtypes::*;
+use super::host::*;
 use super::keys::key_length;
+
+pub struct ScImmutableAddress {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScImmutableAddress {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableAddress {
+        ScImmutableAddress { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn value(&self) -> ScAddress {
+        ScAddress::from_bytes(&get_string(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableAddressArray {
+    obj_id: i32
+}
+
+impl ScImmutableAddressArray {
+    pub(crate) fn new(obj_id: i32) -> ScImmutableAddressArray {
+        ScImmutableAddressArray { obj_id }
+    }
+
+    //TODO exists on arrays?
+
+    // index 0..length(), exclusive
+    pub fn get_address(&self, index: i32) -> ScImmutableAddress {
+        ScImmutableAddress { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScImmutableBytes {
     obj_id: i32,
@@ -21,6 +69,10 @@ pub struct ScImmutableBytes {
 impl ScImmutableBytes {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableBytes {
         ScImmutableBytes { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
     }
 
     pub fn value(&self) -> Vec<u8> {
@@ -51,6 +103,48 @@ impl ScImmutableBytesArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScImmutableColor {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScImmutableColor {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableColor {
+        ScImmutableColor { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn value(&self) -> ScColor {
+        ScColor::from_bytes(&get_string(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableColorArray {
+    obj_id: i32
+}
+
+impl ScImmutableColorArray {
+    pub(crate) fn new(obj_id: i32) -> ScImmutableColorArray {
+        ScImmutableColorArray { obj_id }
+    }
+
+    // index 0..length(), exclusive
+    pub fn get_color(&self, index: i32) -> ScImmutableColor {
+        ScImmutableColor { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScImmutableInt {
     obj_id: i32,
     key_id: i32,
@@ -60,6 +154,8 @@ impl ScImmutableInt {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableInt {
         ScImmutableInt { obj_id, key_id }
     }
+
+    //TODO exists?
 
     pub fn value(&self) -> i64 {
         get_int(self.obj_id, self.key_id)
@@ -98,6 +194,15 @@ impl ScImmutableKeyMap {
         ScImmutableKeyMap { obj_id }
     }
 
+    pub fn get_address(&self, key: &[u8]) -> ScImmutableAddress {
+        ScImmutableAddress { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_address_array(&self, key: &[u8]) -> ScImmutableAddressArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScImmutableAddressArray { obj_id: arr_id }
+    }
+
     pub fn get_bytes(&self, key: &[u8]) -> ScImmutableBytes {
         ScImmutableBytes { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -105,6 +210,15 @@ impl ScImmutableKeyMap {
     pub fn get_bytes_array(&self, key: &[u8]) -> ScImmutableBytesArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
         ScImmutableBytesArray { obj_id: arr_id }
+    }
+
+    pub fn get_color(&self, key: &[u8]) -> ScImmutableColor {
+        ScImmutableColor { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_color_array(&self, key: &[u8]) -> ScImmutableColorArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScImmutableColorArray { obj_id: arr_id }
     }
 
     pub fn get_int(&self, key: &[u8]) -> ScImmutableInt {
@@ -156,6 +270,15 @@ impl ScImmutableMap {
         ScImmutableMap { obj_id }
     }
 
+    pub fn get_address(&self, key: &str) -> ScImmutableAddress {
+        ScImmutableAddress { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_address_array(&self, key: &str) -> ScImmutableAddressArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScImmutableAddressArray { obj_id: arr_id }
+    }
+
     pub fn get_bytes(&self, key: &str) -> ScImmutableBytes {
         ScImmutableBytes { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -163,6 +286,15 @@ impl ScImmutableMap {
     pub fn get_bytes_array(&self, key: &str) -> ScImmutableBytesArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
         ScImmutableBytesArray { obj_id: arr_id }
+    }
+
+    pub fn get_color(&self, key: &str) -> ScImmutableColor {
+        ScImmutableColor { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_color_array(&self, key: &str) -> ScImmutableColorArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScImmutableColorArray { obj_id: arr_id }
     }
 
     pub fn get_int(&self, key: &str) -> ScImmutableInt {
@@ -174,9 +306,9 @@ impl ScImmutableMap {
         ScImmutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_key_map(&self, key: &str) -> ScImmutableKeyMap {
+    pub fn get_key_id_map(&self, key: &str) -> ScImmutableMap {
         let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
-        ScImmutableKeyMap { obj_id: map_id }
+        ScImmutableMap { obj_id: map_id }
     }
 
     pub fn get_map(&self, key: &str) -> ScImmutableMap {
@@ -241,6 +373,10 @@ pub struct ScImmutableString {
 impl ScImmutableString {
     pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableString {
         ScImmutableString { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
     }
 
     pub fn value(&self) -> String {
