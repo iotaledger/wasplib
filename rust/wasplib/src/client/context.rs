@@ -189,16 +189,16 @@ impl ScUtility {
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
         //TODO atomic set/get
         let decode = self.utility.get_string("base58");
-        decode.set_value(value);
         let encode = self.utility.get_bytes("base58");
+        decode.set_value(value);
         encode.value()
     }
 
     pub fn base58_encode(&self, value: &[u8]) -> String {
         //TODO atomic set/get
+        let decode = self.utility.get_string("base58");
         let encode = self.utility.get_bytes("base58");
         encode.set_value(value);
-        let decode = self.utility.get_string("base58");
         decode.value()
     }
 

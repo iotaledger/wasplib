@@ -16,6 +16,15 @@ public class ScMutableMap {
 		Host.SetInt(objId, Keys.KeyLength(), 0);
 	}
 
+	public ScMutableAddress GetAddress(String key) {
+		return new ScMutableAddress(objId, Host.GetKeyId(key));
+	}
+
+	public ScMutableAddressArray GetAddressArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableAddressArray(arrId);
+	}
+
 	public ScMutableBytes GetBytes(String key) {
 		return new ScMutableBytes(objId, Host.GetKeyId(key));
 	}
@@ -23,6 +32,15 @@ public class ScMutableMap {
 	public ScMutableBytesArray GetBytesArray(String key) {
 		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
 		return new ScMutableBytesArray(arrId);
+	}
+
+	public ScMutableColor GetColor(String key) {
+		return new ScMutableColor(objId, Host.GetKeyId(key));
+	}
+
+	public ScMutableColorArray GetColorArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableColorArray(arrId);
 	}
 
 	public ScMutableInt GetInt(String key) {

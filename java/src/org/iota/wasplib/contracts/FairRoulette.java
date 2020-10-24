@@ -5,6 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -68,7 +69,7 @@ public class FairRoulette {
 	public static void lockBets() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		String scAddress = sc.Contract().Address();
+		ScAddress scAddress = sc.Contract().Address();
 		if (!sc.Request().Address().equals(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
@@ -90,7 +91,7 @@ public class FairRoulette {
 	public static void payWinners() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		String scAddress = sc.Contract().Address();
+		ScAddress scAddress = sc.Contract().Address();
 		if (!sc.Request().Address().equals(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
@@ -164,7 +165,7 @@ public class FairRoulette {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BetInfo bet = new BetInfo();
 		bet.id = decoder.String();
-		bet.sender = decoder.String();
+		bet.sender = decoder.Address();
 		bet.color = decoder.Int();
 		bet.amount = decoder.Int();
 		return bet;
@@ -173,7 +174,7 @@ public class FairRoulette {
 	public static byte[] encodeBetInfo(BetInfo bet) {
 		return new BytesEncoder().
 				String(bet.id).
-				String(bet.sender).
+				Address(bet.sender).
 				Int(bet.color).
 				Int(bet.amount).
 				Data();
@@ -181,7 +182,7 @@ public class FairRoulette {
 
 	public static class BetInfo {
 		String id;
-		String sender;
+		ScAddress sender;
 		long color;
 		long amount;
 	}

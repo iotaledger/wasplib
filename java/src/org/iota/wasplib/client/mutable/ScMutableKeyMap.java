@@ -16,6 +16,15 @@ public class ScMutableKeyMap {
 		Host.SetInt(objId, Keys.KeyLength(), 0);
 	}
 
+	public ScMutableAddress GetAddress(byte[] key) {
+		return new ScMutableAddress(objId, Host.GetKey(key));
+	}
+
+	public ScMutableAddressArray GetAddressArray(byte[] key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableAddressArray(arrId);
+	}
+
 	public ScMutableBytes GetBytes(byte[] key) {
 		return new ScMutableBytes(objId, Host.GetKey(key));
 	}
@@ -23,6 +32,15 @@ public class ScMutableKeyMap {
 	public ScMutableBytesArray GetBytesArray(byte[] key) {
 		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
 		return new ScMutableBytesArray(arrId);
+	}
+
+	public ScMutableColor GetColor(byte[] key) {
+		return new ScMutableColor(objId, Host.GetKey(key));
+	}
+
+	public ScMutableColorArray GetColorArray(byte[] key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableColorArray(arrId);
 	}
 
 	public ScMutableInt GetInt(byte[] key) {

@@ -173,10 +173,10 @@ func (ctx ScUtility) Base58Decode(value string) []byte {
 
 func (ctx ScUtility) Base58Encode(value []byte) string {
 	//TODO atomic set/get
-	decode := ctx.utility.GetBytes("base58")
-	encode := ctx.utility.GetString("base58")
-	decode.SetValue(value)
-	return encode.Value()
+	decode := ctx.utility.GetString("base58")
+	encode := ctx.utility.GetBytes("base58")
+	encode.SetValue(value)
+	return decode.Value()
 }
 
 func (ctx ScUtility) Hash(value []byte) []byte {

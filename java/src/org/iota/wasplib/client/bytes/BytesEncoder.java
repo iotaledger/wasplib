@@ -1,5 +1,8 @@
 package org.iota.wasplib.client.bytes;
 
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +14,10 @@ public class BytesEncoder {
 		data = new ByteArrayOutputStream();
 	}
 
+	public BytesEncoder Address(ScAddress value) {
+		return Bytes(value.toBytes());
+	}
+
 	public BytesEncoder Bytes(byte[] value) {
 		Int(value.length);
 		try {
@@ -18,6 +25,10 @@ public class BytesEncoder {
 		} catch (IOException e) {
 		}
 		return this;
+	}
+
+	public BytesEncoder Color(ScColor value) {
+		return Bytes(value.toBytes());
 	}
 
 	public byte[] Data() {

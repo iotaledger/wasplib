@@ -1,6 +1,8 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 
 public class ScRequest {
@@ -10,20 +12,20 @@ public class ScRequest {
 		this.request = request;
 	}
 
-	public String Address() {
-		return request.GetString("address").Value();
+	public ScAddress Address() {
+		return request.GetAddress("address").Value();
 	}
 
 	public long Balance(ScColor color) {
-		return request.GetMap("balance").GetInt(color.toBytes()).Value();
+		return request.GetKeyMap("balance").GetInt(color.toBytes()).Value();
 	}
 
-	public ScColors Colors() {
-		return new ScColors(request.GetStringArray("colors"));
+	public ScImmutableColorArray Colors() {
+		return request.GetColorArray("colors");
 	}
 
 	public ScColor MintedColor() {
-		return new ScColor(request.GetString("hash").Value());
+		return request.GetColor("hash").Value();
 	}
 
 	public String Id() {

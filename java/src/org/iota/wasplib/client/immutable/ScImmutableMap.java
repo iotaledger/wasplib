@@ -11,6 +11,15 @@ public class ScImmutableMap {
 		this.objId = objId;
 	}
 
+	public ScImmutableAddress GetAddress(String key) {
+		return new ScImmutableAddress(objId, Host.GetKeyId(key));
+	}
+
+	public ScImmutableAddressArray GetAddressArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScImmutableAddressArray(arrId);
+	}
+
 	public ScImmutableBytes GetBytes(String key) {
 		return new ScImmutableBytes(objId, Host.GetKeyId(key));
 	}
@@ -18,6 +27,15 @@ public class ScImmutableMap {
 	public ScImmutableBytesArray GetBytesArray(String key) {
 		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
 		return new ScImmutableBytesArray(arrId);
+	}
+
+	public ScImmutableColor GetColor(String key) {
+		return new ScImmutableColor(objId, Host.GetKeyId(key));
+	}
+
+	public ScImmutableColorArray GetColorArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScImmutableColorArray(arrId);
 	}
 
 	public ScImmutableInt GetInt(String key) {

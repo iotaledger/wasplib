@@ -1,12 +1,13 @@
 package org.iota.wasplib.client.immutable;
 
 import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 
-public class ScImmutableBytes {
+public class ScImmutableAddress {
 	int objId;
 	int keyId;
 
-	public ScImmutableBytes(int objId, int keyId) {
+	public ScImmutableAddress(int objId, int keyId) {
 		this.objId = objId;
 		this.keyId = keyId;
 	}
@@ -15,7 +16,7 @@ public class ScImmutableBytes {
 		return Host.Exists(objId, keyId);
 	}
 
-	public byte[] Value() {
-		return Host.GetBytes(objId, keyId);
+	public ScAddress Value() {
+		return new ScAddress(Host.GetBytes(objId, keyId));
 	}
 }

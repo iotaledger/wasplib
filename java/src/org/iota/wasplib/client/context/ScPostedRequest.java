@@ -1,5 +1,6 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScPostedRequest {
@@ -13,8 +14,8 @@ public class ScPostedRequest {
 		request.GetInt("code").SetValue(code);
 	}
 
-	public void Contract(String contract) {
-		request.GetString("contract").SetValue(contract);
+	public void Contract(ScAddress contract) {
+		request.GetAddress("contract").SetValue(contract);
 	}
 
 	public void Delay(long delay) {

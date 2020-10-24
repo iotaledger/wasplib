@@ -38,9 +38,13 @@ public class Host {
 		ctx.Log("Doing nothing as requested. Oh, wait...");
 	}
 
+	public static boolean Exists(int objId, int keyId) {
+		return hostGetBytes(objId, keyId, null, 0) >= 0;
+	}
+
 	public static byte[] GetBytes(int objId, int keyId) {
 		int size = hostGetBytes(objId, keyId, null, 0);
-		if (size == 0) {
+		if (size <= 0) {
 			return null;
 		}
 		byte[] bytes = new byte[size];
