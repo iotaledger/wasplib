@@ -31,7 +31,7 @@ pub fn onLoad() {
 pub fn placeBet() {
     let sc = ScContext::new();
     let request = sc.request();
-    let amount = request.balance(&ScColor::iota());
+    let amount = request.balance(&ScColor::IOTA);
     if amount == 0 {
         sc.log("Empty bet...");
         return;
@@ -123,7 +123,7 @@ pub fn payWinners() {
     if winners.is_empty() {
         sc.log("Nobody wins!");
         // compact separate UTXOs into a single one
-        sc.transfer(&sc_address, &ScColor::iota(), total_bet_amount);
+        sc.transfer(&sc_address, &ScColor::IOTA, total_bet_amount);
         return;
     }
 
@@ -134,7 +134,7 @@ pub fn payWinners() {
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {
             total_payout += payout;
-            sc.transfer(&bet.sender, &ScColor::iota(), payout);
+            sc.transfer(&bet.sender, &ScColor::IOTA, payout);
         }
         let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender.to_string();
         sc.log(&text);
@@ -145,7 +145,7 @@ pub fn payWinners() {
         let remainder = total_bet_amount - total_payout;
         let text = "Remainder is ".to_string() + &remainder.to_string();
         sc.log(&text);
-        sc.transfer(&sc_address, &ScColor::iota(), remainder);
+        sc.transfer(&sc_address, &ScColor::IOTA, remainder);
     }
 }
 

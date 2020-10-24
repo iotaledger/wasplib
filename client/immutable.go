@@ -10,7 +10,7 @@ func (o ScImmutableAddress) Exists() bool {
 }
 
 func (o ScImmutableAddress) Value() *ScAddress {
-	return NewScAddress(GetString(o.objId, o.keyId))
+	return NewScAddress(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -68,7 +68,7 @@ func (o ScImmutableColor) Exists() bool {
 }
 
 func (o ScImmutableColor) Value() *ScColor {
-	return NewScColor(GetString(o.objId, o.keyId))
+	return NewScColor(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -93,6 +93,7 @@ type ScImmutableInt struct {
 }
 
 //TODO exists?
+
 func (o ScImmutableInt) Value() int64 {
 	return GetInt(o.objId, o.keyId)
 }

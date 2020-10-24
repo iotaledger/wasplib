@@ -14,7 +14,7 @@ pub struct ScAccount {
 
 impl ScAccount {
     pub fn balance(&self, color: &ScColor) -> i64 {
-        self.account.get_map("balance").get_int(color.to_bytes()).value()
+        self.account.get_key_map("balance").get_int(color.to_bytes()).value()
     }
 
     pub fn colors(&self) -> ScImmutableColorArray {
@@ -135,19 +135,19 @@ impl ScRequest {
     }
 
     pub fn balance(&self, color: &ScColor) -> i64 {
-        self.request.get_map("balance").get_int(color.to_bytes()).value()
+        self.request.get_key_map("balance").get_int(color.to_bytes()).value()
     }
 
     pub fn colors(&self) -> ScImmutableColorArray {
         self.request.get_color_array("colors")
     }
 
-    pub fn minted_color(&self) -> ScColor {
-        self.request.get_color("hash").value()
-    }
-
     pub fn id(&self) -> String {
         self.request.get_string("id").value()
+    }
+
+    pub fn minted_color(&self) -> ScColor {
+        self.request.get_color("hash").value()
     }
 
     pub fn params(&self) -> ScImmutableMap {
@@ -186,7 +186,7 @@ pub struct ScUtility {
 }
 
 impl ScUtility {
-    pub fn base58decode(&self, value: &str) -> Vec<u8> {
+    pub fn base58_decode(&self, value: &str) -> Vec<u8> {
         //TODO atomic set/get
         let decode = self.utility.get_string("base58");
         decode.set_value(value);
@@ -194,7 +194,7 @@ impl ScUtility {
         encode.value()
     }
 
-    pub fn base58encode(&self, value: &[u8]) -> String {
+    pub fn base58_encode(&self, value: &[u8]) -> String {
         //TODO atomic set/get
         let encode = self.utility.get_bytes("base58");
         encode.set_value(value);
@@ -272,6 +272,7 @@ impl ScContext {
     pub fn timestamped_log(&self, key: &str) -> ScLog {
         ScLog { log: self.root.get_map("logs").get_map(key) }
     }
+
     pub fn trace(&self, text: &str) {
         set_string(1, key_trace(), text)
     }

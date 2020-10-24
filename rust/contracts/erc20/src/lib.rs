@@ -48,7 +48,7 @@ pub fn initSC() {
     let supply = supplyParam.value();
     supplyState.set_value(supply);
     let owner = sc.contract().owner();
-    state.get_map(VAR_BALANCES).get_int(&owner.to_bytes()).set_value(supply);
+    state.get_key_map(VAR_BALANCES).get_int(owner.to_bytes()).set_value(supply);
 
     sc.log(&("initSC.success. Supply = ".to_string() + &supply.to_string()));
     sc.log(&("initSC.success. Owner = ".to_string() + &owner.to_string()));
@@ -83,7 +83,7 @@ pub fn approve() {
     let state = sc.state();
     let request = sc.request();
     let sender = request.address();
-    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&sender.to_bytes());
+    let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(sender.to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
 
     let params = request.params();
@@ -121,7 +121,7 @@ pub fn transfer_from() {
     let source_addr = params.get_address(VAR_SOURCE_ADDRESS);
     let target_addr = params.get_address(VAR_TARGET_ADDRESS);
 
-    let delegations_data = state.get_map(VAR_APPROVALS).get_bytes(&source_addr.value().to_bytes());
+    let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(source_addr.value().to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
 
     if !sub_delegation(&mut delegations, sender, amount.value()) {
@@ -138,12 +138,12 @@ pub fn transfer_from() {
 
 fn transfer_internal(source_addr: &ScAddress, target_addr: &ScAddress, amount: i64) -> bool {
     let sc = ScContext::new();
-    let balances = sc.state().get_map(VAR_BALANCES);
-    let source_balance = balances.get_int(&source_addr.to_bytes());
+    let balances = sc.state().get_key_map(VAR_BALANCES);
+    let source_balance = balances.get_int(source_addr.to_bytes());
     sc.log(&("transfer_internal: source addr: = ".to_string() + &source_addr.to_string()));
     sc.log(&("transfer_internal: source balance: = ".to_string() + &source_balance.value().to_string()));
 
-    let target_balance = balances.get_int(&target_addr.to_bytes());
+    let target_balance = balances.get_int(target_addr.to_bytes());
     sc.log(&("transfer_internal: target addr: = ".to_string() + &target_addr.to_string()));
     sc.log(&("transfer_internal: target balance: = ".to_string() + &target_balance.value().to_string()));
 

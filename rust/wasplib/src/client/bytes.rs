@@ -10,7 +10,7 @@ impl BytesDecoder<'_> {
     }
 
     pub fn address(&mut self) -> ScAddress {
-        ScAddress::from_bytes(&self.string())
+        ScAddress::from_bytes(self.bytes())
     }
 
     pub fn bytes(&mut self) -> &[u8] {
@@ -24,7 +24,7 @@ impl BytesDecoder<'_> {
     }
 
     pub fn color(&mut self) -> ScColor {
-        ScColor::from_bytes(&self.string())
+        ScColor::from_bytes(self.bytes())
     }
 
     pub fn int(&mut self) -> i64 {
@@ -70,7 +70,7 @@ impl BytesEncoder {
     }
 
     pub fn address(&mut self, value: &ScAddress) -> &BytesEncoder {
-        self.string(&value.to_bytes());
+        self.bytes(value.to_bytes());
         self
     }
 
@@ -81,7 +81,7 @@ impl BytesEncoder {
     }
 
     pub fn color(&mut self, value: &ScColor) -> &BytesEncoder {
-        self.string(&value.to_bytes());
+        self.bytes(value.to_bytes());
         self
     }
 

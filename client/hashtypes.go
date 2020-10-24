@@ -1,21 +1,20 @@
 package client
 
 type ScAddress struct {
-	address string
+	address [33]byte
 }
 
-func NewScAddress(bytes string) *ScAddress {
-	return &ScAddress{address: bytes}
-	//if len(bytes) != 33 {
-	//	panic("address should be 33 bytes")
-	//}
-	//a := &ScAddress{}
-	//copy(a.address[:], bytes)
-	//return a
+func NewScAddress(bytes []byte) *ScAddress {
+	if len(bytes) != 33 {
+		panic("address should be 33 bytes")
+	}
+	a := &ScAddress{}
+	copy(a.address[:], bytes)
+	return a
 }
 
-func (a *ScAddress) Bytes() string {
-	return a.address
+func (a *ScAddress) Bytes() []byte {
+	return a.address[:]
 }
 
 func (a *ScAddress) Equals(other *ScAddress) bool {
@@ -23,39 +22,35 @@ func (a *ScAddress) Equals(other *ScAddress) bool {
 }
 
 func (a *ScAddress) String() string {
-	return a.address
-	//return Encode58(a.address[:])
+	return base58Encode(a.address[:])
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScColor struct {
-	color string
+	color [32]byte
 }
 
 var IOTA = &ScColor{}
 var MINT = &ScColor{}
 
 func init() {
-	IOTA.color = "iota"
-	MINT.color = "new"
-	//for i := range MINT.color {
-	//	MINT.color[i] = 0xff
-	//}
+	for i := range MINT.color {
+		MINT.color[i] = 0xff
+	}
 }
 
-func NewScColor(bytes string) *ScColor {
-	return &ScColor{color: bytes}
-	//if len(bytes) != 32 {
-	//	panic("color should be 32 bytes")
-	//}
-	//a := &ScColor{}
-	//copy(a.color[:], bytes)
-	//return a
+func NewScColor(bytes []byte) *ScColor {
+	if len(bytes) != 32 {
+		panic("color should be 32 bytes")
+	}
+	a := &ScColor{}
+	copy(a.color[:], bytes)
+	return a
 }
 
-func (c *ScColor) Bytes() string {
-	return c.color
+func (c *ScColor) Bytes() []byte {
+	return c.color[:]
 }
 
 func (c *ScColor) Equals(other *ScColor) bool {
@@ -63,8 +58,7 @@ func (c *ScColor) Equals(other *ScColor) bool {
 }
 
 func (c *ScColor) String() string {
-	return c.color
-	//return Encode58(c.color[:])
+	return base58Encode(c.color[:])
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -127,4 +121,8 @@ func (t *ScTransactionId) Equals(other *ScTransactionId) bool {
 func (t *ScTransactionId) String() string {
 	return t.id
 	//return Encode58(t.id[:])
+}
+
+func base58Encode(bytes []byte) string {
+	return NewScContext().Utility().Base58Encode(bytes)
 }

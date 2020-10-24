@@ -130,7 +130,7 @@ func startAuction() {
 		description = description[:maxDescriptionLength] + "[...]"
 	}
 
-	auctions := state.GetMap("auctions")
+	auctions := state.GetKeyMap("auctions")
 	currentAuction := auctions.GetBytes(color.Bytes())
 	if len(currentAuction.Value()) != 0 {
 		refund(deposit/2, "Auction for this token already exists...")
@@ -173,7 +173,7 @@ func finalizeAuction() {
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetMap("auctions")
+	auctions := state.GetKeyMap("auctions")
 	currentAuction := auctions.GetBytes(color.Bytes())
 	bytes := currentAuction.Value()
 	if len(bytes) == 0 {
@@ -237,7 +237,7 @@ func placeBid() {
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetMap("auctions")
+	auctions := state.GetKeyMap("auctions")
 	currentAuction := auctions.GetBytes(color.Bytes())
 	bytes := currentAuction.Value()
 	if len(bytes) == 0 {

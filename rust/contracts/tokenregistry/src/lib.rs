@@ -30,7 +30,7 @@ pub fn mintSupply() {
     let request = sc.request();
     let color = request.minted_color();
     let state = sc.state();
-    let registry = state.get_map("registry").get_bytes(&color.to_bytes());
+    let registry = state.get_key_map("registry").get_bytes(color.to_bytes());
     if registry.exists() {
         sc.log("TokenRegistry: Color already exists");
         return;

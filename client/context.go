@@ -5,7 +5,7 @@ type ScAccount struct {
 }
 
 func (ctx ScAccount) Balance(color *ScColor) int64 {
-	return ctx.account.GetMap("balance").GetInt(color.Bytes()).Value()
+	return ctx.account.GetKeyMap("balance").GetInt(color.Bytes()).Value()
 }
 
 func (ctx ScAccount) Colors() ScImmutableColorArray {
@@ -116,7 +116,7 @@ func (ctx ScRequest) Address() *ScAddress {
 }
 
 func (ctx ScRequest) Balance(color *ScColor) int64 {
-	return ctx.request.GetMap("balance").GetInt(color.Bytes()).Value()
+	return ctx.request.GetKeyMap("balance").GetInt(color.Bytes()).Value()
 }
 
 func (ctx ScRequest) Colors() ScImmutableColorArray {

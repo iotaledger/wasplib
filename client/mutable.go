@@ -10,11 +10,11 @@ func (o ScMutableAddress) Exists() bool {
 }
 
 func (o ScMutableAddress) SetValue(value *ScAddress) {
-	SetString(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, value.Bytes())
 }
 
 func (o ScMutableAddress) Value() *ScAddress {
-	return NewScAddress(GetString(o.objId, o.keyId))
+	return NewScAddress(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -92,11 +92,11 @@ func (o ScMutableColor) Exists() bool {
 }
 
 func (o ScMutableColor) SetValue(value *ScColor) {
-	SetString(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, value.Bytes())
 }
 
 func (o ScMutableColor) Value() *ScColor {
-	return NewScColor(GetString(o.objId, o.keyId))
+	return NewScColor(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -127,6 +127,8 @@ type ScMutableInt struct {
 	objId int32
 	keyId int32
 }
+
+//TODO exists?
 
 func (o ScMutableInt) SetValue(value int64) {
 	SetInt(o.objId, o.keyId, value)

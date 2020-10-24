@@ -10,11 +10,6 @@ pub const TYPE_MAP_ARRAY: i32 = 5;
 pub const TYPE_STRING: i32 = 6;
 pub const TYPE_STRING_ARRAY: i32 = 7;
 
-// all token colors must be encoded as a 64-byte hex string,
-// except for the following two special cases:
-// default color, encoded as client.IOTA (COLOR_IOTA)
-// new color, encoded as "new" (COLOR_NEW)
-
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.
 // Any return value will be zero or empty string in that case

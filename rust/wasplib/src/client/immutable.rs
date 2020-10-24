@@ -32,7 +32,7 @@ impl ScImmutableAddress {
     }
 
     pub fn value(&self) -> ScAddress {
-        ScAddress::from_bytes(&get_string(self.obj_id, self.key_id))
+        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 
@@ -118,7 +118,7 @@ impl ScImmutableColor {
     }
 
     pub fn value(&self) -> ScColor {
-        ScColor::from_bytes(&get_string(self.obj_id, self.key_id))
+        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 
@@ -306,9 +306,9 @@ impl ScImmutableMap {
         ScImmutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_key_id_map(&self, key: &str) -> ScImmutableMap {
+    pub fn get_key_map(&self, key: &str) -> ScImmutableKeyMap {
         let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
-        ScImmutableMap { obj_id: map_id }
+        ScImmutableKeyMap { obj_id: map_id }
     }
 
     pub fn get_map(&self, key: &str) -> ScImmutableMap {

@@ -33,11 +33,11 @@ impl ScMutableAddress {
     }
 
     pub fn set_value(&self, val: &ScAddress) {
-        set_string(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, val.to_bytes());
     }
 
     pub fn value(&self) -> ScAddress {
-        ScAddress::from_bytes(&get_string(self.obj_id, self.key_id))
+        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 
@@ -143,11 +143,11 @@ impl ScMutableColor {
     }
 
     pub fn set_value(&self, val: &ScColor) {
-        set_string(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, val.to_bytes());
     }
 
     pub fn value(&self) -> ScColor {
-        ScColor::from_bytes(&get_string(self.obj_id, self.key_id))
+        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 
@@ -363,9 +363,9 @@ impl ScMutableMap {
         ScMutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_key_id_map(&self, key: &str) -> ScMutableMap {
+    pub fn get_key_map(&self, key: &str) -> ScMutableKeyMap {
         let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
-        ScMutableMap { obj_id: map_id }
+        ScMutableKeyMap { obj_id: map_id }
     }
 
     pub fn get_map(&self, key: &str) -> ScMutableMap {

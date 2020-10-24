@@ -9,7 +9,7 @@ func NewBytesDecoder(data []byte) *BytesDecoder {
 }
 
 func (d *BytesDecoder) Address() *ScAddress {
-	return NewScAddress(d.String())
+	return NewScAddress(d.Bytes())
 }
 
 func (d *BytesDecoder) Bytes() []byte {
@@ -23,7 +23,7 @@ func (d *BytesDecoder) Bytes() []byte {
 }
 
 func (d *BytesDecoder) Color() *ScColor {
-	return NewScColor(d.String())
+	return NewScColor(d.Bytes())
 }
 
 func (d *BytesDecoder) Int() int64 {
@@ -67,7 +67,7 @@ func NewBytesEncoder() *BytesEncoder {
 }
 
 func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
-	return e.String(value.Bytes())
+	return e.Bytes(value.Bytes())
 }
 
 func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
@@ -77,7 +77,7 @@ func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 }
 
 func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
-	return e.String(value.Bytes())
+	return e.Bytes(value.Bytes())
 }
 
 func (e *BytesEncoder) Data() []byte {

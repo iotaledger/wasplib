@@ -43,7 +43,7 @@ func initSC() {
 	}
 	supply := supplyParam.Value()
 	supplyState.SetValue(supply)
-	state.GetMap(varBalances).GetInt(sc.Contract().Owner().Bytes()).SetValue(supply)
+	state.GetKeyMap(varBalances).GetInt(sc.Contract().Owner().Bytes()).SetValue(supply)
 
 	sc.Log("initSC: success")
 }
@@ -55,7 +55,7 @@ func transfer() {
 
 	state := sc.State()
 	request := sc.Request()
-	balances := state.GetMap(varBalances)
+	balances := state.GetKeyMap(varBalances)
 
 	sender := request.Address()
 
@@ -75,10 +75,10 @@ func transfer() {
 		sc.Log("transfer.fail: not enough balance")
 		return
 	}
-	targetAddr := params.GetString(varTargetAddress)
+	targetAddr := params.GetAddress(varTargetAddress)
 	// TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
-	targetBalance := balances.GetInt(targetAddr.Value())
+	targetBalance := balances.GetInt(targetAddr.Value().Bytes())
 	targetBalance.SetValue(targetBalance.Value() + amount.Value())
 	sourceBalance.SetValue(sourceBalance.Value() - amount.Value())
 
