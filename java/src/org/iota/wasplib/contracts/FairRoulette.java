@@ -70,7 +70,7 @@ public class FairRoulette {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		ScAddress scAddress = sc.Contract().Address();
-		if (!sc.Request().Address().equals(scAddress)) {
+		if (!sc.Request().From(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -78,7 +78,8 @@ public class FairRoulette {
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
-		for (int i = 0; i < bets.Length(); i++) {
+		int nrBets = bets.Length();
+		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = bets.GetBytes(i).Value();
 			lockedBets.GetBytes(i).SetValue(bytes);
 		}
@@ -92,7 +93,7 @@ public class FairRoulette {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		ScAddress scAddress = sc.Contract().Address();
-		if (!sc.Request().Address().equals(scAddress)) {
+		if (!sc.Request().From(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -105,7 +106,8 @@ public class FairRoulette {
 		long totalWinAmount = 0;
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
 		ArrayList<BetInfo> winners = new ArrayList<>();
-		for (int i = 0; i < lockedBets.Length(); i++) {
+		int nrBets = lockedBets.Length();
+		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = lockedBets.GetBytes(i).Value();
 			BetInfo bet = decodeBetInfo(bytes);
 			totalBetAmount += bet.amount;
@@ -147,7 +149,7 @@ public class FairRoulette {
 	public static void playPeriod() {
 		// can only be sent by SC owner
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
+		if (!sc.Request().From(sc.Contract().Owner())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}

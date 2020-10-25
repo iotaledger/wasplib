@@ -24,6 +24,10 @@ public class ScRequest {
 		return request.GetColorArray("colors");
 	}
 
+	public Boolean From(ScAddress originator) {
+		return From(originator);
+	}
+
 	public ScColor MintedColor() {
 		return request.GetColor("hash").Value();
 	}

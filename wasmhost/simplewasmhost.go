@@ -2,6 +2,7 @@ package wasmhost
 
 import (
 	"fmt"
+	"sort"
 )
 
 var EnableImmutableChecks = true
@@ -9,6 +10,17 @@ var EnableImmutableChecks = true
 type SimpleWasmHost struct {
 	WasmHost
 	ExportsId int32
+}
+
+func NewSimpleWasmHost() (*SimpleWasmHost, error) {
+	host := &SimpleWasmHost{}
+	host.useBase58Keys = true
+	err := host.Init(NewNullObject(host), NewHostMap(host), nil, host)
+	if err != nil {
+		return nil, err
+	}
+	host.ExportsId = host.GetKeyId("exports")
+	return host, nil
 }
 
 func (host *SimpleWasmHost) ClearData() {
@@ -59,7 +71,8 @@ func (host *SimpleWasmHost) CompareMapData(key string, values map[string]interfa
 }
 
 func (host *SimpleWasmHost) CompareSubMapData(mapObject HostObject, values map[string]interface{}) bool {
-	for key, field := range values {
+	for _, key := range SortedKeys(values) {
+		field := values[key]
 		switch t := field.(type) {
 		case string:
 			value := mapObject.GetString(host.GetKeyId(key))
@@ -97,7 +110,9 @@ func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int
 }
 
 func (host *SimpleWasmHost) GetKeyId(key string) int32 {
-	return host.WasmHost.GetKeyId([]byte(key))
+	keyId := host.WasmHost.getKeyId([]byte(key))
+	host.Trace("GetKeyId '%s'=k%d", key, keyId)
+	return keyId
 }
 
 func (host *SimpleWasmHost) LoadData(jsonData *JsonDataModel) {
@@ -112,8 +127,28 @@ func (host *SimpleWasmHost) LoadMapData(key string, values map[string]interface{
 	host.LoadSubMapData(mapObject, values)
 }
 
-func (host *SimpleWasmHost) LoadSubMapData(mapObject HostObject, values map[string]interface{}) {
+func (host *SimpleWasmHost) LoadSubArrayData(arrayObject HostObject, values []interface{}) {
 	for key, field := range values {
+		switch t := field.(type) {
+		case string:
+			arrayObject.SetString(int32(key), field.(string))
+		//case float64:
+		//	mapObject.SetInt(host.GetKeyId(key), int64(field.(float64)))
+		//case map[string]interface{}:
+		//	subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
+		//	host.LoadSubMapData(subMapObject, field.(map[string]interface{}))
+		//case []interface{}:
+		//	subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_STRING_ARRAY)
+		//	host.LoadSubArrayData(subMapObject, field.([]interface{}))
+		default:
+			panic(fmt.Sprintf("Invalid type: %T", t))
+		}
+	}
+}
+
+func (host *SimpleWasmHost) LoadSubMapData(mapObject HostObject, values map[string]interface{}) {
+	for _, key := range SortedKeys(values) {
+		field := values[key]
 		switch t := field.(type) {
 		case string:
 			mapObject.SetString(host.GetKeyId(key), field.(string))
@@ -122,6 +157,9 @@ func (host *SimpleWasmHost) LoadSubMapData(mapObject HostObject, values map[stri
 		case map[string]interface{}:
 			subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
 			host.LoadSubMapData(subMapObject, field.(map[string]interface{}))
+		case []interface{}:
+			subArrayObject := host.FindSubObject(mapObject, key, OBJTYPE_STRING_ARRAY)
+			host.LoadSubArrayData(subArrayObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", t))
 		}
@@ -133,7 +171,7 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	case KeyTraceHost:
 		//fmt.Println(text)
 	case KeyTrace:
-		//fmt.Println(text)
+		fmt.Println(text)
 	case KeyLog:
 		fmt.Println(text)
 	case KeyWarning:
@@ -170,6 +208,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		return
 	}
 
+	scAddress := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address"))
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
@@ -178,7 +217,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	for i < postedRequests.GetInt(KeyLength) {
 		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
 		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
-		if contractAddress != host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address")) {
+		if contractAddress != scAddress {
 			fmt.Printf("FAIL: Expected contract address: %s\n", contractAddress)
 			return
 		}
@@ -188,6 +227,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 			return
 		}
 
+		request.SetString(host.GetKeyId("address"), scAddress)
 		request.SetString(host.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
 		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
@@ -204,4 +244,15 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	if host.CompareData(jsonData.Expect) {
 		fmt.Printf("PASS\n")
 	}
+}
+
+func SortedKeys(values map[string]interface{}) []string {
+	keys := make([]string, len(values))
+	index := 0
+	for key, _ := range values {
+		keys[index] = key
+		index++
+	}
+	sort.Strings(keys)
+	return keys
 }

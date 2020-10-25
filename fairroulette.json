@@ -5,19 +5,19 @@
         "name": "fairroulette",
         "description": "Simple gambling app",
         "id": "fairrouletteId",
-        "address": "fairrouletteAddress",
-        "color": "fairrouletteColor",
-        "owner": "fairrouletteOwner"
+        "address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH",
+        "color": "YEGAxog9gxiGXxo538aAQxq55XAebpFfwU72ZUxmSHm",
+        "owner": "tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq"
       },
       "account": {
-        "colors": ["iota"],
-        "balance": {"iota": 100}
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100}
       },
       "request": {
         "timestamp": 20200928112900,
-        "id": "[0]transaction1",
-        "hash": "transaction1",
-        "address": "senderAddress"
+        "id": "2K3n5t4wSaF5mj27Tw9vStXWLWyRjjiH5Cp3CFLpKVCr1d",
+        "hash": "4uQeVj5tqViQh7yWWGStvkEG1Zmhx6uasJtWCJziofM",
+        "address": "2V9arUwkzyEgqrQv68stUy71cFUDcj3MURFmdJc8qamEP"
       }
     }
   },
@@ -26,8 +26,8 @@
       "setup": "fairroulette",
       "request": {
         "function": "placeBet",
-        "colors": ["iota"],
-        "balance": {"iota": 100},
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
         "params": {
           "color": 3
         }
@@ -37,11 +37,11 @@
           "counter": 1
         },
         "account": {
-          "colors": ["iota"],
-          "balance": {"iota": 200}
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
         },
         "logs": [],
-        "postedRequests": [{"contract": "fairrouletteAddress", "function": "lockBets", "delay": 120}],
+        "postedRequests": [{"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
     }

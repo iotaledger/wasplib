@@ -58,9 +58,9 @@ func donate() {
 //export withdraw
 func withdraw() {
 	sc := client.NewScContext()
-	owner := sc.Contract().Owner()
+	scOwner := sc.Contract().Owner()
 	request := sc.Request()
-	if request.Address() != owner {
+	if !request.From(scOwner) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -76,7 +76,7 @@ func withdraw() {
 		return
 	}
 
-	sc.Transfer(owner, client.IOTA, withdrawAmount)
+	sc.Transfer(scOwner, client.IOTA, withdrawAmount)
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {

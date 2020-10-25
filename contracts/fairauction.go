@@ -160,7 +160,7 @@ func finalizeAuction() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
 	request := sc.Request()
-	if request.Address() != sc.Contract().Address() {
+	if !request.From(sc.Contract().Address()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -272,7 +272,7 @@ func setOwnerMargin() {
 	// can only be sent by SC owner
 	sc := client.NewScContext()
 	request := sc.Request()
-	if request.Address() != sc.Contract().Owner() {
+	if !request.From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}

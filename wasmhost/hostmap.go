@@ -1,5 +1,9 @@
 package wasmhost
 
+import (
+	"github.com/mr-tron/base58/base58"
+)
+
 type HostMap struct {
 	host      *SimpleWasmHost
 	fields    map[int32]interface{}
@@ -15,15 +19,22 @@ func NewHostMap(host *SimpleWasmHost) *HostMap {
 	}
 }
 
+func (m *HostMap) Exists(keyId int32) bool {
+	_, ok := m.fields[keyId]
+	return ok
+}
+
 func (m *HostMap) GetBytes(keyId int32) []byte {
-	if !m.valid(keyId, OBJTYPE_BYTES) {
+	value := m.GetString(keyId)
+	if value == "" {
 		return []byte(nil)
 	}
-	value, ok := m.fields[keyId]
-	if !ok {
+	bytes, err := base58.Decode(value)
+	if err != nil {
+		m.host.SetError("Map.GetBytes: " + err.Error())
 		return []byte(nil)
 	}
-	return value.([]byte)
+	return bytes
 }
 
 func (m *HostMap) GetInt(keyId int32) int64 {
@@ -43,10 +54,6 @@ func (m *HostMap) GetInt(keyId int32) int64 {
 	return value.(int64)
 }
 
-func (m *HostMap) GetLength() int32 {
-	return int32(len(m.fields))
-}
-
 func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	if !m.valid(keyId, typeId) {
 		return 0
@@ -59,7 +66,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	var o HostObject
 	switch typeId {
 	case OBJTYPE_BYTES_ARRAY:
-		o = NewHostArray(m.host, OBJTYPE_BYTES)
+		o = NewHostArray(m.host, OBJTYPE_STRING)
 	case OBJTYPE_INT_ARRAY:
 		o = NewHostArray(m.host, OBJTYPE_INT)
 	case OBJTYPE_MAP:
@@ -93,14 +100,7 @@ func (m *HostMap) GetString(keyId int32) string {
 }
 
 func (m *HostMap) SetBytes(keyId int32, value []byte) {
-	if EnableImmutableChecks && m.immutable {
-		m.host.SetError("Map.SetBytes: Immutable")
-		return
-	}
-	if !m.valid(keyId, OBJTYPE_BYTES) {
-		return
-	}
-	m.fields[keyId] = value
+	m.SetString(keyId, base58.Encode(value))
 }
 
 func (m *HostMap) SetInt(keyId int32, value int64) {
@@ -115,8 +115,11 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 				OBJTYPE_BYTES_ARRAY,
 				OBJTYPE_INT_ARRAY,
 				OBJTYPE_STRING_ARRAY:
-				// tell object to clear itself
-				m.host.SetInt(m.fields[k].(int32), keyId, 0)
+				field, ok := m.fields[k]
+				if ok {
+					// tell object to clear itself
+					m.host.SetInt(field.(int32), keyId, 0)
+				}
 				//TODO move to pool for reuse of transfers
 			}
 		}

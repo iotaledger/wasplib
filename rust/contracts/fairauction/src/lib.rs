@@ -161,7 +161,7 @@ pub fn finalizeAuction() {
     // can only be sent by SC itself
     let sc = ScContext::new();
     let request = sc.request();
-    if request.address() != sc.contract().address() {
+    if !request.from(&sc.contract().address()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -275,7 +275,7 @@ pub fn setOwnerMargin() {
     // can only be sent by SC owner
     let sc = ScContext::new();
     let request = sc.request();
-    if request.address() != sc.contract().owner() {
+    if !request.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }

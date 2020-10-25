@@ -72,7 +72,7 @@ pub fn lockBets() {
     // can only be sent by SC itself
     let sc = ScContext::new();
     let sc_address = sc.contract().address();
-    if sc.request().address() != sc_address {
+    if !sc.request().from(&sc_address) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -81,7 +81,8 @@ pub fn lockBets() {
     let state = sc.state();
     let bets = state.get_bytes_array("bets");
     let locked_bets = state.get_bytes_array("lockedBets");
-    for i in 0..bets.length() {
+    let nrBets = bets.length();
+    for i in 0..nrBets {
         let bytes = bets.get_bytes(i).value();
         locked_bets.get_bytes(i).set_value(&bytes);
     }
@@ -95,7 +96,7 @@ pub fn payWinners() {
     // can only be sent by SC itself
     let sc = ScContext::new();
     let sc_address = sc.contract().address();
-    if sc.request().address() != sc_address {
+    if !sc.request().from(&sc_address) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -109,7 +110,8 @@ pub fn payWinners() {
     let mut total_win_amount = 0_i64;
     let locked_bets = state.get_bytes_array("lockedBets");
     let mut winners: Vec<BetInfo> = Vec::new();
-    for i in 0..locked_bets.length() {
+    let nrBets = locked_bets.length();
+    for i in 0..nrBets {
         let bytes = locked_bets.get_bytes(i).value();
         let bet = decodeBetInfo(&bytes);
         total_bet_amount += bet.amount;
@@ -154,7 +156,7 @@ pub fn playPeriod() {
     // can only be sent by SC owner
     let sc = ScContext::new();
     let request = sc.request();
-    if request.address() != sc.contract().owner() {
+    if !request.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }

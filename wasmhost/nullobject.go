@@ -8,6 +8,11 @@ func NewNullObject(host *SimpleWasmHost) HostObject {
 	return &NullObject{host: host}
 }
 
+func (n *NullObject) Exists(keyId int32) bool {
+	n.host.SetError("Null.Exists")
+	return false
+}
+
 func (n *NullObject) GetBytes(keyId int32) []byte {
 	n.host.SetError("Null.GetBytes")
 	return nil

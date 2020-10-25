@@ -60,12 +60,16 @@ pub fn get_int(obj_id: i32, key_id: i32) -> i64 {
 
 pub fn get_key(bytes: &[u8]) -> i32 {
     unsafe {
-        hostGetKeyId(bytes.as_ptr(), bytes.len() as i32)
+        let size = bytes.len() as i32;
+        hostGetKeyId(bytes.as_ptr(), -size - 1)
     }
 }
 
 pub fn get_key_id(key: &str) -> i32 {
-    get_key(key.as_bytes())
+    let bytes = key.as_bytes();
+    unsafe {
+        hostGetKeyId(bytes.as_ptr(), bytes.len() as i32)
+    }
 }
 
 pub fn get_object_id(obj_id: i32, key_id: i32, type_id: i32) -> i32 {

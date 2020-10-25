@@ -50,9 +50,9 @@ public class DonateWithFeedback {
 	//export withdraw
 	public static void withdraw() {
 		ScContext sc = new ScContext();
-		ScAddress owner = sc.Contract().Owner();
+		ScAddress scOwner = sc.Contract().Owner();
 		ScRequest request = sc.Request();
-		if (!request.Address().equals(owner)) {
+		if (!request.From(scOwner)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -68,7 +68,7 @@ public class DonateWithFeedback {
 			return;
 		}
 
-		sc.Transfer(owner, ScColor.IOTA, withdrawAmount);
+		sc.Transfer(scOwner, ScColor.IOTA, withdrawAmount);
 	}
 
 	//export transferOwnership

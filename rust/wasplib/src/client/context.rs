@@ -142,6 +142,10 @@ impl ScRequest {
         self.request.get_color_array("colors")
     }
 
+    pub fn from(&self, originator: &ScAddress) -> bool {
+        self.address() == *originator
+    }
+
     pub fn id(&self) -> String {
         self.request.get_string("id").value()
     }

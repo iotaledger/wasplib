@@ -123,6 +123,10 @@ func (ctx ScRequest) Colors() ScImmutableColorArray {
 	return ctx.request.GetColorArray("colors")
 }
 
+func (ctx ScRequest) From(originator *ScAddress) bool {
+	return ctx.Address().Equals(originator)
+}
+
 func (ctx ScRequest) Id() string {
 	return ctx.request.GetString("id").Value()
 }

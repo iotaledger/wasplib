@@ -73,17 +73,18 @@ func lockBets() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
 	scAddress := sc.Contract().Address()
-	if sc.Request().Address() != scAddress {
+	if !sc.Request().From(scAddress) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
 	state := sc.State()
-	bets := state.GetStringArray("bets")
-	lockedBets := state.GetStringArray("lockedBets")
-	for i := int32(0); i < bets.Length(); i++ {
-		bytes := bets.GetString(i).Value()
-		lockedBets.GetString(i).SetValue(bytes)
+	bets := state.GetBytesArray("bets")
+	lockedBets := state.GetBytesArray("lockedBets")
+	nrBets := bets.Length()
+	for i := int32(0); i < nrBets; i++ {
+		bytes := bets.GetBytes(i).Value()
+		lockedBets.GetBytes(i).SetValue(bytes)
 	}
 	bets.Clear()
 
@@ -95,7 +96,7 @@ func payWinners() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
 	scAddress := sc.Contract().Address()
-	if sc.Request().Address() != scAddress {
+	if !sc.Request().From(scAddress) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -108,7 +109,8 @@ func payWinners() {
 	totalWinAmount := int64(0)
 	lockedBets := state.GetBytesArray("lockedBets")
 	winners := make([]*BetInfo, 0)
-	for i := int32(0); i < lockedBets.Length(); i++ {
+	nrBets := lockedBets.Length()
+	for i := int32(0); i < nrBets; i++ {
 		bytes := lockedBets.GetBytes(i).Value()
 		bet := decodeBetInfo(bytes)
 		totalBetAmount += bet.amount
@@ -150,7 +152,7 @@ func payWinners() {
 func playPeriod() {
 	// can only be sent by SC owner
 	sc := client.NewScContext()
-	if sc.Request().Address() != sc.Contract().Owner() {
+	if !sc.Request().From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}

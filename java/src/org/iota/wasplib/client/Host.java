@@ -57,11 +57,14 @@ public class Host {
 	}
 
 	public static int GetKey(byte[] key) {
-		return hostGetKeyId(key, key.length);
+		int size = key.length;
+		return hostGetKeyId(key, -size - 1);
 	}
 
 	public static int GetKeyId(String key) {
-		return GetKey(key.getBytes(StandardCharsets.UTF_8));
+		byte[] bytes = key.getBytes(StandardCharsets.UTF_8);
+		int size = bytes.length;
+		return hostGetKeyId(bytes, size);
 	}
 
 	public static int GetObjectId(int objId, int keyId, int typeId) {

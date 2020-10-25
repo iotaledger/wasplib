@@ -27,11 +27,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			keyId := ctx.Frame[ctx.SP+1].I32
 			stringRef := ctx.Frame[ctx.SP+2].I32
 			size := ctx.Frame[ctx.SP+3].I32
-			if objId >= 0 {
-				ctx.Frame[ctx.SP].I32 = host.vmSetBytes(stringRef, size, host.GetBytes(objId, keyId))
-				return nil
-			}
-			ctx.Frame[ctx.SP].I32 = host.vmSetBytes(stringRef, size, []byte(host.GetString(-objId, keyId)))
+			ctx.Frame[ctx.SP].I32 = host.GetBytes(objId, keyId, stringRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostGetInt",
@@ -59,7 +55,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 		func(ctx *sections.HostContext) error {
 			keyRef := ctx.Frame[ctx.SP].I32
 			size := ctx.Frame[ctx.SP+1].I32
-			ctx.Frame[ctx.SP].I32 = host.GetKeyId(host.vmGetBytes(keyRef, size))
+			ctx.Frame[ctx.SP].I32 = host.GetKeyId(keyRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostGetObjectId",
@@ -80,11 +76,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			keyId := ctx.Frame[ctx.SP+1].I32
 			stringRef := ctx.Frame[ctx.SP+2].I32
 			size := ctx.Frame[ctx.SP+3].I32
-			if objId >= 0 {
-				host.SetBytes(objId, keyId, host.vmGetBytes(stringRef, size))
-				return nil
-			}
-			host.SetString(-objId, keyId, string(host.vmGetBytes(stringRef, size)))
+			host.SetBytes(objId, keyId, stringRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostSetInt",

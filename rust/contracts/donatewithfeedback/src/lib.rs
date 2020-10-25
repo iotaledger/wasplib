@@ -56,9 +56,9 @@ pub fn donate() {
 #[no_mangle]
 pub fn withdraw() {
     let sc = ScContext::new();
-    let owner = sc.contract().owner();
+    let sc_owner = sc.contract().owner();
     let request = sc.request();
-    if request.address() != owner {
+    if !request.from(&sc_owner) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -74,7 +74,7 @@ pub fn withdraw() {
         return;
     }
 
-    sc.transfer(&owner, &ScColor::IOTA, withdraw_amount);
+    sc.transfer(&sc_owner, &ScColor::IOTA, withdraw_amount);
 }
 
 fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {

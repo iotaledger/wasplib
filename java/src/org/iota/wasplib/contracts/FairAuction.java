@@ -135,7 +135,7 @@ public class FairAuction {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		if ((!request.Address().equals(sc.Contract().Address()))) {
+		if ((!request.From(sc.Contract().Address()))) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -248,7 +248,7 @@ public class FairAuction {
 	public static void setOwnerMargin() {
 		// can only be sent by SC owner
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
+		if (!sc.Request().From(sc.Contract().Owner())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
