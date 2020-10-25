@@ -39,8 +39,8 @@ pub fn incrementRepeatMany() {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
-    let mut repeats = sc.request().params().get_int("numRepeats").value();
     let state_repeats = sc.state().get_int("numRepeats");
+    let mut repeats = sc.request().params().get_int("numRepeats").value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {

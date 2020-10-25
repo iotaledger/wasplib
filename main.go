@@ -6,6 +6,7 @@ import (
 	"github.com/iotaledger/wasplib/wasmhost"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 // generate base58 strings
@@ -55,7 +56,7 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	file, err := os.Open("fairroulette.json")
+	file, err := os.Open("increment.json")
 	if err != nil {
 		panic(err)
 	}
@@ -70,7 +71,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	wasmData, err := ioutil.ReadFile("wasm/fairroulette_go.wasm")
+	wasmData, err := ioutil.ReadFile("wasm/increment_bg.wasm")
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +84,14 @@ func main() {
 		panic(err)
 	}
 
-	for name, jsonModel := range jsonTests.Tests {
-		host.RunTest(name, jsonModel, jsonTests)
+	testNames := make([]string, len(jsonTests.Tests))
+	index := 0
+	for key, _ := range jsonTests.Tests {
+		testNames[index] = key
+		index++
+	}
+	sort.Strings(testNames)
+	for _,testName := range testNames {
+		host.RunTest(testName, jsonTests.Tests[testName], jsonTests)
 	}
 }

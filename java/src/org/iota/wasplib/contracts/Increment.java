@@ -40,8 +40,8 @@ public class Increment {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		long value = counter.Value();
 		counter.SetValue(value + 1);
-		long repeats = sc.Request().Params().GetInt("numRepeats").Value();
 		ScMutableInt stateRepeats = sc.State().GetInt("numRepeats");
+		long repeats = sc.Request().Params().GetInt("numRepeats").Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {
