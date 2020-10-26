@@ -1,17 +1,13 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::{BytesDecoder, ScAddress};
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScColor;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
-    id: String,
+    id: ScTxHash,
     sender: ScAddress,
     color: i64,
     amount: i64,
@@ -47,7 +43,7 @@ pub fn placeBet() {
     }
 
     let bet = BetInfo {
-        id: request.id(),
+        id: request.tx_hash(),
         sender: request.address(),
         color,
         amount,
@@ -173,7 +169,7 @@ pub fn playPeriod() {
 fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
-        id: decoder.string(),
+        id: decoder.tx_hash(),
         sender: decoder.address(),
         amount: decoder.int(),
         color: decoder.int(),
@@ -182,7 +178,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.string(&bet.id);
+    encoder.tx_hash(&bet.id);
     encoder.address(&bet.sender);
     encoder.int(bet.amount);
     encoder.int(bet.color);

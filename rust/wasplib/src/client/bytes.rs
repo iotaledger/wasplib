@@ -56,6 +56,10 @@ impl BytesDecoder<'_> {
     pub fn string(&mut self) -> String {
         String::from_utf8_lossy(self.bytes()).to_string()
     }
+
+    pub fn tx_hash(&mut self) -> ScTxHash {
+        ScTxHash::from_bytes(self.bytes())
+    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -105,6 +109,11 @@ impl BytesEncoder {
 
     pub fn string(&mut self, value: &str) -> &BytesEncoder {
         self.bytes(value.as_bytes());
+        self
+    }
+
+    pub fn tx_hash(&mut self, value: &ScTxHash) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
         self
     }
 }

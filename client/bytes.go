@@ -56,6 +56,10 @@ func (d *BytesDecoder) String() string {
 	return string(d.Bytes())
 }
 
+func (d *BytesDecoder) TxHash() *ScTxHash {
+	return NewScTxHash(d.Bytes())
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type BytesEncoder struct {
@@ -100,4 +104,8 @@ func (e *BytesEncoder) Int(value int64) *BytesEncoder {
 
 func (e *BytesEncoder) String(value string) *BytesEncoder {
 	return e.Bytes([]byte(value))
+}
+
+func (e *BytesEncoder) TxHash(value *ScTxHash) *BytesEncoder {
+	return e.Bytes(value.Bytes())
 }

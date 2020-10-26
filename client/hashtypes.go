@@ -63,65 +63,32 @@ func (c *ScColor) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScRequestId struct {
-	id string
+type ScTxHash struct {
+	hash [32]byte
 }
 
-func NewScRequestId(bytes string) *ScRequestId {
-	return &ScRequestId{id: bytes}
-	//if len(bytes) != 34 {
-	//	panic("request id should be 34 bytes")
-	//}
-	//a := &ScRequestId{}
-	//copy(a.id[:], bytes)
-	//return a
+func NewScTxHash(bytes []byte) *ScTxHash {
+	if len(bytes) != 32 {
+		panic("tx hash should be 32 bytes")
+	}
+	t := &ScTxHash{}
+	copy(t.hash[:], bytes)
+	return t
 }
 
-func (r *ScRequestId) Bytes() string {
-	return r.id
+func (t *ScTxHash) Bytes() []byte {
+	return t.hash[:]
 }
 
-func (r *ScRequestId) Equals(other *ScRequestId) bool {
-	return r.id == other.id
+func (t *ScTxHash) Equals(other *ScTxHash) bool {
+	return t.hash == other.hash
 }
 
-func (r *ScRequestId) String() string {
-	return r.id
-	//return Encode58(r.id[:])
+func (t *ScTxHash) String() string {
+	return base58Encode(t.hash[:])
 }
-
-//func (r *ScRequestId) TransactionId() *ScTransactionId {
-//	return NewScTransactionId(r.id[:32])
-//}
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScTransactionId struct {
-	id string
-}
-
-func NewScTransactionId(bytes string) *ScTransactionId {
-	return &ScTransactionId{id: bytes}
-	//if len(bytes) != 32 {
-	//	panic("transaction id should be 33 bytes")
-	//}
-	//a := &ScTransactionId{}
-	//copy(a.id[:], bytes)
-	//return a
-}
-
-func (t *ScTransactionId) Bytes() string {
-	return t.id
-}
-
-func (t *ScTransactionId) Equals(other *ScTransactionId) bool {
-	return t.id == other.id
-}
-
-func (t *ScTransactionId) String() string {
-	return t.id
-	//return Encode58(t.id[:])
-}
 
 func base58Encode(bytes []byte) string {
 	return NewScContext().Utility().Base58Encode(bytes)

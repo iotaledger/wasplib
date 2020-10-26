@@ -6,7 +6,7 @@ import (
 
 type DonationInfo struct {
 	seq      int64
-	id       string
+	id       *client.ScTxHash
 	amount   int64
 	sender   *client.ScAddress
 	feedback string
@@ -30,7 +30,7 @@ func donate() {
 	request := sc.Request()
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
-		id:       request.Id(),
+		id:       request.TxHash(),
 		amount:   request.Balance(client.IOTA),
 		sender:   request.Address(),
 		feedback: request.Params().GetString("f").Value(),
@@ -83,7 +83,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &DonationInfo{}
 	data.seq = decoder.Int()
-	data.id = decoder.String()
+	data.id = decoder.TxHash()
 	data.amount = decoder.Int()
 	data.sender = decoder.Address()
 	data.error = decoder.String()
@@ -94,7 +94,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 func encodeDonationInfo(donation *DonationInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(donation.seq).
-		String(donation.id).
+		TxHash(donation.id).
 		Int(donation.amount).
 		Address(donation.sender).
 		String(donation.error).

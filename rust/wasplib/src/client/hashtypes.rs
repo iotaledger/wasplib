@@ -48,50 +48,25 @@ impl ScColor {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Eq, PartialEq)]
-pub struct ScRequestId {
-    id: String,
+pub struct ScTxHash {
+    address: [u8; 32],
 }
 
-impl ScRequestId {
-    pub fn from_bytes(bytes: &str) -> ScRequestId {
-        ScRequestId { id: bytes.to_string() }
-        //ScRequestId { id: bytes.try_into().expect("request id should be 34 bytes") }
+impl ScTxHash {
+    pub fn from_bytes(bytes: &[u8]) -> ScTxHash {
+        ScTxHash { address: bytes.try_into().expect("tx hash should be 32 bytes") }
     }
 
-    pub fn to_bytes(&self) -> &str {
-        &self.id
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.address
     }
 
     pub fn to_string(&self) -> String {
-        self.id.to_string()
+        base58_encode(&self.address)
     }
-
-    // pub fn transaction_id(&self) -> ScTransactionId {
-    //     ScTransactionId::from_bytes(&self.id[..32])
-    // }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-#[derive(Eq, PartialEq)]
-pub struct ScTransactionId {
-    id: String,
-}
-
-impl ScTransactionId {
-    pub fn from_bytes(bytes: &str) -> ScTransactionId {
-        ScTransactionId { id: bytes.to_string() }
-        //ScTransactionId { id: bytes.try_into().expect("transaction id should be 32 bytes") }
-    }
-
-    pub fn to_bytes(&self) -> &str {
-        &self.id
-    }
-
-    pub fn to_string(&self) -> String {
-        self.id.to_string()
-    }
-}
 
 fn base58_encode(bytes: &[u8]) -> String {
     ScContext::new().utility().base58_encode(bytes)

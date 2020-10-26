@@ -230,6 +230,15 @@ func (o ScMutableKeyMap) GetStringArray(key []byte) ScMutableStringArray {
 	return ScMutableStringArray{objId: arrId}
 }
 
+func (o ScMutableKeyMap) GetTxHash(key []byte) ScMutableTxHash {
+	return ScMutableTxHash{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScMutableKeyMap) GetTxHashArray(key []byte) ScMutableTxHashArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScMutableTxHashArray{objId: arrId}
+}
+
 func (o ScMutableKeyMap) Immutable() ScImmutableKeyMap {
 	return ScImmutableKeyMap{objId: o.objId}
 }
@@ -304,6 +313,15 @@ func (o ScMutableMap) GetStringArray(key string) ScMutableStringArray {
 	return ScMutableStringArray{objId: arrId}
 }
 
+func (o ScMutableMap) GetTxHash(key string) ScMutableTxHash {
+	return ScMutableTxHash{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScMutableMap) GetTxHashArray(key string) ScMutableTxHashArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScMutableTxHashArray{objId: arrId}
+}
+
 func (o ScMutableMap) Immutable() ScImmutableMap {
 	return ScImmutableMap{objId: o.objId}
 }
@@ -374,5 +392,46 @@ func (o ScMutableStringArray) Immutable() ScImmutableStringArray {
 }
 
 func (o ScMutableStringArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableTxHash struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScMutableTxHash) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableTxHash) SetValue(value *ScTxHash) {
+	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableTxHash) Value() *ScTxHash {
+	return NewScTxHash(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableTxHashArray struct {
+	objId int32
+}
+
+func (o ScMutableTxHashArray) Clear() {
+	SetInt(o.objId, KeyLength(), 0)
+}
+
+func (o ScMutableTxHashArray) GetTxHash(index int32) ScMutableTxHash {
+	return ScMutableTxHash{objId: o.objId, keyId: index}
+}
+
+func (o ScMutableTxHashArray) Immutable() ScImmutableTxHashArray {
+	return ScImmutableTxHashArray{objId: o.objId}
+}
+
+func (o ScMutableTxHashArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }

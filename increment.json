@@ -61,7 +61,7 @@
         },
         "logs": [],
         "postedRequests": [
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "increment", "delay": 5}
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "increment", "delay": 0}
         ],
         "transfers": []
       }
@@ -81,11 +81,11 @@
         },
         "logs": [],
         "postedRequests": [
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 3}
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0}
         ],
         "transfers": []
       }

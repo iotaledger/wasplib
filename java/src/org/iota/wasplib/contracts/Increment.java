@@ -30,7 +30,7 @@ public class Increment {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.PostRequest(sc.Contract().Address(), "increment", 5);
+			sc.PostRequest(sc.Contract().Address(), "increment", 0);
 		}
 	}
 
@@ -49,7 +49,7 @@ public class Increment {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.PostRequest(sc.Contract().Address(), "incrementRepeatMany", 3);
+		sc.PostRequest(sc.Contract().Address(), "incrementRepeatMany", 0);
 	}
 
 	//export test

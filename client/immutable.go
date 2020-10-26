@@ -178,6 +178,15 @@ func (o ScImmutableKeyMap) GetStringArray(key []byte) ScImmutableStringArray {
 	return ScImmutableStringArray{objId: arrId}
 }
 
+func (o ScImmutableKeyMap) GetTxHash(key []byte) ScImmutableTxHash {
+	return ScImmutableTxHash{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScImmutableKeyMap) GetTxHashArray(key []byte) ScImmutableTxHashArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableTxHashArray{objId: arrId}
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScImmutableMap struct {
@@ -244,6 +253,15 @@ func (o ScImmutableMap) GetStringArray(key string) ScImmutableStringArray {
 	return ScImmutableStringArray{objId: arrId}
 }
 
+func (o ScImmutableMap) GetTxHash(key string) ScImmutableTxHash {
+	return ScImmutableTxHash{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScImmutableMap) GetTxHashArray(key string) ScImmutableTxHashArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableTxHashArray{objId: arrId}
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScImmutableMapArray struct {
@@ -290,5 +308,34 @@ func (o ScImmutableStringArray) GetString(index int32) ScImmutableString {
 }
 
 func (o ScImmutableStringArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableTxHash struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScImmutableTxHash) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableTxHash) Value() *ScTxHash {
+	return NewScTxHash(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableTxHashArray struct {
+	objId int32
+}
+
+func (o ScImmutableTxHashArray) GetTxHash(index int32) ScImmutableTxHash {
+	return ScImmutableTxHash{objId: o.objId, keyId: index}
+}
+
+func (o ScImmutableTxHashArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }

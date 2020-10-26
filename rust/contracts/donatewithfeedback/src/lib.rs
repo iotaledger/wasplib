@@ -1,15 +1,11 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::{BytesDecoder, ScAddress};
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScColor;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 struct DonationInfo {
     seq: i64,
-    id: String,
+    id: ScTxHash,
     amount: i64,
     sender: ScAddress,
     feedback: String,
@@ -30,7 +26,7 @@ pub fn donate() {
     let request = sc.request();
     let mut donation = DonationInfo {
         seq: tlog.length() as i64,
-        id: request.id(),
+        id: request.tx_hash(),
         amount: request.balance(&ScColor::IOTA),
         sender: request.address(),
         feedback: request.params().get_string("f").value(),
@@ -81,7 +77,7 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
     let mut decoder = BytesDecoder::new(bytes);
     DonationInfo {
         seq: decoder.int(),
-        id: decoder.string(),
+        id: decoder.tx_hash(),
         amount: decoder.int(),
         sender: decoder.address(),
         feedback: decoder.string(),
@@ -92,7 +88,7 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
 fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(donation.seq);
-    encoder.string(&donation.id);
+    encoder.tx_hash(&donation.id);
     encoder.int(donation.amount);
     encoder.address(&donation.sender);
     encoder.string(&donation.feedback);

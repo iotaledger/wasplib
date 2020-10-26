@@ -56,7 +56,10 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	file, err := os.Open("increment.json")
+	contract := "fairroulette"
+	language := "bg" // "bg" = Rust, "go" = Go
+
+	file, err := os.Open(contract + ".json")
 	if err != nil {
 		panic(err)
 	}
@@ -71,7 +74,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	wasmData, err := ioutil.ReadFile("wasm/increment_bg.wasm")
+	wasmData, err := ioutil.ReadFile("wasm/" + contract + "_" + language + ".wasm")
 	if err != nil {
 		panic(err)
 	}
@@ -91,7 +94,7 @@ func main() {
 		index++
 	}
 	sort.Strings(testNames)
-	for _,testName := range testNames {
+	for _, testName := range testNames {
 		host.RunTest(testName, jsonTests.Tests[testName], jsonTests)
 	}
 }

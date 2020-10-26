@@ -146,10 +146,6 @@ impl ScRequest {
         self.address() == *originator
     }
 
-    pub fn id(&self) -> String {
-        self.request.get_string("id").value()
-    }
-
     pub fn minted_color(&self) -> ScColor {
         self.request.get_color("hash").value()
     }
@@ -160,6 +156,10 @@ impl ScRequest {
 
     pub fn timestamp(&self) -> i64 {
         self.request.get_int("timestamp").value()
+    }
+
+    pub fn tx_hash(&self) -> ScTxHash {
+        self.request.get_tx_hash("hash").value()
     }
 }
 

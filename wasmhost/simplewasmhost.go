@@ -171,7 +171,7 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	case KeyTraceHost:
 		//fmt.Println(text)
 	case KeyTrace:
-		fmt.Println(text)
+		//fmt.Println(text)
 	case KeyLog:
 		fmt.Println(text)
 	case KeyWarning:
@@ -212,21 +212,25 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
-	i := int64(0)
+
 	expectedPostedRequests := int64(len(jsonData.Expect.PostedRequests))
-	for i < postedRequests.GetInt(KeyLength) {
+	for i := int64(0); i < expectedPostedRequests && i < postedRequests.GetInt(KeyLength); i++ {
 		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
-		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
-		if contractAddress != scAddress {
-			fmt.Printf("FAIL: Expected contract address: %s\n", contractAddress)
-			return
-		}
-		function := postedRequest.GetString(host.GetKeyId("function"))
-		if i >= expectedPostedRequests {
-			fmt.Printf("FAIL: Unexpected posted request: %s\n", function)
-			return
+		delay := postedRequest.GetInt(host.GetKeyId("delay"))
+		if delay != 0 {
+			// only process posted requests when they have no delay
+			// those are the only ones that will be incorporated in the final state
+			continue
 		}
 
+		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
+		if contractAddress != scAddress {
+			// only process posted requests when they are for the current contract
+			// those are the only ones that will be incorporated in the final state
+			continue
+		}
+
+		function := postedRequest.GetString(host.GetKeyId("function"))
 		request.SetString(host.GetKeyId("address"), scAddress)
 		request.SetString(host.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
@@ -237,7 +241,6 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
 			return
 		}
-		i++
 	}
 
 	// now compare the expected json data model to the actual host data model

@@ -127,10 +127,6 @@ func (ctx ScRequest) From(originator *ScAddress) bool {
 	return ctx.Address().Equals(originator)
 }
 
-func (ctx ScRequest) Id() string {
-	return ctx.request.GetString("id").Value()
-}
-
 func (ctx ScRequest) MintedColor() *ScColor {
 	return ctx.request.GetColor("hash").Value()
 }
@@ -141,6 +137,10 @@ func (ctx ScRequest) Params() ScImmutableMap {
 
 func (ctx ScRequest) Timestamp() int64 {
 	return ctx.request.GetInt("timestamp").Value()
+}
+
+func (ctx ScRequest) TxHash() *ScTxHash {
+	return ctx.request.GetTxHash("hash").Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
