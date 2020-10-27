@@ -1,9 +1,8 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::host::{get_int, get_key_id, get_string, set_int, set_string};
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
+use wasplib::client::host::*;
 
 #[no_mangle]
 pub fn onLoad() {

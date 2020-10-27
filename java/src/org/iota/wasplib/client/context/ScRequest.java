@@ -2,6 +2,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScTxHash;
 import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 
@@ -32,15 +33,15 @@ public class ScRequest {
 		return request.GetColor("hash").Value();
 	}
 
-	public String Id() {
-		return request.GetString("id").Value();
-	}
-
 	public ScImmutableMap Params() {
 		return request.GetMap("params");
 	}
 
 	public long Timestamp() {
 		return request.GetInt("timestamp").Value();
+	}
+
+	public ScTxHash TxHash() {
+		return request.GetTxHash("hash").Value();
 	}
 }

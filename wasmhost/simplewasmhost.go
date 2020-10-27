@@ -3,6 +3,7 @@ package wasmhost
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 var EnableImmutableChecks = true
@@ -120,6 +121,7 @@ func (host *SimpleWasmHost) LoadData(jsonData *JsonDataModel) {
 	host.LoadMapData("account", jsonData.Account)
 	host.LoadMapData("request", jsonData.Request)
 	host.LoadMapData("state", jsonData.State)
+	host.LoadMapData("utility", jsonData.Utility)
 }
 
 func (host *SimpleWasmHost) LoadMapData(key string, values map[string]interface{}) {
@@ -202,6 +204,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		fmt.Printf("FAIL: Missing request.function\n")
 		return
 	}
+	fmt.Printf("    Run function: %v\n", function)
 	err := host.RunFunction(function.(string))
 	if err != nil {
 		fmt.Printf("FAIL: Function %v: %v\n", function, err)
@@ -217,8 +220,9 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	for i := int64(0); i < expectedPostedRequests && i < postedRequests.GetInt(KeyLength); i++ {
 		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
 		delay := postedRequest.GetInt(host.GetKeyId("delay"))
-		if delay != 0 {
+		if delay != 0 && !strings.Contains(jsonData.Flags, "nodelay") {
 			// only process posted requests when they have no delay
+			// unless overridden by the nodelay flag
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
@@ -236,6 +240,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		reqParams.SetInt(KeyLength, 0)
 		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
 		params.(*HostMap).CopyDataTo(reqParams)
+		fmt.Printf("    Run function: %v\n", function)
 		err = host.RunFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)

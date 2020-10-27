@@ -94,7 +94,7 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	}
 	host.TrackObject(null)
 	host.TrackObject(root)
-	host.vm = NewWartVM()
+	host.vm = NewWasmTimeVM()
 	return host.vm.LinkHost(host)
 }
 
@@ -119,6 +119,7 @@ func (host *WasmHost) FindObject(objId int32) HostObject {
 func (host *WasmHost) GetBytes(objId int32, keyId int32, stringRef int32, size int32) int32 {
 	// get error string takes precedence over returning error code
 	if keyId == KeyError && objId == -1 {
+		host.Trace("GetString o%d k%d = '%s'", -objId, keyId, host.error)
 		return host.vmSetBytes(stringRef, size, []byte(host.error))
 	}
 
@@ -130,6 +131,7 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32, stringRef int32, size i
 		// negative objId means get string
 		obj := host.FindObject(-objId)
 		if !obj.Exists(keyId) {
+			host.Trace("GetString o%d k%d missing key", -objId, keyId)
 			return -1
 		}
 
@@ -141,6 +143,7 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32, stringRef int32, size i
 	// non-negative objId means get bytes
 	obj := host.FindObject(objId)
 	if !obj.Exists(keyId) {
+		host.Trace("GetBytes o%d k%d missing key", objId, keyId)
 		return -1
 	}
 	value := obj.GetBytes(keyId)
@@ -254,7 +257,11 @@ func (host *WasmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 
 }
 
 func (host *WasmHost) HasError() bool {
-	return host.error != ""
+	if host.error != "" {
+		host.Trace("HasError")
+		return true
+	}
+	return false
 }
 
 func (host *WasmHost) LoadWasm(wasmData []byte) error {

@@ -71,6 +71,15 @@ public class ScImmutableMap {
 		return new ScImmutableStringArray(arrId);
 	}
 
+	public ScImmutableTxHash GetTxHash(String key) {
+		return new ScImmutableTxHash(objId, Host.GetKeyId(key));
+	}
+
+	public ScImmutableTxHashArray GetTxHashArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScImmutableTxHashArray(arrId);
+	}
+
 	public int Length() {
 		return (int) Host.GetInt(objId, Keys.KeyLength());
 	}

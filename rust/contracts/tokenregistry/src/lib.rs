@@ -1,10 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::{BytesDecoder, ScAddress};
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 struct TokenInfo {
     supply: i64,

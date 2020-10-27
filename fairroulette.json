@@ -22,6 +22,66 @@
     }
   },
   "tests": {
+    "payWinner": {
+      "setup": "fairroulette",
+      "flags": "nodelay",
+      "utility": {"random": 2},
+      "request": {
+        "function": "placeBet",
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "2V9arUwkzyEgqrQv68stUy71cFUDcj3MURFmdJc8qamEP", "amount": 100, "color": "11111111111111111111111111111111"}
+        ]
+      }
+    },
+    "nobodyWins": {
+      "setup": "fairroulette",
+      "flags": "nodelay",
+      "utility": {"random": 1},
+      "request": {
+        "function": "placeBet",
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
+        },
+        "state": {
+          "lastWinningColor": 2
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "amount": 100, "color": "11111111111111111111111111111111"}
+        ]
+      }
+    },
     "placeOneBet": {
       "setup": "fairroulette",
       "request": {

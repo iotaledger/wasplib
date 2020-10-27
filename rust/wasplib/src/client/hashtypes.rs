@@ -49,20 +49,20 @@ impl ScColor {
 
 #[derive(Eq, PartialEq)]
 pub struct ScTxHash {
-    address: [u8; 32],
+    hash: [u8; 32],
 }
 
 impl ScTxHash {
     pub fn from_bytes(bytes: &[u8]) -> ScTxHash {
-        ScTxHash { address: bytes.try_into().expect("tx hash should be 32 bytes") }
+        ScTxHash { hash: bytes.try_into().expect("tx hash should be 32 bytes") }
     }
 
     pub fn to_bytes(&self) -> &[u8] {
-        &self.address
+        &self.hash
     }
 
     pub fn to_string(&self) -> String {
-        base58_encode(&self.address)
+        base58_encode(&self.hash)
     }
 }
 

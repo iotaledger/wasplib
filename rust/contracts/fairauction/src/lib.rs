@@ -1,11 +1,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::{BytesDecoder, ScAddress};
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScColor;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;

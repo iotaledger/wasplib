@@ -41,13 +41,13 @@ pub fn exists(obj_id: i32, key_id: i32) -> bool {
 pub fn get_bytes(obj_id: i32, key_id: i32) -> Vec<u8> {
     unsafe {
         // first query length of bytes array
-        let size = hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) as usize;
+        let size = hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0);
         if size <= 0 { return vec![0_u8; 0]; }
 
         // allocate a byte array in Wasm memory and
         // copy the actual data bytes to Wasm byte array
-        let mut bytes = vec![0_u8; size];
-        hostGetBytes(obj_id, key_id, bytes.as_mut_ptr(), size as i32);
+        let mut bytes = vec![0_u8; size as usize];
+        hostGetBytes(obj_id, key_id, bytes.as_mut_ptr(), size);
         return bytes;
     }
 }

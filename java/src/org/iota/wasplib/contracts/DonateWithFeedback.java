@@ -5,6 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.*;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScTxHash;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -23,7 +24,7 @@ public class DonateWithFeedback {
 		ScRequest request = sc.Request();
 		DonationInfo donation = new DonationInfo();
 		donation.seq = tlog.Length();
-		donation.id = request.Id();
+		donation.id = request.TxHash();
 		donation.amount = request.Balance(ScColor.IOTA);
 		donation.sender = request.Address();
 		donation.feedback = request.Params().GetString("f").Value();
@@ -80,7 +81,7 @@ public class DonateWithFeedback {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		DonationInfo bet = new DonationInfo();
 		bet.seq = decoder.Int();
-		bet.id = decoder.String();
+		bet.id = decoder.TxHash();
 		bet.amount = decoder.Int();
 		bet.sender = decoder.Address();
 		bet.feedback = decoder.String();
@@ -91,7 +92,7 @@ public class DonateWithFeedback {
 	public static byte[] encodeDonationInfo(DonationInfo donation) {
 		return new BytesEncoder().
 				Int(donation.seq).
-				String(donation.id).
+				TxHash(donation.id).
 				Int(donation.amount).
 				Address(donation.sender).
 				String(donation.feedback).
@@ -101,7 +102,7 @@ public class DonateWithFeedback {
 
 	public static class DonationInfo {
 		long seq;
-		String id;
+		ScTxHash id;
 		long amount;
 		ScAddress sender;
 		String feedback;
