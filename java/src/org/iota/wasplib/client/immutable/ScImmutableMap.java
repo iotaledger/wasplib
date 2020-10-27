@@ -62,6 +62,15 @@ public class ScImmutableMap {
 		return new ScImmutableMapArray(arrId);
 	}
 
+	public ScImmutableRequestId GetRequestId(String key) {
+		return new ScImmutableRequestId(objId, Host.GetKeyId(key));
+	}
+
+	public ScImmutableRequestIdArray GetRequestIdArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScImmutableRequestIdArray(arrId);
+	}
+
 	public ScImmutableString GetString(String key) {
 		return new ScImmutableString(objId, Host.GetKeyId(key));
 	}

@@ -48,6 +48,27 @@ impl ScColor {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Eq, PartialEq)]
+pub struct ScRequestId {
+    id: [u8; 34],
+}
+
+impl ScRequestId {
+    pub fn from_bytes(bytes: &[u8]) -> ScRequestId {
+        ScRequestId { id: bytes.try_into().expect("request id should be 34 bytes") }
+    }
+
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.id
+    }
+
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Eq, PartialEq)]
 pub struct ScTxHash {
     hash: [u8; 32],
 }

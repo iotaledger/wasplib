@@ -169,6 +169,15 @@ func (o ScImmutableKeyMap) GetMapArray(key []byte) ScImmutableMapArray {
 	return ScImmutableMapArray{objId: arrId}
 }
 
+func (o ScImmutableKeyMap) GetRequestId(key []byte) ScImmutableRequestId {
+	return ScImmutableRequestId{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScImmutableKeyMap) GetRequestIdArray(key []byte) ScImmutableRequestIdArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableRequestIdArray{objId: arrId}
+}
+
 func (o ScImmutableKeyMap) GetString(key []byte) ScImmutableString {
 	return ScImmutableString{objId: o.objId, keyId: GetKey(key)}
 }
@@ -244,6 +253,15 @@ func (o ScImmutableMap) GetMapArray(key string) ScImmutableMapArray {
 	return ScImmutableMapArray{objId: arrId}
 }
 
+func (o ScImmutableMap) GetRequestId(key string) ScImmutableRequestId {
+	return ScImmutableRequestId{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScImmutableMap) GetRequestIdArray(key string) ScImmutableRequestIdArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableRequestIdArray{objId: arrId}
+}
+
 func (o ScImmutableMap) GetString(key string) ScImmutableString {
 	return ScImmutableString{objId: o.objId, keyId: GetKeyId(key)}
 }
@@ -279,6 +297,35 @@ func (o ScImmutableMapArray) GetMap(index int32) ScImmutableMap {
 }
 
 func (o ScImmutableMapArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableRequestId struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScImmutableRequestId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableRequestId) Value() *ScRequestId {
+	return NewScRequestId(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableRequestIdArray struct {
+	objId int32
+}
+
+func (o ScImmutableRequestIdArray) GetRequestId(index int32) ScImmutableRequestId {
+	return ScImmutableRequestId{objId: o.objId, keyId: index}
+}
+
+func (o ScImmutableRequestIdArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }
 

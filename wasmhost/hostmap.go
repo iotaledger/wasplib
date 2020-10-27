@@ -174,3 +174,11 @@ func (m *HostMap) CopyDataTo(other HostObject) {
 		}
 	}
 }
+
+func (m *HostMap) GetTypeId(keyId int32) int32 {
+	typeId, ok := m.types[keyId]
+	if !ok {
+		return -1
+	}
+	return typeId
+}

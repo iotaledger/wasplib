@@ -5,11 +5,11 @@ use wasplib::client::*;
 
 struct DonationInfo {
     seq: i64,
-    id: ScTxHash,
+    id: ScRequestId,
     amount: i64,
     sender: ScAddress,
-    feedback: String,
     error: String,
+    feedback: String,
 }
 
 #[no_mangle]
@@ -26,7 +26,7 @@ pub fn donate() {
     let request = sc.request();
     let mut donation = DonationInfo {
         seq: tlog.length() as i64,
-        id: request.tx_hash(),
+        id: request.id(),
         amount: request.balance(&ScColor::IOTA),
         sender: request.address(),
         feedback: request.params().get_string("f").value(),
@@ -77,21 +77,21 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
     let mut decoder = BytesDecoder::new(bytes);
     DonationInfo {
         seq: decoder.int(),
-        id: decoder.tx_hash(),
+        id: decoder.request_id(),
         amount: decoder.int(),
         sender: decoder.address(),
-        feedback: decoder.string(),
         error: decoder.string(),
+        feedback: decoder.string(),
     }
 }
 
 fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(donation.seq);
-    encoder.tx_hash(&donation.id);
+    encoder.request_id(&donation.id);
     encoder.int(donation.amount);
     encoder.address(&donation.sender);
-    encoder.string(&donation.feedback);
     encoder.string(&donation.error);
+    encoder.string(&donation.feedback);
     encoder.data()
 }

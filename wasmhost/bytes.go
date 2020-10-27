@@ -1,4 +1,4 @@
-package client
+package wasmhost
 
 type BytesDecoder struct {
 	data []byte
@@ -6,10 +6,6 @@ type BytesDecoder struct {
 
 func NewBytesDecoder(data []byte) *BytesDecoder {
 	return &BytesDecoder{data: data}
-}
-
-func (d *BytesDecoder) Address() *ScAddress {
-	return NewScAddress(d.Bytes())
 }
 
 func (d *BytesDecoder) Bytes() []byte {
@@ -20,10 +16,6 @@ func (d *BytesDecoder) Bytes() []byte {
 	value := d.data[:size]
 	d.data = d.data[size:]
 	return value
-}
-
-func (d *BytesDecoder) Color() *ScColor {
-	return NewScColor(d.Bytes())
 }
 
 func (d *BytesDecoder) Int() int64 {
@@ -56,14 +48,6 @@ func (d *BytesDecoder) String() string {
 	return string(d.Bytes())
 }
 
-func (d *BytesDecoder) RequestId() *ScRequestId {
-	return NewScRequestId(d.Bytes())
-}
-
-func (d *BytesDecoder) TxHash() *ScTxHash {
-	return NewScTxHash(d.Bytes())
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type BytesEncoder struct {
@@ -74,18 +58,10 @@ func NewBytesEncoder() *BytesEncoder {
 	return &BytesEncoder{data: make([]byte, 0, 128)}
 }
 
-func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
-	return e.Bytes(value.Bytes())
-}
-
 func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 	e.Int(int64(len(value)))
 	e.data = append(e.data, value...)
 	return e
-}
-
-func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
-	return e.Bytes(value.Bytes())
 }
 
 func (e *BytesEncoder) Data() []byte {
@@ -108,12 +84,4 @@ func (e *BytesEncoder) Int(value int64) *BytesEncoder {
 
 func (e *BytesEncoder) String(value string) *BytesEncoder {
 	return e.Bytes([]byte(value))
-}
-
-func (e *BytesEncoder) RequestId(value *ScRequestId) *BytesEncoder {
-	return e.Bytes(value.Bytes())
-}
-
-func (e *BytesEncoder) TxHash(value *ScTxHash) *BytesEncoder {
-	return e.Bytes(value.Bytes())
 }

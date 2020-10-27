@@ -1,6 +1,7 @@
 package wasmhost
 
 type JsonTests struct {
+	Types  map[string][]string       `json:"types"`
 	Setups map[string]*JsonDataModel `json:"setups"`
 	Tests  map[string]*JsonDataModel `json:"tests"`
 }

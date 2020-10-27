@@ -221,6 +221,15 @@ func (o ScMutableKeyMap) GetMapArray(key []byte) ScMutableMapArray {
 	return ScMutableMapArray{objId: arrId}
 }
 
+func (o ScMutableKeyMap) GetRequestId(key []byte) ScMutableRequestId {
+	return ScMutableRequestId{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScMutableKeyMap) GetRequestIdArray(key []byte) ScMutableRequestIdArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScMutableRequestIdArray{objId: arrId}
+}
+
 func (o ScMutableKeyMap) GetString(key []byte) ScMutableString {
 	return ScMutableString{objId: o.objId, keyId: GetKey(key)}
 }
@@ -304,6 +313,15 @@ func (o ScMutableMap) GetMapArray(key string) ScMutableMapArray {
 	return ScMutableMapArray{objId: arrId}
 }
 
+func (o ScMutableMap) GetRequestId(key string) ScMutableRequestId {
+	return ScMutableRequestId{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScMutableMap) GetRequestIdArray(key string) ScMutableRequestIdArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScMutableRequestIdArray{objId: arrId}
+}
+
 func (o ScMutableMap) GetString(key string) ScMutableString {
 	return ScMutableString{objId: o.objId, keyId: GetKeyId(key)}
 }
@@ -351,6 +369,47 @@ func (o ScMutableMapArray) Immutable() ScImmutableMapArray {
 }
 
 func (o ScMutableMapArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableRequestId struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScMutableRequestId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableRequestId) SetValue(value *ScRequestId) {
+	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableRequestId) Value() *ScRequestId {
+	return NewScRequestId(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableRequestIdArray struct {
+	objId int32
+}
+
+func (o ScMutableRequestIdArray) Clear() {
+	SetInt(o.objId, KeyLength(), 0)
+}
+
+func (o ScMutableRequestIdArray) GetRequestId(index int32) ScMutableRequestId {
+	return ScMutableRequestId{objId: o.objId, keyId: index}
+}
+
+func (o ScMutableRequestIdArray) Immutable() ScImmutableRequestIdArray {
+	return ScImmutableRequestIdArray{objId: o.objId}
+}
+
+func (o ScMutableRequestIdArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }
 

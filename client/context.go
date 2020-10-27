@@ -127,6 +127,10 @@ func (ctx ScRequest) From(originator *ScAddress) bool {
 	return ctx.Address().Equals(originator)
 }
 
+func (ctx ScRequest) Id() *ScRequestId {
+	return ctx.request.GetRequestId("id").Value()
+}
+
 func (ctx ScRequest) MintedColor() *ScColor {
 	return ctx.request.GetColor("hash").Value()
 }

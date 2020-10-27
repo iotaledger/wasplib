@@ -57,9 +57,9 @@ func main() {
 	fmt.Println("Hello, WaspLib!")
 
 	contract := "fairroulette"
-	language := "bg" // "bg" = Rust, "go" = Go
+	language := "go" // "bg" = Rust, "go" = Go
 
-	file, err := os.Open(contract + ".json")
+	file, err := os.Open("tests/" + contract + ".json")
 	if err != nil {
 		panic(err)
 	}

@@ -1,17 +1,4 @@
 // types encapsulating immutable host objects
-// ScImmutableAddress      : refers to immutable address on host
-// ScImmutableAddressArray : refers to immutable array of immutable address on host
-// ScImmutableBytes        : refers to immutable byte array on host
-// ScImmutableBytesArray   : refers to immutable array of immutable byte arrays on host
-// ScImmutableColor        : refers to immutable color on host
-// ScImmutableColorArray   : refers to immutable array of immutable color on host
-// ScImmutableInt          : refers to immutable integer on host
-// ScImmutableIntArray     : refers to immutable array of immutable integers on host
-// ScImmutableKeyMap       : refers to immutable map of immutable values on host
-// ScImmutableMap          : refers to immutable map of immutable values on host
-// ScImmutableMapArray     : refers to immutable array of immutable maps of immutable values on host
-// ScImmutableString       : refers to immutable string on host
-// ScImmutableStringArray  : refers to immutable array of immutable strings on host
 
 use super::hashtypes::*;
 use super::host::*;
@@ -245,6 +232,15 @@ impl ScImmutableKeyMap {
         ScImmutableMapArray { obj_id: arr_id }
     }
 
+    pub fn get_request_id(&self, key: &[u8]) -> ScImmutableRequestId {
+        ScImmutableRequestId { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_request_id_array(&self, key: &[u8]) -> ScImmutableRequestIdArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScImmutableRequestIdArray { obj_id: arr_id }
+    }
+
     pub fn get_string(&self, key: &[u8]) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -330,6 +326,15 @@ impl ScImmutableMap {
         ScImmutableMapArray { obj_id: arr_id }
     }
 
+    pub fn get_request_id(&self, key: &str) -> ScImmutableRequestId {
+        ScImmutableRequestId { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_request_id_array(&self, key: &str) -> ScImmutableRequestIdArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScImmutableRequestIdArray { obj_id: arr_id }
+    }
+
     pub fn get_string(&self, key: &str) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -374,6 +379,48 @@ impl ScImmutableMapArray {
     pub fn get_map(&self, index: i32) -> ScImmutableMap {
         let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
         ScImmutableMap { obj_id: map_id }
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableRequestId {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScImmutableRequestId {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableRequestId {
+        ScImmutableRequestId { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn value(&self) -> ScRequestId {
+        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableRequestIdArray {
+    obj_id: i32
+}
+
+impl ScImmutableRequestIdArray {
+    pub(crate) fn new(obj_id: i32) -> ScImmutableRequestIdArray {
+        ScImmutableRequestIdArray { obj_id }
+    }
+
+    // index 0..length(), exclusive
+    pub fn get_request_id(&self, index: i32) -> ScImmutableRequestId {
+        ScImmutableRequestId { obj_id: self.obj_id, key_id: index }
     }
 
     pub fn length(&self) -> i32 {

@@ -2,6 +2,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.hashtypes.ScTxHash;
 import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
@@ -27,6 +28,10 @@ public class ScRequest {
 
 	public Boolean From(ScAddress originator) {
 		return From(originator);
+	}
+
+	public ScRequestId Id() {
+		return request.GetRequestId("id").Value();
 	}
 
 	public ScColor MintedColor() {

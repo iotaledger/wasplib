@@ -2,6 +2,7 @@ package org.iota.wasplib.client.bytes;
 
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.hashtypes.ScTxHash;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +48,10 @@ public class BytesEncoder {
 			}
 			data.write((byte) (b | 0x80));
 		}
+	}
+
+	public BytesEncoder RequestId(ScRequestId value) {
+		return Bytes(value.toBytes());
 	}
 
 	public BytesEncoder String(String value) {

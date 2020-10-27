@@ -2,6 +2,7 @@ package wasmhost
 
 import (
 	"fmt"
+	"github.com/mr-tron/base58"
 	"sort"
 	"strings"
 )
@@ -11,6 +12,8 @@ var EnableImmutableChecks = true
 type SimpleWasmHost struct {
 	WasmHost
 	ExportsId int32
+	jsonTests *JsonTests
+	jsonData  *JsonDataModel
 }
 
 func NewSimpleWasmHost() (*SimpleWasmHost, error) {
@@ -55,7 +58,9 @@ func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bo
 	return true
 }
 
-func (host *SimpleWasmHost) CompareData(expectData *JsonDataModel) bool {
+func (host *SimpleWasmHost) CompareData(jsonData *JsonDataModel) bool {
+	host.jsonData = jsonData
+	expectData := jsonData.Expect
 	return host.CompareMapData("state", expectData.State) &&
 		host.CompareArrayData("logs", expectData.Logs) &&
 		host.CompareArrayData("postedRequests", expectData.PostedRequests) &&
@@ -71,13 +76,85 @@ func (host *SimpleWasmHost) CompareMapData(key string, values map[string]interfa
 	return true
 }
 
+func (host *SimpleWasmHost) CompareSubArrayData(mapObject HostObject, key string, array []interface{}) bool {
+	if len(array) == 0 {
+		return true
+	}
+	keyId := host.GetKeyId(key)
+	if !mapObject.Exists(keyId) {
+		fmt.Printf("FAIL: missing array %s\n", key)
+		return false
+	}
+	elem := array[0]
+	typeId := mapObject.(*HostMap).GetTypeId(keyId)
+	arrayObject := host.FindSubObject(mapObject, key, typeId)
+	if arrayObject.(*HostArray).GetLength() != int32(len(array)) {
+		fmt.Printf("FAIL: array %s length\n", key)
+		return false
+	}
+	switch t := elem.(type) {
+	case string:
+		if typeId != OBJTYPE_BYTES_ARRAY && typeId != OBJTYPE_STRING_ARRAY {
+			fmt.Printf("FAIL: not a bytes or string array: %s\n", key)
+			return false
+		}
+		for i, elem := range array {
+			value := arrayObject.GetString(int32(i))
+			expect := process(elem.(string))
+			if value != expect {
+				fmt.Printf("FAIL: string array %s[%d], expected '%s', got '%s'\n", key, i, expect, value)
+				return false
+			}
+		}
+		return true
+	case float64:
+		if typeId != OBJTYPE_INT_ARRAY {
+			fmt.Printf("FAIL: not an int array: %s\n", key)
+			return false
+		}
+		for i, elem := range array {
+			value := arrayObject.GetInt(int32(i))
+			expect := int64(elem.(float64))
+			if value != expect {
+				fmt.Printf("FAIL: int array %s[%d], expected '%d', got '%d'\n", key, i, expect, value)
+				return false
+			}
+		}
+		return true
+	case map[string]interface{}:
+		if typeId != OBJTYPE_BYTES_ARRAY {
+			fmt.Printf("FAIL: not a bytes array: %s\n", key)
+			return false
+		}
+		for i, elem := range array {
+			value := arrayObject.GetString(int32(i))
+			expect, ok := host.makeString(key, elem.(map[string]interface{}))
+			if !ok {
+				return false
+			}
+			if value != expect {
+				fmt.Printf("FAIL: string array %s[%d],\n    expected '%s',\n    got      '%s'\n", key, i, expect, value)
+				decVal, _ := base58.Decode(value)
+				expVal, _ := base58.Decode(expect)
+				fmt.Printf("    %v\n    %v\n", decVal, expVal)
+				return false
+			}
+		}
+		return true
+
+	default:
+		panic(fmt.Sprintf("Invalid type: %T", t))
+	}
+}
+
 func (host *SimpleWasmHost) CompareSubMapData(mapObject HostObject, values map[string]interface{}) bool {
-	for _, key := range SortedKeys(values) {
-		field := values[key]
+	for _, k := range SortedKeys(values) {
+		field := values[k]
+		key := process(k)
 		switch t := field.(type) {
 		case string:
 			value := mapObject.GetString(host.GetKeyId(key))
-			expect := field.(string)
+			expect := process(field.(string))
 			if value != expect {
 				fmt.Printf("FAIL: string %s, expected '%s', got '%s'\n", key, expect, value)
 				return false
@@ -95,6 +172,8 @@ func (host *SimpleWasmHost) CompareSubMapData(mapObject HostObject, values map[s
 				fmt.Printf("      map %s\n", key)
 				return false
 			}
+		case []interface{}:
+			host.CompareSubArrayData(mapObject, key, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", t))
 		}
@@ -133,7 +212,7 @@ func (host *SimpleWasmHost) LoadSubArrayData(arrayObject HostObject, values []in
 	for key, field := range values {
 		switch t := field.(type) {
 		case string:
-			arrayObject.SetString(int32(key), field.(string))
+			arrayObject.SetString(int32(key), process(field.(string)))
 		//case float64:
 		//	mapObject.SetInt(host.GetKeyId(key), int64(field.(float64)))
 		//case map[string]interface{}:
@@ -149,11 +228,12 @@ func (host *SimpleWasmHost) LoadSubArrayData(arrayObject HostObject, values []in
 }
 
 func (host *SimpleWasmHost) LoadSubMapData(mapObject HostObject, values map[string]interface{}) {
-	for _, key := range SortedKeys(values) {
-		field := values[key]
+	for _, k := range SortedKeys(values) {
+		field := values[k]
+		key := process(k)
 		switch t := field.(type) {
 		case string:
-			mapObject.SetString(host.GetKeyId(key), field.(string))
+			mapObject.SetString(host.GetKeyId(key), process(field.(string)))
 		case float64:
 			mapObject.SetInt(host.GetKeyId(key), int64(field.(float64)))
 		case map[string]interface{}:
@@ -183,7 +263,32 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	}
 }
 
+func process(value string) string {
+	// preprocesses keys and values by replacing special named values
+	size := 32
+	switch value[0] {
+	case '#': // 32-byte hash value
+		if value == "#iota" {
+			return processHash("", 32)
+		}
+	case '@': // 33-byte address
+		size = 33
+	case '$': // 34-byte request id
+		size = 34
+	default:
+		return value
+	}
+	return processHash(value[1:], size)
+}
+
+func processHash(value string, size int) string {
+	hash := make([]byte, size)
+	copy(hash, value)
+	return base58.Encode(hash)
+}
+
 func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTests *JsonTests) {
+	host.jsonTests = jsonTests
 	fmt.Printf("Test: %s\n", name)
 	if jsonData.Expect == nil {
 		fmt.Printf("FAIL: Missing expect model data\n")
@@ -249,9 +354,51 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	}
 
 	// now compare the expected json data model to the actual host data model
-	if host.CompareData(jsonData.Expect) {
+	if host.CompareData(jsonData) {
 		fmt.Printf("PASS\n")
 	}
+}
+
+func (host *SimpleWasmHost) makeString(key string, object map[string]interface{}) (string, bool) {
+	if len(object) != 1 {
+		fmt.Printf("FAIL: bytes array %s: object type not found\n", key)
+		return "", false
+	}
+	encoder := NewBytesEncoder()
+	// only 1 object
+	for k, v := range object {
+		typeDef, ok := host.jsonTests.Types[k]
+		if !ok {
+			fmt.Printf("FAIL: bytes array %s: object typedef for %s missing\n", key, k)
+			return "", false
+		}
+		m := v.(map[string]interface{})
+		if len(m) != len(typeDef) {
+			fmt.Printf("FAIL: bytes array %s: object typedef for %s mismatch\n", key, k)
+			return "", false
+		}
+		for _, def := range typeDef {
+			fields := strings.Split(def, " ")
+			if len(fields) != 2 {
+				fmt.Printf("FAIL: bytes array %s: object typedef for %s invalid: '%s'\n", key, k, def)
+				return "", false
+			}
+			value := m[fields[0]]
+			switch fields[1] {
+			case "Address", "Bytes", "Color", "RequestId", "TxHash":
+				bytes, _ := base58.Decode(process(value.(string)))
+				encoder.Bytes(bytes)
+			case "Int":
+				encoder.Int(int64(value.(float64)))
+			case "String":
+				encoder.String(value.(string))
+			default:
+				panic("Unhandled type of field")
+			}
+		}
+
+	}
+	return base58.Encode(encoder.Data()), true
 }
 
 func SortedKeys(values map[string]interface{}) []string {

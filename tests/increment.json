@@ -5,16 +5,16 @@
         "name": "increment",
         "description": "Test basic functionality",
         "id": "incrementId",
-        "address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH",
-        "color": "YEGAxog9gxiGXxo538aAQxq55XAebpFfwU72ZUxmSHm",
-        "owner": "tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq"
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
       },
       "account": {},
       "request": {
         "timestamp": 20200928112900,
-        "id": "2K3n5t4wSaF5mj27Tw9vStXWLWyRjjiH5Cp3CFLpKVCr1d",
-        "hash": "4uQeVj5tqViQh7yWWGStvkEG1Zmhx6uasJtWCJziofM",
-        "address": "bTdjzaWCb6UY9AZqTMMbPSc3VzHeVR9By6ueiqrY2uVZ"
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
       }
     }
   },
@@ -61,7 +61,7 @@
         },
         "logs": [],
         "postedRequests": [
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "increment", "delay": 0}
+          {"contract": "@scAddress", "function": "increment", "delay": 0}
         ],
         "transfers": []
       }
@@ -81,11 +81,11 @@
         },
         "logs": [],
         "postedRequests": [
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0}
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0}
         ],
         "transfers": []
       }

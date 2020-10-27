@@ -53,6 +53,10 @@ impl BytesDecoder<'_> {
         }
     }
 
+    pub fn request_id(&mut self) -> ScRequestId {
+        ScRequestId::from_bytes(self.bytes())
+    }
+
     pub fn string(&mut self) -> String {
         String::from_utf8_lossy(self.bytes()).to_string()
     }
@@ -105,6 +109,11 @@ impl BytesEncoder {
             }
             self.data.push(b | 0x80)
         }
+    }
+
+    pub fn request_id(&mut self, value: &ScRequestId) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
     }
 
     pub fn string(&mut self, value: &str) -> &BytesEncoder {

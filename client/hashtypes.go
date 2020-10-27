@@ -63,6 +63,33 @@ func (c *ScColor) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScRequestId struct {
+	id [34]byte
+}
+
+func NewScRequestId(bytes []byte) *ScRequestId {
+	if len(bytes) != 34 {
+		panic("request id should be 34 bytes")
+	}
+	t := &ScRequestId{}
+	copy(t.id[:], bytes)
+	return t
+}
+
+func (t *ScRequestId) Bytes() []byte {
+	return t.id[:]
+}
+
+func (t *ScRequestId) Equals(other *ScRequestId) bool {
+	return t.id == other.id
+}
+
+func (t *ScRequestId) String() string {
+	return base58Encode(t.id[:])
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScTxHash struct {
 	hash [32]byte
 }

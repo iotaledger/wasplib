@@ -146,6 +146,10 @@ impl ScRequest {
         self.address() == *originator
     }
 
+    pub fn id(&self) -> ScRequestId {
+        self.request.get_request_id("id").value()
+    }
+
     pub fn minted_color(&self) -> ScColor {
         self.request.get_color("hash").value()
     }
