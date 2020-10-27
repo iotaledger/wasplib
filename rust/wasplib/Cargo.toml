@@ -1,8 +1,11 @@
 [package]
 name = "wasplib"
+description = "Smart Contract interface library for Wasp nodes"
+license = "Apache-2.0"
 version = "0.1.0"
 authors = ["Eric Hop <eric@iota.org>"]
 edition = "2018"
+repository = "https://github.com/iotaledger/wasplib"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

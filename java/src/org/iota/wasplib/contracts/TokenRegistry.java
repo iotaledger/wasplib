@@ -5,9 +5,12 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.mutable.ScMutableBytes;
+import org.iota.wasplib.client.mutable.ScMutableColorArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableString;
 
 public class TokenRegistry {
 	//export onLoad
@@ -22,10 +25,10 @@ public class TokenRegistry {
 	public static void mintSupply() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		String color = request.Hash();
+		ScColor color = request.MintedColor();
 		ScMutableMap state = sc.State();
-		ScMutableMap registry = state.GetMap("tr");
-		if (registry.GetBytes(color).Value().length != 0) {
+		ScMutableBytes registry = state.GetKeyMap("registry").GetBytes(color.toBytes());
+		if (registry.Exists()) {
 			sc.Log("TokenRegistry: Color already exists");
 			return;
 		}
@@ -46,14 +49,9 @@ public class TokenRegistry {
 			token.description += "no dscr";
 		}
 		byte[] bytes = encodeTokenInfo(token);
-		registry.GetBytes(color).SetValue(bytes);
-		ScMutableString colors = state.GetString("lc");
-		String list = colors.Value();
-		if (!list.isEmpty()) {
-			list += ",";
-		}
-		list += color;
-		colors.SetValue(list);
+		registry.SetValue(bytes);
+		ScMutableColorArray colors = state.GetColorArray("lc");
+		colors.GetColor(colors.Length()).SetValue(color);
 	}
 
 	//export updateMetadata
@@ -70,8 +68,8 @@ public class TokenRegistry {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		TokenInfo token = new TokenInfo();
 		token.supply = decoder.Int();
-		token.mintedBy = decoder.String();
-		token.owner = decoder.String();
+		token.mintedBy = decoder.Address();
+		token.owner = decoder.Address();
 		token.created = decoder.Int();
 		token.updated = decoder.Int();
 		token.description = decoder.String();
@@ -82,8 +80,8 @@ public class TokenRegistry {
 	public static byte[] encodeTokenInfo(TokenInfo token) {
 		return new BytesEncoder().
 				Int(token.supply).
-				String(token.mintedBy).
-				String(token.owner).
+				Address(token.mintedBy).
+				Address(token.owner).
 				Int(token.created).
 				Int(token.updated).
 				String(token.description).
@@ -93,8 +91,8 @@ public class TokenRegistry {
 
 	public static class TokenInfo {
 		long supply;
-		String mintedBy;
-		String owner;
+		ScAddress mintedBy;
+		ScAddress owner;
 		long created;
 		long updated;
 		String description;

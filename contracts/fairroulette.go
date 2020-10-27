@@ -9,8 +9,8 @@ const NUM_COLORS int64 = 5
 const PLAY_PERIOD int64 = 120
 
 type BetInfo struct {
-	id     string
-	sender string
+	id     *client.ScTxHash
+	sender *client.ScAddress
 	color  int64
 	amount int64
 }
@@ -32,7 +32,7 @@ func onLoadFairRoulette() {
 func placeBet() {
 	sc := client.NewScContext()
 	request := sc.Request()
-	amount := request.Balance("iota")
+	amount := request.Balance(client.IOTA)
 	if amount == 0 {
 		sc.Log("Empty bet...")
 		return
@@ -48,7 +48,7 @@ func placeBet() {
 	}
 
 	bet := BetInfo{
-		id:     request.Id(),
+		id:     request.TxHash(),
 		sender: request.Address(),
 		color:  color,
 		amount: amount,
@@ -64,7 +64,7 @@ func placeBet() {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.Event("", "lockBets", playPeriod)
+		sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod)
 	}
 }
 
@@ -72,21 +72,23 @@ func placeBet() {
 func lockBets() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
-	if sc.Request().Address() != sc.Contract().Address() {
+	scAddress := sc.Contract().Address()
+	if !sc.Request().From(scAddress) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
 	state := sc.State()
-	bets := state.GetStringArray("bets")
-	lockedBets := state.GetStringArray("lockedBets")
-	for i := int32(0); i < bets.Length(); i++ {
-		bytes := bets.GetString(i).Value()
-		lockedBets.GetString(i).SetValue(bytes)
+	bets := state.GetBytesArray("bets")
+	lockedBets := state.GetBytesArray("lockedBets")
+	nrBets := bets.Length()
+	for i := int32(0); i < nrBets; i++ {
+		bytes := bets.GetBytes(i).Value()
+		lockedBets.GetBytes(i).SetValue(bytes)
 	}
 	bets.Clear()
 
-	sc.Event("", "payWinners", 0)
+	sc.PostRequest(scAddress, "payWinners", 0)
 }
 
 //export payWinners
@@ -94,7 +96,7 @@ func payWinners() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
 	scAddress := sc.Contract().Address()
-	if sc.Request().Address() != scAddress {
+	if !sc.Request().From(scAddress) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -107,7 +109,8 @@ func payWinners() {
 	totalWinAmount := int64(0)
 	lockedBets := state.GetBytesArray("lockedBets")
 	winners := make([]*BetInfo, 0)
-	for i := int32(0); i < lockedBets.Length(); i++ {
+	nrBets := lockedBets.Length()
+	for i := int32(0); i < nrBets; i++ {
 		bytes := lockedBets.GetBytes(i).Value()
 		bet := decodeBetInfo(bytes)
 		totalBetAmount += bet.amount
@@ -121,7 +124,7 @@ func payWinners() {
 	if len(winners) == 0 {
 		sc.Log("Nobody wins!")
 		// compact separate UTXOs into a single one
-		sc.Transfer(scAddress, "iota", totalBetAmount)
+		sc.Transfer(scAddress, client.IOTA, totalBetAmount)
 		return
 	}
 
@@ -131,9 +134,9 @@ func payWinners() {
 		payout := totalBetAmount * bet.amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.Transfer(bet.sender, "iota", payout)
+			sc.Transfer(bet.sender, client.IOTA, payout)
 		}
-		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender
+		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender.String()
 		sc.Log(text)
 	}
 
@@ -141,7 +144,7 @@ func payWinners() {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + strconv.FormatInt(remainder, 10)
 		sc.Log(text)
-		sc.Transfer(scAddress, "iota", remainder)
+		sc.Transfer(scAddress, client.IOTA, remainder)
 	}
 }
 
@@ -149,7 +152,7 @@ func payWinners() {
 func playPeriod() {
 	// can only be sent by SC owner
 	sc := client.NewScContext()
-	if sc.Request().Address() != sc.Contract().Owner() {
+	if !sc.Request().From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -166,8 +169,8 @@ func playPeriod() {
 func decodeBetInfo(bytes []byte) *BetInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BetInfo{
-		id:     decoder.String(),
-		sender: decoder.String(),
+		id:     decoder.TxHash(),
+		sender: decoder.Address(),
 		amount: decoder.Int(),
 		color:  decoder.Int(),
 	}
@@ -175,8 +178,8 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 
 func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
-		String(bet.id).
-		String(bet.sender).
+		TxHash(bet.id).
+		Address(bet.sender).
 		Int(bet.amount).
 		Int(bet.color).
 		Data()

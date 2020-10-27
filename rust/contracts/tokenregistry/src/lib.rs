@@ -1,15 +1,12 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 struct TokenInfo {
     supply: i64,
-    minted_by: String,
-    owner: String,
+    minted_by: ScAddress,
+    owner: ScAddress,
     created: i64,
     updated: i64,
     description: String,
@@ -28,10 +25,10 @@ pub fn onLoad() {
 pub fn mintSupply() {
     let sc = ScContext::new();
     let request = sc.request();
-    let color = request.hash();
+    let color = request.minted_color();
     let state = sc.state();
-    let registry = state.get_map("tr");
-    if registry.get_bytes(&color).value().len() != 0 {
+    let registry = state.get_key_map("registry").get_bytes(color.to_bytes());
+    if registry.exists() {
         sc.log("TokenRegistry: Color already exists");
         return;
     }
@@ -53,14 +50,9 @@ pub fn mintSupply() {
         token.description += "no dscr";
     }
     let data = encodeTokenInfo(&token);
-    registry.get_bytes(&color).set_value(&data);
-    let colors = state.get_string("lc");
-    let mut list = colors.value();
-    if !list.is_empty() {
-        list += ",";
-    }
-    list += &color;
-    colors.set_value(&list);
+    registry.set_value(&data);
+    let colors = state.get_color_array("colorList");
+    colors.get_color(colors.length()).set_value(&color);
 }
 
 #[no_mangle]
@@ -79,8 +71,8 @@ fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
     let mut decoder = BytesDecoder::new(bytes);
     TokenInfo {
         supply: decoder.int(),
-        minted_by: decoder.string(),
-        owner: decoder.string(),
+        minted_by: decoder.address(),
+        owner: decoder.address(),
         created: decoder.int(),
         updated: decoder.int(),
         description: decoder.string(),
@@ -91,8 +83,8 @@ fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
 fn encodeTokenInfo(token: &TokenInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(token.supply);
-    encoder.string(&token.minted_by);
-    encoder.string(&token.owner);
+    encoder.address(&token.minted_by);
+    encoder.address(&token.owner);
     encoder.int(token.created);
     encoder.int(token.updated);
     encoder.string(&token.description);

@@ -6,9 +6,9 @@ import (
 
 type DonationInfo struct {
 	seq      int64
-	id       string
+	id       *client.ScTxHash
 	amount   int64
-	sender   string
+	sender   *client.ScAddress
 	feedback string
 	error    string
 }
@@ -30,8 +30,8 @@ func donate() {
 	request := sc.Request()
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
-		id:       request.Hash(),
-		amount:   request.Balance("iota"),
+		id:       request.TxHash(),
+		amount:   request.Balance(client.IOTA),
 		sender:   request.Address(),
 		feedback: request.Params().GetString("f").Value(),
 		error:    "",
@@ -39,7 +39,7 @@ func donate() {
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
 		if donation.amount > 0 {
-			sc.Transfer(donation.sender, "iota", donation.amount)
+			sc.Transfer(donation.sender, client.IOTA, donation.amount)
 			donation.amount = 0
 		}
 	}
@@ -58,15 +58,15 @@ func donate() {
 //export withdraw
 func withdraw() {
 	sc := client.NewScContext()
-	owner := sc.Contract().Owner()
+	scOwner := sc.Contract().Owner()
 	request := sc.Request()
-	if request.Address() != owner {
+	if !request.From(scOwner) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
 	account := sc.Account()
-	amount := account.Balance("iota")
+	amount := account.Balance(client.IOTA)
 	withdrawAmount := request.Params().GetInt("s").Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
@@ -76,16 +76,16 @@ func withdraw() {
 		return
 	}
 
-	sc.Transfer(owner, "iota", withdrawAmount)
+	sc.Transfer(scOwner, client.IOTA, withdrawAmount)
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &DonationInfo{}
 	data.seq = decoder.Int()
-	data.id = decoder.String()
+	data.id = decoder.TxHash()
 	data.amount = decoder.Int()
-	data.sender = decoder.String()
+	data.sender = decoder.Address()
 	data.error = decoder.String()
 	data.feedback = decoder.String()
 	return data
@@ -94,9 +94,9 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 func encodeDonationInfo(donation *DonationInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(donation.seq).
-		String(donation.id).
+		TxHash(donation.id).
 		Int(donation.amount).
-		String(donation.sender).
+		Address(donation.sender).
 		String(donation.error).
 		String(donation.feedback).
 		Data()

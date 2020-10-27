@@ -10,11 +10,6 @@ pub const TYPE_MAP_ARRAY: i32 = 5;
 pub const TYPE_STRING: i32 = 6;
 pub const TYPE_STRING_ARRAY: i32 = 7;
 
-// all token colors must be encoded as a 64-byte hex string,
-// except for the following two special cases:
-// default color, encoded as "iota" (COLOR_IOTA)
-// new color, encoded as "new" (COLOR_NEW)
-
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.
 // Any return value will be zero or empty string in that case
@@ -36,16 +31,23 @@ pub fn nothing() {
     ctx.log("Doing nothing as requested. Oh, wait...");
 }
 
+pub fn exists(obj_id: i32, key_id: i32) -> bool {
+    unsafe {
+        // query length of bytes array, negative means error or does not exist
+        hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) >= 0_i32
+    }
+}
+
 pub fn get_bytes(obj_id: i32, key_id: i32) -> Vec<u8> {
     unsafe {
         // first query length of bytes array
-        let size = hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) as usize;
-        if size == 0 { return vec![0_u8; 0]; }
+        let size = hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0);
+        if size <= 0 { return vec![0_u8; 0]; }
 
         // allocate a byte array in Wasm memory and
         // copy the actual data bytes to Wasm byte array
-        let mut bytes = vec![0_u8; size];
-        hostGetBytes(obj_id, key_id, bytes.as_mut_ptr(), size as i32);
+        let mut bytes = vec![0_u8; size as usize];
+        hostGetBytes(obj_id, key_id, bytes.as_mut_ptr(), size);
         return bytes;
     }
 }
@@ -56,10 +58,17 @@ pub fn get_int(obj_id: i32, key_id: i32) -> i64 {
     }
 }
 
-pub fn get_key_id(key: &str) -> i32 {
+pub fn get_key(bytes: &[u8]) -> i32 {
     unsafe {
-        let utf8_bytes = key.as_bytes();
-        hostGetKeyId(utf8_bytes.as_ptr(), utf8_bytes.len() as i32)
+        let size = bytes.len() as i32;
+        hostGetKeyId(bytes.as_ptr(), -size - 1)
+    }
+}
+
+pub fn get_key_id(key: &str) -> i32 {
+    let bytes = key.as_bytes();
+    unsafe {
+        hostGetKeyId(bytes.as_ptr(), bytes.len() as i32)
     }
 }
 

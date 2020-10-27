@@ -11,6 +11,10 @@ public class ScImmutableBytes {
 		this.keyId = keyId;
 	}
 
+	public boolean Exists() {
+		return Host.Exists(objId, keyId);
+	}
+
 	public byte[] Value() {
 		return Host.GetBytes(objId, keyId);
 	}

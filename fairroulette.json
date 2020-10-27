@@ -5,43 +5,100 @@
         "name": "fairroulette",
         "description": "Simple gambling app",
         "id": "fairrouletteId",
-        "address": "fairrouletteAddress",
-        "color": "fairrouletteColor",
-        "owner": "fairrouletteOwner"
+        "address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH",
+        "color": "YEGAxog9gxiGXxo538aAQxq55XAebpFfwU72ZUxmSHm",
+        "owner": "tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq"
       },
       "account": {
-        "colors": ["iota"],
-        "balance": {"iota": 100}
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100}
       },
       "request": {
         "timestamp": 20200928112900,
-        "id": "[0]transaction1",
-        "hash": "transaction1",
-        "address": "senderAddress"
+        "id": "2K3n5t4wSaF5mj27Tw9vStXWLWyRjjiH5Cp3CFLpKVCr1d",
+        "hash": "4uQeVj5tqViQh7yWWGStvkEG1Zmhx6uasJtWCJziofM",
+        "address": "2V9arUwkzyEgqrQv68stUy71cFUDcj3MURFmdJc8qamEP"
       }
     }
   },
   "tests": {
-    "placeOneBet": {
+    "payWinner": {
       "setup": "fairroulette",
+      "flags": "nodelay",
+      "utility": {"random": 2},
       "request": {
         "function": "placeBet",
-        "colors": ["iota"],
-        "balance": {"iota": 100},
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
         "params": {
           "color": 3
         }
       },
       "expect": {
-        "state": {
-          "counter": 1
-        },
         "account": {
-          "colors": ["iota"],
-          "balance": {"iota": 200}
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
+        },
+        "state": {
+          "lastWinningColor": 3
         },
         "logs": [],
-        "events": [{"contract": "", "function": "lockBets", "delay": 120}],
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "2V9arUwkzyEgqrQv68stUy71cFUDcj3MURFmdJc8qamEP", "amount": 100, "color": "11111111111111111111111111111111"}
+        ]
+      }
+    },
+    "nobodyWins": {
+      "setup": "fairroulette",
+      "flags": "nodelay",
+      "utility": {"random": 1},
+      "request": {
+        "function": "placeBet",
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
+        },
+        "state": {
+          "lastWinningColor": 2
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "amount": 100, "color": "11111111111111111111111111111111"}
+        ]
+      }
+    },
+    "placeOneBet": {
+      "setup": "fairroulette",
+      "request": {
+        "function": "placeBet",
+        "colors": ["11111111111111111111111111111111"],
+        "balance": {"11111111111111111111111111111111": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["11111111111111111111111111111111"],
+          "balance": {"11111111111111111111111111111111": 200}
+        },
+        "logs": [],
+        "postedRequests": [{"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
     }

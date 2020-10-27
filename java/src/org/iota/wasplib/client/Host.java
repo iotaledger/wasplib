@@ -38,9 +38,13 @@ public class Host {
 		ctx.Log("Doing nothing as requested. Oh, wait...");
 	}
 
+	public static boolean Exists(int objId, int keyId) {
+		return hostGetBytes(objId, keyId, null, 0) >= 0;
+	}
+
 	public static byte[] GetBytes(int objId, int keyId) {
 		int size = hostGetBytes(objId, keyId, null, 0);
-		if (size == 0) {
+		if (size <= 0) {
 			return null;
 		}
 		byte[] bytes = new byte[size];
@@ -52,9 +56,15 @@ public class Host {
 		return hostGetInt(objId, keyId);
 	}
 
+	public static int GetKey(byte[] key) {
+		int size = key.length;
+		return hostGetKeyId(key, -size - 1);
+	}
+
 	public static int GetKeyId(String key) {
 		byte[] bytes = key.getBytes(StandardCharsets.UTF_8);
-		return hostGetKeyId(bytes, bytes.length);
+		int size = bytes.length;
+		return hostGetKeyId(bytes, size);
 	}
 
 	public static int GetObjectId(int objId, int keyId, int typeId) {

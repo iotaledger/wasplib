@@ -1,7 +1,8 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.immutable.ScImmutableStringArray;
 
 public class ScAccount {
 	ScImmutableMap account;
@@ -10,11 +11,11 @@ public class ScAccount {
 		this.account = account;
 	}
 
-	public long Balance(String color) {
-		return account.GetMap("balance").GetInt(color).Value();
+	public long Balance(ScColor color) {
+		return account.GetKeyMap("balance").GetInt(color.toBytes()).Value();
 	}
 
-	public ScImmutableStringArray Colors() {
-		return account.GetStringArray("colors");
+	public ScImmutableColorArray Colors() {
+		return account.GetColorArray("colors");
 	}
 }

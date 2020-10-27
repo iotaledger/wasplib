@@ -5,6 +5,9 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScTxHash;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -28,7 +31,7 @@ public class FairRoulette {
 	public static void placeBet() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		long amount = request.Balance("iota");
+		long amount = request.Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Log("Empty bet...");
 			return;
@@ -44,7 +47,7 @@ public class FairRoulette {
 		}
 
 		BetInfo bet = new BetInfo();
-		bet.id = request.Hash();
+		bet.id = request.TxHash();
 		bet.sender = request.Address();
 		bet.color = color;
 		bet.amount = amount;
@@ -59,7 +62,7 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.Event("", "lockBets", playPeriod);
+			sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod);
 		}
 	}
 
@@ -67,7 +70,8 @@ public class FairRoulette {
 	public static void lockBets() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Address())) {
+		ScAddress scAddress = sc.Contract().Address();
+		if (!sc.Request().From(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -75,21 +79,22 @@ public class FairRoulette {
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
-		for (int i = 0; i < bets.Length(); i++) {
+		int nrBets = bets.Length();
+		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = bets.GetBytes(i).Value();
 			lockedBets.GetBytes(i).SetValue(bytes);
 		}
 		bets.Clear();
 
-		sc.Event("", "payWinners", 0);
+		sc.PostRequest(scAddress, "payWinners", 0);
 	}
 
 	//export payWinners
 	public static void payWinners() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		String scAddress = sc.Contract().Address();
-		if (!sc.Request().Address().equals(scAddress)) {
+		ScAddress scAddress = sc.Contract().Address();
+		if (!sc.Request().From(scAddress)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -102,7 +107,8 @@ public class FairRoulette {
 		long totalWinAmount = 0;
 		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
 		ArrayList<BetInfo> winners = new ArrayList<>();
-		for (int i = 0; i < lockedBets.Length(); i++) {
+		int nrBets = lockedBets.Length();
+		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = lockedBets.GetBytes(i).Value();
 			BetInfo bet = decodeBetInfo(bytes);
 			totalBetAmount += bet.amount;
@@ -116,7 +122,7 @@ public class FairRoulette {
 		if (winners.size() == 0) {
 			sc.Log("Nobody wins!");
 			// compact separate UTXOs into a single one
-			sc.Transfer(scAddress, "iota", totalBetAmount);
+			sc.Transfer(scAddress, ScColor.IOTA, totalBetAmount);
 			return;
 		}
 
@@ -126,7 +132,7 @@ public class FairRoulette {
 			long payout = totalBetAmount * bet.amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
-				sc.Transfer(bet.sender, "iota", payout);
+				sc.Transfer(bet.sender, ScColor.IOTA, payout);
 			}
 			String text = "Pay " + payout + " to " + bet.sender;
 			sc.Log(text);
@@ -136,7 +142,7 @@ public class FairRoulette {
 			long remainder = totalBetAmount - totalPayout;
 			String text = "Remainder is " + remainder;
 			sc.Log(text);
-			sc.Transfer(scAddress, "iota", remainder);
+			sc.Transfer(scAddress, ScColor.IOTA, remainder);
 		}
 	}
 
@@ -144,7 +150,7 @@ public class FairRoulette {
 	public static void playPeriod() {
 		// can only be sent by SC owner
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
+		if (!sc.Request().From(sc.Contract().Owner())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -161,8 +167,8 @@ public class FairRoulette {
 	public static BetInfo decodeBetInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BetInfo bet = new BetInfo();
-		bet.id = decoder.String();
-		bet.sender = decoder.String();
+		bet.id = decoder.TxHash();
+		bet.sender = decoder.Address();
 		bet.color = decoder.Int();
 		bet.amount = decoder.Int();
 		return bet;
@@ -170,16 +176,16 @@ public class FairRoulette {
 
 	public static byte[] encodeBetInfo(BetInfo bet) {
 		return new BytesEncoder().
-				String(bet.id).
-				String(bet.sender).
+				TxHash(bet.id).
+				Address(bet.sender).
 				Int(bet.color).
 				Int(bet.amount).
 				Data();
 	}
 
 	public static class BetInfo {
-		String id;
-		String sender;
+		ScTxHash id;
+		ScAddress sender;
 		long color;
 		long amount;
 	}

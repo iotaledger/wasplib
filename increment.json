@@ -5,16 +5,16 @@
         "name": "increment",
         "description": "Test basic functionality",
         "id": "incrementId",
-        "address": "incrementAddress",
-        "color": "incrementColor",
-        "owner": "incrementOwner"
+        "address": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH",
+        "color": "YEGAxog9gxiGXxo538aAQxq55XAebpFfwU72ZUxmSHm",
+        "owner": "tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq"
       },
       "account": {},
       "request": {
         "timestamp": 20200928112900,
-        "id": "[0]transaction1",
-        "hash": "transaction1",
-        "address": "senderAddress"
+        "id": "2K3n5t4wSaF5mj27Tw9vStXWLWyRjjiH5Cp3CFLpKVCr1d",
+        "hash": "4uQeVj5tqViQh7yWWGStvkEG1Zmhx6uasJtWCJziofM",
+        "address": "bTdjzaWCb6UY9AZqTMMbPSc3VzHeVR9By6ueiqrY2uVZ"
       }
     }
   },
@@ -29,7 +29,7 @@
           "counter": 1
         },
         "logs": [],
-        "events": [],
+        "postedRequests": [],
         "transfers": []
       }
     },
@@ -46,7 +46,7 @@
           "counter": 2
         },
         "logs": [],
-        "events": [],
+        "postedRequests": [],
         "transfers": []
       }
     },
@@ -60,8 +60,8 @@
           "counter": 2
         },
         "logs": [],
-        "events": [
-          {"contract": "", "function": "increment", "delay": 5}
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "increment", "delay": 0}
         ],
         "transfers": []
       }
@@ -80,12 +80,12 @@
           "numRepeats": 0
         },
         "logs": [],
-        "events": [
-          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "", "function": "incrementRepeatMany", "delay": 3},
-          {"contract": "", "function": "incrementRepeatMany", "delay": 3}
+        "postedRequests": [
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "JEKNVnkbo3jma5nREBBJCDoXFVeKkD56V3xKrvRmWxFH", "function": "incrementRepeatMany", "delay": 0}
         ],
         "transfers": []
       }

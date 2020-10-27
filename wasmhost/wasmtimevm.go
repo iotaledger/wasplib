@@ -23,16 +23,15 @@ func NewWasmTimeVM() *WasmTimeVM {
 func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	err := vm.linker.DefineFunc("wasplib", "hostGetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) int32 {
-			if objId >= 0 {
-				return host.vmSetBytes(stringRef, size, host.GetBytes(objId, keyId))
-			}
-			return host.vmSetBytes(stringRef, size, []byte(host.GetString(-objId, keyId)))
+			vm.traceHost(host, "hostGetBytes")
+			return host.GetBytes(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetInt",
 		func(objId int32, keyId int32) int64 {
+			vm.traceHost(host, "hostGetInt")
 			return host.GetInt(objId, keyId)
 		})
 	if err != nil {
@@ -40,6 +39,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetIntRef",
 		func(objId int32, keyId int32, intRef int32) {
+			vm.traceHost(host, "hostGetIntRef")
 			host.vmSetInt(intRef, host.GetInt(objId, keyId))
 		})
 	if err != nil {
@@ -47,13 +47,15 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetKeyId",
 		func(keyRef int32, size int32) int32 {
-			return host.GetKeyId(string(host.vmGetBytes(keyRef, size)))
+			vm.traceHost(host, "hostGetKeyId")
+			return host.GetKeyId(keyRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetObjectId",
 		func(objId int32, keyId int32, typeId int32) int32 {
+			vm.traceHost(host, "hostGetObjectId")
 			return host.GetObjectId(objId, keyId, typeId)
 		})
 	if err != nil {
@@ -61,17 +63,15 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) {
-			if objId >= 0 {
-				host.SetBytes(objId, keyId, host.vmGetBytes(stringRef, size))
-				return
-			}
-			host.SetString(-objId, keyId, string(host.vmGetBytes(stringRef, size)))
+			vm.traceHost(host, "hostSetBytes")
+			host.SetBytes(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetInt",
 		func(objId int32, keyId int32, value int64) {
+			vm.traceHost(host, "hostSetInt")
 			host.SetInt(objId, keyId, value)
 		})
 	if err != nil {
@@ -79,6 +79,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetIntRef",
 		func(objId int32, keyId int32, intRef int32) {
+			vm.traceHost(host, "hostSetIntRef")
 			host.SetInt(objId, keyId, host.vmGetInt(intRef))
 		})
 	if err != nil {
@@ -120,6 +121,10 @@ func (vm *WasmTimeVM) RunFunction(functionName string) error {
 	function := vm.instance.GetExport(functionName).Func()
 	_, err := function.Call()
 	return err
+}
+
+func (vm *WasmTimeVM) traceHost(host *WasmHost, text string) {
+	host.logger.Log(KeyTraceHost, text)
 }
 
 func (vm *WasmTimeVM) UnsafeMemory() []byte {

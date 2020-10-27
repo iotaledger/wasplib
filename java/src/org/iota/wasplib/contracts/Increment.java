@@ -30,7 +30,7 @@ public class Increment {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.Event("", "increment", 5);
+			sc.PostRequest(sc.Contract().Address(), "increment", 0);
 		}
 	}
 
@@ -40,8 +40,8 @@ public class Increment {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		long value = counter.Value();
 		counter.SetValue(value + 1);
-		long repeats = sc.Request().Params().GetInt("numRepeats").Value();
 		ScMutableInt stateRepeats = sc.State().GetInt("numRepeats");
+		long repeats = sc.Request().Params().GetInt("numRepeats").Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {
@@ -49,7 +49,7 @@ public class Increment {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.Event("", "incrementRepeatMany", 3);
+		sc.PostRequest(sc.Contract().Address(), "incrementRepeatMany", 0);
 	}
 
 	//export test

@@ -1,7 +1,10 @@
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScTxHash;
+import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.immutable.ScImmutableStringArray;
 
 public class ScRequest {
 	ScImmutableMap request;
@@ -10,24 +13,24 @@ public class ScRequest {
 		this.request = request;
 	}
 
-	public String Address() {
-		return request.GetString("address").Value();
+	public ScAddress Address() {
+		return request.GetAddress("address").Value();
 	}
 
-	public long Balance(String color) {
-		return request.GetMap("balance").GetInt(color).Value();
+	public long Balance(ScColor color) {
+		return request.GetKeyMap("balance").GetInt(color.toBytes()).Value();
 	}
 
-	public ScImmutableStringArray Colors() {
-		return request.GetStringArray("colors");
+	public ScImmutableColorArray Colors() {
+		return request.GetColorArray("colors");
 	}
 
-	public String Hash() {
-		return request.GetString("hash").Value();
+	public Boolean From(ScAddress originator) {
+		return From(originator);
 	}
 
-	public String Id() {
-		return request.GetString("id").Value();
+	public ScColor MintedColor() {
+		return request.GetColor("hash").Value();
 	}
 
 	public ScImmutableMap Params() {
@@ -36,5 +39,9 @@ public class ScRequest {
 
 	public long Timestamp() {
 		return request.GetInt("timestamp").Value();
+	}
+
+	public ScTxHash TxHash() {
+		return request.GetTxHash("hash").Value();
 	}
 }

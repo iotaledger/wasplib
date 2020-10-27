@@ -12,4 +12,5 @@ func NewHostExports(host *SimpleWasmHost) *HostExports {
 
 func (a *HostExports) SetString(keyId int32, value string) {
 	fmt.Printf("%s = %d\n", value, keyId)
+	a.host.SetExport(keyId, value)
 }

@@ -1,5 +1,7 @@
 package wasmhost
 
+import "github.com/mr-tron/base58"
+
 type HostArray struct {
 	host      *SimpleWasmHost
 	items     []interface{}
@@ -11,11 +13,21 @@ func NewHostArray(host *SimpleWasmHost, typeId int32) *HostArray {
 	return &HostArray{host: host, typeId: typeId}
 }
 
+func (a *HostArray) Exists(keyId int32) bool {
+	return keyId >= 0 && keyId < int32(len(a.items))
+}
+
 func (a *HostArray) GetBytes(keyId int32) []byte {
-	if !a.valid(keyId, OBJTYPE_BYTES) {
+	value := a.GetString(keyId)
+	if value == "" {
 		return []byte(nil)
 	}
-	return a.items[keyId].([]byte)
+	bytes, err := base58.Decode(value)
+	if err != nil {
+		a.host.SetError("Map.GetBytes: " + err.Error())
+		return []byte(nil)
+	}
+	return bytes
 }
 
 func (a *HostArray) GetInt(keyId int32) int64 {
@@ -49,14 +61,7 @@ func (a *HostArray) GetString(keyId int32) string {
 }
 
 func (a *HostArray) SetBytes(keyId int32, value []byte) {
-	if EnableImmutableChecks && a.immutable {
-		a.host.SetError("Array.SetBytes: Immutable")
-		return
-	}
-	if !a.valid(keyId, OBJTYPE_BYTES) {
-		return
-	}
-	a.items[keyId] = value
+	a.SetString(keyId, base58.Encode(value))
 }
 
 func (a *HostArray) SetInt(keyId int32, value int64) {

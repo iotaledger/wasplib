@@ -1,17 +1,14 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
-    id: String,
-    sender: String,
+    id: ScTxHash,
+    sender: ScAddress,
     color: i64,
     amount: i64,
 }
@@ -30,7 +27,7 @@ pub fn onLoad() {
 pub fn placeBet() {
     let sc = ScContext::new();
     let request = sc.request();
-    let amount = request.balance("iota");
+    let amount = request.balance(&ScColor::IOTA);
     if amount == 0 {
         sc.log("Empty bet...");
         return;
@@ -46,7 +43,7 @@ pub fn placeBet() {
     }
 
     let bet = BetInfo {
-        id: request.id(),
+        id: request.tx_hash(),
         sender: request.address(),
         color,
         amount,
@@ -62,7 +59,7 @@ pub fn placeBet() {
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.event("", "lockBets", play_period);
+        sc.post_request(&sc.contract().address(), "lockBets", play_period);
     }
 }
 
@@ -70,7 +67,8 @@ pub fn placeBet() {
 pub fn lockBets() {
     // can only be sent by SC itself
     let sc = ScContext::new();
-    if sc.request().address() != sc.contract().address() {
+    let sc_address = sc.contract().address();
+    if !sc.request().from(&sc_address) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -79,13 +77,14 @@ pub fn lockBets() {
     let state = sc.state();
     let bets = state.get_bytes_array("bets");
     let locked_bets = state.get_bytes_array("lockedBets");
-    for i in 0..bets.length() {
+    let nrBets = bets.length();
+    for i in 0..nrBets {
         let bytes = bets.get_bytes(i).value();
         locked_bets.get_bytes(i).set_value(&bytes);
     }
     bets.clear();
 
-    sc.event("", "payWinners", 0);
+    sc.post_request(&sc_address, "payWinners", 0);
 }
 
 #[no_mangle]
@@ -93,7 +92,7 @@ pub fn payWinners() {
     // can only be sent by SC itself
     let sc = ScContext::new();
     let sc_address = sc.contract().address();
-    if sc.request().address() != sc_address {
+    if !sc.request().from(&sc_address) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -107,7 +106,8 @@ pub fn payWinners() {
     let mut total_win_amount = 0_i64;
     let locked_bets = state.get_bytes_array("lockedBets");
     let mut winners: Vec<BetInfo> = Vec::new();
-    for i in 0..locked_bets.length() {
+    let nrBets = locked_bets.length();
+    for i in 0..nrBets {
         let bytes = locked_bets.get_bytes(i).value();
         let bet = decodeBetInfo(&bytes);
         total_bet_amount += bet.amount;
@@ -121,7 +121,7 @@ pub fn payWinners() {
     if winners.is_empty() {
         sc.log("Nobody wins!");
         // compact separate UTXOs into a single one
-        sc.transfer(&sc_address, "iota", total_bet_amount);
+        sc.transfer(&sc_address, &ScColor::IOTA, total_bet_amount);
         return;
     }
 
@@ -132,9 +132,9 @@ pub fn payWinners() {
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {
             total_payout += payout;
-            sc.transfer(&bet.sender, "iota", payout);
+            sc.transfer(&bet.sender, &ScColor::IOTA, payout);
         }
-        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender;
+        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender.to_string();
         sc.log(&text);
     }
 
@@ -143,7 +143,7 @@ pub fn payWinners() {
         let remainder = total_bet_amount - total_payout;
         let text = "Remainder is ".to_string() + &remainder.to_string();
         sc.log(&text);
-        sc.transfer(&sc_address, "iota", remainder);
+        sc.transfer(&sc_address, &ScColor::IOTA, remainder);
     }
 }
 
@@ -152,7 +152,7 @@ pub fn playPeriod() {
     // can only be sent by SC owner
     let sc = ScContext::new();
     let request = sc.request();
-    if request.address() != sc.contract().owner() {
+    if !request.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -169,8 +169,8 @@ pub fn playPeriod() {
 fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
-        id: decoder.string(),
-        sender: decoder.string(),
+        id: decoder.tx_hash(),
+        sender: decoder.address(),
         amount: decoder.int(),
         color: decoder.int(),
     }
@@ -178,8 +178,8 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.string(&bet.id);
-    encoder.string(&bet.sender);
+    encoder.tx_hash(&bet.id);
+    encoder.address(&bet.sender);
     encoder.int(bet.amount);
     encoder.int(bet.color);
     encoder.data()

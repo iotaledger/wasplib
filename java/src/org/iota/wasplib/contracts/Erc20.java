@@ -3,10 +3,12 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.immutable.ScImmutableString;
 import org.iota.wasplib.client.mutable.ScMutableInt;
+import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class Erc20 {
@@ -43,7 +45,7 @@ public class Erc20 {
 		}
 		long supply = supplyParam.Value();
 		supplyState.SetValue(supply);
-		state.GetMap(varBalances).GetInt(sc.Contract().Owner()).SetValue(supply);
+		state.GetKeyMap(varBalances).GetInt(sc.Contract().Owner().toBytes()).SetValue(supply);
 
 		sc.Log("initSC: success");
 	}
@@ -55,12 +57,12 @@ public class Erc20 {
 
 		ScMutableMap state = sc.State();
 		ScRequest request = sc.Request();
-		ScMutableMap balances = state.GetMap(varBalances);
+		ScMutableKeyMap balances = state.GetKeyMap(varBalances);
 
-		String sender = request.Address();
+		ScAddress sender = request.Address();
 		sc.Log("sender address: " + sender);
 
-		ScMutableInt sourceBalance = balances.GetInt(sender);
+		ScMutableInt sourceBalance = balances.GetInt(sender.toBytes());
 		sc.Log("source balance: " + sourceBalance.Value());
 
 		ScImmutableMap params = request.Params();
@@ -73,10 +75,10 @@ public class Erc20 {
 			sc.Log("transfer.fail: not enough balance");
 			return;
 		}
-		ScImmutableString targetAddr = params.GetString(varTargetAddress);
+		ScImmutableAddress targetAddr = params.GetAddress(varTargetAddress);
 		// TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
-		ScMutableInt targetBalance = balances.GetInt(targetAddr.Value());
+		ScMutableInt targetBalance = balances.GetInt(targetAddr.Value().toBytes());
 		targetBalance.SetValue(targetBalance.Value() + amount.Value());
 		sourceBalance.SetValue(sourceBalance.Value() - amount.Value());
 

@@ -53,7 +53,7 @@
     {"address": "base58HashOfTargetAddress", "color": "iota", "amount": 10},
     {"address": "base58HashOfTargetAddress", "color": "base58HashOfColor", "amount": 1}
   ],
-  "events": [
+  "postedRequests": [
     {
       "contract": "base58HashOfSmartContractId",
       "code": 0,

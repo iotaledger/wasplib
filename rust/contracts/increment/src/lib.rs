@@ -1,9 +1,8 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::host::{get_int, get_key_id, get_string, set_int, set_string};
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
+use wasplib::client::host::*;
 
 #[no_mangle]
 pub fn onLoad() {
@@ -29,7 +28,7 @@ pub fn incrementRepeat1() {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.event("", "increment", 5);
+        sc.post_request(&sc.contract().address(), "increment", 0);
     }
 }
 
@@ -39,8 +38,8 @@ pub fn incrementRepeatMany() {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
-    let mut repeats = sc.request().params().get_int("numRepeats").value();
     let state_repeats = sc.state().get_int("numRepeats");
+    let mut repeats = sc.request().params().get_int("numRepeats").value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {
@@ -48,7 +47,7 @@ pub fn incrementRepeatMany() {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.event("", "incrementRepeatMany", 3);
+    sc.post_request(&sc.contract().address(), "incrementRepeatMany", 0);
 }
 
 #[no_mangle]

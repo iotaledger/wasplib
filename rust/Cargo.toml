@@ -2,12 +2,12 @@
 members = [
     "wasplib",
     "contracts/donatewithfeedback",
+    "contracts/erc20",
     "contracts/fairauction",
     "contracts/fairroulette",
     "contracts/helloworld",
     "contracts/increment",
     "contracts/tokenregistry",
-    "contracts/erc20",
 ]
 
 [profile.release]

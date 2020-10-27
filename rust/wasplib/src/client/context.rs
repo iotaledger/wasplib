@@ -1,45 +1,40 @@
 // encapsulates standard host entities into a simple interface
 
+use super::hashtypes::*;
 use super::host::set_string;
-use super::immutable::ScImmutableMap;
-use super::immutable::ScImmutableStringArray;
-use super::keys::key_log;
-use super::keys::key_trace;
-use super::mutable::ScMutableMap;
-use super::mutable::ScMutableString;
-use super::mutable::ScMutableStringArray;
+use super::immutable::*;
+use super::keys::*;
+use super::mutable::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScAccount {
     account: ScImmutableMap,
 }
 
 impl ScAccount {
-    pub fn balance(&self, color: &str) -> i64 {
-        self.account.get_map("balance").get_int(color).value()
+    pub fn balance(&self, color: &ScColor) -> i64 {
+        self.account.get_key_map("balance").get_int(color.to_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScImmutableStringArray {
-        self.account.get_string_array("colors")
+    pub fn colors(&self) -> ScImmutableColorArray {
+        self.account.get_color_array("colors")
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScContract {
     contract: ScImmutableMap,
 }
 
 impl ScContract {
-    pub fn address(&self) -> String {
-        self.contract.get_string("address").value()
+    pub fn address(&self) -> ScAddress {
+        self.contract.get_address("address").value()
     }
 
-    pub fn color(&self) -> String {
-        self.contract.get_string("color").value()
+    pub fn color(&self) -> ScColor {
+        self.contract.get_color("color").value()
     }
 
     pub fn description(&self) -> String {
@@ -54,44 +49,13 @@ impl ScContract {
         self.contract.get_string("name").value()
     }
 
-    pub fn owner(&self) -> String {
-        self.contract.get_string("owner").value()
+    pub fn owner(&self) -> ScAddress {
+        self.contract.get_address("owner").value()
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
-pub struct ScEvent {
-    event: ScMutableMap,
-}
-
-impl ScEvent {
-    pub fn code(&self, code: i64) {
-        self.event.get_int("code").set_value(code);
-    }
-
-    pub fn contract(&self, contract: &str) {
-        self.event.get_string("contract").set_value(contract);
-    }
-
-    pub fn delay(&self, delay: i64) {
-        self.event.get_int("delay").set_value(delay);
-    }
-
-    pub fn function(&self, function: &str) {
-        self.event.get_string("function").set_value(function);
-    }
-
-    pub fn params(&self) -> ScMutableMap {
-        self.event.get_map("params")
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-
-#[derive(Copy, Clone)]
 pub struct ScExports {
     exports: ScMutableStringArray,
     next: i32,
@@ -116,8 +80,6 @@ impl ScExports {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-
-#[derive(Copy, Clone)]
 pub struct ScLog {
     log: ScMutableMap,
 }
@@ -135,30 +97,57 @@ impl ScLog {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
+pub struct ScPostedRequest {
+    request: ScMutableMap,
+}
+
+impl ScPostedRequest {
+    pub fn code(&self, code: i64) {
+        self.request.get_int("code").set_value(code);
+    }
+
+    pub fn contract(&self, address: &ScAddress) {
+        self.request.get_address("contract").set_value(address);
+    }
+
+    pub fn delay(&self, delay: i64) {
+        self.request.get_int("delay").set_value(delay);
+    }
+
+    pub fn function(&self, function: &str) {
+        self.request.get_string("function").set_value(function);
+    }
+
+    pub fn params(&self) -> ScMutableMap {
+        self.request.get_map("params")
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScRequest {
     request: ScImmutableMap,
 }
 
 impl ScRequest {
-    pub fn address(&self) -> String {
-        self.request.get_string("address").value()
+    pub fn address(&self) -> ScAddress {
+        self.request.get_address("address").value()
     }
 
-    pub fn balance(&self, color: &str) -> i64 {
-        self.request.get_map("balance").get_int(color).value()
+    pub fn balance(&self, color: &ScColor) -> i64 {
+        self.request.get_key_map("balance").get_int(color.to_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScImmutableStringArray {
-        self.request.get_string_array("colors")
+    pub fn colors(&self) -> ScImmutableColorArray {
+        self.request.get_color_array("colors")
     }
 
-    pub fn hash(&self) -> String {
-        self.request.get_string("hash").value()
+    pub fn from(&self, originator: &ScAddress) -> bool {
+        self.address() == *originator
     }
 
-    pub fn id(&self) -> String {
-        self.request.get_string("id").value()
+    pub fn minted_color(&self) -> ScColor {
+        self.request.get_color("hash").value()
     }
 
     pub fn params(&self) -> ScImmutableMap {
@@ -168,39 +157,57 @@ impl ScRequest {
     pub fn timestamp(&self) -> i64 {
         self.request.get_int("timestamp").value()
     }
+
+    pub fn tx_hash(&self) -> ScTxHash {
+        self.request.get_tx_hash("hash").value()
+    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScTransfer {
     transfer: ScMutableMap,
 }
 
 impl ScTransfer {
-    pub fn address(&self, address: &str) {
-        self.transfer.get_string("address").set_value(address);
+    pub fn address(&self, address: &ScAddress) {
+        self.transfer.get_address("address").set_value(address);
     }
 
     pub fn amount(&self, amount: i64) {
         self.transfer.get_int("amount").set_value(amount);
     }
 
-    pub fn color(&self, color: &str) {
-        self.transfer.get_string("color").set_value(color);
+    pub fn color(&self, color: &ScColor) {
+        self.transfer.get_color("color").set_value(color);
     }
 }
 
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScUtility {
     utility: ScMutableMap,
 }
 
 impl ScUtility {
+    pub fn base58_decode(&self, value: &str) -> Vec<u8> {
+        //TODO atomic set/get
+        let decode = self.utility.get_string("base58");
+        let encode = self.utility.get_bytes("base58");
+        decode.set_value(value);
+        encode.value()
+    }
+
+    pub fn base58_encode(&self, value: &[u8]) -> String {
+        //TODO atomic set/get
+        let decode = self.utility.get_string("base58");
+        let encode = self.utility.get_bytes("base58");
+        encode.set_value(value);
+        decode.value()
+    }
+
     pub fn hash(&self, value: &[u8]) -> Vec<u8> {
+        //TODO atomic set/get
         let hash = self.utility.get_bytes("hash");
         hash.set_value(value);
         hash.value()
@@ -214,7 +221,6 @@ impl ScUtility {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Copy, Clone)]
 pub struct ScContext {
     root: ScMutableMap,
 }
@@ -236,27 +242,27 @@ impl ScContext {
         self.root.get_string("error")
     }
 
-    pub fn event(&self, contract: &str, function: &str, delay: i64) -> ScMutableMap {
-        let events = self.root.get_map_array("events");
-        let evt = ScEvent { event: events.get_map(events.length()) };
-        evt.contract(contract);
-        evt.function(function);
-        evt.delay(delay);
-        evt.params()
+    pub fn log(&self, text: &str) {
+        set_string(1, key_log(), text)
+    }
+
+    pub fn post_request(&self, contract: &ScAddress, function: &str, delay: i64) -> ScMutableMap {
+        let posted_requests = self.root.get_map_array("postedRequests");
+        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
+        request.contract(contract);
+        request.function(function);
+        request.delay(delay);
+        request.params()
     }
 
     // just for compatibility with old hardcoded SCs
-    pub fn event_with_code(&self, contract: &str, code: i64, delay: i64) -> ScMutableMap {
-        let events = self.root.get_map_array("events");
-        let evt = ScEvent { event: events.get_map(events.length()) };
-        evt.contract(contract);
-        evt.code(code);
-        evt.delay(delay);
-        evt.params()
-    }
-
-    pub fn log(&self, text: &str) {
-        set_string(1, key_log(), text)
+    pub fn post_request_with_code(&self, contract: &ScAddress, code: i64, delay: i64) -> ScMutableMap {
+        let posted_requests = self.root.get_map_array("postedRequests");
+        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
+        request.contract(contract);
+        request.code(code);
+        request.delay(delay);
+        request.params()
     }
 
     pub fn request(&self) -> ScRequest {
@@ -270,11 +276,12 @@ impl ScContext {
     pub fn timestamped_log(&self, key: &str) -> ScLog {
         ScLog { log: self.root.get_map("logs").get_map(key) }
     }
+
     pub fn trace(&self, text: &str) {
         set_string(1, key_trace(), text)
     }
 
-    pub fn transfer(&self, address: &str, color: &str, amount: i64) {
+    pub fn transfer(&self, address: &ScAddress, color: &ScColor, amount: i64) {
         let transfers = self.root.get_map_array("transfers");
         let xfer = ScTransfer { transfer: transfers.get_map(transfers.length()) };
         xfer.address(address);

@@ -11,6 +11,10 @@ public class ScMutableBytes {
 		this.keyId = keyId;
 	}
 
+	public boolean Exists() {
+		return Host.Exists(objId, keyId);
+	}
+
 	public void SetValue(byte[] value) {
 		Host.SetBytes(objId, keyId, value);
 	}

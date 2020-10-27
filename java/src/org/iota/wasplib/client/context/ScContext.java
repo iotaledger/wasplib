@@ -2,6 +2,8 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
@@ -25,26 +27,26 @@ public class ScContext {
 		return root.GetString("error");
 	}
 
-	public ScMutableMap Event(String contract, String function, long delay) {
-		ScMutableMapArray events = root.GetMapArray("events");
-		ScEvent evt = new ScEvent(events.GetMap(events.Length()));
-		evt.Contract(contract);
-		evt.Function(function);
-		evt.Delay(delay);
-		return evt.Params();
-	}
-
-	public ScMutableMap EventWithCode(String contract, long code, long delay) {
-		ScMutableMapArray events = root.GetMapArray("events");
-		ScEvent evt = new ScEvent(events.GetMap(events.Length()));
-		evt.Contract(contract);
-		evt.Code(code);
-		evt.Delay(delay);
-		return evt.Params();
-	}
-
 	public void Log(String text) {
 		Host.SetString(1, Keys.KeyLog(), text);
+	}
+
+	public ScMutableMap PostRequest(ScAddress contract, String function, long delay) {
+		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
+		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
+		request.Contract(contract);
+		request.Function(function);
+		request.Delay(delay);
+		return request.Params();
+	}
+
+	public ScMutableMap PostRequestWithCode(ScAddress contract, long code, long delay) {
+		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
+		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
+		request.Contract(contract);
+		request.Code(code);
+		request.Delay(delay);
+		return request.Params();
 	}
 
 	public long Random(long max) {
@@ -68,7 +70,7 @@ public class ScContext {
 		Host.SetString(1, Keys.KeyTrace(), text);
 	}
 
-	public void Transfer(String address, String color, long amount) {
+	public void Transfer(ScAddress address, ScColor color, long amount) {
 		ScMutableMapArray transfers = root.GetMapArray("transfers");
 		ScTransfer xfer = new ScTransfer(transfers.GetMap(transfers.Length()));
 		xfer.Address(address);

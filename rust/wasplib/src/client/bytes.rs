@@ -1,3 +1,5 @@
+use super::hashtypes::*;
+
 pub struct BytesDecoder<'a> {
     data: &'a [u8],
 }
@@ -5,6 +7,10 @@ pub struct BytesDecoder<'a> {
 impl BytesDecoder<'_> {
     pub fn new(data: &[u8]) -> BytesDecoder {
         BytesDecoder { data: data }
+    }
+
+    pub fn address(&mut self) -> ScAddress {
+        ScAddress::from_bytes(self.bytes())
     }
 
     pub fn bytes(&mut self) -> &[u8] {
@@ -15,6 +21,10 @@ impl BytesDecoder<'_> {
         let value = &self.data[..size];
         self.data = &self.data[size..];
         value
+    }
+
+    pub fn color(&mut self) -> ScColor {
+        ScColor::from_bytes(self.bytes())
     }
 
     pub fn int(&mut self) -> i64 {
@@ -46,6 +56,10 @@ impl BytesDecoder<'_> {
     pub fn string(&mut self) -> String {
         String::from_utf8_lossy(self.bytes()).to_string()
     }
+
+    pub fn tx_hash(&mut self) -> ScTxHash {
+        ScTxHash::from_bytes(self.bytes())
+    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -59,9 +73,19 @@ impl BytesEncoder {
         BytesEncoder { data: Vec::new() }
     }
 
+    pub fn address(&mut self, value: &ScAddress) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
+    }
+
     pub fn bytes(&mut self, value: &[u8]) -> &BytesEncoder {
         self.int(value.len() as i64);
         self.data.extend_from_slice(value);
+        self
+    }
+
+    pub fn color(&mut self, value: &ScColor) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
         self
     }
 
@@ -85,6 +109,11 @@ impl BytesEncoder {
 
     pub fn string(&mut self, value: &str) -> &BytesEncoder {
         self.bytes(value.as_bytes());
+        self
+    }
+
+    pub fn tx_hash(&mut self, value: &ScTxHash) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
         self
     }
 }

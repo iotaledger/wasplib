@@ -27,7 +27,6 @@ name = "donatewithfeedback"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -38,7 +37,6 @@ name = "erc20"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -49,7 +47,6 @@ name = "fairauction"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -60,7 +57,6 @@ name = "fairroulette"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -71,7 +67,6 @@ name = "helloworld"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -82,7 +77,6 @@ name = "increment"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",
@@ -164,7 +158,6 @@ name = "tokenregistry"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
- "wasm-bindgen",
  "wasm-bindgen-test",
  "wasplib",
  "wee_alloc",

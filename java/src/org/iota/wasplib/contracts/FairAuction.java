@@ -5,9 +5,13 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.immutable.ScImmutableColor;
+import org.iota.wasplib.client.immutable.ScImmutableColorArray;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.immutable.ScImmutableStringArray;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
+import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 import java.util.ArrayList;
@@ -34,7 +38,7 @@ public class FairAuction {
 	public static void startAuction() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		long deposit = request.Balance("iota");
+		long deposit = request.Balance(ScColor.IOTA);
 		if (deposit < 1) {
 			sc.Log("Empty deposit...");
 			return;
@@ -47,18 +51,14 @@ public class FairAuction {
 		}
 
 		ScImmutableMap params = request.Params();
-		String color = params.GetString("color").Value();
-		if (color == "") {
+		ScImmutableColor colorParam = params.GetColor("color");
+		if (!colorParam.Exists()) {
 			refund(deposit / 2, "Missing token color...");
 			return;
 		}
-		//TODO check if valid base58 string
-		if (color == "InvalidBase58") {
-			refund(deposit / 2, "Invalid token color...");
-			return;
-		}
-		//TODO determine appropriate color hashes
-		if (color == "iota" || color == "new") {
+		ScColor color = colorParam.Value();
+
+		if (color.equals(ScColor.IOTA) || color.equals(ScColor.MINT)) {
 			refund(deposit / 2, "Reserved token color...");
 			return;
 		}
@@ -105,8 +105,8 @@ public class FairAuction {
 			description = description.substring(0, maxDescriptionLength) + "[...]";
 		}
 
-		ScMutableMap auctions = state.GetMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color);
+		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
+		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
 		if (currentAuction.Value().length != 0) {
 			refund(deposit / 2, "Auction for this token already exists...");
 			return;
@@ -122,11 +122,11 @@ public class FairAuction {
 		auction.auctionOwner = request.Address();
 		auction.deposit = deposit;
 		auction.ownerMargin = ownerMargin;
-		byte[] bytes = encodeAuctionInfo(auction);
-		currentAuction.SetValue(bytes);
+		byte[] bytes2 = encodeAuctionInfo(auction);
+		currentAuction.SetValue(bytes2);
 
-		ScMutableMap finalizeParams = sc.Event("", "finalizeAuction", auction.duration * 60);
-		finalizeParams.GetString("color").SetValue(auction.color);
+		ScMutableMap finalizeParams = sc.PostRequest(sc.Contract().Address(), "finalizeAuction", auction.duration * 60);
+		finalizeParams.GetColor("color").SetValue(auction.color);
 		sc.Log("New auction started...");
 	}
 
@@ -135,26 +135,27 @@ public class FairAuction {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		if ((!request.Address().equals(sc.Contract().Address()))) {
+		if ((!request.From(sc.Contract().Address()))) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		String color = request.Params().GetString("color").Value();
-		if (color.isEmpty()) {
+		ScImmutableColor colorParam = request.Params().GetColor("color");
+		if (!colorParam.Exists()) {
 			sc.Log("INTERNAL INCONSISTENCY: missing color");
 			return;
 		}
+		ScColor color = colorParam.Value();
 
 		ScMutableMap state = sc.State();
-		ScMutableMap auctions = state.GetMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color);
-		byte[] bytes = currentAuction.Value();
-		if (bytes.length == 0) {
+		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
+		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
+		byte[] bytes2 = currentAuction.Value();
+		if (bytes2.length == 0) {
 			sc.Log("INTERNAL INCONSISTENCY missing auction info");
 			return;
 		}
-		AuctionInfo auction = decodeAuctionInfo(bytes);
+		AuctionInfo auction = decodeAuctionInfo(bytes2);
 		long ownerFee;
 		if (auction.bids.size() == 0) {
 			sc.Log("No one bid on " + color);
@@ -162,9 +163,9 @@ public class FairAuction {
 			if (ownerFee == 0) {
 				ownerFee = 1;
 			}
-	        // finalizeAuction request token was probably not confirmed yet
-			sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
-			sc.Transfer(auction.auctionOwner, "iota", auction.deposit - ownerFee);
+			// finalizeAuction request token was probably not confirmed yet
+			sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
+			sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit - ownerFee);
 			return;
 		}
 
@@ -184,42 +185,43 @@ public class FairAuction {
 		// return staked bids to losers
 		for (BidInfo bidder : auction.bids) {
 			if (bidder != winner) {
-				sc.Transfer(bidder.address, "iota", bidder.amount);
+				sc.Transfer(bidder.address, ScColor.IOTA, bidder.amount);
 			}
 		}
 
-	    // finalizeAuction request token was probably not confirmed yet
-		sc.Transfer(sc.Contract().Owner(), "iota", ownerFee - 1);
+		// finalizeAuction request token was probably not confirmed yet
+		sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
 		sc.Transfer(winner.address, auction.color, auction.numTokens);
-		sc.Transfer(auction.auctionOwner, "iota", auction.deposit + winner.amount - ownerFee);
+		sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit + winner.amount - ownerFee);
 	}
 
 	//export placeBid
 	public static void placeBid() {
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		long bidAmount = request.Balance("iota");
+		long bidAmount = request.Balance(ScColor.IOTA);
 		if (bidAmount == 0) {
 			sc.Log("Insufficient bid amount");
 			return;
 		}
 
-		String color = request.Params().GetString("color").Value();
-		if (color.isEmpty()) {
+		ScImmutableColor colorParam = request.Params().GetColor("color");
+		if (!colorParam.Exists()) {
 			refund(bidAmount, "Missing token color");
 			return;
 		}
+		ScColor color = colorParam.Value();
 
 		ScMutableMap state = sc.State();
-		ScMutableMap auctions = state.GetMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color);
+		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
+		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
 		byte[] bytes = currentAuction.Value();
 		if (bytes.length == 0) {
 			refund(bidAmount, "Missing auction");
 			return;
 		}
 
-		String sender = request.Address();
+		ScAddress sender = request.Address();
 		AuctionInfo auction = decodeAuctionInfo(bytes);
 		BidInfo bid = null;
 		for (BidInfo bidder : auction.bids) {
@@ -246,7 +248,7 @@ public class FairAuction {
 	public static void setOwnerMargin() {
 		// can only be sent by SC owner
 		ScContext sc = new ScContext();
-		if (!sc.Request().Address().equals(sc.Contract().Owner())) {
+		if (!sc.Request().From(sc.Contract().Owner())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -265,13 +267,13 @@ public class FairAuction {
 	public static AuctionInfo decodeAuctionInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		AuctionInfo auction = new AuctionInfo();
-		auction.color = decoder.String();
+		auction.color = decoder.Color();
 		auction.numTokens = decoder.Int();
 		auction.minimumBid = decoder.Int();
 		auction.description = decoder.String();
 		auction.whenStarted = decoder.Int();
 		auction.duration = decoder.Int();
-		auction.auctionOwner = decoder.String();
+		auction.auctionOwner = decoder.Address();
 		auction.deposit = decoder.Int();
 		auction.ownerMargin = decoder.Int();
 		return auction;
@@ -280,7 +282,7 @@ public class FairAuction {
 	public static BidInfo decodeBidInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BidInfo bid = new BidInfo();
-		bid.address = decoder.String();
+		bid.address = decoder.Address();
 		bid.amount = decoder.Int();
 		bid.when = decoder.Int();
 		return bid;
@@ -288,13 +290,13 @@ public class FairAuction {
 
 	public static byte[] encodeAuctionInfo(AuctionInfo auction) {
 		BytesEncoder encoder = new BytesEncoder().
-				String(auction.color).
+				Color(auction.color).
 				Int(auction.numTokens).
 				Int(auction.minimumBid).
 				String(auction.description).
 				Int(auction.whenStarted).
 				Int(auction.duration).
-				String(auction.auctionOwner).
+				Address(auction.auctionOwner).
 				Int(auction.deposit).
 				Int(auction.ownerMargin).
 				Int(auction.bids.size());
@@ -307,7 +309,7 @@ public class FairAuction {
 
 	public static byte[] encodeBidInfo(BidInfo bid) {
 		return new BytesEncoder().
-				String(bid.address).
+				Address(bid.address).
 				Int(bid.amount).
 				Int(bid.when).
 				Data();
@@ -317,21 +319,21 @@ public class FairAuction {
 		ScContext sc = new ScContext();
 		sc.Log(reason);
 		ScRequest request = sc.Request();
-		String sender = request.Address();
+		ScAddress sender = request.Address();
 		if (amount != 0) {
-			sc.Transfer(sender, "iota", amount);
+			sc.Transfer(sender, ScColor.IOTA, amount);
 		}
-		long deposit = request.Balance("iota");
+		long deposit = request.Balance(ScColor.IOTA);
 		if (deposit - amount != 0) {
-			sc.Transfer(sc.Contract().Owner(), "iota", deposit - amount);
+			sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, deposit - amount);
 		}
 
 		// refund all other token colors, don't keep tokens that were to be auctioned
-		ScImmutableStringArray colors = request.Colors();
+		ScImmutableColorArray colors = request.Colors();
 		int items = colors.Length();
 		for (int i = 0; i < items; i++) {
-			String color = colors.GetString(i).Value();
-			if (!color.equals("iota")) {
+			ScColor color = colors.GetColor(i).Value();
+			if (!color.equals(ScColor.IOTA)) {
 				sc.Transfer(sender, color, request.Balance(color));
 			}
 		}
@@ -339,7 +341,7 @@ public class FairAuction {
 
 	public static class AuctionInfo {
 		// color of tokens for sale
-		String color;
+		ScColor color;
 		// number of tokens for sale
 		long numTokens;
 		// minimum bid. Set by the auction initiator
@@ -351,7 +353,7 @@ public class FairAuction {
 		// duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
 		long duration;
 		// address which issued StartAuction transaction
-		String auctionOwner;
+		ScAddress auctionOwner;
 		// deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
 		// transaction.
 		long deposit;
@@ -363,7 +365,7 @@ public class FairAuction {
 
 	public static class BidInfo {
 		// originator of the bid
-		String address;
+		ScAddress address;
 		// the amount is a cumulative sum of all bids from the same bidder
 		long amount;
 		// most recent bid update time

@@ -1,16 +1,13 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-use wasplib::client::BytesDecoder;
-use wasplib::client::BytesEncoder;
-use wasplib::client::ScContext;
-use wasplib::client::ScExports;
+use wasplib::client::*;
 
 struct DonationInfo {
     seq: i64,
-    id: String,
+    id: ScTxHash,
     amount: i64,
-    sender: String,
+    sender: ScAddress,
     feedback: String,
     error: String,
 }
@@ -29,8 +26,8 @@ pub fn donate() {
     let request = sc.request();
     let mut donation = DonationInfo {
         seq: tlog.length() as i64,
-        id: request.id(),
-        amount: request.balance("iota"),
+        id: request.tx_hash(),
+        amount: request.balance(&ScColor::IOTA),
         sender: request.address(),
         feedback: request.params().get_string("f").value(),
         error: String::new(),
@@ -38,7 +35,7 @@ pub fn donate() {
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
         if donation.amount > 0 {
-            sc.transfer(&donation.sender, "iota", donation.amount);
+            sc.transfer(&donation.sender, &ScColor::IOTA, donation.amount);
             donation.amount = 0;
         }
     }
@@ -55,15 +52,15 @@ pub fn donate() {
 #[no_mangle]
 pub fn withdraw() {
     let sc = ScContext::new();
-    let owner = sc.contract().owner();
+    let sc_owner = sc.contract().owner();
     let request = sc.request();
-    if request.address() != owner {
+    if !request.from(&sc_owner) {
         sc.log("Cancel spoofed request");
         return;
     }
 
     let account = sc.account();
-    let amount = account.balance("iota");
+    let amount = account.balance(&ScColor::IOTA);
     let mut withdraw_amount = request.params().get_int("s").value();
     if withdraw_amount == 0 || withdraw_amount > amount {
         withdraw_amount = amount;
@@ -73,16 +70,16 @@ pub fn withdraw() {
         return;
     }
 
-    sc.transfer(&owner, "iota", withdraw_amount);
+    sc.transfer(&sc_owner, &ScColor::IOTA, withdraw_amount);
 }
 
 fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
     let mut decoder = BytesDecoder::new(bytes);
     DonationInfo {
         seq: decoder.int(),
-        id: decoder.string(),
+        id: decoder.tx_hash(),
         amount: decoder.int(),
-        sender: decoder.string(),
+        sender: decoder.address(),
         feedback: decoder.string(),
         error: decoder.string(),
     }
@@ -91,8 +88,9 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
 fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(donation.seq);
-    encoder.string(&donation.id);
+    encoder.tx_hash(&donation.id);
     encoder.int(donation.amount);
+    encoder.address(&donation.sender);
     encoder.string(&donation.feedback);
     encoder.string(&donation.error);
     encoder.data()
