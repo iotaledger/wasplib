@@ -29,8 +29,8 @@ pub fn donate() {
         id: request.id(),
         amount: request.balance(&ScColor::IOTA),
         sender: request.address(),
-        feedback: request.params().get_string("f").value(),
         error: String::new(),
+        feedback: request.params().get_string("f").value(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();

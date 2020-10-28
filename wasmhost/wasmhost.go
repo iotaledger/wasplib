@@ -219,7 +219,6 @@ func (host *WasmHost) GetKeyId(keyRef int32, size int32) int32 {
 	keyId := host.getKeyId(key)
 	host.Trace("GetKeyId '%s'=k%d", base58Key, keyId)
 	return keyId
-
 }
 
 func (host *WasmHost) getKeyId(key []byte) int32 {

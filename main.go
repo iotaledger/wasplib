@@ -56,7 +56,7 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "increment"
+	contract := "donatewithfeedback"
 	language := "go" // "bg" = Rust, "go" = Go
 
 	file, err := os.Open("tests/" + contract + ".json")
@@ -67,7 +67,7 @@ func main() {
 	jsonTests := &wasmhost.JsonTests{}
 	err = json.NewDecoder(file).Decode(&jsonTests)
 	if err != nil {
-		panic(err)
+		panic("JSON error: " + err.Error())
 	}
 
 	host, err := wasmhost.NewSimpleWasmHost()

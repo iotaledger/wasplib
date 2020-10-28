@@ -67,16 +67,17 @@ func (ctx *ScExports) AddProtected(name string) {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScLog struct {
-	log ScMutableMap
+	log ScMutableMapArray
 }
 
 func (ctx ScLog) Append(timestamp int64, data []byte) {
-	ctx.log.GetInt("timestamp").SetValue(timestamp)
-	ctx.log.GetBytes("data").SetValue(data)
+	logEntry := ctx.log.GetMap(ctx.log.Length())
+	logEntry.GetInt("timestamp").SetValue(timestamp)
+	logEntry.GetBytes("data").SetValue(data)
 }
 
 func (ctx ScLog) Length() int32 {
-	return int32(ctx.log.GetInt("length").Value())
+	return int32(ctx.log.Length())
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -252,7 +253,7 @@ func (ctx ScContext) State() ScMutableMap {
 }
 
 func (ctx ScContext) TimestampedLog(key string) ScLog {
-	return ScLog{ctx.root.GetMap("logs").GetMap(key)}
+	return ScLog{ctx.root.GetMap("logs").GetMapArray(key)}
 }
 
 func (ctx ScContext) Trace(text string) {

@@ -63,7 +63,7 @@ public class ScContext {
 	}
 
 	public ScLog TimestampedLog(String key) {
-		return new ScLog(root.GetMap("logs").GetMap(key));
+		return new ScLog(root.GetMap("logs").GetMapArray(key));
 	}
 
 	public void Trace(String text) {

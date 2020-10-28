@@ -12,9 +12,10 @@ type JsonDataModel struct {
 	Contract       map[string]interface{} `json:"contract"`
 	Account        map[string]interface{} `json:"account"`
 	Request        map[string]interface{} `json:"request"`
+	Additional     []interface{}          `json:"additionalRequest"`
 	State          map[string]interface{} `json:"state"`
 	Utility        map[string]interface{} `json:"utility"`
-	Logs           []interface{}          `json:"logs"`
+	Logs           map[string]interface{} `json:"logs"`
 	PostedRequests []interface{}          `json:"postedRequests"`
 	Transfers      []interface{}          `json:"transfers"`
 	Expect         *JsonDataModel         `json:"expect"`

@@ -27,8 +27,8 @@ public class DonateWithFeedback {
 		donation.id = request.Id();
 		donation.amount = request.Balance(ScColor.IOTA);
 		donation.sender = request.Address();
-		donation.feedback = request.Params().GetString("f").Value();
 		donation.error = "";
+		donation.feedback = request.Params().GetString("f").Value();
 		if (donation.amount == 0 || donation.feedback.length() == 0) {
 			donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
 			if (donation.amount > 0) {

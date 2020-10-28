@@ -32,30 +32,43 @@
     }
   },
   "tests": {
-    "payWinner": {
+    "donateOnce": {
       "setup": "default",
       "request": {
-        "function": "",
+        "function": "donate",
         "colors": ["#iota"],
-        "balance": {"#iota": 100},
+        "balance": {"#iota": 500},
         "params": {
-          "color": 3
+          "f": "Here, have some iotas"
         }
       },
       "expect": {
         "account": {
           "colors": ["#iota"],
-          "balance": {"#iota": 200}
+          "balance": {"#iota": 600}
         },
         "state": {
-          "lastWinningColor": 3
         },
-        "logs": [],
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120}
         ],
         "transfers": [
-          {"address": "@sender", "amount": 100, "color": "#iota"}
         ]
       }
     }

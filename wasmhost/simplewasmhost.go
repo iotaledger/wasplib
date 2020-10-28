@@ -34,7 +34,7 @@ func (host *SimpleWasmHost) ClearData() {
 	host.ClearObjectData(OBJTYPE_MAP, "account")
 	host.ClearObjectData(OBJTYPE_MAP, "request")
 	host.ClearObjectData(OBJTYPE_MAP, "state")
-	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "logs")
+	host.ClearObjectData(OBJTYPE_MAP, "logs")
 	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "postedRequests")
 	host.ClearObjectData(OBJTYPE_MAP_ARRAY, "transfers")
 }
@@ -65,7 +65,7 @@ func (host *SimpleWasmHost) CompareData(jsonData *JsonDataModel) bool {
 	expectData := jsonData.Expect
 	return host.CompareMapData("account", expectData.Account) &&
 		host.CompareMapData("state", expectData.State) &&
-		host.CompareArrayData("logs", expectData.Logs) &&
+		host.CompareMapData("logs", expectData.Logs) &&
 		host.CompareArrayData("postedRequests", expectData.PostedRequests) &&
 		host.CompareArrayData("transfers", expectData.Transfers)
 }
@@ -125,13 +125,24 @@ func (host *SimpleWasmHost) CompareSubArrayData(mapObject HostObject, key string
 		}
 		return true
 	case map[string]interface{}:
+		if typeId == OBJTYPE_MAP_ARRAY {
+			for i := range array {
+				mapObject := host.FindObject(arrayObject.GetObjectId(int32(i), OBJTYPE_MAP))
+				if !host.CompareSubMapData(mapObject, array[i].(map[string]interface{})) {
+					fmt.Printf("      map %s\n", key)
+					return false
+				}
+			}
+			return true
+		}
+
 		if typeId != OBJTYPE_BYTES_ARRAY {
 			fmt.Printf("FAIL: not a bytes array: %s\n", key)
 			return false
 		}
 		for i, elem := range array {
 			value := arrayObject.GetString(int32(i))
-			expect, ok := host.makeString(key, elem.(map[string]interface{}))
+			expect, ok := host.makeSerializedObject(key, elem)
 			if !ok {
 				return false
 			}
@@ -154,27 +165,51 @@ func (host *SimpleWasmHost) CompareSubMapData(mapObject HostObject, values map[s
 	for _, k := range SortedKeys(values) {
 		field := values[k]
 		key := process(k)
+		keyId := host.GetKeyId(key)
 		switch t := field.(type) {
 		case string:
-			value := mapObject.GetString(host.GetKeyId(key))
+			value := mapObject.GetString(keyId)
 			expect := process(field.(string))
 			if value != expect {
 				fmt.Printf("FAIL: string %s, expected '%s', got '%s'\n", key, expect, value)
 				return false
 			}
 		case float64:
-			value := mapObject.GetInt(host.GetKeyId(key))
+			value := mapObject.GetInt(keyId)
 			expect := int64(field.(float64))
 			if value != expect {
 				fmt.Printf("FAIL: int %s, expected %d, got %d\n", key, expect, value)
 				return false
 			}
 		case map[string]interface{}:
-			subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
-			if !host.CompareSubMapData(subMapObject, field.(map[string]interface{})) {
-				fmt.Printf("      map %s\n", key)
+			typeId := mapObject.(*HostMap).GetTypeId(keyId)
+			if typeId == OBJTYPE_MAP {
+				subMapObject := host.FindSubObject(mapObject, key, OBJTYPE_MAP)
+				if !host.CompareSubMapData(subMapObject, field.(map[string]interface{})) {
+					fmt.Printf("      map %s\n", key)
+					return false
+				}
+				return true
+			}
+
+			if typeId != OBJTYPE_STRING {
+				fmt.Printf("FAIL: not a string field: %s\n", key)
 				return false
 			}
+
+			value := mapObject.GetString(keyId)
+			expect, ok := host.makeSerializedObject(key, field)
+			if !ok {
+				return false
+			}
+			if value != expect {
+				fmt.Printf("FAIL: string %s,\n    expected '%s',\n    got      '%s'\n", key, expect, value)
+				decVal, _ := base58.Decode(value)
+				expVal, _ := base58.Decode(expect)
+				fmt.Printf("    %v\n    %v\n", decVal, expVal)
+				return false
+			}
+
 		case []interface{}:
 			host.CompareSubArrayData(mapObject, key, field.([]interface{}))
 		default:
@@ -194,7 +229,7 @@ func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int
 
 func (host *SimpleWasmHost) GetKeyId(key string) int32 {
 	keyId := host.WasmHost.getKeyId([]byte(key))
-	host.Trace("GetKeyId '%s'=k%d", key, keyId)
+	host.Trace("GetKeyId('%s')=k%d", key, keyId)
 	return keyId
 }
 
@@ -266,7 +301,8 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	}
 }
 
-func (host *SimpleWasmHost) makeString(key string, object map[string]interface{}) (string, bool) {
+func (host *SimpleWasmHost) makeSerializedObject(key string, field interface{}) (string, bool) {
+	object := field.(map[string]interface{})
 	if len(object) != 1 {
 		fmt.Printf("FAIL: bytes array %s: object type not found\n", key)
 		return "", false
@@ -309,6 +345,9 @@ func (host *SimpleWasmHost) makeString(key string, object map[string]interface{}
 }
 
 func process(value string) string {
+	if len(value) == 0 {
+		return value
+	}
 	// preprocesses keys and values by replacing special named values
 	size := 32
 	switch value[0] {

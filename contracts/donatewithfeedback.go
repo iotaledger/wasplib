@@ -33,8 +33,8 @@ func donate() {
 		id:       request.Id(),
 		amount:   request.Balance(client.IOTA),
 		sender:   request.Address(),
-		feedback: request.Params().GetString("f").Value(),
 		error:    "",
+		feedback: request.Params().GetString("f").Value(),
 	}
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"

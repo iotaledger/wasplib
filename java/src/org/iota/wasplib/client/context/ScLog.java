@@ -1,20 +1,22 @@
 package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.mutable.ScMutableMap;
+import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public class ScLog {
-	ScMutableMap log;
+	ScMutableMapArray log;
 
-	ScLog(ScMutableMap log) {
+	ScLog(ScMutableMapArray log) {
 		this.log = log;
 	}
 
 	public void Append(long timestamp, byte[] data) {
-		log.GetInt("timestamp").SetValue(timestamp);
-		log.GetBytes("data").SetValue(data);
+		ScMutableMap logEntry = log.GetMap(log.Length());
+		logEntry.GetInt("timestamp").SetValue(timestamp);
+		logEntry.GetBytes("data").SetValue(data);
 	}
 
 	public int Length() {
-		return (int) log.GetInt("length").Value();
+		return log.Length();
 	}
 }

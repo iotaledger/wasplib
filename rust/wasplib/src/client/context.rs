@@ -81,17 +81,18 @@ impl ScExports {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScLog {
-    log: ScMutableMap,
+    log: ScMutableMapArray,
 }
 
 impl ScLog {
     pub fn append(&self, timestamp: i64, data: &[u8]) {
-        self.log.get_int("timestamp").set_value(timestamp);
-        self.log.get_bytes("data").set_value(data);
+        let log_entry = self.log.get_map(self.log.length());
+        log_entry.get_int("timestamp").set_value(timestamp);
+        log_entry.get_bytes("data").set_value(data);
     }
 
     pub fn length(&self) -> i32 {
-        self.log.get_int("length").value() as i32
+        self.log.length()
     }
 }
 
@@ -278,7 +279,7 @@ impl ScContext {
     }
 
     pub fn timestamped_log(&self, key: &str) -> ScLog {
-        ScLog { log: self.root.get_map("logs").get_map(key) }
+        ScLog { log: self.root.get_map("logs").get_map_array(key) }
     }
 
     pub fn trace(&self, text: &str) {
