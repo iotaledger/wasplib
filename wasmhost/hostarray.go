@@ -6,11 +6,12 @@ type HostArray struct {
 	host      *SimpleWasmHost
 	items     []interface{}
 	immutable bool
+	keyId     int32
 	typeId    int32
 }
 
-func NewHostArray(host *SimpleWasmHost, typeId int32) *HostArray {
-	return &HostArray{host: host, typeId: typeId}
+func NewHostArray(host *SimpleWasmHost, keyId int32, typeId int32) *HostArray {
+	return &HostArray{host: host, keyId: keyId, typeId: typeId}
 }
 
 func (a *HostArray) Exists(keyId int32) bool {
@@ -110,7 +111,12 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case OBJTYPE_INT:
 			a.items = append(a.items, int64(0))
 		case OBJTYPE_MAP:
-			objId := a.host.TrackObject(NewHostMap(a.host))
+			if a.keyId == a.host.TransfersId {
+				objId := a.host.TrackObject(NewHostTransfer(a.host, keyId))
+				a.items = append(a.items, objId)
+				break
+			}
+			objId := a.host.TrackObject(NewHostMap(a.host, keyId))
 			a.items = append(a.items, objId)
 		case OBJTYPE_STRING:
 			a.items = append(a.items, "")

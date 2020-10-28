@@ -1,0 +1,72 @@
+{
+  "types": {
+    "AuctionInfo": [
+      "color Color",
+      "numTokens Int",
+      "minimumBid Int",
+      "description String",
+      "whenStarted Int",
+      "duration Int",
+      "auctionOwner Address",
+      "deposit Int",
+      "ownerMargin Int",
+      "bids []BidInfo"
+    ],
+    "BidInfo": [
+      "address Address",
+      "amount Int",
+      "when Int"
+    ]
+  },
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "fairauction",
+        "description": "Auction colored tokens",
+        "id": "fairauctionId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "payWinner": {
+      "setup": "default",
+      "request": {
+        "function": "",
+        "colors": ["#iota"],
+        "balance": {"#iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 200}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "lockBets", "delay": 120}
+        ],
+        "transfers": [
+          {"address": "@sender", "amount": 100, "color": "#iota"}
+        ]
+      }
+    }
+  }
+}

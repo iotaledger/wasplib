@@ -1,6 +1,7 @@
 {
+  "types": {},
   "setups": {
-    "increment": {
+    "default": {
       "contract": {
         "name": "increment",
         "description": "Test basic functionality",
@@ -9,9 +10,12 @@
         "color": "#scColor",
         "owner": "@scOwner"
       },
-      "account": {},
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
       "request": {
-        "timestamp": 20200928112900,
+        "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
         "address": "@sender"
@@ -20,7 +24,7 @@
   },
   "tests": {
     "incrementFirstTime": {
-      "setup": "increment",
+      "setup": "default",
       "request": {
         "function": "increment"
       },
@@ -34,7 +38,7 @@
       }
     },
     "incrementSecondTime": {
-      "setup": "increment",
+      "setup": "default",
       "state": {
         "counter": 1
       },
@@ -51,7 +55,7 @@
       }
     },
     "incrementAgainByChainingToIncrement": {
-      "setup": "increment",
+      "setup": "default",
       "request": {
         "function": "incrementRepeat1"
       },
@@ -67,7 +71,7 @@
       }
     },
     "increment5TimesByChainingToSelf": {
-      "setup": "increment",
+      "setup": "default",
       "request": {
         "function": "incrementRepeatMany",
         "params": {

@@ -56,7 +56,7 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "fairroulette"
+	contract := "increment"
 	language := "go" // "bg" = Rust, "go" = Go
 
 	file, err := os.Open("tests/" + contract + ".json")
@@ -94,7 +94,18 @@ func main() {
 		index++
 	}
 	sort.Strings(testNames)
+	failed := 0
+	passed := 0
 	for _, testName := range testNames {
-		host.RunTest(testName, jsonTests.Tests[testName], jsonTests)
+		if host.RunTest(testName, jsonTests.Tests[testName], jsonTests) {
+			fmt.Printf("PASS\n")
+			passed++
+			continue
+		}
+		failed++
 	}
+	if failed != 0 {
+		fmt.Printf("%d FAILED, ", failed)
+	}
+	fmt.Printf("%d PASSED\n", passed)
 }

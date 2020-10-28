@@ -1,0 +1,64 @@
+{
+  "types": {
+    "TokenInfo": [
+      "supply Int",
+      "mintedBy Address",
+      "owner Address",
+      "created Int",
+      "updated Int",
+      "description String",
+      "userDefined String"
+    ]
+  },
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "tokenregistry",
+        "description": "Register colored tokens on the Tangle",
+        "id": "tokenregistryId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "payWinner": {
+      "setup": "default",
+      "request": {
+        "function": "",
+        "colors": ["#txHash"],
+        "balance": {"#txHash": 50},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 200}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "lockBets", "delay": 120}
+        ],
+        "transfers": [
+          {"address": "@sender", "amount": 100, "color": "#iota"}
+        ]
+      }
+    }
+  }
+}

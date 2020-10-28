@@ -1,0 +1,63 @@
+{
+  "types": {
+    "DonationInfo": [
+      "seq Int",
+      "id RequestId",
+      "amount Int",
+      "sender Address",
+      "error String",
+      "feedback String"
+    ]
+  },
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "donatewithfeedback",
+        "description": "Donate iotas and give feedback",
+        "id": "donatewithfeedbackId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "payWinner": {
+      "setup": "default",
+      "request": {
+        "function": "",
+        "colors": ["#iota"],
+        "balance": {"#iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 200}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": [],
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "lockBets", "delay": 120}
+        ],
+        "transfers": [
+          {"address": "@sender", "amount": 100, "color": "#iota"}
+        ]
+      }
+    }
+  }
+}

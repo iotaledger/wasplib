@@ -11,19 +11,21 @@ var EnableImmutableChecks = true
 
 type SimpleWasmHost struct {
 	WasmHost
-	ExportsId int32
-	jsonTests *JsonTests
-	jsonData  *JsonDataModel
+	ExportsId   int32
+	TransfersId int32
+	jsonTests   *JsonTests
+	jsonData    *JsonDataModel
 }
 
 func NewSimpleWasmHost() (*SimpleWasmHost, error) {
 	host := &SimpleWasmHost{}
 	host.useBase58Keys = true
-	err := host.Init(NewNullObject(host), NewHostMap(host), nil, host)
+	err := host.Init(NewNullObject(host), NewHostMap(host, 0), nil, host)
 	if err != nil {
 		return nil, err
 	}
 	host.ExportsId = host.GetKeyId("exports")
+	host.TransfersId = host.GetKeyId("transfers")
 	return host, nil
 }
 
@@ -61,7 +63,8 @@ func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bo
 func (host *SimpleWasmHost) CompareData(jsonData *JsonDataModel) bool {
 	host.jsonData = jsonData
 	expectData := jsonData.Expect
-	return host.CompareMapData("state", expectData.State) &&
+	return host.CompareMapData("account", expectData.Account) &&
+		host.CompareMapData("state", expectData.State) &&
 		host.CompareArrayData("logs", expectData.Logs) &&
 		host.CompareArrayData("postedRequests", expectData.PostedRequests) &&
 		host.CompareArrayData("transfers", expectData.Transfers)
@@ -263,102 +266,6 @@ func (host *WasmHost) Log(logLevel int32, text string) {
 	}
 }
 
-func process(value string) string {
-	// preprocesses keys and values by replacing special named values
-	size := 32
-	switch value[0] {
-	case '#': // 32-byte hash value
-		if value == "#iota" {
-			return processHash("", 32)
-		}
-	case '@': // 33-byte address
-		size = 33
-	case '$': // 34-byte request id
-		size = 34
-	default:
-		return value
-	}
-	return processHash(value[1:], size)
-}
-
-func processHash(value string, size int) string {
-	hash := make([]byte, size)
-	copy(hash, value)
-	return base58.Encode(hash)
-}
-
-func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTests *JsonTests) {
-	host.jsonTests = jsonTests
-	fmt.Printf("Test: %s\n", name)
-	if jsonData.Expect == nil {
-		fmt.Printf("FAIL: Missing expect model data\n")
-		return
-	}
-	host.ClearData()
-	if jsonData.Setup != "" {
-		setupData, ok := jsonTests.Setups[jsonData.Setup]
-		if !ok {
-			fmt.Printf("FAIL: Missing setup: %s\n", jsonData.Setup)
-			return
-		}
-		host.LoadData(setupData)
-	}
-	host.LoadData(jsonData)
-	function, ok := jsonData.Request["function"]
-	if !ok {
-		fmt.Printf("FAIL: Missing request.function\n")
-		return
-	}
-	fmt.Printf("    Run function: %v\n", function)
-	err := host.RunFunction(function.(string))
-	if err != nil {
-		fmt.Printf("FAIL: Function %v: %v\n", function, err)
-		return
-	}
-
-	scAddress := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address"))
-	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
-	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
-	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
-
-	expectedPostedRequests := int64(len(jsonData.Expect.PostedRequests))
-	for i := int64(0); i < expectedPostedRequests && i < postedRequests.GetInt(KeyLength); i++ {
-		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
-		delay := postedRequest.GetInt(host.GetKeyId("delay"))
-		if delay != 0 && !strings.Contains(jsonData.Flags, "nodelay") {
-			// only process posted requests when they have no delay
-			// unless overridden by the nodelay flag
-			// those are the only ones that will be incorporated in the final state
-			continue
-		}
-
-		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
-		if contractAddress != scAddress {
-			// only process posted requests when they are for the current contract
-			// those are the only ones that will be incorporated in the final state
-			continue
-		}
-
-		function := postedRequest.GetString(host.GetKeyId("function"))
-		request.SetString(host.GetKeyId("address"), scAddress)
-		request.SetString(host.GetKeyId("function"), function)
-		reqParams.SetInt(KeyLength, 0)
-		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
-		params.(*HostMap).CopyDataTo(reqParams)
-		fmt.Printf("    Run function: %v\n", function)
-		err = host.RunFunction(function)
-		if err != nil {
-			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
-			return
-		}
-	}
-
-	// now compare the expected json data model to the actual host data model
-	if host.CompareData(jsonData) {
-		fmt.Printf("PASS\n")
-	}
-}
-
 func (host *SimpleWasmHost) makeString(key string, object map[string]interface{}) (string, bool) {
 	if len(object) != 1 {
 		fmt.Printf("FAIL: bytes array %s: object type not found\n", key)
@@ -401,10 +308,116 @@ func (host *SimpleWasmHost) makeString(key string, object map[string]interface{}
 	return base58.Encode(encoder.Data()), true
 }
 
+func process(value string) string {
+	// preprocesses keys and values by replacing special named values
+	size := 32
+	switch value[0] {
+	case '#': // 32-byte hash value
+		if value == "#iota" {
+			return processHash("", 32)
+		}
+	case '@': // 33-byte address
+		size = 33
+	case '$': // 34-byte request id
+		size = 34
+	default:
+		return value
+	}
+	return processHash(value[1:], size)
+}
+
+func processHash(value string, size int) string {
+	hash := make([]byte, size)
+	copy(hash, value)
+	return base58.Encode(hash)
+}
+
+func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTests *JsonTests) bool {
+	host.jsonTests = jsonTests
+	fmt.Printf("Test: %s\n", name)
+	if jsonData.Expect == nil {
+		fmt.Printf("FAIL: Missing expect model data\n")
+		return false
+	}
+	host.ClearData()
+	if jsonData.Setup != "" {
+		setupData, ok := jsonTests.Setups[jsonData.Setup]
+		if !ok {
+			fmt.Printf("FAIL: Missing setup: %s\n", jsonData.Setup)
+			return false
+		}
+		host.LoadData(setupData)
+	}
+	host.LoadData(jsonData)
+	function, ok := jsonData.Request["function"]
+	if !ok {
+		fmt.Printf("FAIL: Missing request.function\n")
+		return false
+	}
+	request := host.FindSubObject(nil, "request", OBJTYPE_MAP).(*HostMap)
+	if request.Exists(host.GetKeyId("balance")) {
+		reqColors := host.FindSubObject(request, "colors", OBJTYPE_STRING_ARRAY).(*HostArray)
+		reqBalance := host.FindSubObject(request, "balance", OBJTYPE_MAP).(*HostMap)
+		account := host.FindSubObject(nil, "account", OBJTYPE_MAP).(*HostMap)
+		accBalance := host.FindSubObject(account, "balance", OBJTYPE_MAP).(*HostMap)
+		for i := reqColors.GetLength() - 1; i >= 0; i-- {
+			color := reqColors.GetBytes(i)
+			colorKeyId := host.GetKeyId(base58.Encode(color))
+			accBalance.SetInt(colorKeyId, accBalance.GetInt(colorKeyId)+reqBalance.GetInt(colorKeyId))
+		}
+	}
+
+	fmt.Printf("    Run function: %v\n", function)
+	err := host.RunFunction(function.(string))
+	if err != nil {
+		fmt.Printf("FAIL: Function %v: %v\n", function, err)
+		return false
+	}
+
+	scAddress := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address"))
+	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
+	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
+
+	expectedPostedRequests := int64(len(jsonData.Expect.PostedRequests))
+	for i := int64(0); i < expectedPostedRequests && i < postedRequests.GetInt(KeyLength); i++ {
+		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
+		delay := postedRequest.GetInt(host.GetKeyId("delay"))
+		if delay != 0 && !strings.Contains(jsonData.Flags, "nodelay") {
+			// only process posted requests when they have no delay
+			// unless overridden by the nodelay flag
+			// those are the only ones that will be incorporated in the final state
+			continue
+		}
+
+		contractAddress := postedRequest.GetString(host.GetKeyId("contract"))
+		if contractAddress != scAddress {
+			// only process posted requests when they are for the current contract
+			// those are the only ones that will be incorporated in the final state
+			continue
+		}
+
+		function := postedRequest.GetString(host.GetKeyId("function"))
+		request.SetString(host.GetKeyId("address"), scAddress)
+		request.SetString(host.GetKeyId("function"), function)
+		reqParams.SetInt(KeyLength, 0)
+		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
+		params.(*HostMap).CopyDataTo(reqParams)
+		fmt.Printf("    Run function: %v\n", function)
+		err = host.RunFunction(function)
+		if err != nil {
+			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
+			return false
+		}
+	}
+
+	// now compare the expected json data model to the actual host data model
+	return host.CompareData(jsonData)
+}
+
 func SortedKeys(values map[string]interface{}) []string {
 	keys := make([]string, len(values))
 	index := 0
-	for key, _ := range values {
+	for key := range values {
 		keys[index] = key
 		index++
 	}
