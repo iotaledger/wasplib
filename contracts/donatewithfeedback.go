@@ -6,11 +6,11 @@ import (
 
 type DonationInfo struct {
 	seq      int64
-	id       *client.ScTxHash
+	id       *client.ScRequestId
 	amount   int64
 	sender   *client.ScAddress
-	feedback string
 	error    string
+	feedback string
 }
 
 func main() {
@@ -30,11 +30,11 @@ func donate() {
 	request := sc.Request()
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
-		id:       request.TxHash(),
+		id:       request.Id(),
 		amount:   request.Balance(client.IOTA),
 		sender:   request.Address(),
-		feedback: request.Params().GetString("f").Value(),
 		error:    "",
+		feedback: request.Params().GetString("f").Value(),
 	}
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
@@ -83,7 +83,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &DonationInfo{}
 	data.seq = decoder.Int()
-	data.id = decoder.TxHash()
+	data.id = decoder.RequestId()
 	data.amount = decoder.Int()
 	data.sender = decoder.Address()
 	data.error = decoder.String()
@@ -94,7 +94,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 func encodeDonationInfo(donation *DonationInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(donation.seq).
-		TxHash(donation.id).
+		RequestId(donation.id).
 		Int(donation.amount).
 		Address(donation.sender).
 		String(donation.error).

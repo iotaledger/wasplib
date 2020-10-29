@@ -186,6 +186,7 @@ pub fn finalizeAuction() {
         }
         // finalizeAuction request token was probably not confirmed yet
         sc.transfer(&sc.contract().owner(), &ScColor::IOTA, ownerFee - 1);
+        sc.transfer(&auction.auctionOwner, &auction.color, auction.numTokens);
         sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit - ownerFee);
         return;
     }

@@ -8,12 +8,14 @@ type HostMap struct {
 	host      *SimpleWasmHost
 	fields    map[int32]interface{}
 	immutable bool
+	keyId     int32
 	types     map[int32]int32
 }
 
-func NewHostMap(host *SimpleWasmHost) *HostMap {
+func NewHostMap(host *SimpleWasmHost, keyId int32) *HostMap {
 	return &HostMap{
 		host:   host,
+		keyId:  keyId,
 		fields: make(map[int32]interface{}),
 		types:  make(map[int32]int32),
 	}
@@ -66,19 +68,19 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	var o HostObject
 	switch typeId {
 	case OBJTYPE_BYTES_ARRAY:
-		o = NewHostArray(m.host, OBJTYPE_STRING)
+		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
 	case OBJTYPE_INT_ARRAY:
-		o = NewHostArray(m.host, OBJTYPE_INT)
+		o = NewHostArray(m.host, keyId, OBJTYPE_INT)
 	case OBJTYPE_MAP:
-		o = NewHostMap(m.host)
+		o = NewHostMap(m.host, keyId)
 	case OBJTYPE_MAP_ARRAY:
-		o = NewHostArray(m.host, OBJTYPE_MAP)
+		o = NewHostArray(m.host, keyId, OBJTYPE_MAP)
 	case OBJTYPE_STRING_ARRAY:
 		if keyId == m.host.ExportsId {
-			o = NewHostExports(m.host)
+			o = NewHostExports(m.host, keyId)
 			break
 		}
-		o = NewHostArray(m.host, OBJTYPE_STRING)
+		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
 	default:
 		m.host.SetError("Map.GetObjectId: Invalid type id")
 		return 0
@@ -173,4 +175,12 @@ func (m *HostMap) CopyDataTo(other HostObject) {
 			panic("Implement types")
 		}
 	}
+}
+
+func (m *HostMap) GetTypeId(keyId int32) int32 {
+	typeId, ok := m.types[keyId]
+	if !ok {
+		return -1
+	}
+	return typeId
 }

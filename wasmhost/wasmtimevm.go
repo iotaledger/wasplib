@@ -118,7 +118,11 @@ func (vm *WasmTimeVM) LoadWasm(wasmData []byte) error {
 }
 
 func (vm *WasmTimeVM) RunFunction(functionName string) error {
-	function := vm.instance.GetExport(functionName).Func()
+	export := vm.instance.GetExport(functionName)
+	if export == nil {
+		return errors.New("Unknown export function: '" + functionName + "'")
+	}
+	function := export.Func()
 	_, err := function.Call()
 	return err
 }

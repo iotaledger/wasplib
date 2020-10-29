@@ -56,10 +56,10 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "fairroulette"
-	language := "bg" // "bg" = Rust, "go" = Go
+	contract := "fairauction"
+	language := "go" // "bg" = Rust, "go" = Go
 
-	file, err := os.Open(contract + ".json")
+	file, err := os.Open("tests/" + contract + ".json")
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,7 @@ func main() {
 	jsonTests := &wasmhost.JsonTests{}
 	err = json.NewDecoder(file).Decode(&jsonTests)
 	if err != nil {
-		panic(err)
+		panic("JSON error: " + err.Error())
 	}
 
 	host, err := wasmhost.NewSimpleWasmHost()
@@ -94,7 +94,18 @@ func main() {
 		index++
 	}
 	sort.Strings(testNames)
+	failed := 0
+	passed := 0
 	for _, testName := range testNames {
-		host.RunTest(testName, jsonTests.Tests[testName], jsonTests)
+		if host.RunTest(testName, jsonTests.Tests[testName], jsonTests) {
+			fmt.Printf("PASS\n")
+			passed++
+			continue
+		}
+		failed++
 	}
+	if failed != 0 {
+		fmt.Printf("%d FAILED, ", failed)
+	}
+	fmt.Printf("%d PASSED\n", passed)
 }

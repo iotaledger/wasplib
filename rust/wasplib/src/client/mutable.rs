@@ -1,17 +1,4 @@
 // types encapsulating mutable host objects
-// ScMutableAddress      : refers to mutable address on host
-// ScMutableAddressArray : refers to mutable array of mutable address on host
-// ScMutableBytes        : refers to mutable byte array on host
-// ScMutableBytesArray   : refers to mutable array of mutable byte arrays on host
-// ScMutableColor        : refers to mutable color on host
-// ScMutableColorArray   : refers to mutable array of mutable color on host
-// ScMutableInt          : refers to mutable integer on host
-// ScMutableIntArray     : refers to mutable array of mutable integers on host
-// ScMutableKeyMap       : refers to mutable map of mutable values on host
-// ScMutableMap          : refers to mutable map of mutable values on host
-// ScMutableMapArray     : refers to mutable array of mutable maps of mutable values on host
-// ScMutableString       : refers to mutable string on host
-// ScMutableStringArray  : refers to mutable array of mutable strings on host
 
 use super::hashtypes::*;
 use super::host::*;
@@ -298,6 +285,15 @@ impl ScMutableKeyMap {
         ScMutableMapArray { obj_id: arr_id }
     }
 
+    pub fn get_request_id(&self, key: &[u8]) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_request_id_array(&self, key: &[u8]) -> ScMutableRequestIdArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScMutableRequestIdArray { obj_id: arr_id }
+    }
+
     pub fn get_string(&self, key: &[u8]) -> ScMutableString {
         ScMutableString { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -387,6 +383,15 @@ impl ScMutableMap {
         ScMutableMapArray { obj_id: arr_id }
     }
 
+    pub fn get_request_id(&self, key: &str) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_request_id_array(&self, key: &str) -> ScMutableRequestIdArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScMutableRequestIdArray { obj_id: arr_id }
+    }
+
     pub fn get_string(&self, key: &str) -> ScMutableString {
         ScMutableString { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -439,6 +444,60 @@ impl ScMutableMapArray {
 
     pub fn immutable(&self) -> ScImmutableMapArray {
         ScImmutableMapArray::new(self.obj_id)
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableRequestId {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScMutableRequestId {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: &ScRequestId) {
+        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn value(&self) -> ScRequestId {
+        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableRequestIdArray {
+    obj_id: i32
+}
+
+impl ScMutableRequestIdArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableRequestIdArray {
+        ScMutableRequestIdArray { obj_id }
+    }
+
+    pub fn clear(&self) {
+        set_int(self.obj_id, key_length(), 0);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_request_idh(&self, index: i32) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn immutable(&self) -> ScImmutableRequestIdArray {
+        ScImmutableRequestIdArray::new(self.obj_id)
     }
 
     pub fn length(&self) -> i32 {

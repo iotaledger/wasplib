@@ -7,10 +7,10 @@ const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
-    id: ScTxHash,
+    id: ScRequestId,
     sender: ScAddress,
-    color: i64,
     amount: i64,
+    color: i64,
 }
 
 #[no_mangle]
@@ -43,10 +43,10 @@ pub fn placeBet() {
     }
 
     let bet = BetInfo {
-        id: request.tx_hash(),
+        id: request.id(),
         sender: request.address(),
-        color,
         amount,
+        color,
     };
 
     let state = sc.state();
@@ -169,7 +169,7 @@ pub fn playPeriod() {
 fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
-        id: decoder.tx_hash(),
+        id: decoder.request_id(),
         sender: decoder.address(),
         amount: decoder.int(),
         color: decoder.int(),
@@ -178,7 +178,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.tx_hash(&bet.id);
+    encoder.request_id(&bet.id);
     encoder.address(&bet.sender);
     encoder.int(bet.amount);
     encoder.int(bet.color);

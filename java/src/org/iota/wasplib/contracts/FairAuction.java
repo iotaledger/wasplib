@@ -165,6 +165,7 @@ public class FairAuction {
 			}
 			// finalizeAuction request token was probably not confirmed yet
 			sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
+			sc.Transfer(auction.auctionOwner, auction.color, auction.numTokens);
 			sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit - ownerFee);
 			return;
 		}

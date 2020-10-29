@@ -9,10 +9,10 @@ const NUM_COLORS int64 = 5
 const PLAY_PERIOD int64 = 120
 
 type BetInfo struct {
-	id     *client.ScTxHash
+	id     *client.ScRequestId
 	sender *client.ScAddress
-	color  int64
 	amount int64
+	color  int64
 }
 
 func main() {
@@ -48,10 +48,10 @@ func placeBet() {
 	}
 
 	bet := BetInfo{
-		id:     request.TxHash(),
+		id:     request.Id(),
 		sender: request.Address(),
-		color:  color,
 		amount: amount,
+		color:  color,
 	}
 
 	state := sc.State()
@@ -169,7 +169,7 @@ func playPeriod() {
 func decodeBetInfo(bytes []byte) *BetInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BetInfo{
-		id:     decoder.TxHash(),
+		id:     decoder.RequestId(),
 		sender: decoder.Address(),
 		amount: decoder.Int(),
 		color:  decoder.Int(),
@@ -178,7 +178,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 
 func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
-		TxHash(bet.id).
+		RequestId(bet.id).
 		Address(bet.sender).
 		Int(bet.amount).
 		Int(bet.color).

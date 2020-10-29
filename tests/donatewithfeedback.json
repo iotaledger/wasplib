@@ -1,0 +1,248 @@
+{
+  "types": {
+    "DonationInfo": [
+      "seq Int",
+      "id RequestId",
+      "amount Int",
+      "sender Address",
+      "error String",
+      "feedback String"
+    ]
+  },
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "donatewithfeedback",
+        "description": "Donate iotas and give feedback",
+        "id": "donatewithfeedbackId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "donateOnce": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 600}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+        ]
+      }
+    },
+    "donateTwice": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@sender2",
+          "function": "donate",
+          "colors": ["#iota"],
+          "balance": {"#iota": 750},
+          "params": {
+            "f": "Here, have some more iotas"
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 1350}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            },
+            {
+              "timestamp": 20201027172139,
+              "data": {
+                "DonationInfo": {
+                  "seq": 1,
+                  "id": "$txHash2",
+                  "amount": 750,
+                  "sender": "@sender2",
+                  "error": "",
+                  "feedback": "Here, have some more iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+        ]
+      }
+    },
+    "donateAndWithdraw": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@scOwner",
+          "function": "withdraw",
+          "params": {
+            "s": 250
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 350}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+          {"address": "@scOwner", "color": "#iota", "amount": 250}
+        ]
+      }
+    },
+    "donateAndWithdrawUnauthorized": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@notScOwner",
+          "function": "withdraw",
+          "params": {
+            "s": 250
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 600}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+        ]
+      }
+    }
+  }
+}

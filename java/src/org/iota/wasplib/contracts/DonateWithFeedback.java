@@ -5,7 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.*;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScTxHash;
+import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -24,11 +24,11 @@ public class DonateWithFeedback {
 		ScRequest request = sc.Request();
 		DonationInfo donation = new DonationInfo();
 		donation.seq = tlog.Length();
-		donation.id = request.TxHash();
+		donation.id = request.Id();
 		donation.amount = request.Balance(ScColor.IOTA);
 		donation.sender = request.Address();
-		donation.feedback = request.Params().GetString("f").Value();
 		donation.error = "";
+		donation.feedback = request.Params().GetString("f").Value();
 		if (donation.amount == 0 || donation.feedback.length() == 0) {
 			donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
 			if (donation.amount > 0) {
@@ -81,31 +81,31 @@ public class DonateWithFeedback {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		DonationInfo bet = new DonationInfo();
 		bet.seq = decoder.Int();
-		bet.id = decoder.TxHash();
+		bet.id = decoder.RequestId();
 		bet.amount = decoder.Int();
 		bet.sender = decoder.Address();
-		bet.feedback = decoder.String();
 		bet.error = decoder.String();
+		bet.feedback = decoder.String();
 		return bet;
 	}
 
 	public static byte[] encodeDonationInfo(DonationInfo donation) {
 		return new BytesEncoder().
 				Int(donation.seq).
-				TxHash(donation.id).
+				RequestId(donation.id).
 				Int(donation.amount).
 				Address(donation.sender).
-				String(donation.feedback).
 				String(donation.error).
+				String(donation.feedback).
 				Data();
 	}
 
 	public static class DonationInfo {
 		long seq;
-		ScTxHash id;
+		ScRequestId id;
 		long amount;
 		ScAddress sender;
-		String feedback;
 		String error;
+		String feedback;
 	}
 }

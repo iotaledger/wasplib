@@ -7,7 +7,7 @@ import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScTxHash;
+import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -47,10 +47,10 @@ public class FairRoulette {
 		}
 
 		BetInfo bet = new BetInfo();
-		bet.id = request.TxHash();
+		bet.id = request.Id();
 		bet.sender = request.Address();
-		bet.color = color;
 		bet.amount = amount;
+		bet.color = color;
 
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray("bets");
@@ -167,26 +167,26 @@ public class FairRoulette {
 	public static BetInfo decodeBetInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BetInfo bet = new BetInfo();
-		bet.id = decoder.TxHash();
+		bet.id = decoder.RequestId();
 		bet.sender = decoder.Address();
-		bet.color = decoder.Int();
 		bet.amount = decoder.Int();
+		bet.color = decoder.Int();
 		return bet;
 	}
 
 	public static byte[] encodeBetInfo(BetInfo bet) {
 		return new BytesEncoder().
-				TxHash(bet.id).
+				RequestId(bet.id).
 				Address(bet.sender).
-				Int(bet.color).
 				Int(bet.amount).
+				Int(bet.color).
 				Data();
 	}
 
 	public static class BetInfo {
-		ScTxHash id;
+		ScRequestId id;
 		ScAddress sender;
-		long color;
 		long amount;
+		long color;
 	}
 }

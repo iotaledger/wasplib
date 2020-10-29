@@ -1,0 +1,195 @@
+{
+  "types": {
+    "TokenInfo": [
+      "supply Int",
+      "mintedBy Address",
+      "owner Address",
+      "created Int",
+      "updated Int",
+      "description String",
+      "userDefined String"
+    ]
+  },
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "tokenregistry",
+        "description": "Register colored tokens on the Tangle",
+        "id": "tokenregistryId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "mintSupply": {
+      "setup": "default",
+      "request": {
+        "function": "mintSupply",
+        "colors": ["#txHash"],
+        "balance": {"#txHash": 1},
+        "params": {
+          "dscr": "My very valuable token"
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#txHash"],
+          "balance": {"#iota": 100, "#txHash": 1}
+        },
+        "state": {
+          "registry": {
+            "#txHash": {
+              "TokenInfo": {
+                "supply": 1,
+                "mintedBy": "@sender",
+                "owner": "@sender",
+                "created": 20201027172138,
+                "updated": 20201027172138,
+                "description": "My very valuable token",
+                "userDefined": ""
+              }
+            }
+          },
+          "colorList": ["#txHash"]
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "mintSupplyMissingDescription": {
+      "setup": "default",
+      "request": {
+        "function": "mintSupply",
+        "colors": ["#txHash"],
+        "balance": {"#txHash": 1},
+        "params": {
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#txHash"],
+          "balance": {"#iota": 100, "#txHash": 1}
+        },
+        "state": {
+          "registry": {
+            "#txHash": {
+              "TokenInfo": {
+                "supply": 1,
+                "mintedBy": "@sender",
+                "owner": "@sender",
+                "created": 20201027172138,
+                "updated": 20201027172138,
+                "description": "no dscr",
+                "userDefined": ""
+              }
+            }
+          },
+          "colorList": ["#txHash"]
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "mintWithMissingSupply": {
+      "setup": "default",
+      "request": {
+        "function": "mintSupply",
+        "colors": ["#iota"],
+        "balance": {"#iota": 1},
+        "params": {
+          "dscr": "Sending 1 iota instead of minting a token"
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 101}
+        },
+        "state": {
+          "registry": {
+          },
+          "colorList": []
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "mintSecondSupply": {
+      "setup": "default",
+      "request": {
+        "function": "mintSupply",
+        "colors": ["#txHash"],
+        "balance": {"#txHash": 1},
+        "params": {
+          "dscr": "My very valuable token"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@sender",
+          "function": "mintSupply",
+          "colors": ["#txHash2"],
+          "balance": {"#txHash2": 750},
+          "params": {
+            "dscr": "My shares in the IOTA Foundation",
+            "ud": "Some user defined data"
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#txHash", "#txHash2"],
+          "balance": {"#iota": 100, "#txHash": 1, "#txHash2": 750}
+        },
+        "state": {
+          "registry": {
+            "#txHash": {
+              "TokenInfo": {
+                "supply": 1,
+                "mintedBy": "@sender",
+                "owner": "@sender",
+                "created": 20201027172138,
+                "updated": 20201027172138,
+                "description": "My very valuable token",
+                "userDefined": ""
+              }
+            },
+            "#txHash2": {
+              "TokenInfo": {
+                "supply": 750,
+                "mintedBy": "@sender",
+                "owner": "@sender",
+                "created": 20201027172139,
+                "updated": 20201027172139,
+                "description": "My shares in the IOTA Foundation",
+                "userDefined": "Some user defined data"
+              }
+            }
+          },
+          "colorList": ["#txHash", "#txHash2"]
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    }
+  }
+}

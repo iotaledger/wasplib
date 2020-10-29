@@ -1,0 +1,111 @@
+{
+  "types": {},
+  "setups": {
+    "default": {
+      "contract": {
+        "name": "increment",
+        "description": "Test basic functionality",
+        "id": "incrementId",
+        "address": "@scAddress",
+        "color": "#scColor",
+        "owner": "@scOwner"
+      },
+      "account": {
+        "colors": ["#iota"],
+        "balance": {"#iota": 100}
+      },
+      "request": {
+        "timestamp": 20201027172138,
+        "id": "$txHash",
+        "hash": "#txHash",
+        "address": "@sender"
+      }
+    }
+  },
+  "tests": {
+    "nothing": {
+      "setup": "default",
+      "request": {
+        "function": "nothing"
+      },
+      "expect": {
+        "state": {
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "incrementFirstTime": {
+      "setup": "default",
+      "request": {
+        "function": "increment"
+      },
+      "expect": {
+        "state": {
+          "counter": 1
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "incrementSecondTime": {
+      "setup": "default",
+      "state": {
+        "counter": 1
+      },
+      "request": {
+        "function": "increment"
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
+    "incrementAgainByChainingToIncrement": {
+      "setup": "default",
+      "request": {
+        "function": "incrementRepeat1"
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": {},
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "increment", "delay": 0}
+        ],
+        "transfers": []
+      }
+    },
+    "increment5TimesByChainingToSelf": {
+      "setup": "default",
+      "request": {
+        "function": "incrementRepeatMany",
+        "params": {
+          "numRepeats": 5
+        }
+      },
+      "expect": {
+        "state": {
+          "counter": 6,
+          "numRepeats": 0
+        },
+        "logs": {},
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0}
+        ],
+        "transfers": []
+      }
+    }
+  }
+}

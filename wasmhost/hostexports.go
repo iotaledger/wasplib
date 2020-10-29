@@ -6,8 +6,8 @@ type HostExports struct {
 	HostArray
 }
 
-func NewHostExports(host *SimpleWasmHost) *HostExports {
-	return &HostExports{HostArray: *NewHostArray(host, OBJTYPE_STRING)}
+func NewHostExports(host *SimpleWasmHost, keyId int32) *HostExports {
+	return &HostExports{HostArray: *NewHostArray(host, keyId, OBJTYPE_STRING)}
 }
 
 func (a *HostExports) SetString(keyId int32, value string) {

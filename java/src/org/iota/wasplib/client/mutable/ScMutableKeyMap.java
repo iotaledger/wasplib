@@ -67,6 +67,15 @@ public class ScMutableKeyMap {
 		return new ScMutableMapArray(arrId);
 	}
 
+	public ScMutableRequestId GetRequestId(byte[] key) {
+		return new ScMutableRequestId(objId, Host.GetKey(key));
+	}
+
+	public ScMutableRequestIdArray GetRequestIdArray(byte[] key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableRequestIdArray(arrId);
+	}
+
 	public ScMutableString GetString(byte[] key) {
 		return new ScMutableString(objId, Host.GetKey(key));
 	}
