@@ -388,29 +388,17 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		host.LoadData(setupData)
 	}
 	host.LoadData(jsonData)
-	function, ok := jsonData.Request["function"]
-	if !ok {
-		fmt.Printf("FAIL: Missing request.function\n")
-		return false
-	}
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP).(*HostMap)
-	if request.Exists(host.GetKeyId("balance")) {
-		reqColors := host.FindSubObject(request, "colors", OBJTYPE_STRING_ARRAY).(*HostArray)
-		reqBalance := host.FindSubObject(request, "balance", OBJTYPE_MAP).(*HostMap)
-		account := host.FindSubObject(nil, "account", OBJTYPE_MAP).(*HostMap)
-		accBalance := host.FindSubObject(account, "balance", OBJTYPE_MAP).(*HostMap)
-		for i := reqColors.GetLength() - 1; i >= 0; i-- {
-			color := reqColors.GetBytes(i)
-			colorKeyId := host.GetKeyId(base58.Encode(color))
-			accBalance.SetInt(colorKeyId, accBalance.GetInt(colorKeyId)+reqBalance.GetInt(colorKeyId))
-		}
-	}
-
-	fmt.Printf("    Run function: %v\n", function)
-	err := host.RunFunction(function.(string))
-	if err != nil {
-		fmt.Printf("FAIL: Function %v: %v\n", function, err)
+	if !host.runRequest(request, jsonData.Request) {
 		return false
+	}
+	for _, req := range jsonData.AdditionalRequests {
+		jsonRequest := req.(map[string]interface{})
+		request.SetInt(KeyLength, 0)
+		host.LoadSubMapData(request, jsonRequest)
+		if !host.runRequest(request, jsonRequest) {
+			return false
+		}
 	}
 
 	scAddress := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("address"))
@@ -442,7 +430,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 		params := host.FindObject(postedRequest.GetObjectId(host.GetKeyId("params"), OBJTYPE_MAP))
 		params.(*HostMap).CopyDataTo(reqParams)
 		fmt.Printf("    Run function: %v\n", function)
-		err = host.RunFunction(function)
+		err := host.RunFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
 			return false
@@ -451,6 +439,33 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 
 	// now compare the expected json data model to the actual host data model
 	return host.CompareData(jsonData)
+}
+
+func (host *SimpleWasmHost) runRequest(request *HostMap, req map[string]interface{}) bool {
+	function, ok := req["function"]
+	if !ok {
+		fmt.Printf("FAIL: Missing request.function\n")
+		return false
+	}
+	if request.Exists(host.GetKeyId("balance")) {
+		reqColors := host.FindSubObject(request, "colors", OBJTYPE_STRING_ARRAY).(*HostArray)
+		reqBalance := host.FindSubObject(request, "balance", OBJTYPE_MAP).(*HostMap)
+		account := host.FindSubObject(nil, "account", OBJTYPE_MAP).(*HostMap)
+		accBalance := host.FindSubObject(account, "balance", OBJTYPE_MAP).(*HostMap)
+		for i := reqColors.GetLength() - 1; i >= 0; i-- {
+			color := reqColors.GetBytes(i)
+			colorKeyId := host.GetKeyId(base58.Encode(color))
+			accBalance.SetInt(colorKeyId, accBalance.GetInt(colorKeyId)+reqBalance.GetInt(colorKeyId))
+		}
+	}
+
+	fmt.Printf("    Run function: %v\n", function)
+	err := host.RunFunction(function.(string))
+	if err != nil {
+		fmt.Printf("FAIL: Function %v: %v\n", function, err)
+		return false
+	}
+	return true
 }
 
 func SortedKeys(values map[string]interface{}) []string {
