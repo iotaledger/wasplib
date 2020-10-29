@@ -23,6 +23,19 @@
     }
   },
   "tests": {
+    "nothing": {
+      "setup": "default",
+      "request": {
+        "function": "nothing"
+      },
+      "expect": {
+        "state": {
+        },
+        "logs": {},
+        "postedRequests": [],
+        "transfers": []
+      }
+    },
     "incrementFirstTime": {
       "setup": "default",
       "request": {
@@ -32,7 +45,7 @@
         "state": {
           "counter": 1
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [],
         "transfers": []
       }
@@ -49,7 +62,7 @@
         "state": {
           "counter": 2
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [],
         "transfers": []
       }
@@ -63,7 +76,7 @@
         "state": {
           "counter": 2
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [
           {"contract": "@scAddress", "function": "increment", "delay": 0}
         ],
@@ -83,7 +96,7 @@
           "counter": 6,
           "numRepeats": 0
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [
           {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
           {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},

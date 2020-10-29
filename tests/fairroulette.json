@@ -56,7 +56,60 @@
             }
           ]
         },
-        "logs": [],
+        "logs": {},
+        "postedRequests": [{"contract": "@scAddress", "function": "lockBets", "delay": 120}],
+        "transfers": []
+      }
+    },
+    "placeTwoBets": {
+      "setup": "default",
+      "request": {
+        "function": "placeBet",
+        "colors": ["#iota"],
+        "balance": {"#iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@sender2",
+          "function": "placeBet",
+          "colors": ["#iota"],
+          "balance": {"#iota": 200},
+          "params": {
+            "color": 1
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "balance": {"#iota": 400}
+        },
+        "state": {
+          "bets": [
+            {
+              "BetInfo": {
+                "id": "$txHash",
+                "sender": "@sender",
+                "amount": 100,
+                "color": 3
+              }
+            },
+            {
+              "BetInfo": {
+                "id": "$txHash2",
+                "sender": "@sender2",
+                "amount": 200,
+                "color": 1
+              }
+            }
+          ]
+        },
+        "logs": {},
         "postedRequests": [{"contract": "@scAddress", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
@@ -80,7 +133,7 @@
         "state": {
           "lastWinningColor": 2
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [
           {"contract": "@scAddress", "function": "lockBets", "delay": 120},
           {"contract": "@scAddress", "function": "payWinners", "delay": 0}
@@ -90,7 +143,7 @@
         ]
       }
     },
-    "payWinner": {
+    "payWinnerFromOneBet": {
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
@@ -109,13 +162,101 @@
         "state": {
           "lastWinningColor": 3
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [
           {"contract": "@scAddress", "function": "lockBets", "delay": 120},
           {"contract": "@scAddress", "function": "payWinners", "delay": 0}
         ],
         "transfers": [
           {"address": "@sender", "amount": 100, "color": "#iota"}
+        ]
+      }
+    },
+    "payWinnerFromTwoBets": {
+      "setup": "default",
+      "flags": "nodelay",
+      "utility": {"random": 2},
+      "request": {
+        "function": "placeBet",
+        "colors": ["#iota"],
+        "balance": {"#iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@sender2",
+          "function": "placeBet",
+          "colors": ["#iota"],
+          "balance": {"#iota": 200},
+          "params": {
+            "color": 1
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "balance": {"#iota": 100}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": {},
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
+          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "@sender", "amount": 300, "color": "#iota"}
+        ]
+      }
+    },
+    "payWinnersFromTwoBets": {
+      "setup": "default",
+      "flags": "nodelay",
+      "utility": {"random": 2},
+      "request": {
+        "address": "@better1",
+        "function": "placeBet",
+        "colors": ["#iota"],
+        "balance": {"#iota": 100},
+        "params": {
+          "color": 3
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@better2",
+          "function": "placeBet",
+          "colors": ["#iota"],
+          "balance": {"#iota": 200},
+          "params": {
+            "color": 3
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "balance": {"#iota": 100}
+        },
+        "state": {
+          "lastWinningColor": 3
+        },
+        "logs": {},
+        "postedRequests": [
+          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
+          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+        ],
+        "transfers": [
+          {"address": "@better1", "amount": 100, "color": "#iota"},
+          {"address": "@better2", "amount": 200, "color": "#iota"}
         ]
       }
     }

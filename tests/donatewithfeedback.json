@@ -138,6 +138,111 @@
         "transfers": [
         ]
       }
+    },
+    "donateAndWithdraw": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@scOwner",
+          "function": "withdraw",
+          "params": {
+            "s": 250
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 350}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+          {"address": "@scOwner", "color": "#iota", "amount": 250}
+        ]
+      }
+    },
+    "donateAndWithdrawUnauthorized": {
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "address": "@notScOwner",
+          "function": "withdraw",
+          "params": {
+            "s": 250
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 600}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            }
+          ]
+        },
+        "postedRequests": [
+        ],
+        "transfers": [
+        ]
+      }
     }
   }
 }

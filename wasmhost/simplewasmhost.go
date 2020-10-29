@@ -305,43 +305,71 @@ func (host *SimpleWasmHost) makeSerializedObject(key string, field interface{}) 
 	object := field.(map[string]interface{})
 	if len(object) != 1 {
 		fmt.Printf("FAIL: bytes array %s: object type not found\n", key)
-		return "", false
 	}
 	encoder := NewBytesEncoder()
 	// only 1 object
-	for k, v := range object {
-		typeDef, ok := host.jsonTests.Types[k]
-		if !ok {
-			fmt.Printf("FAIL: bytes array %s: object typedef for %s missing\n", key, k)
+	for typeName, value := range object {
+		if !host.makeSubObject(encoder, key, typeName, value) {
 			return "", false
 		}
-		m := v.(map[string]interface{})
-		if len(m) != len(typeDef) {
-			fmt.Printf("FAIL: bytes array %s: object typedef for %s mismatch\n", key, k)
-			return "", false
-		}
-		for _, def := range typeDef {
-			fields := strings.Split(def, " ")
-			if len(fields) != 2 {
-				fmt.Printf("FAIL: bytes array %s: object typedef for %s invalid: '%s'\n", key, k, def)
-				return "", false
-			}
-			value := m[fields[0]]
-			switch fields[1] {
-			case "Address", "Bytes", "Color", "RequestId", "TxHash":
-				bytes, _ := base58.Decode(process(value.(string)))
-				encoder.Bytes(bytes)
-			case "Int":
-				encoder.Int(int64(value.(float64)))
-			case "String":
-				encoder.String(value.(string))
-			default:
-				panic("Unhandled type of field")
-			}
-		}
-
 	}
 	return base58.Encode(encoder.Data()), true
+}
+
+func (host *SimpleWasmHost) makeSubObject(encoder *BytesEncoder, key string, typeName string, value interface{}) bool {
+	typeDef, ok := host.jsonTests.Types[typeName]
+	if !ok {
+		fmt.Printf("FAIL: bytes array %s: object typedef for %s missing\n", key, typeName)
+		return false
+	}
+	m := value.(map[string]interface{})
+	if len(m) != len(typeDef) {
+		fmt.Printf("FAIL: bytes array %s: object typedef for %s mismatch\n", key, typeName)
+		return false
+	}
+	for _, def := range typeDef {
+		fields := strings.Split(def, " ")
+		if len(fields) != 2 {
+			fmt.Printf("FAIL: bytes array %s: object typedef for %s invalid: '%s'\n", key, typeName, def)
+			return false
+		}
+		value := m[fields[0]]
+		typeName = fields[1]
+		switch typeName {
+		case "Address", "Bytes", "Color", "RequestId", "TxHash":
+			bytes, _ := base58.Decode(process(value.(string)))
+			encoder.Bytes(bytes)
+		case "Int":
+			encoder.Int(int64(value.(float64)))
+		case "String":
+			encoder.String(value.(string))
+		default:
+			_, ok = host.jsonTests.Types[typeName]
+			if ok {
+				enc := NewBytesEncoder()
+				if !host.makeSubObject(enc, key, typeName, value) {
+					return false
+				}
+				encoder.Bytes(enc.Data())
+				return true
+			}
+			if typeName[:2] == "[]" {
+				typeName = typeName[2:]
+				array := value.([]interface{})
+				encoder.Int(int64(len(array)))
+				for _, value = range array {
+					enc := NewBytesEncoder()
+					if !host.makeSubObject(enc, key, typeName, value) {
+						return false
+					}
+					encoder.Bytes(enc.Data())
+				}
+				return true
+			}
+			panic("Unhandled type '" + typeName + "' of field in" + key)
+		}
+	}
+	return true
 }
 
 func process(value string) string {

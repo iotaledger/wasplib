@@ -88,7 +88,7 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	host.keyIdToKey = [][]byte{[]byte("<null>")}
 	host.keyMapToKeyId = keyMap
 	host.keyToKeyId = make(map[string]int32)
-	host.keyIdToKeyMap = make([][]byte, elements, elements)
+	host.keyIdToKeyMap = make([][]byte, elements)
 	for k, v := range *keyMap {
 		host.keyIdToKeyMap[-v] = []byte(k)
 	}
@@ -96,6 +96,16 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	host.TrackObject(root)
 	host.vm = NewWasmTimeVM()
 	return host.vm.LinkHost(host)
+}
+
+func (host *WasmHost) CallFunction(functionName string) error {
+	//TODO what about passing args and results?
+	ptr := host.vm.UnsafeMemory()
+	saved := make([]byte, len(ptr))
+	copy(saved, ptr)
+	err := host.RunFunction(functionName)
+	copy(ptr, saved)
+	return err
 }
 
 func (host *WasmHost) fdWrite(fd int32, iovs int32, size int32, written int32) int32 {
@@ -287,7 +297,7 @@ func (host *WasmHost) LoadWasm(wasmData []byte) error {
 	if ptr[firstNonZero] != 0 {
 		host.memoryNonZero = firstNonZero
 		size := lastNonZero + 1 - firstNonZero
-		host.memoryCopy = make([]byte, size, size)
+		host.memoryCopy = make([]byte, size)
 		copy(host.memoryCopy, ptr[host.memoryNonZero:])
 	}
 	return nil
@@ -297,8 +307,7 @@ func (host *WasmHost) RunFunction(functionName string) error {
 	if host.memoryDirty {
 		// clear memory and restore initialized data range
 		ptr := host.vm.UnsafeMemory()
-		size := len(ptr)
-		copy(ptr, make([]byte, size, size))
+		copy(ptr, make([]byte, len(ptr)))
 		copy(ptr[host.memoryNonZero:], host.memoryCopy)
 	}
 	host.memoryDirty = true

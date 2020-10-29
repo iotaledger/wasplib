@@ -56,7 +56,7 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "donatewithfeedback"
+	contract := "fairauction"
 	language := "go" // "bg" = Rust, "go" = Go
 
 	file, err := os.Open("tests/" + contract + ".json")

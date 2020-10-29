@@ -41,30 +41,398 @@
     }
   },
   "tests": {
-    "payWinner": {
+    "startAuction": {
       "setup": "default",
       "request": {
-        "function": "",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
+        "function": "startAuction",
+        "colors": ["#iota", "#tokenColor"],
+        "balance": {"#iota": 100, "#tokenColor": 1},
         "params": {
-          "color": 3
+          "color": "#tokenColor",
+          "minimum": 500
         }
       },
       "expect": {
         "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 200}
+          "colors": ["#iota", "#tokenColor"],
+          "balance": {"#iota": 200, "#tokenColor": 1}
         },
         "state": {
-          "lastWinningColor": 3
+          "auctions": {
+            "#tokenColor": {
+              "AuctionInfo": {
+                "color": "#tokenColor",
+                "numTokens": 1,
+                "minimumBid": 500,
+                "description": "N/A",
+                "whenStarted": 20201027172138,
+                "duration": 60,
+                "auctionOwner": "@sender",
+                "deposit": 100,
+                "ownerMargin": 50,
+                "bids": []
+              }
+            }
+          }
         },
-        "logs": [],
+        "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120}
+          {
+            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "params": {"color": "#tokenColor"}
+          }
+        ],
+        "transfers": []
+      }
+    },
+    "noBids": {
+      "setup": "default",
+      "flags": "nodelay",
+      "request": {
+        "function": "startAuction",
+        "colors": ["#iota", "#tokenColor"],
+        "balance": {"#iota": 100, "#tokenColor": 1},
+        "params": {
+          "color": "#tokenColor",
+          "minimum": 500
+        }
+      },
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#tokenColor"],
+          "balance": {"#iota": 101, "#tokenColor": 0}
+        },
+        "state": {
+          "auctions": {
+            "#tokenColor": {
+              "AuctionInfo": {
+                "color": "#tokenColor",
+                "numTokens": 1,
+                "minimumBid": 500,
+                "description": "N/A",
+                "whenStarted": 20201027172138,
+                "duration": 60,
+                "auctionOwner": "@sender",
+                "deposit": 100,
+                "ownerMargin": 50,
+                "bids": []
+              }
+            }
+          }
+        },
+        "logs": {},
+        "postedRequests": [
+          {
+            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "params": {"color": "#tokenColor"}
+          }
         ],
         "transfers": [
-          {"address": "@sender", "amount": 100, "color": "#iota"}
+          {"address": "@scOwner", "color": "#iota", "amount": 24},
+          {"address": "@sender", "color": "#tokenColor", "amount": 1},
+          {"address": "@sender", "color": "#iota", "amount": 75}
+        ]
+      }
+    },
+    "singleBid": {
+      "setup": "default",
+      "request": {
+        "function": "startAuction",
+        "colors": ["#iota", "#tokenColor"],
+        "balance": {"#iota": 100, "#tokenColor": 1},
+        "params": {
+          "color": "#tokenColor",
+          "minimum": 500
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$bidder1",
+          "hash": "#bidder1",
+          "address": "@bidder1",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 600},
+          "params": {
+            "color": "#tokenColor"
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#tokenColor"],
+          "balance": {"#iota": 800, "#tokenColor": 1}
+        },
+        "state": {
+          "auctions": {
+            "#tokenColor": {
+              "AuctionInfo": {
+                "color": "#tokenColor",
+                "numTokens": 1,
+                "minimumBid": 500,
+                "description": "N/A",
+                "whenStarted": 20201027172138,
+                "duration": 60,
+                "auctionOwner": "@sender",
+                "deposit": 100,
+                "ownerMargin": 50,
+                "bids": [
+                  {
+                    "address": "@bidder1",
+                    "amount": 600,
+                    "when": 20201027172139
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "logs": {},
+        "postedRequests": [
+          {
+            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "params": {"color": "#tokenColor"}
+          }
+        ],
+        "transfers": []
+      }
+    },
+    "fourBids": {
+      "setup": "default",
+      "request": {
+        "function": "startAuction",
+        "colors": ["#iota", "#tokenColor"],
+        "balance": {"#iota": 100, "#tokenColor": 1},
+        "params": {
+          "color": "#tokenColor",
+          "minimum": 500
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$bidder1",
+          "hash": "#bidder1",
+          "address": "@bidder1",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 600},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172140,
+          "id": "$bidder2",
+          "hash": "#bidder2",
+          "address": "@bidder2",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 700},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172141,
+          "id": "$bidder3",
+          "hash": "#bidder3",
+          "address": "@bidder3",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 700},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172142,
+          "id": "$bidder4",
+          "hash": "#bidder4",
+          "address": "@bidder4",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 600},
+          "params": {
+            "color": "#tokenColor"
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#tokenColor"],
+          "balance": {"#iota": 2800, "#tokenColor": 1}
+        },
+        "state": {
+          "auctions": {
+            "#tokenColor": {
+              "AuctionInfo": {
+                "color": "#tokenColor",
+                "numTokens": 1,
+                "minimumBid": 500,
+                "description": "N/A",
+                "whenStarted": 20201027172138,
+                "duration": 60,
+                "auctionOwner": "@sender",
+                "deposit": 100,
+                "ownerMargin": 50,
+                "bids": [
+                  {
+                    "address": "@bidder1",
+                    "amount": 600,
+                    "when": 20201027172139
+                  },
+                  {
+                    "address": "@bidder2",
+                    "amount": 700,
+                    "when": 20201027172140
+                  },
+                  {
+                    "address": "@bidder3",
+                    "amount": 700,
+                    "when": 20201027172141
+                  },
+                  {
+                    "address": "@bidder4",
+                    "amount": 600,
+                    "when": 20201027172142
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "logs": {},
+        "postedRequests": [
+          {
+            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "params": {"color": "#tokenColor"}
+          }
+        ],
+        "transfers": []
+      }
+    },
+    "fourBidsAndFinalize": {
+      "setup": "default",
+      "flags": "nodelay",
+      "request": {
+        "function": "startAuction",
+        "colors": ["#iota", "#tokenColor"],
+        "balance": {"#iota": 100, "#tokenColor": 1},
+        "params": {
+          "color": "#tokenColor",
+          "minimum": 500
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$bidder1",
+          "hash": "#bidder1",
+          "address": "@bidder1",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 600},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172140,
+          "id": "$bidder2",
+          "hash": "#bidder2",
+          "address": "@bidder2",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 700},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172141,
+          "id": "$bidder3",
+          "hash": "#bidder3",
+          "address": "@bidder3",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 700},
+          "params": {
+            "color": "#tokenColor"
+          }
+        },
+        {
+          "timestamp": 20201027172142,
+          "id": "$bidder4",
+          "hash": "#bidder4",
+          "address": "@bidder4",
+          "function": "placeBid",
+          "colors": ["#iota"],
+          "balance": {"#iota": 600},
+          "params": {
+            "color": "#tokenColor"
+          }
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota", "#tokenColor"],
+          "balance": {"#iota": 101, "#tokenColor": 0}
+        },
+        "state": {
+          "auctions": {
+            "#tokenColor": {
+              "AuctionInfo": {
+                "color": "#tokenColor",
+                "numTokens": 1,
+                "minimumBid": 500,
+                "description": "N/A",
+                "whenStarted": 20201027172138,
+                "duration": 60,
+                "auctionOwner": "@sender",
+                "deposit": 100,
+                "ownerMargin": 50,
+                "bids": [
+                  {
+                    "address": "@bidder1",
+                    "amount": 600,
+                    "when": 20201027172139
+                  },
+                  {
+                    "address": "@bidder2",
+                    "amount": 700,
+                    "when": 20201027172140
+                  },
+                  {
+                    "address": "@bidder3",
+                    "amount": 700,
+                    "when": 20201027172141
+                  },
+                  {
+                    "address": "@bidder4",
+                    "amount": 600,
+                    "when": 20201027172142
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "logs": {},
+        "postedRequests": [
+          {
+            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "params": {"color": "#tokenColor"}
+          }
+        ],
+        "transfers": [
+          {"address": "@bidder1", "color": "#iota", "amount": 600},
+          {"address": "@bidder3", "color": "#iota", "amount": 700},
+          {"address": "@bidder4", "color": "#iota", "amount": 600},
+          {"address": "@scOwner", "color": "#iota", "amount": 34},
+          {"address": "@bidder2", "color": "#tokenColor", "amount": 1},
+          {"address": "@sender", "color": "#iota", "amount": 765}
         ]
       }
     }
