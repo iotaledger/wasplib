@@ -13,8 +13,7 @@ type SimpleWasmHost struct {
 	WasmHost
 	ExportsId   int32
 	TransfersId int32
-	jsonTests   *JsonTests
-	jsonData    *JsonDataModel
+	JsonTests   *JsonTests
 }
 
 func NewSimpleWasmHost() (*SimpleWasmHost, error) {
@@ -60,9 +59,8 @@ func (host *SimpleWasmHost) CompareArrayData(key string, array []interface{}) bo
 	return true
 }
 
-func (host *SimpleWasmHost) CompareData(jsonData *JsonDataModel) bool {
-	host.jsonData = jsonData
-	expectData := jsonData.Expect
+func (host *SimpleWasmHost) CompareData(jsonTest *JsonTest) bool {
+	expectData := jsonTest.Expect
 	return host.CompareMapData("account", expectData.Account) &&
 		host.CompareMapData("state", expectData.State) &&
 		host.CompareMapData("logs", expectData.Logs) &&
@@ -317,24 +315,19 @@ func (host *SimpleWasmHost) makeSerializedObject(key string, field interface{}) 
 }
 
 func (host *SimpleWasmHost) makeSubObject(encoder *BytesEncoder, key string, typeName string, value interface{}) bool {
-	typeDef, ok := host.jsonTests.Types[typeName]
+	fieldDefs, ok := host.JsonTests.Types[typeName]
 	if !ok {
 		fmt.Printf("FAIL: bytes array %s: object typedef for %s missing\n", key, typeName)
 		return false
 	}
-	m := value.(map[string]interface{})
-	if len(m) != len(typeDef) {
+	fieldValues := value.(map[string]interface{})
+	if len(fieldValues) != len(fieldDefs) {
 		fmt.Printf("FAIL: bytes array %s: object typedef for %s mismatch\n", key, typeName)
 		return false
 	}
-	for _, def := range typeDef {
-		fields := strings.Split(def, " ")
-		if len(fields) != 2 {
-			fmt.Printf("FAIL: bytes array %s: object typedef for %s invalid: '%s'\n", key, typeName, def)
-			return false
-		}
-		value := m[fields[0]]
-		typeName = fields[1]
+	for _, def := range fieldDefs {
+		value = fieldValues[def.FieldName]
+		typeName = def.TypeName
 		switch typeName {
 		case "Address", "Bytes", "Color", "RequestId", "TxHash":
 			bytes, _ := base58.Decode(process(value.(string)))
@@ -344,7 +337,7 @@ func (host *SimpleWasmHost) makeSubObject(encoder *BytesEncoder, key string, typ
 		case "String":
 			encoder.String(value.(string))
 		default:
-			_, ok = host.jsonTests.Types[typeName]
+			_, ok = host.JsonTests.Types[typeName]
 			if ok {
 				enc := NewBytesEncoder()
 				if !host.makeSubObject(enc, key, typeName, value) {
@@ -399,28 +392,27 @@ func processHash(value string, size int) string {
 	return base58.Encode(hash)
 }
 
-func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTests *JsonTests) bool {
-	host.jsonTests = jsonTests
-	fmt.Printf("Test: %s\n", name)
-	if jsonData.Expect == nil {
+func (host *SimpleWasmHost) RunTest(test *JsonTest) bool {
+	fmt.Printf("Test: %s\n", test.Name)
+	if test.Expect == nil {
 		fmt.Printf("FAIL: Missing expect model data\n")
 		return false
 	}
 	host.ClearData()
-	if jsonData.Setup != "" {
-		setupData, ok := jsonTests.Setups[jsonData.Setup]
+	if test.Setup != "" {
+		setupData, ok := host.JsonTests.Setups[test.Setup]
 		if !ok {
-			fmt.Printf("FAIL: Missing setup: %s\n", jsonData.Setup)
+			fmt.Printf("FAIL: Missing setup: %s\n", test.Setup)
 			return false
 		}
 		host.LoadData(setupData)
 	}
-	host.LoadData(jsonData)
+	host.LoadData(&test.JsonDataModel)
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP).(*HostMap)
-	if !host.runRequest(request, jsonData.Request) {
+	if !host.runRequest(request, test.Request) {
 		return false
 	}
-	for _, req := range jsonData.AdditionalRequests {
+	for _, req := range test.AdditionalRequests {
 		jsonRequest := req.(map[string]interface{})
 		request.SetInt(KeyLength, 0)
 		host.LoadSubMapData(request, jsonRequest)
@@ -433,11 +425,11 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 	postedRequests := host.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
 
-	expectedPostedRequests := int64(len(jsonData.Expect.PostedRequests))
+	expectedPostedRequests := int64(len(test.Expect.PostedRequests))
 	for i := int64(0); i < expectedPostedRequests && i < postedRequests.GetInt(KeyLength); i++ {
 		postedRequest := host.FindObject(postedRequests.GetObjectId(int32(i), OBJTYPE_MAP))
 		delay := postedRequest.GetInt(host.GetKeyId("delay"))
-		if delay != 0 && !strings.Contains(jsonData.Flags, "nodelay") {
+		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
 			// only process posted requests when they have no delay
 			// unless overridden by the nodelay flag
 			// those are the only ones that will be incorporated in the final state
@@ -466,7 +458,7 @@ func (host *SimpleWasmHost) RunTest(name string, jsonData *JsonDataModel, jsonTe
 	}
 
 	// now compare the expected json data model to the actual host data model
-	return host.CompareData(jsonData)
+	return host.CompareData(test)
 }
 
 func (host *SimpleWasmHost) runRequest(request *HostMap, req map[string]interface{}) bool {

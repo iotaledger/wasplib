@@ -1,21 +1,21 @@
 {
   "types": {
     "AuctionInfo": [
-      "color Color",
-      "numTokens Int",
-      "minimumBid Int",
-      "description String",
-      "whenStarted Int",
-      "duration Int",
-      "auctionOwner Address",
-      "deposit Int",
-      "ownerMargin Int",
-      "bids []BidInfo"
+      {"field": "color", "type": "Color"},
+      {"field": "numTokens", "type": "Int"},
+      {"field": "minimumBid", "type": "Int"},
+      {"field": "description", "type": "String"},
+      {"field": "whenStarted", "type": "Int"},
+      {"field": "duration", "type": "Int"},
+      {"field": "auctionOwner", "type": "Address"},
+      {"field": "deposit", "type": "Int"},
+      {"field": "ownerMargin", "type": "Int"},
+      {"field": "bids", "type": "[]BidInfo"}
     ],
     "BidInfo": [
-      "address Address",
-      "amount Int",
-      "when Int"
+      {"field": "address", "type": "Address"},
+      {"field": "amount", "type": "Int"},
+      {"field": "when", "type": "Int"}
     ]
   },
   "setups": {
@@ -40,8 +40,9 @@
       }
     }
   },
-  "tests": {
-    "startAuction": {
+  "tests": [
+    {
+      "name": "startAuction",
       "setup": "default",
       "request": {
         "function": "startAuction",
@@ -85,7 +86,8 @@
         "transfers": []
       }
     },
-    "noBids": {
+    {
+      "name": "noBids",
       "setup": "default",
       "flags": "nodelay",
       "request": {
@@ -134,7 +136,8 @@
         ]
       }
     },
-    "singleBid": {
+    {
+      "name": "singleBid",
       "setup": "default",
       "request": {
         "function": "startAuction",
@@ -198,7 +201,8 @@
         "transfers": []
       }
     },
-    "fourBids": {
+    {
+      "name": "fourBids",
       "setup": "default",
       "request": {
         "function": "startAuction",
@@ -313,7 +317,8 @@
         "transfers": []
       }
     },
-    "fourBidsAndFinalize": {
+    {
+      "name": "fourBidsAndFinalize",
       "setup": "default",
       "flags": "nodelay",
       "request": {
@@ -436,5 +441,5 @@
         ]
       }
     }
-  }
+  ]
 }

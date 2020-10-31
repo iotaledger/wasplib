@@ -1,10 +1,10 @@
 {
   "types": {
     "BetInfo": [
-      "id RequestId",
-      "sender Address",
-      "amount Int",
-      "color Int"
+      {"field": "id", "type": "RequestId"},
+      {"field": "sender", "type": "Address"},
+      {"field": "amount", "type": "Int"},
+      {"field": "color", "type": "Int"}
     ]
   },
   "setups": {
@@ -29,8 +29,9 @@
       }
     }
   },
-  "tests": {
-    "placeOneBet": {
+  "tests": [
+    {
+      "name": "placeOneBet",
       "setup": "default",
       "request": {
         "function": "placeBet",
@@ -61,7 +62,8 @@
         "transfers": []
       }
     },
-    "placeTwoBets": {
+    {
+      "name": "placeTwoBets",
       "setup": "default",
       "request": {
         "function": "placeBet",
@@ -114,7 +116,8 @@
         "transfers": []
       }
     },
-    "nobodyWins": {
+    {
+      "name": "nobodyWins",
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 1},
@@ -143,7 +146,8 @@
         ]
       }
     },
-    "payWinnerFromOneBet": {
+    {
+      "name": "payWinnerFromOneBet",
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
@@ -172,7 +176,8 @@
         ]
       }
     },
-    "payWinnerFromTwoBets": {
+    {
+      "name": "payWinnerFromTwoBets",
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
@@ -215,7 +220,8 @@
         ]
       }
     },
-    "payWinnersFromTwoBets": {
+    {
+      "name": "payWinnersFromTwoBets",
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
@@ -260,5 +266,5 @@
         ]
       }
     }
-  }
+  ]
 }

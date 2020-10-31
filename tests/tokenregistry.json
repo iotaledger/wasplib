@@ -1,13 +1,13 @@
 {
   "types": {
     "TokenInfo": [
-      "supply Int",
-      "mintedBy Address",
-      "owner Address",
-      "created Int",
-      "updated Int",
-      "description String",
-      "userDefined String"
+      {"field": "supply", "type": "Int"},
+      {"field": "mintedBy", "type": "Address"},
+      {"field": "owner", "type": "Address"},
+      {"field": "created", "type": "Int"},
+      {"field": "updated", "type": "Int"},
+      {"field": "description", "type": "String"},
+      {"field": "userDefined", "type": "String"}
     ]
   },
   "setups": {
@@ -32,8 +32,9 @@
       }
     }
   },
-  "tests": {
-    "mintSupply": {
+  "tests": [
+    {
+      "name": "mintSupply",
       "setup": "default",
       "request": {
         "function": "mintSupply",
@@ -69,7 +70,8 @@
         "transfers": []
       }
     },
-    "mintSupplyMissingDescription": {
+    {
+      "name": "mintWithMissingDescription",
       "setup": "default",
       "request": {
         "function": "mintSupply",
@@ -104,7 +106,8 @@
         "transfers": []
       }
     },
-    "mintWithMissingSupply": {
+    {
+      "name": "mintWithMissingSupply",
       "setup": "default",
       "request": {
         "function": "mintSupply",
@@ -129,7 +132,8 @@
         "transfers": []
       }
     },
-    "mintSecondSupply": {
+    {
+      "name": "mintSecondSupply",
       "setup": "default",
       "request": {
         "function": "mintSupply",
@@ -191,5 +195,5 @@
         "transfers": []
       }
     }
-  }
+  ]
 }

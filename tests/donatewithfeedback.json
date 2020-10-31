@@ -1,12 +1,12 @@
 {
   "types": {
     "DonationInfo": [
-      "seq Int",
-      "id RequestId",
-      "amount Int",
-      "sender Address",
-      "error String",
-      "feedback String"
+      {"field": "seq", "type": "Int"},
+      {"field": "id", "type": "RequestId"},
+      {"field": "amount", "type": "Int"},
+      {"field": "sender", "type": "Address"},
+      {"field": "error", "type": "String"},
+      {"field": "feedback", "type": "String"}
     ]
   },
   "setups": {
@@ -31,8 +31,9 @@
       }
     }
   },
-  "tests": {
-    "donateOnce": {
+  "tests": [
+    {
+      "name": "donateOnce",
       "setup": "default",
       "request": {
         "function": "donate",
@@ -72,7 +73,8 @@
         ]
       }
     },
-    "donateTwice": {
+    {
+      "name": "donateTwice",
       "setup": "default",
       "request": {
         "function": "donate",
@@ -139,7 +141,8 @@
         ]
       }
     },
-    "donateAndWithdraw": {
+    {
+      "name": "donateAndWithdraw",
       "setup": "default",
       "request": {
         "function": "donate",
@@ -192,7 +195,8 @@
         ]
       }
     },
-    "donateAndWithdrawUnauthorized": {
+    {
+      "name": "donateAndWithdrawUnauthorized",
       "setup": "default",
       "request": {
         "function": "donate",
@@ -244,5 +248,5 @@
         ]
       }
     }
-  }
+  ]
 }

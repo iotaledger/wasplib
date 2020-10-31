@@ -6,7 +6,6 @@ import (
 	"github.com/iotaledger/wasplib/wasmhost"
 	"io/ioutil"
 	"os"
-	"sort"
 )
 
 // generate base58 strings
@@ -56,7 +55,7 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "fairauction"
+	contract := "tokenregistry"
 	language := "go" // "bg" = Rust, "go" = Go
 
 	file, err := os.Open("tests/" + contract + ".json")
@@ -87,17 +86,11 @@ func main() {
 		panic(err)
 	}
 
-	testNames := make([]string, len(jsonTests.Tests))
-	index := 0
-	for key, _ := range jsonTests.Tests {
-		testNames[index] = key
-		index++
-	}
-	sort.Strings(testNames)
+	host.JsonTests = jsonTests
 	failed := 0
 	passed := 0
-	for _, testName := range testNames {
-		if host.RunTest(testName, jsonTests.Tests[testName], jsonTests) {
+	for _, test := range jsonTests.Tests {
+		if host.RunTest(test) {
 			fmt.Printf("PASS\n")
 			passed++
 			continue

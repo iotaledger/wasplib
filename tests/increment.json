@@ -22,8 +22,9 @@
       }
     }
   },
-  "tests": {
-    "nothing": {
+  "tests": [
+    {
+      "name": "nothing",
       "setup": "default",
       "request": {
         "function": "nothing"
@@ -36,7 +37,8 @@
         "transfers": []
       }
     },
-    "incrementFirstTime": {
+    {
+      "name": "incrementFirstTime",
       "setup": "default",
       "request": {
         "function": "increment"
@@ -50,7 +52,8 @@
         "transfers": []
       }
     },
-    "incrementSecondTime": {
+    {
+      "name": "incrementSecondTime",
       "setup": "default",
       "state": {
         "counter": 1
@@ -67,7 +70,8 @@
         "transfers": []
       }
     },
-    "incrementAgainByChainingToIncrement": {
+    {
+      "name": "incrementAgainByChainingToIncrement",
       "setup": "default",
       "request": {
         "function": "incrementRepeat1"
@@ -83,7 +87,8 @@
         "transfers": []
       }
     },
-    "increment5TimesByChainingToSelf": {
+    {
+      "name": "increment5TimesByChainingToSelf",
       "setup": "default",
       "request": {
         "function": "incrementRepeatMany",
@@ -107,5 +112,5 @@
         "transfers": []
       }
     }
-  }
+  ]
 }
