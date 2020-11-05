@@ -33,6 +33,7 @@ type HostObject interface {
 	GetInt(keyId int32) int64
 	GetObjectId(keyId int32, typeId int32) int32
 	GetString(keyId int32) string
+	GetTypeId(keyId int32) int32
 	SetBytes(keyId int32, value []byte)
 	SetInt(keyId int32, value int64)
 	SetString(keyId int32, value string)
@@ -207,7 +208,7 @@ func (host *WasmHost) GetKeyId(keyRef int32, size int32) int32 {
 	// non-negative size means original key was a string
 	if size >= 0 {
 		key := host.vmGetBytes(keyRef, size)
-		keyId := host.getKeyId(key)
+		keyId := host.GetKeyIdFromBytes(key)
 		host.Trace("GetKeyId '%s'=k%d", string(key), keyId)
 		return keyId
 	}
@@ -217,7 +218,7 @@ func (host *WasmHost) GetKeyId(keyRef int32, size int32) int32 {
 
 	if !host.useBase58Keys {
 		// use byte slice key as is
-		keyId := host.getKeyId(key)
+		keyId := host.GetKeyIdFromBytes(key)
 		host.Trace("GetKeyId '%s'=k%d", base58.Encode(key), keyId)
 		return keyId
 	}
@@ -226,12 +227,12 @@ func (host *WasmHost) GetKeyId(keyRef int32, size int32) int32 {
 	// now all keys are byte slices from strings
 	base58Key := base58.Encode(key)
 	key = []byte(base58Key)
-	keyId := host.getKeyId(key)
+	keyId := host.GetKeyIdFromBytes(key)
 	host.Trace("GetKeyId '%s'=k%d", base58Key, keyId)
 	return keyId
 }
 
-func (host *WasmHost) getKeyId(key []byte) int32 {
+func (host *WasmHost) GetKeyIdFromBytes(key []byte) int32 {
 	// cannot use []byte as key in maps
 	// so we will convert to (non-utf8) string
 	// most will have started out as string anyway

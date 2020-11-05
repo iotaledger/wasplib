@@ -1,11 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/iotaledger/wasplib/wasmhost"
 	"io/ioutil"
-	"os"
 )
 
 // generate base58 strings
@@ -55,18 +53,13 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "tokenregistry"
+	contract := "fairauction"
 	language := "go" // "bg" = Rust, "go" = Go
 
-	file, err := os.Open("tests/" + contract + ".json")
+	pathName := "tests/" + contract + ".json"
+	jsonTests, err := wasmhost.NewJsonTests(pathName)
 	if err != nil {
 		panic(err)
-	}
-	defer file.Close()
-	jsonTests := &wasmhost.JsonTests{}
-	err = json.NewDecoder(file).Decode(&jsonTests)
-	if err != nil {
-		panic("JSON error: " + err.Error())
 	}
 
 	host, err := wasmhost.NewSimpleWasmHost()
@@ -86,11 +79,10 @@ func main() {
 		panic(err)
 	}
 
-	host.JsonTests = jsonTests
 	failed := 0
 	passed := 0
 	for _, test := range jsonTests.Tests {
-		if host.RunTest(test) {
+		if jsonTests.RunTest(&host.WasmHost, test) {
 			fmt.Printf("PASS\n")
 			passed++
 			continue

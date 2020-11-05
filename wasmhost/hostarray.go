@@ -61,6 +61,10 @@ func (a *HostArray) GetString(keyId int32) string {
 	return a.items[keyId].(string)
 }
 
+func (a *HostArray) GetTypeId(keyId int32) int32 {
+	return a.typeId
+}
+
 func (a *HostArray) SetBytes(keyId int32, value []byte) {
 	a.SetString(keyId, base58.Encode(value))
 }

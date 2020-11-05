@@ -101,6 +101,14 @@ func (m *HostMap) GetString(keyId int32) string {
 	return value.(string)
 }
 
+func (m *HostMap) GetTypeId(keyId int32) int32 {
+	typeId, ok := m.types[keyId]
+	if !ok {
+		return -1
+	}
+	return typeId
+}
+
 func (m *HostMap) SetBytes(keyId int32, value []byte) {
 	m.SetString(keyId, base58.Encode(value))
 }
@@ -175,12 +183,4 @@ func (m *HostMap) CopyDataTo(other HostObject) {
 			panic("Implement types")
 		}
 	}
-}
-
-func (m *HostMap) GetTypeId(keyId int32) int32 {
-	typeId, ok := m.types[keyId]
-	if !ok {
-		return -1
-	}
-	return typeId
 }

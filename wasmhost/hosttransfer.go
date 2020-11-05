@@ -38,7 +38,7 @@ func (a *HostTransfer) SetInt(keyId int32, value int64) {
 	}
 	account := a.host.FindSubObject(nil, "account", OBJTYPE_MAP)
 	balance := a.host.FindSubObject(account, "balance", OBJTYPE_MAP)
-	colorKeyId := a.host.GetKeyId(base58.Encode(a.color))
+	colorKeyId := a.host.GetKeyIdFromBytes([]byte(base58.Encode(a.color)))
 	colorAmount := balance.GetInt(colorKeyId)
 	if colorAmount < value {
 		a.host.SetError("Insufficient funds")
