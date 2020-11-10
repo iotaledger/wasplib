@@ -56,7 +56,7 @@ func onLoadFairAuction() {
 	exports.Add("startAuction")
 	exports.Add("finalizeAuction")
 	exports.Add("placeBid")
-	exports.AddProtected("setOwnerMargin")
+	exports.Add("setOwnerMargin")
 }
 
 //export startAuction

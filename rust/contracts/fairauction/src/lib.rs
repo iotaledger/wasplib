@@ -50,7 +50,7 @@ pub fn onLoad() {
     exports.add("startAuction");
     exports.add("finalizeAuction");
     exports.add("placeBid");
-    exports.add_protected("setOwnerMargin");
+    exports.add("setOwnerMargin");
 }
 
 #[no_mangle]

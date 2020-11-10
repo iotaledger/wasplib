@@ -15,6 +15,17 @@ func onLoadIncrement() {
 	exports.Add("incrementRepeatMany")
 	exports.Add("test")
 	exports.Add("nothing")
+	exports.Add("init")
+}
+
+//export init
+func init() {
+	sc := client.NewScContext()
+	counter := sc.Request().Params().GetInt("counter").Value()
+	if counter == 0 {
+		return
+	}
+	sc.State().GetInt("counter").SetValue(counter)
 }
 
 //export increment

@@ -53,7 +53,21 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
-	contract := "fairauction"
+	//err := filepath.Walk("../tests",
+	//	func(path string, info os.FileInfo, err error) error {
+	//		if err != nil {
+	//			return err
+	//		}
+	//		if strings.HasSuffix(path, ".json") {
+	//			readerTest(path)
+	//		}
+	//		return nil
+	//	})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+
+	contract := "tokenregistry"
 	language := "go" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"

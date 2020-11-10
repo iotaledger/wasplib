@@ -16,7 +16,7 @@ struct DonationInfo {
 pub fn onLoad() {
     let mut exports = ScExports::new();
     exports.add("donate");
-    exports.add_protected("withdraw");
+    exports.add("withdraw");
 }
 
 #[no_mangle]

@@ -16,9 +16,4 @@ public class ScExports {
 		next++;
 		exports.GetString(next).SetValue(name);
 	}
-
-	public void AddProtected(String name) {
-		next++;
-		exports.GetString(next | 0x4000).SetValue(name);
-	}
 }

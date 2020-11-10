@@ -16,6 +16,16 @@ public class Increment {
 		exports.Add("nothing");
 	}
 
+	//export init
+	public static void init() {
+		ScContext sc = new ScContext();
+		long counter = sc.Request().Params().GetInt("counter").Value();
+		if (counter == 0) {
+			return;
+		}
+		sc.State().GetInt("counter").SetValue(counter);
+	}
+
 	//export increment
 	public static void increment() {
 		ScContext sc = new ScContext();

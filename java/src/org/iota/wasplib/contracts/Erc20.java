@@ -20,7 +20,7 @@ public class Erc20 {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddProtected("initSC");
+		exports.Add("initSC");
 		exports.Add("transfer");
 		exports.Add("approve");
 	}

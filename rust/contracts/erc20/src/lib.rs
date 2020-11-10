@@ -18,7 +18,7 @@ struct Delegation {
 #[no_mangle]
 pub fn onLoad() {
     let mut exports = ScExports::new();
-    exports.add_protected("initSC");
+    exports.add("initSC");
     exports.add("transfer");
     exports.add("approve");
     exports.add("transfer_from");

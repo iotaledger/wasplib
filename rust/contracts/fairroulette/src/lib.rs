@@ -19,7 +19,7 @@ pub fn onLoad() {
     exports.add("placeBet");
     exports.add("lockBets");
     exports.add("payWinners");
-    exports.add_protected("playPeriod");
+    exports.add("playPeriod");
     exports.add("nothing");
 }
 

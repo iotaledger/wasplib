@@ -31,7 +31,7 @@ public class FairAuction {
 		exports.Add("startAuction");
 		exports.Add("finalizeAuction");
 		exports.Add("placeBid");
-		exports.AddProtected("setOwnerMargin");
+		exports.Add("setOwnerMargin");
 	}
 
 	//export startAuction

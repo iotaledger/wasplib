@@ -59,11 +59,6 @@ func (ctx *ScExports) Add(name string) {
 	ctx.exports.GetString(ctx.next).SetValue(name)
 }
 
-func (ctx *ScExports) AddProtected(name string) {
-	ctx.next++
-	ctx.exports.GetString(ctx.next | 0x4000).SetValue(name)
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScLog struct {

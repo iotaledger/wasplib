@@ -23,14 +23,19 @@ func (n *NullObject) GetInt(keyId int32) int64 {
 	return 0
 }
 
+func (n *NullObject) GetObjectId(keyId int32, typeId int32) int32 {
+	n.host.SetError("Null.GetObjectId")
+	return 0
+}
+
 func (n *NullObject) GetString(keyId int32) string {
 	n.host.SetError("Null.GetString")
 	return ""
 }
 
-func (n *NullObject) GetObjectId(keyId int32, typeId int32) int32 {
-	n.host.SetError("Null.GetObjectId")
-	return 0
+func (n *NullObject) GetTypeId(keyId int32) int32 {
+	n.host.SetError("Null.GetTypeId")
+	return -1
 }
 
 func (n *NullObject) SetBytes(keyId int32, value []byte) {

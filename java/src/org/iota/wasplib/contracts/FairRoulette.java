@@ -23,7 +23,7 @@ public class FairRoulette {
 		exports.Add("placeBet");
 		exports.Add("lockBets");
 		exports.Add("payWinners");
-		exports.AddProtected("playPeriod");
+		exports.Add("playPeriod");
 		exports.Add("nothing");
 	}
 

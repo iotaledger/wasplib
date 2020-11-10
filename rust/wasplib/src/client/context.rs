@@ -71,11 +71,6 @@ impl ScExports {
         self.next += 1;
         self.exports.get_string(self.next).set_value(name);
     }
-
-    pub fn add_protected(&mut self, name: &str) {
-        self.next += 1;
-        self.exports.get_string(self.next | 0x4000).set_value(name);
-    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

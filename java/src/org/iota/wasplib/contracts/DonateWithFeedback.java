@@ -14,7 +14,7 @@ public class DonateWithFeedback {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.Add("donate");
-		exports.AddProtected("withdraw");
+		exports.Add("withdraw");
 	}
 
 	//export donate

@@ -24,7 +24,7 @@ func onLoadFairRoulette() {
 	exports.Add("placeBet")
 	exports.Add("lockBets")   //TODO sc internal only
 	exports.Add("payWinners") //TODO sc internal only
-	exports.AddProtected("playPeriod")
+	exports.Add("playPeriod")
 	exports.Add("nothing")
 }
 

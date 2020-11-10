@@ -12,6 +12,17 @@ pub fn onLoad() {
     exports.add("incrementRepeatMany");
     exports.add("test");
     exports.add("nothing");
+    exports.add("init");
+}
+
+#[no_mangle]
+pub fn init() {
+    let sc = ScContext::new();
+    let counter = sc.request().params().get_int("counter").value();
+    if counter == 0 {
+        return;
+    }
+    sc.state().get_int("counter").set_value(counter);
 }
 
 #[no_mangle]

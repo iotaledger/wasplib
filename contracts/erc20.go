@@ -18,7 +18,7 @@ func main() {
 //export onLoad
 func onLoadERC20() {
 	exports := client.NewScExports()
-	exports.AddProtected("initSC")
+	exports.Add("initSC")
 	exports.Add("transfer")
 	exports.Add("approve")
 }
@@ -27,6 +27,13 @@ func onLoadERC20() {
 func initSC() {
 	sc := client.NewScContext()
 	sc.Log("initSC")
+
+	scOwner := sc.Contract().Owner()
+	request := sc.Request()
+	if !request.From(scOwner) {
+		sc.Log("Cancel spoofed request")
+		return
+	}
 
 	state := sc.State()
 	supplyState := state.GetInt(varSupply)
