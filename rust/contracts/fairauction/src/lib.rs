@@ -24,8 +24,8 @@ struct AuctionInfo {
     whenStarted: i64,
     // duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
     duration: i64,
-    // address which issued StartAuction transaction
-    auctionOwner: ScAddress,
+    // agent who issued StartAuction transaction
+    auctionOwner: ScAgent,
     // deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
     // transaction.
     deposit: i64,
@@ -37,7 +37,7 @@ struct AuctionInfo {
 
 struct BidInfo {
     // originator of the bid
-    address: ScAddress,
+    bidder: ScAgent,
     // the amount is a cumulative sum of all bids from the same bidder
     amount: i64,
     // most recent bid update time
@@ -139,7 +139,7 @@ pub fn startAuction() {
         description: description,
         whenStarted: request.timestamp(),
         duration: duration,
-        auctionOwner: request.address(),
+        auctionOwner: request.sender(),
         deposit: deposit,
         ownerMargin: ownerMargin,
         bids: Vec::new(),
@@ -147,7 +147,7 @@ pub fn startAuction() {
     let bytes = encodeAuctionInfo(auction);
     currentAuction.set_value(&bytes);
 
-    let finalizeparams = sc.post_request(&sc.contract().address(), "finalizeAuction", duration * 60);
+    let finalizeparams = sc.post_request(&sc.contract().id(), "finalizeAuction", duration * 60);
     finalizeparams.get_color("color").set_value(&auction.color);
     sc.log("New auction started...");
 }
@@ -157,7 +157,7 @@ pub fn finalizeAuction() {
     // can only be sent by SC itself
     let sc = ScContext::new();
     let request = sc.request();
-    if !request.from(&sc.contract().address()) {
+    if !request.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -193,14 +193,14 @@ pub fn finalizeAuction() {
 
     let mut winner = BidInfo {
         amount: 0,
-        address: ScAddress::from_bytes(&[0x00; 33]),
+        bidder: ScAgent::from_bytes(&[0x00; 37]),
         when: 0,
     };
     for bidder in &auction.bids {
         if bidder.amount >= winner.amount {
             if bidder.amount > winner.amount || bidder.when < winner.when {
                 winner.amount = bidder.amount;
-                winner.address = ScAddress::from_bytes(bidder.address.to_bytes());
+                winner.bidder = ScAgent::from_bytes(bidder.bidder.to_bytes());
                 winner.when = bidder.when;
             }
         }
@@ -212,14 +212,14 @@ pub fn finalizeAuction() {
 
     // return staked bids to losers
     for bidder in auction.bids {
-        if bidder.address != winner.address {
-            sc.transfer(&bidder.address, &ScColor::IOTA, bidder.amount);
+        if bidder.bidder != winner.bidder {
+            sc.transfer(&bidder.bidder, &ScColor::IOTA, bidder.amount);
         }
     }
 
     // finalizeAuction request token was probably not confirmed yet
     sc.transfer(&sc.contract().owner(), &ScColor::IOTA, ownerFee - 1);
-    sc.transfer(&winner.address, &auction.color, auction.numTokens);
+    sc.transfer(&winner.bidder, &auction.color, auction.numTokens);
     sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit + winner.amount - ownerFee);
 }
 
@@ -249,12 +249,12 @@ pub fn placeBid() {
         return;
     }
 
-    let sender = request.address();
+    let sender = request.sender();
     let mut auction = decodeAuctionInfo(&bytes);
-    let mut bidIndex = auction.bids.iter().position(|b| b.address == sender);
+    let mut bidIndex = auction.bids.iter().position(|b| b.bidder == sender);
     if bidIndex == None {
         sc.log(&("New bid from: ".to_string() + &sender.to_string()));
-        let bid = BidInfo { address: sender, amount: 0, when: 0 };
+        let bid = BidInfo { bidder: sender, amount: 0, when: 0 };
         bidIndex = Some(auction.bids.len());
         auction.bids.push(bid);
     }
@@ -297,7 +297,7 @@ fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
         description: decoder.string(),
         whenStarted: decoder.int(),
         duration: decoder.int(),
-        auctionOwner: decoder.address(),
+        auctionOwner: decoder.agent(),
         deposit: decoder.int(),
         ownerMargin: decoder.int(),
         bids: Vec::new(),
@@ -314,7 +314,7 @@ fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
 fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BidInfo {
-        address: decoder.address(),
+        bidder: decoder.agent(),
         amount: decoder.int(),
         when: decoder.int(),
     }
@@ -328,7 +328,7 @@ fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
     encoder.string(&auction.description);
     encoder.int(auction.whenStarted);
     encoder.int(auction.duration);
-    encoder.address(&auction.auctionOwner);
+    encoder.agent(&auction.auctionOwner);
     encoder.int(auction.deposit);
     encoder.int(auction.ownerMargin);
     encoder.int(auction.bids.len() as i64);
@@ -341,7 +341,7 @@ fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
 
 fn encodeBidInfo(bid: &BidInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.address(&bid.address);
+    encoder.agent(&bid.bidder);
     encoder.int(bid.amount);
     encoder.int(bid.when);
     encoder.data()
@@ -351,7 +351,7 @@ fn refund(amount: i64, reason: &str) {
     let sc = ScContext::new();
     sc.log(reason);
     let request = sc.request();
-    let sender = request.address();
+    let sender = request.sender();
     if amount != 0 {
         sc.transfer(&sender, &ScColor::IOTA, amount);
     }

@@ -5,7 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
@@ -35,8 +35,8 @@ public class TokenRegistry {
 		ScImmutableMap params = request.Params();
 		TokenInfo token = new TokenInfo();
 		token.supply = request.Balance(color);
-		token.mintedBy = request.Address();
-		token.owner = request.Address();
+		token.mintedBy = request.Sender();
+		token.owner = request.Sender();
 		token.created = request.Timestamp();
 		token.updated = request.Timestamp();
 		token.description = params.GetString("dscr").Value();
@@ -68,8 +68,8 @@ public class TokenRegistry {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		TokenInfo token = new TokenInfo();
 		token.supply = decoder.Int();
-		token.mintedBy = decoder.Address();
-		token.owner = decoder.Address();
+		token.mintedBy = decoder.Agent();
+		token.owner = decoder.Agent();
 		token.created = decoder.Int();
 		token.updated = decoder.Int();
 		token.description = decoder.String();
@@ -80,8 +80,8 @@ public class TokenRegistry {
 	public static byte[] encodeTokenInfo(TokenInfo token) {
 		return new BytesEncoder().
 				Int(token.supply).
-				Address(token.mintedBy).
-				Address(token.owner).
+				Agent(token.mintedBy).
+				Agent(token.owner).
 				Int(token.created).
 				Int(token.updated).
 				String(token.description).
@@ -91,8 +91,8 @@ public class TokenRegistry {
 
 	public static class TokenInfo {
 		long supply;
-		ScAddress mintedBy;
-		ScAddress owner;
+		ScAgent mintedBy;
+		ScAgent owner;
 		long created;
 		long updated;
 		String description;

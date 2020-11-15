@@ -2,7 +2,7 @@
   "types": {
     "BetInfo": [
       {"field": "id", "type": "RequestId"},
-      {"field": "sender", "type": "Address"},
+      {"field": "sender", "type": "Agent"},
       {"field": "amount", "type": "Int"},
       {"field": "color", "type": "Int"}
     ]
@@ -12,8 +12,7 @@
       "contract": {
         "name": "fairroulette",
         "description": "Simple gambling app",
-        "id": "fairrouletteId",
-        "address": "@scAddress",
+        "id": "@scId",
         "color": "#scColor",
         "owner": "@scOwner"
       },
@@ -25,7 +24,7 @@
         "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
-        "address": "@sender"
+        "sender": "@sender"
       }
     }
   },
@@ -58,7 +57,7 @@
           ]
         },
         "logs": {},
-        "postedRequests": [{"contract": "@scAddress", "function": "lockBets", "delay": 120}],
+        "postedRequests": [{"contract": "@scId", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -78,7 +77,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@sender2",
+          "sender": "@sender2",
           "function": "placeBet",
           "colors": ["#iota"],
           "balance": {"#iota": 200},
@@ -112,7 +111,7 @@
           ]
         },
         "logs": {},
-        "postedRequests": [{"contract": "@scAddress", "function": "lockBets", "delay": 120}],
+        "postedRequests": [{"contract": "@scId", "function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -138,11 +137,11 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
-          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+          {"contract": "@scId", "function": "lockBets", "delay": 120},
+          {"contract": "@scId", "function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"address": "@scAddress", "amount": 100, "color": "#iota"}
+          {"agent": "@scId", "amount": 100, "color": "#iota"}
         ]
       }
     },
@@ -168,11 +167,11 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
-          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+          {"contract": "@scId", "function": "lockBets", "delay": 120},
+          {"contract": "@scId", "function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"address": "@sender", "amount": 100, "color": "#iota"}
+          {"agent": "@sender", "amount": 100, "color": "#iota"}
         ]
       }
     },
@@ -194,7 +193,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@sender2",
+          "sender": "@sender2",
           "function": "placeBet",
           "colors": ["#iota"],
           "balance": {"#iota": 200},
@@ -212,11 +211,11 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
-          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+          {"contract": "@scId", "function": "lockBets", "delay": 120},
+          {"contract": "@scId", "function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"address": "@sender", "amount": 300, "color": "#iota"}
+          {"agent": "@sender", "amount": 300, "color": "#iota"}
         ]
       }
     },
@@ -226,7 +225,7 @@
       "flags": "nodelay",
       "utility": {"random": 2},
       "request": {
-        "address": "@better1",
+        "sender": "@better1",
         "function": "placeBet",
         "colors": ["#iota"],
         "balance": {"#iota": 100},
@@ -239,7 +238,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@better2",
+          "sender": "@better2",
           "function": "placeBet",
           "colors": ["#iota"],
           "balance": {"#iota": 200},
@@ -257,12 +256,12 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "lockBets", "delay": 120},
-          {"contract": "@scAddress", "function": "payWinners", "delay": 0}
+          {"contract": "@scId", "function": "lockBets", "delay": 120},
+          {"contract": "@scId", "function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"address": "@better1", "amount": 100, "color": "#iota"},
-          {"address": "@better2", "amount": 200, "color": "#iota"}
+          {"agent": "@better1", "amount": 100, "color": "#iota"},
+          {"agent": "@better2", "amount": 200, "color": "#iota"}
         ]
       }
     }

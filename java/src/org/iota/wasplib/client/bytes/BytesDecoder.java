@@ -1,10 +1,7 @@
 package org.iota.wasplib.client.bytes;
 
 import org.iota.wasplib.client.Host;
-import org.iota.wasplib.client.hashtypes.ScAddress;
-import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScRequestId;
-import org.iota.wasplib.client.hashtypes.ScTxHash;
+import org.iota.wasplib.client.hashtypes.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -18,6 +15,10 @@ public class BytesDecoder {
 
 	public ScAddress Address() {
 		return new ScAddress(Bytes());
+	}
+
+	public ScAgent Agent() {
+		return new ScAgent(Bytes());
 	}
 
 	public byte[] Bytes() {

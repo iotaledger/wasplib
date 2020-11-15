@@ -29,10 +29,6 @@ pub struct ScContract {
 }
 
 impl ScContract {
-    pub fn address(&self) -> ScAddress {
-        self.contract.get_address("address").value()
-    }
-
     pub fn color(&self) -> ScColor {
         self.contract.get_color("color").value()
     }
@@ -41,16 +37,16 @@ impl ScContract {
         self.contract.get_string("description").value()
     }
 
-    pub fn id(&self) -> String {
-        self.contract.get_string("id").value()
+    pub fn id(&self) -> ScAgent {
+        self.contract.get_agent("id").value()
     }
 
     pub fn name(&self) -> String {
         self.contract.get_string("name").value()
     }
 
-    pub fn owner(&self) -> ScAddress {
-        self.contract.get_address("owner").value()
+    pub fn owner(&self) -> ScAgent {
+        self.contract.get_agent("owner").value()
     }
 }
 
@@ -102,8 +98,8 @@ impl ScPostedRequest {
         self.request.get_int("code").set_value(code);
     }
 
-    pub fn contract(&self, address: &ScAddress) {
-        self.request.get_address("contract").set_value(address);
+    pub fn contract(&self, contract: &ScAgent) {
+        self.request.get_agent("contract").set_value(contract);
     }
 
     pub fn delay(&self, delay: i64) {
@@ -126,10 +122,6 @@ pub struct ScRequest {
 }
 
 impl ScRequest {
-    pub fn address(&self) -> ScAddress {
-        self.request.get_address("address").value()
-    }
-
     pub fn balance(&self, color: &ScColor) -> i64 {
         self.request.get_key_map("balance").get_int(color.to_bytes()).value()
     }
@@ -138,8 +130,8 @@ impl ScRequest {
         self.request.get_color_array("colors")
     }
 
-    pub fn from(&self, originator: &ScAddress) -> bool {
-        self.address() == *originator
+    pub fn from(&self, originator: &ScAgent) -> bool {
+        self.sender() == *originator
     }
 
     pub fn id(&self) -> ScRequestId {
@@ -153,6 +145,8 @@ impl ScRequest {
     pub fn params(&self) -> ScImmutableMap {
         self.request.get_map("params")
     }
+
+    pub fn sender(&self) -> ScAgent { self.request.get_agent("sender").value() }
 
     pub fn timestamp(&self) -> i64 {
         self.request.get_int("timestamp").value()
@@ -170,8 +164,8 @@ pub struct ScTransfer {
 }
 
 impl ScTransfer {
-    pub fn address(&self, address: &ScAddress) {
-        self.transfer.get_address("address").set_value(address);
+    pub fn agent(&self, agent: &ScAgent) {
+        self.transfer.get_agent("agent").set_value(agent);
     }
 
     pub fn amount(&self, amount: i64) {
@@ -246,7 +240,7 @@ impl ScContext {
         set_string(1, key_log(), text)
     }
 
-    pub fn post_request(&self, contract: &ScAddress, function: &str, delay: i64) -> ScMutableMap {
+    pub fn post_request(&self, contract: &ScAgent, function: &str, delay: i64) -> ScMutableMap {
         let posted_requests = self.root.get_map_array("postedRequests");
         let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
         request.contract(contract);
@@ -256,7 +250,7 @@ impl ScContext {
     }
 
     // just for compatibility with old hardcoded SCs
-    pub fn post_request_with_code(&self, contract: &ScAddress, code: i64, delay: i64) -> ScMutableMap {
+    pub fn post_request_with_code(&self, contract: &ScAgent, code: i64, delay: i64) -> ScMutableMap {
         let posted_requests = self.root.get_map_array("postedRequests");
         let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
         request.contract(contract);
@@ -281,10 +275,10 @@ impl ScContext {
         set_string(1, key_trace(), text)
     }
 
-    pub fn transfer(&self, address: &ScAddress, color: &ScColor, amount: i64) {
+    pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
         let transfers = self.root.get_map_array("transfers");
         let xfer = ScTransfer { transfer: transfers.get_map(transfers.length()) };
-        xfer.address(address);
+        xfer.agent(agent);
         xfer.color(color);
         xfer.amount(amount);
     }

@@ -7,7 +7,7 @@ struct DonationInfo {
     seq: i64,
     id: ScRequestId,
     amount: i64,
-    sender: ScAddress,
+    sender: ScAgent,
     error: String,
     feedback: String,
 }
@@ -28,7 +28,7 @@ pub fn donate() {
         seq: tlog.length() as i64,
         id: request.id(),
         amount: request.balance(&ScColor::IOTA),
-        sender: request.address(),
+        sender: request.sender(),
         error: String::new(),
         feedback: request.params().get_string("f").value(),
     };
@@ -79,7 +79,7 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
         seq: decoder.int(),
         id: decoder.request_id(),
         amount: decoder.int(),
-        sender: decoder.address(),
+        sender: decoder.agent(),
         error: decoder.string(),
         feedback: decoder.string(),
     }
@@ -90,7 +90,7 @@ fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
     encoder.int(donation.seq);
     encoder.request_id(&donation.id);
     encoder.int(donation.amount);
-    encoder.address(&donation.sender);
+    encoder.agent(&donation.sender);
     encoder.string(&donation.error);
     encoder.string(&donation.feedback);
     encoder.data()

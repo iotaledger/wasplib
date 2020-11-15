@@ -3,7 +3,7 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.*;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.mutable.ScMutableInt;
@@ -26,7 +26,7 @@ public class DonateWithFeedback {
 		donation.seq = tlog.Length();
 		donation.id = request.Id();
 		donation.amount = request.Balance(ScColor.IOTA);
-		donation.sender = request.Address();
+		donation.sender = request.Sender();
 		donation.error = "";
 		donation.feedback = request.Params().GetString("f").Value();
 		if (donation.amount == 0 || donation.feedback.length() == 0) {
@@ -51,7 +51,7 @@ public class DonateWithFeedback {
 	//export withdraw
 	public static void withdraw() {
 		ScContext sc = new ScContext();
-		ScAddress scOwner = sc.Contract().Owner();
+		ScAgent scOwner = sc.Contract().Owner();
 		ScRequest request = sc.Request();
 		if (!request.From(scOwner)) {
 			sc.Log("Cancel spoofed request");
@@ -83,7 +83,7 @@ public class DonateWithFeedback {
 		bet.seq = decoder.Int();
 		bet.id = decoder.RequestId();
 		bet.amount = decoder.Int();
-		bet.sender = decoder.Address();
+		bet.sender = decoder.Agent();
 		bet.error = decoder.String();
 		bet.feedback = decoder.String();
 		return bet;
@@ -94,7 +94,7 @@ public class DonateWithFeedback {
 				Int(donation.seq).
 				RequestId(donation.id).
 				Int(donation.amount).
-				Address(donation.sender).
+				Agent(donation.sender).
 				String(donation.error).
 				String(donation.feedback).
 				Data();
@@ -104,7 +104,7 @@ public class DonateWithFeedback {
 		long seq;
 		ScRequestId id;
 		long amount;
-		ScAddress sender;
+		ScAgent sender;
 		String error;
 		String feedback;
 	}

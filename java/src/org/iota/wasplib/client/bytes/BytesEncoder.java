@@ -1,9 +1,6 @@
 package org.iota.wasplib.client.bytes;
 
-import org.iota.wasplib.client.hashtypes.ScAddress;
-import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScRequestId;
-import org.iota.wasplib.client.hashtypes.ScTxHash;
+import org.iota.wasplib.client.hashtypes.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +14,10 @@ public class BytesEncoder {
 	}
 
 	public BytesEncoder Address(ScAddress value) {
+		return Bytes(value.toBytes());
+	}
+
+	public BytesEncoder Agent(ScAgent value) {
 		return Bytes(value.toBytes());
 	}
 

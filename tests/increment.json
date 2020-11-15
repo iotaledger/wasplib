@@ -5,8 +5,7 @@
       "contract": {
         "name": "increment",
         "description": "Test basic functionality",
-        "id": "incrementId",
-        "address": "@scAddress",
+        "id": "@scId",
         "color": "#scColor",
         "owner": "@scOwner"
       },
@@ -18,7 +17,7 @@
         "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
-        "address": "@sender"
+        "sender": "@sender"
       }
     }
   },
@@ -82,7 +81,7 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "increment", "delay": 0}
+          {"contract": "@scId", "function": "increment", "delay": 0}
         ],
         "transfers": []
       }
@@ -103,11 +102,11 @@
         },
         "logs": {},
         "postedRequests": [
-          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scAddress", "function": "incrementRepeatMany", "delay": 0}
+          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
+          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0}
         ],
         "transfers": []
       }

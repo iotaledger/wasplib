@@ -13,6 +13,10 @@ impl BytesDecoder<'_> {
         ScAddress::from_bytes(self.bytes())
     }
 
+    pub fn agent(&mut self) -> ScAgent {
+        ScAgent::from_bytes(self.bytes())
+    }
+
     pub fn bytes(&mut self) -> &[u8] {
         let size = self.int() as usize;
         if self.data.len() < size {
@@ -78,6 +82,11 @@ impl BytesEncoder {
     }
 
     pub fn address(&mut self, value: &ScAddress) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
+    }
+
+    pub fn agent(&mut self, value: &ScAgent) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }

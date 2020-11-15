@@ -2,8 +2,8 @@
   "types": {
     "TokenInfo": [
       {"field": "supply", "type": "Int"},
-      {"field": "mintedBy", "type": "Address"},
-      {"field": "owner", "type": "Address"},
+      {"field": "mintedBy", "type": "Agent"},
+      {"field": "owner", "type": "Agent"},
       {"field": "created", "type": "Int"},
       {"field": "updated", "type": "Int"},
       {"field": "description", "type": "String"},
@@ -15,8 +15,7 @@
       "contract": {
         "name": "tokenregistry",
         "description": "Register colored tokens on the Tangle",
-        "id": "tokenregistryId",
-        "address": "@scAddress",
+        "id": "@scId",
         "color": "#scColor",
         "owner": "@scOwner"
       },
@@ -28,7 +27,7 @@
         "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
-        "address": "@sender"
+        "sender": "@sender"
       }
     }
   },
@@ -148,7 +147,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@sender",
+          "sender": "@sender",
           "function": "mintSupply",
           "colors": ["#txHash2"],
           "balance": {"#txHash2": 750},

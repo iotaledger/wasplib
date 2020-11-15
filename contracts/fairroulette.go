@@ -10,7 +10,7 @@ const PLAY_PERIOD int64 = 120
 
 type BetInfo struct {
 	id     *client.ScRequestId
-	sender *client.ScAddress
+	sender *client.ScAgent
 	amount int64
 	color  int64
 }
@@ -49,7 +49,7 @@ func placeBet() {
 
 	bet := BetInfo{
 		id:     request.Id(),
-		sender: request.Address(),
+		sender: request.Sender(),
 		amount: amount,
 		color:  color,
 	}
@@ -64,7 +64,7 @@ func placeBet() {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod)
+		sc.PostRequest(sc.Contract().Id(), "lockBets", playPeriod)
 	}
 }
 
@@ -72,8 +72,8 @@ func placeBet() {
 func lockBets() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
-	scAddress := sc.Contract().Address()
-	if !sc.Request().From(scAddress) {
+	scId := sc.Contract().Id()
+	if !sc.Request().From(scId) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -88,15 +88,15 @@ func lockBets() {
 	}
 	bets.Clear()
 
-	sc.PostRequest(scAddress, "payWinners", 0)
+	sc.PostRequest(scId, "payWinners", 0)
 }
 
 //export payWinners
 func payWinners() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
-	scAddress := sc.Contract().Address()
-	if !sc.Request().From(scAddress) {
+	scId := sc.Contract().Id()
+	if !sc.Request().From(scId) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -124,7 +124,7 @@ func payWinners() {
 	if len(winners) == 0 {
 		sc.Log("Nobody wins!")
 		// compact separate UTXOs into a single one
-		sc.Transfer(scAddress, client.IOTA, totalBetAmount)
+		sc.Transfer(scId, client.IOTA, totalBetAmount)
 		return
 	}
 
@@ -144,7 +144,7 @@ func payWinners() {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + strconv.FormatInt(remainder, 10)
 		sc.Log(text)
-		sc.Transfer(scAddress, client.IOTA, remainder)
+		sc.Transfer(scId, client.IOTA, remainder)
 	}
 }
 
@@ -170,7 +170,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BetInfo{
 		id:     decoder.RequestId(),
-		sender: decoder.Address(),
+		sender: decoder.Agent(),
 		amount: decoder.Int(),
 		color:  decoder.Int(),
 	}
@@ -179,7 +179,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
 		RequestId(bet.id).
-		Address(bet.sender).
+		Agent(bet.sender).
 		Int(bet.amount).
 		Int(bet.color).
 		Data()

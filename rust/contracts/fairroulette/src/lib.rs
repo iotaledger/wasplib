@@ -8,7 +8,7 @@ const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
     id: ScRequestId,
-    sender: ScAddress,
+    sender: ScAgent,
     amount: i64,
     color: i64,
 }
@@ -44,7 +44,7 @@ pub fn placeBet() {
 
     let bet = BetInfo {
         id: request.id(),
-        sender: request.address(),
+        sender: request.sender(),
         amount,
         color,
     };
@@ -59,7 +59,7 @@ pub fn placeBet() {
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.post_request(&sc.contract().address(), "lockBets", play_period);
+        sc.post_request(&sc.contract().id(), "lockBets", play_period);
     }
 }
 
@@ -67,8 +67,8 @@ pub fn placeBet() {
 pub fn lockBets() {
     // can only be sent by SC itself
     let sc = ScContext::new();
-    let sc_address = sc.contract().address();
-    if !sc.request().from(&sc_address) {
+    let sc_id = sc.contract().id();
+    if !sc.request().from(&sc_id) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -84,15 +84,15 @@ pub fn lockBets() {
     }
     bets.clear();
 
-    sc.post_request(&sc_address, "payWinners", 0);
+    sc.post_request(&sc_id, "payWinners", 0);
 }
 
 #[no_mangle]
 pub fn payWinners() {
     // can only be sent by SC itself
     let sc = ScContext::new();
-    let sc_address = sc.contract().address();
-    if !sc.request().from(&sc_address) {
+    let sc_id = sc.contract().id();
+    if !sc.request().from(&sc_id) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -121,7 +121,7 @@ pub fn payWinners() {
     if winners.is_empty() {
         sc.log("Nobody wins!");
         // compact separate UTXOs into a single one
-        sc.transfer(&sc_address, &ScColor::IOTA, total_bet_amount);
+        sc.transfer(&sc_id, &ScColor::IOTA, total_bet_amount);
         return;
     }
 
@@ -143,7 +143,7 @@ pub fn payWinners() {
         let remainder = total_bet_amount - total_payout;
         let text = "Remainder is ".to_string() + &remainder.to_string();
         sc.log(&text);
-        sc.transfer(&sc_address, &ScColor::IOTA, remainder);
+        sc.transfer(&sc_id, &ScColor::IOTA, remainder);
     }
 }
 
@@ -170,7 +170,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
         id: decoder.request_id(),
-        sender: decoder.address(),
+        sender: decoder.agent(),
         amount: decoder.int(),
         color: decoder.int(),
     }
@@ -179,7 +179,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.request_id(&bet.id);
-    encoder.address(&bet.sender);
+    encoder.agent(&bet.sender);
     encoder.int(bet.amount);
     encoder.int(bet.color);
     encoder.data()

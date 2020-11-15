@@ -5,8 +5,8 @@ use wasplib::client::*;
 
 struct TokenInfo {
     supply: i64,
-    minted_by: ScAddress,
-    owner: ScAddress,
+    minted_by: ScAgent,
+    owner: ScAgent,
     created: i64,
     updated: i64,
     description: String,
@@ -35,8 +35,8 @@ pub fn mintSupply() {
     let params = request.params();
     let mut token = TokenInfo {
         supply: request.balance(&color),
-        minted_by: request.address(),
-        owner: request.address(),
+        minted_by: request.sender(),
+        owner: request.sender(),
         created: request.timestamp(),
         updated: request.timestamp(),
         description: params.get_string("dscr").value(),
@@ -71,8 +71,8 @@ fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
     let mut decoder = BytesDecoder::new(bytes);
     TokenInfo {
         supply: decoder.int(),
-        minted_by: decoder.address(),
-        owner: decoder.address(),
+        minted_by: decoder.agent(),
+        owner: decoder.agent(),
         created: decoder.int(),
         updated: decoder.int(),
         description: decoder.string(),
@@ -83,8 +83,8 @@ fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
 fn encodeTokenInfo(token: &TokenInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(token.supply);
-    encoder.address(&token.minted_by);
-    encoder.address(&token.owner);
+    encoder.agent(&token.minted_by);
+    encoder.agent(&token.owner);
     encoder.int(token.created);
     encoder.int(token.updated);
     encoder.string(&token.description);

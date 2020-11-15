@@ -28,7 +28,7 @@ type AuctionInfo struct {
 	// duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
 	duration int64
 	// address which issued StartAuction transaction
-	auctionOwner *client.ScAddress
+	auctionOwner *client.ScAgent
 	// deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
 	// transaction.
 	deposit int64
@@ -40,7 +40,7 @@ type AuctionInfo struct {
 
 type BidInfo struct {
 	// originator of the bid
-	address *client.ScAddress
+	bidder *client.ScAgent
 	// the amount is a cumulative sum of all bids from the same bidder
 	amount int64
 	// most recent bid update time
@@ -144,13 +144,13 @@ func startAuction() {
 		description:  description,
 		whenStarted:  request.Timestamp(),
 		duration:     duration,
-		auctionOwner: request.Address(),
+		auctionOwner: request.Sender(),
 		deposit:      deposit,
 		ownerMargin:  ownerMargin,
 	}
 	bytes := encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
-	finalizeParams := sc.PostRequest(sc.Contract().Address(), "finalizeAuction", auction.duration*60)
+	finalizeParams := sc.PostRequest(sc.Contract().Id(), "finalizeAuction", auction.duration*60)
 	finalizeParams.GetColor("color").SetValue(auction.color)
 	sc.Log("New auction started...")
 }
@@ -160,7 +160,7 @@ func finalizeAuction() {
 	// can only be sent by SC itself
 	sc := client.NewScContext()
 	request := sc.Request()
-	if !request.From(sc.Contract().Address()) {
+	if !request.From(sc.Contract().Id()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -210,13 +210,13 @@ func finalizeAuction() {
 	// return staked bids to losers
 	for _, bidder := range auction.bids {
 		if bidder != winner {
-			sc.Transfer(bidder.address, client.IOTA, bidder.amount)
+			sc.Transfer(bidder.bidder, client.IOTA, bidder.amount)
 		}
 	}
 
 	// finalizeAuction request token was probably not confirmed yet
 	sc.Transfer(sc.Contract().Owner(), client.IOTA, ownerFee-1)
-	sc.Transfer(winner.address, auction.color, auction.numTokens)
+	sc.Transfer(winner.bidder, auction.color, auction.numTokens)
 	sc.Transfer(auction.auctionOwner, client.IOTA, auction.deposit+winner.amount-ownerFee)
 }
 
@@ -246,18 +246,18 @@ func placeBid() {
 		return
 	}
 
-	sender := request.Address()
+	sender := request.Sender()
 	auction := decodeAuctionInfo(bytes)
 	var bid *BidInfo
 	for _, bidder := range auction.bids {
-		if bidder.address.Equals(sender) {
+		if bidder.bidder.Equals(sender) {
 			bid = bidder
 			break
 		}
 	}
 	if bid == nil {
 		sc.Log("New bid from: " + sender.String())
-		bid = &BidInfo{address: sender}
+		bid = &BidInfo{bidder: sender}
 		auction.bids = append(auction.bids, bid)
 	}
 	bid.amount += bidAmount
@@ -298,7 +298,7 @@ func decodeAuctionInfo(bytes []byte) *AuctionInfo {
 		description:  decoder.String(),
 		whenStarted:  decoder.Int(),
 		duration:     decoder.Int(),
-		auctionOwner: decoder.Address(),
+		auctionOwner: decoder.Agent(),
 		deposit:      decoder.Int(),
 		ownerMargin:  decoder.Int(),
 	}
@@ -314,9 +314,9 @@ func decodeAuctionInfo(bytes []byte) *AuctionInfo {
 func decodeBidInfo(bytes []byte) *BidInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BidInfo{
-		address: decoder.Address(),
-		amount:  decoder.Int(),
-		when:    decoder.Int(),
+		bidder: decoder.Agent(),
+		amount: decoder.Int(),
+		when:   decoder.Int(),
 	}
 }
 
@@ -328,7 +328,7 @@ func encodeAuctionInfo(auction *AuctionInfo) []byte {
 		String(auction.description).
 		Int(auction.whenStarted).
 		Int(auction.duration).
-		Address(auction.auctionOwner).
+		Agent(auction.auctionOwner).
 		Int(auction.deposit).
 		Int(auction.ownerMargin).
 		Int(int64(len(auction.bids)))
@@ -341,7 +341,7 @@ func encodeAuctionInfo(auction *AuctionInfo) []byte {
 
 func encodeBidInfo(bid *BidInfo) []byte {
 	return client.NewBytesEncoder().
-		Address(bid.address).
+		Agent(bid.bidder).
 		Int(bid.amount).
 		Int(bid.when).
 		Data()
@@ -351,7 +351,7 @@ func refund(amount int64, reason string) {
 	sc := client.NewScContext()
 	sc.Log(reason)
 	request := sc.Request()
-	sender := request.Address()
+	sender := request.Sender()
 	if amount != 0 {
 		sc.Transfer(sender, client.IOTA, amount)
 	}

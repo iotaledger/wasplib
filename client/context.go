@@ -18,10 +18,6 @@ type ScContract struct {
 	contract ScImmutableMap
 }
 
-func (ctx ScContract) Address() *ScAddress {
-	return ctx.contract.GetAddress("address").Value()
-}
-
 func (ctx ScContract) Color() *ScColor {
 	return ctx.contract.GetColor("color").Value()
 }
@@ -30,16 +26,16 @@ func (ctx ScContract) Description() string {
 	return ctx.contract.GetString("description").Value()
 }
 
-func (ctx ScContract) Id() string {
-	return ctx.contract.GetString("id").Value()
+func (ctx ScContract) Id() *ScAgent {
+	return ctx.contract.GetAgent("id").Value()
 }
 
 func (ctx ScContract) Name() string {
 	return ctx.contract.GetString("name").Value()
 }
 
-func (ctx ScContract) Owner() *ScAddress {
-	return ctx.contract.GetAddress("owner").Value()
+func (ctx ScContract) Owner() *ScAgent {
+	return ctx.contract.GetAgent("owner").Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -85,8 +81,8 @@ func (ctx ScPostedRequest) Code(code int64) {
 	ctx.request.GetInt("code").SetValue(code)
 }
 
-func (ctx ScPostedRequest) Contract(address *ScAddress) {
-	ctx.request.GetAddress("contract").SetValue(address)
+func (ctx ScPostedRequest) Contract(contract *ScAgent) {
+	ctx.request.GetAgent("contract").SetValue(contract)
 }
 
 func (ctx ScPostedRequest) Delay(delay int64) {
@@ -107,10 +103,6 @@ type ScRequest struct {
 	request ScImmutableMap
 }
 
-func (ctx ScRequest) Address() *ScAddress {
-	return ctx.request.GetAddress("address").Value()
-}
-
 func (ctx ScRequest) Balance(color *ScColor) int64 {
 	return ctx.request.GetKeyMap("balance").GetInt(color.Bytes()).Value()
 }
@@ -119,8 +111,8 @@ func (ctx ScRequest) Colors() ScImmutableColorArray {
 	return ctx.request.GetColorArray("colors")
 }
 
-func (ctx ScRequest) From(originator *ScAddress) bool {
-	return ctx.Address().Equals(originator)
+func (ctx ScRequest) From(originator *ScAgent) bool {
+	return ctx.Sender().Equals(originator)
 }
 
 func (ctx ScRequest) Id() *ScRequestId {
@@ -133,6 +125,10 @@ func (ctx ScRequest) MintedColor() *ScColor {
 
 func (ctx ScRequest) Params() ScImmutableMap {
 	return ctx.request.GetMap("params")
+}
+
+func (ctx ScRequest) Sender() *ScAgent {
+	return ctx.request.GetAgent("sender").Value()
 }
 
 func (ctx ScRequest) Timestamp() int64 {
@@ -149,8 +145,8 @@ type ScTransfer struct {
 	transfer ScMutableMap
 }
 
-func (ctx ScTransfer) Address(address *ScAddress) {
-	ctx.transfer.GetAddress("address").SetValue(address)
+func (ctx ScTransfer) Agent(address *ScAgent) {
+	ctx.transfer.GetAgent("agent").SetValue(address)
 }
 
 func (ctx ScTransfer) Amount(amount int64) {
@@ -220,7 +216,7 @@ func (ctx ScContext) Log(text string) {
 	SetString(1, KeyLog(), text)
 }
 
-func (ctx ScContext) PostRequest(contract *ScAddress, function string, delay int64) ScMutableMap {
+func (ctx ScContext) PostRequest(contract *ScAgent, function string, delay int64) ScMutableMap {
 	postedRequests := ctx.root.GetMapArray("postedRequests")
 	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
 	request.Contract(contract)
@@ -230,7 +226,7 @@ func (ctx ScContext) PostRequest(contract *ScAddress, function string, delay int
 }
 
 // just for compatibility with old hardcoded SCs
-func (ctx ScContext) PostRequestWithCode(contract *ScAddress, code int64, delay int64) ScMutableMap {
+func (ctx ScContext) PostRequestWithCode(contract *ScAgent, code int64, delay int64) ScMutableMap {
 	postedRequests := ctx.root.GetMapArray("postedRequests")
 	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
 	request.Contract(contract)
@@ -255,10 +251,10 @@ func (ctx ScContext) Trace(text string) {
 	SetString(1, KeyTrace(), text)
 }
 
-func (ctx ScContext) Transfer(address *ScAddress, color *ScColor, amount int64) {
+func (ctx ScContext) Transfer(agent *ScAgent, color *ScColor, amount int64) {
 	transfers := ctx.root.GetMapArray("transfers")
 	xfer := ScTransfer{transfers.GetMap(transfers.Length())}
-	xfer.Address(address)
+	xfer.Agent(agent)
 	xfer.Color(color)
 	xfer.Amount(amount)
 }

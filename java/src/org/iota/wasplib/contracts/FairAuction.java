@@ -5,7 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableColor;
 import org.iota.wasplib.client.immutable.ScImmutableColorArray;
@@ -119,13 +119,13 @@ public class FairAuction {
 		auction.description = description;
 		auction.whenStarted = request.Timestamp();
 		auction.duration = duration;
-		auction.auctionOwner = request.Address();
+		auction.auctionOwner = request.Sender();
 		auction.deposit = deposit;
 		auction.ownerMargin = ownerMargin;
 		byte[] bytes2 = encodeAuctionInfo(auction);
 		currentAuction.SetValue(bytes2);
 
-		ScMutableMap finalizeParams = sc.PostRequest(sc.Contract().Address(), "finalizeAuction", auction.duration * 60);
+		ScMutableMap finalizeParams = sc.PostRequest(sc.Contract().Id(), "finalizeAuction", auction.duration * 60);
 		finalizeParams.GetColor("color").SetValue(auction.color);
 		sc.Log("New auction started...");
 	}
@@ -135,7 +135,7 @@ public class FairAuction {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
 		ScRequest request = sc.Request();
-		if ((!request.From(sc.Contract().Address()))) {
+		if (!request.From(sc.Contract().Id())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -186,13 +186,13 @@ public class FairAuction {
 		// return staked bids to losers
 		for (BidInfo bidder : auction.bids) {
 			if (bidder != winner) {
-				sc.Transfer(bidder.address, ScColor.IOTA, bidder.amount);
+				sc.Transfer(bidder.bidder, ScColor.IOTA, bidder.amount);
 			}
 		}
 
 		// finalizeAuction request token was probably not confirmed yet
 		sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
-		sc.Transfer(winner.address, auction.color, auction.numTokens);
+		sc.Transfer(winner.bidder, auction.color, auction.numTokens);
 		sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit + winner.amount - ownerFee);
 	}
 
@@ -222,11 +222,11 @@ public class FairAuction {
 			return;
 		}
 
-		ScAddress sender = request.Address();
+		ScAgent sender = request.Sender();
 		AuctionInfo auction = decodeAuctionInfo(bytes);
 		BidInfo bid = null;
 		for (BidInfo bidder : auction.bids) {
-			if (bidder.address == sender) {
+			if (bidder.bidder == sender) {
 				bid = bidder;
 				break;
 			}
@@ -234,7 +234,7 @@ public class FairAuction {
 		if (bid == null) {
 			sc.Log("New bid from: " + sender);
 			bid = new BidInfo();
-			bid.address = sender;
+			bid.bidder = sender;
 			auction.bids.add(bid);
 		}
 		bid.amount += bidAmount;
@@ -274,7 +274,7 @@ public class FairAuction {
 		auction.description = decoder.String();
 		auction.whenStarted = decoder.Int();
 		auction.duration = decoder.Int();
-		auction.auctionOwner = decoder.Address();
+		auction.auctionOwner = decoder.Agent();
 		auction.deposit = decoder.Int();
 		auction.ownerMargin = decoder.Int();
 		return auction;
@@ -283,7 +283,7 @@ public class FairAuction {
 	public static BidInfo decodeBidInfo(byte[] bytes) {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BidInfo bid = new BidInfo();
-		bid.address = decoder.Address();
+		bid.bidder = decoder.Agent();
 		bid.amount = decoder.Int();
 		bid.when = decoder.Int();
 		return bid;
@@ -297,7 +297,7 @@ public class FairAuction {
 				String(auction.description).
 				Int(auction.whenStarted).
 				Int(auction.duration).
-				Address(auction.auctionOwner).
+				Agent(auction.auctionOwner).
 				Int(auction.deposit).
 				Int(auction.ownerMargin).
 				Int(auction.bids.size());
@@ -310,7 +310,7 @@ public class FairAuction {
 
 	public static byte[] encodeBidInfo(BidInfo bid) {
 		return new BytesEncoder().
-				Address(bid.address).
+				Agent(bid.bidder).
 				Int(bid.amount).
 				Int(bid.when).
 				Data();
@@ -320,7 +320,7 @@ public class FairAuction {
 		ScContext sc = new ScContext();
 		sc.Log(reason);
 		ScRequest request = sc.Request();
-		ScAddress sender = request.Address();
+		ScAgent sender = request.Sender();
 		if (amount != 0) {
 			sc.Transfer(sender, ScColor.IOTA, amount);
 		}
@@ -354,7 +354,7 @@ public class FairAuction {
 		// duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
 		long duration;
 		// address which issued StartAuction transaction
-		ScAddress auctionOwner;
+		ScAgent auctionOwner;
 		// deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
 		// transaction.
 		long deposit;
@@ -366,7 +366,7 @@ public class FairAuction {
 
 	public static class BidInfo {
 		// originator of the bid
-		ScAddress address;
+		ScAgent bidder;
 		// the amount is a cumulative sum of all bids from the same bidder
 		long amount;
 		// most recent bid update time

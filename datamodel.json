@@ -4,9 +4,8 @@
     "id": "base58HashOfSmartContractId",
     "name": "nameOfSmartContract",
     "description": "descriptionOfSmartContract",
-    "address": "base58HashOfSmartContractAccountAddress",
     "color": "base58HashOfSmartContractColor",
-    "owner": "base58HashOfSmartContractOwnerAddress"
+    "owner": "base58HashOfChainOwner"
   },
   "account": {
     "colors": ["iota", "base58HashOfColor"],
@@ -16,7 +15,7 @@
     }
   },
   "request": {
-    "address": "base58HashOfSenderAddress",
+    "sender": "base58HashOfSender",
     "colors": ["iota", "base58HashOfColor"],
     "balance": {
       "iota": 1000,
@@ -50,8 +49,8 @@
     "stringArrayVar": ["a", "b", "c"]
   },
   "transfers": [
-    {"address": "base58HashOfTargetAddress", "color": "iota", "amount": 10},
-    {"address": "base58HashOfTargetAddress", "color": "base58HashOfColor", "amount": 1}
+    {"agent": "base58HashOfTargetAgent", "color": "iota", "amount": 10},
+    {"agent": "base58HashOfTargetAgent", "color": "base58HashOfColor", "amount": 1}
   ],
   "postedRequests": [
     {

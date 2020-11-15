@@ -1,6 +1,6 @@
 package org.iota.wasplib.client.context;
 
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -11,8 +11,8 @@ public class ScTransfer {
 		this.transfer = transfer;
 	}
 
-	public void Address(ScAddress address) {
-		transfer.GetAddress("address").SetValue(address);
+	public void Agent(ScAgent agent) {
+		transfer.GetAgent("agent").SetValue(agent);
 	}
 
 	public void Amount(long amount) {

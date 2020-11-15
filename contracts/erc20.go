@@ -64,7 +64,7 @@ func transfer() {
 	request := sc.Request()
 	balances := state.GetKeyMap(varBalances)
 
-	sender := request.Address()
+	sender := request.Sender()
 
 	sc.Log("sender address: " + sender.String())
 
@@ -82,7 +82,7 @@ func transfer() {
 		sc.Log("transfer.fail: not enough balance")
 		return
 	}
-	targetAddr := params.GetAddress(varTargetAddress)
+	targetAddr := params.GetAgent(varTargetAddress)
 	// TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
 	targetBalance := balances.GetInt(targetAddr.Value().Bytes())

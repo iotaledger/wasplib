@@ -2,7 +2,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
@@ -31,7 +31,7 @@ public class ScContext {
 		Host.SetString(1, Keys.KeyLog(), text);
 	}
 
-	public ScMutableMap PostRequest(ScAddress contract, String function, long delay) {
+	public ScMutableMap PostRequest(ScAgent contract, String function, long delay) {
 		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
 		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
 		request.Contract(contract);
@@ -40,7 +40,7 @@ public class ScContext {
 		return request.Params();
 	}
 
-	public ScMutableMap PostRequestWithCode(ScAddress contract, long code, long delay) {
+	public ScMutableMap PostRequestWithCode(ScAgent contract, long code, long delay) {
 		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
 		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
 		request.Contract(contract);
@@ -70,10 +70,10 @@ public class ScContext {
 		Host.SetString(1, Keys.KeyTrace(), text);
 	}
 
-	public void Transfer(ScAddress address, ScColor color, long amount) {
+	public void Transfer(ScAgent agent, ScColor color, long amount) {
 		ScMutableMapArray transfers = root.GetMapArray("transfers");
 		ScTransfer xfer = new ScTransfer(transfers.GetMap(transfers.Length()));
-		xfer.Address(address);
+		xfer.Agent(agent);
 		xfer.Color(color);
 		xfer.Amount(amount);
 	}

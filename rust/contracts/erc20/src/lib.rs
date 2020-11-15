@@ -11,7 +11,7 @@ const VAR_TARGET_ADDRESS: &str = "addr";
 const VAR_AMOUNT: &str = "amount";
 
 struct Delegation {
-    delegated_to: ScAddress,
+    delegated_to: ScAgent,
     amount: i64,
 }
 
@@ -58,11 +58,11 @@ pub fn transfer() {
 
     let request = sc.request();
     let params = request.params();
-    let sender = request.address();
-    sc.log(&("sender address: ".to_string() + &sender.to_string()));
+    let sender = request.sender();
+    sc.log(&("sender: ".to_string() + &sender.to_string()));
 
     // TODO validate parameter address
-    let target_addr = params.get_address(VAR_TARGET_ADDRESS).value();
+    let target_addr = params.get_agent(VAR_TARGET_ADDRESS).value();
     let amount = params.get_int(VAR_AMOUNT).value();
     if amount <= 0 {
         sc.log("transfer.fail: wrong 'amount' parameter");
@@ -79,7 +79,7 @@ pub fn approve() {
 
     let state = sc.state();
     let request = sc.request();
-    let sender = request.address();
+    let sender = request.sender();
     let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(sender.to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
 
@@ -89,7 +89,7 @@ pub fn approve() {
         sc.log("approve.fail: wrong 'amount' parameter");
         return;
     }
-    let target_addr = params.get_address(VAR_TARGET_ADDRESS);
+    let target_addr = params.get_agent(VAR_TARGET_ADDRESS);
 
     add_delegation(&mut delegations, target_addr.value(), amount.value());
 
@@ -105,7 +105,7 @@ pub fn transfer_from() {
 
     let state = sc.state();
     let request = sc.request();
-    let sender = request.address();
+    let sender = request.sender();
 
     // take parameters
     let params = request.params();
@@ -115,8 +115,8 @@ pub fn transfer_from() {
         return;
     }
     // TODO parameter validation
-    let source_addr = params.get_address(VAR_SOURCE_ADDRESS);
-    let target_addr = params.get_address(VAR_TARGET_ADDRESS);
+    let source_addr = params.get_agent(VAR_SOURCE_ADDRESS);
+    let target_addr = params.get_agent(VAR_TARGET_ADDRESS);
 
     let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(source_addr.value().to_bytes());
     let mut delegations = decode_delegations(&delegations_data.value());
@@ -133,7 +133,7 @@ pub fn transfer_from() {
     sc.log("transfer_from.success");
 }
 
-fn transfer_internal(source_addr: &ScAddress, target_addr: &ScAddress, amount: i64) -> bool {
+fn transfer_internal(source_addr: &ScAgent, target_addr: &ScAgent, amount: i64) -> bool {
     let sc = ScContext::new();
     let balances = sc.state().get_key_map(VAR_BALANCES);
     let source_balance = balances.get_int(source_addr.to_bytes());
@@ -152,7 +152,7 @@ fn transfer_internal(source_addr: &ScAddress, target_addr: &ScAddress, amount: i
     true
 }
 
-fn add_delegation(lst: &mut Vec<Delegation>, delegate: ScAddress, amount: i64) {
+fn add_delegation(lst: &mut Vec<Delegation>, delegate: ScAgent, amount: i64) {
     for d in lst.iter_mut() {
         if d.delegated_to == delegate {
             d.amount = amount;
@@ -165,7 +165,7 @@ fn add_delegation(lst: &mut Vec<Delegation>, delegate: ScAddress, amount: i64) {
     })
 }
 
-fn sub_delegation(lst: &mut Vec<Delegation>, delegate: ScAddress, amount: i64) -> bool {
+fn sub_delegation(lst: &mut Vec<Delegation>, delegate: ScAgent, amount: i64) -> bool {
     for d in lst {
         if d.delegated_to == delegate {
             return if d.amount >= amount {
@@ -193,7 +193,7 @@ fn encode_delegations(delegations: &Vec<Delegation>) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(delegations.len() as i64);
     for d in delegations {
-        encoder.address(&d.delegated_to);
+        encoder.agent(&d.delegated_to);
         encoder.int(d.amount);
     }
     return encoder.data();
@@ -208,7 +208,7 @@ fn decode_delegations(bytes: &[u8]) -> Vec<Delegation> {
     let mut ret: Vec<Delegation> = Vec::with_capacity(size as usize);
     for _ in 0..size {
         ret.push(Delegation {
-            delegated_to: decoder.address(),
+            delegated_to: decoder.agent(),
             amount: decoder.int(),
         })
     }

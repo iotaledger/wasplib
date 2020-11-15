@@ -1,6 +1,6 @@
 package org.iota.wasplib.client.context;
 
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.hashtypes.ScTxHash;
@@ -14,10 +14,6 @@ public class ScRequest {
 		this.request = request;
 	}
 
-	public ScAddress Address() {
-		return request.GetAddress("address").Value();
-	}
-
 	public long Balance(ScColor color) {
 		return request.GetKeyMap("balance").GetInt(color.toBytes()).Value();
 	}
@@ -26,8 +22,8 @@ public class ScRequest {
 		return request.GetColorArray("colors");
 	}
 
-	public Boolean From(ScAddress originator) {
-		return From(originator);
+	public Boolean From(ScAgent originator) {
+		return Sender().equals(originator);
 	}
 
 	public ScRequestId Id() {
@@ -40,6 +36,10 @@ public class ScRequest {
 
 	public ScImmutableMap Params() {
 		return request.GetMap("params");
+	}
+
+	public ScAgent Sender() {
+		return request.GetAgent("sender").Value();
 	}
 
 	public long Timestamp() {

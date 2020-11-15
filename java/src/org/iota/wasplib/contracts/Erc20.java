@@ -3,7 +3,7 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
@@ -59,7 +59,7 @@ public class Erc20 {
 		ScRequest request = sc.Request();
 		ScMutableKeyMap balances = state.GetKeyMap(varBalances);
 
-		ScAddress sender = request.Address();
+		ScAgent sender = request.Sender();
 		sc.Log("sender address: " + sender);
 
 		ScMutableInt sourceBalance = balances.GetInt(sender.toBytes());

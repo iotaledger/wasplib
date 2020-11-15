@@ -346,7 +346,7 @@ func (t *JsonTests) makeSubObject(encoder *BytesEncoder, key string, typeName st
 		value = fieldValues[def.FieldName]
 		typeName = def.TypeName
 		switch typeName {
-		case "Address", "Bytes", "Color", "RequestId", "TxHash":
+		case "Address", "Agent", "Bytes", "Color", "RequestId", "TxHash":
 			bytes, _ := base58.Decode(process(value.(string)))
 			encoder.Bytes(bytes)
 		case "Int":
@@ -439,7 +439,7 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 		}
 	}
 
-	scAddress := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("address"))
+	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("id"))
 	reqParams := t.FindSubObject(request, "params", OBJTYPE_MAP)
 	postedRequests := t.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
 
@@ -454,15 +454,15 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 			continue
 		}
 
-		contractAddress := postedRequest.GetString(t.GetKeyId("contract"))
-		if contractAddress != scAddress {
+		contract := postedRequest.GetString(t.GetKeyId("contract"))
+		if contract != scId {
 			// only process posted requests when they are for the current contract
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
 
 		function := postedRequest.GetString(t.GetKeyId("function"))
-		request.SetString(t.GetKeyId("address"), scAddress)
+		request.SetString(t.GetKeyId("sender"), scId)
 		request.SetString(t.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
 		params := t.FindSubObject(postedRequest, "params", OBJTYPE_MAP)

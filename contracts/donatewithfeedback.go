@@ -8,7 +8,7 @@ type DonationInfo struct {
 	seq      int64
 	id       *client.ScRequestId
 	amount   int64
-	sender   *client.ScAddress
+	sender   *client.ScAgent
 	error    string
 	feedback string
 }
@@ -32,7 +32,7 @@ func donate() {
 		seq:      int64(tlog.Length()),
 		id:       request.Id(),
 		amount:   request.Balance(client.IOTA),
-		sender:   request.Address(),
+		sender:   request.Sender(),
 		error:    "",
 		feedback: request.Params().GetString("f").Value(),
 	}
@@ -85,7 +85,7 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	data.seq = decoder.Int()
 	data.id = decoder.RequestId()
 	data.amount = decoder.Int()
-	data.sender = decoder.Address()
+	data.sender = decoder.Agent()
 	data.error = decoder.String()
 	data.feedback = decoder.String()
 	return data
@@ -96,7 +96,7 @@ func encodeDonationInfo(donation *DonationInfo) []byte {
 		Int(donation.seq).
 		RequestId(donation.id).
 		Int(donation.amount).
-		Address(donation.sender).
+		Agent(donation.sender).
 		String(donation.error).
 		String(donation.feedback).
 		Data()

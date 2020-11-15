@@ -12,6 +12,10 @@ func (d *BytesDecoder) Address() *ScAddress {
 	return NewScAddress(d.Bytes())
 }
 
+func (d *BytesDecoder) Agent() *ScAgent {
+	return NewScAgent(d.Bytes())
+}
+
 func (d *BytesDecoder) Bytes() []byte {
 	size := d.Int()
 	if len(d.data) < int(size) {
@@ -75,6 +79,10 @@ func NewBytesEncoder() *BytesEncoder {
 }
 
 func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
+	return e.Bytes(value.Bytes())
+}
+
+func (e *BytesEncoder) Agent(value *ScAgent) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 

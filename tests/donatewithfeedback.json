@@ -4,7 +4,7 @@
       {"field": "seq", "type": "Int"},
       {"field": "id", "type": "RequestId"},
       {"field": "amount", "type": "Int"},
-      {"field": "sender", "type": "Address"},
+      {"field": "sender", "type": "Agent"},
       {"field": "error", "type": "String"},
       {"field": "feedback", "type": "String"}
     ]
@@ -14,8 +14,7 @@
       "contract": {
         "name": "donatewithfeedback",
         "description": "Donate iotas and give feedback",
-        "id": "donatewithfeedbackId",
-        "address": "@scAddress",
+        "id": "@scId",
         "color": "#scColor",
         "owner": "@scOwner"
       },
@@ -27,7 +26,7 @@
         "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
-        "address": "@sender"
+        "sender": "@sender"
       }
     }
   },
@@ -89,7 +88,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@sender2",
+          "sender": "@sender2",
           "function": "donate",
           "colors": ["#iota"],
           "balance": {"#iota": 750},
@@ -157,7 +156,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@scOwner",
+          "sender": "@scOwner",
           "function": "withdraw",
           "params": {
             "s": 250
@@ -191,7 +190,7 @@
         "postedRequests": [
         ],
         "transfers": [
-          {"address": "@scOwner", "color": "#iota", "amount": 250}
+          {"agent": "@scOwner", "color": "#iota", "amount": 250}
         ]
       }
     },
@@ -211,7 +210,7 @@
           "timestamp": 20201027172139,
           "id": "$txHash2",
           "hash": "#txHash2",
-          "address": "@notScOwner",
+          "sender": "@notScOwner",
           "function": "withdraw",
           "params": {
             "s": 250

@@ -7,13 +7,13 @@
       {"field": "description", "type": "String"},
       {"field": "whenStarted", "type": "Int"},
       {"field": "duration", "type": "Int"},
-      {"field": "auctionOwner", "type": "Address"},
+      {"field": "auctionOwner", "type": "Agent"},
       {"field": "deposit", "type": "Int"},
       {"field": "ownerMargin", "type": "Int"},
       {"field": "bids", "type": "[]BidInfo"}
     ],
     "BidInfo": [
-      {"field": "address", "type": "Address"},
+      {"field": "bidder", "type": "Agent"},
       {"field": "amount", "type": "Int"},
       {"field": "when", "type": "Int"}
     ]
@@ -23,8 +23,7 @@
       "contract": {
         "name": "fairauction",
         "description": "Auction colored tokens",
-        "id": "fairauctionId",
-        "address": "@scAddress",
+        "id": "@scId",
         "color": "#scColor",
         "owner": "@scOwner"
       },
@@ -36,7 +35,7 @@
         "timestamp": 20201027172138,
         "id": "$txHash",
         "hash": "#txHash",
-        "address": "@sender"
+        "sender": "@sender"
       }
     }
   },
@@ -79,7 +78,7 @@
         "logs": {},
         "postedRequests": [
           {
-            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -125,14 +124,14 @@
         "logs": {},
         "postedRequests": [
           {
-            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
         "transfers": [
-          {"address": "@scOwner", "color": "#iota", "amount": 24},
-          {"address": "@sender", "color": "#tokenColor", "amount": 1},
-          {"address": "@sender", "color": "#iota", "amount": 75}
+          {"agent": "@scOwner", "color": "#iota", "amount": 24},
+          {"agent": "@sender", "color": "#tokenColor", "amount": 1},
+          {"agent": "@sender", "color": "#iota", "amount": 75}
         ]
       }
     },
@@ -153,7 +152,7 @@
           "timestamp": 20201027172139,
           "id": "$bidder1",
           "hash": "#bidder1",
-          "address": "@bidder1",
+          "sender": "@bidder1",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 600},
@@ -182,7 +181,7 @@
                 "ownerMargin": 50,
                 "bids": [
                   {
-                    "address": "@bidder1",
+                    "bidder": "@bidder1",
                     "amount": 600,
                     "when": 20201027172139
                   }
@@ -194,7 +193,7 @@
         "logs": {},
         "postedRequests": [
           {
-            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -218,7 +217,7 @@
           "timestamp": 20201027172139,
           "id": "$bidder1",
           "hash": "#bidder1",
-          "address": "@bidder1",
+          "sender": "@bidder1",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 600},
@@ -230,7 +229,7 @@
           "timestamp": 20201027172140,
           "id": "$bidder2",
           "hash": "#bidder2",
-          "address": "@bidder2",
+          "sender": "@bidder2",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 700},
@@ -242,7 +241,7 @@
           "timestamp": 20201027172141,
           "id": "$bidder3",
           "hash": "#bidder3",
-          "address": "@bidder3",
+          "sender": "@bidder3",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 700},
@@ -254,7 +253,7 @@
           "timestamp": 20201027172142,
           "id": "$bidder4",
           "hash": "#bidder4",
-          "address": "@bidder4",
+          "sender": "@bidder4",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 600},
@@ -283,22 +282,22 @@
                 "ownerMargin": 50,
                 "bids": [
                   {
-                    "address": "@bidder1",
+                    "bidder": "@bidder1",
                     "amount": 600,
                     "when": 20201027172139
                   },
                   {
-                    "address": "@bidder2",
+                    "bidder": "@bidder2",
                     "amount": 700,
                     "when": 20201027172140
                   },
                   {
-                    "address": "@bidder3",
+                    "bidder": "@bidder3",
                     "amount": 700,
                     "when": 20201027172141
                   },
                   {
-                    "address": "@bidder4",
+                    "bidder": "@bidder4",
                     "amount": 600,
                     "when": 20201027172142
                   }
@@ -310,7 +309,7 @@
         "logs": {},
         "postedRequests": [
           {
-            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -335,7 +334,7 @@
           "timestamp": 20201027172139,
           "id": "$bidder1",
           "hash": "#bidder1",
-          "address": "@bidder1",
+          "sender": "@bidder1",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 600},
@@ -347,7 +346,7 @@
           "timestamp": 20201027172140,
           "id": "$bidder2",
           "hash": "#bidder2",
-          "address": "@bidder2",
+          "sender": "@bidder2",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 700},
@@ -359,7 +358,7 @@
           "timestamp": 20201027172141,
           "id": "$bidder3",
           "hash": "#bidder3",
-          "address": "@bidder3",
+          "sender": "@bidder3",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 700},
@@ -371,7 +370,7 @@
           "timestamp": 20201027172142,
           "id": "$bidder4",
           "hash": "#bidder4",
-          "address": "@bidder4",
+          "sender": "@bidder4",
           "function": "placeBid",
           "colors": ["#iota"],
           "balance": {"#iota": 600},
@@ -400,22 +399,22 @@
                 "ownerMargin": 50,
                 "bids": [
                   {
-                    "address": "@bidder1",
+                    "bidder": "@bidder1",
                     "amount": 600,
                     "when": 20201027172139
                   },
                   {
-                    "address": "@bidder2",
+                    "bidder": "@bidder2",
                     "amount": 700,
                     "when": 20201027172140
                   },
                   {
-                    "address": "@bidder3",
+                    "bidder": "@bidder3",
                     "amount": 700,
                     "when": 20201027172141
                   },
                   {
-                    "address": "@bidder4",
+                    "bidder": "@bidder4",
                     "amount": 600,
                     "when": 20201027172142
                   }
@@ -427,17 +426,17 @@
         "logs": {},
         "postedRequests": [
           {
-            "contract": "@scAddress", "function": "finalizeAuction", "delay": 3600,
+            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
         "transfers": [
-          {"address": "@bidder1", "color": "#iota", "amount": 600},
-          {"address": "@bidder3", "color": "#iota", "amount": 700},
-          {"address": "@bidder4", "color": "#iota", "amount": 600},
-          {"address": "@scOwner", "color": "#iota", "amount": 34},
-          {"address": "@bidder2", "color": "#tokenColor", "amount": 1},
-          {"address": "@sender", "color": "#iota", "amount": 765}
+          {"agent": "@bidder1", "color": "#iota", "amount": 600},
+          {"agent": "@bidder3", "color": "#iota", "amount": 700},
+          {"agent": "@bidder4", "color": "#iota", "amount": 600},
+          {"agent": "@scOwner", "color": "#iota", "amount": 34},
+          {"agent": "@bidder2", "color": "#tokenColor", "amount": 1},
+          {"agent": "@sender", "color": "#iota", "amount": 765}
         ]
       }
     }

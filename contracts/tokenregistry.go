@@ -6,8 +6,8 @@ import (
 
 type TokenInfo struct {
 	supply      int64
-	mintedBy    *client.ScAddress
-	owner       *client.ScAddress
+	mintedBy    *client.ScAgent
+	owner       *client.ScAgent
 	created     int64
 	updated     int64
 	description string
@@ -39,8 +39,8 @@ func mintSupply() {
 	params := request.Params()
 	token := &TokenInfo{
 		supply:      request.Balance(color),
-		mintedBy:    request.Address(),
-		owner:       request.Address(),
+		mintedBy:    request.Sender(),
+		owner:       request.Sender(),
 		created:     request.Timestamp(),
 		updated:     request.Timestamp(),
 		description: params.GetString("dscr").Value(),
@@ -75,8 +75,8 @@ func decodeTokenInfo(bytes []byte) *TokenInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &TokenInfo{}
 	data.supply = decoder.Int()
-	data.mintedBy = decoder.Address()
-	data.owner = decoder.Address()
+	data.mintedBy = decoder.Agent()
+	data.owner = decoder.Agent()
 	data.created = decoder.Int()
 	data.updated = decoder.Int()
 	data.description = decoder.String()
@@ -87,8 +87,8 @@ func decodeTokenInfo(bytes []byte) *TokenInfo {
 func encodeTokenInfo(token *TokenInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(token.supply).
-		Address(token.mintedBy).
-		Address(token.owner).
+		Agent(token.mintedBy).
+		Agent(token.owner).
 		Int(token.created).
 		Int(token.updated).
 		String(token.description).

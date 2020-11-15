@@ -5,7 +5,7 @@ import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScContext;
 import org.iota.wasplib.client.context.ScExports;
 import org.iota.wasplib.client.context.ScRequest;
-import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
@@ -48,7 +48,7 @@ public class FairRoulette {
 
 		BetInfo bet = new BetInfo();
 		bet.id = request.Id();
-		bet.sender = request.Address();
+		bet.sender = request.Sender();
 		bet.amount = amount;
 		bet.color = color;
 
@@ -62,7 +62,7 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.PostRequest(sc.Contract().Address(), "lockBets", playPeriod);
+			sc.PostRequest(sc.Contract().Id(), "lockBets", playPeriod);
 		}
 	}
 
@@ -70,8 +70,8 @@ public class FairRoulette {
 	public static void lockBets() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		ScAddress scAddress = sc.Contract().Address();
-		if (!sc.Request().From(scAddress)) {
+		ScAgent scId = sc.Contract().Id();
+		if (!sc.Request().From(scId)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -86,15 +86,15 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		sc.PostRequest(scAddress, "payWinners", 0);
+		sc.PostRequest(scId, "payWinners", 0);
 	}
 
 	//export payWinners
 	public static void payWinners() {
 		// can only be sent by SC itself
 		ScContext sc = new ScContext();
-		ScAddress scAddress = sc.Contract().Address();
-		if (!sc.Request().From(scAddress)) {
+		ScAgent scId = sc.Contract().Id();
+		if (!sc.Request().From(scId)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -122,7 +122,7 @@ public class FairRoulette {
 		if (winners.size() == 0) {
 			sc.Log("Nobody wins!");
 			// compact separate UTXOs into a single one
-			sc.Transfer(scAddress, ScColor.IOTA, totalBetAmount);
+			sc.Transfer(scId, ScColor.IOTA, totalBetAmount);
 			return;
 		}
 
@@ -142,7 +142,7 @@ public class FairRoulette {
 			long remainder = totalBetAmount - totalPayout;
 			String text = "Remainder is " + remainder;
 			sc.Log(text);
-			sc.Transfer(scAddress, ScColor.IOTA, remainder);
+			sc.Transfer(scId, ScColor.IOTA, remainder);
 		}
 	}
 
@@ -168,7 +168,7 @@ public class FairRoulette {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		BetInfo bet = new BetInfo();
 		bet.id = decoder.RequestId();
-		bet.sender = decoder.Address();
+		bet.sender = decoder.Agent();
 		bet.amount = decoder.Int();
 		bet.color = decoder.Int();
 		return bet;
@@ -177,7 +177,7 @@ public class FairRoulette {
 	public static byte[] encodeBetInfo(BetInfo bet) {
 		return new BytesEncoder().
 				RequestId(bet.id).
-				Address(bet.sender).
+				Agent(bet.sender).
 				Int(bet.amount).
 				Int(bet.color).
 				Data();
@@ -185,7 +185,7 @@ public class FairRoulette {
 
 	public static class BetInfo {
 		ScRequestId id;
-		ScAddress sender;
+		ScAgent sender;
 		long amount;
 		long color;
 	}
