@@ -27,6 +27,33 @@ func (a *ScAddress) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScAgent struct {
+	id [37]byte
+}
+
+func NewScAgent(bytes []byte) *ScAgent {
+	if len(bytes) != 37 {
+		panic("agent id should be 37 bytes")
+	}
+	a := &ScAgent{}
+	copy(a.id[:], bytes)
+	return a
+}
+
+func (a *ScAgent) Bytes() []byte {
+	return a.id[:]
+}
+
+func (a *ScAgent) Equals(other *ScAgent) bool {
+	return a.id == other.id
+}
+
+func (a *ScAgent) String() string {
+	return base58Encode(a.id[:])
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScColor struct {
 	color [32]byte
 }

@@ -25,6 +25,15 @@ public class ScMutableMap {
 		return new ScMutableAddressArray(arrId);
 	}
 
+	public ScMutableAgent GetAgent(String key) {
+		return new ScMutableAgent(objId, Host.GetKeyId(key));
+	}
+
+	public ScMutableAgentArray GetAgentArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScMutableAgentArray(arrId);
+	}
+
 	public ScMutableBytes GetBytes(String key) {
 		return new ScMutableBytes(objId, Host.GetKeyId(key));
 	}

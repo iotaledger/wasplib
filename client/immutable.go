@@ -29,6 +29,35 @@ func (o ScImmutableAddressArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScImmutableAgent struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScImmutableAgent) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableAgent) Value() *ScAgent {
+	return NewScAgent(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableAgentArray struct {
+	objId int32
+}
+
+func (o ScImmutableAgentArray) GetAgent(index int32) ScImmutableAgent {
+	return ScImmutableAgent{objId: o.objId, keyId: index}
+}
+
+func (o ScImmutableAgentArray) Length() int32 {
+	return int32(GetInt(o.objId, KeyLength()))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScImmutableBytes struct {
 	objId int32
 	keyId int32
@@ -92,7 +121,9 @@ type ScImmutableInt struct {
 	keyId int32
 }
 
-//TODO exists?
+func (o ScImmutableInt) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
 
 func (o ScImmutableInt) Value() int64 {
 	return GetInt(o.objId, o.keyId)
@@ -125,6 +156,15 @@ func (o ScImmutableKeyMap) GetAddress(key []byte) ScImmutableAddress {
 func (o ScImmutableKeyMap) GetAddressArray(key []byte) ScImmutableAddressArray {
 	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
 	return ScImmutableAddressArray{objId: arrId}
+}
+
+func (o ScImmutableKeyMap) GetAgent(key []byte) ScImmutableAgent {
+	return ScImmutableAgent{objId: o.objId, keyId: GetKey(key)}
+}
+
+func (o ScImmutableKeyMap) GetAgentArray(key []byte) ScImmutableAgentArray {
+	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableAgentArray{objId: arrId}
 }
 
 func (o ScImmutableKeyMap) GetBytes(key []byte) ScImmutableBytes {
@@ -209,6 +249,15 @@ func (o ScImmutableMap) GetAddress(key string) ScImmutableAddress {
 func (o ScImmutableMap) GetAddressArray(key string) ScImmutableAddressArray {
 	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
 	return ScImmutableAddressArray{objId: arrId}
+}
+
+func (o ScImmutableMap) GetAgent(key string) ScImmutableAgent {
+	return ScImmutableAgent{objId: o.objId, keyId: GetKeyId(key)}
+}
+
+func (o ScImmutableMap) GetAgentArray(key string) ScImmutableAgentArray {
+	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	return ScImmutableAgentArray{objId: arrId}
 }
 
 func (o ScImmutableMap) GetBytes(key string) ScImmutableBytes {

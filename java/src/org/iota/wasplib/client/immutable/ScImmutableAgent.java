@@ -1,12 +1,13 @@
 package org.iota.wasplib.client.immutable;
 
 import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 
-public class ScImmutableInt {
+public class ScImmutableAgent {
 	int objId;
 	int keyId;
 
-	public ScImmutableInt(int objId, int keyId) {
+	public ScImmutableAgent(int objId, int keyId) {
 		this.objId = objId;
 		this.keyId = keyId;
 	}
@@ -15,7 +16,7 @@ public class ScImmutableInt {
 		return Host.Exists(objId, keyId);
 	}
 
-	public long Value() {
-		return Host.GetInt(objId, keyId);
+	public ScAgent Value() {
+		return new ScAgent(Host.GetBytes(objId, keyId));
 	}
 }

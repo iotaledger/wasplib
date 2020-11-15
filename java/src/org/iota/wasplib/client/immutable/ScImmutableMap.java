@@ -20,6 +20,15 @@ public class ScImmutableMap {
 		return new ScImmutableAddressArray(arrId);
 	}
 
+	public ScImmutableAgent GetAgent(String key) {
+		return new ScImmutableAgent(objId, Host.GetKeyId(key));
+	}
+
+	public ScImmutableAgentArray GetAgentArray(String key) {
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		return new ScImmutableAgentArray(arrId);
+	}
+
 	public ScImmutableBytes GetBytes(String key) {
 		return new ScImmutableBytes(objId, Host.GetKeyId(key));
 	}

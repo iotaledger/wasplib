@@ -24,6 +24,27 @@ impl ScAddress {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Eq, PartialEq)]
+pub struct ScAgent {
+    id: [u8; 37],
+}
+
+impl ScAgent {
+    pub fn from_bytes(bytes: &[u8]) -> ScAgent {
+        ScAgent { id: bytes.try_into().expect("agent id should be 37 bytes") }
+    }
+
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.id
+    }
+
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Eq, PartialEq)]
 pub struct ScColor {
     color: [u8; 32],
 }

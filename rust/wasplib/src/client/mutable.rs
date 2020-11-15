@@ -61,6 +61,62 @@ impl ScMutableAddressArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScMutableAgent {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScMutableAgent {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableAgent {
+        ScMutableAgent { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: &ScAgent) {
+        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn value(&self) -> ScAgent {
+        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableAgentArray {
+    obj_id: i32
+}
+
+impl ScMutableAgentArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableAgentArray {
+        ScMutableAgentArray { obj_id }
+    }
+
+    pub fn clear(&self) {
+        set_int(self.obj_id, key_length(), 0);
+    }
+
+    //TODO exists on arrays?
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_agent(&self, index: i32) -> ScMutableAgent {
+        ScMutableAgent { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn immutable(&self) -> ScImmutableAgentArray {
+        ScImmutableAgentArray::new(self.obj_id)
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScMutableBytes {
     obj_id: i32,
     key_id: i32,
@@ -179,7 +235,9 @@ impl ScMutableInt {
         ScMutableInt { obj_id, key_id }
     }
 
-    //TODO exists?
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
 
     pub fn set_value(&self, val: i64) {
         set_int(self.obj_id, self.key_id, val);
@@ -241,6 +299,15 @@ impl ScMutableKeyMap {
     pub fn get_address_array(&self, key: &[u8]) -> ScMutableAddressArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
         ScMutableAddressArray { obj_id: arr_id }
+    }
+
+    pub fn get_agent(&self, key: &[u8]) -> ScMutableAgent {
+        ScMutableAgent { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_agent_array(&self, key: &[u8]) -> ScMutableAgentArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScMutableAgentArray { obj_id: arr_id }
     }
 
     pub fn get_bytes(&self, key: &[u8]) -> ScMutableBytes {
@@ -339,6 +406,15 @@ impl ScMutableMap {
     pub fn get_address_array(&self, key: &str) -> ScMutableAddressArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
         ScMutableAddressArray { obj_id: arr_id }
+    }
+
+    pub fn get_agent(&self, key: &str) -> ScMutableAgent {
+        ScMutableAgent { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_agent_array(&self, key: &str) -> ScMutableAgentArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScMutableAgentArray { obj_id: arr_id }
     }
 
     pub fn get_bytes(&self, key: &str) -> ScMutableBytes {

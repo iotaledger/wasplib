@@ -48,6 +48,50 @@ impl ScImmutableAddressArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScImmutableAgent {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScImmutableAgent {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableAgent {
+        ScImmutableAgent { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn value(&self) -> ScAgent {
+        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableAgentArray {
+    obj_id: i32
+}
+
+impl ScImmutableAgentArray {
+    pub(crate) fn new(obj_id: i32) -> ScImmutableAgentArray {
+        ScImmutableAgentArray { obj_id }
+    }
+
+    //TODO exists on arrays?
+
+    // index 0..length(), exclusive
+    pub fn get_agent(&self, index: i32) -> ScImmutableAgent {
+        ScImmutableAgent { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn length(&self) -> i32 {
+        get_int(self.obj_id, key_length()) as i32
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScImmutableBytes {
     obj_id: i32,
     key_id: i32,
@@ -142,7 +186,9 @@ impl ScImmutableInt {
         ScImmutableInt { obj_id, key_id }
     }
 
-    //TODO exists?
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
 
     pub fn value(&self) -> i64 {
         get_int(self.obj_id, self.key_id)
@@ -188,6 +234,15 @@ impl ScImmutableKeyMap {
     pub fn get_address_array(&self, key: &[u8]) -> ScImmutableAddressArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
         ScImmutableAddressArray { obj_id: arr_id }
+    }
+
+    pub fn get_agent(&self, key: &[u8]) -> ScImmutableAgent {
+        ScImmutableAgent { obj_id: self.obj_id, key_id: get_key(key) }
+    }
+
+    pub fn get_agent_array(&self, key: &[u8]) -> ScImmutableAgentArray {
+        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
+        ScImmutableAgentArray { obj_id: arr_id }
     }
 
     pub fn get_bytes(&self, key: &[u8]) -> ScImmutableBytes {
@@ -282,6 +337,15 @@ impl ScImmutableMap {
     pub fn get_address_array(&self, key: &str) -> ScImmutableAddressArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
         ScImmutableAddressArray { obj_id: arr_id }
+    }
+
+    pub fn get_agent(&self, key: &str) -> ScImmutableAgent {
+        ScImmutableAgent { obj_id: self.obj_id, key_id: get_key_id(key) }
+    }
+
+    pub fn get_agent_array(&self, key: &str) -> ScImmutableAgentArray {
+        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+        ScImmutableAgentArray { obj_id: arr_id }
     }
 
     pub fn get_bytes(&self, key: &str) -> ScImmutableBytes {
