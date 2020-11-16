@@ -1,3 +1,6 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 use super::host::get_key_id;
 
 static mut ID_LENGTH: i32 = 0;

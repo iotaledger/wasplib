@@ -1,3 +1,6 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 use super::context::ScContext;
 
 // all const values should exactly match the counterpart values on the host!

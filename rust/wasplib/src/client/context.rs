@@ -1,3 +1,6 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 // encapsulates standard host entities into a simple interface
 
 use super::hashtypes::*;

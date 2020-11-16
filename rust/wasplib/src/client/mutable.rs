@@ -1,3 +1,6 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 // types encapsulating mutable host objects
 
 use super::hashtypes::*;
