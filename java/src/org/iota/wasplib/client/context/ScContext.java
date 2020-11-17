@@ -43,15 +43,6 @@ public class ScContext {
 		return request.Params();
 	}
 
-	public ScMutableMap PostRequestWithCode(ScAgent contract, long code, long delay) {
-		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
-		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
-		request.Contract(contract);
-		request.Code(code);
-		request.Delay(delay);
-		return request.Params();
-	}
-
 	public long Random(long max) {
 		long rnd = root.GetInt("random").Value();
 		return Long.remainderUnsigned(rnd, max);

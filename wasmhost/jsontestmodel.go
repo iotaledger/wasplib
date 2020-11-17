@@ -396,8 +396,8 @@ func process(value string) string {
 		if value == "#iota" {
 			return processHash("", 32)
 		}
-	case '@': // 33-byte address
-		size = 33
+	case '@': // 37-byte agent
+		size = 37
 	case '$': // 34-byte request id
 		size = 34
 	default:

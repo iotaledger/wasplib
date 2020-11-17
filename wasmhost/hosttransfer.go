@@ -10,8 +10,8 @@ import (
 
 type HostTransfer struct {
 	HostMap
-	address []byte
-	color   []byte
+	agent []byte
+	color []byte
 }
 
 func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
@@ -22,8 +22,8 @@ func (a *HostTransfer) SetBytes(keyId int32, value []byte) {
 	s := string(a.host.GetKey(keyId))
 	//fmt.Printf("Transfer.SetBytes %s = %s\n", s, base58.Encode(value))
 	a.HostMap.SetBytes(keyId, value)
-	if s == "address" {
-		a.address = value
+	if s == "agent" {
+		a.agent = value
 		return
 	}
 	if s == "color" {
@@ -49,7 +49,8 @@ func (a *HostTransfer) SetInt(keyId int32, value int64) {
 	}
 	// check if compacting, in which case no balance change happens
 	contract := a.host.FindSubObject(nil, "contract", OBJTYPE_MAP)
-	if !bytes.Equal(a.address, contract.GetBytes(a.host.GetKeyId("address"))) {
+	scId := contract.GetBytes(a.host.GetKeyId("id"))
+	if !bytes.Equal(a.agent, scId) {
 		balance.SetInt(colorKeyId, colorAmount-value)
 	}
 }

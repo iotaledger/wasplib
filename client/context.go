@@ -80,10 +80,6 @@ type ScPostedRequest struct {
 	request ScMutableMap
 }
 
-func (ctx ScPostedRequest) Code(code int64) {
-	ctx.request.GetInt("code").SetValue(code)
-}
-
 func (ctx ScPostedRequest) Contract(contract *ScAgent) {
 	ctx.request.GetAgent("contract").SetValue(contract)
 }
@@ -224,16 +220,6 @@ func (ctx ScContext) PostRequest(contract *ScAgent, function string, delay int64
 	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
 	request.Contract(contract)
 	request.Function(function)
-	request.Delay(delay)
-	return request.Params()
-}
-
-// just for compatibility with old hardcoded SCs
-func (ctx ScContext) PostRequestWithCode(contract *ScAgent, code int64, delay int64) ScMutableMap {
-	postedRequests := ctx.root.GetMapArray("postedRequests")
-	request := ScPostedRequest{postedRequests.GetMap(postedRequests.Length())}
-	request.Contract(contract)
-	request.Code(code)
 	request.Delay(delay)
 	return request.Params()
 }

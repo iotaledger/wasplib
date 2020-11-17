@@ -13,10 +13,6 @@ public class ScPostedRequest {
 		this.request = request;
 	}
 
-	public void Code(long code) {
-		request.GetInt("code").SetValue(code);
-	}
-
 	public void Contract(ScAgent contract) {
 		request.GetAgent("contract").SetValue(contract);
 	}

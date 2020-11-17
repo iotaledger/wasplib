@@ -97,10 +97,6 @@ pub struct ScPostedRequest {
 }
 
 impl ScPostedRequest {
-    pub fn code(&self, code: i64) {
-        self.request.get_int("code").set_value(code);
-    }
-
     pub fn contract(&self, contract: &ScAgent) {
         self.request.get_agent("contract").set_value(contract);
     }
@@ -248,16 +244,6 @@ impl ScContext {
         let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
         request.contract(contract);
         request.function(function);
-        request.delay(delay);
-        request.params()
-    }
-
-    // just for compatibility with old hardcoded SCs
-    pub fn post_request_with_code(&self, contract: &ScAgent, code: i64, delay: i64) -> ScMutableMap {
-        let posted_requests = self.root.get_map_array("postedRequests");
-        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
-        request.contract(contract);
-        request.code(code);
         request.delay(delay);
         request.params()
     }
