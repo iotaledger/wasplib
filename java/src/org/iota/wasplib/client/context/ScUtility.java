@@ -14,6 +14,10 @@ public class ScUtility {
 		this.utility = utility;
 	}
 
+	public static String Base58String(byte[] bytes) {
+		return new ScCallContext().Utility().Base58Encode(bytes);
+	}
+
 	public byte[] Base58Decode(String value) {
 		ScMutableString decode = utility.GetString("base58");
 		ScMutableBytes encode = utility.GetBytes("base58");
@@ -32,5 +36,10 @@ public class ScUtility {
 		ScMutableString hash = utility.GetString("hash");
 		hash.SetValue(value);
 		return hash.Value();
+	}
+
+	public long Random(long max) {
+		long rnd = utility.GetInt("random").Value();
+		return Long.remainderUnsigned(rnd, max);
 	}
 }

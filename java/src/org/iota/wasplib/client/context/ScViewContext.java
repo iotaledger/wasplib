@@ -5,21 +5,35 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
-import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
 
-public class ScContext {
+public class ScViewContext {
 	ScMutableMap root;
 
-	public ScContext() {
+	public ScViewContext() {
 		root = new ScMutableMap(1);
 	}
 
 	public ScAccount Account() {
 		return new ScAccount(root.GetMap("account").Immutable());
+	}
+
+	public ScCallInfo Call(String contract, String function) {
+		ScMutableMapArray calls = root.GetMapArray("calls");
+		ScCallInfo call = new ScCallInfo(calls.GetMap(calls.Length()));
+		call.Contract(contract);
+		call.Function(function);
+		return call;
+	}
+
+	public ScCallInfo CallSelf(String function) {
+		ScMutableMapArray calls = root.GetMapArray("calls");
+		ScCallInfo call = new ScCallInfo(calls.GetMap(calls.Length()));
+		call.Function(function);
+		return call;
 	}
 
 	public ScContract Contract() {
@@ -34,26 +48,12 @@ public class ScContext {
 		Host.SetString(1, Keys.KeyLog(), text);
 	}
 
-	public ScMutableMap PostRequest(ScAgent contract, String function, long delay) {
-		ScMutableMapArray postedRequests = root.GetMapArray("postedRequests");
-		ScPostedRequest request = new ScPostedRequest(postedRequests.GetMap(postedRequests.Length()));
-		request.Contract(contract);
-		request.Function(function);
-		request.Delay(delay);
-		return request.Params();
-	}
-
-	public long Random(long max) {
-		long rnd = root.GetInt("random").Value();
-		return Long.remainderUnsigned(rnd, max);
-	}
-
 	public ScRequest Request() {
 		return new ScRequest(root.GetMap("request").Immutable());
 	}
 
-	public ScMutableMap State() {
-		return root.GetMap("state");
+	public ScImmutableMap State() {
+		return root.GetMap("state").Immutable();
 	}
 
 	public ScLog TimestampedLog(String key) {
@@ -62,14 +62,6 @@ public class ScContext {
 
 	public void Trace(String text) {
 		Host.SetString(1, Keys.KeyTrace(), text);
-	}
-
-	public void Transfer(ScAgent agent, ScColor color, long amount) {
-		ScMutableMapArray transfers = root.GetMapArray("transfers");
-		ScTransfer xfer = new ScTransfer(transfers.GetMap(transfers.Length()));
-		xfer.Agent(agent);
-		xfer.Color(color);
-		xfer.Amount(amount);
 	}
 
 	public ScUtility Utility() {

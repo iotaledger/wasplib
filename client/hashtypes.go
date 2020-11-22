@@ -148,5 +148,5 @@ func (t *ScTxHash) String() string {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 func base58Encode(bytes []byte) string {
-	return NewScContext().Utility().Base58Encode(bytes)
+	return rootCallContext.Utility().Base58Encode(bytes)
 }

@@ -66,10 +66,8 @@
             }
           ]
         },
-        "postedRequests": [
-        ],
-        "transfers": [
-        ]
+        "calls": [],
+        "transfers": []
       }
     },
     {
@@ -134,10 +132,8 @@
             }
           ]
         },
-        "postedRequests": [
-        ],
-        "transfers": [
-        ]
+        "calls": [],
+        "transfers": []
       }
     },
     {
@@ -187,8 +183,7 @@
             }
           ]
         },
-        "postedRequests": [
-        ],
+        "calls": [],
         "transfers": [
           {"agent": "@scOwner", "color": "#iota", "amount": 250}
         ]
@@ -241,10 +236,8 @@
             }
           ]
         },
-        "postedRequests": [
-        ],
-        "transfers": [
-        ]
+        "calls": [],
+        "transfers": []
       }
     }
   ]

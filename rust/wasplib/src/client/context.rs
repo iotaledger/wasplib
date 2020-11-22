@@ -9,6 +9,9 @@ use super::immutable::*;
 use super::keys::*;
 use super::mutable::*;
 
+pub(crate) static ROOT_CALL_CONTEXT: ScCallContext = ScCallContext { root: ScMutableMap::new(1) };
+pub(crate) static ROOT_VIEW_CONTEXT: ScViewContext = ScViewContext { root: ScMutableMap::new(1) };
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScAccount {
@@ -22,6 +25,37 @@ impl ScAccount {
 
     pub fn colors(&self) -> ScImmutableColorArray {
         self.account.get_color_array("colors")
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScCallInfo {
+    call: ScMutableMap,
+}
+
+impl ScCallInfo {
+    fn contract(&self, contract: &str) {
+        self.call.get_string("contract").set_value(contract);
+    }
+
+    fn delay(&self, delay: i64) {
+        self.call.get_int("delay").set_value(delay);
+    }
+
+    fn function(&self, function: &str) {
+        self.call.get_string("function").set_value(function);
+    }
+
+    pub fn params(&self) -> ScMutableMap {
+        self.call.get_map("params")
+    }
+
+    pub fn transfer(&self, color: &ScColor, amount: i64) {
+        let transfers = self.call.get_map_array("transfers");
+        let transfer = transfers.get_map(transfers.length());
+        transfer.get_bytes("color").set_value(&color.to_bytes());
+        transfer.get_int("amount").set_value(amount);
     }
 }
 
@@ -55,25 +89,6 @@ impl ScContract {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScExports {
-    exports: ScMutableStringArray,
-    next: i32,
-}
-
-impl ScExports {
-    pub fn new() -> ScExports {
-        let root = ScMutableMap::new(1);
-        ScExports { exports: root.get_string_array("exports"), next: 0 }
-    }
-
-    pub fn add(&mut self, name: &str) {
-        self.next += 1;
-        self.exports.get_string(self.next).set_value(name);
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 pub struct ScLog {
     log: ScMutableMapArray,
 }
@@ -87,30 +102,6 @@ impl ScLog {
 
     pub fn length(&self) -> i32 {
         self.log.length()
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScPostedRequest {
-    request: ScMutableMap,
-}
-
-impl ScPostedRequest {
-    pub fn contract(&self, contract: &ScAgent) {
-        self.request.get_agent("contract").set_value(contract);
-    }
-
-    pub fn delay(&self, delay: i64) {
-        self.request.get_int("delay").set_value(delay);
-    }
-
-    pub fn function(&self, function: &str) {
-        self.request.get_string("function").set_value(function);
-    }
-
-    pub fn params(&self) -> ScMutableMap {
-        self.request.get_map("params")
     }
 }
 
@@ -214,17 +205,28 @@ impl ScUtility {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScContext {
+pub struct ScCallContext {
     root: ScMutableMap,
 }
 
-impl ScContext {
-    pub fn new() -> ScContext {
-        ScContext { root: ScMutableMap::new(1) }
-    }
-
+impl ScCallContext {
     pub fn account(&self) -> ScAccount {
         ScAccount { account: self.root.get_map("account").immutable() }
+    }
+
+    pub fn call(&self, contract: &str, function: &str) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let call = ScCallInfo { call: calls.get_map(calls.length()) };
+        call.contract(contract);
+        call.function(function);
+        call
+    }
+
+    pub fn call_self(&self, function: &str) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let call = ScCallInfo { call: calls.get_map(calls.length()) };
+        call.function(function);
+        call
     }
 
     pub fn contract(&self) -> ScContract {
@@ -239,13 +241,21 @@ impl ScContext {
         set_string(1, key_log(), text)
     }
 
-    pub fn post_request(&self, contract: &ScAgent, function: &str, delay: i64) -> ScMutableMap {
-        let posted_requests = self.root.get_map_array("postedRequests");
-        let request = ScPostedRequest { request: posted_requests.get_map(posted_requests.length()) };
+    pub fn post(&self, contract: &str, function: &str, delay: i64) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let request = ScCallInfo { call: calls.get_map(calls.length()) };
         request.contract(contract);
         request.function(function);
         request.delay(delay);
-        request.params()
+        request
+    }
+
+    pub fn post_self(&self, function: &str, delay: i64) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let request = ScCallInfo { call: calls.get_map(calls.length()) };
+        request.function(function);
+        request.delay(delay);
+        request
     }
 
     pub fn request(&self) -> ScRequest {
@@ -270,6 +280,65 @@ impl ScContext {
         xfer.agent(agent);
         xfer.color(color);
         xfer.amount(amount);
+    }
+
+    pub fn utility(&self) -> ScUtility {
+        ScUtility { utility: self.root.get_map("utility") }
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScViewContext {
+    root: ScMutableMap,
+}
+
+impl ScViewContext {
+    pub fn account(&self) -> ScAccount {
+        ScAccount { account: self.root.get_map("account").immutable() }
+    }
+
+    pub fn call(&self, contract: &str, function: &str) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let call = ScCallInfo { call: calls.get_map(calls.length()) };
+        call.contract(contract);
+        call.function(function);
+        call
+    }
+
+    pub fn call_self(&self, function: &str) -> ScCallInfo {
+        let calls = self.root.get_map_array("calls");
+        let call = ScCallInfo { call: calls.get_map(calls.length()) };
+        call.function(function);
+        call
+    }
+
+    pub fn contract(&self) -> ScContract {
+        ScContract { contract: self.root.get_map("contract").immutable() }
+    }
+
+    pub fn error(&self) -> ScMutableString {
+        self.root.get_string("error")
+    }
+
+    pub fn log(&self, text: &str) {
+        set_string(1, key_log(), text)
+    }
+
+    pub fn request(&self) -> ScRequest {
+        ScRequest { request: self.root.get_map("request").immutable() }
+    }
+
+    pub fn state(&self) -> ScImmutableMap {
+        self.root.get_map("state").immutable()
+    }
+
+    pub fn timestamped_log(&self, key: &str) -> ScLog {
+        ScLog { log: self.root.get_map("logs").get_map_array(key) }
+    }
+
+    pub fn trace(&self, text: &str) {
+        set_string(1, key_trace(), text)
     }
 
     pub fn utility(&self) -> ScUtility {

@@ -56,15 +56,13 @@ func main() {
 //export onLoad
 func onLoadFairAuction() {
 	exports := client.NewScExports()
-	exports.Add("startAuction")
-	exports.Add("finalizeAuction")
-	exports.Add("placeBid")
-	exports.Add("setOwnerMargin")
+	exports.AddCall("startAuction", startAuction)
+	exports.AddCall("finalizeAuction", finalizeAuction)
+	exports.AddCall("placeBid", placeBid)
+	exports.AddCall("setOwnerMargin", setOwnerMargin)
 }
 
-//export startAuction
-func startAuction() {
-	sc := client.NewScContext()
+func startAuction(sc *client.ScCallContext) {
 	request := sc.Request()
 	deposit := request.Balance(client.IOTA)
 	if deposit < 1 {
@@ -81,25 +79,25 @@ func startAuction() {
 	params := request.Params()
 	colorParam := params.GetColor("color")
 	if !colorParam.Exists() {
-		refund(deposit/2, "Missing token color...")
+		refund(sc, deposit/2, "Missing token color...")
 		return
 	}
 	color := colorParam.Value()
 
 	if color.Equals(client.IOTA) || color.Equals(client.MINT) {
-		refund(deposit/2, "Reserved token color...")
+		refund(sc, deposit/2, "Reserved token color...")
 		return
 	}
 
 	numTokens := request.Balance(color)
 	if numTokens == 0 {
-		refund(deposit/2, "Auction tokens missing from request...")
+		refund(sc, deposit/2, "Auction tokens missing from request...")
 		return
 	}
 
 	minimumBid := params.GetInt("minimum").Value()
 	if minimumBid == 0 {
-		refund(deposit/2, "Missing minimum bid...")
+		refund(sc, deposit/2, "Missing minimum bid...")
 		return
 	}
 
@@ -109,7 +107,7 @@ func startAuction() {
 		margin = 1
 	}
 	if deposit < margin {
-		refund(deposit/2, "Insufficient deposit...")
+		refund(sc, deposit/2, "Insufficient deposit...")
 		return
 	}
 
@@ -136,7 +134,7 @@ func startAuction() {
 	auctions := state.GetKeyMap("auctions")
 	currentAuction := auctions.GetBytes(color.Bytes())
 	if len(currentAuction.Value()) != 0 {
-		refund(deposit/2, "Auction for this token already exists...")
+		refund(sc, deposit/2, "Auction for this token already exists...")
 		return
 	}
 
@@ -153,22 +151,20 @@ func startAuction() {
 	}
 	bytes := encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
-	finalizeParams := sc.PostRequest(sc.Contract().Id(), "finalizeAuction", auction.duration*60)
+	finalizeParams := sc.PostSelf("finalizeAuction", auction.duration*60).Params()
 	finalizeParams.GetColor("color").SetValue(auction.color)
 	sc.Log("New auction started...")
 }
 
-//export finalizeAuction
-func finalizeAuction() {
+func finalizeAuction(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	sc := client.NewScContext()
 	request := sc.Request()
 	if !request.From(sc.Contract().Id()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	colorParam := sc.Request().Params().GetColor("color")
+	colorParam := request.Params().GetColor("color")
 	if !colorParam.Exists() {
 		sc.Log("INTERNAL INCONSISTENCY: missing color")
 		return
@@ -223,9 +219,7 @@ func finalizeAuction() {
 	sc.Transfer(auction.auctionOwner, client.IOTA, auction.deposit+winner.amount-ownerFee)
 }
 
-//export placeBid
-func placeBid() {
-	sc := client.NewScContext()
+func placeBid(sc *client.ScCallContext) {
 	request := sc.Request()
 	bidAmount := request.Balance(client.IOTA)
 	if bidAmount == 0 {
@@ -235,7 +229,7 @@ func placeBid() {
 
 	colorParam := request.Params().GetColor("color")
 	if !colorParam.Exists() {
-		refund(bidAmount, "Missing token color")
+		refund(sc, bidAmount, "Missing token color")
 		return
 	}
 	color := colorParam.Value()
@@ -245,7 +239,7 @@ func placeBid() {
 	currentAuction := auctions.GetBytes(color.Bytes())
 	bytes := currentAuction.Value()
 	if len(bytes) == 0 {
-		refund(bidAmount, "Missing auction")
+		refund(sc, bidAmount, "Missing auction")
 		return
 	}
 
@@ -271,10 +265,8 @@ func placeBid() {
 	sc.Log("Updated auction with bid...")
 }
 
-//export setOwnerMargin
-func setOwnerMargin() {
+func setOwnerMargin(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	sc := client.NewScContext()
 	request := sc.Request()
 	if !request.From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
@@ -350,8 +342,7 @@ func encodeBidInfo(bid *BidInfo) []byte {
 		Data()
 }
 
-func refund(amount int64, reason string) {
-	sc := client.NewScContext()
+func refund(sc *client.ScCallContext, amount int64, reason string) {
 	sc.Log(reason)
 	request := sc.Request()
 	sender := request.Sender()

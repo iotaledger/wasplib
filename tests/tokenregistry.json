@@ -65,7 +65,7 @@
           "colorList": ["#txHash"]
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -101,7 +101,7 @@
           "colorList": ["#txHash"]
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -127,7 +127,7 @@
           "colorList": []
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -190,7 +190,7 @@
           "colorList": ["#txHash", "#txHash2"]
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     }

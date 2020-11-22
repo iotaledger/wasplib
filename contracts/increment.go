@@ -13,17 +13,15 @@ func main() {
 //export onLoad
 func onLoadIncrement() {
 	exports := client.NewScExports()
-	exports.Add("increment")
-	exports.Add("incrementRepeat1")
-	exports.Add("incrementRepeatMany")
-	exports.Add("test")
-	exports.Add("nothing")
-	exports.Add("init")
+	exports.AddCall("increment", increment)
+	exports.AddCall("incrementRepeat1", incrementRepeat1)
+	exports.AddCall("incrementRepeatMany", incrementRepeatMany)
+	exports.AddCall("test", test)
+	exports.AddCall("nothing", client.Nothing)
+	exports.AddCall("init", onInitIncrement)
 }
 
-//export init
-func init() {
-	sc := client.NewScContext()
+func onInitIncrement(sc *client.ScCallContext) {
 	counter := sc.Request().Params().GetInt("counter").Value()
 	if counter == 0 {
 		return
@@ -31,27 +29,21 @@ func init() {
 	sc.State().GetInt("counter").SetValue(counter)
 }
 
-//export increment
-func increment() {
-	sc := client.NewScContext()
+func increment(sc *client.ScCallContext) {
 	counter := sc.State().GetInt("counter")
 	counter.SetValue(counter.Value() + 1)
 }
 
-//export incrementRepeat1
-func incrementRepeat1() {
-	sc := client.NewScContext()
+func incrementRepeat1(sc *client.ScCallContext) {
 	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.PostRequest(sc.Contract().Id(), "increment", 0)
+		sc.PostSelf("increment", 0)
 	}
 }
 
-//export incrementRepeatMany
-func incrementRepeatMany() {
-	sc := client.NewScContext()
+func incrementRepeatMany(sc *client.ScCallContext) {
 	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -64,11 +56,10 @@ func incrementRepeatMany() {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	sc.PostRequest(sc.Contract().Id(), "incrementRepeatMany", 0)
+	sc.PostSelf("incrementRepeatMany", 0)
 }
 
-//export test
-func test() {
+func test(sc *client.ScCallContext) {
 	keyId := client.GetKeyId("timestamp")
 	client.SetInt(1, keyId, 123456789)
 	timestamp := client.GetInt(1, keyId)

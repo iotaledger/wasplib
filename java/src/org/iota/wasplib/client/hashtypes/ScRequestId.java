@@ -3,7 +3,9 @@
 
 package org.iota.wasplib.client.hashtypes;
 
-import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScUtility;
+
+import java.util.Arrays;
 
 public class ScRequestId {
 	final byte[] id = new byte[34];
@@ -20,12 +22,12 @@ public class ScRequestId {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScRequestId other = (ScRequestId) o;
-		return id.equals(other.id);
+		return Arrays.equals(id, other.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return Arrays.hashCode(id);
 	}
 
 	public byte[] toBytes() {
@@ -34,6 +36,6 @@ public class ScRequestId {
 
 	@Override
 	public String toString() {
-		return new ScContext().Utility().Base58Encode(id);
+		return ScUtility.Base58String(id);
 	}
 }

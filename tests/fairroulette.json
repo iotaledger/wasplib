@@ -57,7 +57,7 @@
           ]
         },
         "logs": {},
-        "postedRequests": [{"contract": "@scId", "function": "lockBets", "delay": 120}],
+        "calls": [{"function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -111,7 +111,7 @@
           ]
         },
         "logs": {},
-        "postedRequests": [{"contract": "@scId", "function": "lockBets", "delay": 120}],
+        "calls": [{"function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -136,9 +136,9 @@
           "lastWinningColor": 2
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "lockBets", "delay": 120},
-          {"contract": "@scId", "function": "payWinners", "delay": 0}
+        "calls": [
+          {"function": "lockBets", "delay": 120},
+          {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@scId", "amount": 100, "color": "#iota"}
@@ -166,9 +166,9 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "lockBets", "delay": 120},
-          {"contract": "@scId", "function": "payWinners", "delay": 0}
+        "calls": [
+          {"function": "lockBets", "delay": 120},
+          {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@sender", "amount": 100, "color": "#iota"}
@@ -210,9 +210,9 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "lockBets", "delay": 120},
-          {"contract": "@scId", "function": "payWinners", "delay": 0}
+        "calls": [
+          {"function": "lockBets", "delay": 120},
+          {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@sender", "amount": 300, "color": "#iota"}
@@ -255,9 +255,9 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "lockBets", "delay": 120},
-          {"contract": "@scId", "function": "payWinners", "delay": 0}
+        "calls": [
+          {"function": "lockBets", "delay": 120},
+          {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@better1", "amount": 100, "color": "#iota"},

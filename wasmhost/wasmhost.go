@@ -5,6 +5,7 @@ package wasmhost
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"github.com/mr-tron/base58"
 )
@@ -59,6 +60,7 @@ type WasmVM interface {
 	LinkHost(host *WasmHost) error
 	LoadWasm(wasmData []byte) error
 	RunFunction(functionName string) error
+	RunScFunction(index int32) error
 	UnsafeMemory() []byte
 }
 
@@ -67,6 +69,7 @@ type WasmHost struct {
 	codeToFunc    map[uint32]string
 	error         string
 	funcToCode    map[string]uint32
+	funcToIndex   map[string]int32
 	keyIdToKey    [][]byte
 	keyIdToKeyMap [][]byte
 	keyMapToKeyId *map[string]int32
@@ -87,6 +90,7 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	host.codeToFunc = make(map[uint32]string)
 	host.error = ""
 	host.funcToCode = make(map[string]uint32)
+	host.funcToIndex = make(map[string]int32)
 	host.logger = logger
 	host.objIdToObj = nil
 	host.keyIdToKey = [][]byte{[]byte("<null>")}
@@ -100,16 +104,6 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	host.TrackObject(root)
 	host.vm = NewWasmTimeVM()
 	return host.vm.LinkHost(host)
-}
-
-func (host *WasmHost) CallFunction(functionName string) error {
-	//TODO what about passing args and results?
-	ptr := host.vm.UnsafeMemory()
-	saved := make([]byte, len(ptr))
-	copy(saved, ptr)
-	err := host.RunFunction(functionName)
-	copy(ptr, saved)
-	return err
 }
 
 func (host *WasmHost) fdWrite(fd int32, iovs int32, size int32, written int32) int32 {
@@ -283,6 +277,11 @@ func (host *WasmHost) LoadWasm(wasmData []byte) error {
 		return err
 	}
 
+	err = host.vm.RunFunction("onLoad")
+	if err != nil {
+		return err
+	}
+
 	// find initialized data range in memory
 	ptr := host.vm.UnsafeMemory()
 	firstNonZero := 0
@@ -307,7 +306,7 @@ func (host *WasmHost) LoadWasm(wasmData []byte) error {
 	return nil
 }
 
-func (host *WasmHost) RunFunction(functionName string) error {
+func (host *WasmHost) resetMemory() {
 	if host.memoryDirty {
 		// clear memory and restore initialized data range
 		ptr := host.vm.UnsafeMemory()
@@ -315,7 +314,20 @@ func (host *WasmHost) RunFunction(functionName string) error {
 		copy(ptr[host.memoryNonZero:], host.memoryCopy)
 	}
 	host.memoryDirty = true
+}
+
+func (host *WasmHost) RunFunction(functionName string) error {
+	host.resetMemory()
 	return host.vm.RunFunction(functionName)
+}
+
+func (host *WasmHost) RunScFunction(functionName string) error {
+	index, ok := host.funcToIndex[functionName]
+	if !ok {
+		return errors.New("unknown SC function name: " + functionName)
+	}
+	host.resetMemory()
+	return host.vm.RunScFunction(index)
 }
 
 func (host *WasmHost) SetBytes(objId int32, keyId int32, stringRef int32, size int32) {

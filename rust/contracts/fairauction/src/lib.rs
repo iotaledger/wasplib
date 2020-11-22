@@ -49,16 +49,14 @@ struct BidInfo {
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("startAuction");
-    exports.add("finalizeAuction");
-    exports.add("placeBid");
-    exports.add("setOwnerMargin");
+    let exports = ScExports::new();
+    exports.add_call("startAuction", startAuction);
+    exports.add_call("finalizeAuction", finalizeAuction);
+    exports.add_call("placeBid", placeBid);
+    exports.add_call("setOwnerMargin", setOwnerMargin);
 }
 
-#[no_mangle]
-pub fn startAuction() {
-    let sc = ScContext::new();
+pub fn startAuction(sc: &ScCallContext) {
     let request = sc.request();
     let deposit = request.balance(&ScColor::IOTA);
     if deposit < 1 {
@@ -75,25 +73,25 @@ pub fn startAuction() {
     let params = request.params();
     let colorParam = params.get_color("color");
     if !colorParam.exists() {
-        refund(deposit / 2, "Missing token color...");
+        refund(sc, deposit / 2, "Missing token color...");
         return;
     }
     let color = colorParam.value();
 
     if color == ScColor::IOTA || color == ScColor::MINT {
-        refund(deposit / 2, "Reserved token color...");
+        refund(sc, deposit / 2, "Reserved token color...");
         return;
     }
 
     let numTokens = request.balance(&color);
     if numTokens == 0 {
-        refund(deposit / 2, "Auction tokens missing from request...");
+        refund(sc, deposit / 2, "Auction tokens missing from request...");
         return;
     }
 
     let minimumBid = params.get_int("minimum").value();
     if minimumBid == 0 {
-        refund(deposit / 2, "Missing minimum bid...");
+        refund(sc, deposit / 2, "Missing minimum bid...");
         return;
     }
 
@@ -103,7 +101,7 @@ pub fn startAuction() {
         margin = 1;
     }
     if deposit < margin {
-        refund(deposit / 2, "Insufficient deposit...");
+        refund(sc, deposit / 2, "Insufficient deposit...");
         return;
     }
 
@@ -131,7 +129,7 @@ pub fn startAuction() {
     let auctions = state.get_key_map("auctions");
     let currentAuction = auctions.get_bytes(color.to_bytes());
     if currentAuction.value().len() != 0 {
-        refund(deposit / 2, "Auction for this token already exists...");
+        refund(sc, deposit / 2, "Auction for this token already exists...");
         return;
     }
 
@@ -150,15 +148,13 @@ pub fn startAuction() {
     let bytes = encodeAuctionInfo(auction);
     currentAuction.set_value(&bytes);
 
-    let finalizeparams = sc.post_request(&sc.contract().id(), "finalizeAuction", duration * 60);
-    finalizeparams.get_color("color").set_value(&auction.color);
+    let finalize_params = sc.post_self("finalizeAuction", duration * 60).params();
+    finalize_params.get_color("color").set_value(&auction.color);
     sc.log("New auction started...");
 }
 
-#[no_mangle]
-pub fn finalizeAuction() {
+pub fn finalizeAuction(sc: &ScCallContext) {
     // can only be sent by SC itself
-    let sc = ScContext::new();
     let request = sc.request();
     if !request.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
@@ -226,9 +222,7 @@ pub fn finalizeAuction() {
     sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit + winner.amount - ownerFee);
 }
 
-#[no_mangle]
-pub fn placeBid() {
-    let sc = ScContext::new();
+pub fn placeBid(sc: &ScCallContext) {
     let request = sc.request();
     let bidAmount = request.balance(&ScColor::IOTA);
     if bidAmount == 0 {
@@ -238,7 +232,7 @@ pub fn placeBid() {
 
     let colorParam = request.params().get_color("color");
     if !colorParam.exists() {
-        refund(bidAmount, "Missing token color");
+        refund(sc, bidAmount, "Missing token color");
         return;
     }
     let color = colorParam.value();
@@ -248,7 +242,7 @@ pub fn placeBid() {
     let currentAuction = auctions.get_bytes(color.to_bytes());
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
-        refund(bidAmount, "Missing auction");
+        refund(sc, bidAmount, "Missing auction");
         return;
     }
 
@@ -270,17 +264,15 @@ pub fn placeBid() {
     sc.log("Updated auction with bid...");
 }
 
-#[no_mangle]
-pub fn setOwnerMargin() {
+pub fn setOwnerMargin(sc: &ScCallContext) {
     // can only be sent by SC owner
-    let sc = ScContext::new();
     let request = sc.request();
     if !request.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let mut ownerMargin = sc.request().params().get_int("ownerMargin").value();
+    let mut ownerMargin = request.params().get_int("ownerMargin").value();
     if ownerMargin < OWNER_MARGIN_MIN {
         ownerMargin = OWNER_MARGIN_MIN;
     }
@@ -350,8 +342,7 @@ fn encodeBidInfo(bid: &BidInfo) -> Vec<u8> {
     encoder.data()
 }
 
-fn refund(amount: i64, reason: &str) {
-    let sc = ScContext::new();
+fn refund(sc: &ScCallContext, amount: i64, reason: &str) {
     sc.log(reason);
     let request = sc.request();
     let sender = request.sender();

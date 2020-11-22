@@ -329,7 +329,7 @@ pub struct ScImmutableMap {
 }
 
 impl ScImmutableMap {
-    pub(crate) fn new(obj_id: i32) -> ScImmutableMap {
+    pub(crate) const fn new(obj_id: i32) -> ScImmutableMap {
         ScImmutableMap { obj_id }
     }
 

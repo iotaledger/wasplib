@@ -18,15 +18,13 @@ struct TokenInfo {
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("mintSupply");
-    exports.add("updateMetadata");
-    exports.add("transferOwnership");
+    let exports = ScExports::new();
+    exports.add_call("mintSupply", mintSupply);
+    exports.add_call("updateMetadata", updateMetadata);
+    exports.add_call("transferOwnership", transferOwnership);
 }
 
-#[no_mangle]
-pub fn mintSupply() {
-    let sc = ScContext::new();
+pub fn mintSupply(sc: &ScCallContext) {
     let request = sc.request();
     let color = request.minted_color();
     let state = sc.state();
@@ -58,15 +56,11 @@ pub fn mintSupply() {
     colors.get_color(colors.length()).set_value(&color);
 }
 
-#[no_mangle]
-pub fn updateMetadata() {
-    //let sc = ScContext::new();
+pub fn updateMetadata(_sc: &ScCallContext) {
     //TODO
 }
 
-#[no_mangle]
-pub fn transferOwnership() {
-    //let sc = ScContext::new();
+pub fn transferOwnership(_sc: &ScCallContext) {
     //TODO
 }
 

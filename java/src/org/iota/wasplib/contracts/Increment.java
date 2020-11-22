@@ -4,24 +4,22 @@
 package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.Host;
-import org.iota.wasplib.client.context.ScContext;
-import org.iota.wasplib.client.context.ScExports;
+import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 
 public class Increment {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("increment");
-		exports.Add("incrementRepeat1");
-		exports.Add("incrementRepeatMany");
-		exports.Add("test");
-		exports.Add("nothing");
+		exports.AddCall("increment", Increment::increment);
+		exports.AddCall("incrementRepeat1", Increment::incrementRepeat1);
+		exports.AddCall("incrementRepeatMany", Increment::incrementRepeatMany);
+		exports.AddCall("test", Increment::test);
+		exports.AddCall("nothing", ScExports::nothing);
 	}
 
-	//export init
-	public static void init() {
-		ScContext sc = new ScContext();
+	public static void init(ScCallContext sc) {
 		long counter = sc.Request().Params().GetInt("counter").Value();
 		if (counter == 0) {
 			return;
@@ -29,27 +27,21 @@ public class Increment {
 		sc.State().GetInt("counter").SetValue(counter);
 	}
 
-	//export increment
-	public static void increment() {
-		ScContext sc = new ScContext();
+	public static void increment(ScCallContext sc) {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	//export incrementRepeat1
-	public static void incrementRepeat1() {
-		ScContext sc = new ScContext();
+	public static void incrementRepeat1(ScCallContext sc) {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.PostRequest(sc.Contract().Id(), "increment", 0);
+			sc.PostSelf("increment", 0);
 		}
 	}
 
-	//export incrementRepeatMany
-	public static void incrementRepeatMany() {
-		ScContext sc = new ScContext();
+	public static void incrementRepeatMany(ScCallContext sc) {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -62,11 +54,10 @@ public class Increment {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.PostRequest(sc.Contract().Id(), "incrementRepeatMany", 0);
+		sc.PostSelf("incrementRepeatMany", 0);
 	}
 
-	//export test
-	public static void test() {
+	public static void test(ScCallContext sc) {
 		int keyId = Host.GetKeyId("timestamp");
 		Host.SetInt(1, keyId, 123456789);
 		long timestamp = Host.GetInt(1, keyId);

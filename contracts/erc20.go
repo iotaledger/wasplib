@@ -21,14 +21,12 @@ func main() {
 //export onLoad
 func onLoadERC20() {
 	exports := client.NewScExports()
-	exports.Add("initSC")
-	exports.Add("transfer")
-	exports.Add("approve")
+	exports.AddCall("init", onInitERC20)
+	exports.AddCall("transfer", transfer)
+	exports.AddCall("approve", approve)
 }
 
-//export initSC
-func initSC() {
-	sc := client.NewScContext()
+func onInitERC20(sc *client.ScCallContext) {
 	sc.Log("initSC")
 
 	scOwner := sc.Contract().Owner()
@@ -58,9 +56,7 @@ func initSC() {
 	sc.Log("initSC: success")
 }
 
-//export transfer
-func transfer() {
-	sc := client.NewScContext()
+func transfer(sc *client.ScCallContext) {
 	sc.Log("transfer")
 
 	state := sc.State()
@@ -95,9 +91,7 @@ func transfer() {
 	sc.Log("transfer: success")
 }
 
-//export approve
-func approve() {
-	sc := client.NewScContext()
+func approve(sc *client.ScCallContext) {
 	// TODO
 	sc.Log("approve")
 }

@@ -22,13 +22,11 @@ func main() {
 //export onLoad
 func onLoadDonateWithFeedback() {
 	exports := client.NewScExports()
-	exports.Add("donate")
-	exports.Add("withdraw")
+	exports.AddCall("donate", donate)
+	exports.AddCall("withdraw", withdraw)
 }
 
-//export donate
-func donate() {
-	sc := client.NewScContext()
+func donate(sc *client.ScCallContext) {
 	tlog := sc.TimestampedLog("l")
 	request := sc.Request()
 	donation := &DonationInfo{
@@ -58,9 +56,7 @@ func donate() {
 	totalDonated.SetValue(totalDonated.Value() + donation.amount)
 }
 
-//export withdraw
-func withdraw() {
-	sc := client.NewScContext()
+func withdraw(sc *client.ScCallContext) {
 	scOwner := sc.Contract().Owner()
 	request := sc.Request()
 	if !request.From(scOwner) {

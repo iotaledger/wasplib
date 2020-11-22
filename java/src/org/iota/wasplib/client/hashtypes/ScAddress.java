@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.client.hashtypes;
 
-import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScUtility;
 
 import java.util.Arrays;
 
@@ -35,6 +35,6 @@ public class ScAddress {
 	}
 
 	public String toString() {
-		return new ScContext().Utility().Base58Encode(address);
+		return ScUtility.Base58String(address);
 	}
 }

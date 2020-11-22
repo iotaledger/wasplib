@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.client.hashtypes;
 
-import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScUtility;
 
 import java.util.Arrays;
 
@@ -39,7 +39,7 @@ public class ScColor {
 	@Override
 
 	public String toString() {
-		return new ScContext().Utility().Base58Encode(color);
+		return ScUtility.Base58String(color);
 	}
 
 	static {

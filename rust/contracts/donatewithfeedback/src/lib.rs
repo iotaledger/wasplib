@@ -17,14 +17,12 @@ struct DonationInfo {
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("donate");
-    exports.add("withdraw");
+    let exports = ScExports::new();
+    exports.add_call("donate", donate);
+    exports.add_call("withdraw", withdraw);
 }
 
-#[no_mangle]
-pub fn donate() {
-    let sc = ScContext::new();
+pub fn donate(sc: &ScCallContext) {
     let tlog = sc.timestamped_log("l");
     let request = sc.request();
     let mut donation = DonationInfo {
@@ -52,9 +50,7 @@ pub fn donate() {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-#[no_mangle]
-pub fn withdraw() {
-    let sc = ScContext::new();
+pub fn withdraw(sc: &ScCallContext) {
     let sc_owner = sc.contract().owner();
     let request = sc.request();
     if !request.from(&sc_owner) {

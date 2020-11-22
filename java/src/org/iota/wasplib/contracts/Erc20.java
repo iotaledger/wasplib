@@ -3,9 +3,9 @@
 
 package org.iota.wasplib.contracts;
 
-import org.iota.wasplib.client.context.ScContext;
-import org.iota.wasplib.client.context.ScExports;
+import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
@@ -23,14 +23,12 @@ public class Erc20 {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("initSC");
-		exports.Add("transfer");
-		exports.Add("approve");
+		exports.AddCall("initSC", Erc20::initSC);
+		exports.AddCall("transfer", Erc20::transfer);
+		exports.AddCall("approve", Erc20::approve);
 	}
 
-	//export initSC
-	public static void initSC() {
-		ScContext sc = new ScContext();
+	public static void initSC(ScCallContext sc) {
 		sc.Log("initSC");
 
 		ScMutableMap state = sc.State();
@@ -53,9 +51,7 @@ public class Erc20 {
 		sc.Log("initSC: success");
 	}
 
-	//export transfer
-	public static void transfer() {
-		ScContext sc = new ScContext();
+	public static void transfer(ScCallContext sc) {
 		sc.Log("transfer");
 
 		ScMutableMap state = sc.State();
@@ -88,9 +84,7 @@ public class Erc20 {
 		sc.Log("transfer: success");
 	}
 
-	//export approve
-	public static void approve() {
-		ScContext sc = new ScContext();
+	public static void approve(ScCallContext sc) {
 		// TODO
 		sc.Log("approve");
 	}

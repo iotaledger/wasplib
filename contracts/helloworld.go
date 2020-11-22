@@ -13,11 +13,9 @@ func main() {
 //export onLoad
 func onLoadHelloWorld() {
 	exports := client.NewScExports()
-	exports.Add("helloWorld")
+	exports.AddCall("helloWorld", helloWorld)
 }
 
-//export helloWorld
-func helloWorld() {
-	sc := client.NewScContext()
+func helloWorld(sc *client.ScCallContext) {
 	sc.Log("Hello, world!")
 }

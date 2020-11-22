@@ -32,7 +32,7 @@
         "state": {
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -47,7 +47,7 @@
           "counter": 1
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -65,7 +65,7 @@
           "counter": 2
         },
         "logs": {},
-        "postedRequests": [],
+        "calls": [],
         "transfers": []
       }
     },
@@ -80,8 +80,8 @@
           "counter": 2
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "increment", "delay": 0}
+        "calls": [
+          {"function": "increment", "delay": 0}
         ],
         "transfers": []
       }
@@ -101,12 +101,12 @@
           "numRepeats": 0
         },
         "logs": {},
-        "postedRequests": [
-          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0},
-          {"contract": "@scId", "function": "incrementRepeatMany", "delay": 0}
+        "calls": [
+          {"function": "incrementRepeatMany", "delay": 0},
+          {"function": "incrementRepeatMany", "delay": 0},
+          {"function": "incrementRepeatMany", "delay": 0},
+          {"function": "incrementRepeatMany", "delay": 0},
+          {"function": "incrementRepeatMany", "delay": 0}
         ],
         "transfers": []
       }

@@ -5,7 +5,11 @@ package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.context.*;
+import org.iota.wasplib.client.context.ScAccount;
+import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScLog;
+import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.hashtypes.ScRequestId;
@@ -16,13 +20,11 @@ public class DonateWithFeedback {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("donate");
-		exports.Add("withdraw");
+		exports.AddCall("donate", DonateWithFeedback::donate);
+		exports.AddCall("withdraw", DonateWithFeedback::withdraw);
 	}
 
-	//export donate
-	public static void donate() {
-		ScContext sc = new ScContext();
+	public static void donate(ScCallContext sc) {
 		ScLog tlog = sc.TimestampedLog("l");
 		ScRequest request = sc.Request();
 		DonationInfo donation = new DonationInfo();
@@ -51,9 +53,7 @@ public class DonateWithFeedback {
 		totalDonated.SetValue(totalDonated.Value() + donation.amount);
 	}
 
-	//export withdraw
-	public static void withdraw() {
-		ScContext sc = new ScContext();
+	public static void withdraw(ScCallContext sc) {
 		ScAgent scOwner = sc.Contract().Owner();
 		ScRequest request = sc.Request();
 		if (!request.From(scOwner)) {
@@ -75,9 +75,7 @@ public class DonateWithFeedback {
 		sc.Transfer(scOwner, ScColor.IOTA, withdrawAmount);
 	}
 
-	//export transferOwnership
-	public static void transferOwnership() {
-		//ScContext sc = new ScContext();
+	public static void transferOwnership(ScCallContext sc) {
 	}
 
 	public static DonationInfo decodeDonationInfo(byte[] bytes) {

@@ -3,7 +3,9 @@
 
 package org.iota.wasplib.client.hashtypes;
 
-import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.context.ScUtility;
+
+import java.util.Arrays;
 
 public class ScTxHash {
 	final byte[] hash = new byte[32];
@@ -20,12 +22,12 @@ public class ScTxHash {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScTxHash other = (ScTxHash) o;
-		return hash.equals(other.hash);
+		return Arrays.equals(hash, other.hash);
 	}
 
 	@Override
 	public int hashCode() {
-		return hash.hashCode();
+		return Arrays.hashCode(hash);
 	}
 
 	public byte[] toBytes() {
@@ -34,6 +36,6 @@ public class ScTxHash {
 
 	@Override
 	public String toString() {
-		return new ScContext().Utility().Base58Encode(hash);
+		return ScUtility.Base58String(hash);
 	}
 }

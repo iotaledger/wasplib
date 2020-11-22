@@ -20,17 +20,15 @@ struct Delegation {
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("initSC");
-    exports.add("transfer");
-    exports.add("approve");
-    exports.add("transfer_from");
+    let exports = ScExports::new();
+    exports.add_call("init", onInit);
+    exports.add_call("transfer", transfer);
+    exports.add_call("approve", approve);
+    exports.add_call("transfer_from", transfer_from);
 }
 
-#[no_mangle]
-pub fn initSC() {
-    let sc = ScContext::new();
-    sc.log("initSC");
+pub fn onInit(sc: &ScCallContext) {
+    sc.log("onInit");
 
     let state = sc.state();
     let supplyState = state.get_int(VAR_SUPPLY);
@@ -54,9 +52,7 @@ pub fn initSC() {
     sc.log(&("initSC.success. Owner = ".to_string() + &owner.to_string()));
 }
 
-#[no_mangle]
-pub fn transfer() {
-    let sc = ScContext::new();
+pub fn transfer(sc: &ScCallContext) {
     sc.log("transfer");
 
     let request = sc.request();
@@ -71,13 +67,11 @@ pub fn transfer() {
         sc.log("transfer.fail: wrong 'amount' parameter");
         return;
     }
-    let succ = transfer_internal(&sender, &target_addr, amount);
+    let succ = transfer_internal(sc, &sender, &target_addr, amount);
     sc.log(if succ { "transfer.success" } else { "transfer.fail" });
 }
 
-#[no_mangle]
-pub fn approve() {
-    let sc = ScContext::new();
+pub fn approve(sc: &ScCallContext) {
     sc.log("approve");
 
     let state = sc.state();
@@ -101,9 +95,7 @@ pub fn approve() {
     sc.log("approve.success");
 }
 
-#[no_mangle]
-pub fn transfer_from() {
-    let sc = ScContext::new();
+pub fn transfer_from(sc: &ScCallContext) {
     sc.log("transfer_from");
 
     let state = sc.state();
@@ -128,7 +120,7 @@ pub fn transfer_from() {
         sc.log("transfer_from.fail: wrong delegation, possibly over the limit");
         return;
     }
-    if !transfer_internal(&source_addr.value(), &target_addr.value(), amount.value()) {
+    if !transfer_internal(sc, &source_addr.value(), &target_addr.value(), amount.value()) {
         sc.log("transfer_from.fail: possibly not enough balance in the source address");
     }
 
@@ -136,8 +128,7 @@ pub fn transfer_from() {
     sc.log("transfer_from.success");
 }
 
-fn transfer_internal(source_addr: &ScAgent, target_addr: &ScAgent, amount: i64) -> bool {
-    let sc = ScContext::new();
+fn transfer_internal(sc: &ScCallContext, source_addr: &ScAgent, target_addr: &ScAgent, amount: i64) -> bool {
     let balances = sc.state().get_key_map(VAR_BALANCES);
     let source_balance = balances.get_int(source_addr.to_bytes());
     sc.log(&("transfer_internal: source addr: = ".to_string() + &source_addr.to_string()));

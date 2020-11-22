@@ -8,12 +8,10 @@ use wasplib::client::*;
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("helloWorld");
+    let exports = ScExports::new();
+    exports.add_call("helloWorld", helloWorld);
 }
 
-#[no_mangle]
-pub fn helloWorld() {
-    let sc = ScContext::new();
+pub fn helloWorld(sc: &ScCallContext) {
     sc.log("Hello, world!");
 }

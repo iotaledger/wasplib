@@ -40,14 +40,6 @@ func hostSetIntRef(objId int32, keyId int32, value *int64)
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-//export nothing
-func nothing() {
-	ctx := NewScContext()
-	ctx.Log("Doing nothing as requested. Oh, wait...")
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 func Exists(objId int32, keyId int32) bool {
 	return hostGetBytes(objId, keyId, nil, 0) >= 0
 }

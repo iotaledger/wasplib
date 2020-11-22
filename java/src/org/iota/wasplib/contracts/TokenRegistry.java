@@ -5,9 +5,9 @@ package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.context.ScContext;
-import org.iota.wasplib.client.context.ScExports;
+import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
@@ -19,14 +19,12 @@ public class TokenRegistry {
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("mintSupply");
-		exports.Add("updateMetadata");
-		exports.Add("transferOwnership");
+		exports.AddCall("mintSupply", TokenRegistry::mintSupply);
+		exports.AddCall("updateMetadata", TokenRegistry::updateMetadata);
+		exports.AddCall("transferOwnership", TokenRegistry::transferOwnership);
 	}
 
-	//export mintSupply
-	public static void mintSupply() {
-		ScContext sc = new ScContext();
+	public static void mintSupply(ScCallContext sc) {
 		ScRequest request = sc.Request();
 		ScColor color = request.MintedColor();
 		ScMutableMap state = sc.State();
@@ -57,14 +55,12 @@ public class TokenRegistry {
 		colors.GetColor(colors.Length()).SetValue(color);
 	}
 
-	//export updateMetadata
-	public static void updateMetadata() {
-		//ScContext sc = new ScContext();
+	public static void updateMetadata(ScCallContext sc) {
+		//TODO
 	}
 
-	//export transferOwnership
-	public static void transferOwnership() {
-		//ScContext sc = new ScContext();
+	public static void transferOwnership(ScCallContext sc) {
+		//TODO
 	}
 
 	public static TokenInfo decodeTokenInfo(byte[] bytes) {

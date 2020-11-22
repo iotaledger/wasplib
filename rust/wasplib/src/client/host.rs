@@ -1,8 +1,6 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use super::context::ScContext;
-
 // all const values should exactly match the counterpart values on the host!
 pub const TYPE_BYTES: i32 = 0;
 pub const TYPE_BYTES_ARRAY: i32 = 1;
@@ -25,13 +23,6 @@ extern {
     pub fn hostGetObjectId(obj_id: i32, key_id: i32, type_id: i32) -> i32;
     pub fn hostSetBytes(obj_id: i32, key_id: i32, value: *const u8, len: i32);
     pub fn hostSetInt(obj_id: i32, key_id: i32, value: i64);
-}
-
-
-#[no_mangle]
-pub fn nothing() {
-    let ctx = ScContext::new();
-    ctx.log("Doing nothing as requested. Oh, wait...");
 }
 
 pub fn exists(obj_id: i32, key_id: i32) -> bool {

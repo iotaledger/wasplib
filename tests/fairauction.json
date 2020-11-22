@@ -76,9 +76,9 @@
           }
         },
         "logs": {},
-        "postedRequests": [
+        "calls": [
           {
-            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
+            "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -122,9 +122,9 @@
           }
         },
         "logs": {},
-        "postedRequests": [
+        "calls": [
           {
-            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
+            "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -191,9 +191,9 @@
           }
         },
         "logs": {},
-        "postedRequests": [
+        "calls": [
           {
-            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
+            "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -307,9 +307,9 @@
           }
         },
         "logs": {},
-        "postedRequests": [
+        "calls": [
           {
-            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
+            "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -424,9 +424,9 @@
           }
         },
         "logs": {},
-        "postedRequests": [
+        "calls": [
           {
-            "contract": "@scId", "function": "finalizeAuction", "delay": 3600,
+            "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],

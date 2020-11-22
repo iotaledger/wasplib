@@ -18,17 +18,15 @@ struct BetInfo {
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("placeBet");
-    exports.add("lockBets");
-    exports.add("payWinners");
-    exports.add("playPeriod");
-    exports.add("nothing");
+    let exports = ScExports::new();
+    exports.add_call("placeBet", placeBet);
+    exports.add_call("lockBets", lockBets);
+    exports.add_call("payWinners", payWinners);
+    exports.add_call("playPeriod", playPeriod);
+    exports.add_call("nothing", ScExports::nothing);
 }
 
-#[no_mangle]
-pub fn placeBet() {
-    let sc = ScContext::new();
+pub fn placeBet(sc: &ScCallContext) {
     let request = sc.request();
     let amount = request.balance(&ScColor::IOTA);
     if amount == 0 {
@@ -62,16 +60,13 @@ pub fn placeBet() {
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.post_request(&sc.contract().id(), "lockBets", play_period);
+        sc.post_self("lockBets", play_period);
     }
 }
 
-#[no_mangle]
-pub fn lockBets() {
+pub fn lockBets(sc: &ScCallContext) {
     // can only be sent by SC itself
-    let sc = ScContext::new();
-    let sc_id = sc.contract().id();
-    if !sc.request().from(&sc_id) {
+    if !sc.request().from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -87,13 +82,11 @@ pub fn lockBets() {
     }
     bets.clear();
 
-    sc.post_request(&sc_id, "payWinners", 0);
+    sc.post_self("payWinners", 0);
 }
 
-#[no_mangle]
-pub fn payWinners() {
+pub fn payWinners(sc: &ScCallContext) {
     // can only be sent by SC itself
-    let sc = ScContext::new();
     let sc_id = sc.contract().id();
     if !sc.request().from(&sc_id) {
         sc.log("Cancel spoofed request");
@@ -150,10 +143,8 @@ pub fn payWinners() {
     }
 }
 
-#[no_mangle]
-pub fn playPeriod() {
+pub fn playPeriod(sc: &ScCallContext) {
     // can only be sent by SC owner
-    let sc = ScContext::new();
     let request = sc.request();
     if !request.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");

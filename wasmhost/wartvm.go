@@ -125,7 +125,13 @@ func (vm *WartVM) LoadWasm(wasmData []byte) error {
 }
 
 func (vm *WartVM) RunFunction(functionName string) error {
-	return vm.runner.RunExport(functionName)
+	return vm.runner.RunExport(functionName, nil)
+}
+
+func (vm *WartVM) RunScFunction(index int32) error {
+	params := make([]sections.Variable, 1)
+	params[0].I32 = index
+	return vm.runner.RunExport("sc_call_entrypoint", params)
 }
 
 func (vm *WartVM) UnsafeMemory() []byte {

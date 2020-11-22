@@ -43,10 +43,6 @@ func (host *SimpleWasmHost) GetKeyId(key string) int32 {
 }
 
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
-	if index != int32(len(host.codeToFunc)+1) {
-		host.SetError("SetExport: invalid index")
-		return
-	}
 	_, ok := host.funcToCode[functionName]
 	if ok {
 		host.SetError("SetExport: duplicate function name")
@@ -60,8 +56,9 @@ func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
 		host.SetError("SetExport: duplicate hashed name")
 		return
 	}
-	host.funcToCode[functionName] = hashedName
 	host.codeToFunc[hashedName] = functionName
+	host.funcToCode[functionName] = hashedName
+	host.funcToIndex[functionName] = index
 }
 
 func (host *SimpleWasmHost) Log(logLevel int32, text string) {
@@ -69,7 +66,7 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	case KeyTraceHost:
 		//fmt.Println(text)
 	case KeyTrace:
-		//fmt.Println(text)
+		fmt.Println(text)
 	case KeyLog:
 		fmt.Println(text)
 	case KeyWarning:

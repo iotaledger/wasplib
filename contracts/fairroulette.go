@@ -24,16 +24,14 @@ func main() {
 //export onLoad
 func onLoadFairRoulette() {
 	exports := client.NewScExports()
-	exports.Add("placeBet")
-	exports.Add("lockBets")   //TODO sc internal only
-	exports.Add("payWinners") //TODO sc internal only
-	exports.Add("playPeriod")
-	exports.Add("nothing")
+	exports.AddCall("placeBet", placeBet)
+	exports.AddCall("lockBets", lockBets)     //TODO sc internal only
+	exports.AddCall("payWinners", payWinners) //TODO sc internal only
+	exports.AddCall("playPeriod", playPeriod)
+	exports.AddCall("nothing", client.Nothing)
 }
 
-//export placeBet
-func placeBet() {
-	sc := client.NewScContext()
+func placeBet(sc *client.ScCallContext) {
 	request := sc.Request()
 	amount := request.Balance(client.IOTA)
 	if amount == 0 {
@@ -67,16 +65,13 @@ func placeBet() {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.PostRequest(sc.Contract().Id(), "lockBets", playPeriod)
+		sc.PostSelf("lockBets", playPeriod)
 	}
 }
 
-//export lockBets
-func lockBets() {
+func lockBets(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	sc := client.NewScContext()
-	scId := sc.Contract().Id()
-	if !sc.Request().From(scId) {
+	if !sc.Request().From(sc.Contract().Id()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -91,13 +86,11 @@ func lockBets() {
 	}
 	bets.Clear()
 
-	sc.PostRequest(scId, "payWinners", 0)
+	sc.PostSelf("payWinners", 0)
 }
 
-//export payWinners
-func payWinners() {
+func payWinners(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	sc := client.NewScContext()
 	scId := sc.Contract().Id()
 	if !sc.Request().From(scId) {
 		sc.Log("Cancel spoofed request")
@@ -151,10 +144,8 @@ func payWinners() {
 	}
 }
 
-//export playPeriod
-func playPeriod() {
+func playPeriod(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	sc := client.NewScContext()
 	if !sc.Request().From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return

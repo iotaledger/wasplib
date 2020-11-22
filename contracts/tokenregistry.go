@@ -23,14 +23,12 @@ func main() {
 //export onLoad
 func onLoadTokenRegistry() {
 	exports := client.NewScExports()
-	exports.Add("mintSupply")
-	exports.Add("updateMetadata")
-	exports.Add("transferOwnership")
+	exports.AddCall("mintSupply", mintSupply)
+	exports.AddCall("updateMetadata", updateMetadata)
+	exports.AddCall("transferOwnership", transferOwnership)
 }
 
-//export mintSupply
-func mintSupply() {
-	sc := client.NewScContext()
+func mintSupply(sc *client.ScCallContext) {
 	request := sc.Request()
 	color := request.MintedColor()
 	state := sc.State()
@@ -62,15 +60,11 @@ func mintSupply() {
 	colors.GetColor(colors.Length()).SetValue(color)
 }
 
-//export updateMetadata
-func updateMetadata() {
-	//sc := client.NewScContext()
+func updateMetadata(sc *client.ScCallContext) {
 	//TODO
 }
 
-//export transferOwnership
-func transferOwnership() {
-	//sc := client.NewScContext()
+func transferOwnership(sc *client.ScCallContext) {
 	//TODO
 }
 

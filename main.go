@@ -70,8 +70,8 @@ func main() {
 	//	log.Println(err)
 	//}
 
-	contract := "tokenregistry"
-	language := "go" // "bg" = Rust, "go" = Go
+	contract := "increment"
+	language := "bg" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"
 	jsonTests, err := wasmhost.NewJsonTests(pathName)
@@ -88,10 +88,6 @@ func main() {
 		panic(err)
 	}
 	err = host.LoadWasm(wasmData)
-	if err != nil {
-		panic(err)
-	}
-	err = host.RunFunction("onLoad")
 	if err != nil {
 		panic(err)
 	}

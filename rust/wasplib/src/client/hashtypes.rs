@@ -3,7 +3,7 @@
 
 use std::convert::TryInto;
 
-use crate::client::ScContext;
+use super::context::ROOT_CALL_CONTEXT;
 
 #[derive(Eq, PartialEq)]
 pub struct ScAddress {
@@ -114,5 +114,5 @@ impl ScTxHash {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 fn base58_encode(bytes: &[u8]) -> String {
-    ScContext::new().utility().base58_encode(bytes)
+    ROOT_CALL_CONTEXT.utility().base58_encode(bytes)
 }

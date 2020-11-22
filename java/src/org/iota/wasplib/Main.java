@@ -3,12 +3,11 @@
 
 package org.iota.wasplib;
 
-import org.iota.wasplib.client.context.ScContext;
+import org.iota.wasplib.client.exports.ScExports;
 
 public class Main {
 
 	public static void main(String[] args) {
-		ScContext ctx = new ScContext();
-		ctx.Log("Test");
+		ScExports exports = new ScExports();
 	}
 }

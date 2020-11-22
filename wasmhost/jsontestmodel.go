@@ -14,14 +14,14 @@ import (
 )
 
 type JsonDataModel struct {
-	Contract       map[string]interface{} `json:"contract"`
-	Account        map[string]interface{} `json:"account"`
-	Request        map[string]interface{} `json:"request"`
-	State          map[string]interface{} `json:"state"`
-	Utility        map[string]interface{} `json:"utility"`
-	Logs           map[string]interface{} `json:"logs"`
-	PostedRequests []interface{}          `json:"postedRequests"`
-	Transfers      []interface{}          `json:"transfers"`
+	Contract  map[string]interface{} `json:"contract"`
+	Account   map[string]interface{} `json:"account"`
+	Request   map[string]interface{} `json:"request"`
+	State     map[string]interface{} `json:"state"`
+	Utility   map[string]interface{} `json:"utility"`
+	Logs      map[string]interface{} `json:"logs"`
+	Calls     []interface{}          `json:"calls"`
+	Transfers []interface{}          `json:"transfers"`
 }
 
 type JsonFieldType struct {
@@ -65,7 +65,7 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData("request", OBJTYPE_MAP)
 	t.ClearObjectData("state", OBJTYPE_MAP)
 	t.ClearObjectData("logs", OBJTYPE_MAP)
-	t.ClearObjectData("postedRequests", OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData("calls", OBJTYPE_MAP_ARRAY)
 	t.ClearObjectData("transfers", OBJTYPE_MAP_ARRAY)
 }
 
@@ -95,7 +95,7 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 	return t.CompareMapData("account", expectData.Account) &&
 		t.CompareMapData("state", expectData.State) &&
 		t.CompareMapData("logs", expectData.Logs) &&
-		t.CompareArrayData("postedRequests", expectData.PostedRequests) &&
+		t.CompareArrayData("calls", expectData.Calls) &&
 		t.CompareArrayData("transfers", expectData.Transfers)
 }
 
@@ -262,7 +262,7 @@ func (t *JsonTests) FindSubObject(mapObject HostObject, key string, typeId int32
 
 func (t *JsonTests) GetKeyId(key string) int32 {
 	keyId := t.host.GetKeyIdFromBytes([]byte(key))
-	t.host.Trace("GetKeyId('%s')=k%d", key, keyId)
+	t.host.Trace("t.GetKeyId('%s')=k%d", key, keyId)
 	return keyId
 }
 
@@ -444,35 +444,35 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 
 	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("id"))
 	reqParams := t.FindSubObject(request, "params", OBJTYPE_MAP)
-	postedRequests := t.FindSubObject(nil, "postedRequests", OBJTYPE_MAP_ARRAY)
+	calls := t.FindSubObject(nil, "calls", OBJTYPE_MAP_ARRAY)
 
-	expectedPostedRequests := len(test.Expect.PostedRequests)
-	for i := 0; i < expectedPostedRequests && i < int(postedRequests.GetInt(KeyLength)); i++ {
-		postedRequest := t.FindIndexedMap(postedRequests, i)
-		delay := postedRequest.GetInt(t.GetKeyId("delay"))
+	expectedCalls := len(test.Expect.Calls)
+	for i := 0; i < expectedCalls && i < int(calls.GetInt(KeyLength)); i++ {
+		call := t.FindIndexedMap(calls, i)
+		delay := call.GetInt(t.GetKeyId("delay"))
 		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
-			// only process posted requests when they have no delay
+			// only process calls when they have no delay
 			// unless overridden by the nodelay flag
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
 
-		contract := postedRequest.GetString(t.GetKeyId("contract"))
-		if contract != scId {
-			// only process posted requests when they are for the current contract
+		contract := call.GetString(t.GetKeyId("contract"))
+		if contract != "" && contract != scId {
+			// only process calls when they are for the current contract
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
 
-		function := postedRequest.GetString(t.GetKeyId("function"))
+		function := call.GetString(t.GetKeyId("function"))
 		request.SetString(t.GetKeyId("sender"), scId)
 		request.SetString(t.GetKeyId("function"), function)
 		reqParams.SetInt(KeyLength, 0)
-		params := t.FindSubObject(postedRequest, "params", OBJTYPE_MAP)
+		params := t.FindSubObject(call, "params", OBJTYPE_MAP)
 		//TODO how to iterate
 		params.(*HostMap).CopyDataTo(reqParams)
 		fmt.Printf("    Run function: %v\n", function)
-		err := t.host.RunFunction(function)
+		err := t.host.RunScFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
 			return false
@@ -503,7 +503,7 @@ func (t *JsonTests) runRequest(request HostObject, req map[string]interface{}) b
 	}
 
 	fmt.Printf("    Run function: %v\n", function)
-	err := t.host.RunFunction(function.(string))
+	err := t.host.RunScFunction(function.(string))
 	if err != nil {
 		fmt.Printf("FAIL: Function %v: %v\n", function, err)
 		return false

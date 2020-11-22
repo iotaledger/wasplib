@@ -9,18 +9,16 @@ use wasplib::client::host::*;
 
 #[no_mangle]
 pub fn onLoad() {
-    let mut exports = ScExports::new();
-    exports.add("increment");
-    exports.add("incrementRepeat1");
-    exports.add("incrementRepeatMany");
-    exports.add("test");
-    exports.add("nothing");
-    exports.add("init");
+    let exports = ScExports::new();
+    exports.add_call("increment", increment);
+    exports.add_call("incrementRepeat1", incrementRepeat1);
+    exports.add_call("incrementRepeatMany", incrementRepeatMany);
+    exports.add_call("test", test);
+    exports.add_call("nothing", ScExports::nothing);
+    exports.add_call("init", init);
 }
 
-#[no_mangle]
-pub fn init() {
-    let sc = ScContext::new();
+pub fn init(sc: &ScCallContext) {
     let counter = sc.request().params().get_int("counter").value();
     if counter == 0 {
         return;
@@ -28,27 +26,21 @@ pub fn init() {
     sc.state().get_int("counter").set_value(counter);
 }
 
-#[no_mangle]
-pub fn increment() {
-    let sc = ScContext::new();
+pub fn increment(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     counter.set_value(counter.value() + 1);
 }
 
-#[no_mangle]
-pub fn incrementRepeat1() {
-    let sc = ScContext::new();
+pub fn incrementRepeat1(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.post_request(&sc.contract().id(), "increment", 0);
+        sc.post_self("increment", 0);
     }
 }
 
-#[no_mangle]
-pub fn incrementRepeatMany() {
-    let sc = ScContext::new();
+pub fn incrementRepeatMany(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
@@ -61,11 +53,10 @@ pub fn incrementRepeatMany() {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.post_request(&sc.contract().id(), "incrementRepeatMany", 0);
+    sc.post_self("incrementRepeatMany", 0);
 }
 
-#[no_mangle]
-pub fn test() {
+pub fn test(_sc: &ScCallContext) {
     let key_id = get_key_id("timestamp");
     set_int(1, key_id, 123456789);
     let timestamp = get_int(1, key_id);

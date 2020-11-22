@@ -52,12 +52,11 @@
     {"agent": "base58HashOfTargetAgent", "color": "iota", "amount": 10},
     {"agent": "base58HashOfTargetAgent", "color": "base58HashOfColor", "amount": 1}
   ],
-  "postedRequests": [
+  "calls": [
     {
-      "contract": "base58HashOfSmartContractId",
-      "code": 0,
+      "contract": "contractName",
       "function": "functionName",
-      "delay": 120000000000,
+      "delay": 3600,
       "params": {
         "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
         "paramInt": 987654321,

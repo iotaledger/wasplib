@@ -5,9 +5,9 @@ package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.context.ScContext;
-import org.iota.wasplib.client.context.ScExports;
+import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScRequest;
+import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.hashtypes.ScRequestId;
@@ -17,22 +17,20 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 import java.util.ArrayList;
 
 public class FairRoulette {
-	private static long NUM_COLORS = 5;
-	private static long PLAY_PERIOD = 120;
+	private static final long NUM_COLORS = 5;
+	private static final long PLAY_PERIOD = 120;
 
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.Add("placeBet");
-		exports.Add("lockBets");
-		exports.Add("payWinners");
-		exports.Add("playPeriod");
-		exports.Add("nothing");
+		exports.AddCall("placeBet", FairRoulette::placeBet);
+		exports.AddCall("lockBets", FairRoulette::lockBets);
+		exports.AddCall("payWinners", FairRoulette::payWinners);
+		exports.AddCall("playPeriod", FairRoulette::playPeriod);
+		exports.AddCall("nothing", ScExports::nothing);
 	}
 
-	//export placeBet
-	public static void placeBet() {
-		ScContext sc = new ScContext();
+	public static void placeBet(ScCallContext sc) {
 		ScRequest request = sc.Request();
 		long amount = request.Balance(ScColor.IOTA);
 		if (amount == 0) {
@@ -65,16 +63,13 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.PostRequest(sc.Contract().Id(), "lockBets", playPeriod);
+			sc.PostSelf("lockBets", playPeriod);
 		}
 	}
 
-	//export lockBets
-	public static void lockBets() {
+	public static void lockBets(ScCallContext sc) {
 		// can only be sent by SC itself
-		ScContext sc = new ScContext();
-		ScAgent scId = sc.Contract().Id();
-		if (!sc.Request().From(scId)) {
+		if (!sc.Request().From(sc.Contract().Id())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -89,20 +84,18 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		sc.PostRequest(scId, "payWinners", 0);
+		sc.PostSelf("payWinners", 0);
 	}
 
-	//export payWinners
-	public static void payWinners() {
+	public static void payWinners(ScCallContext sc) {
 		// can only be sent by SC itself
-		ScContext sc = new ScContext();
 		ScAgent scId = sc.Contract().Id();
 		if (!sc.Request().From(scId)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		long winningColor = sc.Random(5) + 1;
+		long winningColor = sc.Utility().Random(5) + 1;
 		ScMutableMap state = sc.State();
 		state.GetInt("lastWinningColor").SetValue(winningColor);
 
@@ -149,16 +142,15 @@ public class FairRoulette {
 		}
 	}
 
-	//export playPeriod
-	public static void playPeriod() {
+	public static void playPeriod(ScCallContext sc) {
 		// can only be sent by SC owner
-		ScContext sc = new ScContext();
-		if (!sc.Request().From(sc.Contract().Owner())) {
+		ScRequest request = sc.Request();
+		if (!request.From(sc.Contract().Owner())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		long playPeriod = sc.Request().Params().GetInt("playPeriod").Value();
+		long playPeriod = request.Params().GetInt("playPeriod").Value();
 		if (playPeriod < 10) {
 			sc.Log("Invalid play period...");
 			return;
