@@ -70,7 +70,11 @@ func main() {
 	//	log.Println(err)
 	//}
 
+	//contract := "donatewithfeedback"
+	//contract := "fairauction"
+	//contract := "fairroulette"
 	contract := "increment"
+	//contract := "tokenregistry"
 	language := "bg" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"

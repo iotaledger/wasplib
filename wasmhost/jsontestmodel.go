@@ -262,7 +262,7 @@ func (t *JsonTests) FindSubObject(mapObject HostObject, key string, typeId int32
 
 func (t *JsonTests) GetKeyId(key string) int32 {
 	keyId := t.host.GetKeyIdFromBytes([]byte(key))
-	t.host.Trace("t.GetKeyId('%s')=k%d", key, keyId)
+	t.host.logger.Log(KeyTraceHost, fmt.Sprintf("t.GetKeyId('%s')=k%d", key, keyId))
 	return keyId
 }
 

@@ -66,7 +66,7 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	case KeyTraceHost:
 		//fmt.Println(text)
 	case KeyTrace:
-		fmt.Println(text)
+		//fmt.Println(text)
 	case KeyLog:
 		fmt.Println(text)
 	case KeyWarning:
