@@ -24,17 +24,14 @@ public class ScCallContext {
 
 	public ScCallInfo Call(String contract, String function) {
 		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo request = new ScCallInfo(calls.GetMap(calls.Length()));
-		request.Contract(contract);
-		request.Function(function);
-		return request;
+		ScMutableMap call = calls.GetMap(calls.Length());
+		call.GetString("contract").SetValue(contract);
+		call.GetString("function").SetValue(function);
+		return new ScCallInfo(call);
 	}
 
 	public ScCallInfo CallSelf(String function) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo request = new ScCallInfo(calls.GetMap(calls.Length()));
-		request.Function(function);
-		return request;
+		return Call("", function);
 	}
 
 	public ScContract Contract() {
@@ -49,21 +46,16 @@ public class ScCallContext {
 		Host.SetString(1, Keys.KeyLog(), text);
 	}
 
-	public ScCallInfo Post(String contract, String function, long delay) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo request = new ScCallInfo(calls.GetMap(calls.Length()));
-		request.Contract(contract);
-		request.Function(function);
-		request.Delay(delay);
-		return request;
+	public ScPostInfo Post(String contract, String function) {
+		ScMutableMapArray posts = root.GetMapArray("posts");
+		ScMutableMap post = posts.GetMap(posts.Length());
+		post.GetString("contract").SetValue(contract);
+		post.GetString("function").SetValue(function);
+		return new ScPostInfo(post);
 	}
 
-	public ScCallInfo PostSelf(String function, long delay) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo request = new ScCallInfo(calls.GetMap(calls.Length()));
-		request.Function(function);
-		request.Delay(delay);
-		return request;
+	public ScPostInfo PostSelf(String function) {
+		return Post("", function);
 	}
 
 	public ScRequest Request() {
@@ -84,13 +76,25 @@ public class ScCallContext {
 
 	public void Transfer(ScAgent agent, ScColor color, long amount) {
 		ScMutableMapArray transfers = root.GetMapArray("transfers");
-		ScTransfer xfer = new ScTransfer(transfers.GetMap(transfers.Length()));
-		xfer.Agent(agent);
-		xfer.Color(color);
-		xfer.Amount(amount);
+		ScMutableMap transfer = transfers.GetMap(transfers.Length());
+		transfer.GetAgent("agent").SetValue(agent);
+		transfer.GetColor("color").SetValue(color);
+		transfer.GetInt("amount").SetValue(amount);
 	}
 
 	public ScUtility Utility() {
 		return new ScUtility(root.GetMap("utility"));
+	}
+
+	public ScViewInfo View(String contract, String function) {
+		ScMutableMapArray views = root.GetMapArray("views");
+		ScMutableMap view = views.GetMap(views.Length());
+		view.GetString("contract").SetValue(contract);
+		view.GetString("function").SetValue(function);
+		return new ScViewInfo(view);
+	}
+
+	public ScViewInfo ViewSelf(String function) {
+		return View("", function);
 	}
 }

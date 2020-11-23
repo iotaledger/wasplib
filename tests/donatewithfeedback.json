@@ -67,6 +67,8 @@
           ]
         },
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     },
@@ -133,6 +135,8 @@
           ]
         },
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     },
@@ -184,6 +188,8 @@
           ]
         },
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": [
           {"agent": "@scOwner", "color": "#iota", "amount": 250}
         ]
@@ -237,6 +243,8 @@
           ]
         },
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     }

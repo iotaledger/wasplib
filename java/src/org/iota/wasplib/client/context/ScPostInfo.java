@@ -4,31 +4,26 @@
 package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
-public class ScCallInfo {
-	ScMutableMap call;
+public class ScPostInfo {
+	ScMutableMap post;
 
-	ScCallInfo(ScMutableMap call) {
-		this.call = call;
-	}
-
-	void Call() {
-		call.GetInt("delay").SetValue(-1);
+	ScPostInfo(ScMutableMap post) {
+		this.post = post;
 	}
 
 	public ScMutableMap Params() {
-		return call.GetMap("params");
+		return post.GetMap("params");
 	}
 
-	public ScImmutableMap Results() {
-		return call.GetMap("results").Immutable();
+	public void Post(long delay) {
+		post.GetInt("delay").SetValue(delay);
 	}
 
 	public void Transfer(ScColor color, long amount) {
-		ScMutableMapArray transfers = call.GetMapArray("transfers");
+		ScMutableMapArray transfers = post.GetMapArray("transfers");
 		ScMutableMap transfer = transfers.GetMap(transfers.Length());
 		transfer.GetColor("color").SetValue(color);
 		transfer.GetInt("amount").SetValue(amount);

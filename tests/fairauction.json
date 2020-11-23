@@ -76,7 +76,7 @@
           }
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {
             "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
@@ -122,7 +122,7 @@
           }
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {
             "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
@@ -191,7 +191,7 @@
           }
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {
             "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
@@ -307,7 +307,7 @@
           }
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {
             "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}
@@ -424,7 +424,7 @@
           }
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {
             "function": "finalizeAuction", "delay": 3600,
             "params": {"color": "#tokenColor"}

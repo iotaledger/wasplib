@@ -65,7 +65,7 @@ func placeBet(sc *client.ScCallContext) {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.PostSelf("lockBets", playPeriod)
+		sc.PostSelf("lockBets").Post(playPeriod)
 	}
 }
 
@@ -86,7 +86,7 @@ func lockBets(sc *client.ScCallContext) {
 	}
 	bets.Clear()
 
-	sc.PostSelf("payWinners", 0)
+	sc.PostSelf("payWinners").Post(0)
 }
 
 func payWinners(sc *client.ScCallContext) {

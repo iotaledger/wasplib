@@ -36,7 +36,7 @@ pub fn incrementRepeat1(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.post_self("increment", 0);
+        sc.post_self("increment").post(0);
     }
 }
 
@@ -53,7 +53,7 @@ pub fn incrementRepeatMany(sc: &ScCallContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.post_self("incrementRepeatMany", 0);
+    sc.post_self("incrementRepeatMany").post(0);
 }
 
 pub fn test(_sc: &ScCallContext) {

@@ -66,6 +66,8 @@
         },
         "logs": {},
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     },
@@ -102,6 +104,8 @@
         },
         "logs": {},
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     },
@@ -128,6 +132,8 @@
         },
         "logs": {},
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     },
@@ -191,6 +197,8 @@
         },
         "logs": {},
         "calls": [],
+        "posts": [],
+        "views": [],
         "transfers": []
       }
     }

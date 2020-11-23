@@ -60,7 +60,7 @@ pub fn placeBet(sc: &ScCallContext) {
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.post_self("lockBets", play_period);
+        sc.post_self("lockBets").post(play_period);
     }
 }
 
@@ -82,7 +82,7 @@ pub fn lockBets(sc: &ScCallContext) {
     }
     bets.clear();
 
-    sc.post_self("payWinners", 0);
+    sc.post_self("payWinners").post(0);
 }
 
 pub fn payWinners(sc: &ScCallContext) {

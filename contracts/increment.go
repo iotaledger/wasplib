@@ -39,7 +39,7 @@ func incrementRepeat1(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.PostSelf("increment", 0)
+		sc.PostSelf("increment").Post(0)
 	}
 }
 
@@ -56,7 +56,7 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	sc.PostSelf("incrementRepeatMany", 0)
+	sc.PostSelf("incrementRepeatMany").Post(0)
 }
 
 func test(sc *client.ScCallContext) {

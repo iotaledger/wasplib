@@ -6,6 +6,7 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScPostInfo;
 import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -126,8 +127,10 @@ public class FairAuction {
 		byte[] bytes2 = encodeAuctionInfo(auction);
 		currentAuction.SetValue(bytes2);
 
-		ScMutableMap finalizeParams = sc.PostSelf("finalizeAuction", auction.duration * 60).Params();
+		ScPostInfo finalizeRequest = sc.PostSelf("finalizeAuction");
+		ScMutableMap finalizeParams = finalizeRequest.Params();
 		finalizeParams.GetColor("color").SetValue(auction.color);
+		finalizeRequest.Post(auction.duration * 60);
 		sc.Log("New auction started...");
 	}
 

@@ -37,7 +37,7 @@ public class Increment {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.PostSelf("increment", 0);
+			sc.PostSelf("increment").Post(0);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class Increment {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.PostSelf("incrementRepeatMany", 0);
+		sc.PostSelf("incrementRepeatMany").Post(0);
 	}
 
 	public static void test(ScCallContext sc) {

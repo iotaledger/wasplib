@@ -21,21 +21,6 @@ public class ScViewContext {
 		return new ScAccount(root.GetMap("account").Immutable());
 	}
 
-	public ScCallInfo Call(String contract, String function) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo call = new ScCallInfo(calls.GetMap(calls.Length()));
-		call.Contract(contract);
-		call.Function(function);
-		return call;
-	}
-
-	public ScCallInfo CallSelf(String function) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScCallInfo call = new ScCallInfo(calls.GetMap(calls.Length()));
-		call.Function(function);
-		return call;
-	}
-
 	public ScContract Contract() {
 		return new ScContract(root.GetMap("contract").Immutable());
 	}
@@ -66,5 +51,17 @@ public class ScViewContext {
 
 	public ScUtility Utility() {
 		return new ScUtility(root.GetMap("utility"));
+	}
+
+	public ScViewInfo View(String contract, String function) {
+		ScMutableMapArray views = root.GetMapArray("views");
+		ScMutableMap view = views.GetMap(views.Length());
+		view.GetString("contract").SetValue(contract);
+		view.GetString("function").SetValue(function);
+		return new ScViewInfo(view);
+	}
+
+	public ScViewInfo ViewSelf(String function) {
+		return View("", function);
 	}
 }

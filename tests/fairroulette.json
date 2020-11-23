@@ -57,7 +57,7 @@
           ]
         },
         "logs": {},
-        "calls": [{"function": "lockBets", "delay": 120}],
+        "posts": [{"function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -111,7 +111,7 @@
           ]
         },
         "logs": {},
-        "calls": [{"function": "lockBets", "delay": 120}],
+        "posts": [{"function": "lockBets", "delay": 120}],
         "transfers": []
       }
     },
@@ -136,7 +136,7 @@
           "lastWinningColor": 2
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {"function": "lockBets", "delay": 120},
           {"function": "payWinners", "delay": 0}
         ],
@@ -166,7 +166,7 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {"function": "lockBets", "delay": 120},
           {"function": "payWinners", "delay": 0}
         ],
@@ -210,7 +210,7 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {"function": "lockBets", "delay": 120},
           {"function": "payWinners", "delay": 0}
         ],
@@ -255,7 +255,7 @@
           "lastWinningColor": 3
         },
         "logs": {},
-        "calls": [
+        "posts": [
           {"function": "lockBets", "delay": 120},
           {"function": "payWinners", "delay": 0}
         ],

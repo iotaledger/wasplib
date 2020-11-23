@@ -21,6 +21,8 @@ type JsonDataModel struct {
 	Utility   map[string]interface{} `json:"utility"`
 	Logs      map[string]interface{} `json:"logs"`
 	Calls     []interface{}          `json:"calls"`
+	Posts     []interface{}          `json:"posts"`
+	Views     []interface{}          `json:"views"`
 	Transfers []interface{}          `json:"transfers"`
 }
 
@@ -66,6 +68,8 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData("state", OBJTYPE_MAP)
 	t.ClearObjectData("logs", OBJTYPE_MAP)
 	t.ClearObjectData("calls", OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData("posts", OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData("views", OBJTYPE_MAP_ARRAY)
 	t.ClearObjectData("transfers", OBJTYPE_MAP_ARRAY)
 }
 
@@ -96,6 +100,8 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 		t.CompareMapData("state", expectData.State) &&
 		t.CompareMapData("logs", expectData.Logs) &&
 		t.CompareArrayData("calls", expectData.Calls) &&
+		t.CompareArrayData("posts", expectData.Posts) &&
+		t.CompareArrayData("views", expectData.Views) &&
 		t.CompareArrayData("transfers", expectData.Transfers)
 }
 
@@ -444,9 +450,9 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 
 	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("id"))
 	reqParams := t.FindSubObject(request, "params", OBJTYPE_MAP)
-	calls := t.FindSubObject(nil, "calls", OBJTYPE_MAP_ARRAY)
+	calls := t.FindSubObject(nil, "posts", OBJTYPE_MAP_ARRAY)
 
-	expectedCalls := len(test.Expect.Calls)
+	expectedCalls := len(test.Expect.Posts)
 	for i := 0; i < expectedCalls && i < int(calls.GetInt(KeyLength)); i++ {
 		call := t.FindIndexedMap(calls, i)
 		delay := call.GetInt(t.GetKeyId("delay"))

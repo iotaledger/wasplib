@@ -52,7 +52,7 @@
     {"agent": "base58HashOfTargetAgent", "color": "iota", "amount": 10},
     {"agent": "base58HashOfTargetAgent", "color": "base58HashOfColor", "amount": 1}
   ],
-  "calls": [
+  "posts": [
     {
       "contract": "contractName",
       "function": "functionName",

@@ -35,26 +35,22 @@ pub struct ScCallInfo {
 }
 
 impl ScCallInfo {
-    fn contract(&self, contract: &str) {
-        self.call.get_string("contract").set_value(contract);
-    }
-
-    fn delay(&self, delay: i64) {
+    pub fn call(&self, delay: i64) {
         self.call.get_int("delay").set_value(delay);
-    }
-
-    fn function(&self, function: &str) {
-        self.call.get_string("function").set_value(function);
     }
 
     pub fn params(&self) -> ScMutableMap {
         self.call.get_map("params")
     }
 
+    pub fn results(&self) -> ScImmutableMap {
+        self.call.get_map("results").immutable()
+    }
+
     pub fn transfer(&self, color: &ScColor, amount: i64) {
         let transfers = self.call.get_map_array("transfers");
         let transfer = transfers.get_map(transfers.length());
-        transfer.get_bytes("color").set_value(&color.to_bytes());
+        transfer.get_color("color").set_value(color);
         transfer.get_int("amount").set_value(amount);
     }
 }
@@ -149,21 +145,24 @@ impl ScRequest {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScTransfer {
-    transfer: ScMutableMap,
+pub struct ScPostInfo {
+    post: ScMutableMap,
 }
 
-impl ScTransfer {
-    pub fn agent(&self, agent: &ScAgent) {
-        self.transfer.get_agent("agent").set_value(agent);
+impl ScPostInfo {
+    pub fn params(&self) -> ScMutableMap {
+        self.post.get_map("params")
     }
 
-    pub fn amount(&self, amount: i64) {
-        self.transfer.get_int("amount").set_value(amount);
+    pub fn post(&self, delay: i64) {
+        self.post.get_int("delay").set_value(delay);
     }
 
-    pub fn color(&self, color: &ScColor) {
-        self.transfer.get_color("color").set_value(color);
+    pub fn transfer(&self, color: &ScColor, amount: i64) {
+        let transfers = self.post.get_map_array("transfers");
+        let transfer = transfers.get_map(transfers.length());
+        transfer.get_color("color").set_value(color);
+        transfer.get_int("amount").set_value(amount);
     }
 }
 
@@ -205,6 +204,26 @@ impl ScUtility {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScViewInfo {
+    view: ScMutableMap,
+}
+
+impl ScViewInfo {
+    pub fn params(&self) -> ScMutableMap {
+        self.view.get_map("params")
+    }
+
+    pub fn results(&self) -> ScImmutableMap {
+        self.view.get_map("results").immutable()
+    }
+
+    pub fn view(&self, delay: i64) {
+        self.view.get_int("delay").set_value(delay);
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScCallContext {
     root: ScMutableMap,
 }
@@ -216,17 +235,14 @@ impl ScCallContext {
 
     pub fn call(&self, contract: &str, function: &str) -> ScCallInfo {
         let calls = self.root.get_map_array("calls");
-        let call = ScCallInfo { call: calls.get_map(calls.length()) };
-        call.contract(contract);
-        call.function(function);
-        call
+        let call = calls.get_map(calls.length());
+        call.get_string("contract").set_value(contract);
+        call.get_string("function").set_value(function);
+        ScCallInfo { call: call }
     }
 
     pub fn call_self(&self, function: &str) -> ScCallInfo {
-        let calls = self.root.get_map_array("calls");
-        let call = ScCallInfo { call: calls.get_map(calls.length()) };
-        call.function(function);
-        call
+        self.call("", function)
     }
 
     pub fn contract(&self) -> ScContract {
@@ -241,21 +257,16 @@ impl ScCallContext {
         set_string(1, key_log(), text)
     }
 
-    pub fn post(&self, contract: &str, function: &str, delay: i64) -> ScCallInfo {
-        let calls = self.root.get_map_array("calls");
-        let request = ScCallInfo { call: calls.get_map(calls.length()) };
-        request.contract(contract);
-        request.function(function);
-        request.delay(delay);
-        request
+    pub fn post(&self, contract: &str, function: &str) -> ScPostInfo {
+        let posts = self.root.get_map_array("posts");
+        let post = posts.get_map(posts.length());
+        post.get_string("contract").set_value(contract);
+        post.get_string("function").set_value(function);
+        ScPostInfo { post: post }
     }
 
-    pub fn post_self(&self, function: &str, delay: i64) -> ScCallInfo {
-        let calls = self.root.get_map_array("calls");
-        let request = ScCallInfo { call: calls.get_map(calls.length()) };
-        request.function(function);
-        request.delay(delay);
-        request
+    pub fn post_self(&self, function: &str) -> ScPostInfo {
+        self.post("", function)
     }
 
     pub fn request(&self) -> ScRequest {
@@ -276,14 +287,26 @@ impl ScCallContext {
 
     pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
         let transfers = self.root.get_map_array("transfers");
-        let xfer = ScTransfer { transfer: transfers.get_map(transfers.length()) };
-        xfer.agent(agent);
-        xfer.color(color);
-        xfer.amount(amount);
+        let transfer = transfers.get_map(transfers.length());
+        transfer.get_agent("agent").set_value(agent);
+        transfer.get_color("color").set_value(color);
+        transfer.get_int("amount").set_value(amount);
     }
 
     pub fn utility(&self) -> ScUtility {
         ScUtility { utility: self.root.get_map("utility") }
+    }
+
+    pub fn view(&self, contract: &str, function: &str) -> ScViewInfo {
+        let views = self.root.get_map_array("views");
+        let view = views.get_map(views.length());
+        view.get_string("contract").set_value(contract);
+        view.get_string("function").set_value(function);
+        ScViewInfo { view: view }
+    }
+
+    pub fn view_self(&self, function: &str) -> ScViewInfo {
+        self.view("", function)
     }
 }
 
@@ -296,21 +319,6 @@ pub struct ScViewContext {
 impl ScViewContext {
     pub fn account(&self) -> ScAccount {
         ScAccount { account: self.root.get_map("account").immutable() }
-    }
-
-    pub fn call(&self, contract: &str, function: &str) -> ScCallInfo {
-        let calls = self.root.get_map_array("calls");
-        let call = ScCallInfo { call: calls.get_map(calls.length()) };
-        call.contract(contract);
-        call.function(function);
-        call
-    }
-
-    pub fn call_self(&self, function: &str) -> ScCallInfo {
-        let calls = self.root.get_map_array("calls");
-        let call = ScCallInfo { call: calls.get_map(calls.length()) };
-        call.function(function);
-        call
     }
 
     pub fn contract(&self) -> ScContract {
@@ -343,5 +351,17 @@ impl ScViewContext {
 
     pub fn utility(&self) -> ScUtility {
         ScUtility { utility: self.root.get_map("utility") }
+    }
+
+    pub fn view(&self, contract: &str, function: &str) -> ScViewInfo {
+        let views = self.root.get_map_array("views");
+        let view = views.get_map(views.length());
+        view.get_string("contract").set_value(contract);
+        view.get_string("function").set_value(function);
+        ScViewInfo { view: view }
+    }
+
+    pub fn view_self(&self, function: &str) -> ScViewInfo {
+        self.view("", function)
     }
 }
