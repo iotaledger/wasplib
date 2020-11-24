@@ -14,16 +14,17 @@ import (
 )
 
 type JsonDataModel struct {
-	Contract  map[string]interface{} `json:"contract"`
 	Account   map[string]interface{} `json:"account"`
-	Request   map[string]interface{} `json:"request"`
-	State     map[string]interface{} `json:"state"`
-	Utility   map[string]interface{} `json:"utility"`
-	Logs      map[string]interface{} `json:"logs"`
 	Calls     []interface{}          `json:"calls"`
+	Contract  map[string]interface{} `json:"contract"`
+	Logs      map[string]interface{} `json:"logs"`
 	Posts     []interface{}          `json:"posts"`
-	Views     []interface{}          `json:"views"`
+	Request   map[string]interface{} `json:"request"`
+	Results   map[string]interface{} `json:"results"`
+	State     map[string]interface{} `json:"state"`
 	Transfers []interface{}          `json:"transfers"`
+	Utility   map[string]interface{} `json:"utility"`
+	Views     []interface{}          `json:"views"`
 }
 
 type JsonFieldType struct {
@@ -65,6 +66,7 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData("contract", OBJTYPE_MAP)
 	t.ClearObjectData("account", OBJTYPE_MAP)
 	t.ClearObjectData("request", OBJTYPE_MAP)
+	t.ClearObjectData("results", OBJTYPE_MAP)
 	t.ClearObjectData("state", OBJTYPE_MAP)
 	t.ClearObjectData("logs", OBJTYPE_MAP)
 	t.ClearObjectData("calls", OBJTYPE_MAP_ARRAY)
@@ -99,6 +101,7 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 	return t.CompareMapData("account", expectData.Account) &&
 		t.CompareMapData("state", expectData.State) &&
 		t.CompareMapData("logs", expectData.Logs) &&
+		t.CompareMapData("results", expectData.Results) &&
 		t.CompareArrayData("calls", expectData.Calls) &&
 		t.CompareArrayData("posts", expectData.Posts) &&
 		t.CompareArrayData("views", expectData.Views) &&

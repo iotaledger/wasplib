@@ -35,7 +35,8 @@
         "calls": [],
         "posts": [],
         "views": [],
-        "transfers": []
+        "transfers": [],
+        "results": {}
       }
     },
     {
@@ -52,7 +53,8 @@
         "calls": [],
         "posts": [],
         "views": [],
-        "transfers": []
+        "transfers": [],
+        "results": {}
       }
     },
     {
@@ -72,7 +74,8 @@
         "calls": [],
         "posts": [],
         "views": [],
-        "transfers": []
+        "transfers": [],
+        "results": {}
       }
     },
     {
@@ -91,7 +94,8 @@
           {"function": "increment", "delay": 0}
         ],
         "views": [],
-        "transfers": []
+        "transfers": [],
+        "results": {}
       }
     },
     {
@@ -118,7 +122,8 @@
           {"function": "incrementRepeatMany", "delay": 0}
         ],
         "views": [],
-        "transfers": []
+        "transfers": [],
+        "results": {}
       }
     }
   ]
