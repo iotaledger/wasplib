@@ -37,6 +37,10 @@ public class ScViewContext {
 		return new ScRequest(root.GetMap("request").Immutable());
 	}
 
+	public ScMutableMap Results() {
+		return root.GetMap("results");
+	}
+
 	public ScImmutableMap State() {
 		return root.GetMap("state").Immutable();
 	}

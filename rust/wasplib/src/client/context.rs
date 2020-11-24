@@ -273,6 +273,10 @@ impl ScCallContext {
         ScRequest { request: self.root.get_map("request").immutable() }
     }
 
+    pub fn results(&self) -> ScMutableMap {
+        self.root.get_map("results")
+    }
+
     pub fn state(&self) -> ScMutableMap {
         self.root.get_map("state")
     }
@@ -335,6 +339,10 @@ impl ScViewContext {
 
     pub fn request(&self) -> ScRequest {
         ScRequest { request: self.root.get_map("request").immutable() }
+    }
+
+    pub fn results(&self) -> ScMutableMap {
+        self.root.get_map("results")
     }
 
     pub fn state(&self) -> ScImmutableMap {

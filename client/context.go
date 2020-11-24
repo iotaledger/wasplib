@@ -253,6 +253,10 @@ func (ctx ScCallContext) Request() ScRequest {
 	return ScRequest{ctx.root.GetMap("request").Immutable()}
 }
 
+func (ctx ScCallContext) Results() ScMutableMap {
+	return ctx.root.GetMap("results")
+}
+
 func (ctx ScCallContext) State() ScMutableMap {
 	return ctx.root.GetMap("state")
 }
@@ -313,6 +317,10 @@ func (ctx ScViewContext) Log(text string) {
 
 func (ctx ScViewContext) Request() ScRequest {
 	return ScRequest{ctx.root.GetMap("request").Immutable()}
+}
+
+func (ctx ScViewContext) Results() ScMutableMap {
+	return ctx.root.GetMap("results")
 }
 
 func (ctx ScViewContext) State() ScImmutableMap {

@@ -62,6 +62,10 @@ public class ScCallContext {
 		return new ScRequest(root.GetMap("request").Immutable());
 	}
 
+	public ScMutableMap Results() {
+		return root.GetMap("results");
+	}
+
 	public ScMutableMap State() {
 		return root.GetMap("state");
 	}
