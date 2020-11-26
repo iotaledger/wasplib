@@ -11,7 +11,9 @@ use wasplib::client::host::*;
 pub fn onLoad() {
     let exports = ScExports::new();
     exports.add_call("increment", increment);
-    exports.add_call("incrementRepeat1", incrementRepeat1);
+    exports.add_call("incrementCallIncrement", incrementCallIncrement);
+    exports.add_call("incrementPostIncrement", incrementPostIncrement);
+    exports.add_view("incrementViewCounter", incrementViewCounter);
     exports.add_call("incrementRepeatMany", incrementRepeatMany);
     exports.add_call("test", test);
     exports.add_call("nothing", ScExports::nothing);
@@ -31,13 +33,27 @@ pub fn increment(sc: &ScCallContext) {
     counter.set_value(counter.value() + 1);
 }
 
-pub fn incrementRepeat1(sc: &ScCallContext) {
+pub fn incrementCallIncrement(sc: &ScCallContext) {
+    let counter = sc.state().get_int("counter");
+    let value = counter.value();
+    counter.set_value(value + 1);
+    if value == 0 {
+        sc.call_self("increment").call();
+    }
+}
+
+pub fn incrementPostIncrement(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
         sc.post_self("increment").post(0);
     }
+}
+
+pub fn incrementViewCounter(sc: &ScViewContext) {
+    let counter = sc.state().get_int("counter").value();
+    sc.results().get_int("counter").set_value(counter);
 }
 
 pub fn incrementRepeatMany(sc: &ScCallContext) {

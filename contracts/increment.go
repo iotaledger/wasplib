@@ -14,7 +14,9 @@ func main() {
 func onLoadIncrement() {
 	exports := client.NewScExports()
 	exports.AddCall("increment", increment)
-	exports.AddCall("incrementRepeat1", incrementRepeat1)
+	exports.AddCall("incrementCallIncrement", incrementCallIncrement)
+	exports.AddCall("incrementPostIncrement", incrementPostIncrement)
+	exports.AddView("incrementViewCounter", incrementViewCounter)
 	exports.AddCall("incrementRepeatMany", incrementRepeatMany)
 	exports.AddCall("test", test)
 	exports.AddCall("nothing", client.Nothing)
@@ -34,13 +36,27 @@ func increment(sc *client.ScCallContext) {
 	counter.SetValue(counter.Value() + 1)
 }
 
-func incrementRepeat1(sc *client.ScCallContext) {
+func incrementCallIncrement(sc *client.ScCallContext) {
+	counter := sc.State().GetInt("counter")
+	value := counter.Value()
+	counter.SetValue(value + 1)
+	if value == 0 {
+		sc.CallSelf("increment").Call()
+	}
+}
+
+func incrementPostIncrement(sc *client.ScCallContext) {
 	counter := sc.State().GetInt("counter")
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
 		sc.PostSelf("increment").Post(0)
 	}
+}
+
+func incrementViewCounter(sc *client.ScViewContext) {
+	counter := sc.State().GetInt("counter").Value()
+	sc.Results().GetInt("counter").SetValue(counter)
 }
 
 func incrementRepeatMany(sc *client.ScCallContext) {

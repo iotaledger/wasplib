@@ -21,7 +21,7 @@ public class ScViewInfo {
 		return view.GetMap("results").Immutable();
 	}
 
-	void View() {
-		view.GetInt("delay").SetValue(-1);
+	public void View() {
+		view.GetInt("delay").SetValue(-2);
 	}
 }

@@ -5,8 +5,8 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public class ScCallInfo {
 	ScMutableMap call;
@@ -15,7 +15,7 @@ public class ScCallInfo {
 		this.call = call;
 	}
 
-	void Call() {
+	public void Call() {
 		call.GetInt("delay").SetValue(-1);
 	}
 
@@ -28,9 +28,7 @@ public class ScCallInfo {
 	}
 
 	public void Transfer(ScColor color, long amount) {
-		ScMutableMapArray transfers = call.GetMapArray("transfers");
-		ScMutableMap transfer = transfers.GetMap(transfers.Length());
-		transfer.GetColor("color").SetValue(color);
-		transfer.GetInt("amount").SetValue(amount);
+		ScMutableKeyMap transfers = call.GetKeyMap("transfers");
+		transfers.GetInt(color.toBytes()).SetValue(amount);
 	}
 }

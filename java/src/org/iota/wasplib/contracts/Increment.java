@@ -5,6 +5,7 @@ package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 
@@ -13,7 +14,9 @@ public class Increment {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("increment", Increment::increment);
-		exports.AddCall("incrementRepeat1", Increment::incrementRepeat1);
+		exports.AddCall("incrementCallIncrement", Increment::incrementCallIncrement);
+		exports.AddCall("incrementPostIncrement", Increment::incrementPostIncrement);
+		exports.AddView("incrementViewCounter", Increment::incrementViewCounter);
 		exports.AddCall("incrementRepeatMany", Increment::incrementRepeatMany);
 		exports.AddCall("test", Increment::test);
 		exports.AddCall("nothing", ScExports::nothing);
@@ -32,13 +35,27 @@ public class Increment {
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void incrementRepeat1(ScCallContext sc) {
+	public static void incrementCallIncrement(ScCallContext sc) {
+		ScMutableInt counter = sc.State().GetInt("counter");
+		long value = counter.Value();
+		counter.SetValue(value + 1);
+		if (value == 0) {
+			sc.CallSelf("increment").Call();
+		}
+	}
+
+	public static void incrementPostIncrement(ScCallContext sc) {
 		ScMutableInt counter = sc.State().GetInt("counter");
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
 			sc.PostSelf("increment").Post(0);
 		}
+	}
+
+	public static void incrementViewCounter(ScViewContext sc) {
+		long counter = sc.State().GetInt("counter").Value();
+		sc.Results().GetInt("counter").SetValue(counter);
 	}
 
 	public static void incrementRepeatMany(ScCallContext sc) {

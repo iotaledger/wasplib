@@ -5,7 +5,7 @@ package client
 
 var (
 	calls []func(sc *ScCallContext)
-	views []func(sc *ScCallContext)
+	views []func(sc *ScViewContext)
 )
 
 //export sc_call_entrypoint
@@ -34,7 +34,7 @@ func (ctx ScExports) AddCall(name string, f func(sc *ScCallContext)) {
 	ctx.exports.GetString(index).SetValue(name)
 }
 
-func (ctx ScExports) AddView(name string, f func(sc *ScCallContext)) {
+func (ctx ScExports) AddView(name string, f func(sc *ScViewContext)) {
 	index := int32(len(views))
 	views = append(views, f)
 	ctx.exports.GetString(index | 0x8000).SetValue(name)

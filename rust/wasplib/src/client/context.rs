@@ -35,8 +35,8 @@ pub struct ScCallInfo {
 }
 
 impl ScCallInfo {
-    pub fn call(&self, delay: i64) {
-        self.call.get_int("delay").set_value(delay);
+    pub fn call(&self) {
+        self.call.get_int("delay").set_value(-1);
     }
 
     pub fn params(&self) -> ScMutableMap {
@@ -48,10 +48,8 @@ impl ScCallInfo {
     }
 
     pub fn transfer(&self, color: &ScColor, amount: i64) {
-        let transfers = self.call.get_map_array("transfers");
-        let transfer = transfers.get_map(transfers.length());
-        transfer.get_color("color").set_value(color);
-        transfer.get_int("amount").set_value(amount);
+        let transfers = self.call.get_key_map("transfers");
+        transfers.get_int(&color.to_bytes()).set_value(amount);
     }
 }
 
@@ -103,6 +101,27 @@ impl ScLog {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScPostInfo {
+    post: ScMutableMap,
+}
+
+impl ScPostInfo {
+    pub fn params(&self) -> ScMutableMap {
+        self.post.get_map("params")
+    }
+
+    pub fn post(&self, delay: i64) {
+        self.post.get_int("delay").set_value(delay);
+    }
+
+    pub fn transfer(&self, color: &ScColor, amount: i64) {
+        let transfers = self.post.get_key_map("transfers");
+        transfers.get_int(&color.to_bytes()).set_value(amount);
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScRequest {
     request: ScImmutableMap,
 }
@@ -140,29 +159,6 @@ impl ScRequest {
 
     pub fn tx_hash(&self) -> ScTxHash {
         self.request.get_tx_hash("hash").value()
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScPostInfo {
-    post: ScMutableMap,
-}
-
-impl ScPostInfo {
-    pub fn params(&self) -> ScMutableMap {
-        self.post.get_map("params")
-    }
-
-    pub fn post(&self, delay: i64) {
-        self.post.get_int("delay").set_value(delay);
-    }
-
-    pub fn transfer(&self, color: &ScColor, amount: i64) {
-        let transfers = self.post.get_map_array("transfers");
-        let transfer = transfers.get_map(transfers.length());
-        transfer.get_color("color").set_value(color);
-        transfer.get_int("amount").set_value(amount);
     }
 }
 
@@ -217,8 +213,8 @@ impl ScViewInfo {
         self.view.get_map("results").immutable()
     }
 
-    pub fn view(&self, delay: i64) {
-        self.view.get_int("delay").set_value(delay);
+    pub fn view(&self) {
+        self.view.get_int("delay").set_value(-2);
     }
 }
 
@@ -257,7 +253,16 @@ impl ScCallContext {
         set_string(1, key_log(), text)
     }
 
-    pub fn post(&self, contract: &str, function: &str) -> ScPostInfo {
+    pub fn post_global(&self, chain: &ScAddress, contract: &str, function: &str) -> ScPostInfo {
+        let posts = self.root.get_map_array("posts");
+        let post = posts.get_map(posts.length());
+        post.get_address("chain").set_value(chain);
+        post.get_string("contract").set_value(contract);
+        post.get_string("function").set_value(function);
+        ScPostInfo { post: post }
+    }
+
+    pub fn post_local(&self, contract: &str, function: &str) -> ScPostInfo {
         let posts = self.root.get_map_array("posts");
         let post = posts.get_map(posts.length());
         post.get_string("contract").set_value(contract);
@@ -266,7 +271,7 @@ impl ScCallContext {
     }
 
     pub fn post_self(&self, function: &str) -> ScPostInfo {
-        self.post("", function)
+        self.post_local("", function)
     }
 
     pub fn request(&self) -> ScRequest {

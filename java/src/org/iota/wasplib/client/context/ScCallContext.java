@@ -5,6 +5,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -46,7 +47,16 @@ public class ScCallContext {
 		Host.SetString(1, Keys.KeyLog(), text);
 	}
 
-	public ScPostInfo Post(String contract, String function) {
+	public ScPostInfo PostGlobal(ScAddress chain, String contract, String function) {
+		ScMutableMapArray posts = root.GetMapArray("posts");
+		ScMutableMap post = posts.GetMap(posts.Length());
+		post.GetAddress("chain").SetValue(chain);
+		post.GetString("contract").SetValue(contract);
+		post.GetString("function").SetValue(function);
+		return new ScPostInfo(post);
+	}
+
+	public ScPostInfo PostLocal(String contract, String function) {
 		ScMutableMapArray posts = root.GetMapArray("posts");
 		ScMutableMap post = posts.GetMap(posts.Length());
 		post.GetString("contract").SetValue(contract);
@@ -55,7 +65,7 @@ public class ScCallContext {
 	}
 
 	public ScPostInfo PostSelf(String function) {
-		return Post("", function);
+		return PostLocal("", function);
 	}
 
 	public ScRequest Request() {
