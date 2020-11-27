@@ -15,12 +15,16 @@ pub fn onLoad() {
     exports.add_call("incrementPostIncrement", incrementPostIncrement);
     exports.add_view("incrementViewCounter", incrementViewCounter);
     exports.add_call("incrementRepeatMany", incrementRepeatMany);
+    exports.add_call("incrementWhenMustIncrement", incrementWhenMustIncrement);
+    exports.add_call("incrementLocalStateInternalCall", incrementLocalStateInternalCall);
+    exports.add_call("incrementLocalStateSandboxCall", incrementLocalStateSandboxCall);
+    exports.add_call("incrementLocalStatePost", incrementLocalStatePost);
     exports.add_call("test", test);
     exports.add_call("nothing", ScExports::nothing);
     exports.add_call("init", init);
 }
 
-pub fn init(sc: &ScCallContext) {
+fn init(sc: &ScCallContext) {
     let counter = sc.request().params().get_int("counter").value();
     if counter == 0 {
         return;
@@ -28,12 +32,12 @@ pub fn init(sc: &ScCallContext) {
     sc.state().get_int("counter").set_value(counter);
 }
 
-pub fn increment(sc: &ScCallContext) {
+fn increment(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     counter.set_value(counter.value() + 1);
 }
 
-pub fn incrementCallIncrement(sc: &ScCallContext) {
+fn incrementCallIncrement(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
@@ -42,7 +46,7 @@ pub fn incrementCallIncrement(sc: &ScCallContext) {
     }
 }
 
-pub fn incrementPostIncrement(sc: &ScCallContext) {
+fn incrementPostIncrement(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
@@ -51,12 +55,12 @@ pub fn incrementPostIncrement(sc: &ScCallContext) {
     }
 }
 
-pub fn incrementViewCounter(sc: &ScViewContext) {
+fn incrementViewCounter(sc: &ScViewContext) {
     let counter = sc.state().get_int("counter").value();
     sc.results().get_int("counter").set_value(counter);
 }
 
-pub fn incrementRepeatMany(sc: &ScCallContext) {
+fn incrementRepeatMany(sc: &ScCallContext) {
     let counter = sc.state().get_int("counter");
     let value = counter.value();
     counter.set_value(value + 1);
@@ -72,7 +76,7 @@ pub fn incrementRepeatMany(sc: &ScCallContext) {
     sc.post_self("incrementRepeatMany").post(0);
 }
 
-pub fn test(_sc: &ScCallContext) {
+fn test(_sc: &ScCallContext) {
     let key_id = get_key_id("timestamp");
     set_int(1, key_id, 123456789);
     let timestamp = get_int(1, key_id);
@@ -87,4 +91,47 @@ pub fn test(_sc: &ScCallContext) {
     set_string(1, key_id2, &s1);
     set_string(1, key_id2, &s2);
     set_string(1, key_id2, &s3);
+}
+
+static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
+
+fn incrementWhenMustIncrement(sc: &ScCallContext) {
+    sc.log("incrementWhenMustIncrement called");
+    unsafe {
+        if !LOCAL_STATE_MUST_INCREMENT {
+            return;
+        }
+    }
+    let counter = sc.state().get_int("counter");
+    counter.set_value(counter.value() + 1);
+}
+
+fn incrementLocalStateInternalCall(sc: &ScCallContext) {
+    incrementWhenMustIncrement(sc);
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = true;
+    }
+    incrementWhenMustIncrement(sc);
+    incrementWhenMustIncrement(sc);
+    // counter ends up as 2
+}
+
+fn incrementLocalStateSandboxCall(sc: &ScCallContext) {
+    sc.call_self("incrementWhenMustIncrement").call();
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = true;
+    }
+    sc.call_self("incrementWhenMustIncrement").call();
+    sc.call_self("incrementWhenMustIncrement").call();
+    // counter ends up as 0
+}
+
+fn incrementLocalStatePost(sc: &ScCallContext) {
+    sc.post_self("incrementWhenMustIncrement").post(0);
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = true;
+    }
+    sc.post_self("incrementWhenMustIncrement").post(0);
+    sc.post_self("incrementWhenMustIncrement").post(0);
+    // counter ends up as 0
 }

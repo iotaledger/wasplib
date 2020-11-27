@@ -27,7 +27,7 @@ pub fn onLoad() {
     exports.add_call("transfer_from", transfer_from);
 }
 
-pub fn onInit(sc: &ScCallContext) {
+fn onInit(sc: &ScCallContext) {
     sc.log("onInit");
 
     let state = sc.state();
@@ -52,7 +52,7 @@ pub fn onInit(sc: &ScCallContext) {
     sc.log(&("initSC.success. Owner = ".to_string() + &owner.to_string()));
 }
 
-pub fn transfer(sc: &ScCallContext) {
+fn transfer(sc: &ScCallContext) {
     sc.log("transfer");
 
     let request = sc.request();
@@ -71,7 +71,7 @@ pub fn transfer(sc: &ScCallContext) {
     sc.log(if succ { "transfer.success" } else { "transfer.fail" });
 }
 
-pub fn approve(sc: &ScCallContext) {
+fn approve(sc: &ScCallContext) {
     sc.log("approve");
 
     let state = sc.state();
@@ -95,7 +95,7 @@ pub fn approve(sc: &ScCallContext) {
     sc.log("approve.success");
 }
 
-pub fn transfer_from(sc: &ScCallContext) {
+fn transfer_from(sc: &ScCallContext) {
     sc.log("transfer_from");
 
     let state = sc.state();

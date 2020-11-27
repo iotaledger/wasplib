@@ -56,7 +56,7 @@ pub fn onLoad() {
     exports.add_call("setOwnerMargin", setOwnerMargin);
 }
 
-pub fn startAuction(sc: &ScCallContext) {
+fn startAuction(sc: &ScCallContext) {
     let request = sc.request();
     let deposit = request.balance(&ScColor::IOTA);
     if deposit < 1 {
@@ -155,7 +155,7 @@ pub fn startAuction(sc: &ScCallContext) {
     sc.log("New auction started...");
 }
 
-pub fn finalizeAuction(sc: &ScCallContext) {
+fn finalizeAuction(sc: &ScCallContext) {
     // can only be sent by SC itself
     let request = sc.request();
     if !request.from(&sc.contract().id()) {
@@ -224,7 +224,7 @@ pub fn finalizeAuction(sc: &ScCallContext) {
     sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit + winner.amount - ownerFee);
 }
 
-pub fn placeBid(sc: &ScCallContext) {
+fn placeBid(sc: &ScCallContext) {
     let request = sc.request();
     let bidAmount = request.balance(&ScColor::IOTA);
     if bidAmount == 0 {
@@ -266,7 +266,7 @@ pub fn placeBid(sc: &ScCallContext) {
     sc.log("Updated auction with bid...");
 }
 
-pub fn setOwnerMargin(sc: &ScCallContext) {
+fn setOwnerMargin(sc: &ScCallContext) {
     // can only be sent by SC owner
     let request = sc.request();
     if !request.from(&sc.contract().owner()) {

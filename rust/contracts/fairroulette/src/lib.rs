@@ -26,7 +26,7 @@ pub fn onLoad() {
     exports.add_call("nothing", ScExports::nothing);
 }
 
-pub fn placeBet(sc: &ScCallContext) {
+fn placeBet(sc: &ScCallContext) {
     let request = sc.request();
     let amount = request.balance(&ScColor::IOTA);
     if amount == 0 {
@@ -64,7 +64,7 @@ pub fn placeBet(sc: &ScCallContext) {
     }
 }
 
-pub fn lockBets(sc: &ScCallContext) {
+fn lockBets(sc: &ScCallContext) {
     // can only be sent by SC itself
     if !sc.request().from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
@@ -85,7 +85,7 @@ pub fn lockBets(sc: &ScCallContext) {
     sc.post_self("payWinners").post(0);
 }
 
-pub fn payWinners(sc: &ScCallContext) {
+fn payWinners(sc: &ScCallContext) {
     // can only be sent by SC itself
     let sc_id = sc.contract().id();
     if !sc.request().from(&sc_id) {
@@ -143,7 +143,7 @@ pub fn payWinners(sc: &ScCallContext) {
     }
 }
 
-pub fn playPeriod(sc: &ScCallContext) {
+fn playPeriod(sc: &ScCallContext) {
     // can only be sent by SC owner
     let request = sc.request();
     if !request.from(&sc.contract().owner()) {

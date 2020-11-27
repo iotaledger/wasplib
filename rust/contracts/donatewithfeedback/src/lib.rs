@@ -22,7 +22,7 @@ pub fn onLoad() {
     exports.add_call("withdraw", withdraw);
 }
 
-pub fn donate(sc: &ScCallContext) {
+fn donate(sc: &ScCallContext) {
     let tlog = sc.timestamped_log("l");
     let request = sc.request();
     let mut donation = DonationInfo {
@@ -50,7 +50,7 @@ pub fn donate(sc: &ScCallContext) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-pub fn withdraw(sc: &ScCallContext) {
+fn withdraw(sc: &ScCallContext) {
     let sc_owner = sc.contract().owner();
     let request = sc.request();
     if !request.from(&sc_owner) {

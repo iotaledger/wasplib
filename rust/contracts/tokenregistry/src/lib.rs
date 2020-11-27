@@ -24,7 +24,7 @@ pub fn onLoad() {
     exports.add_call("transferOwnership", transferOwnership);
 }
 
-pub fn mintSupply(sc: &ScCallContext) {
+fn mintSupply(sc: &ScCallContext) {
     let request = sc.request();
     let color = request.minted_color();
     let state = sc.state();
@@ -56,11 +56,11 @@ pub fn mintSupply(sc: &ScCallContext) {
     colors.get_color(colors.length()).set_value(&color);
 }
 
-pub fn updateMetadata(_sc: &ScCallContext) {
+fn updateMetadata(_sc: &ScCallContext) {
     //TODO
 }
 
-pub fn transferOwnership(_sc: &ScCallContext) {
+fn transferOwnership(_sc: &ScCallContext) {
     //TODO
 }
 

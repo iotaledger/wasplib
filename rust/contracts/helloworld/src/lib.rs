@@ -12,6 +12,6 @@ pub fn onLoad() {
     exports.add_call("helloWorld", helloWorld);
 }
 
-pub fn helloWorld(sc: &ScCallContext) {
+fn helloWorld(sc: &ScCallContext) {
     sc.log("Hello, world!");
 }

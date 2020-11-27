@@ -18,6 +18,10 @@ func onLoadIncrement() {
 	exports.AddCall("incrementPostIncrement", incrementPostIncrement)
 	exports.AddView("incrementViewCounter", incrementViewCounter)
 	exports.AddCall("incrementRepeatMany", incrementRepeatMany)
+	exports.AddCall("incrementWhenMustIncrement", incrementWhenMustIncrement)
+	exports.AddCall("incrementLocalStateInternalCall", incrementLocalStateInternalCall)
+	exports.AddCall("incrementLocalStateSandboxCall", incrementLocalStateSandboxCall)
+	exports.AddCall("incrementLocalStatePost", incrementLocalStatePost)
 	exports.AddCall("test", test)
 	exports.AddCall("nothing", client.Nothing)
 	exports.AddCall("init", onInitIncrement)
@@ -91,4 +95,38 @@ func test(sc *client.ScCallContext) {
 	client.SetString(1, keyId2, s1)
 	client.SetString(1, keyId2, s2)
 	client.SetString(1, keyId2, s3)
+}
+
+var localStateMustIncrement = false
+
+func incrementWhenMustIncrement(sc *client.ScCallContext) {
+	sc.Log("incrementWhenMustIncrement called")
+	if localStateMustIncrement {
+		counter := sc.State().GetInt("counter")
+		counter.SetValue(counter.Value() + 1)
+	}
+}
+
+func incrementLocalStateInternalCall(sc *client.ScCallContext) {
+	incrementWhenMustIncrement(sc)
+	localStateMustIncrement = true
+	incrementWhenMustIncrement(sc)
+	incrementWhenMustIncrement(sc)
+	// counter ends up as 2
+}
+
+func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
+	sc.CallSelf("incrementWhenMustIncrement").Call()
+	localStateMustIncrement = true
+	sc.CallSelf("incrementWhenMustIncrement").Call()
+	sc.CallSelf("incrementWhenMustIncrement").Call()
+	// counter ends up as 0
+}
+
+func incrementLocalStatePost(sc *client.ScCallContext) {
+	sc.PostSelf("incrementWhenMustIncrement").Post(0)
+	localStateMustIncrement = true
+	sc.PostSelf("incrementWhenMustIncrement").Post(0)
+	sc.PostSelf("incrementWhenMustIncrement").Post(0)
+	// counter ends up as 0
 }
