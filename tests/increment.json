@@ -79,7 +79,28 @@
       }
     },
     {
-      "name": "incrementAgainByChainingToIncrement",
+      "name": "incrementAgainByCallingIncrement",
+      "setup": "default",
+      "request": {
+        "function": "incrementCallIncrement"
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": {},
+        "calls": [
+          {"function": "increment"}
+        ],
+        "posts": [
+        ],
+        "views": [],
+        "transfers": [],
+        "results": {}
+      }
+    },
+    {
+      "name": "incrementAgainByPostingIncrement",
       "setup": "default",
       "request": {
         "function": "incrementPostIncrement"
@@ -120,6 +141,72 @@
           {"function": "incrementRepeatMany", "delay": 0},
           {"function": "incrementRepeatMany", "delay": 0},
           {"function": "incrementRepeatMany", "delay": 0}
+        ],
+        "views": [],
+        "transfers": [],
+        "results": {}
+      }
+    },
+    {
+      "name": "incrementLocalStateInternalCall",
+      "setup": "default",
+      "request": {
+        "function": "incrementLocalStateInternalCall"
+      },
+      "expect": {
+        "state": {
+          "counter": 2
+        },
+        "logs": {},
+        "calls": [
+        ],
+        "posts": [
+        ],
+        "views": [],
+        "transfers": [],
+        "results": {}
+      }
+    },
+    {
+      "name": "incrementLocalStateSandboxCall",
+      "setup": "default",
+      "request": {
+        "function": "incrementLocalStateSandboxCall"
+      },
+      "expect": {
+        "state": {
+          "counter": 0
+        },
+        "logs": {},
+        "calls": [
+          {"function": "incrementWhenMustIncrement"},
+          {"function": "incrementWhenMustIncrement"},
+          {"function": "incrementWhenMustIncrement"}
+        ],
+        "posts": [
+        ],
+        "views": [],
+        "transfers": [],
+        "results": {}
+      }
+    },
+    {
+      "name": "incrementLocalStatePost",
+      "setup": "default",
+      "request": {
+        "function": "incrementLocalStatePost"
+      },
+      "expect": {
+        "state": {
+          "counter": 0
+        },
+        "logs": {},
+        "calls": [
+        ],
+        "posts": [
+          {"function": "incrementWhenMustIncrement"},
+          {"function": "incrementWhenMustIncrement"},
+          {"function": "incrementWhenMustIncrement"}
         ],
         "views": [],
         "transfers": [],

@@ -118,6 +118,11 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case OBJTYPE_INT:
 			a.items = append(a.items, int64(0))
 		case OBJTYPE_MAP:
+			if a.keyId == a.host.CallsId {
+				objId := a.host.TrackObject(NewHostCall(a.host, keyId))
+				a.items = append(a.items, objId)
+				break
+			}
 			if a.keyId == a.host.TransfersId {
 				objId := a.host.TrackObject(NewHostTransfer(a.host, keyId))
 				a.items = append(a.items, objId)

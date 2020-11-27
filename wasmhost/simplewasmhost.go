@@ -12,6 +12,7 @@ var EnableImmutableChecks = true
 
 type SimpleWasmHost struct {
 	WasmHost
+	CallsId     int32
 	ExportsId   int32
 	TransfersId int32
 }
@@ -23,6 +24,7 @@ func NewSimpleWasmHost() (*SimpleWasmHost, error) {
 	if err != nil {
 		return nil, err
 	}
+	host.CallsId = host.GetKeyIdFromBytes([]byte("calls"))
 	host.ExportsId = host.GetKeyIdFromBytes([]byte("exports"))
 	host.TransfersId = host.GetKeyIdFromBytes([]byte("transfers"))
 	return host, nil

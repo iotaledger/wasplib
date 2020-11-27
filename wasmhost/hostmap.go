@@ -183,6 +183,7 @@ func (m *HostMap) CopyDataTo(other HostObject) {
 		case OBJTYPE_STRING:
 			other.SetString(k, v.(string))
 		default:
+			//TODO what about recursion?
 			panic("Implement types")
 		}
 	}
