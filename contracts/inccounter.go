@@ -4,7 +4,7 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/contracts/fairauction"
+	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/wasmclient"
 )
 
@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadFairAuction() {
+func onLoadIncCounter() {
 	wasmclient.ConnectWasmHost()
-	fairauction.OnLoad()
+	inccounter.OnLoad()
 }

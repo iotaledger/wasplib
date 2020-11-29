@@ -1,4 +1,4 @@
-## increment
+## inccounter
 
 Sample smart contract
 

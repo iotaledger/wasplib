@@ -4,7 +4,8 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/client"
+	"github.com/iotaledger/wasplib/contracts/helloworld"
+	"github.com/iotaledger/wasplib/wasmclient"
 )
 
 func main() {
@@ -12,10 +13,6 @@ func main() {
 
 //export onLoad
 func onLoadHelloWorld() {
-	exports := client.NewScExports()
-	exports.AddCall("helloWorld", helloWorld)
-}
-
-func helloWorld(sc *client.ScCallContext) {
-	sc.Log("Hello, world!")
+	wasmclient.ConnectWasmHost()
+	helloworld.OnLoad()
 }

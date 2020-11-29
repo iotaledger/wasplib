@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package inccounter
 
 import (
 	"github.com/iotaledger/wasplib/client"
@@ -9,13 +9,9 @@ import (
 
 var localStateMustIncrement = false
 
-func main() {
-}
-
-//export onLoad
-func onLoadIncrement() {
+func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("init", onInitIncrement)
+	exports.AddCall("init", onInit)
 	exports.AddCall("increment", increment)
 	exports.AddCall("incrementCallIncrement", incrementCallIncrement)
 	exports.AddCall("incrementCallIncrementRecurse5x", incrementCallIncrementRecurse5x)
@@ -30,7 +26,7 @@ func onLoadIncrement() {
 	exports.AddCall("test", test)
 }
 
-func onInitIncrement(sc *client.ScCallContext) {
+func onInit(sc *client.ScCallContext) {
 	counter := sc.Request().Params().GetInt("counter").Value()
 	if counter == 0 {
 		return

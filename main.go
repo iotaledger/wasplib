@@ -73,9 +73,9 @@ func main() {
 	//contract := "donatewithfeedback"
 	//contract := "fairauction"
 	//contract := "fairroulette"
-	contract := "increment"
+	contract := "inccounter"
 	//contract := "tokenregistry"
-	language := "bg" // "bg" = Rust, "go" = Go
+	language := "go" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"
 	jsonTests, err := wasmhost.NewJsonTests(pathName)

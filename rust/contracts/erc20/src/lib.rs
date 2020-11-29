@@ -21,26 +21,26 @@ struct Delegation {
 #[no_mangle]
 pub fn onLoad() {
     let exports = ScExports::new();
-    exports.add_call("init", onInit);
+    exports.add_call("init", init);
     exports.add_call("transfer", transfer);
     exports.add_call("approve", approve);
     exports.add_call("transfer_from", transfer_from);
 }
 
-fn onInit(sc: &ScCallContext) {
-    sc.log("onInit");
+fn init(sc: &ScCallContext) {
+    sc.log("init");
 
     let state = sc.state();
     let supplyState = state.get_int(VAR_SUPPLY);
     if supplyState.value() > 0 {
         // already initialized
-        sc.log("initSC.fail: already initialized");
+        sc.log("init.fail: already initialized");
         return;
     }
     let params = sc.request().params();
     let supplyParam = params.get_int(VAR_SUPPLY);
     if supplyParam.value() == 0 {
-        sc.log("initSC.fail: wrong 'supply' parameter");
+        sc.log("init.fail: wrong 'supply' parameter");
         return;
     }
     let supply = supplyParam.value();
@@ -48,8 +48,8 @@ fn onInit(sc: &ScCallContext) {
     let owner = sc.contract().owner();
     state.get_key_map(VAR_BALANCES).get_int(owner.to_bytes()).set_value(supply);
 
-    sc.log(&("initSC.success. Supply = ".to_string() + &supply.to_string()));
-    sc.log(&("initSC.success. Owner = ".to_string() + &owner.to_string()));
+    sc.log(&("init.success. Supply = ".to_string() + &supply.to_string()));
+    sc.log(&("init.success. Owner = ".to_string() + &owner.to_string()));
 }
 
 fn transfer(sc: &ScCallContext) {

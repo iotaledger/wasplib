@@ -27,7 +27,7 @@ Sample smart contracts:
 
     ISCP version of the ubiquitous "Hello, world!" program.
 
-- increment
+- inccounter
 
     A simple test contract. All it does is increment a counter value.
     It was used to test basic ISCP capabilities, like persisting state,

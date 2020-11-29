@@ -3,7 +3,7 @@
   "setups": {
     "default": {
       "contract": {
-        "name": "increment",
+        "name": "inccounter",
         "description": "Test basic functionality",
         "id": "@scId",
         "color": "#scColor",

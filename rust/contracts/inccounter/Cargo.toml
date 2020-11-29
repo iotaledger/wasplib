@@ -1,5 +1,5 @@
 [package]
-name = "increment"
+name = "inccounter"
 description = "PoC contracts that increments a counter"
 license = "Apache-2.0"
 version = "0.1.0"

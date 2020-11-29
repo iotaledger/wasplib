@@ -9,25 +9,25 @@ import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 
-public class Increment {
+public class IncCounter {
 	private static boolean localStateMustIncrement = false;
 
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("init", Increment::init);
-		exports.AddCall("increment", Increment::increment);
-		exports.AddCall("incrementCallIncrement", Increment::incrementCallIncrement);
-		exports.AddCall("incrementCallIncrementRecurse5x", Increment::incrementCallIncrementRecurse5x);
-		exports.AddCall("incrementPostIncrement", Increment::incrementPostIncrement);
-		exports.AddView("incrementViewCounter", Increment::incrementViewCounter);
-		exports.AddCall("incrementRepeatMany", Increment::incrementRepeatMany);
-		exports.AddCall("incrementWhenMustIncrement", Increment::incrementWhenMustIncrement);
-		exports.AddCall("incrementLocalStateInternalCall", Increment::incrementLocalStateInternalCall);
-		exports.AddCall("incrementLocalStateSandboxCall", Increment::incrementLocalStateSandboxCall);
-		exports.AddCall("incrementLocalStatePost", Increment::incrementLocalStatePost);
+		exports.AddCall("init", IncCounter::init);
+		exports.AddCall("increment", IncCounter::increment);
+		exports.AddCall("incrementCallIncrement", IncCounter::incrementCallIncrement);
+		exports.AddCall("incrementCallIncrementRecurse5x", IncCounter::incrementCallIncrementRecurse5x);
+		exports.AddCall("incrementPostIncrement", IncCounter::incrementPostIncrement);
+		exports.AddView("incrementViewCounter", IncCounter::incrementViewCounter);
+		exports.AddCall("incrementRepeatMany", IncCounter::incrementRepeatMany);
+		exports.AddCall("incrementWhenMustIncrement", IncCounter::incrementWhenMustIncrement);
+		exports.AddCall("incrementLocalStateInternalCall", IncCounter::incrementLocalStateInternalCall);
+		exports.AddCall("incrementLocalStateSandboxCall", IncCounter::incrementLocalStateSandboxCall);
+		exports.AddCall("incrementLocalStatePost", IncCounter::incrementLocalStatePost);
 		exports.AddCall("nothing", ScExports::nothing);
-		exports.AddCall("test", Increment::test);
+		exports.AddCall("test", IncCounter::test);
 	}
 
 	public static void init(ScCallContext sc) {
