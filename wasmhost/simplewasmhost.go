@@ -5,7 +5,9 @@ package wasmhost
 
 import (
 	"fmt"
+	"github.com/mr-tron/base58"
 	"hash/fnv"
+	"io"
 )
 
 var EnableImmutableChecks = true
@@ -30,6 +32,21 @@ func NewSimpleWasmHost() (*SimpleWasmHost, error) {
 	return host, nil
 }
 
+func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
+	switch typeId {
+	case OBJTYPE_BYTES:
+		fmt.Fprintf(w, "\"%s\"", base58.Encode(value.([]byte)))
+	case OBJTYPE_INT:
+		fmt.Fprintf(w, "%d", value.(int64))
+	case OBJTYPE_MAP:
+		host.FindObject(value.(int32)).(*HostMap).Dump(w)
+	case OBJTYPE_STRING:
+		fmt.Fprintf(w, "\"%s\"", value.(string))
+	case OBJTYPE_BYTES_ARRAY, OBJTYPE_INT_ARRAY, OBJTYPE_MAP_ARRAY, OBJTYPE_STRING_ARRAY:
+		host.FindObject(value.(int32)).(*HostArray).Dump(w)
+	}
+}
+
 func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int32) HostObject {
 	if obj == nil {
 		// use root object
@@ -42,6 +59,21 @@ func (host *SimpleWasmHost) GetKeyId(key string) int32 {
 	keyId := host.GetKeyIdFromBytes([]byte(key))
 	host.Trace("GetKeyId('%s')=k%d", key, keyId)
 	return keyId
+}
+
+func (host *SimpleWasmHost) Log(logLevel int32, text string) {
+	switch logLevel {
+	case KeyTraceHost:
+		//fmt.Println(text)
+	case KeyTrace:
+		//fmt.Println(text)
+	case KeyLog:
+		fmt.Println(text)
+	case KeyWarning:
+		fmt.Println(text)
+	case KeyError:
+		fmt.Println(text)
+	}
 }
 
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
@@ -61,19 +93,4 @@ func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
 	host.codeToFunc[hashedName] = functionName
 	host.funcToCode[functionName] = hashedName
 	host.funcToIndex[functionName] = index
-}
-
-func (host *SimpleWasmHost) Log(logLevel int32, text string) {
-	switch logLevel {
-	case KeyTraceHost:
-		//fmt.Println(text)
-	case KeyTrace:
-		//fmt.Println(text)
-	case KeyLog:
-		fmt.Println(text)
-	case KeyWarning:
-		fmt.Println(text)
-	case KeyError:
-		fmt.Println(text)
-	}
 }

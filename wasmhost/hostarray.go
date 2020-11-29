@@ -3,7 +3,11 @@
 
 package wasmhost
 
-import "github.com/mr-tron/base58"
+import (
+	"fmt"
+	"github.com/mr-tron/base58"
+	"io"
+)
 
 type HostArray struct {
 	host      *SimpleWasmHost
@@ -15,6 +19,27 @@ type HostArray struct {
 
 func NewHostArray(host *SimpleWasmHost, keyId int32, typeId int32) *HostArray {
 	return &HostArray{host: host, keyId: keyId, typeId: typeId}
+}
+
+func (a *HostArray) Dump(w io.Writer) {
+	fmt.Fprintf(w, "[\n")
+	multiple := false
+	for _, item := range a.items {
+		if multiple {
+			fmt.Fprintf(w, ",\n")
+		}
+		multiple = true
+		if a.keyId == a.host.CallsId {
+			a.host.FindObject(item.(int32)).(*HostCall).Dump(w)
+			continue
+		}
+		if a.keyId == a.host.TransfersId {
+			a.host.FindObject(item.(int32)).(*HostTransfer).Dump(w)
+			continue
+		}
+		a.host.Dump(w, a.typeId, item)
+	}
+	fmt.Fprintf(w, "]")
 }
 
 func (a *HostArray) Exists(keyId int32) bool {

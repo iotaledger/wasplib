@@ -125,6 +125,7 @@ func (host *WasmHost) FindObject(objId int32) HostObject {
 }
 
 func (host *WasmHost) GetBytes(objId int32, keyId int32, stringRef int32, size int32) int32 {
+	host.TraceHost("GetBytes(o%d,k%d)", objId, keyId)
 	// get error string takes precedence over returning error code
 	if keyId == KeyError && objId == -1 {
 		host.Trace("GetString o%d k%d = '%s'", -objId, keyId, host.error)
@@ -160,6 +161,7 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32, stringRef int32, size i
 }
 
 func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
+	host.TraceHost("GetInt(o%d,k%d)", objId, keyId)
 	if keyId == KeyError && objId == 1 {
 		if host.HasError() {
 			return 1
@@ -175,6 +177,7 @@ func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
 }
 
 func (host *WasmHost) GetKey(keyId int32) []byte {
+	host.TraceHost("GetKey(k%d)", keyId)
 	key := host.getKey(keyId)
 	if key[len(key)-1] != 0 {
 		// originally a string key
@@ -202,6 +205,7 @@ func (host *WasmHost) getKey(keyId int32) []byte {
 }
 
 func (host *WasmHost) GetKeyId(keyRef int32, size int32) int32 {
+	host.TraceHost("GetKeyId(r%d,s%d)", keyRef, size)
 	// non-negative size means original key was a string
 	if size >= 0 {
 		key := host.vmGetBytes(keyRef, size)
@@ -255,6 +259,7 @@ func (host *WasmHost) GetKeyIdFromBytes(key []byte) int32 {
 }
 
 func (host *WasmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 {
+	host.TraceHost("GetObjectId(o%d,k%d)", objId, keyId)
 	if host.HasError() {
 		return 0
 	}
@@ -269,6 +274,16 @@ func (host *WasmHost) HasError() bool {
 		return true
 	}
 	return false
+}
+
+func (host *WasmHost) initMemory() {
+	if host.memoryDirty {
+		// clear memory and restore initialized data range
+		ptr := host.vm.UnsafeMemory()
+		copy(ptr, make([]byte, len(ptr)))
+		copy(ptr[host.memoryNonZero:], host.memoryCopy)
+	}
+	host.memoryDirty = true
 }
 
 func (host *WasmHost) LoadWasm(wasmData []byte) error {
@@ -306,19 +321,17 @@ func (host *WasmHost) LoadWasm(wasmData []byte) error {
 	return nil
 }
 
-func (host *WasmHost) resetMemory() {
-	if host.memoryDirty {
-		// clear memory and restore initialized data range
-		ptr := host.vm.UnsafeMemory()
-		copy(ptr, make([]byte, len(ptr)))
-		copy(ptr[host.memoryNonZero:], host.memoryCopy)
-	}
-	host.memoryDirty = true
-}
-
 func (host *WasmHost) RunFunction(functionName string) error {
-	host.resetMemory()
-	return host.vm.RunFunction(functionName)
+	ptr := host.vm.UnsafeMemory()
+	save := make([]byte, len(ptr))
+	copy(save, ptr)
+
+	host.initMemory()
+	err := host.vm.RunFunction(functionName)
+
+	ptr = host.vm.UnsafeMemory()
+	copy(ptr, save)
+	return err
 }
 
 func (host *WasmHost) RunScFunction(functionName string) error {
@@ -326,11 +339,21 @@ func (host *WasmHost) RunScFunction(functionName string) error {
 	if !ok {
 		return errors.New("unknown SC function name: " + functionName)
 	}
-	host.resetMemory()
-	return host.vm.RunScFunction(index)
+
+	ptr := host.vm.UnsafeMemory()
+	save := make([]byte, len(ptr))
+	copy(save, ptr)
+
+	host.initMemory()
+	err := host.vm.RunScFunction(index)
+
+	ptr = host.vm.UnsafeMemory()
+	copy(ptr, save)
+	return err
 }
 
 func (host *WasmHost) SetBytes(objId int32, keyId int32, stringRef int32, size int32) {
+	host.TraceHost("SetBytes(o%d,k%d)", objId, keyId)
 	bytes := host.vmGetBytes(stringRef, size)
 	if objId == -1 {
 		// intercept logging keys to prevent final logging of SetBytes itself
@@ -367,6 +390,7 @@ func (host *WasmHost) SetError(text string) {
 }
 
 func (host *WasmHost) SetInt(objId int32, keyId int32, value int64) {
+	host.TraceHost("SetInt(o%d,k%d)", objId, keyId)
 	if host.HasError() {
 		return
 	}
@@ -376,6 +400,10 @@ func (host *WasmHost) SetInt(objId int32, keyId int32, value int64) {
 
 func (host *WasmHost) Trace(format string, a ...interface{}) {
 	host.logger.Log(KeyTrace, fmt.Sprintf(format, a...))
+}
+
+func (host *WasmHost) TraceHost(format string, a ...interface{}) {
+	host.logger.Log(KeyTraceHost, fmt.Sprintf(format, a...))
 }
 
 func (host *WasmHost) TrackObject(obj HostObject) int32 {

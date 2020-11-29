@@ -488,6 +488,8 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 		}
 	}
 
+	t.Dump(test)
+
 	// now compare the expected json data model to the actual host data model
 	return t.CompareData(test)
 }
@@ -518,6 +520,21 @@ func (t *JsonTests) runRequest(request HostObject, req map[string]interface{}) b
 		return false
 	}
 	return true
+}
+
+func (t *JsonTests) Dump(test *JsonTest) {
+	contractName := t.Setups["default"].Contract["name"].(string)
+	folder := "dump/" + contractName
+	err := os.MkdirAll(folder, 0755)
+	if err != nil {
+		panic(err)
+	}
+	f, err := os.Create(folder + "/" + test.Name + ".json")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	t.host.FindObject(1).(*HostMap).Dump(f)
 }
 
 func SortedKeys(values map[string]interface{}) []string {

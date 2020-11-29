@@ -79,7 +79,7 @@
       }
     },
     {
-      "name": "incrementAgainByCallingIncrement",
+      "name": "incrementAgainByCallingSelf",
       "setup": "default",
       "request": {
         "function": "incrementCallIncrement"
@@ -90,7 +90,7 @@
         },
         "logs": {},
         "calls": [
-          {"function": "increment"}
+          {"function": "incrementCallIncrement"}
         ],
         "posts": [
         ],
@@ -100,7 +100,32 @@
       }
     },
     {
-      "name": "incrementAgainByPostingIncrement",
+      "name": "incrementByRecursivelyCallingSelf5x",
+      "setup": "default",
+      "request": {
+        "function": "incrementCallIncrementRecurse5x"
+      },
+      "expect": {
+        "state": {
+          "counter": 6
+        },
+        "logs": {},
+        "calls": [
+          {"function": "incrementCallIncrementRecurse5x"},
+          {"function": "incrementCallIncrementRecurse5x"},
+          {"function": "incrementCallIncrementRecurse5x"},
+          {"function": "incrementCallIncrementRecurse5x"},
+          {"function": "incrementCallIncrementRecurse5x"}
+        ],
+        "posts": [
+        ],
+        "views": [],
+        "transfers": [],
+        "results": {}
+      }
+    },
+    {
+      "name": "incrementAgainByPostingSelf",
       "setup": "default",
       "request": {
         "function": "incrementPostIncrement"
@@ -112,7 +137,7 @@
         "logs": {},
         "calls": [],
         "posts": [
-          {"function": "increment", "delay": 0}
+          {"function": "incrementPostIncrement", "delay": 0}
         ],
         "views": [],
         "transfers": [],
@@ -211,6 +236,35 @@
         "views": [],
         "transfers": [],
         "results": {}
+      }
+    },
+    {
+      "name": "incrementViewCounter",
+      "setup": "default",
+      "request": {
+        "function": "increment"
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "sender": "@sender2",
+          "function": "incrementViewCounter"
+        }
+      ],
+      "expect": {
+        "state": {
+          "counter": 1
+        },
+        "logs": {},
+        "calls": [],
+        "posts": [],
+        "views": [],
+        "transfers": [],
+        "results": {
+          "counter": 1
+        }
       }
     }
   ]

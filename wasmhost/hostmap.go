@@ -4,7 +4,9 @@
 package wasmhost
 
 import (
+	"fmt"
 	"github.com/mr-tron/base58/base58"
+	"io"
 )
 
 type HostMap struct {
@@ -22,6 +24,25 @@ func NewHostMap(host *SimpleWasmHost, keyId int32) *HostMap {
 		fields: make(map[int32]interface{}),
 		types:  make(map[int32]int32),
 	}
+}
+
+func (m *HostMap) Dump(w io.Writer) {
+	fmt.Fprintf(w, "{\n")
+	multiple := false
+	for keyId, value := range m.fields {
+		if multiple {
+			fmt.Fprintf(w, ",\n")
+		}
+		multiple = true
+		key := m.host.GetKey(keyId)
+		fmt.Fprintf(w, "\"%s\": ", string(key))
+		if keyId == m.host.ExportsId {
+			m.host.FindObject(value.(int32)).(*HostExports).Dump(w)
+			continue
+		}
+		m.host.Dump(w, m.types[keyId], value)
+	}
+	fmt.Fprintf(w, "}")
 }
 
 func (m *HostMap) Exists(keyId int32) bool {

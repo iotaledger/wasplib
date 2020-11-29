@@ -7,14 +7,18 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+var localStateMustIncrement = false
+
 func main() {
 }
 
 //export onLoad
 func onLoadIncrement() {
 	exports := client.NewScExports()
+	exports.AddCall("init", onInitIncrement)
 	exports.AddCall("increment", increment)
 	exports.AddCall("incrementCallIncrement", incrementCallIncrement)
+	exports.AddCall("incrementCallIncrementRecurse5x", incrementCallIncrementRecurse5x)
 	exports.AddCall("incrementPostIncrement", incrementPostIncrement)
 	exports.AddView("incrementViewCounter", incrementViewCounter)
 	exports.AddCall("incrementRepeatMany", incrementRepeatMany)
@@ -22,9 +26,8 @@ func onLoadIncrement() {
 	exports.AddCall("incrementLocalStateInternalCall", incrementLocalStateInternalCall)
 	exports.AddCall("incrementLocalStateSandboxCall", incrementLocalStateSandboxCall)
 	exports.AddCall("incrementLocalStatePost", incrementLocalStatePost)
-	exports.AddCall("test", test)
 	exports.AddCall("nothing", client.Nothing)
-	exports.AddCall("init", onInitIncrement)
+	exports.AddCall("test", test)
 }
 
 func onInitIncrement(sc *client.ScCallContext) {
@@ -45,7 +48,16 @@ func incrementCallIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.CallSelf("increment").Call()
+		sc.CallSelf("incrementCallIncrement").Call()
+	}
+}
+
+func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
+	counter := sc.State().GetInt("counter")
+	value := counter.Value()
+	counter.SetValue(value + 1)
+	if value < 5 {
+		sc.CallSelf("incrementCallIncrementRecurse5x").Call()
 	}
 }
 
@@ -54,7 +66,7 @@ func incrementPostIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.PostSelf("increment").Post(0)
+		sc.PostSelf("incrementPostIncrement").Post(0)
 	}
 }
 
@@ -78,26 +90,6 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 	stateRepeats.SetValue(repeats - 1)
 	sc.PostSelf("incrementRepeatMany").Post(0)
 }
-
-func test(sc *client.ScCallContext) {
-	keyId := client.GetKeyId("timestamp")
-	client.SetInt(1, keyId, 123456789)
-	timestamp := client.GetInt(1, keyId)
-	client.SetInt(1, keyId, timestamp)
-
-	keyId2 := client.GetKeyId("string")
-	client.SetString(1, keyId2, "Test")
-	s1 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Bleep")
-	s2 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Klunky")
-	s3 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, s1)
-	client.SetString(1, keyId2, s2)
-	client.SetString(1, keyId2, s3)
-}
-
-var localStateMustIncrement = false
 
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
 	sc.Log("incrementWhenMustIncrement called")
@@ -129,4 +121,22 @@ func incrementLocalStatePost(sc *client.ScCallContext) {
 	sc.PostSelf("incrementWhenMustIncrement").Post(0)
 	sc.PostSelf("incrementWhenMustIncrement").Post(0)
 	// counter ends up as 0
+}
+
+func test(sc *client.ScCallContext) {
+	keyId := client.GetKeyId("timestamp")
+	client.SetInt(1, keyId, 123456789)
+	timestamp := client.GetInt(1, keyId)
+	client.SetInt(1, keyId, timestamp)
+
+	keyId2 := client.GetKeyId("string")
+	client.SetString(1, keyId2, "Test")
+	s1 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, "Bleep")
+	s2 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, "Klunky")
+	s3 := client.GetString(1, keyId2)
+	client.SetString(1, keyId2, s1)
+	client.SetString(1, keyId2, s2)
+	client.SetString(1, keyId2, s3)
 }
