@@ -64,6 +64,7 @@ type WasmVM interface {
 	UnsafeMemory() []byte
 }
 
+// implements client.ScHost interface
 type WasmHost struct {
 	vm            WasmVM
 	codeToFunc    map[uint32]string
@@ -128,6 +129,14 @@ func (host *WasmHost) FindObject(objId int32) HostObject {
 	return host.objIdToObj[objId]
 }
 
+func (host *WasmHost) FindSubObject(obj HostObject, key string, typeId int32) HostObject {
+	if obj == nil {
+		// use root object
+		obj = host.FindObject(1)
+	}
+	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
+}
+
 func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
 	if host.HasError() {
 		return nil
@@ -140,37 +149,18 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
 	value := obj.GetBytes(keyId)
 	host.Trace("GetBytes o%d k%d = '%s'", objId, keyId, base58.Encode(value))
 	return value
-
-}
-
-func (host *WasmHost) GetString(objId int32, keyId int32) string {
-	// get error string takes precedence over returning error code
-	if keyId == KeyError && objId == 1 {
-		host.Trace("GetString o%d k%d = '%s'", objId, keyId, host.error)
-		return host.error
-	}
-	if host.HasError() {
-		return ""
-	}
-	obj := host.FindObject(objId)
-	if !obj.Exists(keyId) {
-		host.Trace("GetString o%d k%d missing key", objId, keyId)
-		return ""
-	}
-	value := obj.GetString(keyId)
-	host.Trace("GetString o%d k%d = '%s'", objId, keyId, value)
-	return value
 }
 
 func (host *WasmHost) GetBytesFromRef(objId int32, keyId int32, stringRef int32, size int32) int32 {
-	host.TraceHost("GetBytes(o%d,k%d)", objId, keyId)
+	host.TraceHost("GetBytesFromRef(o%d,k%d,s%d)", objId, keyId, size)
 	if objId < 0 {
 		// negative objId means get string
-		value := host.GetString(-objId, keyId)
-		if value == "" {
+		value := host.getString(-objId, keyId)
+		// missing key is indicated by -1
+		if value == nil {
 			return -1
 		}
-		return host.vmSetBytes(stringRef, size, []byte(value))
+		return host.vmSetBytes(stringRef, size, []byte(*value))
 	}
 
 	bytes := host.GetBytes(objId, keyId)
@@ -196,20 +186,26 @@ func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
 	return value
 }
 
+func (host *WasmHost) GetKey(bytes []byte) int32 {
+	keyId := host.getKeyId(bytes)
+	host.Trace("GetKey '%s'=k%d", base58.Encode(bytes), keyId)
+	return keyId
+}
+
 func (host *WasmHost) GetKeyFromId(keyId int32) []byte {
 	host.TraceHost("GetKeyFromId(k%d)", keyId)
-	key := host.getKey(keyId)
-	if key[len(key)-1] != 0 {
-		// originally a string key
-		host.Trace("GetKeyFromId k%d='%s'", keyId, string(key))
+	key := host.getKeyFromId(keyId)
+	if key[len(key)-1] == 0 {
+		// originally a byte slice key
+		host.Trace("GetKeyFromId k%d='%s'", keyId, base58.Encode(key))
 		return key
 	}
-	// originally a byte slice key
-	host.Trace("GetKeyFromId k%d='%s'", keyId, base58.Encode(key))
+	// originally a string key
+	host.Trace("GetKeyFromId k%d='%s'", keyId, string(key))
 	return key
 }
 
-func (host *WasmHost) getKey(keyId int32) []byte {
+func (host *WasmHost) getKeyFromId(keyId int32) []byte {
 	// find predefined key
 	if keyId < 0 {
 		return host.keyIdToKeyMap[-keyId]
@@ -224,7 +220,13 @@ func (host *WasmHost) getKey(keyId int32) []byte {
 	return nil
 }
 
-func (host *WasmHost) GetKeyIdFromBytes(key []byte) int32 {
+func (host *WasmHost) GetKeyId(key string) int32 {
+	keyId := host.getKeyId([]byte(key))
+	host.Trace("GetKeyId '%s'=k%d", key, keyId)
+	return keyId
+}
+
+func (host *WasmHost) getKeyId(key []byte) int32 {
 	// cannot use []byte as key in maps
 	// so we will convert to (non-utf8) string
 	// most will have started out as string anyway
@@ -249,20 +251,8 @@ func (host *WasmHost) GetKeyIdFromBytes(key []byte) int32 {
 	return keyId
 }
 
-func (host *WasmHost) GetKey(bytes []byte) int32 {
-	keyId := host.GetKeyIdFromBytes(bytes)
-	host.Trace("GetKeyId '%s'=k%d", base58.Encode(bytes), keyId)
-	return keyId
-}
-
-func (host *WasmHost) GetKeyId(key string) int32 {
-	keyId := host.GetKeyIdFromBytes([]byte(key))
-	host.Trace("GetKeyId '%s'=k%d", key, keyId)
-	return keyId
-}
-
 func (host *WasmHost) GetKeyIdFromRef(keyRef int32, size int32) int32 {
-	host.TraceHost("GetKeyId(r%d,s%d)", keyRef, size)
+	host.TraceHost("GetKeyIdFromRef(r%d,s%d)", keyRef, size)
 	// non-negative size means original key was a string
 	if size >= 0 {
 		bytes := host.vmGetBytes(keyRef, size)
@@ -289,6 +279,33 @@ func (host *WasmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 
 	subId := host.FindObject(objId).GetObjectId(keyId, typeId)
 	host.Trace("GetObjectId o%d k%d t%d = o%d", objId, keyId, typeId, subId)
 	return subId
+}
+
+func (host *WasmHost) GetString(objId int32, keyId int32) string {
+	value := host.getString(objId, keyId)
+	if value == nil {
+		return ""
+	}
+	return *value
+}
+
+func (host *WasmHost) getString(objId int32, keyId int32) *string {
+	// get error string takes precedence over returning error code
+	if keyId == KeyError && objId == 1 {
+		host.Trace("GetString o%d k%d = '%s'", objId, keyId, host.error)
+		return &host.error
+	}
+	if host.HasError() {
+		return nil
+	}
+	obj := host.FindObject(objId)
+	if !obj.Exists(keyId) {
+		host.Trace("GetString o%d k%d missing key", objId, keyId)
+		return nil
+	}
+	value := obj.GetString(keyId)
+	host.Trace("GetString o%d k%d = '%s'", objId, keyId, value)
+	return &value
 }
 
 func (host *WasmHost) HasError() bool {

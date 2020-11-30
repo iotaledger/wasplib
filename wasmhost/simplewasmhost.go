@@ -4,9 +4,7 @@
 package wasmhost
 
 import (
-	"errors"
 	"fmt"
-	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"hash/fnv"
 	"io"
@@ -28,9 +26,9 @@ func NewSimpleWasmHost() (*SimpleWasmHost, error) {
 	if err != nil {
 		return nil, err
 	}
-	host.CallsId = host.GetKeyIdFromBytes([]byte("calls"))
-	host.ExportsId = host.GetKeyIdFromBytes([]byte("exports"))
-	host.TransfersId = host.GetKeyIdFromBytes([]byte("transfers"))
+	host.CallsId = host.GetKeyId("calls")
+	host.ExportsId = host.GetKeyId("exports")
+	host.TransfersId = host.GetKeyId("transfers")
 	return host, nil
 }
 
@@ -49,14 +47,6 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	}
 }
 
-func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int32) HostObject {
-	if obj == nil {
-		// use root object
-		obj = host.FindObject(1)
-	}
-	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
-}
-
 func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	switch logLevel {
 	case KeyTraceHost:
@@ -72,16 +62,16 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	}
 }
 
-func (host *SimpleWasmHost) RunScFunction(functionName string) error {
-	fmt.Printf("Simple function: %v\n", functionName)
-	index, ok := host.funcToIndex[functionName]
-	if !ok {
-		return errors.New("unknown SC function name: " + functionName)
-	}
-
-	client.ScCallEntrypoint(index)
-	return nil
-}
+//func (host *SimpleWasmHost) RunScFunction(functionName string) error {
+//	fmt.Printf("Simple function: %v\n", functionName)
+//	index, ok := host.funcToIndex[functionName]
+//	if !ok {
+//		return errors.New("unknown SC function name: " + functionName)
+//	}
+//
+//	client.ScCallEntrypoint(index)
+//	return nil
+//}
 
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
 	_, ok := host.funcToCode[functionName]

@@ -14,7 +14,7 @@ const (
 	TYPE_STRING_ARRAY int32 = 7
 )
 
-type Host interface {
+type ScHost interface {
 	Exists(objId int32, keyId int32) bool
 	GetBytes(objId int32, keyId int32) []byte
 	GetInt(objId int32, keyId int32) int64
@@ -29,9 +29,9 @@ type Host interface {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-var host Host
+var host ScHost
 
-func ConnectHost(h Host) {
+func ConnectHost(h ScHost) {
 	host = h
 }
 
