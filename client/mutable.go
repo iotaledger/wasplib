@@ -221,7 +221,7 @@ func (o ScMutableKeyMap) GetAddress(key []byte) ScMutableAddress {
 }
 
 func (o ScMutableKeyMap) GetAddressArray(key []byte) ScMutableAddressArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableAddressArray{objId: arrId}
 }
 
@@ -230,7 +230,7 @@ func (o ScMutableKeyMap) GetAgent(key []byte) ScMutableAgent {
 }
 
 func (o ScMutableKeyMap) GetAgentArray(key []byte) ScMutableAgentArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableAgentArray{objId: arrId}
 }
 
@@ -239,7 +239,7 @@ func (o ScMutableKeyMap) GetBytes(key []byte) ScMutableBytes {
 }
 
 func (o ScMutableKeyMap) GetBytesArray(key []byte) ScMutableBytesArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableBytesArray{objId: arrId}
 }
 
@@ -248,7 +248,7 @@ func (o ScMutableKeyMap) GetColor(key []byte) ScMutableColor {
 }
 
 func (o ScMutableKeyMap) GetColorArray(key []byte) ScMutableColorArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableColorArray{objId: arrId}
 }
 
@@ -257,22 +257,22 @@ func (o ScMutableKeyMap) GetInt(key []byte) ScMutableInt {
 }
 
 func (o ScMutableKeyMap) GetIntArray(key []byte) ScMutableIntArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_INT_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_INT_ARRAY)
 	return ScMutableIntArray{objId: arrId}
 }
 
 func (o ScMutableKeyMap) GetKeyMap(key []byte) ScMutableKeyMap {
-	mapId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, GetKey(key), TYPE_MAP)
 	return ScMutableKeyMap{objId: mapId}
 }
 
 func (o ScMutableKeyMap) GetMap(key []byte) ScMutableMap {
-	mapId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, GetKey(key), TYPE_MAP)
 	return ScMutableMap{objId: mapId}
 }
 
 func (o ScMutableKeyMap) GetMapArray(key []byte) ScMutableMapArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_MAP_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_MAP_ARRAY)
 	return ScMutableMapArray{objId: arrId}
 }
 
@@ -281,7 +281,7 @@ func (o ScMutableKeyMap) GetRequestId(key []byte) ScMutableRequestId {
 }
 
 func (o ScMutableKeyMap) GetRequestIdArray(key []byte) ScMutableRequestIdArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableRequestIdArray{objId: arrId}
 }
 
@@ -290,7 +290,7 @@ func (o ScMutableKeyMap) GetString(key []byte) ScMutableString {
 }
 
 func (o ScMutableKeyMap) GetStringArray(key []byte) ScMutableStringArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_STRING_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_STRING_ARRAY)
 	return ScMutableStringArray{objId: arrId}
 }
 
@@ -299,7 +299,7 @@ func (o ScMutableKeyMap) GetTxHash(key []byte) ScMutableTxHash {
 }
 
 func (o ScMutableKeyMap) GetTxHashArray(key []byte) ScMutableTxHashArray {
-	arrId := GetObjectId(o.objId, GetKey(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
 	return ScMutableTxHashArray{objId: arrId}
 }
 
@@ -322,7 +322,7 @@ func (o ScMutableMap) GetAddress(key string) ScMutableAddress {
 }
 
 func (o ScMutableMap) GetAddressArray(key string) ScMutableAddressArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableAddressArray{objId: arrId}
 }
 
@@ -331,7 +331,7 @@ func (o ScMutableMap) GetAgent(key string) ScMutableAgent {
 }
 
 func (o ScMutableMap) GetAgentArray(key string) ScMutableAgentArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableAgentArray{objId: arrId}
 }
 
@@ -340,7 +340,7 @@ func (o ScMutableMap) GetBytes(key string) ScMutableBytes {
 }
 
 func (o ScMutableMap) GetBytesArray(key string) ScMutableBytesArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableBytesArray{objId: arrId}
 }
 
@@ -349,7 +349,7 @@ func (o ScMutableMap) GetColor(key string) ScMutableColor {
 }
 
 func (o ScMutableMap) GetColorArray(key string) ScMutableColorArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableColorArray{objId: arrId}
 }
 
@@ -358,22 +358,22 @@ func (o ScMutableMap) GetInt(key string) ScMutableInt {
 }
 
 func (o ScMutableMap) GetIntArray(key string) ScMutableIntArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_INT_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_INT_ARRAY)
 	return ScMutableIntArray{objId: arrId}
 }
 
 func (o ScMutableMap) GetKeyMap(key string) ScMutableKeyMap {
-	mapId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP)
 	return ScMutableKeyMap{objId: mapId}
 }
 
 func (o ScMutableMap) GetMap(key string) ScMutableMap {
-	mapId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP)
 	return ScMutableMap{objId: mapId}
 }
 
 func (o ScMutableMap) GetMapArray(key string) ScMutableMapArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_MAP_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP_ARRAY)
 	return ScMutableMapArray{objId: arrId}
 }
 
@@ -382,7 +382,7 @@ func (o ScMutableMap) GetRequestId(key string) ScMutableRequestId {
 }
 
 func (o ScMutableMap) GetRequestIdArray(key string) ScMutableRequestIdArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableRequestIdArray{objId: arrId}
 }
 
@@ -391,7 +391,7 @@ func (o ScMutableMap) GetString(key string) ScMutableString {
 }
 
 func (o ScMutableMap) GetStringArray(key string) ScMutableStringArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_STRING_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_STRING_ARRAY)
 	return ScMutableStringArray{objId: arrId}
 }
 
@@ -400,7 +400,7 @@ func (o ScMutableMap) GetTxHash(key string) ScMutableTxHash {
 }
 
 func (o ScMutableMap) GetTxHashArray(key string) ScMutableTxHashArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), OBJTYPE_BYTES_ARRAY)
+	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
 	return ScMutableTxHashArray{objId: arrId}
 }
 
@@ -419,12 +419,12 @@ func (o ScMutableMapArray) Clear() {
 }
 
 func (o ScMutableMapArray) GetKeyMap(index int32) ScMutableKeyMap {
-	mapId := GetObjectId(o.objId, index, OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, index, TYPE_MAP)
 	return ScMutableKeyMap{objId: mapId}
 }
 
 func (o ScMutableMapArray) GetMap(index int32) ScMutableMap {
-	mapId := GetObjectId(o.objId, index, OBJTYPE_MAP)
+	mapId := GetObjectId(o.objId, index, TYPE_MAP)
 	return ScMutableMap{objId: mapId}
 }
 

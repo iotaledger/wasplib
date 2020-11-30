@@ -42,6 +42,10 @@ func (a *HostArray) Dump(w io.Writer) {
 	fmt.Fprintf(w, "]")
 }
 
+func (a *HostArray) Error(text string) {
+	a.host.SetError(text)
+}
+
 func (a *HostArray) Exists(keyId int32) bool {
 	return keyId >= 0 && keyId < int32(len(a.items))
 }
@@ -53,7 +57,7 @@ func (a *HostArray) GetBytes(keyId int32) []byte {
 	}
 	bytes, err := base58.Decode(value)
 	if err != nil {
-		a.host.SetError("Map.GetBytes: " + err.Error())
+		a.Error("Map.GetBytes: " + err.Error())
 		return []byte(nil)
 	}
 	return bytes
@@ -99,7 +103,7 @@ func (a *HostArray) SetBytes(keyId int32, value []byte) {
 
 func (a *HostArray) SetInt(keyId int32, value int64) {
 	if EnableImmutableChecks && a.immutable {
-		a.host.SetError("Array.SetInt: Immutable")
+		a.Error("Array.SetInt: Immutable")
 		return
 	}
 	if keyId == KeyLength {
@@ -121,7 +125,7 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 
 func (a *HostArray) SetString(keyId int32, value string) {
 	if EnableImmutableChecks && a.immutable {
-		a.host.SetError("Array.SetString: Immutable")
+		a.Error("Array.SetString: Immutable")
 		return
 	}
 	if !a.valid(keyId, OBJTYPE_STRING) {
@@ -132,7 +136,7 @@ func (a *HostArray) SetString(keyId int32, value string) {
 
 func (a *HostArray) valid(keyId int32, typeId int32) bool {
 	if a.typeId != typeId {
-		a.host.SetError("Array.valid: Invalid access")
+		a.Error("Array.valid: Invalid access")
 		return false
 	}
 	max := int32(len(a.items))
@@ -158,13 +162,13 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case OBJTYPE_STRING:
 			a.items = append(a.items, "")
 		default:
-			a.host.SetError("Array.valid: Invalid typeId")
+			a.Error("Array.valid: Invalid typeId")
 			return false
 		}
 		return true
 	}
 	if keyId < 0 || keyId >= max {
-		a.host.SetError("Array.valid: Invalid index")
+		a.Error("Array.valid: Invalid index")
 		return false
 	}
 	return true

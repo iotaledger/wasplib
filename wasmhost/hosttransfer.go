@@ -19,7 +19,7 @@ func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
 }
 
 func (a *HostTransfer) SetBytes(keyId int32, value []byte) {
-	s := string(a.host.GetKey(keyId))
+	s := string(a.host.GetKeyFromId(keyId))
 	//fmt.Printf("Transfer.SetBytes %s = %s\n", s, base58.Encode(value))
 	a.HostMap.SetBytes(keyId, value)
 	if s == "agent" {
@@ -33,7 +33,7 @@ func (a *HostTransfer) SetBytes(keyId int32, value []byte) {
 }
 
 func (a *HostTransfer) SetInt(keyId int32, value int64) {
-	s := string(a.host.GetKey(keyId))
+	s := string(a.host.GetKeyFromId(keyId))
 	//fmt.Printf("Transfer.SetInt %s = %d\n", s, value)
 	a.HostMap.SetInt(keyId, value)
 	if s != "amount" {
@@ -44,7 +44,7 @@ func (a *HostTransfer) SetInt(keyId int32, value int64) {
 	colorKeyId := a.host.GetKeyIdFromBytes([]byte(base58.Encode(a.color)))
 	colorAmount := balance.GetInt(colorKeyId)
 	if colorAmount < value {
-		a.host.SetError("Insufficient funds")
+		a.Error("Insufficient funds")
 		return
 	}
 	// check if compacting, in which case no balance change happens

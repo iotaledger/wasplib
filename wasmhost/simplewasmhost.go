@@ -4,7 +4,9 @@
 package wasmhost
 
 import (
+	"errors"
 	"fmt"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"hash/fnv"
 	"io"
@@ -55,12 +57,6 @@ func (host *SimpleWasmHost) FindSubObject(obj HostObject, key string, typeId int
 	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
 }
 
-func (host *SimpleWasmHost) GetKeyId(key string) int32 {
-	keyId := host.GetKeyIdFromBytes([]byte(key))
-	host.Trace("GetKeyId('%s')=k%d", key, keyId)
-	return keyId
-}
-
 func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	switch logLevel {
 	case KeyTraceHost:
@@ -74,6 +70,17 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	case KeyError:
 		fmt.Println(text)
 	}
+}
+
+func (host *SimpleWasmHost) RunScFunction(functionName string) error {
+	fmt.Printf("Simple function: %v\n", functionName)
+	index, ok := host.funcToIndex[functionName]
+	if !ok {
+		return errors.New("unknown SC function name: " + functionName)
+	}
+
+	client.ScCallEntrypoint(index)
+	return nil
 }
 
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {

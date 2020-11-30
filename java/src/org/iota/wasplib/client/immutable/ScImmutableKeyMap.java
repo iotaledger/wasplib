@@ -19,7 +19,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableAddressArray GetAddressArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableAddressArray(arrId);
 	}
 
@@ -28,7 +28,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableAgentArray GetAgentArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableAgentArray(arrId);
 	}
 
@@ -37,7 +37,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableBytesArray GetBytesArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableBytesArray(arrId);
 	}
 
@@ -46,7 +46,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableColorArray GetColorArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableColorArray(arrId);
 	}
 
@@ -55,22 +55,22 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableIntArray GetIntArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_INT_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_INT_ARRAY);
 		return new ScImmutableIntArray(arrId);
 	}
 
 	public ScImmutableKeyMap GetKeyMap(byte[] key) {
-		int mapId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_MAP);
 		return new ScImmutableKeyMap(mapId);
 	}
 
 	public ScImmutableMap GetMap(byte[] key) {
-		int mapId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_MAP);
 		return new ScImmutableMap(mapId);
 	}
 
 	public ScImmutableMapArray GetMapArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_MAP_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_MAP_ARRAY);
 		return new ScImmutableMapArray(arrId);
 	}
 
@@ -79,7 +79,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableRequestIdArray GetRequestIdArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableRequestIdArray(arrId);
 	}
 
@@ -88,7 +88,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableStringArray GetStringArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_STRING_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_STRING_ARRAY);
 		return new ScImmutableStringArray(arrId);
 	}
 
@@ -97,7 +97,7 @@ public class ScImmutableKeyMap {
 	}
 
 	public ScImmutableTxHashArray GetTxHashArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableTxHashArray(arrId);
 	}
 

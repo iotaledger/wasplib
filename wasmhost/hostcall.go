@@ -36,14 +36,14 @@ func (a *HostCall) call() {
 	err := t.RunScFunction(a.function)
 	if err != nil {
 		fmt.Printf("FAIL: Request function %s: %v\n", a.function, err)
-		a.host.SetError(err.Error())
+		a.Error(err.Error())
 	}
 	reqParams.SetInt(KeyLength, 0)
 	savedParams.CopyDataTo(reqParams)
 }
 
 func (a *HostCall) SetBytes(keyId int32, value []byte) {
-	s := string(a.host.GetKey(keyId))
+	s := string(a.host.GetKeyFromId(keyId))
 	//fmt.Printf("Call.SetBytes %s = %s\n", s, base58.Encode(value))
 	a.HostMap.SetBytes(keyId, value)
 	if s == "chain" {
@@ -53,7 +53,7 @@ func (a *HostCall) SetBytes(keyId int32, value []byte) {
 }
 
 func (a *HostCall) SetInt(keyId int32, value int64) {
-	s := string(a.host.GetKey(keyId))
+	s := string(a.host.GetKeyFromId(keyId))
 	//fmt.Printf("Call.SetInt %s = %d\n", s, value)
 	a.HostMap.SetInt(keyId, value)
 	if s != "delay" {
@@ -69,7 +69,7 @@ func (a *HostCall) SetInt(keyId int32, value int64) {
 }
 
 func (a *HostCall) SetString(keyId int32, value string) {
-	s := string(a.host.GetKey(keyId))
+	s := string(a.host.GetKeyFromId(keyId))
 	//fmt.Printf("Call.SetString %s = %s\n", s, value)
 	a.HostMap.SetString(keyId, value)
 	if s == "contract" {

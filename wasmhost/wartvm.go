@@ -30,7 +30,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			keyId := ctx.Frame[ctx.SP+1].I32
 			stringRef := ctx.Frame[ctx.SP+2].I32
 			size := ctx.Frame[ctx.SP+3].I32
-			ctx.Frame[ctx.SP].I32 = host.GetBytes(objId, keyId, stringRef, size)
+			ctx.Frame[ctx.SP].I32 = host.GetBytesFromRef(objId, keyId, stringRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostGetInt",
@@ -58,7 +58,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 		func(ctx *sections.HostContext) error {
 			keyRef := ctx.Frame[ctx.SP].I32
 			size := ctx.Frame[ctx.SP+1].I32
-			ctx.Frame[ctx.SP].I32 = host.GetKeyId(keyRef, size)
+			ctx.Frame[ctx.SP].I32 = host.GetKeyIdFromRef(keyRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostGetObjectId",
@@ -79,7 +79,7 @@ func (vm *WartVM) LinkHost(host *WasmHost) error {
 			keyId := ctx.Frame[ctx.SP+1].I32
 			stringRef := ctx.Frame[ctx.SP+2].I32
 			size := ctx.Frame[ctx.SP+3].I32
-			host.SetBytes(objId, keyId, stringRef, size)
+			host.SetBytesFromRef(objId, keyId, stringRef, size)
 			return nil
 		})
 	_ = lnk.DefineFunction("hostSetInt",

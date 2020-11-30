@@ -20,12 +20,12 @@ public class ScMutableMapArray {
 	}
 
 	public ScMutableKeyMap GetKeyMap(int index) {
-		int mapId = Host.GetObjectId(objId, index, ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, index, ScType.TYPE_MAP);
 		return new ScMutableKeyMap(mapId);
 	}
 
 	public ScMutableMap GetMap(int index) {
-		int mapId = Host.GetObjectId(objId, index, ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, index, ScType.TYPE_MAP);
 		return new ScMutableMap(mapId);
 	}
 

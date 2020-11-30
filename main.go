@@ -5,6 +5,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/iotaledger/wasplib/client"
+	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/wasmhost"
 	"io/ioutil"
 )
@@ -56,6 +58,8 @@ import (
 func main() {
 	fmt.Println("Hello, WaspLib!")
 
+	//execGoHost()
+
 	//err := filepath.Walk("../tests",
 	//	func(path string, info os.FileInfo, err error) error {
 	//		if err != nil {
@@ -70,12 +74,26 @@ func main() {
 	//	log.Println(err)
 	//}
 
+	execJsonTest()
+}
+
+func execGoHost() {
+	goHost, err := wasmhost.NewSimpleWasmHost()
+	if err != nil {
+		panic(err)
+	}
+	client.ConnectHost(goHost)
+	inccounter.OnLoad()
+	goHost.RunScFunction("incrementCallIncrement")
+}
+
+func execJsonTest() {
 	//contract := "donatewithfeedback"
 	//contract := "fairauction"
 	//contract := "fairroulette"
 	contract := "inccounter"
 	//contract := "tokenregistry"
-	language := "go" // "bg" = Rust, "go" = Go
+	language := "bg" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"
 	jsonTests, err := wasmhost.NewJsonTests(pathName)

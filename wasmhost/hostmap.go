@@ -34,7 +34,7 @@ func (m *HostMap) Dump(w io.Writer) {
 			fmt.Fprintf(w, ",\n")
 		}
 		multiple = true
-		key := m.host.GetKey(keyId)
+		key := m.host.GetKeyFromId(keyId)
 		fmt.Fprintf(w, "\"%s\": ", string(key))
 		if keyId == m.host.ExportsId {
 			m.host.FindObject(value.(int32)).(*HostExports).Dump(w)
@@ -43,6 +43,10 @@ func (m *HostMap) Dump(w io.Writer) {
 		m.host.Dump(w, m.types[keyId], value)
 	}
 	fmt.Fprintf(w, "}")
+}
+
+func (m *HostMap) Error(text string) {
+	m.host.SetError(text)
 }
 
 func (m *HostMap) Exists(keyId int32) bool {
@@ -57,7 +61,7 @@ func (m *HostMap) GetBytes(keyId int32) []byte {
 	}
 	bytes, err := base58.Decode(value)
 	if err != nil {
-		m.host.SetError("Map.GetBytes: " + err.Error())
+		m.Error("Map.GetBytes: " + err.Error())
 		return []byte(nil)
 	}
 	return bytes
@@ -106,7 +110,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 		}
 		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
 	default:
-		m.host.SetError("Map.GetObjectId: Invalid type id")
+		m.Error("Map.GetObjectId: Invalid type id")
 		return 0
 	}
 	objId := m.host.TrackObject(o)
@@ -139,7 +143,7 @@ func (m *HostMap) SetBytes(keyId int32, value []byte) {
 
 func (m *HostMap) SetInt(keyId int32, value int64) {
 	if EnableImmutableChecks && m.immutable {
-		m.host.SetError("Map.SetInt: Immutable")
+		m.Error("Map.SetInt: Immutable")
 		return
 	}
 	if keyId == KeyLength {
@@ -168,7 +172,7 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 
 func (m *HostMap) SetString(keyId int32, value string) {
 	if EnableImmutableChecks && m.immutable {
-		m.host.SetError("Map.SetString: Immutable")
+		m.Error("Map.SetString: Immutable")
 		return
 	}
 	if !m.valid(keyId, OBJTYPE_STRING) {
@@ -181,14 +185,14 @@ func (m *HostMap) valid(keyId int32, typeId int32) bool {
 	fieldType, ok := m.types[keyId]
 	if !ok {
 		if EnableImmutableChecks && m.immutable {
-			m.host.SetError("Map.valid: Immutable")
+			m.Error("Map.valid: Immutable")
 			return false
 		}
 		m.types[keyId] = typeId
 		return true
 	}
 	if fieldType != typeId {
-		m.host.SetError("Map.valid: Invalid typeId")
+		m.Error("Map.valid: Invalid typeId")
 		return false
 	}
 	return true

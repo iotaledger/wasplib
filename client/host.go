@@ -4,14 +4,14 @@
 package client
 
 const (
-	OBJTYPE_BYTES        int32 = 0
-	OBJTYPE_BYTES_ARRAY  int32 = 1
-	OBJTYPE_INT          int32 = 2
-	OBJTYPE_INT_ARRAY    int32 = 3
-	OBJTYPE_MAP          int32 = 4
-	OBJTYPE_MAP_ARRAY    int32 = 5
-	OBJTYPE_STRING       int32 = 6
-	OBJTYPE_STRING_ARRAY int32 = 7
+	TYPE_BYTES        int32 = 0
+	TYPE_BYTES_ARRAY  int32 = 1
+	TYPE_INT          int32 = 2
+	TYPE_INT_ARRAY    int32 = 3
+	TYPE_MAP          int32 = 4
+	TYPE_MAP_ARRAY    int32 = 5
+	TYPE_STRING       int32 = 6
+	TYPE_STRING_ARRAY int32 = 7
 )
 
 type Host interface {

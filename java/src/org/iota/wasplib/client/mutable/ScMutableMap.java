@@ -24,7 +24,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableAddressArray GetAddressArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableAddressArray(arrId);
 	}
 
@@ -33,7 +33,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableAgentArray GetAgentArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableAgentArray(arrId);
 	}
 
@@ -42,7 +42,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableBytesArray GetBytesArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableBytesArray(arrId);
 	}
 
@@ -51,7 +51,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableColorArray GetColorArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableColorArray(arrId);
 	}
 
@@ -60,22 +60,22 @@ public class ScMutableMap {
 	}
 
 	public ScMutableIntArray GetIntArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_INT_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_INT_ARRAY);
 		return new ScMutableIntArray(arrId);
 	}
 
 	public ScMutableKeyMap GetKeyMap(String key) {
-		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_MAP);
 		return new ScMutableKeyMap(mapId);
 	}
 
 	public ScMutableMap GetMap(String key) {
-		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP);
+		int mapId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_MAP);
 		return new ScMutableMap(mapId);
 	}
 
 	public ScMutableMapArray GetMapArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_MAP_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_MAP_ARRAY);
 		return new ScMutableMapArray(arrId);
 	}
 
@@ -84,7 +84,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableRequestIdArray GetRequestIdArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableRequestIdArray(arrId);
 	}
 
@@ -93,7 +93,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableStringArray GetStringArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_STRING_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_STRING_ARRAY);
 		return new ScMutableStringArray(arrId);
 	}
 
@@ -102,7 +102,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableTxHashArray GetTxHashArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.OBJTYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
 		return new ScMutableTxHashArray(arrId);
 	}
 

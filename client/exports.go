@@ -9,7 +9,7 @@ var (
 )
 
 //export sc_call_entrypoint
-func scCallEntrypoint(index int32) {
+func ScCallEntrypoint(index int32) {
 	if (index & 0x8000) != 0 {
 		views[index&0x7fff](&rootViewContext)
 		return

@@ -27,7 +27,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	err := vm.linker.DefineFunc("wasplib", "hostGetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) int32 {
 			vm.traceHost(host, "hostGetBytes")
-			return host.GetBytes(objId, keyId, stringRef, size)
+			return host.GetBytesFromRef(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	err = vm.linker.DefineFunc("wasplib", "hostGetKeyId",
 		func(keyRef int32, size int32) int32 {
 			vm.traceHost(host, "hostGetKeyId")
-			return host.GetKeyId(keyRef, size)
+			return host.GetKeyIdFromRef(keyRef, size)
 		})
 	if err != nil {
 		return err
@@ -67,7 +67,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	err = vm.linker.DefineFunc("wasplib", "hostSetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) {
 			vm.traceHost(host, "hostSetBytes")
-			host.SetBytes(objId, keyId, stringRef, size)
+			host.SetBytesFromRef(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
