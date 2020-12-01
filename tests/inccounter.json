@@ -195,6 +195,7 @@
     {
       "name": "incrementLocalStateSandboxCall",
       "setup": "default",
+      "flags": "failWhenSC",
       "request": {
         "function": "incrementLocalStateSandboxCall"
       },
@@ -218,6 +219,7 @@
     {
       "name": "incrementLocalStatePost",
       "setup": "default",
+      "flags": "failWhenSC",
       "request": {
         "function": "incrementLocalStatePost"
       },
