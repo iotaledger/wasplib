@@ -4,7 +4,6 @@
 package wasmhost
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
 	"github.com/mr-tron/base58"
@@ -56,14 +55,6 @@ var baseKeyMap = map[string]int32{
 	"warning":   KeyWarning,
 }
 
-type WasmVM interface {
-	LinkHost(host *WasmHost) error
-	LoadWasm(wasmData []byte) error
-	RunFunction(functionName string) error
-	RunScFunction(index int32) error
-	UnsafeMemory() []byte
-}
-
 // implements client.ScHost interface
 type WasmHost struct {
 	vm            WasmVM
@@ -76,9 +67,6 @@ type WasmHost struct {
 	keyMapToKeyId *map[string]int32
 	keyToKeyId    map[string]int32
 	logger        LogInterface
-	memoryCopy    []byte
-	memoryDirty   bool
-	memoryNonZero int
 	objIdToObj    []HostObject
 	useBase58Keys bool
 }
@@ -111,16 +99,6 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	return host.vm.LinkHost(host)
 }
 
-func (host *WasmHost) fdWrite(fd int32, iovs int32, size int32, written int32) int32 {
-	// very basic implementation that expects fd to be stdout and iovs to be only one element
-	ptr := host.vm.UnsafeMemory()
-	txt := binary.LittleEndian.Uint32(ptr[iovs : iovs+4])
-	siz := binary.LittleEndian.Uint32(ptr[iovs+4 : iovs+8])
-	fmt.Print(string(ptr[txt : txt+siz]))
-	binary.LittleEndian.PutUint32(ptr[written:written+4], siz)
-	return int32(siz)
-}
-
 func (host *WasmHost) FindObject(objId int32) HostObject {
 	if objId < 0 || objId >= int32(len(host.objIdToObj)) {
 		host.SetError("Invalid objId")
@@ -149,25 +127,6 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
 	value := obj.GetBytes(keyId)
 	host.Trace("GetBytes o%d k%d = '%s'", objId, keyId, base58.Encode(value))
 	return value
-}
-
-func (host *WasmHost) GetBytesFromRef(objId int32, keyId int32, stringRef int32, size int32) int32 {
-	host.TraceHost("GetBytesFromRef(o%d,k%d,s%d)", objId, keyId, size)
-	if objId < 0 {
-		// negative objId means get string
-		value := host.getString(-objId, keyId)
-		// missing key is indicated by -1
-		if value == nil {
-			return -1
-		}
-		return host.vmSetBytes(stringRef, size, []byte(*value))
-	}
-
-	bytes := host.GetBytes(objId, keyId)
-	if bytes == nil {
-		return -1
-	}
-	return host.vmSetBytes(stringRef, size, bytes)
 }
 
 func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
@@ -251,26 +210,6 @@ func (host *WasmHost) getKeyId(key []byte) int32 {
 	return keyId
 }
 
-func (host *WasmHost) GetKeyIdFromRef(keyRef int32, size int32) int32 {
-	host.TraceHost("GetKeyIdFromRef(r%d,s%d)", keyRef, size)
-	// non-negative size means original key was a string
-	if size >= 0 {
-		bytes := host.vmGetBytes(keyRef, size)
-		return host.GetKeyId(string(bytes))
-	}
-
-	// negative size means original key was a byte slice
-	bytes := host.vmGetBytes(keyRef, -size-1)
-	if !host.useBase58Keys {
-		// use byte slice key as is
-		return host.GetKey(bytes)
-	}
-
-	// transform byte slice key into base58 string
-	// now all keys are byte slices from strings
-	return host.GetKeyId(base58.Encode(bytes))
-}
-
 func (host *WasmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 {
 	host.TraceHost("GetObjectId(o%d,k%d)", objId, keyId)
 	if host.HasError() {
@@ -316,62 +255,21 @@ func (host *WasmHost) HasError() bool {
 	return false
 }
 
-func (host *WasmHost) initMemory() {
-	if host.memoryDirty {
-		// clear memory and restore initialized data range
-		ptr := host.vm.UnsafeMemory()
-		copy(ptr, make([]byte, len(ptr)))
-		copy(ptr[host.memoryNonZero:], host.memoryCopy)
-	}
-	host.memoryDirty = true
-}
-
 func (host *WasmHost) LoadWasm(wasmData []byte) error {
 	err := host.vm.LoadWasm(wasmData)
 	if err != nil {
 		return err
 	}
-
 	err = host.vm.RunFunction("onLoad")
 	if err != nil {
 		return err
 	}
-
-	// find initialized data range in memory
-	ptr := host.vm.UnsafeMemory()
-	firstNonZero := 0
-	lastNonZero := 0
-	for i, b := range ptr {
-		if b != 0 {
-			if firstNonZero == 0 {
-				firstNonZero = i
-			}
-			lastNonZero = i
-		}
-	}
-
-	// save copy of initialized data range
-	host.memoryNonZero = len(ptr)
-	if ptr[firstNonZero] != 0 {
-		host.memoryNonZero = firstNonZero
-		size := lastNonZero + 1 - firstNonZero
-		host.memoryCopy = make([]byte, size)
-		copy(host.memoryCopy, ptr[host.memoryNonZero:])
-	}
+	host.vm.SaveMemory()
 	return nil
 }
 
 func (host *WasmHost) RunFunction(functionName string) error {
-	ptr := host.vm.UnsafeMemory()
-	save := make([]byte, len(ptr))
-	copy(save, ptr)
-
-	host.initMemory()
-	err := host.vm.RunFunction(functionName)
-
-	ptr = host.vm.UnsafeMemory()
-	copy(ptr, save)
-	return err
+	return host.vm.RunFunction(functionName)
 }
 
 func (host *WasmHost) RunScFunction(functionName string) error {
@@ -379,17 +277,7 @@ func (host *WasmHost) RunScFunction(functionName string) error {
 	if !ok {
 		return errors.New("unknown SC function name: " + functionName)
 	}
-
-	ptr := host.vm.UnsafeMemory()
-	save := make([]byte, len(ptr))
-	copy(save, ptr)
-
-	host.initMemory()
-	err := host.vm.RunScFunction(index)
-
-	ptr = host.vm.UnsafeMemory()
-	copy(ptr, save)
-	return err
+	return host.vm.RunScFunction(index)
 }
 
 func (host *WasmHost) SetBytes(objId int32, keyId int32, bytes []byte) {
@@ -399,15 +287,6 @@ func (host *WasmHost) SetBytes(objId int32, keyId int32, bytes []byte) {
 	host.FindObject(objId).SetBytes(keyId, bytes)
 	host.Trace("SetBytes o%d k%d v='%s'", objId, keyId, base58.Encode(bytes))
 
-}
-func (host *WasmHost) SetBytesFromRef(objId int32, keyId int32, stringRef int32, size int32) {
-	host.TraceHost("SetBytes(o%d,k%d)", objId, keyId)
-	bytes := host.vmGetBytes(stringRef, size)
-	if objId < 0 {
-		host.SetString(-objId, keyId, string(bytes))
-		return
-	}
-	host.SetBytes(objId, keyId, bytes)
 }
 
 func (host *WasmHost) SetError(text string) {
@@ -458,29 +337,4 @@ func (host *WasmHost) TrackObject(obj HostObject) int32 {
 	objId := int32(len(host.objIdToObj))
 	host.objIdToObj = append(host.objIdToObj, obj)
 	return objId
-}
-
-func (host *WasmHost) vmGetBytes(offset int32, size int32) []byte {
-	ptr := host.vm.UnsafeMemory()
-	bytes := make([]byte, size)
-	copy(bytes, ptr[offset:offset+size])
-	return bytes
-}
-
-func (host *WasmHost) vmGetInt(offset int32) int64 {
-	ptr := host.vm.UnsafeMemory()
-	return int64(binary.LittleEndian.Uint64(ptr[offset : offset+8]))
-}
-
-func (host *WasmHost) vmSetBytes(offset int32, size int32, bytes []byte) int32 {
-	if size != 0 {
-		ptr := host.vm.UnsafeMemory()
-		copy(ptr[offset:offset+size], bytes)
-	}
-	return int32(len(bytes))
-}
-
-func (host *WasmHost) vmSetInt(offset int32, value int64) {
-	ptr := host.vm.UnsafeMemory()
-	binary.LittleEndian.PutUint64(ptr[offset:offset+8], uint64(value))
 }

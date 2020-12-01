@@ -103,11 +103,12 @@ func (w WasmVmHost) GetString(objId int32, keyId int32) string {
 
 func (w WasmVmHost) SetBytes(objId int32, keyId int32, value []byte) {
 	// &bytes[0] will panic on zero length slice, so use nil instead
-	if len(value) != 0 {
-		hostSetBytes(objId, keyId, nil, int32(len(value)))
+	size := int32(len(value))
+	if size == 0 {
+		hostSetBytes(objId, keyId, nil, size)
 		return
 	}
-	hostSetBytes(objId, keyId, &value[0], int32(len(value)))
+	hostSetBytes(objId, keyId, &value[0], size)
 }
 
 func (w WasmVmHost) SetInt(objId int32, keyId int32, value int64) {

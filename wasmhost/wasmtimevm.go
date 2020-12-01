@@ -9,6 +9,7 @@ import (
 )
 
 type WasmTimeVM struct {
+	WasmVmBase
 	instance *wasmtime.Instance
 	linker   *wasmtime.Linker
 	memory   *wasmtime.Memory
@@ -18,72 +19,66 @@ type WasmTimeVM struct {
 
 func NewWasmTimeVM() *WasmTimeVM {
 	host := &WasmTimeVM{}
+	host.impl = host
 	host.store = wasmtime.NewStore(wasmtime.NewEngine())
 	host.linker = wasmtime.NewLinker(host.store)
 	return host
 }
 
 func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
+	vm.host = host
 	err := vm.linker.DefineFunc("wasplib", "hostGetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) int32 {
-			vm.traceHost(host, "hostGetBytes")
-			return host.GetBytesFromRef(objId, keyId, stringRef, size)
+			return vm.hostGetBytes(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetInt",
 		func(objId int32, keyId int32) int64 {
-			vm.traceHost(host, "hostGetInt")
-			return host.GetInt(objId, keyId)
+			return vm.hostGetInt(objId, keyId)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetIntRef",
 		func(objId int32, keyId int32, intRef int32) {
-			vm.traceHost(host, "hostGetIntRef")
-			host.vmSetInt(intRef, host.GetInt(objId, keyId))
+			vm.hostGetIntRef(objId, keyId, intRef)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetKeyId",
 		func(keyRef int32, size int32) int32 {
-			vm.traceHost(host, "hostGetKeyId")
-			return host.GetKeyIdFromRef(keyRef, size)
+			return vm.hostGetKeyId(keyRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostGetObjectId",
 		func(objId int32, keyId int32, typeId int32) int32 {
-			vm.traceHost(host, "hostGetObjectId")
-			return host.GetObjectId(objId, keyId, typeId)
+			return vm.hostGetObjectId(objId, keyId, typeId)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetBytes",
 		func(objId int32, keyId int32, stringRef int32, size int32) {
-			vm.traceHost(host, "hostSetBytes")
-			host.SetBytesFromRef(objId, keyId, stringRef, size)
+			vm.hostSetBytes(objId, keyId, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetInt",
 		func(objId int32, keyId int32, value int64) {
-			vm.traceHost(host, "hostSetInt")
-			host.SetInt(objId, keyId, value)
+			vm.hostSetInt(objId, keyId, value)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("wasplib", "hostSetIntRef",
 		func(objId int32, keyId int32, intRef int32) {
-			vm.traceHost(host, "hostSetIntRef")
-			host.SetInt(objId, keyId, host.vmGetInt(intRef))
+			vm.hostSetIntRef(objId, keyId, intRef)
 		})
 	if err != nil {
 		return err
@@ -91,7 +86,7 @@ func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {
 	// go implementation uses this one to write panic message
 	err = vm.linker.DefineFunc("wasi_unstable", "fd_write",
 		func(fd int32, iovs int32, size int32, written int32) int32 {
-			return host.fdWrite(fd, iovs, size, written)
+			return vm.hostFdWrite(fd, iovs, size, written)
 		})
 	if err != nil {
 		return err
@@ -125,8 +120,7 @@ func (vm *WasmTimeVM) RunFunction(functionName string) error {
 	if export == nil {
 		return errors.New("unknown export function: '" + functionName + "'")
 	}
-	function := export.Func()
-	_, err := function.Call()
+	_, err := export.Func().Call()
 	return err
 }
 
@@ -135,13 +129,10 @@ func (vm *WasmTimeVM) RunScFunction(index int32) error {
 	if export == nil {
 		return errors.New("unknown export function: 'sc_call_entrypoint'")
 	}
-	function := export.Func()
-	_, err := function.Call(index)
+	frame := vm.preCall()
+	_, err := export.Func().Call(index)
+	vm.postCall(frame)
 	return err
-}
-
-func (vm *WasmTimeVM) traceHost(host *WasmHost, text string) {
-	host.logger.Log(KeyTraceHost, text)
 }
 
 func (vm *WasmTimeVM) UnsafeMemory() []byte {

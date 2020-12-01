@@ -93,7 +93,7 @@ func execJsonTest() {
 	//contract := "fairroulette"
 	contract := "inccounter"
 	//contract := "tokenregistry"
-	language := "bg" // "bg" = Rust, "go" = Go
+	language := "go" // "bg" = Rust, "go" = Go
 
 	pathName := "tests/" + contract + ".json"
 	jsonTests, err := wasmhost.NewJsonTests(pathName)

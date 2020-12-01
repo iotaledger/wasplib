@@ -62,17 +62,6 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	}
 }
 
-//func (host *SimpleWasmHost) RunScFunction(functionName string) error {
-//	fmt.Printf("Simple function: %v\n", functionName)
-//	index, ok := host.funcToIndex[functionName]
-//	if !ok {
-//		return errors.New("unknown SC function name: " + functionName)
-//	}
-//
-//	client.ScCallEntrypoint(index)
-//	return nil
-//}
-
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
 	_, ok := host.funcToCode[functionName]
 	if ok {
