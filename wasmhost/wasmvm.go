@@ -3,7 +3,6 @@ package wasmhost
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/mr-tron/base58"
 )
 
 type WasmVM interface {
@@ -78,14 +77,7 @@ func (vm *WasmVmBase) hostGetKeyId(keyRef int32, size int32) int32 {
 
 	// negative size means original key was a byte slice
 	bytes := vm.vmGetBytes(keyRef, -size-1)
-	if !host.useBase58Keys {
-		// use byte slice key as is
-		return host.GetKey(bytes)
-	}
-
-	// transform byte slice key into base58 string
-	// now all keys are byte slices from strings
-	return host.GetKeyId(base58.Encode(bytes))
+	return host.GetKey(bytes)
 }
 
 func (vm *WasmVmBase) hostGetObjectId(objId int32, keyId int32, typeId int32) int32 {

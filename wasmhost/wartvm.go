@@ -15,10 +15,10 @@ type WartVM struct {
 }
 
 func NewWartVM() *WartVM {
-	host := &WartVM{}
-	host.impl = host
-	host.runner = executors.NewWasmRunner()
-	return host
+	vm := &WartVM{}
+	vm.impl = vm
+	vm.runner = executors.NewWasmRunner()
+	return vm
 }
 
 func (vm *WartVM) LinkHost(host *WasmHost) error {

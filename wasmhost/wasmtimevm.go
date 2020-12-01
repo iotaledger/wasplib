@@ -18,11 +18,11 @@ type WasmTimeVM struct {
 }
 
 func NewWasmTimeVM() *WasmTimeVM {
-	host := &WasmTimeVM{}
-	host.impl = host
-	host.store = wasmtime.NewStore(wasmtime.NewEngine())
-	host.linker = wasmtime.NewLinker(host.store)
-	return host
+	vm := &WasmTimeVM{}
+	vm.impl = vm
+	vm.store = wasmtime.NewStore(wasmtime.NewEngine())
+	vm.linker = wasmtime.NewLinker(vm.store)
+	return vm
 }
 
 func (vm *WasmTimeVM) LinkHost(host *WasmHost) error {

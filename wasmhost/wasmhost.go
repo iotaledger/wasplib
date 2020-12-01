@@ -75,7 +75,7 @@ func (host *WasmHost) Exists(objId int32, keyId int32) bool {
 	return host.FindObject(objId).Exists(keyId)
 }
 
-func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]int32, logger LogInterface) error {
+func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]int32, logger LogInterface) {
 	if keyMap == nil {
 		keyMap = &baseKeyMap
 	}
@@ -95,8 +95,10 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	}
 	host.TrackObject(null)
 	host.TrackObject(root)
-	host.vm = NewWasmTimeVM()
-	return host.vm.LinkHost(host)
+}
+
+func (host *WasmHost) InitVM(vm WasmVM) error {
+	return vm.LinkHost(host)
 }
 
 func (host *WasmHost) FindObject(objId int32) HostObject {
@@ -146,8 +148,16 @@ func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
 }
 
 func (host *WasmHost) GetKey(bytes []byte) int32 {
+	encoded := base58.Encode(bytes)
+	if host.useBase58Keys {
+		// transform byte slice key into base58 string
+		// now all keys are byte slices from strings
+		return host.GetKeyId(encoded)
+	}
+
+	// use byte slice key as is
 	keyId := host.getKeyId(bytes)
-	host.Trace("GetKey '%s'=k%d", base58.Encode(bytes), keyId)
+	host.Trace("GetKey '%s'=k%d", encoded, keyId)
 	return keyId
 }
 

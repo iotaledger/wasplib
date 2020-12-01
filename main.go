@@ -5,8 +5,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasplib/client"
+	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
+	"github.com/iotaledger/wasplib/contracts/fairauction"
+	"github.com/iotaledger/wasplib/contracts/fairroulette"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
+	"github.com/iotaledger/wasplib/contracts/tokenregistry"
 	"github.com/iotaledger/wasplib/wasmhost"
 	"io/ioutil"
 )
@@ -77,14 +80,12 @@ func main() {
 	execJsonTest()
 }
 
-func execGoHost() {
-	goHost, err := wasmhost.NewSimpleWasmHost()
-	if err != nil {
-		panic(err)
-	}
-	client.ConnectHost(goHost)
-	inccounter.OnLoad()
-	goHost.RunScFunction("incrementCallIncrement")
+var goVmContracts = map[string]func(){
+	"donatewithfeedback": donatewithfeedback.OnLoad,
+	"fairauction":        fairauction.OnLoad,
+	"fairroulette":       fairroulette.OnLoad,
+	"inccounter":         inccounter.OnLoad,
+	"tokenregistry":      tokenregistry.OnLoad,
 }
 
 func execJsonTest() {
@@ -93,7 +94,7 @@ func execJsonTest() {
 	//contract := "fairroulette"
 	contract := "inccounter"
 	//contract := "tokenregistry"
-	language := "go" // "bg" = Rust, "go" = Go
+	language := "go" // "bg" = Rust Wasm, "go" = Go Wasm, "" = Go VM
 
 	pathName := "tests/" + contract + ".json"
 	jsonTests, err := wasmhost.NewJsonTests(pathName)
@@ -101,17 +102,25 @@ func execJsonTest() {
 		panic(err)
 	}
 
-	host, err := wasmhost.NewSimpleWasmHost()
+	host, err := wasmhost.NewSimpleWasmHost(wasmhost.NewWasmTimeVM())
 	if err != nil {
 		panic(err)
 	}
-	wasmData, err := ioutil.ReadFile("wasm/" + contract + "_" + language + ".wasm")
-	if err != nil {
-		panic(err)
-	}
-	err = host.LoadWasm(wasmData)
-	if err != nil {
-		panic(err)
+	if language == "go" || language == "bg" {
+		wasmData, err := ioutil.ReadFile("wasm/" + contract + "_" + language + ".wasm")
+		if err != nil {
+			panic(err)
+		}
+		err = host.LoadWasm(wasmData)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		onLoad, ok := goVmContracts[contract]
+		if !ok {
+			panic("Unknown contract: " + contract)
+		}
+		onLoad()
 	}
 
 	failed := 0

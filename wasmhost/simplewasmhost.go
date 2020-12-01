@@ -19,16 +19,18 @@ type SimpleWasmHost struct {
 	TransfersId int32
 }
 
-func NewSimpleWasmHost() (*SimpleWasmHost, error) {
+func NewSimpleWasmHost(vm WasmVM) (*SimpleWasmHost, error) {
 	host := &SimpleWasmHost{}
+	host.vm = vm
 	host.useBase58Keys = true
-	err := host.Init(NewNullObject(host), NewHostMap(host, 0), nil, host)
-	if err != nil {
-		return nil, err
-	}
+	host.Init(NewNullObject(host), NewHostMap(host, 0), nil, host)
 	host.CallsId = host.GetKeyId("calls")
 	host.ExportsId = host.GetKeyId("exports")
 	host.TransfersId = host.GetKeyId("transfers")
+	err := host.InitVM(vm)
+	if err != nil {
+		return nil, err
+	}
 	return host, nil
 }
 
