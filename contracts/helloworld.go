@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadHelloWorld() {
+func helloworldOnLoad() {
 	wasmclient.ConnectWasmHost()
 	helloworld.OnLoad()
 }

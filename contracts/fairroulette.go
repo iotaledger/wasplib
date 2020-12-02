@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadFairRoulette() {
+func fairrouletteOnLoad() {
 	wasmclient.ConnectWasmHost()
 	fairroulette.OnLoad()
 }

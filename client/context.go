@@ -332,8 +332,8 @@ func (ctx ScViewContext) State() ScImmutableMap {
 	return ctx.root.GetMap("state").Immutable()
 }
 
-func (ctx ScViewContext) TimestampedLog(key string) ScLog {
-	return ScLog{ctx.root.GetMap("logs").GetMapArray(key)}
+func (ctx ScViewContext) TimestampedLog(key string) ScImmutableMapArray {
+	return ctx.root.GetMap("logs").GetMapArray(key).Immutable()
 }
 
 func (ctx ScViewContext) Trace(text string) {

@@ -6,6 +6,7 @@ package org.iota.wasplib.client.context;
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.immutable.ScImmutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
@@ -45,8 +46,8 @@ public class ScViewContext {
 		return root.GetMap("state").Immutable();
 	}
 
-	public ScLog TimestampedLog(String key) {
-		return new ScLog(root.GetMap("logs").GetMapArray(key));
+	public ScImmutableMapArray TimestampedLog(String key) {
+		return root.GetMap("logs").GetMapArray(key).Immutable();
 	}
 
 	public void Trace(String text) {

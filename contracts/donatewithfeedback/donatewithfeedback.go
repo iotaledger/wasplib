@@ -20,6 +20,7 @@ func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("donate", donate)
 	exports.AddCall("withdraw", withdraw)
+	exports.AddView("viewDonations", viewDonations)
 }
 
 func donate(sc *client.ScCallContext) {
@@ -72,6 +73,29 @@ func withdraw(sc *client.ScCallContext) {
 	}
 
 	sc.Transfer(scOwner, client.IOTA, withdrawAmount)
+}
+
+func viewDonations(sc *client.ScViewContext) {
+	state := sc.State()
+	largestDonation := state.GetInt("maxd")
+	totalDonated := state.GetInt("total")
+	tlog := sc.TimestampedLog("l")
+	results := sc.Results()
+	results.GetInt("largest").SetValue(largestDonation.Value())
+	results.GetInt("total").SetValue(totalDonated.Value())
+	donations := results.GetMapArray("donations")
+	size := tlog.Length()
+	for i := int32(0); i < size; i++ {
+		log := tlog.GetMap(i)
+		donation := donations.GetMap(i)
+		donation.GetInt("timestamp").SetValue(log.GetInt("timestamp").Value())
+		bytes := log.GetBytes("data").Value()
+		di := decodeDonationInfo(bytes)
+		donation.GetInt("amount").SetValue(di.amount)
+		donation.GetString("feedback").SetValue(di.feedback)
+		donation.GetString("sender").SetValue(di.sender.String())
+		donation.GetString("error").SetValue(di.error)
+	}
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {

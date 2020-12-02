@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadTokenRegistry() {
+func tokenregistryOnLoad() {
 	wasmclient.ConnectWasmHost()
 	tokenregistry.OnLoad()
 }

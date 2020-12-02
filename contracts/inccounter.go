@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadIncCounter() {
+func inccounterOnLoad() {
 	wasmclient.ConnectWasmHost()
 	inccounter.OnLoad()
 }

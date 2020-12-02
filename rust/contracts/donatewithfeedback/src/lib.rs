@@ -20,6 +20,7 @@ pub fn onLoad() {
     let exports = ScExports::new();
     exports.add_call("donate", donate);
     exports.add_call("withdraw", withdraw);
+    exports.add_view("viewDonations", viewDonations);
 }
 
 fn donate(sc: &ScCallContext) {
@@ -70,6 +71,29 @@ fn withdraw(sc: &ScCallContext) {
     }
 
     sc.transfer(&sc_owner, &ScColor::IOTA, withdraw_amount);
+}
+
+fn viewDonations(sc: &ScViewContext) {
+    let state = sc.state();
+    let largestDonation = state.get_int("maxd");
+    let totalDonated = state.get_int("total");
+    let tlog = sc.timestamped_log("l");
+    let results = sc.results();
+    results.get_int("largest").set_value(largestDonation.value());
+    results.get_int("total").set_value(totalDonated.value());
+    let donations = results.get_map_array("donations");
+    let size = tlog.length();
+    for i in 0..size {
+        let log = tlog.get_map(i);
+        let donation = donations.get_map(i);
+        donation.get_int("timestamp").set_value(log.get_int("timestamp").value());
+        let bytes = log.get_bytes("data").value();
+        let di = decodeDonationInfo(&bytes);
+        donation.get_int("amount").set_value(di.amount);
+        donation.get_string("feedback").set_value(&di.feedback);
+        donation.get_string("sender").set_value(&di.sender.to_string());
+        donation.get_string("error").set_value(&di.error);
+    }
 }
 
 fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {

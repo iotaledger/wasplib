@@ -354,8 +354,8 @@ impl ScViewContext {
         self.root.get_map("state").immutable()
     }
 
-    pub fn timestamped_log(&self, key: &str) -> ScLog {
-        ScLog { log: self.root.get_map("logs").get_map_array(key) }
+    pub fn timestamped_log(&self, key: &str) -> ScImmutableMapArray {
+        self.root.get_map("logs").get_map_array(key).immutable()
     }
 
     pub fn trace(&self, text: &str) {

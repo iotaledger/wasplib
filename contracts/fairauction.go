@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadFairAuction() {
+func fairauctionOnLoad() {
 	wasmclient.ConnectWasmHost()
 	fairauction.OnLoad()
 }

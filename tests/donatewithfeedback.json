@@ -247,6 +247,101 @@
         "views": [],
         "transfers": []
       }
+    },
+    {
+      "name": "donateTwiceAndView",
+      "setup": "default",
+      "request": {
+        "function": "donate",
+        "colors": ["#iota"],
+        "balance": {"#iota": 500},
+        "params": {
+          "f": "Here, have some iotas"
+        }
+      },
+      "additionalRequests": [
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash2",
+          "hash": "#txHash2",
+          "sender": "@sender2",
+          "function": "donate",
+          "colors": ["#iota"],
+          "balance": {"#iota": 750},
+          "params": {
+            "f": "Here, have some more iotas"
+          }
+        },
+        {
+          "timestamp": 20201027172139,
+          "id": "$txHash3",
+          "hash": "#txHash3",
+          "sender": "@sender3",
+          "function": "viewDonations"
+        }
+      ],
+      "expect": {
+        "account": {
+          "colors": ["#iota"],
+          "balance": {"#iota": 1350}
+        },
+        "state": {
+        },
+        "logs": {
+          "l": [
+            {
+              "timestamp": 20201027172138,
+              "data": {
+                "DonationInfo": {
+                  "seq": 0,
+                  "id": "$txHash",
+                  "amount": 500,
+                  "sender": "@sender",
+                  "error": "",
+                  "feedback": "Here, have some iotas"
+                }
+              }
+            },
+            {
+              "timestamp": 20201027172139,
+              "data": {
+                "DonationInfo": {
+                  "seq": 1,
+                  "id": "$txHash2",
+                  "amount": 750,
+                  "sender": "@sender2",
+                  "error": "",
+                  "feedback": "Here, have some more iotas"
+                }
+              }
+            }
+          ]
+        },
+        "calls": [],
+        "posts": [],
+        "views": [],
+        "transfers": [],
+        "results": {
+          "largest": 750,
+          "total": 1250,
+          "donations": [
+            {
+              "timestamp": 20201027172138,
+              "amount": 500,
+              "feedback": "Here, have some iotas",
+              "sender": "@sender",
+              "error": ""
+            },
+            {
+              "feedback": "Here, have some more iotas",
+              "sender": "@sender2",
+              "error": "",
+              "timestamp": 20201027172139,
+              "amount": 750
+            }
+          ]
+        }
+      }
     }
   ]
 }

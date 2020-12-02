@@ -12,7 +12,7 @@ func main() {
 }
 
 //export onLoad
-func onLoadDonateWithFeedback() {
+func donatewithfeedbackOnLoad() {
 	wasmclient.ConnectWasmHost()
 	donatewithfeedback.OnLoad()
 }
