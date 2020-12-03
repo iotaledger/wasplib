@@ -98,7 +98,7 @@ fn allowance(call: &ScViewContext){
         call.log("er20.allowance.fail: wrong 'delegation' parameter");
         return;
     }
-    let allowances = call.state().get_key_map(&(owner.value().to_string()+"_allow"));
+    let allowances = call.state().get_key_map(&owner.value().to_string());
     let allow = allowances.get_int(delegation.value().to_bytes()).value();
     call.results().get_int(PARAM_AMOUNT).set_value(allow);
 }
@@ -161,7 +161,7 @@ fn approve(call: &ScCallContext) {
         return;
     }
     let caller = call.request().sender().to_string();
-    let allowances = call.state().get_key_map(&(caller + "_allow"));
+    let allowances = call.state().get_key_map(&caller);
     allowances.get_int(account.to_bytes()).set_value(amount);
     call.log("erc20.approve.success");
 }
@@ -194,7 +194,7 @@ fn transfer_from(call: &ScCallContext) {
     }
     let amount = amount.value();
 
-    let allowances = call.state().get_key_map(&(account.to_string()+"_allow"));
+    let allowances = call.state().get_key_map(&account.to_string());
     let allowance = allowances.get_int(recipient.to_bytes());
     if allowance.value() < amount{
         call.log("erc20.approve.fail: not enough allowance");
