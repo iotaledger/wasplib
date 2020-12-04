@@ -5,7 +5,6 @@ package erc20
 
 import (
 	"github.com/iotaledger/wasplib/client"
-	"strconv"
 )
 
 const (
@@ -65,7 +64,7 @@ func transfer(sc *client.ScCallContext) {
 
 	sourceBalance := balances.GetInt(sender.Bytes())
 
-	sc.Log("source balance: " + strconv.FormatInt(sourceBalance.Value(), 10))
+	sc.Log("source balance: " + sc.Utility().String(sourceBalance.Value()))
 
 	params := request.Params()
 	amount := params.GetInt(varAmount)

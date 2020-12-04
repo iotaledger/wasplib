@@ -17,6 +17,10 @@ public class ScAddress {
 		System.arraycopy(bytes, 0, address, 0, address.length);
 	}
 
+	public ScAgent AsAgent() {
+		return new ScAgent(Arrays.copyOf(address, 37));
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "wasplib",
+    "contracts/dividend",
     "contracts/donatewithfeedback",
     "contracts/erc20",
     "contracts/fairauction",

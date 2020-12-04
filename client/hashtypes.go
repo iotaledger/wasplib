@@ -28,6 +28,13 @@ func (a *ScAddress) String() string {
 	return base58Encode(a.address[:])
 }
 
+func (a *ScAddress) AsAgent() *ScAgent {
+	agent := &ScAgent{}
+	// agent is address padded with zeroes
+	copy(agent.id[:], a.address[:])
+	return agent
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScAgent struct {

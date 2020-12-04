@@ -11,6 +11,11 @@ pub struct ScAddress {
 }
 
 impl ScAddress {
+    pub fn as_agent(&self) -> ScAgent {
+        let mut agent = ScAgent { id: [0; 37] };
+        agent.id[0..33].copy_from_slice(&self.address[0..33]);
+        agent
+    }
     pub fn from_bytes(bytes: &[u8]) -> ScAddress {
         ScAddress { address: bytes.try_into().expect("address should be 33 bytes") }
     }

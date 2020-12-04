@@ -42,4 +42,8 @@ public class ScUtility {
 		long rnd = utility.GetInt("random").Value();
 		return Long.remainderUnsigned(rnd, max);
 	}
+
+	public String String(long value) {
+		return "" + value;
+	}
 }

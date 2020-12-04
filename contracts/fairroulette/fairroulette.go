@@ -5,7 +5,6 @@ package fairroulette
 
 import (
 	"github.com/iotaledger/wasplib/client"
-	"strconv"
 )
 
 const NUM_COLORS int64 = 5
@@ -128,13 +127,13 @@ func payWinners(sc *client.ScCallContext) {
 			totalPayout += payout
 			sc.Transfer(bet.sender, client.IOTA, payout)
 		}
-		text := "Pay " + strconv.FormatInt(payout, 10) + " to " + bet.sender.String()
+		text := "Pay " + sc.Utility().String(payout) + " to " + bet.sender.String()
 		sc.Log(text)
 	}
 
 	if totalPayout != totalBetAmount {
 		remainder := totalBetAmount - totalPayout
-		text := "Remainder is " + strconv.FormatInt(remainder, 10)
+		text := "Remainder is " + sc.Utility().String(remainder)
 		sc.Log(text)
 		sc.Transfer(scId, client.IOTA, remainder)
 	}

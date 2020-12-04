@@ -3,6 +3,8 @@
 
 package client
 
+import "strconv"
+
 var (
 	rootCallContext = ScCallContext{root: ScMutableMap{objId: 1}}
 	rootViewContext = ScViewContext{root: ScMutableMap{objId: 1}}
@@ -178,6 +180,10 @@ func (ctx ScUtility) Hash(value []byte) []byte {
 func (ctx ScUtility) Random(max int64) int64 {
 	rnd := ctx.utility.GetInt("random").Value()
 	return int64(uint64(rnd) % uint64(max))
+}
+
+func (ctx ScUtility) String(value int64) string {
+	return strconv.FormatInt(value, 10)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

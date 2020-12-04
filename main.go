@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/iotaledger/wasplib/contracts/dividend"
 	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/iotaledger/wasplib/contracts/fairroulette"
@@ -18,6 +19,7 @@ import (
 )
 
 var scForGoVM = map[string]func(){
+	"dividend":           dividend.OnLoad,
 	"donatewithfeedback": donatewithfeedback.OnLoad,
 	"fairauction":        fairauction.OnLoad,
 	"fairroulette":       fairroulette.OnLoad,
