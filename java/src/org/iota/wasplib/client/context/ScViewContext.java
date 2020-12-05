@@ -5,6 +5,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.Keys;
+import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.immutable.ScImmutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -18,8 +19,12 @@ public class ScViewContext {
 		root = new ScMutableMap(1);
 	}
 
-	public ScAccount Account() {
-		return new ScAccount(root.GetMap("account").Immutable());
+	public ScBalances Balances() {
+		return new ScBalances(root.GetKeyMap("balances").Immutable());
+	}
+
+	public ScAgent Caller() {
+		return root.GetAgent("caller").Value();
 	}
 
 	public ScContract Contract() {
@@ -30,12 +35,16 @@ public class ScViewContext {
 		return root.GetString("error");
 	}
 
+	public Boolean From(ScAgent originator) {
+		return Caller().equals(originator);
+	}
+
 	public void Log(String text) {
 		Host.SetString(1, Keys.KeyLog(), text);
 	}
 
-	public ScRequest Request() {
-		return new ScRequest(root.GetMap("request").Immutable());
+	public ScImmutableMap Params() {
+		return root.GetMap("params").Immutable();
 	}
 
 	public ScMutableMap Results() {
@@ -44,6 +53,10 @@ public class ScViewContext {
 
 	public ScImmutableMap State() {
 		return root.GetMap("state").Immutable();
+	}
+
+	public long Timestamp() {
+		return root.GetInt("timestamp").Value();
 	}
 
 	public ScImmutableMapArray TimestampedLog(String key) {

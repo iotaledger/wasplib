@@ -79,15 +79,6 @@ public class ScMutableMap {
 		return new ScMutableMapArray(arrId);
 	}
 
-	public ScMutableRequestId GetRequestId(String key) {
-		return new ScMutableRequestId(objId, Host.GetKeyId(key));
-	}
-
-	public ScMutableRequestIdArray GetRequestIdArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
-		return new ScMutableRequestIdArray(arrId);
-	}
-
 	public ScMutableString GetString(String key) {
 		return new ScMutableString(objId, Host.GetKeyId(key));
 	}
@@ -95,15 +86,6 @@ public class ScMutableMap {
 	public ScMutableStringArray GetStringArray(String key) {
 		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_STRING_ARRAY);
 		return new ScMutableStringArray(arrId);
-	}
-
-	public ScMutableTxHash GetTxHash(String key) {
-		return new ScMutableTxHash(objId, Host.GetKeyId(key));
-	}
-
-	public ScMutableTxHashArray GetTxHashArray(String key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKeyId(key), ScType.TYPE_BYTES_ARRAY);
-		return new ScMutableTxHashArray(arrId);
 	}
 
 	public ScImmutableMap Immutable() {

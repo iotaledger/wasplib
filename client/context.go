@@ -12,16 +12,17 @@ var (
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScAccount struct {
-	account ScImmutableMap
+type ScBalances struct {
+	balances ScImmutableKeyMap
 }
 
-func (ctx ScAccount) Balance(color *ScColor) int64 {
-	return ctx.account.GetKeyMap("balance").GetInt(color.Bytes()).Value()
+func (ctx ScBalances) Balance(color *ScColor) int64 {
+	return ctx.balances.GetInt(color.Bytes()).Value()
 }
 
-func (ctx ScAccount) Colors() ScImmutableColorArray {
-	return ctx.account.GetColorArray("colors")
+func (ctx ScBalances) Minted() *ScColor {
+	mintKey := MINT.Bytes()
+	return NewScColor(ctx.balances.GetBytes(mintKey).Value())
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -111,48 +112,6 @@ func (ctx ScPostInfo) Transfer(color *ScColor, amount int64) {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScRequest struct {
-	request ScImmutableMap
-}
-
-func (ctx ScRequest) Balance(color *ScColor) int64 {
-	return ctx.request.GetKeyMap("balance").GetInt(color.Bytes()).Value()
-}
-
-func (ctx ScRequest) Colors() ScImmutableColorArray {
-	return ctx.request.GetColorArray("colors")
-}
-
-func (ctx ScRequest) From(originator *ScAgent) bool {
-	return ctx.Sender().Equals(originator)
-}
-
-func (ctx ScRequest) Id() *ScRequestId {
-	return ctx.request.GetRequestId("id").Value()
-}
-
-func (ctx ScRequest) MintedColor() *ScColor {
-	return ctx.request.GetColor("hash").Value()
-}
-
-func (ctx ScRequest) Params() ScImmutableMap {
-	return ctx.request.GetMap("params")
-}
-
-func (ctx ScRequest) Sender() *ScAgent {
-	return ctx.request.GetAgent("sender").Value()
-}
-
-func (ctx ScRequest) Timestamp() int64 {
-	return ctx.request.GetInt("timestamp").Value()
-}
-
-func (ctx ScRequest) TxHash() *ScTxHash {
-	return ctx.request.GetTxHash("hash").Value()
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScUtility struct {
 	utility ScMutableMap
 }
@@ -211,8 +170,8 @@ type ScCallContext struct {
 	root ScMutableMap
 }
 
-func (ctx ScCallContext) Account() ScAccount {
-	return ScAccount{ctx.root.GetMap("account").Immutable()}
+func (ctx ScCallContext) Balances() ScBalances {
+	return ScBalances{ctx.root.GetKeyMap("balances").Immutable()}
 }
 
 func (ctx ScCallContext) Call(contract string, function string) ScCallInfo {
@@ -221,6 +180,10 @@ func (ctx ScCallContext) Call(contract string, function string) ScCallInfo {
 	call.GetString("contract").SetValue(contract)
 	call.GetString("function").SetValue(function)
 	return ScCallInfo{call}
+}
+
+func (ctx ScCallContext) Caller() *ScAgent {
+	return ctx.root.GetAgent("caller").Value()
 }
 
 func (ctx ScCallContext) CallSelf(function string) ScCallInfo {
@@ -235,8 +198,20 @@ func (ctx ScCallContext) Error() ScMutableString {
 	return ctx.root.GetString("error")
 }
 
+func (ctx ScCallContext) From(originator *ScAgent) bool {
+	return ctx.Caller().Equals(originator)
+}
+
+func (ctx ScCallContext) Incoming() ScBalances {
+	return ScBalances{ctx.root.GetKeyMap("incoming").Immutable()}
+}
+
 func (ctx ScCallContext) Log(text string) {
 	SetString(1, KeyLog(), text)
+}
+
+func (ctx ScCallContext) Params() ScImmutableMap {
+	return ctx.root.GetMap("params").Immutable()
 }
 
 func (ctx ScCallContext) PostGlobal(chain *ScAddress, contract string, function string) ScPostInfo {
@@ -260,16 +235,16 @@ func (ctx ScCallContext) PostSelf(function string) ScPostInfo {
 	return ctx.PostLocal("", function)
 }
 
-func (ctx ScCallContext) Request() ScRequest {
-	return ScRequest{ctx.root.GetMap("request").Immutable()}
-}
-
 func (ctx ScCallContext) Results() ScMutableMap {
 	return ctx.root.GetMap("results")
 }
 
 func (ctx ScCallContext) State() ScMutableMap {
 	return ctx.root.GetMap("state")
+}
+
+func (ctx ScCallContext) Timestamp() int64 {
+	return ctx.root.GetInt("timestamp").Value()
 }
 
 func (ctx ScCallContext) TimestampedLog(key string) ScLog {
@@ -310,8 +285,12 @@ type ScViewContext struct {
 	root ScMutableMap
 }
 
-func (ctx ScViewContext) Account() ScAccount {
-	return ScAccount{ctx.root.GetMap("account").Immutable()}
+func (ctx ScViewContext) Balances() ScBalances {
+	return ScBalances{ctx.root.GetKeyMap("balances").Immutable()}
+}
+
+func (ctx ScViewContext) Caller() *ScAgent {
+	return ctx.root.GetAgent("caller").Value()
 }
 
 func (ctx ScViewContext) Contract() ScContract {
@@ -322,12 +301,16 @@ func (ctx ScViewContext) Error() ScMutableString {
 	return ctx.root.GetString("error")
 }
 
+func (ctx ScViewContext) From(originator *ScAgent) bool {
+	return ctx.Caller().Equals(originator)
+}
+
 func (ctx ScViewContext) Log(text string) {
 	SetString(1, KeyLog(), text)
 }
 
-func (ctx ScViewContext) Request() ScRequest {
-	return ScRequest{ctx.root.GetMap("request").Immutable()}
+func (ctx ScViewContext) Params() ScImmutableMap {
+	return ctx.root.GetMap("params").Immutable()
 }
 
 func (ctx ScViewContext) Results() ScMutableMap {
@@ -336,6 +319,10 @@ func (ctx ScViewContext) Results() ScMutableMap {
 
 func (ctx ScViewContext) State() ScImmutableMap {
 	return ctx.root.GetMap("state").Immutable()
+}
+
+func (ctx ScViewContext) Timestamp() int64 {
+	return ctx.root.GetInt("timestamp").Value()
 }
 
 func (ctx ScViewContext) TimestampedLog(key string) ScImmutableMapArray {

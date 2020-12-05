@@ -19,12 +19,11 @@ pub fn onLoad() {
 }
 
 fn member(sc: &ScCallContext) {
-    let request = sc.request();
-    if !request.from(&sc.contract().owner()) {
+    if !sc.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
-    let params = request.params();
+    let params = sc.params();
     let address = params.get_address("address");
     if !address.exists() {
         sc.log("Missing address");
@@ -65,7 +64,7 @@ fn member(sc: &ScCallContext) {
 }
 
 fn dividend(sc: &ScCallContext) {
-    let amount = sc.account().balance(&ScColor::IOTA);
+    let amount = sc.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         sc.log("Nothing to divide");
         return;

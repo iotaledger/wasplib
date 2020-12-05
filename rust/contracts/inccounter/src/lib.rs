@@ -28,7 +28,7 @@ pub fn onLoad() {
 }
 
 fn init(sc: &ScCallContext) {
-    let counter = sc.request().params().get_int("counter").value();
+    let counter = sc.params().get_int("counter").value();
     if counter == 0 {
         return;
     }
@@ -77,7 +77,7 @@ fn incrementRepeatMany(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     let state_repeats = sc.state().get_int("numRepeats");
-    let mut repeats = sc.request().params().get_int("numRepeats").value();
+    let mut repeats = sc.params().get_int("numRepeats").value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {

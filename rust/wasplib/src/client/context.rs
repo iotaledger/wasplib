@@ -14,17 +14,18 @@ pub(crate) static ROOT_VIEW_CONTEXT: ScViewContext = ScViewContext { root: ScMut
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScAccount {
-    account: ScImmutableMap,
+pub struct ScBalances {
+    balances: ScImmutableKeyMap,
 }
 
-impl ScAccount {
+impl ScBalances {
     pub fn balance(&self, color: &ScColor) -> i64 {
-        self.account.get_key_map("balance").get_int(color.to_bytes()).value()
+        self.balances.get_int(color.to_bytes()).value()
     }
 
-    pub fn colors(&self) -> ScImmutableColorArray {
-        self.account.get_color_array("colors")
+    pub fn minted(&self) -> ScColor {
+        let mint_key = &ScColor::MINT.to_bytes();
+        return ScColor::from_bytes(&self.balances.get_bytes(mint_key).value());
     }
 }
 
@@ -122,48 +123,6 @@ impl ScPostInfo {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScRequest {
-    request: ScImmutableMap,
-}
-
-impl ScRequest {
-    pub fn balance(&self, color: &ScColor) -> i64 {
-        self.request.get_key_map("balance").get_int(color.to_bytes()).value()
-    }
-
-    pub fn colors(&self) -> ScImmutableColorArray {
-        self.request.get_color_array("colors")
-    }
-
-    pub fn from(&self, originator: &ScAgent) -> bool {
-        self.sender() == *originator
-    }
-
-    pub fn id(&self) -> ScRequestId {
-        self.request.get_request_id("id").value()
-    }
-
-    pub fn minted_color(&self) -> ScColor {
-        self.request.get_color("hash").value()
-    }
-
-    pub fn params(&self) -> ScImmutableMap {
-        self.request.get_map("params")
-    }
-
-    pub fn sender(&self) -> ScAgent { self.request.get_agent("sender").value() }
-
-    pub fn timestamp(&self) -> i64 {
-        self.request.get_int("timestamp").value()
-    }
-
-    pub fn tx_hash(&self) -> ScTxHash {
-        self.request.get_tx_hash("hash").value()
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 pub struct ScUtility {
     utility: ScMutableMap,
 }
@@ -225,8 +184,8 @@ pub struct ScCallContext {
 }
 
 impl ScCallContext {
-    pub fn account(&self) -> ScAccount {
-        ScAccount { account: self.root.get_map("account").immutable() }
+    pub fn balances(&self) -> ScBalances {
+        ScBalances { balances: self.root.get_key_map("balances").immutable() }
     }
 
     pub fn call(&self, contract: &str, function: &str) -> ScCallInfo {
@@ -236,6 +195,8 @@ impl ScCallContext {
         call.get_string("function").set_value(function);
         ScCallInfo { call: call }
     }
+
+    pub fn caller(&self) -> ScAgent { self.root.get_agent("caller").value() }
 
     pub fn call_self(&self, function: &str) -> ScCallInfo {
         self.call("", function)
@@ -249,8 +210,19 @@ impl ScCallContext {
         self.root.get_string("error")
     }
 
+    pub fn from(&self, originator: &ScAgent) -> bool {
+        self.caller() == *originator
+    }
+    pub fn incoming(&self) -> ScBalances {
+        ScBalances { balances: self.root.get_key_map("incoming").immutable() }
+    }
+
     pub fn log(&self, text: &str) {
         set_string(1, key_log(), text)
+    }
+
+    pub fn params(&self) -> ScImmutableMap {
+        self.root.get_map("params").immutable()
     }
 
     pub fn post_global(&self, chain: &ScAddress, contract: &str, function: &str) -> ScPostInfo {
@@ -274,16 +246,16 @@ impl ScCallContext {
         self.post_local("", function)
     }
 
-    pub fn request(&self) -> ScRequest {
-        ScRequest { request: self.root.get_map("request").immutable() }
-    }
-
     pub fn results(&self) -> ScMutableMap {
         self.root.get_map("results")
     }
 
     pub fn state(&self) -> ScMutableMap {
         self.root.get_map("state")
+    }
+
+    pub fn timestamp(&self) -> i64 {
+        self.root.get_int("timestamp").value()
     }
 
     pub fn timestamped_log(&self, key: &str) -> ScLog {
@@ -326,9 +298,11 @@ pub struct ScViewContext {
 }
 
 impl ScViewContext {
-    pub fn account(&self) -> ScAccount {
-        ScAccount { account: self.root.get_map("account").immutable() }
+    pub fn balances(&self) -> ScBalances {
+        ScBalances { balances: self.root.get_key_map("balances").immutable() }
     }
+
+    pub fn caller(&self) -> ScAgent { self.root.get_agent("caller").value() }
 
     pub fn contract(&self) -> ScContract {
         ScContract { contract: self.root.get_map("contract").immutable() }
@@ -338,12 +312,16 @@ impl ScViewContext {
         self.root.get_string("error")
     }
 
+    pub fn from(&self, originator: &ScAgent) -> bool {
+        self.caller() == *originator
+    }
+
     pub fn log(&self, text: &str) {
         set_string(1, key_log(), text)
     }
 
-    pub fn request(&self) -> ScRequest {
-        ScRequest { request: self.root.get_map("request").immutable() }
+    pub fn params(&self) -> ScImmutableMap {
+        self.root.get_map("params").immutable()
     }
 
     pub fn results(&self) -> ScMutableMap {
@@ -352,6 +330,10 @@ impl ScViewContext {
 
     pub fn state(&self) -> ScImmutableMap {
         self.root.get_map("state").immutable()
+    }
+
+    pub fn timestamp(&self) -> i64 {
+        self.root.get_int("timestamp").value()
     }
 
     pub fn timestamped_log(&self, key: &str) -> ScImmutableMapArray {

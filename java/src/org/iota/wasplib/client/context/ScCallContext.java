@@ -8,6 +8,7 @@ import org.iota.wasplib.client.Keys;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
@@ -19,8 +20,8 @@ public class ScCallContext {
 		root = new ScMutableMap(1);
 	}
 
-	public ScAccount Account() {
-		return new ScAccount(root.GetMap("account").Immutable());
+	public ScBalances Balances() {
+		return new ScBalances(root.GetKeyMap("balances").Immutable());
 	}
 
 	public ScCallInfo Call(String contract, String function) {
@@ -29,6 +30,10 @@ public class ScCallContext {
 		call.GetString("contract").SetValue(contract);
 		call.GetString("function").SetValue(function);
 		return new ScCallInfo(call);
+	}
+
+	public ScAgent Caller() {
+		return root.GetAgent("caller").Value();
 	}
 
 	public ScCallInfo CallSelf(String function) {
@@ -43,8 +48,20 @@ public class ScCallContext {
 		return root.GetString("error");
 	}
 
+	public Boolean From(ScAgent originator) {
+		return Caller().equals(originator);
+	}
+
+	public ScBalances Incoming() {
+		return new ScBalances(root.GetKeyMap("incoming").Immutable());
+	}
+
 	public void Log(String text) {
 		Host.SetString(1, Keys.KeyLog(), text);
+	}
+
+	public ScImmutableMap Params() {
+		return root.GetMap("params").Immutable();
 	}
 
 	public ScPostInfo PostGlobal(ScAddress chain, String contract, String function) {
@@ -68,16 +85,16 @@ public class ScCallContext {
 		return PostLocal("", function);
 	}
 
-	public ScRequest Request() {
-		return new ScRequest(root.GetMap("request").Immutable());
-	}
-
 	public ScMutableMap Results() {
 		return root.GetMap("results");
 	}
 
 	public ScMutableMap State() {
 		return root.GetMap("state");
+	}
+
+	public long Timestamp() {
+		return root.GetInt("timestamp").Value();
 	}
 
 	public ScLog TimestampedLog(String key) {

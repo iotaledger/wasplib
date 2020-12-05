@@ -6,7 +6,6 @@ package org.iota.wasplib.contracts;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
-import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
@@ -25,21 +24,24 @@ public class TokenRegistry {
 	}
 
 	public static void mintSupply(ScCallContext sc) {
-		ScRequest request = sc.Request();
-		ScColor color = request.MintedColor();
+		ScColor minted = sc.Incoming().Minted();
+		if (minted.equals(ScColor.MINT)) {
+			sc.Log("TokenRegistry: No newly minted tokens found");
+			return;
+		}
 		ScMutableMap state = sc.State();
-		ScMutableBytes registry = state.GetKeyMap("registry").GetBytes(color.toBytes());
+		ScMutableBytes registry = state.GetKeyMap("registry").GetBytes(minted.toBytes());
 		if (registry.Exists()) {
 			sc.Log("TokenRegistry: Color already exists");
 			return;
 		}
-		ScImmutableMap params = request.Params();
+		ScImmutableMap params = sc.Params();
 		TokenInfo token = new TokenInfo();
-		token.supply = request.Balance(color);
-		token.mintedBy = request.Sender();
-		token.owner = request.Sender();
-		token.created = request.Timestamp();
-		token.updated = request.Timestamp();
+		token.supply = sc.Balances().Balance(minted);
+		token.mintedBy = sc.Caller();
+		token.owner = sc.Caller();
+		token.created = sc.Timestamp();
+		token.updated = sc.Timestamp();
 		token.description = params.GetString("dscr").Value();
 		token.userDefined = params.GetString("ud").Value();
 		if (token.supply <= 0) {
@@ -52,7 +54,7 @@ public class TokenRegistry {
 		byte[] bytes = encodeTokenInfo(token);
 		registry.SetValue(bytes);
 		ScMutableColorArray colors = state.GetColorArray("lc");
-		colors.GetColor(colors.Length()).SetValue(color);
+		colors.GetColor(colors.Length()).SetValue(minted);
 	}
 
 	public static void updateMetadata(ScCallContext sc) {

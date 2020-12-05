@@ -12,22 +12,14 @@
   },
   "setups": {
     "default": {
+      "caller": "@caller",
+      "timestamp": 20201027172138,
+      "balances": {"#iota": 100},
       "contract": {
         "name": "tokenregistry",
         "description": "Register colored tokens on the Tangle",
         "id": "@scId",
-        "color": "#scColor",
-        "owner": "@scOwner"
-      },
-      "account": {
-        "colors": ["#iota"],
-        "balance": {"#iota": 100}
-      },
-      "request": {
-        "timestamp": 20201027172138,
-        "id": "$txHash",
-        "hash": "#txHash",
-        "sender": "@sender"
+         "owner": "@scOwner"
       }
     }
   },
@@ -35,26 +27,20 @@
     {
       "name": "mintSupply",
       "setup": "default",
-      "request": {
-        "function": "mintSupply",
-        "colors": ["#txHash"],
-        "balance": {"#txHash": 1},
-        "params": {
-          "dscr": "My very valuable token"
-        }
+      "function": "mintSupply",
+      "incoming": {"#mint": "#token1", "#token1": 1},
+      "params": {
+        "dscr": "My very valuable token"
       },
       "expect": {
-        "account": {
-          "colors": ["#iota", "#txHash"],
-          "balance": {"#iota": 100, "#txHash": 1}
-        },
+        "balances": {"#iota": 100, "#token1": 1},
         "state": {
           "registry": {
-            "#txHash": {
+            "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@sender",
-                "owner": "@sender",
+                "mintedBy": "@caller",
+                "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
@@ -62,7 +48,7 @@
               }
             }
           },
-          "colorList": ["#txHash"]
+          "colorList": ["#token1"]
         },
         "logs": {},
         "calls": [],
@@ -74,25 +60,18 @@
     {
       "name": "mintWithMissingDescription",
       "setup": "default",
-      "request": {
-        "function": "mintSupply",
-        "colors": ["#txHash"],
-        "balance": {"#txHash": 1},
-        "params": {
-        }
-      },
+      "function": "mintSupply",
+      "incoming": {"#mint": "#token1", "#token1": 1},
+      "params": {},
       "expect": {
-        "account": {
-          "colors": ["#iota", "#txHash"],
-          "balance": {"#iota": 100, "#txHash": 1}
-        },
+        "balances": {"#iota": 100, "#token1": 1},
         "state": {
           "registry": {
-            "#txHash": {
+            "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@sender",
-                "owner": "@sender",
+                "mintedBy": "@caller",
+                "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "no dscr",
@@ -100,7 +79,7 @@
               }
             }
           },
-          "colorList": ["#txHash"]
+          "colorList": ["#token1"]
         },
         "logs": {},
         "calls": [],
@@ -112,19 +91,13 @@
     {
       "name": "mintWithMissingSupply",
       "setup": "default",
-      "request": {
-        "function": "mintSupply",
-        "colors": ["#iota"],
-        "balance": {"#iota": 1},
-        "params": {
-          "dscr": "Sending 1 iota instead of minting a token"
-        }
+      "function": "mintSupply",
+      "incoming": {"#mint": "#token1", "#iota": 1},
+      "params": {
+        "dscr": "Sending 1 iota instead of minting a token"
       },
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 101}
-        },
+        "balances": {"#iota": 101},
         "state": {
           "registry": {
           },
@@ -140,23 +113,17 @@
     {
       "name": "mintSecondSupply",
       "setup": "default",
-      "request": {
-        "function": "mintSupply",
-        "colors": ["#txHash"],
-        "balance": {"#txHash": 1},
-        "params": {
-          "dscr": "My very valuable token"
-        }
+      "function": "mintSupply",
+      "incoming": {"#mint": "#token1", "#token1": 1},
+      "params": {
+        "dscr": "My very valuable token"
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender",
+          "caller": "@caller2",
           "function": "mintSupply",
-          "colors": ["#txHash2"],
-          "balance": {"#txHash2": 750},
+          "incoming": {"#mint": "#token2", "#token2": 750},
           "params": {
             "dscr": "My shares in the IOTA Foundation",
             "ud": "Some user defined data"
@@ -164,28 +131,25 @@
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota", "#txHash", "#txHash2"],
-          "balance": {"#iota": 100, "#txHash": 1, "#txHash2": 750}
-        },
+        "balances": {"#iota": 100, "#token1": 1, "#token2": 750},
         "state": {
           "registry": {
-            "#txHash": {
+            "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@sender",
-                "owner": "@sender",
+                "mintedBy": "@caller",
+                "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
                 "userDefined": ""
               }
             },
-            "#txHash2": {
+            "#token2": {
               "TokenInfo": {
                 "supply": 750,
-                "mintedBy": "@sender",
-                "owner": "@sender",
+                "mintedBy": "@caller2",
+                "owner": "@caller2",
                 "created": 20201027172139,
                 "updated": 20201027172139,
                 "description": "My shares in the IOTA Foundation",
@@ -193,7 +157,7 @@
               }
             }
           },
-          "colorList": ["#txHash", "#txHash2"]
+          "colorList": ["#token1", "#token2"]
         },
         "logs": {},
         "calls": [],

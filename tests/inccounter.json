@@ -6,31 +6,20 @@
         "name": "inccounter",
         "description": "Test basic functionality",
         "id": "@scId",
-        "color": "#scColor",
         "owner": "@scOwner"
       },
-      "account": {
-        "colors": ["#iota"],
-        "balance": {"#iota": 100}
-      },
-      "request": {
-        "timestamp": 20201027172138,
-        "id": "$txHash",
-        "hash": "#txHash",
-        "sender": "@sender"
-      }
+      "balances": {"#iota": 100},
+      "timestamp": 20201027172138,
+      "caller": "@caller"
     }
   },
   "tests": [
     {
       "name": "nothing",
       "setup": "default",
-      "request": {
-        "function": "nothing"
-      },
+      "function": "nothing",
       "expect": {
-        "state": {
-        },
+        "state": {},
         "logs": {},
         "calls": [],
         "posts": [],
@@ -42,9 +31,7 @@
     {
       "name": "incrementFirstTime",
       "setup": "default",
-      "request": {
-        "function": "increment"
-      },
+      "function": "increment",
       "expect": {
         "state": {
           "counter": 1
@@ -63,9 +50,7 @@
       "state": {
         "counter": 1
       },
-      "request": {
-        "function": "increment"
-      },
+      "function": "increment",
       "expect": {
         "state": {
           "counter": 2
@@ -81,19 +66,14 @@
     {
       "name": "incrementAgainByCallingSelf",
       "setup": "default",
-      "request": {
-        "function": "incrementCallIncrement"
-      },
+      "function": "incrementCallIncrement",
       "expect": {
         "state": {
           "counter": 2
         },
         "logs": {},
-        "calls": [
-          {"function": "incrementCallIncrement"}
-        ],
-        "posts": [
-        ],
+        "calls": [{"function": "incrementCallIncrement"}],
+        "posts": [],
         "views": [],
         "transfers": [],
         "results": {}
@@ -102,9 +82,7 @@
     {
       "name": "incrementByRecursivelyCallingSelf5x",
       "setup": "default",
-      "request": {
-        "function": "incrementCallIncrementRecurse5x"
-      },
+      "function": "incrementCallIncrementRecurse5x",
       "expect": {
         "state": {
           "counter": 6
@@ -117,8 +95,7 @@
           {"function": "incrementCallIncrementRecurse5x"},
           {"function": "incrementCallIncrementRecurse5x"}
         ],
-        "posts": [
-        ],
+        "posts": [],
         "views": [],
         "transfers": [],
         "results": {}
@@ -127,18 +104,14 @@
     {
       "name": "incrementAgainByPostingSelf",
       "setup": "default",
-      "request": {
-        "function": "incrementPostIncrement"
-      },
+      "function": "incrementPostIncrement",
       "expect": {
         "state": {
           "counter": 2
         },
         "logs": {},
         "calls": [],
-        "posts": [
-          {"function": "incrementPostIncrement", "delay": 0}
-        ],
+        "posts": [{"function": "incrementPostIncrement", "delay": 0}],
         "views": [],
         "transfers": [],
         "results": {}
@@ -147,11 +120,9 @@
     {
       "name": "increment5TimesByChainingToSelf",
       "setup": "default",
-      "request": {
-        "function": "incrementRepeatMany",
-        "params": {
-          "numRepeats": 5
-        }
+      "function": "incrementRepeatMany",
+      "params": {
+        "numRepeats": 5
       },
       "expect": {
         "state": {
@@ -175,18 +146,14 @@
     {
       "name": "incrementLocalStateInternalCall",
       "setup": "default",
-      "request": {
-        "function": "incrementLocalStateInternalCall"
-      },
+      "function": "incrementLocalStateInternalCall",
       "expect": {
         "state": {
           "counter": 2
         },
         "logs": {},
-        "calls": [
-        ],
-        "posts": [
-        ],
+        "calls": [],
+        "posts": [],
         "views": [],
         "transfers": [],
         "results": {}
@@ -196,9 +163,7 @@
       "name": "incrementLocalStateSandboxCall",
       "setup": "default",
       "flags": "failWhenSC",
-      "request": {
-        "function": "incrementLocalStateSandboxCall"
-      },
+      "function": "incrementLocalStateSandboxCall",
       "expect": {
         "state": {
           "counter": 0
@@ -209,8 +174,7 @@
           {"function": "incrementWhenMustIncrement"},
           {"function": "incrementWhenMustIncrement"}
         ],
-        "posts": [
-        ],
+        "posts": [],
         "views": [],
         "transfers": [],
         "results": {}
@@ -220,16 +184,13 @@
       "name": "incrementLocalStatePost",
       "setup": "default",
       "flags": "failWhenSC",
-      "request": {
-        "function": "incrementLocalStatePost"
-      },
+      "function": "incrementLocalStatePost",
       "expect": {
         "state": {
           "counter": 0
         },
         "logs": {},
-        "calls": [
-        ],
+        "calls": [],
         "posts": [
           {"function": "incrementWhenMustIncrement"},
           {"function": "incrementWhenMustIncrement"},
@@ -243,15 +204,11 @@
     {
       "name": "incrementViewCounter",
       "setup": "default",
-      "request": {
-        "function": "increment"
-      },
+      "function": "increment",
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender2",
+          "caller": "@caller2",
           "function": "incrementViewCounter"
         }
       ],

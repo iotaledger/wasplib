@@ -19,12 +19,11 @@ func OnLoad() {
 }
 
 func member(sc *client.ScCallContext) {
-	request := sc.Request()
-	if !request.From(sc.Contract().Owner()) {
+	if !sc.From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
-	params := request.Params()
+	params := sc.Params()
 	address := params.GetAddress("address")
 	if !address.Exists() {
 		sc.Log("Missing address")
@@ -65,7 +64,7 @@ func member(sc *client.ScCallContext) {
 }
 
 func divide(sc *client.ScCallContext) {
-	amount := sc.Account().Balance(client.IOTA)
+	amount := sc.Balances().Balance(client.IOTA)
 	if amount == 0 {
 		sc.Log("Nothing to divide")
 		return

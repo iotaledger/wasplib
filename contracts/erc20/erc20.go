@@ -16,17 +16,16 @@ const (
 
 func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("init", onInitERC20)
+	exports.AddCall("init", onInit)
 	exports.AddCall("transfer", transfer)
 	exports.AddCall("approve", approve)
 }
 
-func onInitERC20(sc *client.ScCallContext) {
+func onInit(sc *client.ScCallContext) {
 	sc.Log("initSC")
 
 	scOwner := sc.Contract().Owner()
-	request := sc.Request()
-	if !request.From(scOwner) {
+	if !sc.From(scOwner) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -38,7 +37,7 @@ func onInitERC20(sc *client.ScCallContext) {
 		sc.Log("initSC.fail: already initialized")
 		return
 	}
-	params := sc.Request().Params()
+	params := sc.Params()
 	supplyParam := params.GetInt(varSupply)
 	if supplyParam.Value() == 0 {
 		sc.Log("initSC.fail: wrong 'supply' parameter")
@@ -55,18 +54,17 @@ func transfer(sc *client.ScCallContext) {
 	sc.Log("transfer")
 
 	state := sc.State()
-	request := sc.Request()
 	balances := state.GetKeyMap(varBalances)
 
-	sender := request.Sender()
+	caller := sc.Caller()
 
-	sc.Log("sender address: " + sender.String())
+	sc.Log("sender address: " + caller.String())
 
-	sourceBalance := balances.GetInt(sender.Bytes())
+	sourceBalance := balances.GetInt(caller.Bytes())
 
 	sc.Log("source balance: " + sc.Utility().String(sourceBalance.Value()))
 
-	params := request.Params()
+	params := sc.Params()
 	amount := params.GetInt(varAmount)
 	if amount.Value() == 0 {
 		sc.Log("transfer.fail: wrong 'amount' parameter")

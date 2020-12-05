@@ -1,210 +1,238 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+// implementation of ERC-20 smart contract for ISCP
+// following https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/
+
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
 use wasplib::client::*;
 
-const VAR_SUPPLY: &str = "supply";
-const VAR_BALANCES: &str = "b";
-const VAR_APPROVALS: &str = "a";
-const VAR_SOURCE_ADDRESS: &str = "s";
-const VAR_TARGET_ADDRESS: &str = "addr";
-const VAR_AMOUNT: &str = "amount";
+// state variable
+const STATE_VAR_SUPPLY: &str = "s";
+// supply constant
+const STATE_VAR_BALANCES: &str = "b";     // map of balances
 
-struct Delegation {
-    delegated_to: ScAgent,
-    amount: i64,
-}
+// params and return variables, used in calls
+const PARAM_SUPPLY: &str = "s";
+const PARAM_CREATOR: &str = "c";
+const PARAM_ACCOUNT: &str = "ac";
+const PARAM_DELEGATION: &str = "d";
+const PARAM_AMOUNT: &str = "am";
+const PARAM_RECIPIENT: &str = "r";
 
 #[no_mangle]
 pub fn onLoad() {
     let exports = ScExports::new();
     exports.add_call("init", init);
+    exports.add_view("totalSupply", total_supply);
+    exports.add_view("balanceOf", balance_of);
+    exports.add_view("allowance", allowance);
     exports.add_call("transfer", transfer);
     exports.add_call("approve", approve);
-    exports.add_call("transfer_from", transfer_from);
+    exports.add_call("transferFrom", transfer_from);
 }
 
-fn init(sc: &ScCallContext) {
-    sc.log("init");
+// TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-    let state = sc.state();
-    let supplyState = state.get_int(VAR_SUPPLY);
-    if supplyState.value() > 0 {
-        // already initialized
-        sc.log("init.fail: already initialized");
+// init is a constructor entry point. It initializes the smart contract with the initial value of the token supply
+// - input:
+//   -- PARAM_SUPPLY must be nonzero positive integer
+//   -- PARAM_CREATOR is the AgentID where initial supply is placed
+fn init(ctx: &ScCallContext) {
+    ctx.log("erc20.init. begin");
+
+    // validate parameters
+    // supply
+    let supply = ctx.params().get_int(PARAM_SUPPLY);
+    if !supply.exists() || supply.value() <= 0 {
+        ctx.log("er20.init.fail: wrong 'supply' parameter");
         return;
     }
-    let params = sc.request().params();
-    let supplyParam = params.get_int(VAR_SUPPLY);
-    if supplyParam.value() == 0 {
-        sc.log("init.fail: wrong 'supply' parameter");
+    // creator (owner)
+    // we cannot use 'caller' here because the init is always called from the 'root'
+    // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (init)
+    let creator = ctx.params().get_agent(PARAM_CREATOR);
+    if !creator.exists() {
+        ctx.log("er20.init.fail: wrong 'creator' parameter");
         return;
     }
-    let supply = supplyParam.value();
-    supplyState.set_value(supply);
-    let owner = sc.contract().owner();
-    state.get_key_map(VAR_BALANCES).get_int(owner.to_bytes()).set_value(supply);
+    ctx.state().get_int(STATE_VAR_SUPPLY).set_value(supply.value());
 
-    sc.log(&("init.success. Supply = ".to_string() + &supply.to_string()));
-    sc.log(&("init.success. Owner = ".to_string() + &owner.to_string()));
+    // assign the whole supply to creator
+    ctx.state().get_key_map(STATE_VAR_BALANCES).get_int(creator.value().to_bytes()).set_value(supply.value());
+
+    ctx.log(&("init.success. Supply = ".to_string() + &supply.value().to_string()));
+    ctx.log(&("init.success. Owner = ".to_string() + &creator.value().to_string()));
 }
 
-fn transfer(sc: &ScCallContext) {
-    sc.log("transfer");
+// the view returns total supply set when creating the contract.
+// Output:
+// - PARAM_SUPPLY: i64
+fn total_supply(ctx: &ScViewContext) {
+    let supply = ctx.state().get_int(STATE_VAR_SUPPLY).value();
+    ctx.results().get_int(PARAM_SUPPLY).set_value(supply);
+}
 
-    let request = sc.request();
-    let params = request.params();
-    let sender = request.sender();
-    sc.log(&("sender: ".to_string() + &sender.to_string()));
+// the view returns balance of the token held in the account
+// Input:
+// - PARAM_ACCOUNT: agentID
+fn balance_of(ctx: &ScViewContext) {
+    let account = ctx.params().get_agent(PARAM_ACCOUNT);
+    if !account.exists() {
+        ctx.log(&("wrong or non existing parameter: ".to_string() + &account.value().to_string()));
+        return;
+    }
+    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
+    let balance = balances.get_int(account.value().to_bytes()).value();  // 0 if doesn't exist
+    ctx.results().get_int(PARAM_AMOUNT).set_value(balance)
+}
 
-    // TODO validate parameter address
-    let target_addr = params.get_agent(VAR_TARGET_ADDRESS).value();
-    let amount = params.get_int(VAR_AMOUNT).value();
+// the view returns max number of tokens the owner PARAM_ACCOUNT of the account
+// allowed to retrieve to another party PARAM_DELEGATION
+// Input:
+// - PARAM_ACCOUNT: agentID
+// - PARAM_DELEGATION: agentID
+// Output:
+// - PARAM_AMOUNT: i64. 0 if delegation doesn't exists
+fn allowance(ctx: &ScViewContext) {
+    ctx.log("erc20.allowance");
+    // validate parameters
+    // account
+    let owner = ctx.params().get_agent(PARAM_ACCOUNT);
+    if !owner.exists() {
+        ctx.log("er20.allowance.fail: wrong 'account' parameter");
+        return;
+    }
+    // delegation
+    let delegation = ctx.params().get_agent(PARAM_DELEGATION);
+    if !delegation.exists() {
+        ctx.log("er20.allowance.fail: wrong 'delegation' parameter");
+        return;
+    }
+    // all allowances of the address 'owner' are stored in the map of the same name
+    let allowances = ctx.state().get_key_map(&owner.value().to_string());
+    let allow = allowances.get_int(delegation.value().to_bytes()).value();
+    ctx.results().get_int(PARAM_AMOUNT).set_value(allow);
+}
+
+// transfer moves tokens from caller's account to target account
+// Input:
+// - PARAM_ACCOUNT: agentID
+// - PARAM_AMOUNT: i64
+fn transfer(ctx: &ScCallContext) {
+    ctx.log("erc20.transfer");
+
+    // validate params
+    let params = ctx.params();
+    // account
+    let target_addr = params.get_agent(PARAM_ACCOUNT);
+    if !target_addr.exists() {
+        ctx.log("er20.transfer.fail: wrong 'account' parameter");
+        return;
+    }
+    let target_addr = target_addr.value();
+    // amount
+    let amount = params.get_int(PARAM_AMOUNT).value();
     if amount <= 0 {
-        sc.log("transfer.fail: wrong 'amount' parameter");
+        ctx.log("erc20.transfer.fail: wrong 'amount' parameter");
         return;
     }
-    let succ = transfer_internal(sc, &sender, &target_addr, amount);
-    sc.log(if succ { "transfer.success" } else { "transfer.fail" });
-}
+    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
+    let source_balance = balances.get_int(ctx.caller().to_bytes());
 
-fn approve(sc: &ScCallContext) {
-    sc.log("approve");
-
-    let state = sc.state();
-    let request = sc.request();
-    let sender = request.sender();
-    let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(sender.to_bytes());
-    let mut delegations = decode_delegations(&delegations_data.value());
-
-    let params = request.params();
-    let amount = params.get_int(VAR_AMOUNT);
-    if amount.value() == 0 {
-        sc.log("approve.fail: wrong 'amount' parameter");
+    if source_balance.value() < amount {
+        ctx.log("erc20.transfer.fail: not enough funds");
         return;
     }
-    let target_addr = params.get_agent(VAR_TARGET_ADDRESS);
-
-    add_delegation(&mut delegations, target_addr.value(), amount.value());
-
-    delegations_data.set_value(encode_delegations(&delegations).as_slice());
-
-    sc.log("approve.success");
-}
-
-fn transfer_from(sc: &ScCallContext) {
-    sc.log("transfer_from");
-
-    let state = sc.state();
-    let request = sc.request();
-    let sender = request.sender();
-
-    // take parameters
-    let params = request.params();
-    let amount = params.get_int(VAR_AMOUNT);
-    if amount.value() == 0 {
-        sc.log("transfer_from.fail: wrong 'amount' parameter");
-        return;
-    }
-    // TODO parameter validation
-    let source_addr = params.get_agent(VAR_SOURCE_ADDRESS);
-    let target_addr = params.get_agent(VAR_TARGET_ADDRESS);
-
-    let delegations_data = state.get_key_map(VAR_APPROVALS).get_bytes(source_addr.value().to_bytes());
-    let mut delegations = decode_delegations(&delegations_data.value());
-
-    if !sub_delegation(&mut delegations, sender, amount.value()) {
-        sc.log("transfer_from.fail: wrong delegation, possibly over the limit");
-        return;
-    }
-    if !transfer_internal(sc, &source_addr.value(), &target_addr.value(), amount.value()) {
-        sc.log("transfer_from.fail: possibly not enough balance in the source address");
-    }
-
-    delegations_data.set_value(encode_delegations(&delegations).as_slice());
-    sc.log("transfer_from.success");
-}
-
-fn transfer_internal(sc: &ScCallContext, source_addr: &ScAgent, target_addr: &ScAgent, amount: i64) -> bool {
-    let balances = sc.state().get_key_map(VAR_BALANCES);
-    let source_balance = balances.get_int(source_addr.to_bytes());
-    sc.log(&("transfer_internal: source addr: = ".to_string() + &source_addr.to_string()));
-    sc.log(&("transfer_internal: source balance: = ".to_string() + &source_balance.value().to_string()));
-
     let target_balance = balances.get_int(target_addr.to_bytes());
-    sc.log(&("transfer_internal: target addr: = ".to_string() + &target_addr.to_string()));
-    sc.log(&("transfer_internal: target balance: = ".to_string() + &target_balance.value().to_string()));
-
-    if amount > source_balance.value() {
-        return false;
+    let result = target_balance.value() + amount;
+    if result <= 0 {
+        ctx.log("erc20.transfer.fail: overflow");
+        return;
     }
-    target_balance.set_value(target_balance.value() + amount);
     source_balance.set_value(source_balance.value() - amount);
-    true
+    target_balance.set_value(target_balance.value() + amount);
+    ctx.log("erc20.transfer.success");
 }
 
-fn add_delegation(lst: &mut Vec<Delegation>, delegate: ScAgent, amount: i64) {
-    for d in lst.iter_mut() {
-        if d.delegated_to == delegate {
-            d.amount = amount;
-            return;
-        }
+// Sets the allowance value for delegated account
+// inputs:
+//  - PARAM_DELEGATION: agentID
+//  - PARAM_AMOUNT: i64
+fn approve(ctx: &ScCallContext) {
+    ctx.log("erc20.approve");
+
+    // validate parameters
+    let account = ctx.params().get_agent(PARAM_DELEGATION);
+    if !account.exists() {
+        ctx.log("erc20.approve.fail: wrong 'delegation' parameter");
+        return;
     }
-    lst.push(Delegation {
-        delegated_to: delegate,
-        amount: amount,
-    })
+    let account = account.value();
+    let amount = ctx.params().get_int(PARAM_AMOUNT).value();
+    if amount <= 0 {
+        ctx.log("erc20.approve.fail: wrong 'amount' parameter");
+        return;
+    }
+    let caller = ctx.caller().to_string();
+    let allowances = ctx.state().get_key_map(&caller);
+    allowances.get_int(account.to_bytes()).set_value(amount);
+    ctx.log("erc20.approve.success");
 }
 
-fn sub_delegation(lst: &mut Vec<Delegation>, delegate: ScAgent, amount: i64) -> bool {
-    for d in lst {
-        if d.delegated_to == delegate {
-            return if d.amount >= amount {
-                d.amount -= amount;
-                true
-            } else {
-                false
-            };
-        }
-    }
-    false
-}
+// Moves the amount of tokens from sender to recipient using the allowance mechanism.
+// Amount is then deducted from the caller’s allowance. This function emits the Transfer event.
+// Input:
+// - PARAM_ACCOUNT: agentID   the spender
+// - PARAM_RECIPIENT: agentID   the target
+// - PARAM_AMOUNT: i64
+fn transfer_from(ctx: &ScCallContext) {
+    ctx.log("erc20.transfer_from");
 
-fn clean_delegations(lst: Vec<Delegation>) -> Vec<Delegation> {
-    let mut ret: Vec<Delegation> = Vec::new();
-    for d in lst {
-        if d.amount > 0 {
-            ret.push(d)
-        }
+    // validate parameters
+    let account = ctx.params().get_agent(PARAM_ACCOUNT);
+    if !account.exists() {
+        ctx.log("erc20.approve.fail: wrong 'account' parameter");
+        return;
     }
-    ret
-}
+    let account = account.value();
+    let recipient = ctx.params().get_agent(PARAM_RECIPIENT);
+    if !recipient.exists() {
+        ctx.log("erc20.approve.fail: wrong 'recipient' parameter");
+        return;
+    }
+    let recipient = recipient.value();
+    let amount = ctx.params().get_int(PARAM_AMOUNT);
+    if !amount.exists() {
+        ctx.log("erc20.approve.fail: wrong 'amount' parameter");
+        return;
+    }
+    let amount = amount.value();
 
-fn encode_delegations(delegations: &Vec<Delegation>) -> Vec<u8> {
-    let mut encoder = BytesEncoder::new();
-    encoder.int(delegations.len() as i64);
-    for d in delegations {
-        encoder.agent(&d.delegated_to);
-        encoder.int(d.amount);
+    // allowances are in the map under the name of the account
+    let allowances = ctx.state().get_key_map(&account.to_string());
+    let allowance = allowances.get_int(recipient.to_bytes());
+    if allowance.value() < amount {
+        ctx.log("erc20.approve.fail: not enough allowance");
     }
-    return encoder.data();
-}
 
-fn decode_delegations(bytes: &[u8]) -> Vec<Delegation> {
-    if bytes.len() == 0 {
-        return Vec::new();
+    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
+    let source_balance = balances.get_int(account.to_bytes());
+    if source_balance.value() < amount {
+        ctx.log("erc20.transfer.fail: not enough funds");
+        return;
     }
-    let mut decoder = BytesDecoder::new(bytes);
-    let size = decoder.int();
-    let mut ret: Vec<Delegation> = Vec::with_capacity(size as usize);
-    for _ in 0..size {
-        ret.push(Delegation {
-            delegated_to: decoder.agent(),
-            amount: decoder.int(),
-        })
+    let recipient_balance = balances.get_int(recipient.to_bytes());
+    let result = recipient_balance.value() + amount;
+    if result <= 0 {
+        ctx.log("erc20.transfer.fail: overflow");
+        return;
     }
-    ret
+    source_balance.set_value(source_balance.value() - amount);
+    recipient_balance.set_value(recipient_balance.value() + amount);
+    allowance.set_value(allowance.value() - amount);
+
+    ctx.log("erc20.transfer_from.success");
 }

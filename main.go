@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"github.com/iotaledger/wasplib/contracts/dividend"
 	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
+	"github.com/iotaledger/wasplib/contracts/erc20"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/iotaledger/wasplib/contracts/fairroulette"
+	"github.com/iotaledger/wasplib/contracts/helloworld"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/contracts/tokenregistry"
 	"github.com/iotaledger/wasplib/wasmhost"
@@ -21,8 +23,10 @@ import (
 var scForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,
 	"donatewithfeedback": donatewithfeedback.OnLoad,
+	"erc20":              erc20.OnLoad,
 	"fairauction":        fairauction.OnLoad,
 	"fairroulette":       fairroulette.OnLoad,
+	"helloworld":         helloworld.OnLoad,
 	"inccounter":         inccounter.OnLoad,
 	"tokenregistry":      tokenregistry.OnLoad,
 }

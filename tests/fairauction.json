@@ -24,39 +24,25 @@
         "name": "fairauction",
         "description": "Auction colored tokens",
         "id": "@scId",
-        "color": "#scColor",
         "owner": "@scOwner"
       },
-      "account": {
-        "colors": ["#iota"],
-        "balance": {"#iota": 100}
-      },
-      "request": {
-        "timestamp": 20201027172138,
-        "id": "$txHash",
-        "hash": "#txHash",
-        "sender": "@sender"
-      }
+      "balances": {"#iota": 100},
+      "timestamp": 20201027172138,
+      "caller": "@caller"
     }
   },
   "tests": [
     {
       "name": "startAuction",
       "setup": "default",
-      "request": {
-        "function": "startAuction",
-        "colors": ["#iota", "#tokenColor"],
-        "balance": {"#iota": 100, "#tokenColor": 1},
-        "params": {
-          "color": "#tokenColor",
-          "minimum": 500
-        }
+      "function": "startAuction",
+      "incoming": {"#iota": 100, "#tokenColor": 1},
+      "params": {
+        "color": "#tokenColor",
+        "minimum": 500
       },
       "expect": {
-        "account": {
-          "colors": ["#iota", "#tokenColor"],
-          "balance": {"#iota": 200, "#tokenColor": 1}
-        },
+        "balances": {"#iota": 200, "#tokenColor": 1},
         "state": {
           "auctions": {
             "#tokenColor": {
@@ -67,7 +53,7 @@
                 "description": "N/A",
                 "whenStarted": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@sender",
+                "auctionOwner": "@caller",
                 "deposit": 100,
                 "ownerMargin": 50,
                 "bids": []
@@ -89,20 +75,14 @@
       "name": "noBids",
       "setup": "default",
       "flags": "nodelay",
-      "request": {
-        "function": "startAuction",
-        "colors": ["#iota", "#tokenColor"],
-        "balance": {"#iota": 100, "#tokenColor": 1},
-        "params": {
-          "color": "#tokenColor",
-          "minimum": 500
-        }
+      "function": "startAuction",
+      "incoming": {"#iota": 100, "#tokenColor": 1},
+      "params": {
+        "color": "#tokenColor",
+        "minimum": 500
       },
       "expect": {
-        "account": {
-          "colors": ["#iota", "#tokenColor"],
-          "balance": {"#iota": 101, "#tokenColor": 0}
-        },
+        "balances": {"#iota": 101, "#tokenColor": 0},
         "state": {
           "auctions": {
             "#tokenColor": {
@@ -113,7 +93,7 @@
                 "description": "N/A",
                 "whenStarted": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@sender",
+                "auctionOwner": "@caller",
                 "deposit": 100,
                 "ownerMargin": 50,
                 "bids": []
@@ -130,42 +110,33 @@
         ],
         "transfers": [
           {"agent": "@scOwner", "color": "#iota", "amount": 24},
-          {"agent": "@sender", "color": "#tokenColor", "amount": 1},
-          {"agent": "@sender", "color": "#iota", "amount": 75}
+          {"agent": "@caller", "color": "#tokenColor", "amount": 1},
+          {"agent": "@caller", "color": "#iota", "amount": 75}
         ]
       }
     },
     {
       "name": "singleBid",
       "setup": "default",
-      "request": {
-        "function": "startAuction",
-        "colors": ["#iota", "#tokenColor"],
-        "balance": {"#iota": 100, "#tokenColor": 1},
-        "params": {
-          "color": "#tokenColor",
-          "minimum": 500
-        }
+      "function": "startAuction",
+      "incoming": {"#iota": 100, "#tokenColor": 1},
+      "params": {
+        "color": "#tokenColor",
+        "minimum": 500
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$bidder1",
-          "hash": "#bidder1",
-          "sender": "@bidder1",
+          "caller": "@bidder1",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 600},
+          "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
           }
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota", "#tokenColor"],
-          "balance": {"#iota": 800, "#tokenColor": 1}
-        },
+        "balances": {"#iota": 800, "#tokenColor": 1},
         "state": {
           "auctions": {
             "#tokenColor": {
@@ -176,7 +147,7 @@
                 "description": "N/A",
                 "whenStarted": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@sender",
+                "auctionOwner": "@caller",
                 "deposit": 100,
                 "ownerMargin": 50,
                 "bids": [
@@ -203,70 +174,52 @@
     {
       "name": "fourBids",
       "setup": "default",
-      "request": {
-        "function": "startAuction",
-        "colors": ["#iota", "#tokenColor"],
-        "balance": {"#iota": 100, "#tokenColor": 1},
-        "params": {
-          "color": "#tokenColor",
-          "minimum": 500
-        }
+      "function": "startAuction",
+      "incoming": {"#iota": 100, "#tokenColor": 1},
+      "params": {
+        "color": "#tokenColor",
+        "minimum": 500
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$bidder1",
-          "hash": "#bidder1",
-          "sender": "@bidder1",
+          "caller": "@bidder1",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 600},
+          "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172140,
-          "id": "$bidder2",
-          "hash": "#bidder2",
-          "sender": "@bidder2",
+          "caller": "@bidder2",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 700},
+          "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172141,
-          "id": "$bidder3",
-          "hash": "#bidder3",
-          "sender": "@bidder3",
+          "caller": "@bidder3",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 700},
+          "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172142,
-          "id": "$bidder4",
-          "hash": "#bidder4",
-          "sender": "@bidder4",
+          "caller": "@bidder4",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 600},
+          "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
           }
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota", "#tokenColor"],
-          "balance": {"#iota": 2800, "#tokenColor": 1}
-        },
+        "balances": {"#iota": 2800, "#tokenColor": 1},
         "state": {
           "auctions": {
             "#tokenColor": {
@@ -277,7 +230,7 @@
                 "description": "N/A",
                 "whenStarted": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@sender",
+                "auctionOwner": "@caller",
                 "deposit": 100,
                 "ownerMargin": 50,
                 "bids": [
@@ -320,70 +273,52 @@
       "name": "fourBidsAndFinalize",
       "setup": "default",
       "flags": "nodelay",
-      "request": {
-        "function": "startAuction",
-        "colors": ["#iota", "#tokenColor"],
-        "balance": {"#iota": 100, "#tokenColor": 1},
-        "params": {
-          "color": "#tokenColor",
-          "minimum": 500
-        }
+      "function": "startAuction",
+      "incoming": {"#iota": 100, "#tokenColor": 1},
+      "params": {
+        "color": "#tokenColor",
+        "minimum": 500
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$bidder1",
-          "hash": "#bidder1",
-          "sender": "@bidder1",
+          "caller": "@bidder1",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 600},
+          "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172140,
-          "id": "$bidder2",
-          "hash": "#bidder2",
-          "sender": "@bidder2",
+          "caller": "@bidder2",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 700},
+          "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172141,
-          "id": "$bidder3",
-          "hash": "#bidder3",
-          "sender": "@bidder3",
+          "caller": "@bidder3",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 700},
+          "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
           }
         },
         {
           "timestamp": 20201027172142,
-          "id": "$bidder4",
-          "hash": "#bidder4",
-          "sender": "@bidder4",
+          "caller": "@bidder4",
           "function": "placeBid",
-          "colors": ["#iota"],
-          "balance": {"#iota": 600},
+          "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
           }
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota", "#tokenColor"],
-          "balance": {"#iota": 101, "#tokenColor": 0}
-        },
+        "balances": {"#iota": 101, "#tokenColor": 0},
         "state": {
           "auctions": {
             "#tokenColor": {
@@ -394,7 +329,7 @@
                 "description": "N/A",
                 "whenStarted": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@sender",
+                "auctionOwner": "@caller",
                 "deposit": 100,
                 "ownerMargin": 50,
                 "bids": [
@@ -436,7 +371,7 @@
           {"agent": "@bidder4", "color": "#iota", "amount": 600},
           {"agent": "@scOwner", "color": "#iota", "amount": 34},
           {"agent": "@bidder2", "color": "#tokenColor", "amount": 1},
-          {"agent": "@sender", "color": "#iota", "amount": 765}
+          {"agent": "@caller", "color": "#iota", "amount": 765}
         ]
       }
     }

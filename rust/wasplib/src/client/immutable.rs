@@ -290,15 +290,6 @@ impl ScImmutableKeyMap {
         ScImmutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_request_id(&self, key: &[u8]) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_request_id_array(&self, key: &[u8]) -> ScImmutableRequestIdArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScImmutableRequestIdArray { obj_id: arr_id }
-    }
-
     pub fn get_string(&self, key: &[u8]) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -306,15 +297,6 @@ impl ScImmutableKeyMap {
     pub fn get_string_array(&self, key: &[u8]) -> ScImmutableStringArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_STRING_ARRAY);
         ScImmutableStringArray { obj_id: arr_id }
-    }
-
-    pub fn get_tx_hash(&self, key: &[u8]) -> ScImmutableTxHash {
-        ScImmutableTxHash { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_tx_hash_array(&self, key: &[u8]) -> ScImmutableTxHashArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScImmutableTxHashArray { obj_id: arr_id }
     }
 
     pub fn length(&self) -> i32 {
@@ -393,15 +375,6 @@ impl ScImmutableMap {
         ScImmutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_request_id(&self, key: &str) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id: self.obj_id, key_id: get_key_id(key) }
-    }
-
-    pub fn get_request_id_array(&self, key: &str) -> ScImmutableRequestIdArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
-        ScImmutableRequestIdArray { obj_id: arr_id }
-    }
-
     pub fn get_string(&self, key: &str) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -409,15 +382,6 @@ impl ScImmutableMap {
     pub fn get_string_array(&self, key: &str) -> ScImmutableStringArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_STRING_ARRAY);
         ScImmutableStringArray { obj_id: arr_id }
-    }
-
-    pub fn get_tx_hash(&self, key: &str) -> ScImmutableTxHash {
-        ScImmutableTxHash { obj_id: self.obj_id, key_id: get_key_id(key) }
-    }
-
-    pub fn get_tx_hash_array(&self, key: &str) -> ScImmutableTxHashArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
-        ScImmutableTxHashArray { obj_id: arr_id }
     }
 
     pub fn length(&self) -> i32 {
@@ -446,48 +410,6 @@ impl ScImmutableMapArray {
     pub fn get_map(&self, index: i32) -> ScImmutableMap {
         let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
         ScImmutableMap { obj_id: map_id }
-    }
-
-    pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScImmutableRequestId {
-    obj_id: i32,
-    key_id: i32,
-}
-
-impl ScImmutableRequestId {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id, key_id }
-    }
-
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
-    }
-
-    pub fn value(&self) -> ScRequestId {
-        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScImmutableRequestIdArray {
-    obj_id: i32
-}
-
-impl ScImmutableRequestIdArray {
-    pub(crate) fn new(obj_id: i32) -> ScImmutableRequestIdArray {
-        ScImmutableRequestIdArray { obj_id }
-    }
-
-    // index 0..length(), exclusive
-    pub fn get_request_id(&self, index: i32) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id: self.obj_id, key_id: index }
     }
 
     pub fn length(&self) -> i32 {
@@ -530,48 +452,6 @@ impl ScImmutableStringArray {
     // index 0..length(), exclusive
     pub fn get_string(&self, index: i32) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: index }
-    }
-
-    pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScImmutableTxHash {
-    obj_id: i32,
-    key_id: i32,
-}
-
-impl ScImmutableTxHash {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableTxHash {
-        ScImmutableTxHash { obj_id, key_id }
-    }
-
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
-    }
-
-    pub fn value(&self) -> ScTxHash {
-        ScTxHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScImmutableTxHashArray {
-    obj_id: i32
-}
-
-impl ScImmutableTxHashArray {
-    pub(crate) fn new(obj_id: i32) -> ScImmutableTxHashArray {
-        ScImmutableTxHashArray { obj_id }
-    }
-
-    // index 0..length(), exclusive
-    pub fn get_tx_hash(&self, index: i32) -> ScImmutableTxHash {
-        ScImmutableTxHash { obj_id: self.obj_id, key_id: index }
     }
 
     pub fn length(&self) -> i32 {

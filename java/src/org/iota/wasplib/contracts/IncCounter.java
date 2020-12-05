@@ -31,7 +31,7 @@ public class IncCounter {
 	}
 
 	public static void init(ScCallContext sc) {
-		long counter = sc.Request().Params().GetInt("counter").Value();
+		long counter = sc.Params().GetInt("counter").Value();
 		if (counter == 0) {
 			return;
 		}
@@ -80,7 +80,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		ScMutableInt stateRepeats = sc.State().GetInt("numRepeats");
-		long repeats = sc.Request().Params().GetInt("numRepeats").Value();
+		long repeats = sc.Params().GetInt("numRepeats").Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {

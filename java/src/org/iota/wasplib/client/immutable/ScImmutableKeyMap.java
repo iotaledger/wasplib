@@ -74,15 +74,6 @@ public class ScImmutableKeyMap {
 		return new ScImmutableMapArray(arrId);
 	}
 
-	public ScImmutableRequestId GetRequestId(byte[] key) {
-		return new ScImmutableRequestId(objId, Host.GetKey(key));
-	}
-
-	public ScImmutableRequestIdArray GetRequestIdArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
-		return new ScImmutableRequestIdArray(arrId);
-	}
-
 	public ScImmutableString GetString(byte[] key) {
 		return new ScImmutableString(objId, Host.GetKey(key));
 	}
@@ -90,15 +81,6 @@ public class ScImmutableKeyMap {
 	public ScImmutableStringArray GetStringArray(byte[] key) {
 		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_STRING_ARRAY);
 		return new ScImmutableStringArray(arrId);
-	}
-
-	public ScImmutableTxHash GetTxHash(byte[] key) {
-		return new ScImmutableTxHash(objId, Host.GetKey(key));
-	}
-
-	public ScImmutableTxHashArray GetTxHashArray(byte[] key) {
-		int arrId = Host.GetObjectId(objId, Host.GetKey(key), ScType.TYPE_BYTES_ARRAY);
-		return new ScImmutableTxHashArray(arrId);
 	}
 
 	public int Length() {

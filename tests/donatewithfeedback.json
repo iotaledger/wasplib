@@ -2,11 +2,10 @@
   "types": {
     "DonationInfo": [
       {"field": "seq", "type": "Int"},
-      {"field": "id", "type": "RequestId"},
+      {"field": "donator", "type": "Agent"},
       {"field": "amount", "type": "Int"},
-      {"field": "sender", "type": "Agent"},
-      {"field": "error", "type": "String"},
-      {"field": "feedback", "type": "String"}
+      {"field": "feedback", "type": "String"},
+      {"field": "error", "type": "String"}
     ]
   },
   "setups": {
@@ -15,40 +14,25 @@
         "name": "donatewithfeedback",
         "description": "Donate iotas and give feedback",
         "id": "@scId",
-        "color": "#scColor",
         "owner": "@scOwner"
       },
-      "account": {
-        "colors": ["#iota"],
-        "balance": {"#iota": 100}
-      },
-      "request": {
-        "timestamp": 20201027172138,
-        "id": "$txHash",
-        "hash": "#txHash",
-        "sender": "@sender"
-      }
+      "balances": {"#iota": 100},
+      "timestamp": 20201027172138,
+      "caller": "@caller"
     }
   },
   "tests": [
     {
       "name": "donateOnce",
       "setup": "default",
-      "request": {
-        "function": "donate",
-        "colors": ["#iota"],
-        "balance": {"#iota": 500},
-        "params": {
-          "f": "Here, have some iotas"
-        }
+      "function": "donate",
+      "incoming": {"#iota": 500},
+      "params": {
+        "f": "Here, have some iotas"
       },
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 600}
-        },
-        "state": {
-        },
+        "balances": {"#iota": 600},
+        "state": {},
         "logs": {
           "l": [
             {
@@ -56,11 +40,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 0,
-                  "id": "$txHash",
+                  "donator": "@caller",
                   "amount": 500,
-                  "sender": "@sender",
-                  "error": "",
-                  "feedback": "Here, have some iotas"
+                  "feedback": "Here, have some iotas",
+                  "error": ""
                 }
               }
             }
@@ -75,35 +58,25 @@
     {
       "name": "donateTwice",
       "setup": "default",
-      "request": {
-        "function": "donate",
-        "colors": ["#iota"],
-        "balance": {"#iota": 500},
-        "params": {
-          "f": "Here, have some iotas"
-        }
+      "function": "donate",
+      "incoming": {"#iota": 500},
+      "params": {
+        "f": "Here, have some iotas"
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender2",
+          "caller": "@caller2",
           "function": "donate",
-          "colors": ["#iota"],
-          "balance": {"#iota": 750},
+          "incoming": {"#iota": 750},
           "params": {
             "f": "Here, have some more iotas"
           }
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 1350}
-        },
-        "state": {
-        },
+        "balances": {"#iota": 1350},
+        "state": {},
         "logs": {
           "l": [
             {
@@ -111,11 +84,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 0,
-                  "id": "$txHash",
+                  "donator": "@caller",
                   "amount": 500,
-                  "sender": "@sender",
-                  "error": "",
-                  "feedback": "Here, have some iotas"
+                  "feedback": "Here, have some iotas",
+                  "error": ""
                 }
               }
             },
@@ -124,11 +96,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 1,
-                  "id": "$txHash2",
+                  "donator": "@caller2",
                   "amount": 750,
-                  "sender": "@sender2",
-                  "error": "",
-                  "feedback": "Here, have some more iotas"
+                  "feedback": "Here, have some more iotas",
+                  "error": ""
                 }
               }
             }
@@ -143,20 +114,15 @@
     {
       "name": "donateAndWithdraw",
       "setup": "default",
-      "request": {
-        "function": "donate",
-        "colors": ["#iota"],
-        "balance": {"#iota": 500},
-        "params": {
-          "f": "Here, have some iotas"
-        }
+      "function": "donate",
+      "incoming": {"#iota": 500},
+      "params": {
+        "f": "Here, have some iotas"
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@scOwner",
+          "caller": "@scOwner",
           "function": "withdraw",
           "params": {
             "s": 250
@@ -164,12 +130,8 @@
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 350}
-        },
-        "state": {
-        },
+        "balances": {"#iota": 350},
+        "state": {},
         "logs": {
           "l": [
             {
@@ -177,11 +139,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 0,
-                  "id": "$txHash",
+                  "donator": "@caller",
                   "amount": 500,
-                  "sender": "@sender",
-                  "error": "",
-                  "feedback": "Here, have some iotas"
+                  "feedback": "Here, have some iotas",
+                  "error": ""
                 }
               }
             }
@@ -198,20 +159,15 @@
     {
       "name": "donateAndWithdrawUnauthorized",
       "setup": "default",
-      "request": {
-        "function": "donate",
-        "colors": ["#iota"],
-        "balance": {"#iota": 500},
-        "params": {
-          "f": "Here, have some iotas"
-        }
+      "function": "donate",
+      "incoming": {"#iota": 500},
+      "params": {
+        "f": "Here, have some iotas"
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@notScOwner",
+          "caller": "@notScOwner",
           "function": "withdraw",
           "params": {
             "s": 250
@@ -219,12 +175,8 @@
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 600}
-        },
-        "state": {
-        },
+        "balances": {"#iota": 600},
+        "state": {},
         "logs": {
           "l": [
             {
@@ -232,11 +184,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 0,
-                  "id": "$txHash",
+                  "donator": "@caller",
                   "amount": 500,
-                  "sender": "@sender",
-                  "error": "",
-                  "feedback": "Here, have some iotas"
+                  "feedback": "Here, have some iotas",
+                  "error": ""
                 }
               }
             }
@@ -251,42 +202,30 @@
     {
       "name": "donateTwiceAndView",
       "setup": "default",
-      "request": {
-        "function": "donate",
-        "colors": ["#iota"],
-        "balance": {"#iota": 500},
-        "params": {
-          "f": "Here, have some iotas"
-        }
+      "function": "donate",
+      "incoming": {"#iota": 500},
+      "params": {
+        "f": "Here, have some iotas"
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender2",
+          "caller": "@caller2",
           "function": "donate",
-          "colors": ["#iota"],
-          "balance": {"#iota": 750},
+          "incoming": {"#iota": 750},
           "params": {
             "f": "Here, have some more iotas"
           }
         },
         {
           "timestamp": 20201027172139,
-          "id": "$txHash3",
-          "hash": "#txHash3",
-          "sender": "@sender3",
+          "caller": "@caller3",
           "function": "viewDonations"
         }
       ],
       "expect": {
-        "account": {
-          "colors": ["#iota"],
-          "balance": {"#iota": 1350}
-        },
-        "state": {
-        },
+        "balances": {"#iota": 1350},
+        "state": {},
         "logs": {
           "l": [
             {
@@ -294,11 +233,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 0,
-                  "id": "$txHash",
+                  "donator": "@caller",
                   "amount": 500,
-                  "sender": "@sender",
-                  "error": "",
-                  "feedback": "Here, have some iotas"
+                  "feedback": "Here, have some iotas",
+                  "error": ""
                 }
               }
             },
@@ -307,11 +245,10 @@
               "data": {
                 "DonationInfo": {
                   "seq": 1,
-                  "id": "$txHash2",
+                  "donator": "@caller2",
                   "amount": 750,
-                  "sender": "@sender2",
-                  "error": "",
-                  "feedback": "Here, have some more iotas"
+                  "feedback": "Here, have some more iotas",
+                  "error": ""
                 }
               }
             }
@@ -327,17 +264,17 @@
           "donations": [
             {
               "timestamp": 20201027172138,
+              "donator": "@caller",
               "amount": 500,
               "feedback": "Here, have some iotas",
-              "sender": "@sender",
               "error": ""
             },
             {
-              "feedback": "Here, have some more iotas",
-              "sender": "@sender2",
-              "error": "",
               "timestamp": 20201027172139,
-              "amount": 750
+              "donator": "@caller2",
+              "amount": 750,
+              "feedback": "Here, have some more iotas",
+              "error": ""
             }
           ]
         }

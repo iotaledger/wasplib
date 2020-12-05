@@ -57,8 +57,7 @@ pub fn onLoad() {
 }
 
 fn startAuction(sc: &ScCallContext) {
-    let request = sc.request();
-    let deposit = request.balance(&ScColor::IOTA);
+    let deposit = sc.incoming().balance(&ScColor::IOTA);
     if deposit < 1 {
         sc.log("Empty deposit...");
         return;
@@ -70,7 +69,7 @@ fn startAuction(sc: &ScCallContext) {
         ownerMargin = OWNER_MARGIN_DEFAULT;
     }
 
-    let params = request.params();
+    let params = sc.params();
     let colorParam = params.get_color("color");
     if !colorParam.exists() {
         refund(sc, deposit / 2, "Missing token color...");
@@ -83,7 +82,7 @@ fn startAuction(sc: &ScCallContext) {
         return;
     }
 
-    let numTokens = request.balance(&color);
+    let numTokens = sc.incoming().balance(&color);
     if numTokens == 0 {
         refund(sc, deposit / 2, "Auction tokens missing from request...");
         return;
@@ -138,9 +137,9 @@ fn startAuction(sc: &ScCallContext) {
         numTokens: numTokens,
         minimumBid: minimumBid,
         description: description,
-        whenStarted: request.timestamp(),
+        whenStarted: sc.timestamp(),
         duration: duration,
-        auctionOwner: request.sender(),
+        auctionOwner: sc.caller(),
         deposit: deposit,
         ownerMargin: ownerMargin,
         bids: Vec::new(),
@@ -157,13 +156,12 @@ fn startAuction(sc: &ScCallContext) {
 
 fn finalizeAuction(sc: &ScCallContext) {
     // can only be sent by SC itself
-    let request = sc.request();
-    if !request.from(&sc.contract().id()) {
+    if !sc.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let colorParam = request.params().get_color("color");
+    let colorParam = sc.params().get_color("color");
     if !colorParam.exists() {
         sc.log("INTERNAL INCONSISTENCY: missing color");
         return;
@@ -225,14 +223,13 @@ fn finalizeAuction(sc: &ScCallContext) {
 }
 
 fn placeBid(sc: &ScCallContext) {
-    let request = sc.request();
-    let bidAmount = request.balance(&ScColor::IOTA);
+    let bidAmount = sc.incoming().balance(&ScColor::IOTA);
     if bidAmount == 0 {
         sc.log("Insufficient bid amount");
         return;
     }
 
-    let colorParam = request.params().get_color("color");
+    let colorParam = sc.params().get_color("color");
     if !colorParam.exists() {
         refund(sc, bidAmount, "Missing token color");
         return;
@@ -248,18 +245,18 @@ fn placeBid(sc: &ScCallContext) {
         return;
     }
 
-    let sender = request.sender();
+    let caller = sc.caller();
     let mut auction = decodeAuctionInfo(&bytes);
-    let mut bidIndex = auction.bids.iter().position(|b| b.bidder == sender);
+    let mut bidIndex = auction.bids.iter().position(|b| b.bidder == caller);
     if bidIndex == None {
-        sc.log(&("New bid from: ".to_string() + &sender.to_string()));
-        let bid = BidInfo { bidder: sender, amount: 0, when: 0 };
+        sc.log(&("New bid from: ".to_string() + &caller.to_string()));
+        let bid = BidInfo { bidder: caller, amount: 0, when: 0 };
         bidIndex = Some(auction.bids.len());
         auction.bids.push(bid);
     }
     let mut bid = auction.bids.get_mut(bidIndex.unwrap()).unwrap();
     bid.amount += bidAmount;
-    bid.when = request.timestamp();
+    bid.when = sc.timestamp();
 
     let bytes = encodeAuctionInfo(&auction);
     currentAuction.set_value(&bytes);
@@ -268,13 +265,12 @@ fn placeBid(sc: &ScCallContext) {
 
 fn setOwnerMargin(sc: &ScCallContext) {
     // can only be sent by SC owner
-    let request = sc.request();
-    if !request.from(&sc.contract().owner()) {
+    if !sc.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let mut ownerMargin = request.params().get_int("ownerMargin").value();
+    let mut ownerMargin = sc.params().get_int("ownerMargin").value();
     if ownerMargin < OWNER_MARGIN_MIN {
         ownerMargin = OWNER_MARGIN_MIN;
     }
@@ -346,23 +342,23 @@ fn encodeBidInfo(bid: &BidInfo) -> Vec<u8> {
 
 fn refund(sc: &ScCallContext, amount: i64, reason: &str) {
     sc.log(reason);
-    let request = sc.request();
-    let sender = request.sender();
+    let caller = sc.caller();
     if amount != 0 {
-        sc.transfer(&sender, &ScColor::IOTA, amount);
+        sc.transfer(&caller, &ScColor::IOTA, amount);
     }
-    let deposit = request.balance(&ScColor::IOTA);
+    let deposit = sc.incoming().balance(&ScColor::IOTA);
     if deposit - amount != 0 {
         sc.transfer(&sc.contract().owner(), &ScColor::IOTA, deposit - amount);
     }
 
-    // refund all other token colors, don't keep tokens that were to be auctioned
-    let colors = request.colors();
-    let items = colors.length();
-    for i in 0..items {
-        let color = colors.get_color(i).value();
-        if color != ScColor::IOTA {
-            sc.transfer(&sender, &color, request.balance(&color));
-        }
-    }
+    //TODO iterate over sc.incoming() balances
+    // // refund all other token colors, don't keep tokens that were to be auctioned
+    // let colors = request.colors();
+    // let items = colors.length();
+    // for i in 0..items {
+    //     let color = colors.get_color(i).value();
+    //     if color != ScColor::IOTA {
+    //         sc.transfer(&caller, &color, sc.incoming().balance(&color));
+    //     }
+    // }
 }

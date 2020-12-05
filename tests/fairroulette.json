@@ -1,8 +1,7 @@
 {
   "types": {
     "BetInfo": [
-      {"field": "id", "type": "RequestId"},
-      {"field": "sender", "type": "Agent"},
+      {"field": "better", "type": "Agent"},
       {"field": "amount", "type": "Int"},
       {"field": "color", "type": "Int"}
     ]
@@ -13,43 +12,29 @@
         "name": "fairroulette",
         "description": "Simple gambling app",
         "id": "@scId",
-        "color": "#scColor",
         "owner": "@scOwner"
       },
-      "account": {
-        "colors": ["#iota"],
-        "balance": {"#iota": 100}
-      },
-      "request": {
-        "timestamp": 20201027172138,
-        "id": "$txHash",
-        "hash": "#txHash",
-        "sender": "@sender"
-      }
+      "balances": {"#iota": 100},
+      "timestamp": 20201027172138,
+      "caller": "@caller"
     }
   },
   "tests": [
     {
       "name": "placeOneBet",
       "setup": "default",
-      "request": {
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "expect": {
-        "account": {
-          "balance": {"#iota": 200}
-        },
+        "balances": {"#iota": 200},
         "state": {
           "bets": [
             {
               "BetInfo": {
-                "id": "$txHash",
-                "sender": "@sender",
+                "better": "@caller",
                 "amount": 100,
                 "color": 3
               }
@@ -64,46 +49,36 @@
     {
       "name": "placeTwoBets",
       "setup": "default",
-      "request": {
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender2",
+          "caller": "@caller2",
           "function": "placeBet",
-          "colors": ["#iota"],
-          "balance": {"#iota": 200},
+          "incoming": {"#iota": 200},
           "params": {
             "color": 1
           }
         }
       ],
       "expect": {
-        "account": {
-          "balance": {"#iota": 400}
-        },
+        "balances": {"#iota": 400},
         "state": {
           "bets": [
             {
               "BetInfo": {
-                "id": "$txHash",
-                "sender": "@sender",
+                "better": "@caller",
                 "amount": 100,
                 "color": 3
               }
             },
             {
               "BetInfo": {
-                "id": "$txHash2",
-                "sender": "@sender2",
+                "better": "@caller2",
                 "amount": 200,
                 "color": 1
               }
@@ -120,18 +95,13 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 1},
-      "request": {
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "expect": {
-        "account": {
-          "balance": {"#iota": 200}
-        },
+        "balances": {"#iota": 200},
         "state": {
           "lastWinningColor": 2
         },
@@ -150,18 +120,13 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
-      "request": {
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "expect": {
-        "account": {
-          "balance": {"#iota": 100}
-        },
+        "balances": {"#iota": 100},
         "state": {
           "lastWinningColor": 3
         },
@@ -171,7 +136,7 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@sender", "amount": 100, "color": "#iota"}
+          {"agent": "@caller", "amount": 100, "color": "#iota"}
         ]
       }
     },
@@ -180,32 +145,24 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
-      "request": {
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@sender2",
+          "caller": "@caller2",
           "function": "placeBet",
-          "colors": ["#iota"],
-          "balance": {"#iota": 200},
+          "incoming": {"#iota": 200},
           "params": {
             "color": 1
           }
         }
       ],
       "expect": {
-        "account": {
-          "balance": {"#iota": 100}
-        },
+        "balances": {"#iota": 100},
         "state": {
           "lastWinningColor": 3
         },
@@ -215,7 +172,7 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@sender", "amount": 300, "color": "#iota"}
+          {"agent": "@caller", "amount": 300, "color": "#iota"}
         ]
       }
     },
@@ -224,33 +181,25 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
-      "request": {
-        "sender": "@better1",
-        "function": "placeBet",
-        "colors": ["#iota"],
-        "balance": {"#iota": 100},
-        "params": {
-          "color": 3
-        }
+      "caller": "@better1",
+      "function": "placeBet",
+      "incoming": {"#iota": 100},
+      "params": {
+        "color": 3
       },
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "id": "$txHash2",
-          "hash": "#txHash2",
-          "sender": "@better2",
+          "caller": "@better2",
           "function": "placeBet",
-          "colors": ["#iota"],
-          "balance": {"#iota": 200},
+          "incoming": {"#iota": 200},
           "params": {
             "color": 3
           }
         }
       ],
       "expect": {
-        "account": {
-          "balance": {"#iota": 100}
-        },
+        "balances": {"#iota": 100},
         "state": {
           "lastWinningColor": 3
         },

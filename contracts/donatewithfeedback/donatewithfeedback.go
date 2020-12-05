@@ -9,11 +9,10 @@ import (
 
 type DonationInfo struct {
 	seq      int64
-	id       *client.ScRequestId
+	donator  *client.ScAgent
 	amount   int64
-	sender   *client.ScAgent
-	error    string
 	feedback string
+	error    string
 }
 
 func OnLoad() {
@@ -25,24 +24,22 @@ func OnLoad() {
 
 func donate(sc *client.ScCallContext) {
 	tlog := sc.TimestampedLog("l")
-	request := sc.Request()
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
-		id:       request.Id(),
-		amount:   request.Balance(client.IOTA),
-		sender:   request.Sender(),
+		amount:   sc.Incoming().Balance(client.IOTA),
+		donator:  sc.Caller(),
 		error:    "",
-		feedback: request.Params().GetString("f").Value(),
+		feedback: sc.Params().GetString("f").Value(),
 	}
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
 		if donation.amount > 0 {
-			sc.Transfer(donation.sender, client.IOTA, donation.amount)
+			sc.Transfer(donation.donator, client.IOTA, donation.amount)
 			donation.amount = 0
 		}
 	}
 	bytes := encodeDonationInfo(donation)
-	tlog.Append(request.Timestamp(), bytes)
+	tlog.Append(sc.Timestamp(), bytes)
 
 	state := sc.State()
 	largestDonation := state.GetInt("maxd")
@@ -55,15 +52,13 @@ func donate(sc *client.ScCallContext) {
 
 func withdraw(sc *client.ScCallContext) {
 	scOwner := sc.Contract().Owner()
-	request := sc.Request()
-	if !request.From(scOwner) {
+	if !sc.From(scOwner) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	account := sc.Account()
-	amount := account.Balance(client.IOTA)
-	withdrawAmount := request.Params().GetInt("s").Value()
+	amount := sc.Balances().Balance(client.IOTA)
+	withdrawAmount := sc.Params().GetInt("s").Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
 	}
@@ -93,7 +88,7 @@ func viewDonations(sc *client.ScViewContext) {
 		di := decodeDonationInfo(bytes)
 		donation.GetInt("amount").SetValue(di.amount)
 		donation.GetString("feedback").SetValue(di.feedback)
-		donation.GetString("sender").SetValue(di.sender.String())
+		donation.GetString("donator").SetValue(di.donator.String())
 		donation.GetString("error").SetValue(di.error)
 	}
 }
@@ -102,21 +97,19 @@ func decodeDonationInfo(bytes []byte) *DonationInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	data := &DonationInfo{}
 	data.seq = decoder.Int()
-	data.id = decoder.RequestId()
+	data.donator = decoder.Agent()
 	data.amount = decoder.Int()
-	data.sender = decoder.Agent()
-	data.error = decoder.String()
 	data.feedback = decoder.String()
+	data.error = decoder.String()
 	return data
 }
 
 func encodeDonationInfo(donation *DonationInfo) []byte {
 	return client.NewBytesEncoder().
 		Int(donation.seq).
-		RequestId(donation.id).
+		Agent(donation.donator).
 		Int(donation.amount).
-		Agent(donation.sender).
-		String(donation.error).
 		String(donation.feedback).
+		String(donation.error).
 		Data()
 }

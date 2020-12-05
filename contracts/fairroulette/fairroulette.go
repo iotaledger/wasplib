@@ -11,8 +11,7 @@ const NUM_COLORS int64 = 5
 const PLAY_PERIOD int64 = 120
 
 type BetInfo struct {
-	id     *client.ScRequestId
-	sender *client.ScAgent
+	better *client.ScAgent
 	amount int64
 	color  int64
 }
@@ -27,13 +26,12 @@ func OnLoad() {
 }
 
 func placeBet(sc *client.ScCallContext) {
-	request := sc.Request()
-	amount := request.Balance(client.IOTA)
+	amount := sc.Incoming().Balance(client.IOTA)
 	if amount == 0 {
 		sc.Log("Empty bet...")
 		return
 	}
-	color := request.Params().GetInt("color").Value()
+	color := sc.Params().GetInt("color").Value()
 	if color == 0 {
 		sc.Log("No color...")
 		return
@@ -44,8 +42,7 @@ func placeBet(sc *client.ScCallContext) {
 	}
 
 	bet := BetInfo{
-		id:     request.Id(),
-		sender: request.Sender(),
+		better: sc.Caller(),
 		amount: amount,
 		color:  color,
 	}
@@ -66,7 +63,7 @@ func placeBet(sc *client.ScCallContext) {
 
 func lockBets(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.Request().From(sc.Contract().Id()) {
+	if !sc.From(sc.Contract().Id()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -87,7 +84,7 @@ func lockBets(sc *client.ScCallContext) {
 func payWinners(sc *client.ScCallContext) {
 	// can only be sent by SC itself
 	scId := sc.Contract().Id()
-	if !sc.Request().From(scId) {
+	if !sc.From(scId) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -125,9 +122,9 @@ func payWinners(sc *client.ScCallContext) {
 		payout := totalBetAmount * bet.amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.Transfer(bet.sender, client.IOTA, payout)
+			sc.Transfer(bet.better, client.IOTA, payout)
 		}
-		text := "Pay " + sc.Utility().String(payout) + " to " + bet.sender.String()
+		text := "Pay " + sc.Utility().String(payout) + " to " + bet.better.String()
 		sc.Log(text)
 	}
 
@@ -141,12 +138,12 @@ func payWinners(sc *client.ScCallContext) {
 
 func playPeriod(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	if !sc.Request().From(sc.Contract().Owner()) {
+	if !sc.From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	playPeriod := sc.Request().Params().GetInt("playPeriod").Value()
+	playPeriod := sc.Params().GetInt("playPeriod").Value()
 	if playPeriod < 10 {
 		sc.Log("Invalid play period...")
 		return
@@ -158,8 +155,7 @@ func playPeriod(sc *client.ScCallContext) {
 func decodeBetInfo(bytes []byte) *BetInfo {
 	decoder := client.NewBytesDecoder(bytes)
 	return &BetInfo{
-		id:     decoder.RequestId(),
-		sender: decoder.Agent(),
+		better: decoder.Agent(),
 		amount: decoder.Int(),
 		color:  decoder.Int(),
 	}
@@ -167,8 +163,7 @@ func decodeBetInfo(bytes []byte) *BetInfo {
 
 func encodeBetInfo(bet *BetInfo) []byte {
 	return client.NewBytesEncoder().
-		RequestId(bet.id).
-		Agent(bet.sender).
+		Agent(bet.better).
 		Int(bet.amount).
 		Int(bet.color).
 		Data()

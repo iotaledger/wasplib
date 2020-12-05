@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"os"
 	"sort"
@@ -14,17 +15,21 @@ import (
 )
 
 type JsonDataModel struct {
-	Account   map[string]interface{} `json:"account"`
-	Calls     []interface{}          `json:"calls"`
 	Contract  map[string]interface{} `json:"contract"`
-	Logs      map[string]interface{} `json:"logs"`
-	Posts     []interface{}          `json:"posts"`
-	Request   map[string]interface{} `json:"request"`
-	Results   map[string]interface{} `json:"results"`
+	Balances  map[string]interface{} `json:"balances"`
+	Timestamp int64                  `json:"timestamp"`
+	Caller    string                 `json:"caller"`
+	Function  string                 `json:"function"`
+	Incoming  map[string]interface{} `json:"incoming"`
+	Params    map[string]interface{} `json:"params"`
 	State     map[string]interface{} `json:"state"`
+	Logs      map[string]interface{} `json:"logs"`
+	Results   map[string]interface{} `json:"results"`
+	Calls     []interface{}          `json:"calls"`
+	Posts     []interface{}          `json:"posts"`
+	Views     []interface{}          `json:"views"`
 	Transfers []interface{}          `json:"transfers"`
 	Utility   map[string]interface{} `json:"utility"`
-	Views     []interface{}          `json:"views"`
 }
 
 type JsonFieldType struct {
@@ -34,11 +39,11 @@ type JsonFieldType struct {
 
 type JsonTest struct {
 	JsonDataModel
-	Name               string         `json:"name"`
-	Setup              string         `json:"setup"`
-	Flags              string         `json:"flags"`
-	AdditionalRequests []interface{}  `json:"additionalRequests"`
-	Expect             *JsonDataModel `json:"expect"`
+	Name               string           `json:"name"`
+	Setup              string           `json:"setup"`
+	Flags              string           `json:"flags"`
+	AdditionalRequests []*JsonDataModel `json:"additionalRequests"`
+	Expect             *JsonDataModel   `json:"expect"`
 }
 
 type JsonTests struct {
@@ -64,11 +69,12 @@ func NewJsonTests(pathName string) (*JsonTests, error) {
 
 func (t *JsonTests) ClearData() {
 	t.ClearObjectData("contract", OBJTYPE_MAP)
-	t.ClearObjectData("account", OBJTYPE_MAP)
-	t.ClearObjectData("request", OBJTYPE_MAP)
-	t.ClearObjectData("results", OBJTYPE_MAP)
+	t.ClearObjectData("balances", OBJTYPE_MAP)
+	t.ClearObjectData("incoming", OBJTYPE_MAP)
+	t.ClearObjectData("params", OBJTYPE_MAP)
 	t.ClearObjectData("state", OBJTYPE_MAP)
 	t.ClearObjectData("logs", OBJTYPE_MAP)
+	t.ClearObjectData("results", OBJTYPE_MAP)
 	t.ClearObjectData("calls", OBJTYPE_MAP_ARRAY)
 	t.ClearObjectData("posts", OBJTYPE_MAP_ARRAY)
 	t.ClearObjectData("views", OBJTYPE_MAP_ARRAY)
@@ -98,7 +104,7 @@ func (t *JsonTests) CompareArrayData(key string, array []interface{}) bool {
 
 func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 	expectData := jsonTest.Expect
-	return t.CompareMapData("account", expectData.Account) &&
+	return t.CompareMapData("balances", expectData.Balances) &&
 		t.CompareMapData("state", expectData.State) &&
 		t.CompareMapData("logs", expectData.Logs) &&
 		t.CompareMapData("results", expectData.Results) &&
@@ -275,10 +281,18 @@ func (t *JsonTests) GetKeyId(key string) int32 {
 
 func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
 	t.LoadMapData("contract", jsonData.Contract)
-	t.LoadMapData("account", jsonData.Account)
-	t.LoadMapData("request", jsonData.Request)
+	t.LoadMapData("balances", jsonData.Balances)
+	t.LoadMapData("incoming", jsonData.Incoming)
+	t.LoadMapData("params", jsonData.Params)
 	t.LoadMapData("state", jsonData.State)
 	t.LoadMapData("utility", jsonData.Utility)
+	root := t.host.FindObject(1)
+	if jsonData.Timestamp != 0 {
+		root.SetInt(t.GetKeyId("timestamp"), jsonData.Timestamp)
+	}
+	if jsonData.Caller != "" {
+		root.SetString(t.GetKeyId("caller"), process(jsonData.Caller))
+	}
 }
 
 func (t *JsonTests) LoadMapData(key string, values map[string]interface{}) {
@@ -401,7 +415,10 @@ func process(value string) string {
 	switch value[0] {
 	case '#': // 32-byte hash value
 		if value == "#iota" {
-			return processHash("", 32)
+			return base58.Encode(client.IOTA.Bytes())
+		}
+		if value == "#mint" {
+			return base58.Encode(client.MINT.Bytes())
 		}
 	case '@': // 37-byte agent
 		size = 37
@@ -436,21 +453,22 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 		t.LoadData(setupData)
 	}
 	t.LoadData(&test.JsonDataModel)
-	request := t.FindSubObject(nil, "request", OBJTYPE_MAP)
-	if !t.runRequest(request, test.Request) {
+	if !t.runRequest(test.Function) {
 		return false
 	}
-	for _, req := range test.AdditionalRequests {
-		jsonRequest := req.(map[string]interface{})
-		request.SetInt(KeyLength, 0)
-		t.LoadSubMapData(request, jsonRequest)
-		if !t.runRequest(request, jsonRequest) {
+	incoming := t.FindSubObject(nil, "incoming", OBJTYPE_MAP)
+	params := t.FindSubObject(nil, "params", OBJTYPE_MAP)
+	for _, jsonRequest := range test.AdditionalRequests {
+		incoming.SetInt(KeyLength, 0)
+		params.SetInt(KeyLength, 0)
+		t.LoadData(jsonRequest)
+		if !t.runRequest(jsonRequest.Function) {
 			return false
 		}
 	}
 
+	root := t.host.FindObject(1)
 	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("id"))
-	reqParams := t.FindSubObject(request, "params", OBJTYPE_MAP)
 	posts := t.FindSubObject(nil, "posts", OBJTYPE_MAP_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)
@@ -471,14 +489,15 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 			continue
 		}
 
-		function := post.GetString(t.GetKeyId("function"))
-		request.SetString(t.GetKeyId("sender"), scId)
-		request.SetString(t.GetKeyId("function"), function)
-		reqParams.SetInt(KeyLength, 0)
-		params := t.FindSubObject(post, "params", OBJTYPE_MAP)
+		root.SetString(t.GetKeyId("caller"), scId)
+		//TODO increment timestamp and pass post.transfers as incoming
+		//TODO how do we pass incoming when we call instead of post?
+		params.SetInt(KeyLength, 0)
+		postParams := t.FindSubObject(post, "params", OBJTYPE_MAP)
 		//TODO how to iterate
-		params.(*HostMap).CopyDataTo(reqParams)
-		fmt.Printf("    Run function: %v\n", function)
+		postParams.(*HostMap).CopyDataTo(params)
+		function := post.GetString(t.GetKeyId("function"))
+		fmt.Printf("    Run function: %s\n", function)
 		err := t.host.RunScFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
@@ -492,29 +511,20 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 	return t.CompareData(test)
 }
 
-func (t *JsonTests) runRequest(request HostObject, req map[string]interface{}) bool {
-	function, ok := req["function"]
-	if !ok {
-		fmt.Printf("FAIL: Missing request.function\n")
-		return false
-	}
-	if request.Exists(t.GetKeyId("balance")) {
-		reqColors := t.FindSubObject(request, "colors", OBJTYPE_STRING_ARRAY)
-		reqBalance := t.FindSubObject(request, "balance", OBJTYPE_MAP)
-		account := t.FindSubObject(nil, "account", OBJTYPE_MAP)
-		accBalance := t.FindSubObject(account, "balance", OBJTYPE_MAP)
-		nrOfColors := int32(reqColors.GetInt(KeyLength))
-		for i := nrOfColors - 1; i >= 0; i-- {
-			color := reqColors.GetBytes(i)
-			colorKeyId := t.GetKeyId(base58.Encode(color))
-			accBalance.SetInt(colorKeyId, accBalance.GetInt(colorKeyId)+reqBalance.GetInt(colorKeyId))
+func (t *JsonTests) runRequest(function string) bool {
+	incoming := t.FindSubObject(nil, "incoming", OBJTYPE_MAP).(*HostMap)
+	balances := t.FindSubObject(nil, "balances", OBJTYPE_MAP).(*HostMap)
+    mintKeyId := t.GetKeyId(process("#mint"))
+    for keyId, _ := range incoming.fields {
+		if keyId != mintKeyId {
+			balances.SetInt(keyId, balances.GetInt(keyId)+incoming.GetInt(keyId))
 		}
 	}
 
-	fmt.Printf("    Run function: %v\n", function)
-	err := t.host.RunScFunction(function.(string))
+	fmt.Printf("    Run function: %s\n", function)
+	err := t.host.RunScFunction(function)
 	if err != nil {
-		fmt.Printf("FAIL: Function %v: %v\n", function, err)
+		fmt.Printf("FAIL: Function %s: %v\n", function, err)
 		return false
 	}
 	return true

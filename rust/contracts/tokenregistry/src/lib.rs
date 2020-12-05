@@ -25,21 +25,24 @@ pub fn onLoad() {
 }
 
 fn mintSupply(sc: &ScCallContext) {
-    let request = sc.request();
-    let color = request.minted_color();
+    let minted = sc.incoming().minted();
+    if minted == ScColor::MINT {
+        sc.log("TokenRegistry: No newly minted tokens found");
+        return;
+    }
     let state = sc.state();
-    let registry = state.get_key_map("registry").get_bytes(color.to_bytes());
+    let registry = state.get_key_map("registry").get_bytes(minted.to_bytes());
     if registry.exists() {
         sc.log("TokenRegistry: Color already exists");
         return;
     }
-    let params = request.params();
+    let params = sc.params();
     let mut token = TokenInfo {
-        supply: request.balance(&color),
-        minted_by: request.sender(),
-        owner: request.sender(),
-        created: request.timestamp(),
-        updated: request.timestamp(),
+        supply: sc.incoming().balance(&minted),
+        minted_by: sc.caller(),
+        owner: sc.caller(),
+        created: sc.timestamp(),
+        updated: sc.timestamp(),
         description: params.get_string("dscr").value(),
         user_defined: params.get_string("ud").value(),
     };
@@ -53,7 +56,7 @@ fn mintSupply(sc: &ScCallContext) {
     let data = encodeTokenInfo(&token);
     registry.set_value(&data);
     let colors = state.get_color_array("colorList");
-    colors.get_color(colors.length()).set_value(&color);
+    colors.get_color(colors.length()).set_value(&minted);
 }
 
 fn updateMetadata(_sc: &ScCallContext) {

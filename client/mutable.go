@@ -276,15 +276,6 @@ func (o ScMutableKeyMap) GetMapArray(key []byte) ScMutableMapArray {
 	return ScMutableMapArray{objId: arrId}
 }
 
-func (o ScMutableKeyMap) GetRequestId(key []byte) ScMutableRequestId {
-	return ScMutableRequestId{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScMutableKeyMap) GetRequestIdArray(key []byte) ScMutableRequestIdArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScMutableRequestIdArray{objId: arrId}
-}
-
 func (o ScMutableKeyMap) GetString(key []byte) ScMutableString {
 	return ScMutableString{objId: o.objId, keyId: GetKey(key)}
 }
@@ -292,15 +283,6 @@ func (o ScMutableKeyMap) GetString(key []byte) ScMutableString {
 func (o ScMutableKeyMap) GetStringArray(key []byte) ScMutableStringArray {
 	arrId := GetObjectId(o.objId, GetKey(key), TYPE_STRING_ARRAY)
 	return ScMutableStringArray{objId: arrId}
-}
-
-func (o ScMutableKeyMap) GetTxHash(key []byte) ScMutableTxHash {
-	return ScMutableTxHash{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScMutableKeyMap) GetTxHashArray(key []byte) ScMutableTxHashArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScMutableTxHashArray{objId: arrId}
 }
 
 func (o ScMutableKeyMap) Immutable() ScImmutableKeyMap {
@@ -377,15 +359,6 @@ func (o ScMutableMap) GetMapArray(key string) ScMutableMapArray {
 	return ScMutableMapArray{objId: arrId}
 }
 
-func (o ScMutableMap) GetRequestId(key string) ScMutableRequestId {
-	return ScMutableRequestId{objId: o.objId, keyId: GetKeyId(key)}
-}
-
-func (o ScMutableMap) GetRequestIdArray(key string) ScMutableRequestIdArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
-	return ScMutableRequestIdArray{objId: arrId}
-}
-
 func (o ScMutableMap) GetString(key string) ScMutableString {
 	return ScMutableString{objId: o.objId, keyId: GetKeyId(key)}
 }
@@ -393,15 +366,6 @@ func (o ScMutableMap) GetString(key string) ScMutableString {
 func (o ScMutableMap) GetStringArray(key string) ScMutableStringArray {
 	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_STRING_ARRAY)
 	return ScMutableStringArray{objId: arrId}
-}
-
-func (o ScMutableMap) GetTxHash(key string) ScMutableTxHash {
-	return ScMutableTxHash{objId: o.objId, keyId: GetKeyId(key)}
-}
-
-func (o ScMutableMap) GetTxHashArray(key string) ScMutableTxHashArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
-	return ScMutableTxHashArray{objId: arrId}
 }
 
 func (o ScMutableMap) Immutable() ScImmutableMap {
@@ -433,47 +397,6 @@ func (o ScMutableMapArray) Immutable() ScImmutableMapArray {
 }
 
 func (o ScMutableMapArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScMutableRequestId struct {
-	objId int32
-	keyId int32
-}
-
-func (o ScMutableRequestId) Exists() bool {
-	return Exists(o.objId, o.keyId)
-}
-
-func (o ScMutableRequestId) SetValue(value *ScRequestId) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
-}
-
-func (o ScMutableRequestId) Value() *ScRequestId {
-	return NewScRequestId(GetBytes(o.objId, o.keyId))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScMutableRequestIdArray struct {
-	objId int32
-}
-
-func (o ScMutableRequestIdArray) Clear() {
-	SetInt(o.objId, KeyLength(), 0)
-}
-
-func (o ScMutableRequestIdArray) GetRequestId(index int32) ScMutableRequestId {
-	return ScMutableRequestId{objId: o.objId, keyId: index}
-}
-
-func (o ScMutableRequestIdArray) Immutable() ScImmutableRequestIdArray {
-	return ScImmutableRequestIdArray{objId: o.objId}
-}
-
-func (o ScMutableRequestIdArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }
 
@@ -515,46 +438,5 @@ func (o ScMutableStringArray) Immutable() ScImmutableStringArray {
 }
 
 func (o ScMutableStringArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScMutableTxHash struct {
-	objId int32
-	keyId int32
-}
-
-func (o ScMutableTxHash) Exists() bool {
-	return Exists(o.objId, o.keyId)
-}
-
-func (o ScMutableTxHash) SetValue(value *ScTxHash) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
-}
-
-func (o ScMutableTxHash) Value() *ScTxHash {
-	return NewScTxHash(GetBytes(o.objId, o.keyId))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScMutableTxHashArray struct {
-	objId int32
-}
-
-func (o ScMutableTxHashArray) Clear() {
-	SetInt(o.objId, KeyLength(), 0)
-}
-
-func (o ScMutableTxHashArray) GetTxHash(index int32) ScMutableTxHash {
-	return ScMutableTxHash{objId: o.objId, keyId: index}
-}
-
-func (o ScMutableTxHashArray) Immutable() ScImmutableTxHashArray {
-	return ScImmutableTxHashArray{objId: o.objId}
-}
-
-func (o ScMutableTxHashArray) Length() int32 {
 	return int32(GetInt(o.objId, KeyLength()))
 }

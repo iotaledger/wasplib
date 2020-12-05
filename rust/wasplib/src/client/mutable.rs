@@ -355,15 +355,6 @@ impl ScMutableKeyMap {
         ScMutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_request_id(&self, key: &[u8]) -> ScMutableRequestId {
-        ScMutableRequestId { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_request_id_array(&self, key: &[u8]) -> ScMutableRequestIdArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableRequestIdArray { obj_id: arr_id }
-    }
-
     pub fn get_string(&self, key: &[u8]) -> ScMutableString {
         ScMutableString { obj_id: self.obj_id, key_id: get_key(key) }
     }
@@ -371,15 +362,6 @@ impl ScMutableKeyMap {
     pub fn get_string_array(&self, key: &[u8]) -> ScMutableStringArray {
         let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_STRING_ARRAY);
         ScMutableStringArray { obj_id: arr_id }
-    }
-
-    pub fn get_tx_hash(&self, key: &[u8]) -> ScMutableTxHash {
-        ScMutableTxHash { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_tx_hash_array(&self, key: &[u8]) -> ScMutableTxHashArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableTxHashArray { obj_id: arr_id }
     }
 
     pub fn immutable(&self) -> ScImmutableKeyMap {
@@ -462,15 +444,6 @@ impl ScMutableMap {
         ScMutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_request_id(&self, key: &str) -> ScMutableRequestId {
-        ScMutableRequestId { obj_id: self.obj_id, key_id: get_key_id(key) }
-    }
-
-    pub fn get_request_id_array(&self, key: &str) -> ScMutableRequestIdArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
-        ScMutableRequestIdArray { obj_id: arr_id }
-    }
-
     pub fn get_string(&self, key: &str) -> ScMutableString {
         ScMutableString { obj_id: self.obj_id, key_id: get_key_id(key) }
     }
@@ -478,15 +451,6 @@ impl ScMutableMap {
     pub fn get_string_array(&self, key: &str) -> ScMutableStringArray {
         let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_STRING_ARRAY);
         ScMutableStringArray { obj_id: arr_id }
-    }
-
-    pub fn get_tx_hash(&self, key: &str) -> ScMutableTxHash {
-        ScMutableTxHash { obj_id: self.obj_id, key_id: get_key_id(key) }
-    }
-
-    pub fn get_tx_hash_array(&self, key: &str) -> ScMutableTxHashArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
-        ScMutableTxHashArray { obj_id: arr_id }
     }
 
     pub fn immutable(&self) -> ScImmutableMap {
@@ -523,60 +487,6 @@ impl ScMutableMapArray {
 
     pub fn immutable(&self) -> ScImmutableMapArray {
         ScImmutableMapArray::new(self.obj_id)
-    }
-
-    pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScMutableRequestId {
-    obj_id: i32,
-    key_id: i32,
-}
-
-impl ScMutableRequestId {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableRequestId {
-        ScMutableRequestId { obj_id, key_id }
-    }
-
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
-    }
-
-    pub fn set_value(&self, val: &ScRequestId) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
-    }
-
-    pub fn value(&self) -> ScRequestId {
-        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScMutableRequestIdArray {
-    obj_id: i32
-}
-
-impl ScMutableRequestIdArray {
-    pub(crate) fn new(obj_id: i32) -> ScMutableRequestIdArray {
-        ScMutableRequestIdArray { obj_id }
-    }
-
-    pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
-    }
-
-    // index 0..length(), when length() a new one is appended
-    pub fn get_request_idh(&self, index: i32) -> ScMutableRequestId {
-        ScMutableRequestId { obj_id: self.obj_id, key_id: index }
-    }
-
-    pub fn immutable(&self) -> ScImmutableRequestIdArray {
-        ScImmutableRequestIdArray::new(self.obj_id)
     }
 
     pub fn length(&self) -> i32 {
@@ -631,60 +541,6 @@ impl ScMutableStringArray {
 
     pub fn immutable(&self) -> ScImmutableStringArray {
         ScImmutableStringArray::new(self.obj_id)
-    }
-
-    pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScMutableTxHash {
-    obj_id: i32,
-    key_id: i32,
-}
-
-impl ScMutableTxHash {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableTxHash {
-        ScMutableTxHash { obj_id, key_id }
-    }
-
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
-    }
-
-    pub fn set_value(&self, val: &ScTxHash) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
-    }
-
-    pub fn value(&self) -> ScTxHash {
-        ScTxHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScMutableTxHashArray {
-    obj_id: i32
-}
-
-impl ScMutableTxHashArray {
-    pub(crate) fn new(obj_id: i32) -> ScMutableTxHashArray {
-        ScMutableTxHashArray { obj_id }
-    }
-
-    pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
-    }
-
-    // index 0..length(), when length() a new one is appended
-    pub fn get_tx_hash(&self, index: i32) -> ScMutableTxHash {
-        ScMutableTxHash { obj_id: self.obj_id, key_id: index }
-    }
-
-    pub fn immutable(&self) -> ScImmutableTxHashArray {
-        ScImmutableTxHashArray::new(self.obj_id)
     }
 
     pub fn length(&self) -> i32 {

@@ -10,8 +10,7 @@ const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
 
 struct BetInfo {
-    id: ScRequestId,
-    sender: ScAgent,
+    better: ScAgent,
     amount: i64,
     color: i64,
 }
@@ -27,13 +26,12 @@ pub fn onLoad() {
 }
 
 fn placeBet(sc: &ScCallContext) {
-    let request = sc.request();
-    let amount = request.balance(&ScColor::IOTA);
+    let amount = sc.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
         sc.log("Empty bet...");
         return;
     }
-    let color = request.params().get_int("color").value();
+    let color = sc.params().get_int("color").value();
     if color == 0 {
         sc.log("No color...");
         return;
@@ -44,8 +42,7 @@ fn placeBet(sc: &ScCallContext) {
     }
 
     let bet = BetInfo {
-        id: request.id(),
-        sender: request.sender(),
+        better: sc.caller(),
         amount,
         color,
     };
@@ -66,7 +63,7 @@ fn placeBet(sc: &ScCallContext) {
 
 fn lockBets(sc: &ScCallContext) {
     // can only be sent by SC itself
-    if !sc.request().from(&sc.contract().id()) {
+    if !sc.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -88,7 +85,7 @@ fn lockBets(sc: &ScCallContext) {
 fn payWinners(sc: &ScCallContext) {
     // can only be sent by SC itself
     let sc_id = sc.contract().id();
-    if !sc.request().from(&sc_id) {
+    if !sc.from(&sc_id) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -128,9 +125,9 @@ fn payWinners(sc: &ScCallContext) {
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {
             total_payout += payout;
-            sc.transfer(&bet.sender, &ScColor::IOTA, payout);
+            sc.transfer(&bet.better, &ScColor::IOTA, payout);
         }
-        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.sender.to_string();
+        let text = "Pay ".to_string() + &payout.to_string() + " to " + &bet.better.to_string();
         sc.log(&text);
     }
 
@@ -145,13 +142,12 @@ fn payWinners(sc: &ScCallContext) {
 
 fn playPeriod(sc: &ScCallContext) {
     // can only be sent by SC owner
-    let request = sc.request();
-    if !request.from(&sc.contract().owner()) {
+    if !sc.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let play_period = request.params().get_int("playPeriod").value();
+    let play_period = sc.params().get_int("playPeriod").value();
     if play_period < 10 {
         sc.log("Invalid play period...");
         return;
@@ -163,8 +159,7 @@ fn playPeriod(sc: &ScCallContext) {
 fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
-        id: decoder.request_id(),
-        sender: decoder.agent(),
+        better: decoder.agent(),
         amount: decoder.int(),
         color: decoder.int(),
     }
@@ -172,8 +167,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
 
 fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
-    encoder.request_id(&bet.id);
-    encoder.agent(&bet.sender);
+    encoder.agent(&bet.better);
     encoder.int(bet.amount);
     encoder.int(bet.color);
     encoder.data()

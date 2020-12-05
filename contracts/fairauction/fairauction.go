@@ -59,8 +59,7 @@ func OnLoad() {
 }
 
 func startAuction(sc *client.ScCallContext) {
-	request := sc.Request()
-	deposit := request.Balance(client.IOTA)
+	deposit := sc.Incoming().Balance(client.IOTA)
 	if deposit < 1 {
 		sc.Log("Empty deposit...")
 		return
@@ -72,7 +71,7 @@ func startAuction(sc *client.ScCallContext) {
 		ownerMargin = ownerMarginDefault
 	}
 
-	params := request.Params()
+	params := sc.Params()
 	colorParam := params.GetColor("color")
 	if !colorParam.Exists() {
 		refund(sc, deposit/2, "Missing token color...")
@@ -85,7 +84,7 @@ func startAuction(sc *client.ScCallContext) {
 		return
 	}
 
-	numTokens := request.Balance(color)
+	numTokens := sc.Incoming().Balance(color)
 	if numTokens == 0 {
 		refund(sc, deposit/2, "Auction tokens missing from request...")
 		return
@@ -139,9 +138,9 @@ func startAuction(sc *client.ScCallContext) {
 		numTokens:    numTokens,
 		minimumBid:   minimumBid,
 		description:  description,
-		whenStarted:  request.Timestamp(),
+		whenStarted:  sc.Timestamp(),
 		duration:     duration,
-		auctionOwner: request.Sender(),
+		auctionOwner: sc.Caller(),
 		deposit:      deposit,
 		ownerMargin:  ownerMargin,
 	}
@@ -156,13 +155,12 @@ func startAuction(sc *client.ScCallContext) {
 
 func finalizeAuction(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	request := sc.Request()
-	if !request.From(sc.Contract().Id()) {
+	if !sc.From(sc.Contract().Id()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	colorParam := request.Params().GetColor("color")
+	colorParam := sc.Params().GetColor("color")
 	if !colorParam.Exists() {
 		sc.Log("INTERNAL INCONSISTENCY: missing color")
 		return
@@ -218,14 +216,13 @@ func finalizeAuction(sc *client.ScCallContext) {
 }
 
 func placeBid(sc *client.ScCallContext) {
-	request := sc.Request()
-	bidAmount := request.Balance(client.IOTA)
+	bidAmount := sc.Incoming().Balance(client.IOTA)
 	if bidAmount == 0 {
 		sc.Log("Insufficient bid amount")
 		return
 	}
 
-	colorParam := request.Params().GetColor("color")
+	colorParam := sc.Params().GetColor("color")
 	if !colorParam.Exists() {
 		refund(sc, bidAmount, "Missing token color")
 		return
@@ -241,22 +238,22 @@ func placeBid(sc *client.ScCallContext) {
 		return
 	}
 
-	sender := request.Sender()
+	caller := sc.Caller()
 	auction := decodeAuctionInfo(bytes)
 	var bid *BidInfo
 	for _, bidder := range auction.bids {
-		if bidder.bidder.Equals(sender) {
+		if bidder.bidder.Equals(caller) {
 			bid = bidder
 			break
 		}
 	}
 	if bid == nil {
-		sc.Log("New bid from: " + sender.String())
-		bid = &BidInfo{bidder: sender}
+		sc.Log("New bid from: " + caller.String())
+		bid = &BidInfo{bidder: caller}
 		auction.bids = append(auction.bids, bid)
 	}
 	bid.amount += bidAmount
-	bid.when = request.Timestamp()
+	bid.when = sc.Timestamp()
 
 	bytes = encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
@@ -265,13 +262,12 @@ func placeBid(sc *client.ScCallContext) {
 
 func setOwnerMargin(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	request := sc.Request()
-	if !request.From(sc.Contract().Owner()) {
+	if !sc.From(sc.Contract().Owner()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
 
-	ownerMargin := request.Params().GetInt("ownerMargin").Value()
+	ownerMargin := sc.Params().GetInt("ownerMargin").Value()
 	if ownerMargin < ownerMarginMin {
 		ownerMargin = ownerMarginMin
 	}
@@ -342,23 +338,23 @@ func encodeBidInfo(bid *BidInfo) []byte {
 
 func refund(sc *client.ScCallContext, amount int64, reason string) {
 	sc.Log(reason)
-	request := sc.Request()
-	sender := request.Sender()
+	caller := sc.Caller()
 	if amount != 0 {
-		sc.Transfer(sender, client.IOTA, amount)
+		sc.Transfer(caller, client.IOTA, amount)
 	}
-	deposit := request.Balance(client.IOTA)
+	deposit := sc.Incoming().Balance(client.IOTA)
 	if deposit-amount != 0 {
 		sc.Transfer(sc.Contract().Owner(), client.IOTA, deposit-amount)
 	}
 
-	// refund all other token colors, don't keep tokens that were to be auctioned
-	colors := request.Colors()
-	items := colors.Length()
-	for i := int32(0); i < items; i++ {
-		color := colors.GetColor(i).Value()
-		if !color.Equals(client.IOTA) {
-			sc.Transfer(sender, color, request.Balance(color))
-		}
-	}
+	//TODO
+	//// refund all other token colors, don't keep tokens that were to be auctioned
+	//colors := request.Colors()
+	//items := colors.Length()
+	//for i := int32(0); i < items; i++ {
+	//	color := colors.GetColor(i).Value()
+	//	if !color.Equals(client.IOTA) {
+	//		sc.Transfer(caller, color, request.Balance(color))
+	//	}
+	//}
 }

@@ -25,21 +25,24 @@ func OnLoad() {
 }
 
 func mintSupply(sc *client.ScCallContext) {
-	request := sc.Request()
-	color := request.MintedColor()
+	minted := sc.Incoming().Minted()
+	if minted.Equals(client.MINT) {
+		sc.Log("TokenRegistry: No newly minted tokens found")
+		return
+	}
 	state := sc.State()
-	registry := state.GetKeyMap("registry").GetBytes(color.Bytes())
+	registry := state.GetKeyMap("registry").GetBytes(minted.Bytes())
 	if registry.Exists() {
 		sc.Log("TokenRegistry: Color already exists")
 		return
 	}
-	params := request.Params()
+	params := sc.Params()
 	token := &TokenInfo{
-		supply:      request.Balance(color),
-		mintedBy:    request.Sender(),
-		owner:       request.Sender(),
-		created:     request.Timestamp(),
-		updated:     request.Timestamp(),
+		supply:      sc.Incoming().Balance(minted),
+		mintedBy:    sc.Caller(),
+		owner:       sc.Caller(),
+		created:     sc.Timestamp(),
+		updated:     sc.Timestamp(),
 		description: params.GetString("dscr").Value(),
 		userDefined: params.GetString("ud").Value(),
 	}
@@ -53,7 +56,7 @@ func mintSupply(sc *client.ScCallContext) {
 	bytes := encodeTokenInfo(token)
 	registry.SetValue(bytes)
 	colors := state.GetColorArray("colorList")
-	colors.GetColor(colors.Length()).SetValue(color)
+	colors.GetColor(colors.Length()).SetValue(minted)
 }
 
 func updateMetadata(sc *client.ScCallContext) {

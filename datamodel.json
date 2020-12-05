@@ -1,4 +1,6 @@
 {
+  "caller": "base58HashOfCaller",
+  "timestamp": 1234567890,
   "error": "errorTextOrEmptyStringWhenNoError",
   "contract": {
     "id": "base58HashOfSmartContractId",
@@ -9,24 +11,22 @@
   },
   "account": {
     "colors": ["iota", "base58HashOfColor"],
-    "balance": {
+    "balances": {
       "iota": 1000000,
       "base58HashOfColor": 27
     }
   },
+  "params": {
+    "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+    "paramInt": 987654321,
+    "paramString": "someValue"
+  },
   "request": {
-    "sender": "base58HashOfSender",
     "colors": ["iota", "base58HashOfColor"],
-    "balance": {
+    "balances": {
       "iota": 1000,
       "base58HashOfColor": 27
     },
-    "params": {
-      "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
-      "paramInt": 987654321,
-      "paramString": "someValue"
-    },
-    "timestamp": 1234567890,
     "id": "[nr]base58HashOfTransaction",
     "hash": "base58HashOfTransaction",
     "function": "nameOfRequestedFunction"

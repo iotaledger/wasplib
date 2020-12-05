@@ -4,7 +4,6 @@
 package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.context.ScCallContext;
-import org.iota.wasplib.client.context.ScRequest;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
@@ -38,7 +37,7 @@ public class Erc20 {
 			sc.Log("initSC.fail: already initialized");
 			return;
 		}
-		ScImmutableMap params = sc.Request().Params();
+		ScImmutableMap params = sc.Params();
 		ScImmutableInt supplyParam = params.GetInt(varSupply);
 		if (supplyParam.Value() == 0) {
 			sc.Log("initSC.fail: wrong 'supply' parameter");
@@ -55,16 +54,15 @@ public class Erc20 {
 		sc.Log("transfer");
 
 		ScMutableMap state = sc.State();
-		ScRequest request = sc.Request();
 		ScMutableKeyMap balances = state.GetKeyMap(varBalances);
 
-		ScAgent sender = request.Sender();
-		sc.Log("sender address: " + sender);
+		ScAgent caller = sc.Caller();
+		sc.Log("caller address: " + caller);
 
-		ScMutableInt sourceBalance = balances.GetInt(sender.toBytes());
+		ScMutableInt sourceBalance = balances.GetInt(caller.toBytes());
 		sc.Log("source balance: " + sourceBalance.Value());
 
-		ScImmutableMap params = request.Params();
+		ScImmutableMap params = sc.Params();
 		ScImmutableInt amount = params.GetInt(varAmount);
 		if (amount.Value() == 0) {
 			sc.Log("transfer.fail: wrong 'amount' parameter");

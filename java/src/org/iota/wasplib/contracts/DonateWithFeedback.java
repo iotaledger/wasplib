@@ -5,11 +5,13 @@ package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.context.*;
+import org.iota.wasplib.client.context.ScBalances;
+import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScLog;
+import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScRequestId;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.immutable.ScImmutableMapArray;
@@ -28,23 +30,21 @@ public class DonateWithFeedback {
 
 	public static void donate(ScCallContext sc) {
 		ScLog tlog = sc.TimestampedLog("l");
-		ScRequest request = sc.Request();
 		DonationInfo donation = new DonationInfo();
 		donation.seq = tlog.Length();
-		donation.id = request.Id();
-		donation.amount = request.Balance(ScColor.IOTA);
-		donation.sender = request.Sender();
+		donation.amount = sc.Balances().Balance(ScColor.IOTA);
+		donation.donator = sc.Caller();
 		donation.error = "";
-		donation.feedback = request.Params().GetString("f").Value();
+		donation.feedback = sc.Params().GetString("f").Value();
 		if (donation.amount == 0 || donation.feedback.length() == 0) {
 			donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
 			if (donation.amount > 0) {
-				sc.Transfer(donation.sender, ScColor.IOTA, donation.amount);
+				sc.Transfer(donation.donator, ScColor.IOTA, donation.amount);
 				donation.amount = 0;
 			}
 		}
 		byte[] bytes = encodeDonationInfo(donation);
-		tlog.Append(request.Timestamp(), bytes);
+		tlog.Append(sc.Timestamp(), bytes);
 
 		ScMutableMap state = sc.State();
 		ScMutableInt largestDonation = state.GetInt("maxd");
@@ -57,15 +57,14 @@ public class DonateWithFeedback {
 
 	public static void withdraw(ScCallContext sc) {
 		ScAgent scOwner = sc.Contract().Owner();
-		ScRequest request = sc.Request();
-		if (!request.From(scOwner)) {
+		if (!sc.From(scOwner)) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
 
-		ScAccount account = sc.Account();
+		ScBalances account = sc.Balances();
 		long amount = account.Balance(ScColor.IOTA);
-		long withdrawAmount = request.Params().GetInt("s").Value();
+		long withdrawAmount = sc.Params().GetInt("s").Value();
 		if (withdrawAmount == 0 || withdrawAmount > amount) {
 			withdrawAmount = amount;
 		}
@@ -95,7 +94,7 @@ public class DonateWithFeedback {
 			DonationInfo di = decodeDonationInfo(bytes);
 			donation.GetInt("amount").SetValue(di.amount);
 			donation.GetString("feedback").SetValue(di.feedback);
-			donation.GetString("sender").SetValue(di.sender.toString());
+			donation.GetString("donator").SetValue(di.donator.toString());
 			donation.GetString("error").SetValue(di.error);
 		}
 	}
@@ -104,31 +103,28 @@ public class DonateWithFeedback {
 		BytesDecoder decoder = new BytesDecoder(bytes);
 		DonationInfo bet = new DonationInfo();
 		bet.seq = decoder.Int();
-		bet.id = decoder.RequestId();
+		bet.donator = decoder.Agent();
 		bet.amount = decoder.Int();
-		bet.sender = decoder.Agent();
-		bet.error = decoder.String();
 		bet.feedback = decoder.String();
+		bet.error = decoder.String();
 		return bet;
 	}
 
 	public static byte[] encodeDonationInfo(DonationInfo donation) {
 		return new BytesEncoder().
 				Int(donation.seq).
-				RequestId(donation.id).
+				Agent(donation.donator).
 				Int(donation.amount).
-				Agent(donation.sender).
-				String(donation.error).
 				String(donation.feedback).
+				String(donation.error).
 				Data();
 	}
 
 	public static class DonationInfo {
 		long seq;
-		ScRequestId id;
+		ScAgent donator;
 		long amount;
-		ScAgent sender;
-		String error;
 		String feedback;
+		String error;
 	}
 }

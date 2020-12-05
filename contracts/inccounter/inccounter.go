@@ -27,7 +27,7 @@ func OnLoad() {
 }
 
 func onInit(sc *client.ScCallContext) {
-	counter := sc.Request().Params().GetInt("counter").Value()
+	counter := sc.Params().GetInt("counter").Value()
 	if counter == 0 {
 		return
 	}
@@ -76,7 +76,7 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	stateRepeats := sc.State().GetInt("numRepeats")
-	repeats := sc.Request().Params().GetInt("numRepeats").Value()
+	repeats := sc.Params().GetInt("numRepeats").Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
