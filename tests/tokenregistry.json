@@ -19,7 +19,7 @@
         "name": "tokenregistry",
         "description": "Register colored tokens on the Tangle",
         "id": "@scId",
-         "owner": "@scOwner"
+        "owner": "@scOwner"
       }
     }
   },

@@ -59,7 +59,7 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.PostSelf("lockBets").Post(playPeriod);
+			sc.Post("lockBets").Post(playPeriod);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		sc.PostSelf("payWinners").Post(0);
+		sc.Post("payWinners").Post(0);
 	}
 
 	public static void payWinners(ScCallContext sc) {

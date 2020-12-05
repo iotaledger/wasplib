@@ -9,8 +9,8 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.immutable.ScImmutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
+import org.iota.wasplib.client.request.ScViewInfo;
 
 public class ScViewContext {
 	ScMutableMap root;
@@ -71,15 +71,7 @@ public class ScViewContext {
 		return new ScUtility(root.GetMap("utility"));
 	}
 
-	public ScViewInfo View(String contract, String function) {
-		ScMutableMapArray views = root.GetMapArray("views");
-		ScMutableMap view = views.GetMap(views.Length());
-		view.GetString("contract").SetValue(contract);
-		view.GetString("function").SetValue(function);
-		return new ScViewInfo(view);
-	}
-
-	public ScViewInfo ViewSelf(String function) {
-		return View("", function);
+	public ScViewInfo View(String function) {
+		return new ScViewInfo(ScCallContext.makeRequest("views", function));
 	}
 }

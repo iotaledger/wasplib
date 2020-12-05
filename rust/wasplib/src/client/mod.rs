@@ -7,6 +7,7 @@ pub use exports::ScExports;
 pub use hashtypes::*;
 pub use immutable::*;
 pub use mutable::*;
+pub use request::*;
 
 mod bytes;
 mod context;
@@ -16,4 +17,5 @@ pub mod host;
 mod immutable;
 pub mod keys;
 mod mutable;
+mod request;
 

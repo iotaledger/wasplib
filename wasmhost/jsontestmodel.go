@@ -514,8 +514,8 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 func (t *JsonTests) runRequest(function string) bool {
 	incoming := t.FindSubObject(nil, "incoming", OBJTYPE_MAP).(*HostMap)
 	balances := t.FindSubObject(nil, "balances", OBJTYPE_MAP).(*HostMap)
-    mintKeyId := t.GetKeyId(process("#mint"))
-    for keyId, _ := range incoming.fields {
+	mintKeyId := t.GetKeyId(process("#mint"))
+	for keyId, _ := range incoming.fields {
 		if keyId != mintKeyId {
 			balances.SetInt(keyId, balances.GetInt(keyId)+incoming.GetInt(keyId))
 		}

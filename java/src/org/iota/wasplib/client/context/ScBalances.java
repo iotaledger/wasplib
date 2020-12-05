@@ -4,7 +4,6 @@
 package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.immutable.ScImmutableBytes;
 import org.iota.wasplib.client.immutable.ScImmutableKeyMap;
 
 public class ScBalances {

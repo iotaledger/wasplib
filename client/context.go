@@ -27,30 +27,6 @@ func (ctx ScBalances) Minted() *ScColor {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScCallInfo struct {
-	call ScMutableMap
-}
-
-func (ctx ScCallInfo) Call() ScCallInfo {
-	ctx.call.GetInt("delay").SetValue(-1)
-	return ctx
-}
-
-func (ctx ScCallInfo) Params() ScMutableMap {
-	return ctx.call.GetMap("params")
-}
-
-func (ctx ScCallInfo) Results() ScImmutableMap {
-	return ctx.call.GetMap("results").Immutable()
-}
-
-func (ctx ScCallInfo) Transfer(color *ScColor, amount int64) {
-	transfers := ctx.call.GetKeyMap("transfers")
-	transfers.GetInt(color.Bytes()).SetValue(amount)
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScContract struct {
 	contract ScImmutableMap
 }
@@ -93,25 +69,6 @@ func (ctx ScLog) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScPostInfo struct {
-	post ScMutableMap
-}
-
-func (ctx ScPostInfo) Params() ScMutableMap {
-	return ctx.post.GetMap("params")
-}
-
-func (ctx ScPostInfo) Post(delay int64) {
-	ctx.post.GetInt("delay").SetValue(delay)
-}
-
-func (ctx ScPostInfo) Transfer(color *ScColor, amount int64) {
-	transfers := ctx.post.GetKeyMap("transfers")
-	transfers.GetInt(color.Bytes()).SetValue(amount)
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScUtility struct {
 	utility ScMutableMap
 }
@@ -147,25 +104,6 @@ func (ctx ScUtility) String(value int64) string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScViewInfo struct {
-	view ScMutableMap
-}
-
-func (ctx ScViewInfo) Params() ScMutableMap {
-	return ctx.view.GetMap("params")
-}
-
-func (ctx ScViewInfo) Results() ScImmutableMap {
-	return ctx.view.GetMap("results").Immutable()
-}
-
-func (ctx ScViewInfo) View() ScViewInfo {
-	ctx.view.GetInt("delay").SetValue(-2)
-	return ctx
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScCallContext struct {
 	root ScMutableMap
 }
@@ -174,20 +112,12 @@ func (ctx ScCallContext) Balances() ScBalances {
 	return ScBalances{ctx.root.GetKeyMap("balances").Immutable()}
 }
 
-func (ctx ScCallContext) Call(contract string, function string) ScCallInfo {
-	calls := ctx.root.GetMapArray("calls")
-	call := calls.GetMap(calls.Length())
-	call.GetString("contract").SetValue(contract)
-	call.GetString("function").SetValue(function)
-	return ScCallInfo{call}
+func (ctx ScCallContext) Call(function string) ScCallInfo {
+	return ScCallInfo{makeRequest("calls", function)}
 }
 
 func (ctx ScCallContext) Caller() *ScAgent {
 	return ctx.root.GetAgent("caller").Value()
-}
-
-func (ctx ScCallContext) CallSelf(function string) ScCallInfo {
-	return ctx.Call("", function)
 }
 
 func (ctx ScCallContext) Contract() ScContract {
@@ -214,25 +144,8 @@ func (ctx ScCallContext) Params() ScImmutableMap {
 	return ctx.root.GetMap("params").Immutable()
 }
 
-func (ctx ScCallContext) PostGlobal(chain *ScAddress, contract string, function string) ScPostInfo {
-	posts := ctx.root.GetMapArray("posts")
-	post := posts.GetMap(posts.Length())
-	post.GetAddress("chain").SetValue(chain)
-	post.GetString("contract").SetValue(contract)
-	post.GetString("function").SetValue(function)
-	return ScPostInfo{post}
-}
-
-func (ctx ScCallContext) PostLocal(contract string, function string) ScPostInfo {
-	posts := ctx.root.GetMapArray("posts")
-	post := posts.GetMap(posts.Length())
-	post.GetString("contract").SetValue(contract)
-	post.GetString("function").SetValue(function)
-	return ScPostInfo{post}
-}
-
-func (ctx ScCallContext) PostSelf(function string) ScPostInfo {
-	return ctx.PostLocal("", function)
+func (ctx ScCallContext) Post(function string) ScPostInfo {
+	return ScPostInfo{makeRequest("posts", function)}
 }
 
 func (ctx ScCallContext) Results() ScMutableMap {
@@ -267,16 +180,8 @@ func (ctx ScCallContext) Utility() ScUtility {
 	return ScUtility{ctx.root.GetMap("utility")}
 }
 
-func (ctx ScCallContext) View(contract string, function string) ScViewInfo {
-	views := ctx.root.GetMapArray("views")
-	view := views.GetMap(views.Length())
-	view.GetString("contract").SetValue(contract)
-	view.GetString("function").SetValue(function)
-	return ScViewInfo{view}
-}
-
-func (ctx ScCallContext) ViewSelf(function string) ScViewInfo {
-	return ctx.View("", function)
+func (ctx ScCallContext) View(function string) ScViewInfo {
+	return ScViewInfo{makeRequest("views", function)}
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -337,14 +242,6 @@ func (ctx ScViewContext) Utility() ScUtility {
 	return ScUtility{ctx.root.GetMap("utility")}
 }
 
-func (ctx ScViewContext) View(contract string, function string) ScViewInfo {
-	views := ctx.root.GetMapArray("views")
-	view := views.GetMap(views.Length())
-	view.GetString("contract").SetValue(contract)
-	view.GetString("function").SetValue(function)
-	return ScViewInfo{view}
-}
-
-func (ctx ScViewContext) ViewSelf(function string) ScViewInfo {
-	return ctx.View("", function)
+func (ctx ScViewContext) View(function string) ScViewInfo {
+	return ScViewInfo{makeRequest("views", function)}
 }

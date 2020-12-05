@@ -147,7 +147,7 @@ fn startAuction(sc: &ScCallContext) {
     let bytes = encodeAuctionInfo(auction);
     currentAuction.set_value(&bytes);
 
-    let finalize_request = sc.post_self("finalizeAuction");
+    let finalize_request = sc.post("finalizeAuction");
     let finalize_params = finalize_request.params();
     finalize_params.get_color("color").set_value(&auction.color);
     finalize_request.post(duration * 60);

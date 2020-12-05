@@ -48,7 +48,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.CallSelf("incrementCallIncrement").Call();
+			sc.Call("incrementCallIncrement").Call();
 		}
 	}
 
@@ -57,7 +57,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
-			sc.CallSelf("incrementCallIncrementRecurse5x").Call();
+			sc.Call("incrementCallIncrementRecurse5x").Call();
 		}
 	}
 
@@ -66,7 +66,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.PostSelf("incrementPostIncrement").Post(0);
+			sc.Post("incrementPostIncrement").Post(0);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class IncCounter {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.PostSelf("incrementRepeatMany").Post(0);
+		sc.Post("incrementRepeatMany").Post(0);
 	}
 
 	public static void incrementWhenMustIncrement(ScCallContext sc) {
@@ -108,18 +108,18 @@ public class IncCounter {
 	}
 
 	public static void incrementLocalStateSandboxCall(ScCallContext sc) {
-		sc.CallSelf("incrementWhenMustIncrement").Call();
+		sc.Call("incrementWhenMustIncrement").Call();
 		localStateMustIncrement = true;
-		sc.CallSelf("incrementWhenMustIncrement").Call();
-		sc.CallSelf("incrementWhenMustIncrement").Call();
+		sc.Call("incrementWhenMustIncrement").Call();
+		sc.Call("incrementWhenMustIncrement").Call();
 		// counter ends up as 0
 	}
 
 	public static void incrementLocalStatePost(ScCallContext sc) {
-		sc.PostSelf("incrementWhenMustIncrement").Post(0);
+		sc.Post("incrementWhenMustIncrement").Post(0);
 		localStateMustIncrement = true;
-		sc.PostSelf("incrementWhenMustIncrement").Post(0);
-		sc.PostSelf("incrementWhenMustIncrement").Post(0);
+		sc.Post("incrementWhenMustIncrement").Post(0);
+		sc.Post("incrementWhenMustIncrement").Post(0);
 		// counter ends up as 0
 	}
 

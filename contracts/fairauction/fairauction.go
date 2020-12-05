@@ -146,7 +146,7 @@ func startAuction(sc *client.ScCallContext) {
 	}
 	bytes := encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
-	finalizeRequest := sc.PostSelf("finalizeAuction")
+	finalizeRequest := sc.Post("finalizeAuction")
 	finalizeParams := finalizeRequest.Params()
 	finalizeParams.GetColor("color").SetValue(auction.color)
 	finalizeRequest.Post(auction.duration * 60)

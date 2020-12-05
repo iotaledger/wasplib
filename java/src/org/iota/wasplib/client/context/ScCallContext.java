@@ -12,6 +12,9 @@ import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
+import org.iota.wasplib.client.request.ScCallInfo;
+import org.iota.wasplib.client.request.ScPostInfo;
+import org.iota.wasplib.client.request.ScViewInfo;
 
 public class ScCallContext {
 	ScMutableMap root;
@@ -20,24 +23,24 @@ public class ScCallContext {
 		root = new ScMutableMap(1);
 	}
 
-	public ScBalances Balances() {
-		return new ScBalances(root.GetKeyMap("balances").Immutable());
+	static ScMutableMap makeRequest(String key, String function) {
+		ScMutableMap root = new ScMutableMap(1);
+		ScMutableMapArray requests = root.GetMapArray(key);
+		ScMutableMap request = requests.GetMap(requests.Length());
+		request.GetString("function").SetValue(function);
+		return request;
 	}
 
-	public ScCallInfo Call(String contract, String function) {
-		ScMutableMapArray calls = root.GetMapArray("calls");
-		ScMutableMap call = calls.GetMap(calls.Length());
-		call.GetString("contract").SetValue(contract);
-		call.GetString("function").SetValue(function);
-		return new ScCallInfo(call);
+	public ScBalances Balances() {
+		return new ScBalances(root.GetKeyMap("balances").Immutable());
 	}
 
 	public ScAgent Caller() {
 		return root.GetAgent("caller").Value();
 	}
 
-	public ScCallInfo CallSelf(String function) {
-		return Call("", function);
+	public ScCallInfo Call(String function) {
+		return new ScCallInfo(makeRequest("calls", function));
 	}
 
 	public ScContract Contract() {
@@ -73,16 +76,8 @@ public class ScCallContext {
 		return new ScPostInfo(post);
 	}
 
-	public ScPostInfo PostLocal(String contract, String function) {
-		ScMutableMapArray posts = root.GetMapArray("posts");
-		ScMutableMap post = posts.GetMap(posts.Length());
-		post.GetString("contract").SetValue(contract);
-		post.GetString("function").SetValue(function);
-		return new ScPostInfo(post);
-	}
-
-	public ScPostInfo PostSelf(String function) {
-		return PostLocal("", function);
+	public ScPostInfo Post(String function) {
+		return new ScPostInfo(makeRequest("posts", function));
 	}
 
 	public ScMutableMap Results() {
@@ -117,15 +112,7 @@ public class ScCallContext {
 		return new ScUtility(root.GetMap("utility"));
 	}
 
-	public ScViewInfo View(String contract, String function) {
-		ScMutableMapArray views = root.GetMapArray("views");
-		ScMutableMap view = views.GetMap(views.Length());
-		view.GetString("contract").SetValue(contract);
-		view.GetString("function").SetValue(function);
-		return new ScViewInfo(view);
-	}
-
-	public ScViewInfo ViewSelf(String function) {
-		return View("", function);
+	public ScViewInfo View(String function) {
+		return new ScViewInfo(makeRequest("views", function));
 	}
 }

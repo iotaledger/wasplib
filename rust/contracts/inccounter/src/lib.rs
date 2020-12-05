@@ -45,7 +45,7 @@ fn incrementCallIncrement(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.call_self("incrementCallIncrement").call();
+        sc.call("incrementCallIncrement").call();
     }
 }
 
@@ -54,7 +54,7 @@ fn incrementCallIncrementRecurse5x(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        sc.call_self("incrementCallIncrementRecurse5x").call();
+        sc.call("incrementCallIncrementRecurse5x").call();
     }
 }
 
@@ -63,7 +63,7 @@ fn incrementPostIncrement(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.post_self("incrementPostIncrement").post(0);
+        sc.post("incrementPostIncrement").post(0);
     }
 }
 
@@ -85,7 +85,7 @@ fn incrementRepeatMany(sc: &ScCallContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.post_self("incrementRepeatMany").post(0);
+    sc.post("incrementRepeatMany").post(0);
 }
 
 fn incrementWhenMustIncrement(sc: &ScCallContext) {
@@ -110,22 +110,22 @@ fn incrementLocalStateInternalCall(sc: &ScCallContext) {
 }
 
 fn incrementLocalStateSandboxCall(sc: &ScCallContext) {
-    sc.call_self("incrementWhenMustIncrement").call();
+    sc.call("incrementWhenMustIncrement").call();
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.call_self("incrementWhenMustIncrement").call();
-    sc.call_self("incrementWhenMustIncrement").call();
+    sc.call("incrementWhenMustIncrement").call();
+    sc.call("incrementWhenMustIncrement").call();
     // counter ends up as 0
 }
 
 fn incrementLocalStatePost(sc: &ScCallContext) {
-    sc.post_self("incrementWhenMustIncrement").post(0);
+    sc.post("incrementWhenMustIncrement").post(0);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.post_self("incrementWhenMustIncrement").post(0);
-    sc.post_self("incrementWhenMustIncrement").post(0);
+    sc.post("incrementWhenMustIncrement").post(0);
+    sc.post("incrementWhenMustIncrement").post(0);
     // counter ends up as 0
 }
 

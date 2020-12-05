@@ -6,30 +6,21 @@
     "id": "base58HashOfSmartContractId",
     "name": "nameOfSmartContract",
     "description": "descriptionOfSmartContract",
-    "color": "base58HashOfSmartContractColor",
     "owner": "base58HashOfChainOwner"
   },
-  "account": {
-    "colors": ["iota", "base58HashOfColor"],
-    "balances": {
-      "iota": 1000000,
-      "base58HashOfColor": 27
-    }
+  "balances": {
+    "iota": 1000000,
+    "base58HashOfColor": 27
+  },
+  "function": "nameOfRequestedFunction",
+  "incoming": {
+    "iota": 1000,
+    "base58HashOfColor": 27
   },
   "params": {
     "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
     "paramInt": 987654321,
     "paramString": "someValue"
-  },
-  "request": {
-    "colors": ["iota", "base58HashOfColor"],
-    "balances": {
-      "iota": 1000,
-      "base58HashOfColor": 27
-    },
-    "id": "[nr]base58HashOfTransaction",
-    "hash": "base58HashOfTransaction",
-    "function": "nameOfRequestedFunction"
   },
   "logs": [
     {"timestamp": 20191231235559, "data": "0x[fe dc ba 98 76 54 32 10]"},
