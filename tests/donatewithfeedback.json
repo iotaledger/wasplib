@@ -28,13 +28,13 @@
       "function": "donate",
       "incoming": {"#iota": 500},
       "params": {
-        "f": "Here, have some iotas"
+        "feedback": "Here, have some iotas"
       },
       "expect": {
         "balances": {"#iota": 600},
         "state": {},
         "logs": {
-          "l": [
+          "log": [
             {
               "timestamp": 20201027172138,
               "data": {
@@ -61,7 +61,7 @@
       "function": "donate",
       "incoming": {"#iota": 500},
       "params": {
-        "f": "Here, have some iotas"
+        "feedback": "Here, have some iotas"
       },
       "additionalRequests": [
         {
@@ -70,7 +70,7 @@
           "function": "donate",
           "incoming": {"#iota": 750},
           "params": {
-            "f": "Here, have some more iotas"
+            "feedback": "Here, have some more iotas"
           }
         }
       ],
@@ -78,7 +78,7 @@
         "balances": {"#iota": 1350},
         "state": {},
         "logs": {
-          "l": [
+          "log": [
             {
               "timestamp": 20201027172138,
               "data": {
@@ -117,7 +117,7 @@
       "function": "donate",
       "incoming": {"#iota": 500},
       "params": {
-        "f": "Here, have some iotas"
+        "feedback": "Here, have some iotas"
       },
       "additionalRequests": [
         {
@@ -125,7 +125,7 @@
           "caller": "@scOwner",
           "function": "withdraw",
           "params": {
-            "s": 250
+            "withdraw": 250
           }
         }
       ],
@@ -133,7 +133,7 @@
         "balances": {"#iota": 350},
         "state": {},
         "logs": {
-          "l": [
+          "log": [
             {
               "timestamp": 20201027172138,
               "data": {
@@ -162,7 +162,7 @@
       "function": "donate",
       "incoming": {"#iota": 500},
       "params": {
-        "f": "Here, have some iotas"
+        "feedback": "Here, have some iotas"
       },
       "additionalRequests": [
         {
@@ -170,7 +170,7 @@
           "caller": "@notScOwner",
           "function": "withdraw",
           "params": {
-            "s": 250
+            "withdraw": 250
           }
         }
       ],
@@ -178,7 +178,7 @@
         "balances": {"#iota": 600},
         "state": {},
         "logs": {
-          "l": [
+          "log": [
             {
               "timestamp": 20201027172138,
               "data": {
@@ -205,7 +205,7 @@
       "function": "donate",
       "incoming": {"#iota": 500},
       "params": {
-        "f": "Here, have some iotas"
+        "feedback": "Here, have some iotas"
       },
       "additionalRequests": [
         {
@@ -214,7 +214,7 @@
           "function": "donate",
           "incoming": {"#iota": 750},
           "params": {
-            "f": "Here, have some more iotas"
+            "feedback": "Here, have some more iotas"
           }
         },
         {
@@ -227,7 +227,7 @@
         "balances": {"#iota": 1350},
         "state": {},
         "logs": {
-          "l": [
+          "log": [
             {
               "timestamp": 20201027172138,
               "data": {
@@ -259,8 +259,8 @@
         "views": [],
         "transfers": [],
         "results": {
-          "largest": 750,
-          "total": 1250,
+          "maxDonation": 750,
+          "totalDonation": 1250,
           "donations": [
             {
               "timestamp": 20201027172138,

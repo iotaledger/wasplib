@@ -7,6 +7,13 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+const (
+	keyAddress     = client.Key("address")
+	keyFactor      = client.Key("factor")
+	keyMembers     = client.Key("members")
+	keyTotalFactor = client.Key("totalFactor")
+)
+
 type Member struct {
 	address *client.ScAddress
 	factor  int64
@@ -24,12 +31,12 @@ func member(sc *client.ScCallContext) {
 		return
 	}
 	params := sc.Params()
-	address := params.GetAddress("address")
+	address := params.GetAddress(keyAddress)
 	if !address.Exists() {
 		sc.Log("Missing address")
 		return
 	}
-	factor := params.GetInt("factor")
+	factor := params.GetInt(keyFactor)
 	if !factor.Exists() {
 		sc.Log("Missing factor")
 		return
@@ -39,9 +46,9 @@ func member(sc *client.ScCallContext) {
 		factor:  factor.Value(),
 	}
 	state := sc.State()
-	totalFactor := state.GetInt("totalFactor")
+	totalFactor := state.GetInt(keyTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray("members")
+	members := state.GetBytesArray(keyMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
 		bytes := members.GetBytes(i).Value()
@@ -70,9 +77,9 @@ func divide(sc *client.ScCallContext) {
 		return
 	}
 	state := sc.State()
-	totalFactor := state.GetInt("totalFactor")
+	totalFactor := state.GetInt(keyTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray("members")
+	members := state.GetBytesArray(keyMembers)
 	size := members.Length()
 	parts := int64(0)
 	for i := int32(0); i < size; i++ {

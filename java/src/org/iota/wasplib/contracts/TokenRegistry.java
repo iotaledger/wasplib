@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
@@ -15,6 +16,11 @@ import org.iota.wasplib.client.mutable.ScMutableColorArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class TokenRegistry {
+	private static final Key keyColorList = new Key("colorList");
+	private static final Key keyDescription = new Key("description");
+	private static final Key keyRegistry = new Key("registry");
+	private static final Key keyUserDefined = new Key("userDefined");
+
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
@@ -30,7 +36,7 @@ public class TokenRegistry {
 			return;
 		}
 		ScMutableMap state = sc.State();
-		ScMutableBytes registry = state.GetKeyMap("registry").GetBytes(minted.toBytes());
+		ScMutableBytes registry = state.GetMap(keyRegistry).GetBytes(minted);
 		if (registry.Exists()) {
 			sc.Log("TokenRegistry: Color already exists");
 			return;
@@ -42,8 +48,8 @@ public class TokenRegistry {
 		token.owner = sc.Caller();
 		token.created = sc.Timestamp();
 		token.updated = sc.Timestamp();
-		token.description = params.GetString("dscr").Value();
-		token.userDefined = params.GetString("ud").Value();
+		token.description = params.GetString(keyDescription).Value();
+		token.userDefined = params.GetString(keyUserDefined).Value();
 		if (token.supply <= 0) {
 			sc.Log("TokenRegistry: Insufficient supply");
 			return;
@@ -53,7 +59,7 @@ public class TokenRegistry {
 		}
 		byte[] bytes = encodeTokenInfo(token);
 		registry.SetValue(bytes);
-		ScMutableColorArray colors = state.GetColorArray("lc");
+		ScMutableColorArray colors = state.GetColorArray(keyColorList);
 		colors.GetColor(colors.Length()).SetValue(minted);
 	}
 

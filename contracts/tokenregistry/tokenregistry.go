@@ -7,6 +7,13 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+const (
+	keyColorList   = client.Key("colorList")
+	keyDescription = client.Key("description")
+	keyRegistry    = client.Key("registry")
+	keyUserDefined = client.Key("userDefined")
+)
+
 type TokenInfo struct {
 	supply      int64
 	mintedBy    *client.ScAgent
@@ -31,7 +38,7 @@ func mintSupply(sc *client.ScCallContext) {
 		return
 	}
 	state := sc.State()
-	registry := state.GetKeyMap("registry").GetBytes(minted.Bytes())
+	registry := state.GetMap(keyRegistry).GetBytes(minted)
 	if registry.Exists() {
 		sc.Log("TokenRegistry: Color already exists")
 		return
@@ -43,8 +50,8 @@ func mintSupply(sc *client.ScCallContext) {
 		owner:       sc.Caller(),
 		created:     sc.Timestamp(),
 		updated:     sc.Timestamp(),
-		description: params.GetString("dscr").Value(),
-		userDefined: params.GetString("ud").Value(),
+		description: params.GetString(keyDescription).Value(),
+		userDefined: params.GetString(keyUserDefined).Value(),
 	}
 	if token.supply <= 0 {
 		sc.Log("TokenRegistry: Insufficient supply")
@@ -55,7 +62,7 @@ func mintSupply(sc *client.ScCallContext) {
 	}
 	bytes := encodeTokenInfo(token)
 	registry.SetValue(bytes)
-	colors := state.GetColorArray("colorList")
+	colors := state.GetColorArray(keyColorList)
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 

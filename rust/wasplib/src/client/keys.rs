@@ -7,6 +7,16 @@ static mut ID_LENGTH: i32 = 0;
 static mut ID_LOG: i32 = 0;
 static mut ID_TRACE: i32 = 0;
 
+pub trait KeyId {
+    fn get_id(&self) -> i32;
+}
+
+impl KeyId for str {
+    fn get_id(&self) -> i32 {
+        get_key_id(self)
+    }
+}
+
 pub fn key_length() -> i32 {
     unsafe {
         if ID_LENGTH == 0 {

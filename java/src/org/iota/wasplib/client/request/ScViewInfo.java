@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.request;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
@@ -14,19 +15,19 @@ public class ScViewInfo {
 	}
 
 	public ScViewInfo Contract(String contract) {
-		view.GetString("contract").SetValue(contract);
+		view.GetString(new Key("contract")).SetValue(contract);
 		return this;
 	}
 
 	public ScMutableMap Params() {
-		return view.GetMap("params");
+		return view.GetMap(new Key("params"));
 	}
 
 	public ScImmutableMap Results() {
-		return view.GetMap("results").Immutable();
+		return view.GetMap(new Key("results")).Immutable();
 	}
 
 	public void View() {
-		view.GetInt("delay").SetValue(-2);
+		view.GetInt(new Key("delay")).SetValue(-2);
 	}
 }

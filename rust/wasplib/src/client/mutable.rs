@@ -6,7 +6,9 @@
 use super::hashtypes::*;
 use super::host::*;
 use super::immutable::*;
-use super::keys::key_length;
+use super::keys::*;
+
+pub(crate) static ROOT: ScMutableMap = ScMutableMap::new(1);
 
 pub struct ScMutableAddress {
     obj_id: i32,
@@ -282,95 +284,6 @@ impl ScMutableIntArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScMutableKeyMap {
-    obj_id: i32
-}
-
-impl ScMutableKeyMap {
-    pub(crate) fn new(obj_id: i32) -> ScMutableKeyMap {
-        ScMutableKeyMap { obj_id }
-    }
-
-    pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
-    }
-
-    pub fn get_address(&self, key: &[u8]) -> ScMutableAddress {
-        ScMutableAddress { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_address_array(&self, key: &[u8]) -> ScMutableAddressArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableAddressArray { obj_id: arr_id }
-    }
-
-    pub fn get_agent(&self, key: &[u8]) -> ScMutableAgent {
-        ScMutableAgent { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_agent_array(&self, key: &[u8]) -> ScMutableAgentArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableAgentArray { obj_id: arr_id }
-    }
-
-    pub fn get_bytes(&self, key: &[u8]) -> ScMutableBytes {
-        ScMutableBytes { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_bytes_array(&self, key: &[u8]) -> ScMutableBytesArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableBytesArray { obj_id: arr_id }
-    }
-
-    pub fn get_color(&self, key: &[u8]) -> ScMutableColor {
-        ScMutableColor { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_color_array(&self, key: &[u8]) -> ScMutableColorArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_BYTES_ARRAY);
-        ScMutableColorArray { obj_id: arr_id }
-    }
-
-    pub fn get_int(&self, key: &[u8]) -> ScMutableInt {
-        ScMutableInt { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_int_array(&self, key: &[u8]) -> ScMutableIntArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_INT_ARRAY);
-        ScMutableIntArray { obj_id: arr_id }
-    }
-
-    pub fn get_key_map(&self, key: &[u8]) -> ScMutableKeyMap {
-        let map_id = get_object_id(self.obj_id, get_key(key), TYPE_MAP);
-        ScMutableKeyMap { obj_id: map_id }
-    }
-
-    pub fn get_map(&self, key: &[u8]) -> ScMutableMap {
-        let map_id = get_object_id(self.obj_id, get_key(key), TYPE_MAP);
-        ScMutableMap { obj_id: map_id }
-    }
-
-    pub fn get_map_array(&self, key: &[u8]) -> ScMutableMapArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_MAP_ARRAY);
-        ScMutableMapArray { obj_id: arr_id }
-    }
-
-    pub fn get_string(&self, key: &[u8]) -> ScMutableString {
-        ScMutableString { obj_id: self.obj_id, key_id: get_key(key) }
-    }
-
-    pub fn get_string_array(&self, key: &[u8]) -> ScMutableStringArray {
-        let arr_id = get_object_id(self.obj_id, get_key(key), TYPE_STRING_ARRAY);
-        ScMutableStringArray { obj_id: arr_id }
-    }
-
-    pub fn immutable(&self) -> ScImmutableKeyMap {
-        ScImmutableKeyMap::new(self.obj_id)
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 pub struct ScMutableMap {
     obj_id: i32
 }
@@ -384,72 +297,67 @@ impl ScMutableMap {
         set_int(self.obj_id, key_length(), 0);
     }
 
-    pub fn get_address(&self, key: &str) -> ScMutableAddress {
-        ScMutableAddress { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_address<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAddress {
+        ScMutableAddress { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_address_array(&self, key: &str) -> ScMutableAddressArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+    pub fn get_address_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAddressArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableAddressArray { obj_id: arr_id }
     }
 
-    pub fn get_agent(&self, key: &str) -> ScMutableAgent {
-        ScMutableAgent { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_agent<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAgent {
+        ScMutableAgent { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_agent_array(&self, key: &str) -> ScMutableAgentArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+    pub fn get_agent_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAgentArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableAgentArray { obj_id: arr_id }
     }
 
-    pub fn get_bytes(&self, key: &str) -> ScMutableBytes {
-        ScMutableBytes { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_bytes<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableBytes {
+        ScMutableBytes { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_bytes_array(&self, key: &str) -> ScMutableBytesArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+    pub fn get_bytes_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableBytesArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableBytesArray { obj_id: arr_id }
     }
 
-    pub fn get_color(&self, key: &str) -> ScMutableColor {
-        ScMutableColor { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_color<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableColor {
+        ScMutableColor { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_color_array(&self, key: &str) -> ScMutableColorArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_BYTES_ARRAY);
+    pub fn get_color_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableColorArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableColorArray { obj_id: arr_id }
     }
 
-    pub fn get_int(&self, key: &str) -> ScMutableInt {
-        ScMutableInt { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_int<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableInt {
+        ScMutableInt { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_int_array(&self, key: &str) -> ScMutableIntArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_INT_ARRAY);
+    pub fn get_int_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableIntArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT_ARRAY);
         ScMutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_key_map(&self, key: &str) -> ScMutableKeyMap {
-        let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
-        ScMutableKeyMap { obj_id: map_id }
-    }
-
-    pub fn get_map(&self, key: &str) -> ScMutableMap {
-        let map_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP);
+    pub fn get_map<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableMap {
+        let map_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP);
         ScMutableMap { obj_id: map_id }
     }
 
-    pub fn get_map_array(&self, key: &str) -> ScMutableMapArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_MAP_ARRAY);
+    pub fn get_map_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableMapArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP_ARRAY);
         ScMutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_string(&self, key: &str) -> ScMutableString {
-        ScMutableString { obj_id: self.obj_id, key_id: get_key_id(key) }
+    pub fn get_string<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableString {
+        ScMutableString { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_string_array(&self, key: &str) -> ScMutableStringArray {
-        let arr_id = get_object_id(self.obj_id, get_key_id(key), TYPE_STRING_ARRAY);
+    pub fn get_string_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableStringArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_STRING_ARRAY);
         ScMutableStringArray { obj_id: arr_id }
     }
 
@@ -473,11 +381,6 @@ impl ScMutableMapArray {
         set_int(self.obj_id, key_length(), 0);
     }
 
-    // index 0..length(), inclusive, when length() a new one is appended
-    pub fn get_key_map(&self, index: i32) -> ScMutableKeyMap {
-        let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
-        ScMutableKeyMap { obj_id: map_id }
-    }
 
     // index 0..length(), inclusive, hen length() a new one is appended
     pub fn get_map(&self, index: i32) -> ScMutableMap {

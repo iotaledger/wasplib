@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	varSupply        = "s"
-	varBalances      = "b"
-	varTargetAddress = "addr"
-	varAmount        = "amount"
+	varSupply        = client.Key("s")
+	varBalances      = client.Key("b")
+	varTargetAddress = client.Key("addr")
+	varAmount        = client.Key("amount")
 )
 
 func OnLoad() {
@@ -45,7 +45,7 @@ func onInit(sc *client.ScCallContext) {
 	}
 	supply := supplyParam.Value()
 	supplyState.SetValue(supply)
-	state.GetKeyMap(varBalances).GetInt(sc.Contract().Owner().Bytes()).SetValue(supply)
+	state.GetMap(varBalances).GetInt(sc.Contract().Owner()).SetValue(supply)
 
 	sc.Log("initSC: success")
 }
@@ -54,13 +54,13 @@ func transfer(sc *client.ScCallContext) {
 	sc.Log("transfer")
 
 	state := sc.State()
-	balances := state.GetKeyMap(varBalances)
+	balances := state.GetMap(varBalances)
 
 	caller := sc.Caller()
 
 	sc.Log("sender address: " + caller.String())
 
-	sourceBalance := balances.GetInt(caller.Bytes())
+	sourceBalance := balances.GetInt(caller)
 
 	sc.Log("source balance: " + sc.Utility().String(sourceBalance.Value()))
 
@@ -77,7 +77,7 @@ func transfer(sc *client.ScCallContext) {
 	targetAddr := params.GetAgent(varTargetAddress)
 	// TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
-	targetBalance := balances.GetInt(targetAddr.Value().Bytes())
+	targetBalance := balances.GetInt(targetAddr.Value())
 	targetBalance.SetValue(targetBalance.Value() + amount.Value())
 	sourceBalance.SetValue(sourceBalance.Value() - amount.Value())
 

@@ -7,6 +7,11 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+const (
+	keyCounter    = client.Key("counter")
+	keyNumRepeats = client.Key("numRepeats")
+)
+
 var localStateMustIncrement = false
 
 func OnLoad() {
@@ -27,20 +32,20 @@ func OnLoad() {
 }
 
 func onInit(sc *client.ScCallContext) {
-	counter := sc.Params().GetInt("counter").Value()
+	counter := sc.Params().GetInt(keyCounter).Value()
 	if counter == 0 {
 		return
 	}
-	sc.State().GetInt("counter").SetValue(counter)
+	sc.State().GetInt(keyCounter).SetValue(counter)
 }
 
 func increment(sc *client.ScCallContext) {
-	counter := sc.State().GetInt("counter")
+	counter := sc.State().GetInt(keyCounter)
 	counter.SetValue(counter.Value() + 1)
 }
 
 func incrementCallIncrement(sc *client.ScCallContext) {
-	counter := sc.State().GetInt("counter")
+	counter := sc.State().GetInt(keyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
@@ -49,7 +54,7 @@ func incrementCallIncrement(sc *client.ScCallContext) {
 }
 
 func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
-	counter := sc.State().GetInt("counter")
+	counter := sc.State().GetInt(keyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
@@ -58,7 +63,7 @@ func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
 }
 
 func incrementPostIncrement(sc *client.ScCallContext) {
-	counter := sc.State().GetInt("counter")
+	counter := sc.State().GetInt(keyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
@@ -67,16 +72,16 @@ func incrementPostIncrement(sc *client.ScCallContext) {
 }
 
 func incrementViewCounter(sc *client.ScViewContext) {
-	counter := sc.State().GetInt("counter").Value()
-	sc.Results().GetInt("counter").SetValue(counter)
+	counter := sc.State().GetInt(keyCounter).Value()
+	sc.Results().GetInt(keyCounter).SetValue(counter)
 }
 
 func incrementRepeatMany(sc *client.ScCallContext) {
-	counter := sc.State().GetInt("counter")
+	counter := sc.State().GetInt(keyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
-	stateRepeats := sc.State().GetInt("numRepeats")
-	repeats := sc.Params().GetInt("numRepeats").Value()
+	stateRepeats := sc.State().GetInt(keyNumRepeats)
+	repeats := sc.Params().GetInt(keyNumRepeats).Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -90,7 +95,7 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
 	sc.Log("incrementWhenMustIncrement called")
 	if localStateMustIncrement {
-		counter := sc.State().GetInt("counter")
+		counter := sc.State().GetInt(keyCounter)
 		counter.SetValue(counter.Value() + 1)
 	}
 }

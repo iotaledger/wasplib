@@ -148,151 +148,71 @@ func (o ScImmutableIntArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScImmutableKeyMap struct {
-	objId int32
-}
-
-func (o ScImmutableKeyMap) GetAddress(key []byte) ScImmutableAddress {
-	return ScImmutableAddress{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetAddressArray(key []byte) ScImmutableAddressArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScImmutableAddressArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetAgent(key []byte) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetAgentArray(key []byte) ScImmutableAgentArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScImmutableAgentArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetBytes(key []byte) ScImmutableBytes {
-	return ScImmutableBytes{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetBytesArray(key []byte) ScImmutableBytesArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScImmutableBytesArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetColor(key []byte) ScImmutableColor {
-	return ScImmutableColor{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetColorArray(key []byte) ScImmutableColorArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_BYTES_ARRAY)
-	return ScImmutableColorArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetInt(key []byte) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetIntArray(key []byte) ScImmutableIntArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_INT_ARRAY)
-	return ScImmutableIntArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetKeyMap(key []byte) ScImmutableKeyMap {
-	mapId := GetObjectId(o.objId, GetKey(key), TYPE_MAP)
-	return ScImmutableKeyMap{objId: mapId}
-}
-
-func (o ScImmutableKeyMap) GetMap(key []byte) ScImmutableMap {
-	mapId := GetObjectId(o.objId, GetKey(key), TYPE_MAP)
-	return ScImmutableMap{objId: mapId}
-}
-
-func (o ScImmutableKeyMap) GetMapArray(key []byte) ScImmutableMapArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_MAP_ARRAY)
-	return ScImmutableMapArray{objId: arrId}
-}
-
-func (o ScImmutableKeyMap) GetString(key []byte) ScImmutableString {
-	return ScImmutableString{objId: o.objId, keyId: GetKey(key)}
-}
-
-func (o ScImmutableKeyMap) GetStringArray(key []byte) ScImmutableStringArray {
-	arrId := GetObjectId(o.objId, GetKey(key), TYPE_STRING_ARRAY)
-	return ScImmutableStringArray{objId: arrId}
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScImmutableMap struct {
 	objId int32
 }
 
-func (o ScImmutableMap) GetAddress(key string) ScImmutableAddress {
-	return ScImmutableAddress{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetAddress(key KeyId) ScImmutableAddress {
+	return ScImmutableAddress{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetAddressArray(key string) ScImmutableAddressArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetAddressArray(key KeyId) ScImmutableAddressArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
 	return ScImmutableAddressArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetAgent(key string) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetAgent(key KeyId) ScImmutableAgent {
+	return ScImmutableAgent{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetAgentArray(key string) ScImmutableAgentArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetAgentArray(key KeyId) ScImmutableAgentArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
 	return ScImmutableAgentArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetBytes(key string) ScImmutableBytes {
-	return ScImmutableBytes{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetBytes(key KeyId) ScImmutableBytes {
+	return ScImmutableBytes{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetBytesArray(key string) ScImmutableBytesArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetBytesArray(key KeyId) ScImmutableBytesArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
 	return ScImmutableBytesArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetColor(key string) ScImmutableColor {
-	return ScImmutableColor{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetColor(key KeyId) ScImmutableColor {
+	return ScImmutableColor{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetColorArray(key string) ScImmutableColorArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetColorArray(key KeyId) ScImmutableColorArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
 	return ScImmutableColorArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetInt(key string) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetInt(key KeyId) ScImmutableInt {
+	return ScImmutableInt{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetIntArray(key string) ScImmutableIntArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_INT_ARRAY)
+func (o ScImmutableMap) GetIntArray(key KeyId) ScImmutableIntArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_INT_ARRAY)
 	return ScImmutableIntArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetKeyMap(key string) ScImmutableKeyMap {
-	mapId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP)
-	return ScImmutableKeyMap{objId: mapId}
-}
-
-func (o ScImmutableMap) GetMap(key string) ScImmutableMap {
-	mapId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP)
+func (o ScImmutableMap) GetMap(key KeyId) ScImmutableMap {
+	mapId := GetObjectId(o.objId, key.GetId(), TYPE_MAP)
 	return ScImmutableMap{objId: mapId}
 }
 
-func (o ScImmutableMap) GetMapArray(key string) ScImmutableMapArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_MAP_ARRAY)
+func (o ScImmutableMap) GetMapArray(key KeyId) ScImmutableMapArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_MAP_ARRAY)
 	return ScImmutableMapArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetString(key string) ScImmutableString {
-	return ScImmutableString{objId: o.objId, keyId: GetKeyId(key)}
+func (o ScImmutableMap) GetString(key KeyId) ScImmutableString {
+	return ScImmutableString{objId: o.objId, keyId: key.GetId()}
 }
 
-func (o ScImmutableMap) GetStringArray(key string) ScImmutableStringArray {
-	arrId := GetObjectId(o.objId, GetKeyId(key), TYPE_STRING_ARRAY)
+func (o ScImmutableMap) GetStringArray(key KeyId) ScImmutableStringArray {
+	arrId := GetObjectId(o.objId, key.GetId(), TYPE_STRING_ARRAY)
 	return ScImmutableStringArray{objId: arrId}
 }
 
@@ -300,11 +220,6 @@ func (o ScImmutableMap) GetStringArray(key string) ScImmutableStringArray {
 
 type ScImmutableMapArray struct {
 	objId int32
-}
-
-func (o ScImmutableMapArray) GetKeyMap(index int32) ScImmutableKeyMap {
-	mapId := GetObjectId(o.objId, index, TYPE_MAP)
-	return ScImmutableKeyMap{objId: mapId}
 }
 
 func (o ScImmutableMapArray) GetMap(index int32) ScImmutableMap {

@@ -8,6 +8,15 @@ import (
 )
 
 const (
+	keyAuctions    = client.Key("auctions")
+	keyColor       = client.Key("color")
+	keyDescription = client.Key("description")
+	keyDuration    = client.Key("duration")
+	keyMinimum     = client.Key("minimum")
+	keyOwnerMargin = client.Key("ownerMargin")
+)
+
+const (
 	durationDefault      = 60
 	durationMin          = 1
 	durationMax          = 120
@@ -66,13 +75,13 @@ func startAuction(sc *client.ScCallContext) {
 	}
 
 	state := sc.State()
-	ownerMargin := state.GetInt("ownerMargin").Value()
+	ownerMargin := state.GetInt(keyOwnerMargin).Value()
 	if ownerMargin == 0 {
 		ownerMargin = ownerMarginDefault
 	}
 
 	params := sc.Params()
-	colorParam := params.GetColor("color")
+	colorParam := params.GetColor(keyColor)
 	if !colorParam.Exists() {
 		refund(sc, deposit/2, "Missing token color...")
 		return
@@ -90,7 +99,7 @@ func startAuction(sc *client.ScCallContext) {
 		return
 	}
 
-	minimumBid := params.GetInt("minimum").Value()
+	minimumBid := params.GetInt(keyMinimum).Value()
 	if minimumBid == 0 {
 		refund(sc, deposit/2, "Missing minimum bid...")
 		return
@@ -107,7 +116,7 @@ func startAuction(sc *client.ScCallContext) {
 	}
 
 	// duration in minutes
-	duration := params.GetInt("duration").Value()
+	duration := params.GetInt(keyDuration).Value()
 	if duration == 0 {
 		duration = durationDefault
 	}
@@ -118,7 +127,7 @@ func startAuction(sc *client.ScCallContext) {
 		duration = durationMax
 	}
 
-	description := params.GetString("dscr").Value()
+	description := params.GetString(keyDescription).Value()
 	if len(description) == 0 {
 		description = "N/A"
 	}
@@ -126,8 +135,8 @@ func startAuction(sc *client.ScCallContext) {
 		description = description[:maxDescriptionLength] + "[...]"
 	}
 
-	auctions := state.GetKeyMap("auctions")
-	currentAuction := auctions.GetBytes(color.Bytes())
+	auctions := state.GetMap(keyAuctions)
+	currentAuction := auctions.GetBytes(color)
 	if len(currentAuction.Value()) != 0 {
 		refund(sc, deposit/2, "Auction for this token already exists...")
 		return
@@ -148,7 +157,7 @@ func startAuction(sc *client.ScCallContext) {
 	currentAuction.SetValue(bytes)
 	finalizeRequest := sc.Post("finalizeAuction")
 	finalizeParams := finalizeRequest.Params()
-	finalizeParams.GetColor("color").SetValue(auction.color)
+	finalizeParams.GetColor(keyColor).SetValue(auction.color)
 	finalizeRequest.Post(auction.duration * 60)
 	sc.Log("New auction started...")
 }
@@ -160,7 +169,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 		return
 	}
 
-	colorParam := sc.Params().GetColor("color")
+	colorParam := sc.Params().GetColor(keyColor)
 	if !colorParam.Exists() {
 		sc.Log("INTERNAL INCONSISTENCY: missing color")
 		return
@@ -168,8 +177,8 @@ func finalizeAuction(sc *client.ScCallContext) {
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetKeyMap("auctions")
-	currentAuction := auctions.GetBytes(color.Bytes())
+	auctions := state.GetMap(keyAuctions)
+	currentAuction := auctions.GetBytes(color)
 	bytes := currentAuction.Value()
 	if len(bytes) == 0 {
 		sc.Log("INTERNAL INCONSISTENCY missing auction info")
@@ -222,7 +231,7 @@ func placeBid(sc *client.ScCallContext) {
 		return
 	}
 
-	colorParam := sc.Params().GetColor("color")
+	colorParam := sc.Params().GetColor(keyColor)
 	if !colorParam.Exists() {
 		refund(sc, bidAmount, "Missing token color")
 		return
@@ -230,8 +239,8 @@ func placeBid(sc *client.ScCallContext) {
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetKeyMap("auctions")
-	currentAuction := auctions.GetBytes(color.Bytes())
+	auctions := state.GetMap(keyAuctions)
+	currentAuction := auctions.GetBytes(color)
 	bytes := currentAuction.Value()
 	if len(bytes) == 0 {
 		refund(sc, bidAmount, "Missing auction")
@@ -267,14 +276,14 @@ func setOwnerMargin(sc *client.ScCallContext) {
 		return
 	}
 
-	ownerMargin := sc.Params().GetInt("ownerMargin").Value()
+	ownerMargin := sc.Params().GetInt(keyOwnerMargin).Value()
 	if ownerMargin < ownerMarginMin {
 		ownerMargin = ownerMarginMin
 	}
 	if ownerMargin > ownerMarginMax {
 		ownerMargin = ownerMarginMax
 	}
-	sc.State().GetInt("ownerMargin").SetValue(ownerMargin)
+	sc.State().GetInt(keyOwnerMargin).SetValue(ownerMargin)
 	sc.Log("Updated owner margin...")
 }
 

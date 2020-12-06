@@ -5,24 +5,16 @@ package client
 
 import "strconv"
 
-var (
-	rootCallContext = ScCallContext{root: ScMutableMap{objId: 1}}
-	rootViewContext = ScViewContext{root: ScMutableMap{objId: 1}}
-)
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScBalances struct {
-	balances ScImmutableKeyMap
+	balances ScImmutableMap
 }
 
 func (ctx ScBalances) Balance(color *ScColor) int64 {
-	return ctx.balances.GetInt(color.Bytes()).Value()
+	return ctx.balances.GetInt(color).Value()
 }
 
 func (ctx ScBalances) Minted() *ScColor {
-	mintKey := MINT.Bytes()
-	return NewScColor(ctx.balances.GetBytes(mintKey).Value())
+	return NewScColor(ctx.balances.GetBytes(MINT).Value())
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -32,23 +24,23 @@ type ScContract struct {
 }
 
 func (ctx ScContract) Color() *ScColor {
-	return ctx.contract.GetColor("color").Value()
+	return ctx.contract.GetColor(Key("color")).Value()
 }
 
 func (ctx ScContract) Description() string {
-	return ctx.contract.GetString("description").Value()
+	return ctx.contract.GetString(Key("description")).Value()
 }
 
 func (ctx ScContract) Id() *ScAgent {
-	return ctx.contract.GetAgent("id").Value()
+	return ctx.contract.GetAgent(Key("id")).Value()
 }
 
 func (ctx ScContract) Name() string {
-	return ctx.contract.GetString("name").Value()
+	return ctx.contract.GetString(Key("name")).Value()
 }
 
 func (ctx ScContract) Owner() *ScAgent {
-	return ctx.contract.GetAgent("owner").Value()
+	return ctx.contract.GetAgent(Key("owner")).Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -59,8 +51,8 @@ type ScLog struct {
 
 func (ctx ScLog) Append(timestamp int64, data []byte) {
 	logEntry := ctx.log.GetMap(ctx.log.Length())
-	logEntry.GetInt("timestamp").SetValue(timestamp)
-	logEntry.GetBytes("data").SetValue(data)
+	logEntry.GetInt(Key("timestamp")).SetValue(timestamp)
+	logEntry.GetBytes(Key("data")).SetValue(data)
 }
 
 func (ctx ScLog) Length() int32 {
@@ -74,27 +66,27 @@ type ScUtility struct {
 }
 
 func (ctx ScUtility) Base58Decode(value string) []byte {
-	decode := ctx.utility.GetString("base58")
-	encode := ctx.utility.GetBytes("base58")
+	decode := ctx.utility.GetString(Key("base58"))
+	encode := ctx.utility.GetBytes(Key("base58"))
 	decode.SetValue(value)
 	return encode.Value()
 }
 
 func (ctx ScUtility) Base58Encode(value []byte) string {
-	decode := ctx.utility.GetString("base58")
-	encode := ctx.utility.GetBytes("base58")
+	decode := ctx.utility.GetString(Key("base58"))
+	encode := ctx.utility.GetBytes(Key("base58"))
 	encode.SetValue(value)
 	return decode.Value()
 }
 
 func (ctx ScUtility) Hash(value []byte) []byte {
-	hash := ctx.utility.GetBytes("hash")
+	hash := ctx.utility.GetBytes(Key("hash"))
 	hash.SetValue(value)
 	return hash.Value()
 }
 
 func (ctx ScUtility) Random(max int64) int64 {
-	rnd := ctx.utility.GetInt("random").Value()
+	rnd := ctx.utility.GetInt(Key("random")).Value()
 	return int64(uint64(rnd) % uint64(max))
 }
 
@@ -109,7 +101,7 @@ type ScCallContext struct {
 }
 
 func (ctx ScCallContext) Balances() ScBalances {
-	return ScBalances{ctx.root.GetKeyMap("balances").Immutable()}
+	return ScBalances{root.GetMap(Key("balances")).Immutable()}
 }
 
 func (ctx ScCallContext) Call(function string) ScCallInfo {
@@ -117,15 +109,15 @@ func (ctx ScCallContext) Call(function string) ScCallInfo {
 }
 
 func (ctx ScCallContext) Caller() *ScAgent {
-	return ctx.root.GetAgent("caller").Value()
+	return root.GetAgent(Key("caller")).Value()
 }
 
 func (ctx ScCallContext) Contract() ScContract {
-	return ScContract{ctx.root.GetMap("contract").Immutable()}
+	return ScContract{root.GetMap(Key("contract")).Immutable()}
 }
 
 func (ctx ScCallContext) Error() ScMutableString {
-	return ctx.root.GetString("error")
+	return root.GetString(Key("error"))
 }
 
 func (ctx ScCallContext) From(originator *ScAgent) bool {
@@ -133,7 +125,7 @@ func (ctx ScCallContext) From(originator *ScAgent) bool {
 }
 
 func (ctx ScCallContext) Incoming() ScBalances {
-	return ScBalances{ctx.root.GetKeyMap("incoming").Immutable()}
+	return ScBalances{root.GetMap(Key("incoming")).Immutable()}
 }
 
 func (ctx ScCallContext) Log(text string) {
@@ -141,7 +133,7 @@ func (ctx ScCallContext) Log(text string) {
 }
 
 func (ctx ScCallContext) Params() ScImmutableMap {
-	return ctx.root.GetMap("params").Immutable()
+	return root.GetMap(Key("params")).Immutable()
 }
 
 func (ctx ScCallContext) Post(function string) ScPostInfo {
@@ -149,19 +141,19 @@ func (ctx ScCallContext) Post(function string) ScPostInfo {
 }
 
 func (ctx ScCallContext) Results() ScMutableMap {
-	return ctx.root.GetMap("results")
+	return root.GetMap(Key("results"))
 }
 
 func (ctx ScCallContext) State() ScMutableMap {
-	return ctx.root.GetMap("state")
+	return root.GetMap(Key("state"))
 }
 
 func (ctx ScCallContext) Timestamp() int64 {
-	return ctx.root.GetInt("timestamp").Value()
+	return root.GetInt(Key("timestamp")).Value()
 }
 
-func (ctx ScCallContext) TimestampedLog(key string) ScLog {
-	return ScLog{ctx.root.GetMap("logs").GetMapArray(key)}
+func (ctx ScCallContext) TimestampedLog(key Key) ScLog {
+	return ScLog{root.GetMap(Key("logs")).GetMapArray(key)}
 }
 
 func (ctx ScCallContext) Trace(text string) {
@@ -169,15 +161,15 @@ func (ctx ScCallContext) Trace(text string) {
 }
 
 func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) {
-	transfers := ctx.root.GetMapArray("transfers")
+	transfers := root.GetMapArray(Key("transfers"))
 	transfer := transfers.GetMap(transfers.Length())
-	transfer.GetAgent("agent").SetValue(agent)
-	transfer.GetColor("color").SetValue(color)
-	transfer.GetInt("amount").SetValue(amount)
+	transfer.GetAgent(Key("agent")).SetValue(agent)
+	transfer.GetColor(Key("color")).SetValue(color)
+	transfer.GetInt(Key("amount")).SetValue(amount)
 }
 
 func (ctx ScCallContext) Utility() ScUtility {
-	return ScUtility{ctx.root.GetMap("utility")}
+	return ScUtility{root.GetMap(Key("utility"))}
 }
 
 func (ctx ScCallContext) View(function string) ScViewInfo {
@@ -191,19 +183,19 @@ type ScViewContext struct {
 }
 
 func (ctx ScViewContext) Balances() ScBalances {
-	return ScBalances{ctx.root.GetKeyMap("balances").Immutable()}
+	return ScBalances{root.GetMap(Key("balances")).Immutable()}
 }
 
 func (ctx ScViewContext) Caller() *ScAgent {
-	return ctx.root.GetAgent("caller").Value()
+	return root.GetAgent(Key("caller")).Value()
 }
 
 func (ctx ScViewContext) Contract() ScContract {
-	return ScContract{ctx.root.GetMap("contract").Immutable()}
+	return ScContract{root.GetMap(Key("contract")).Immutable()}
 }
 
 func (ctx ScViewContext) Error() ScMutableString {
-	return ctx.root.GetString("error")
+	return root.GetString(Key("error"))
 }
 
 func (ctx ScViewContext) From(originator *ScAgent) bool {
@@ -215,23 +207,23 @@ func (ctx ScViewContext) Log(text string) {
 }
 
 func (ctx ScViewContext) Params() ScImmutableMap {
-	return ctx.root.GetMap("params").Immutable()
+	return root.GetMap(Key("params")).Immutable()
 }
 
 func (ctx ScViewContext) Results() ScMutableMap {
-	return ctx.root.GetMap("results")
+	return root.GetMap(Key("results"))
 }
 
 func (ctx ScViewContext) State() ScImmutableMap {
-	return ctx.root.GetMap("state").Immutable()
+	return root.GetMap(Key("state")).Immutable()
 }
 
 func (ctx ScViewContext) Timestamp() int64 {
-	return ctx.root.GetInt("timestamp").Value()
+	return root.GetInt(Key("timestamp")).Value()
 }
 
-func (ctx ScViewContext) TimestampedLog(key string) ScImmutableMapArray {
-	return ctx.root.GetMap("logs").GetMapArray(key).Immutable()
+func (ctx ScViewContext) TimestampedLog(key Key) ScImmutableMapArray {
+	return root.GetMap(Key("logs")).GetMapArray(key).Immutable()
 }
 
 func (ctx ScViewContext) Trace(text string) {
@@ -239,7 +231,7 @@ func (ctx ScViewContext) Trace(text string) {
 }
 
 func (ctx ScViewContext) Utility() ScUtility {
-	return ScUtility{ctx.root.GetMap("utility")}
+	return ScUtility{root.GetMap(Key("utility"))}
 }
 
 func (ctx ScViewContext) View(function string) ScViewInfo {

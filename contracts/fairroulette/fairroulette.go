@@ -7,6 +7,14 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+const (
+	keyBets             = client.Key("bets")
+	keyColor            = client.Key("color")
+	keyLastWinningColor = client.Key("lastWinningColor")
+	keyLockedBets       = client.Key("lockedBets")
+	keyPlayPeriod       = client.Key("playPeriod")
+)
+
 const NUM_COLORS int64 = 5
 const PLAY_PERIOD int64 = 120
 
@@ -31,7 +39,7 @@ func placeBet(sc *client.ScCallContext) {
 		sc.Log("Empty bet...")
 		return
 	}
-	color := sc.Params().GetInt("color").Value()
+	color := sc.Params().GetInt(keyColor).Value()
 	if color == 0 {
 		sc.Log("No color...")
 		return
@@ -48,12 +56,12 @@ func placeBet(sc *client.ScCallContext) {
 	}
 
 	state := sc.State()
-	bets := state.GetBytesArray("bets")
+	bets := state.GetBytesArray(keyBets)
 	betNr := bets.Length()
 	bytes := encodeBetInfo(&bet)
 	bets.GetBytes(betNr).SetValue(bytes)
 	if betNr == 0 {
-		playPeriod := state.GetInt("playPeriod").Value()
+		playPeriod := state.GetInt(keyPlayPeriod).Value()
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
@@ -69,8 +77,8 @@ func lockBets(sc *client.ScCallContext) {
 	}
 
 	state := sc.State()
-	bets := state.GetBytesArray("bets")
-	lockedBets := state.GetBytesArray("lockedBets")
+	bets := state.GetBytesArray(keyBets)
+	lockedBets := state.GetBytesArray(keyLockedBets)
 	nrBets := bets.Length()
 	for i := int32(0); i < nrBets; i++ {
 		bytes := bets.GetBytes(i).Value()
@@ -91,11 +99,11 @@ func payWinners(sc *client.ScCallContext) {
 
 	winningColor := sc.Utility().Random(5) + 1
 	state := sc.State()
-	state.GetInt("lastWinningColor").SetValue(winningColor)
+	state.GetInt(keyLastWinningColor).SetValue(winningColor)
 
 	totalBetAmount := int64(0)
 	totalWinAmount := int64(0)
-	lockedBets := state.GetBytesArray("lockedBets")
+	lockedBets := state.GetBytesArray(keyLockedBets)
 	winners := make([]*BetInfo, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
@@ -143,13 +151,13 @@ func playPeriod(sc *client.ScCallContext) {
 		return
 	}
 
-	playPeriod := sc.Params().GetInt("playPeriod").Value()
+	playPeriod := sc.Params().GetInt(keyPlayPeriod).Value()
 	if playPeriod < 10 {
 		sc.Log("Invalid play period...")
 		return
 	}
 
-	sc.State().GetInt("playPeriod").SetValue(playPeriod)
+	sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod)
 }
 
 func decodeBetInfo(bytes []byte) *BetInfo {

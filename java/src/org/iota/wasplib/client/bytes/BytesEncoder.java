@@ -3,7 +3,9 @@
 
 package org.iota.wasplib.client.bytes;
 
-import org.iota.wasplib.client.hashtypes.*;
+import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.hashtypes.ScAgent;
+import org.iota.wasplib.client.hashtypes.ScColor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,15 +56,7 @@ public class BytesEncoder {
 		}
 	}
 
-	public BytesEncoder RequestId(ScRequestId value) {
-		return Bytes(value.toBytes());
-	}
-
 	public BytesEncoder String(String value) {
 		return Bytes(value.getBytes(StandardCharsets.UTF_8));
-	}
-
-	public BytesEncoder TxHash(ScTxHash value) {
-		return Bytes(value.toBytes());
 	}
 }

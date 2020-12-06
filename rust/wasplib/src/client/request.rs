@@ -6,8 +6,7 @@ use super::immutable::*;
 use super::mutable::*;
 
 pub(crate) fn make_request(key: &str, function: &str) -> ScMutableMap {
-    let root = ScMutableMap::new(1);
-    let requests = root.get_map_array(key);
+    let requests = ROOT.get_map_array(key);
     let request = requests.get_map(requests.length());
     request.get_string("function").set_value(function);
     request
@@ -38,8 +37,8 @@ impl ScCallInfo {
     }
 
     pub fn transfer(&self, color: &ScColor, amount: i64) {
-        let transfers = self.call.get_key_map("transfers");
-        transfers.get_int(&color.to_bytes()).set_value(amount);
+        let transfers = self.call.get_map("transfers");
+        transfers.get_int(color).set_value(amount);
     }
 }
 
@@ -69,8 +68,8 @@ impl ScPostInfo {
     }
 
     pub fn transfer(&self, color: &ScColor, amount: i64) {
-        let transfers = self.post.get_key_map("transfers");
-        transfers.get_int(&color.to_bytes()).set_value(amount);
+        let transfers = self.post.get_map("transfers");
+        transfers.get_int(color).set_value(amount);
     }
 }
 

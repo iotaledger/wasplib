@@ -4,21 +4,20 @@
 package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.immutable.ScImmutableKeyMap;
+import org.iota.wasplib.client.immutable.ScImmutableMap;
 
 public class ScBalances {
-	ScImmutableKeyMap balances;
+	ScImmutableMap balances;
 
-	ScBalances(ScImmutableKeyMap balances) {
+	ScBalances(ScImmutableMap balances) {
 		this.balances = balances;
 	}
 
 	public long Balance(ScColor color) {
-		return balances.GetInt(color.toBytes()).Value();
+		return balances.GetInt(color).Value();
 	}
 
 	public ScColor Minted() {
-		byte[] mintKey = ScColor.MINT.toBytes();
-		return new ScColor(balances.GetBytes(mintKey).Value());
+		return new ScColor(balances.GetBytes(ScColor.MINT).Value());
 	}
 }

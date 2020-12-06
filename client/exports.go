@@ -11,10 +11,10 @@ var (
 //export sc_call_entrypoint
 func ScCallEntrypoint(index int32) {
 	if (index & 0x8000) != 0 {
-		views[index&0x7fff](&rootViewContext)
+		views[index&0x7fff](&ScViewContext{})
 		return
 	}
-	calls[index](&rootCallContext)
+	calls[index](&ScCallContext{})
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -25,7 +25,7 @@ type ScExports struct {
 
 func NewScExports() ScExports {
 	root := ScMutableMap{objId: 1}
-	return ScExports{exports: root.GetStringArray("exports")}
+	return ScExports{exports: root.GetStringArray(Key("exports"))}
 }
 
 func (ctx ScExports) AddCall(name string, f func(sc *ScCallContext)) {

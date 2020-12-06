@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
@@ -17,6 +18,11 @@ import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class Dividend {
+	private static final Key keyAddress = new Key("address");
+	private static final Key keyFactor = new Key("factor");
+	private static final Key keyMembers = new Key("members");
+	private static final Key keyTotalFactor = new Key("totalFactor");
+
 	//export onLoad
 	public static void onLoad() {
 		ScExports exports = new ScExports();
@@ -30,12 +36,12 @@ public class Dividend {
 			return;
 		}
 		ScImmutableMap params = sc.Params();
-		ScImmutableAddress address = params.GetAddress("address");
+		ScImmutableAddress address = params.GetAddress(keyAddress);
 		if (!address.Exists()) {
 			sc.Log("Missing address");
 			return;
 		}
-		ScImmutableInt factor = params.GetInt("factor");
+		ScImmutableInt factor = params.GetInt(keyFactor);
 		if (!factor.Exists()) {
 			sc.Log("Missing factor");
 			return;
@@ -44,9 +50,9 @@ public class Dividend {
 		member.address = address.Value();
 		member.factor = factor.Value();
 		ScMutableMap state = sc.State();
-		ScMutableInt totalFactor = state.GetInt("totalFactor");
+		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray("members");
+		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
 			byte[] bytes = members.GetBytes(i).Value();
@@ -75,9 +81,9 @@ public class Dividend {
 			return;
 		}
 		ScMutableMap state = sc.State();
-		ScMutableInt totalFactor = state.GetInt("totalFactor");
+		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray("members");
+		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
 		int size = members.Length();
 		long parts = 0;
 		for (int i = 0; i < size; i++) {

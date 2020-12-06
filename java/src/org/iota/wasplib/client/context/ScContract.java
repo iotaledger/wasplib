@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
@@ -15,22 +16,22 @@ public class ScContract {
 	}
 
 	public ScColor Color() {
-		return contract.GetColor("color").Value();
+		return contract.GetColor(new Key("color")).Value();
 	}
 
 	public String Description() {
-		return contract.GetString("description").Value();
+		return contract.GetString(new Key("description")).Value();
 	}
 
 	public ScAgent Id() {
-		return contract.GetAgent("id").Value();
+		return contract.GetAgent(new Key("id")).Value();
 	}
 
 	public String Name() {
-		return contract.GetString("name").Value();
+		return contract.GetString(new Key("name")).Value();
 	}
 
 	public ScAgent Owner() {
-		return contract.GetAgent("owner").Value();
+		return contract.GetAgent(new Key("owner")).Value();
 	}
 }

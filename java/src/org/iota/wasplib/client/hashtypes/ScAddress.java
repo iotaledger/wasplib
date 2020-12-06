@@ -3,16 +3,18 @@
 
 package org.iota.wasplib.client.hashtypes;
 
+import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.KeyId;
 import org.iota.wasplib.client.context.ScUtility;
 
 import java.util.Arrays;
 
-public class ScAddress {
+public class ScAddress implements KeyId {
 	final byte[] address = new byte[33];
 
 	public ScAddress(byte[] bytes) {
 		if (bytes == null || bytes.length != address.length) {
-			throw new RuntimeException("address should be 33 bytes");
+			throw new RuntimeException("address id should be 33 bytes");
 		}
 		System.arraycopy(bytes, 0, address, 0, address.length);
 	}
@@ -27,6 +29,11 @@ public class ScAddress {
 		if (o == null || getClass() != o.getClass()) return false;
 		ScAddress other = (ScAddress) o;
 		return Arrays.equals(address, other.address);
+	}
+
+	@Override
+	public int GetId() {
+		return Host.GetKey(address);
 	}
 
 	@Override

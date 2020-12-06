@@ -4,12 +4,15 @@
 package org.iota.wasplib.contracts;
 
 import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 
 public class IncCounter {
+	private static final Key keyCounter = new Key("counter");
+	private static final Key keyNumRepeats = new Key("numRepeats");
 	private static boolean localStateMustIncrement = false;
 
 	//export onLoad
@@ -31,20 +34,20 @@ public class IncCounter {
 	}
 
 	public static void init(ScCallContext sc) {
-		long counter = sc.Params().GetInt("counter").Value();
+		long counter = sc.Params().GetInt(keyCounter).Value();
 		if (counter == 0) {
 			return;
 		}
-		sc.State().GetInt("counter").SetValue(counter);
+		sc.State().GetInt(keyCounter).SetValue(counter);
 	}
 
 	public static void increment(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt("counter");
+		ScMutableInt counter = sc.State().GetInt(keyCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
 	public static void incrementCallIncrement(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt("counter");
+		ScMutableInt counter = sc.State().GetInt(keyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
@@ -53,7 +56,7 @@ public class IncCounter {
 	}
 
 	public static void incrementCallIncrementRecurse5x(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt("counter");
+		ScMutableInt counter = sc.State().GetInt(keyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
@@ -62,7 +65,7 @@ public class IncCounter {
 	}
 
 	public static void incrementPostIncrement(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt("counter");
+		ScMutableInt counter = sc.State().GetInt(keyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
@@ -71,16 +74,16 @@ public class IncCounter {
 	}
 
 	public static void incrementViewCounter(ScViewContext sc) {
-		long counter = sc.State().GetInt("counter").Value();
-		sc.Results().GetInt("counter").SetValue(counter);
+		long counter = sc.State().GetInt(keyCounter).Value();
+		sc.Results().GetInt(keyCounter).SetValue(counter);
 	}
 
 	public static void incrementRepeatMany(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt("counter");
+		ScMutableInt counter = sc.State().GetInt(keyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
-		ScMutableInt stateRepeats = sc.State().GetInt("numRepeats");
-		long repeats = sc.Params().GetInt("numRepeats").Value();
+		ScMutableInt stateRepeats = sc.State().GetInt(keyNumRepeats);
+		long repeats = sc.Params().GetInt(keyNumRepeats).Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {
@@ -94,7 +97,7 @@ public class IncCounter {
 	public static void incrementWhenMustIncrement(ScCallContext sc) {
 		sc.Log("incrementWhenMustIncrement called");
 		if (localStateMustIncrement) {
-			ScMutableInt counter = sc.State().GetInt("counter");
+			ScMutableInt counter = sc.State().GetInt(keyCounter);
 			counter.SetValue(counter.Value() + 1);
 		}
 	}

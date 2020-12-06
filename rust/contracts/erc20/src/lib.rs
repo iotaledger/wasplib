@@ -61,7 +61,7 @@ fn init(ctx: &ScCallContext) {
     ctx.state().get_int(STATE_VAR_SUPPLY).set_value(supply.value());
 
     // assign the whole supply to creator
-    ctx.state().get_key_map(STATE_VAR_BALANCES).get_int(creator.value().to_bytes()).set_value(supply.value());
+    ctx.state().get_map(STATE_VAR_BALANCES).get_int(&creator.value()).set_value(supply.value());
 
     ctx.log(&("init.success. Supply = ".to_string() + &supply.value().to_string()));
     ctx.log(&("init.success. Owner = ".to_string() + &creator.value().to_string()));
@@ -84,8 +84,8 @@ fn balance_of(ctx: &ScViewContext) {
         ctx.log(&("wrong or non existing parameter: ".to_string() + &account.value().to_string()));
         return;
     }
-    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
-    let balance = balances.get_int(account.value().to_bytes()).value();  // 0 if doesn't exist
+    let balances = ctx.state().get_map(STATE_VAR_BALANCES);
+    let balance = balances.get_int(&account.value()).value();  // 0 if doesn't exist
     ctx.results().get_int(PARAM_AMOUNT).set_value(balance)
 }
 
@@ -112,8 +112,8 @@ fn allowance(ctx: &ScViewContext) {
         return;
     }
     // all allowances of the address 'owner' are stored in the map of the same name
-    let allowances = ctx.state().get_key_map(&owner.value().to_string());
-    let allow = allowances.get_int(delegation.value().to_bytes()).value();
+    let allowances = ctx.state().get_map(&owner.value());
+    let allow = allowances.get_int(&delegation.value()).value();
     ctx.results().get_int(PARAM_AMOUNT).set_value(allow);
 }
 
@@ -139,14 +139,14 @@ fn transfer(ctx: &ScCallContext) {
         ctx.log("erc20.transfer.fail: wrong 'amount' parameter");
         return;
     }
-    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
-    let source_balance = balances.get_int(ctx.caller().to_bytes());
+    let balances = ctx.state().get_map(STATE_VAR_BALANCES);
+    let source_balance = balances.get_int(&ctx.caller());
 
     if source_balance.value() < amount {
         ctx.log("erc20.transfer.fail: not enough funds");
         return;
     }
-    let target_balance = balances.get_int(target_addr.to_bytes());
+    let target_balance = balances.get_int(&target_addr);
     let result = target_balance.value() + amount;
     if result <= 0 {
         ctx.log("erc20.transfer.fail: overflow");
@@ -176,9 +176,8 @@ fn approve(ctx: &ScCallContext) {
         ctx.log("erc20.approve.fail: wrong 'amount' parameter");
         return;
     }
-    let caller = ctx.caller().to_string();
-    let allowances = ctx.state().get_key_map(&caller);
-    allowances.get_int(account.to_bytes()).set_value(amount);
+    let allowances = ctx.state().get_map(&ctx.caller());
+    allowances.get_int(&account).set_value(amount);
     ctx.log("erc20.approve.success");
 }
 
@@ -212,19 +211,19 @@ fn transfer_from(ctx: &ScCallContext) {
     let amount = amount.value();
 
     // allowances are in the map under the name of the account
-    let allowances = ctx.state().get_key_map(&account.to_string());
-    let allowance = allowances.get_int(recipient.to_bytes());
+    let allowances = ctx.state().get_map(&account);
+    let allowance = allowances.get_int(&recipient);
     if allowance.value() < amount {
         ctx.log("erc20.approve.fail: not enough allowance");
     }
 
-    let balances = ctx.state().get_key_map(STATE_VAR_BALANCES);
-    let source_balance = balances.get_int(account.to_bytes());
+    let balances = ctx.state().get_map(STATE_VAR_BALANCES);
+    let source_balance = balances.get_int(&account);
     if source_balance.value() < amount {
         ctx.log("erc20.transfer.fail: not enough funds");
         return;
     }
-    let recipient_balance = balances.get_int(recipient.to_bytes());
+    let recipient_balance = balances.get_int(&recipient);
     let result = recipient_balance.value() + amount;
     if result <= 0 {
         ctx.log("erc20.transfer.fail: overflow");

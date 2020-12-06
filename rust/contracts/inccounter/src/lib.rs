@@ -7,6 +7,9 @@
 use wasplib::client::*;
 use wasplib::client::host::*;
 
+const KEY_COUNTER: &str = "counter";
+const KEY_NUM_REPEATS: &str = "numRepeats";
+
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
 
 #[no_mangle]
@@ -28,20 +31,20 @@ pub fn onLoad() {
 }
 
 fn init(sc: &ScCallContext) {
-    let counter = sc.params().get_int("counter").value();
+    let counter = sc.params().get_int(KEY_COUNTER).value();
     if counter == 0 {
         return;
     }
-    sc.state().get_int("counter").set_value(counter);
+    sc.state().get_int(KEY_COUNTER).set_value(counter);
 }
 
 fn increment(sc: &ScCallContext) {
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 
 fn incrementCallIncrement(sc: &ScCallContext) {
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
@@ -50,7 +53,7 @@ fn incrementCallIncrement(sc: &ScCallContext) {
 }
 
 fn incrementCallIncrementRecurse5x(sc: &ScCallContext) {
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
@@ -59,7 +62,7 @@ fn incrementCallIncrementRecurse5x(sc: &ScCallContext) {
 }
 
 fn incrementPostIncrement(sc: &ScCallContext) {
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
@@ -68,16 +71,16 @@ fn incrementPostIncrement(sc: &ScCallContext) {
 }
 
 fn incrementViewCounter(sc: &ScViewContext) {
-    let counter = sc.state().get_int("counter").value();
-    sc.results().get_int("counter").set_value(counter);
+    let counter = sc.state().get_int(KEY_COUNTER).value();
+    sc.results().get_int(KEY_COUNTER).set_value(counter);
 }
 
 fn incrementRepeatMany(sc: &ScCallContext) {
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
-    let state_repeats = sc.state().get_int("numRepeats");
-    let mut repeats = sc.params().get_int("numRepeats").value();
+    let state_repeats = sc.state().get_int(KEY_NUM_REPEATS);
+    let mut repeats = sc.params().get_int(KEY_NUM_REPEATS).value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {
@@ -95,7 +98,7 @@ fn incrementWhenMustIncrement(sc: &ScCallContext) {
             return;
         }
     }
-    let counter = sc.state().get_int("counter");
+    let counter = sc.state().get_int(KEY_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 

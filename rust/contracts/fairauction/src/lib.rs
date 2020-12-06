@@ -6,6 +6,13 @@
 
 use wasplib::client::*;
 
+const KEY_AUCTIONS: &str = "auctions";
+const KEY_COLOR: &str = "color";
+const KEY_DESCRIPTION: &str = "description";
+const KEY_DURATION: &str = "duration";
+const KEY_MINIMU_BID: &str = "minimum";
+const KEY_OWNER_MARGIN: &str = "ownerMargin";
+
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
 const DURATION_MAX: i64 = 120;
@@ -64,13 +71,13 @@ fn startAuction(sc: &ScCallContext) {
     }
 
     let state = sc.state();
-    let mut ownerMargin = state.get_int("ownerMargin").value();
+    let mut ownerMargin = state.get_int(KEY_OWNER_MARGIN).value();
     if ownerMargin == 0 {
         ownerMargin = OWNER_MARGIN_DEFAULT;
     }
 
     let params = sc.params();
-    let colorParam = params.get_color("color");
+    let colorParam = params.get_color(KEY_COLOR);
     if !colorParam.exists() {
         refund(sc, deposit / 2, "Missing token color...");
         return;
@@ -88,7 +95,7 @@ fn startAuction(sc: &ScCallContext) {
         return;
     }
 
-    let minimumBid = params.get_int("minimum").value();
+    let minimumBid = params.get_int(KEY_MINIMU_BID).value();
     if minimumBid == 0 {
         refund(sc, deposit / 2, "Missing minimum bid...");
         return;
@@ -105,7 +112,7 @@ fn startAuction(sc: &ScCallContext) {
     }
 
     // duration in minutes
-    let mut duration = params.get_int("duration").value();
+    let mut duration = params.get_int(KEY_DURATION).value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -116,7 +123,7 @@ fn startAuction(sc: &ScCallContext) {
         duration = DURATION_MAX;
     }
 
-    let mut description = params.get_string("dscr").value();
+    let mut description = params.get_string(KEY_DESCRIPTION).value();
     if description == "" {
         description = "N/A".to_string()
     }
@@ -125,8 +132,8 @@ fn startAuction(sc: &ScCallContext) {
         description = ss + "[...]";
     }
 
-    let auctions = state.get_key_map("auctions");
-    let currentAuction = auctions.get_bytes(color.to_bytes());
+    let auctions = state.get_map(KEY_AUCTIONS);
+    let currentAuction = auctions.get_bytes(&color);
     if currentAuction.value().len() != 0 {
         refund(sc, deposit / 2, "Auction for this token already exists...");
         return;
@@ -149,7 +156,7 @@ fn startAuction(sc: &ScCallContext) {
 
     let finalize_request = sc.post("finalizeAuction");
     let finalize_params = finalize_request.params();
-    finalize_params.get_color("color").set_value(&auction.color);
+    finalize_params.get_color(KEY_COLOR).set_value(&auction.color);
     finalize_request.post(duration * 60);
     sc.log("New auction started...");
 }
@@ -161,7 +168,7 @@ fn finalizeAuction(sc: &ScCallContext) {
         return;
     }
 
-    let colorParam = sc.params().get_color("color");
+    let colorParam = sc.params().get_color(KEY_COLOR);
     if !colorParam.exists() {
         sc.log("INTERNAL INCONSISTENCY: missing color");
         return;
@@ -169,8 +176,8 @@ fn finalizeAuction(sc: &ScCallContext) {
     let color = colorParam.value();
 
     let state = sc.state();
-    let auctions = state.get_key_map("auctions");
-    let currentAuction = auctions.get_bytes(color.to_bytes());
+    let auctions = state.get_map(KEY_AUCTIONS);
+    let currentAuction = auctions.get_bytes(&color);
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         sc.log("INTERNAL INCONSISTENCY missing auction info");
@@ -229,7 +236,7 @@ fn placeBid(sc: &ScCallContext) {
         return;
     }
 
-    let colorParam = sc.params().get_color("color");
+    let colorParam = sc.params().get_color(KEY_COLOR);
     if !colorParam.exists() {
         refund(sc, bidAmount, "Missing token color");
         return;
@@ -237,8 +244,8 @@ fn placeBid(sc: &ScCallContext) {
     let color = colorParam.value();
 
     let state = sc.state();
-    let auctions = state.get_key_map("auctions");
-    let currentAuction = auctions.get_bytes(color.to_bytes());
+    let auctions = state.get_map(KEY_AUCTIONS);
+    let currentAuction = auctions.get_bytes(&color);
     let bytes = currentAuction.value();
     if bytes.len() == 0 {
         refund(sc, bidAmount, "Missing auction");
@@ -270,7 +277,7 @@ fn setOwnerMargin(sc: &ScCallContext) {
         return;
     }
 
-    let mut ownerMargin = sc.params().get_int("ownerMargin").value();
+    let mut ownerMargin = sc.params().get_int(KEY_OWNER_MARGIN).value();
     if ownerMargin < OWNER_MARGIN_MIN {
         ownerMargin = OWNER_MARGIN_MIN;
     }

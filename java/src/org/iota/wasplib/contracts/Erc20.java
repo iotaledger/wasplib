@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -10,14 +11,13 @@ import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableInt;
-import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class Erc20 {
-	private static final String varSupply = "s";
-	private static final String varBalances = "b";
-	private static final String varTargetAddress = "addr";
-	private static final String varAmount = "amount";
+	private static final Key varSupply = new Key("s");
+	private static final Key varBalances = new Key("b");
+	private static final Key varTargetAddress = new Key("addr");
+	private static final Key varAmount = new Key("amount");
 
 	//export onLoad
 	public static void onLoad() {
@@ -45,7 +45,7 @@ public class Erc20 {
 		}
 		long supply = supplyParam.Value();
 		supplyState.SetValue(supply);
-		state.GetKeyMap(varBalances).GetInt(sc.Contract().Owner().toBytes()).SetValue(supply);
+		state.GetMap(varBalances).GetInt(sc.Contract().Owner()).SetValue(supply);
 
 		sc.Log("initSC: success");
 	}
@@ -54,12 +54,12 @@ public class Erc20 {
 		sc.Log("transfer");
 
 		ScMutableMap state = sc.State();
-		ScMutableKeyMap balances = state.GetKeyMap(varBalances);
+		ScMutableMap balances = state.GetMap(varBalances);
 
 		ScAgent caller = sc.Caller();
 		sc.Log("caller address: " + caller);
 
-		ScMutableInt sourceBalance = balances.GetInt(caller.toBytes());
+		ScMutableInt sourceBalance = balances.GetInt(caller);
 		sc.Log("source balance: " + sourceBalance.Value());
 
 		ScImmutableMap params = sc.Params();
@@ -75,7 +75,7 @@ public class Erc20 {
 		ScImmutableAddress targetAddr = params.GetAddress(varTargetAddress);
 		// TODO check if it is a correct address, otherwise won't be possible to transfer from it
 
-		ScMutableInt targetBalance = balances.GetInt(targetAddr.Value().toBytes());
+		ScMutableInt targetBalance = balances.GetInt(targetAddr.Value());
 		targetBalance.SetValue(targetBalance.Value() + amount.Value());
 		sourceBalance.SetValue(sourceBalance.Value() - amount.Value());
 

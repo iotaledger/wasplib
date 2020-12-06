@@ -3,18 +3,20 @@
 
 package org.iota.wasplib.client.hashtypes;
 
+import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.KeyId;
 import org.iota.wasplib.client.context.ScUtility;
 
 import java.util.Arrays;
 
-public class ScAgent {
-	final byte[] id = new byte[37];
+public class ScAgent implements KeyId {
+	final byte[] agent = new byte[37];
 
 	public ScAgent(byte[] bytes) {
-		if (bytes == null || bytes.length != id.length) {
+		if (bytes == null || bytes.length != agent.length) {
 			throw new RuntimeException("agent id should be 37 bytes");
 		}
-		System.arraycopy(bytes, 0, id, 0, id.length);
+		System.arraycopy(bytes, 0, agent, 0, agent.length);
 	}
 
 	@Override
@@ -22,19 +24,24 @@ public class ScAgent {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScAgent other = (ScAgent) o;
-		return Arrays.equals(id, other.id);
+		return Arrays.equals(agent, other.agent);
+	}
+
+	@Override
+	public int GetId() {
+		return Host.GetKey(agent);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(id);
+		return Arrays.hashCode(agent);
 	}
 
 	public byte[] toBytes() {
-		return id;
+		return agent;
 	}
 
 	public String toString() {
-		return ScUtility.Base58String(id);
+		return ScUtility.Base58String(agent);
 	}
 }

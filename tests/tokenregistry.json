@@ -30,7 +30,7 @@
       "function": "mintSupply",
       "incoming": {"#mint": "#token1", "#token1": 1},
       "params": {
-        "dscr": "My very valuable token"
+        "description": "My very valuable token"
       },
       "expect": {
         "balances": {"#iota": 100, "#token1": 1},
@@ -94,7 +94,7 @@
       "function": "mintSupply",
       "incoming": {"#mint": "#token1", "#iota": 1},
       "params": {
-        "dscr": "Sending 1 iota instead of minting a token"
+        "description": "Sending 1 iota instead of minting a token"
       },
       "expect": {
         "balances": {"#iota": 101},
@@ -116,7 +116,7 @@
       "function": "mintSupply",
       "incoming": {"#mint": "#token1", "#token1": 1},
       "params": {
-        "dscr": "My very valuable token"
+        "description": "My very valuable token"
       },
       "additionalRequests": [
         {
@@ -125,8 +125,8 @@
           "function": "mintSupply",
           "incoming": {"#mint": "#token2", "#token2": 750},
           "params": {
-            "dscr": "My shares in the IOTA Foundation",
-            "ud": "Some user defined data"
+            "description": "My shares in the IOTA Foundation",
+            "userDefined": "Some user defined data"
           }
         }
       ],

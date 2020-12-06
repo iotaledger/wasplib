@@ -6,6 +6,11 @@
 
 use wasplib::client::*;
 
+const KEY_COLOR_LIST: &str = "colorList";
+const KEY_DESCRIPTION: &str = "description";
+const KEY_REGISTRY: &str = "registry";
+const KEY_USER_DEFINED: &str = "userDefined";
+
 struct TokenInfo {
     supply: i64,
     minted_by: ScAgent,
@@ -31,7 +36,7 @@ fn mintSupply(sc: &ScCallContext) {
         return;
     }
     let state = sc.state();
-    let registry = state.get_key_map("registry").get_bytes(minted.to_bytes());
+    let registry = state.get_map(KEY_REGISTRY).get_bytes(&minted);
     if registry.exists() {
         sc.log("TokenRegistry: Color already exists");
         return;
@@ -43,8 +48,8 @@ fn mintSupply(sc: &ScCallContext) {
         owner: sc.caller(),
         created: sc.timestamp(),
         updated: sc.timestamp(),
-        description: params.get_string("dscr").value(),
-        user_defined: params.get_string("ud").value(),
+        description: params.get_string(KEY_DESCRIPTION).value(),
+        user_defined: params.get_string(KEY_USER_DEFINED).value(),
     };
     if token.supply <= 0 {
         sc.log("TokenRegistry: Insufficient supply");
@@ -55,7 +60,7 @@ fn mintSupply(sc: &ScCallContext) {
     }
     let data = encodeTokenInfo(&token);
     registry.set_value(&data);
-    let colors = state.get_color_array("colorList");
+    let colors = state.get_color_array(KEY_COLOR_LIST);
     colors.get_color(colors.length()).set_value(&minted);
 }
 

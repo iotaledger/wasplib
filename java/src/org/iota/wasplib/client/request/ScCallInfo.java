@@ -3,9 +3,9 @@
 
 package org.iota.wasplib.client.request;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScCallInfo {
@@ -16,24 +16,24 @@ public class ScCallInfo {
 	}
 
 	public void Call() {
-		call.GetInt("delay").SetValue(-1);
+		call.GetInt(new Key("delay")).SetValue(-1);
 	}
 
 	public ScCallInfo Contract(String contract) {
-		call.GetString("contract").SetValue(contract);
+		call.GetString(new Key("contract")).SetValue(contract);
 		return this;
 	}
 
 	public ScMutableMap Params() {
-		return call.GetMap("params");
+		return call.GetMap(new Key("params"));
 	}
 
 	public ScImmutableMap Results() {
-		return call.GetMap("results").Immutable();
+		return call.GetMap(new Key("results")).Immutable();
 	}
 
 	public void Transfer(ScColor color, long amount) {
-		ScMutableKeyMap transfers = call.GetKeyMap("transfers");
-		transfers.GetInt(color.toBytes()).SetValue(amount);
+		ScMutableMap transfers = call.GetMap(new Key("transfers"));
+		transfers.GetInt(color).SetValue(amount);
 	}
 }

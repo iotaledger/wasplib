@@ -6,6 +6,11 @@
 
 use wasplib::client::*;
 
+const KEY_ADDRESS: &str = "address";
+const KEY_FACTOR: &str = "factor";
+const KEY_MEMBERS: &str = "members";
+const KEY_TOTAL_FACTOR: &str = "totalFactor";
+
 struct Member {
     address: ScAddress,
     factor: i64,
@@ -24,12 +29,12 @@ fn member(sc: &ScCallContext) {
         return;
     }
     let params = sc.params();
-    let address = params.get_address("address");
+    let address = params.get_address(KEY_ADDRESS);
     if !address.exists() {
         sc.log("Missing address");
         return;
     }
-    let factor = params.get_int("factor");
+    let factor = params.get_int(KEY_FACTOR);
     if !factor.exists() {
         sc.log("Missing factor");
         return;
@@ -39,9 +44,9 @@ fn member(sc: &ScCallContext) {
         factor: factor.value(),
     };
     let state = sc.state();
-    let totalFactor = state.get_int("totalFactor");
+    let totalFactor = state.get_int(KEY_TOTAL_FACTOR);
     let mut total = totalFactor.value();
-    let members = state.get_bytes_array("members");
+    let members = state.get_bytes_array(KEY_MEMBERS);
     let size = members.length();
     for i in 0..size {
         let bytes = members.get_bytes(i).value();
@@ -70,9 +75,9 @@ fn dividend(sc: &ScCallContext) {
         return;
     }
     let state = sc.state();
-    let totalFactor = state.get_int("totalFactor");
+    let totalFactor = state.get_int(KEY_TOTAL_FACTOR);
     let total = totalFactor.value();
-    let members = state.get_bytes_array("members");
+    let members = state.get_bytes_array(KEY_MEMBERS);
     let size = members.length();
     let mut parts = 0_i64;
     for i in 0..size {

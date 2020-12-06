@@ -7,6 +7,20 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
+const (
+	keyAmount         = client.Key("amount")
+	keyData           = client.Key("data")
+	keyDonations      = client.Key("donations")
+	keyDonator        = client.Key("donator")
+	keyError          = client.Key("error")
+	keyFeedback       = client.Key("feedback")
+	keyLog            = client.Key("log")
+	keyMaxDonation    = client.Key("maxDonation")
+	keyTimestamp      = client.Key("timestamp")
+	keyTotalDonation  = client.Key("totalDonation")
+	keyWithdrawAmount = client.Key("withdraw")
+)
+
 type DonationInfo struct {
 	seq      int64
 	donator  *client.ScAgent
@@ -23,13 +37,13 @@ func OnLoad() {
 }
 
 func donate(sc *client.ScCallContext) {
-	tlog := sc.TimestampedLog("l")
+	tlog := sc.TimestampedLog(keyLog)
 	donation := &DonationInfo{
 		seq:      int64(tlog.Length()),
 		amount:   sc.Incoming().Balance(client.IOTA),
 		donator:  sc.Caller(),
 		error:    "",
-		feedback: sc.Params().GetString("f").Value(),
+		feedback: sc.Params().GetString(keyFeedback).Value(),
 	}
 	if donation.amount == 0 || len(donation.feedback) == 0 {
 		donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
@@ -42,8 +56,8 @@ func donate(sc *client.ScCallContext) {
 	tlog.Append(sc.Timestamp(), bytes)
 
 	state := sc.State()
-	largestDonation := state.GetInt("maxd")
-	totalDonated := state.GetInt("total")
+	largestDonation := state.GetInt(keyMaxDonation)
+	totalDonated := state.GetInt(keyTotalDonation)
 	if donation.amount > largestDonation.Value() {
 		largestDonation.SetValue(donation.amount)
 	}
@@ -58,7 +72,7 @@ func withdraw(sc *client.ScCallContext) {
 	}
 
 	amount := sc.Balances().Balance(client.IOTA)
-	withdrawAmount := sc.Params().GetInt("s").Value()
+	withdrawAmount := sc.Params().GetInt(keyWithdrawAmount).Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
 	}
@@ -72,24 +86,24 @@ func withdraw(sc *client.ScCallContext) {
 
 func viewDonations(sc *client.ScViewContext) {
 	state := sc.State()
-	largestDonation := state.GetInt("maxd")
-	totalDonated := state.GetInt("total")
-	tlog := sc.TimestampedLog("l")
+	largestDonation := state.GetInt(keyMaxDonation)
+	totalDonated := state.GetInt(keyTotalDonation)
+	tlog := sc.TimestampedLog(keyLog)
 	results := sc.Results()
-	results.GetInt("largest").SetValue(largestDonation.Value())
-	results.GetInt("total").SetValue(totalDonated.Value())
-	donations := results.GetMapArray("donations")
+	results.GetInt(keyMaxDonation).SetValue(largestDonation.Value())
+	results.GetInt(keyTotalDonation).SetValue(totalDonated.Value())
+	donations := results.GetMapArray(keyDonations)
 	size := tlog.Length()
 	for i := int32(0); i < size; i++ {
 		log := tlog.GetMap(i)
 		donation := donations.GetMap(i)
-		donation.GetInt("timestamp").SetValue(log.GetInt("timestamp").Value())
-		bytes := log.GetBytes("data").Value()
+		donation.GetInt(keyTimestamp).SetValue(log.GetInt(keyTimestamp).Value())
+		bytes := log.GetBytes(keyData).Value()
 		di := decodeDonationInfo(bytes)
-		donation.GetInt("amount").SetValue(di.amount)
-		donation.GetString("feedback").SetValue(di.feedback)
-		donation.GetString("donator").SetValue(di.donator.String())
-		donation.GetString("error").SetValue(di.error)
+		donation.GetInt(keyAmount).SetValue(di.amount)
+		donation.GetString(keyFeedback).SetValue(di.feedback)
+		donation.GetString(keyDonator).SetValue(di.donator.String())
+		donation.GetString(keyError).SetValue(di.error)
 	}
 }
 

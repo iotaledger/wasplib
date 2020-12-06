@@ -1,10 +1,10 @@
 package client
 
-func makeRequest(key string, function string) ScMutableMap {
+func makeRequest(key Key, function string) ScMutableMap {
 	root := ScMutableMap{objId: 1}
 	requests := root.GetMapArray(key)
 	request := requests.GetMap(requests.Length())
-	request.GetString("function").SetValue(function)
+	request.GetString(Key("function")).SetValue(function)
 	return request
 }
 
@@ -15,26 +15,26 @@ type ScCallInfo struct {
 }
 
 func (ctx ScCallInfo) Call() ScCallInfo {
-	ctx.call.GetInt("delay").SetValue(-1)
+	ctx.call.GetInt(Key("delay")).SetValue(-1)
 	return ctx
 }
 
 func (ctx ScCallInfo) Contract(contract string) ScCallInfo {
-	ctx.call.GetString("contract").SetValue(contract)
+	ctx.call.GetString(Key("contract")).SetValue(contract)
 	return ctx
 }
 
 func (ctx ScCallInfo) Params() ScMutableMap {
-	return ctx.call.GetMap("params")
+	return ctx.call.GetMap(Key("params"))
 }
 
 func (ctx ScCallInfo) Results() ScImmutableMap {
-	return ctx.call.GetMap("results").Immutable()
+	return ctx.call.GetMap(Key("results")).Immutable()
 }
 
 func (ctx ScCallInfo) Transfer(color *ScColor, amount int64) {
-	transfers := ctx.call.GetKeyMap("transfers")
-	transfers.GetInt(color.Bytes()).SetValue(amount)
+	transfers := ctx.call.GetMap(Key("transfers"))
+	transfers.GetInt(color).SetValue(amount)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -44,26 +44,26 @@ type ScPostInfo struct {
 }
 
 func (ctx ScPostInfo) Chain(chain *ScAddress) ScPostInfo {
-	ctx.post.GetAddress("chain").SetValue(chain)
+	ctx.post.GetAddress(Key("chain")).SetValue(chain)
 	return ctx
 }
 
 func (ctx ScPostInfo) Contract(contract string) ScPostInfo {
-	ctx.post.GetString("contract").SetValue(contract)
+	ctx.post.GetString(Key("contract")).SetValue(contract)
 	return ctx
 }
 
 func (ctx ScPostInfo) Params() ScMutableMap {
-	return ctx.post.GetMap("params")
+	return ctx.post.GetMap(Key("params"))
 }
 
 func (ctx ScPostInfo) Post(delay int64) {
-	ctx.post.GetInt("delay").SetValue(delay)
+	ctx.post.GetInt(Key("delay")).SetValue(delay)
 }
 
 func (ctx ScPostInfo) Transfer(color *ScColor, amount int64) {
-	transfers := ctx.post.GetKeyMap("transfers")
-	transfers.GetInt(color.Bytes()).SetValue(amount)
+	transfers := ctx.post.GetMap(Key("transfers"))
+	transfers.GetInt(color).SetValue(amount)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -73,19 +73,19 @@ type ScViewInfo struct {
 }
 
 func (ctx ScViewInfo) Contract(contract string) ScViewInfo {
-	ctx.view.GetString("contract").SetValue(contract)
+	ctx.view.GetString(Key("contract")).SetValue(contract)
 	return ctx
 }
 
 func (ctx ScViewInfo) Params() ScMutableMap {
-	return ctx.view.GetMap("params")
+	return ctx.view.GetMap(Key("params"))
 }
 
 func (ctx ScViewInfo) Results() ScImmutableMap {
-	return ctx.view.GetMap("results").Immutable()
+	return ctx.view.GetMap(Key("results")).Immutable()
 }
 
 func (ctx ScViewInfo) View() ScViewInfo {
-	ctx.view.GetInt("delay").SetValue(-2)
+	ctx.view.GetInt(Key("delay")).SetValue(-2)
 	return ctx
 }

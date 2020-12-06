@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.exports;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -11,14 +12,14 @@ import org.iota.wasplib.client.mutable.ScMutableStringArray;
 import java.util.ArrayList;
 
 public class ScExports {
+	private static final ScMutableMap root = new ScMutableMap(1);
 	private static final ArrayList<ScCall> calls = new ArrayList<>();
 	private static final ArrayList<ScView> views = new ArrayList<>();
 
 	ScMutableStringArray exports;
 
 	public ScExports() {
-		ScMutableMap root = new ScMutableMap(1);
-		exports = root.GetStringArray("exports");
+		exports = root.GetStringArray(new Key("exports"));
 	}
 
 	//export sc_call_entrypoint

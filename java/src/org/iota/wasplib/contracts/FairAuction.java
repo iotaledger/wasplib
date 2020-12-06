@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
@@ -12,13 +13,18 @@ import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
-import org.iota.wasplib.client.mutable.ScMutableKeyMap;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.request.ScPostInfo;
 
 import java.util.ArrayList;
 
 public class FairAuction {
+	private static final Key keyAuctions = new Key("auctions");
+	private static final Key keyColor = new Key("color");
+	private static final Key keyDescription = new Key("description");
+	private static final Key keyDuration = new Key("duration");
+	private static final Key keyMinimum = new Key("minimum");
+	private static final Key keyOwnerMargin = new Key("ownerMargin");
 	private static final int durationDefault = 60;
 	private static final int durationMin = 1;
 	private static final int durationMax = 120;
@@ -44,13 +50,13 @@ public class FairAuction {
 		}
 
 		ScMutableMap state = sc.State();
-		long ownerMargin = state.GetInt("ownerMargin").Value();
+		long ownerMargin = state.GetInt(keyOwnerMargin).Value();
 		if (ownerMargin == 0) {
 			ownerMargin = ownerMarginDefault;
 		}
 
 		ScImmutableMap params = sc.Params();
-		ScImmutableColor colorParam = params.GetColor("color");
+		ScImmutableColor colorParam = params.GetColor(keyColor);
 		if (!colorParam.Exists()) {
 			refund(sc, deposit / 2, "Missing token color...");
 			return;
@@ -68,7 +74,7 @@ public class FairAuction {
 			return;
 		}
 
-		long minimumBid = params.GetInt("minimum").Value();
+		long minimumBid = params.GetInt(keyMinimum).Value();
 		if (minimumBid == 0) {
 			refund(sc, deposit / 2, "Missing minimum bid...");
 			return;
@@ -85,7 +91,7 @@ public class FairAuction {
 		}
 
 		// duration in minutes
-		long duration = params.GetInt("duration").Value();
+		long duration = params.GetInt(keyDuration).Value();
 		if (duration == 0) {
 			duration = durationDefault;
 		}
@@ -96,7 +102,7 @@ public class FairAuction {
 			duration = durationMax;
 		}
 
-		String description = params.GetString("dscr").Value();
+		String description = params.GetString(keyDescription).Value();
 		if (description.isEmpty()) {
 			description = "N/A";
 		}
@@ -104,8 +110,8 @@ public class FairAuction {
 			description = description.substring(0, maxDescriptionLength) + "[...]";
 		}
 
-		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
+		ScMutableMap auctions = state.GetMap(keyAuctions);
+		ScMutableBytes currentAuction = auctions.GetBytes(color);
 		if (currentAuction.Value().length != 0) {
 			refund(sc, deposit / 2, "Auction for this token already exists...");
 			return;
@@ -126,7 +132,7 @@ public class FairAuction {
 
 		ScPostInfo finalizeRequest = sc.Post("finalizeAuction");
 		ScMutableMap finalizeParams = finalizeRequest.Params();
-		finalizeParams.GetColor("color").SetValue(auction.color);
+		finalizeParams.GetColor(keyColor).SetValue(auction.color);
 		finalizeRequest.Post(auction.duration * 60);
 		sc.Log("New auction started...");
 	}
@@ -138,7 +144,7 @@ public class FairAuction {
 			return;
 		}
 
-		ScImmutableColor colorParam = sc.Params().GetColor("color");
+		ScImmutableColor colorParam = sc.Params().GetColor(keyColor);
 		if (!colorParam.Exists()) {
 			sc.Log("INTERNAL INCONSISTENCY: missing color");
 			return;
@@ -146,8 +152,8 @@ public class FairAuction {
 		ScColor color = colorParam.Value();
 
 		ScMutableMap state = sc.State();
-		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
+		ScMutableMap auctions = state.GetMap(keyAuctions);
+		ScMutableBytes currentAuction = auctions.GetBytes(color);
 		byte[] bytes2 = currentAuction.Value();
 		if (bytes2.length == 0) {
 			sc.Log("INTERNAL INCONSISTENCY missing auction info");
@@ -201,7 +207,7 @@ public class FairAuction {
 			return;
 		}
 
-		ScImmutableColor colorParam = sc.Params().GetColor("color");
+		ScImmutableColor colorParam = sc.Params().GetColor(keyColor);
 		if (!colorParam.Exists()) {
 			refund(sc, bidAmount, "Missing token color");
 			return;
@@ -209,8 +215,8 @@ public class FairAuction {
 		ScColor color = colorParam.Value();
 
 		ScMutableMap state = sc.State();
-		ScMutableKeyMap auctions = state.GetKeyMap("auctions");
-		ScMutableBytes currentAuction = auctions.GetBytes(color.toBytes());
+		ScMutableMap auctions = state.GetMap(keyAuctions);
+		ScMutableBytes currentAuction = auctions.GetBytes(color);
 		byte[] bytes = currentAuction.Value();
 		if (bytes.length == 0) {
 			refund(sc, bidAmount, "Missing auction");
@@ -247,14 +253,14 @@ public class FairAuction {
 			return;
 		}
 
-		long ownerMargin = sc.Params().GetInt("ownerMargin").Value();
+		long ownerMargin = sc.Params().GetInt(keyOwnerMargin).Value();
 		if (ownerMargin < ownerMarginMin) {
 			ownerMargin = ownerMarginMin;
 		}
 		if (ownerMargin > ownerMarginMax) {
 			ownerMargin = ownerMarginMax;
 		}
-		sc.State().GetInt("ownerMargin").SetValue(ownerMargin);
+		sc.State().GetInt(keyOwnerMargin).SetValue(ownerMargin);
 		sc.Log("Updated owner margin...");
 	}
 

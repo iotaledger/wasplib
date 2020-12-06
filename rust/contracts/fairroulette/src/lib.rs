@@ -6,6 +6,12 @@
 
 use wasplib::client::*;
 
+const KEY_BETS: &str = "bets";
+const KEY_COLOR: &str = "color";
+const KEY_LAST_WINNING_COLOR: &str = "lastWinningColor";
+const KEY_LOCKED_BETS: &str = "lockedBets";
+const KEY_PLAY_PERIOD: &str = "playPeriod";
+
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
 
@@ -31,7 +37,7 @@ fn placeBet(sc: &ScCallContext) {
         sc.log("Empty bet...");
         return;
     }
-    let color = sc.params().get_int("color").value();
+    let color = sc.params().get_int(KEY_COLOR).value();
     if color == 0 {
         sc.log("No color...");
         return;
@@ -48,12 +54,12 @@ fn placeBet(sc: &ScCallContext) {
     };
 
     let state = sc.state();
-    let bets = state.get_bytes_array("bets");
+    let bets = state.get_bytes_array(KEY_BETS);
     let bet_nr = bets.length();
     let bytes = encodeBetInfo(&bet);
     bets.get_bytes(bet_nr).set_value(&bytes);
     if bet_nr == 0 {
-        let mut play_period = state.get_int("playPeriod").value();
+        let mut play_period = state.get_int(KEY_PLAY_PERIOD).value();
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
@@ -70,8 +76,8 @@ fn lockBets(sc: &ScCallContext) {
 
     // move all current bets to the locked_bets array
     let state = sc.state();
-    let bets = state.get_bytes_array("bets");
-    let locked_bets = state.get_bytes_array("lockedBets");
+    let bets = state.get_bytes_array(KEY_BETS);
+    let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
     let nrBets = bets.length();
     for i in 0..nrBets {
         let bytes = bets.get_bytes(i).value();
@@ -92,12 +98,12 @@ fn payWinners(sc: &ScCallContext) {
 
     let winning_color = sc.utility().random(5) + 1;
     let state = sc.state();
-    state.get_int("lastWinningColor").set_value(winning_color);
+    state.get_int(KEY_LAST_WINNING_COLOR).set_value(winning_color);
 
     // gather all winners and calculate some totals
     let mut total_bet_amount = 0_i64;
     let mut total_win_amount = 0_i64;
-    let locked_bets = state.get_bytes_array("lockedBets");
+    let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
     let mut winners: Vec<BetInfo> = Vec::new();
     let nrBets = locked_bets.length();
     for i in 0..nrBets {
@@ -147,13 +153,13 @@ fn playPeriod(sc: &ScCallContext) {
         return;
     }
 
-    let play_period = sc.params().get_int("playPeriod").value();
+    let play_period = sc.params().get_int(KEY_PLAY_PERIOD).value();
     if play_period < 10 {
         sc.log("Invalid play period...");
         return;
     }
 
-    sc.state().get_int("playPeriod").set_value(play_period);
+    sc.state().get_int(KEY_PLAY_PERIOD).set_value(play_period);
 }
 
 fn decodeBetInfo(bytes: &[u8]) -> BetInfo {

@@ -3,18 +3,21 @@
 
 package org.iota.wasplib.client.hashtypes;
 
+import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.KeyId;
 import org.iota.wasplib.client.context.ScUtility;
 
 import java.util.Arrays;
 
-public class ScColor {
+public class ScColor implements KeyId {
 	public static final ScColor IOTA = new ScColor(new byte[32]);
 	public static final ScColor MINT = new ScColor(new byte[32]);
+
 	final byte[] color = new byte[32];
 
 	public ScColor(byte[] bytes) {
 		if (bytes == null || bytes.length != color.length) {
-			throw new RuntimeException("color should be 32 bytes");
+			throw new RuntimeException("color id should be 32 bytes");
 		}
 		System.arraycopy(bytes, 0, color, 0, color.length);
 	}
@@ -25,6 +28,11 @@ public class ScColor {
 		if (o == null || getClass() != o.getClass()) return false;
 		ScColor other = (ScColor) o;
 		return Arrays.equals(color, other.color);
+	}
+
+	@Override
+	public int GetId() {
+		return Host.GetKey(color);
 	}
 
 	@Override

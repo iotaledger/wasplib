@@ -13,11 +13,11 @@ static mut VIEWS: Vec<fn(&ScViewContext)> = vec![];
 fn sc_call_entrypoint(index: i32) {
     unsafe {
         if (index & 0x8000) != 0 {
-            VIEWS[(index & 0x7fff) as usize](&ROOT_VIEW_CONTEXT);
+            VIEWS[(index & 0x7fff) as usize](&ScViewContext {});
             return;
         }
 
-        CALLS[index as usize](&ROOT_CALL_CONTEXT);
+        CALLS[index as usize](&ScCallContext {});
     }
 }
 
@@ -29,8 +29,7 @@ pub struct ScExports {
 
 impl ScExports {
     pub fn new() -> ScExports {
-        let root = ScMutableMap::new(1);
-        ScExports { exports: root.get_string_array("exports") }
+        ScExports { exports: ROOT.get_string_array("exports") }
     }
 
     pub fn add_call(&self, name: &str, f: fn(&ScCallContext)) {

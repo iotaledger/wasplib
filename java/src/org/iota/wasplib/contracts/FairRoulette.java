@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts;
 
+import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
@@ -15,6 +16,11 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 import java.util.ArrayList;
 
 public class FairRoulette {
+	private static final Key keyBets = new Key("bets");
+	private static final Key keyColor = new Key("color");
+	private static final Key keyLastWinningColor = new Key("lastWinningColor");
+	private static final Key keyLockedBets = new Key("lockedBets");
+	private static final Key keyPlayPeriod = new Key("playPeriod");
 	private static final long NUM_COLORS = 5;
 	private static final long PLAY_PERIOD = 120;
 
@@ -34,7 +40,7 @@ public class FairRoulette {
 			sc.Log("Empty bet...");
 			return;
 		}
-		long color = sc.Params().GetInt("color").Value();
+		long color = sc.Params().GetInt(keyColor).Value();
 		if (color == 0) {
 			sc.Log("No color...");
 			return;
@@ -50,12 +56,12 @@ public class FairRoulette {
 		bet.color = color;
 
 		ScMutableMap state = sc.State();
-		ScMutableBytesArray bets = state.GetBytesArray("bets");
+		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
 		int betNr = bets.Length();
 		byte[] bytes = encodeBetInfo(bet);
 		bets.GetBytes(betNr).SetValue(bytes);
 		if (betNr == 0) {
-			long playPeriod = state.GetInt("playPeriod").Value();
+			long playPeriod = state.GetInt(keyPlayPeriod).Value();
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
@@ -71,8 +77,8 @@ public class FairRoulette {
 		}
 
 		ScMutableMap state = sc.State();
-		ScMutableBytesArray bets = state.GetBytesArray("bets");
-		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
+		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
+		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
 		int nrBets = bets.Length();
 		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = bets.GetBytes(i).Value();
@@ -93,11 +99,11 @@ public class FairRoulette {
 
 		long winningColor = sc.Utility().Random(5) + 1;
 		ScMutableMap state = sc.State();
-		state.GetInt("lastWinningColor").SetValue(winningColor);
+		state.GetInt(keyLastWinningColor).SetValue(winningColor);
 
 		long totalBetAmount = 0;
 		long totalWinAmount = 0;
-		ScMutableBytesArray lockedBets = state.GetBytesArray("lockedBets");
+		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
 		ArrayList<BetInfo> winners = new ArrayList<>();
 		int nrBets = lockedBets.Length();
 		for (int i = 0; i < nrBets; i++) {
@@ -145,13 +151,13 @@ public class FairRoulette {
 			return;
 		}
 
-		long playPeriod = sc.Params().GetInt("playPeriod").Value();
+		long playPeriod = sc.Params().GetInt(keyPlayPeriod).Value();
 		if (playPeriod < 10) {
 			sc.Log("Invalid play period...");
 			return;
 		}
 
-		sc.State().GetInt("playPeriod").SetValue(playPeriod);
+		sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod);
 	}
 
 	public static BetInfo decodeBetInfo(byte[] bytes) {

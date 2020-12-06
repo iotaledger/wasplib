@@ -6,6 +6,7 @@ pub use context::*;
 pub use exports::ScExports;
 pub use hashtypes::*;
 pub use immutable::*;
+pub use keys::*;
 pub use mutable::*;
 pub use request::*;
 
