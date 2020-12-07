@@ -111,7 +111,7 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@scId", "amount": 100, "color": "#iota"}
+          {"agent": "@scId", "#iota": 100}
         ]
       }
     },
@@ -136,7 +136,7 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@caller", "amount": 100, "color": "#iota"}
+          {"agent": "@caller", "#iota": 100}
         ]
       }
     },
@@ -172,7 +172,7 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@caller", "amount": 300, "color": "#iota"}
+          {"agent": "@caller", "#iota": 300}
         ]
       }
     },
@@ -209,8 +209,8 @@
           {"function": "payWinners", "delay": 0}
         ],
         "transfers": [
-          {"agent": "@better1", "amount": 100, "color": "#iota"},
-          {"agent": "@better2", "amount": 200, "color": "#iota"}
+          {"agent": "@better1", "#iota": 100},
+          {"agent": "@better2", "#iota": 200}
         ]
       }
     }

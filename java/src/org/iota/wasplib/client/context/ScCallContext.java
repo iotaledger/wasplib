@@ -48,7 +48,6 @@ public class ScCallContext extends ScBaseContext {
 		ScMutableMapArray transfers = root.GetMapArray(new Key("transfers"));
 		ScMutableMap transfer = transfers.GetMap(transfers.Length());
 		transfer.GetAgent(new Key("agent")).SetValue(agent);
-		transfer.GetColor(new Key("color")).SetValue(color);
-		transfer.GetInt(new Key("amount")).SetValue(amount);
+		transfer.GetInt(color).SetValue(amount);
 	}
 }

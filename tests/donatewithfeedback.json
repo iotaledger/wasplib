@@ -152,7 +152,7 @@
         "posts": [],
         "views": [],
         "transfers": [
-          {"agent": "@scOwner", "color": "#iota", "amount": 250}
+          {"agent": "@scOwner", "#iota": 250}
         ]
       }
     },

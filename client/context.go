@@ -177,10 +177,7 @@ func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) 
 	transfers := root.GetMapArray(Key("transfers"))
 	transfer := transfers.GetMap(transfers.Length())
 	transfer.GetAgent(Key("agent")).SetValue(agent)
-	transfer.GetColor(Key("color")).SetValue(color)
-	transfer.GetInt(Key("amount")).SetValue(amount)
-	//TODO simplify to this
-	//transfer.GetInt(color).SetValue(amount)
+	transfer.GetInt(color).SetValue(amount)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

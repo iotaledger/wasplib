@@ -48,8 +48,8 @@
     "stringArrayVar": ["a", "b", "c"]
   },
   "transfers": [
-    {"agent": "base58HashOfTargetAgent", "color": "iota", "amount": 10},
-    {"agent": "base58HashOfTargetAgent", "color": "base58HashOfColor", "amount": 1}
+    {"agent": "base58HashOfTargetAgent", "#iota": 10},
+    {"agent": "base58HashOfTargetAgent", "base58HashOfColor": 1}
   ],
   "posts": [
     {

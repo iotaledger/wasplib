@@ -189,8 +189,7 @@ impl ScCallContext {
         let transfers = ROOT.get_map_array("transfers");
         let transfer = transfers.get_map(transfers.length());
         transfer.get_agent("agent").set_value(agent);
-        transfer.get_color("color").set_value(color);
-        transfer.get_int("amount").set_value(amount);
+        transfer.get_int(color).set_value(amount);
     }
 }
 
