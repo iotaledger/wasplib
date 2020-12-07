@@ -3,8 +3,8 @@
 
 package org.iota.wasplib.client.immutable;
 
-import org.iota.wasplib.client.Host;
-import org.iota.wasplib.client.Keys;
+import org.iota.wasplib.client.host.Host;
+import org.iota.wasplib.client.keys.Keys;
 
 public class ScImmutableIntArray {
 	int objId;

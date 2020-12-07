@@ -3,8 +3,8 @@
 
 package org.iota.wasplib.client.immutable;
 
-import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.host.Host;
 
 public class ScImmutableColor {
 	int objId;

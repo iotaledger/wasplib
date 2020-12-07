@@ -56,7 +56,7 @@ func (ctx ScLog) Append(timestamp int64, data []byte) {
 }
 
 func (ctx ScLog) Length() int32 {
-	return int32(ctx.log.Length())
+	return ctx.log.Length()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -96,68 +96,88 @@ func (ctx ScUtility) String(value int64) string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScCallContext struct {
-	root ScMutableMap
+type ScBaseContext struct {
 }
 
-func (ctx ScCallContext) Balances() ScBalances {
+func (ctx ScBaseContext) Balances() ScBalances {
 	return ScBalances{root.GetMap(Key("balances")).Immutable()}
 }
 
-func (ctx ScCallContext) Call(function string) ScCallInfo {
-	return ScCallInfo{makeRequest("calls", function)}
-}
-
-func (ctx ScCallContext) Caller() *ScAgent {
+func (ctx ScBaseContext) Caller() *ScAgent {
 	return root.GetAgent(Key("caller")).Value()
 }
 
-func (ctx ScCallContext) Contract() ScContract {
+func (ctx ScBaseContext) Contract() ScContract {
 	return ScContract{root.GetMap(Key("contract")).Immutable()}
 }
 
-func (ctx ScCallContext) Error() ScMutableString {
+func (ctx ScBaseContext) Error() ScMutableString {
 	return root.GetString(Key("error"))
 }
 
-func (ctx ScCallContext) From(originator *ScAgent) bool {
+func (ctx ScBaseContext) From(originator *ScAgent) bool {
 	return ctx.Caller().Equals(originator)
+}
+
+func (ctx ScBaseContext) Log(text string) {
+	SetString(1, KeyLog(), text)
+}
+
+func (ctx ScBaseContext) makeRequest(key Key, function string) ScBaseInfo {
+	requests := root.GetMapArray(key)
+	request := requests.GetMap(requests.Length())
+	request.GetString(Key("function")).SetValue(function)
+	return ScBaseInfo{request}
+}
+
+func (ctx ScBaseContext) Params() ScImmutableMap {
+	return root.GetMap(Key("params")).Immutable()
+}
+
+func (ctx ScBaseContext) Results() ScMutableMap {
+	return root.GetMap(Key("results"))
+}
+
+func (ctx ScBaseContext) Timestamp() int64 {
+	return root.GetInt(Key("timestamp")).Value()
+}
+
+func (ctx ScBaseContext) Trace(text string) {
+	SetString(1, KeyTrace(), text)
+}
+
+func (ctx ScBaseContext) Utility() ScUtility {
+	return ScUtility{root.GetMap(Key("utility"))}
+}
+
+func (ctx ScBaseContext) View(function string) ScViewInfo {
+	return ScViewInfo{ctx.makeRequest("views", function)}
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScCallContext struct {
+	ScBaseContext
+}
+
+func (ctx ScCallContext) Call(function string) ScCallInfo {
+	return ScCallInfo{ctx.makeRequest("calls", function)}
 }
 
 func (ctx ScCallContext) Incoming() ScBalances {
 	return ScBalances{root.GetMap(Key("incoming")).Immutable()}
 }
 
-func (ctx ScCallContext) Log(text string) {
-	SetString(1, KeyLog(), text)
-}
-
-func (ctx ScCallContext) Params() ScImmutableMap {
-	return root.GetMap(Key("params")).Immutable()
-}
-
 func (ctx ScCallContext) Post(function string) ScPostInfo {
-	return ScPostInfo{makeRequest("posts", function)}
-}
-
-func (ctx ScCallContext) Results() ScMutableMap {
-	return root.GetMap(Key("results"))
+	return ScPostInfo{ctx.makeRequest("posts", function)}
 }
 
 func (ctx ScCallContext) State() ScMutableMap {
 	return root.GetMap(Key("state"))
 }
 
-func (ctx ScCallContext) Timestamp() int64 {
-	return root.GetInt(Key("timestamp")).Value()
-}
-
 func (ctx ScCallContext) TimestampedLog(key Key) ScLog {
 	return ScLog{root.GetMap(Key("logs")).GetMapArray(key)}
-}
-
-func (ctx ScCallContext) Trace(text string) {
-	SetString(1, KeyTrace(), text)
 }
 
 func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) {
@@ -168,72 +188,16 @@ func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) 
 	transfer.GetInt(Key("amount")).SetValue(amount)
 }
 
-func (ctx ScCallContext) Utility() ScUtility {
-	return ScUtility{root.GetMap(Key("utility"))}
-}
-
-func (ctx ScCallContext) View(function string) ScViewInfo {
-	return ScViewInfo{makeRequest("views", function)}
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScViewContext struct {
-	root ScMutableMap
-}
-
-func (ctx ScViewContext) Balances() ScBalances {
-	return ScBalances{root.GetMap(Key("balances")).Immutable()}
-}
-
-func (ctx ScViewContext) Caller() *ScAgent {
-	return root.GetAgent(Key("caller")).Value()
-}
-
-func (ctx ScViewContext) Contract() ScContract {
-	return ScContract{root.GetMap(Key("contract")).Immutable()}
-}
-
-func (ctx ScViewContext) Error() ScMutableString {
-	return root.GetString(Key("error"))
-}
-
-func (ctx ScViewContext) From(originator *ScAgent) bool {
-	return ctx.Caller().Equals(originator)
-}
-
-func (ctx ScViewContext) Log(text string) {
-	SetString(1, KeyLog(), text)
-}
-
-func (ctx ScViewContext) Params() ScImmutableMap {
-	return root.GetMap(Key("params")).Immutable()
-}
-
-func (ctx ScViewContext) Results() ScMutableMap {
-	return root.GetMap(Key("results"))
+	ScBaseContext
 }
 
 func (ctx ScViewContext) State() ScImmutableMap {
 	return root.GetMap(Key("state")).Immutable()
 }
 
-func (ctx ScViewContext) Timestamp() int64 {
-	return root.GetInt(Key("timestamp")).Value()
-}
-
 func (ctx ScViewContext) TimestampedLog(key Key) ScImmutableMapArray {
 	return root.GetMap(Key("logs")).GetMapArray(key).Immutable()
-}
-
-func (ctx ScViewContext) Trace(text string) {
-	SetString(1, KeyTrace(), text)
-}
-
-func (ctx ScViewContext) Utility() ScUtility {
-	return ScUtility{root.GetMap(Key("utility"))}
-}
-
-func (ctx ScViewContext) View(function string) ScViewInfo {
-	return ScViewInfo{makeRequest("views", function)}
 }

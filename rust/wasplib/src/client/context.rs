@@ -110,64 +110,79 @@ impl ScUtility {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScCallContext {}
-
-impl ScCallContext {
-    pub fn balances(&self) -> ScBalances {
+pub trait ScBaseContext {
+    fn balances(&self) -> ScBalances {
         ScBalances { balances: ROOT.get_map("balances").immutable() }
     }
 
-    pub fn call(&self, function: &str) -> ScCallInfo {
-        ScCallInfo { call: make_request("calls", function) }
-    }
+    fn caller(&self) -> ScAgent { ROOT.get_agent("caller").value() }
 
-    pub fn caller(&self) -> ScAgent { ROOT.get_agent("caller").value() }
-
-    pub fn contract(&self) -> ScContract {
+    fn contract(&self) -> ScContract {
         ScContract { contract: ROOT.get_map("contract").immutable() }
     }
 
-    pub fn error(&self) -> ScMutableString {
+    fn error(&self) -> ScMutableString {
         ROOT.get_string("error")
     }
 
-    pub fn from(&self, originator: &ScAgent) -> bool {
+    fn from(&self, originator: &ScAgent) -> bool {
         self.caller() == *originator
     }
+
+    fn log(&self, text: &str) {
+        set_string(1, key_log(), text)
+    }
+
+    fn params(&self) -> ScImmutableMap {
+        ROOT.get_map("params").immutable()
+    }
+
+    fn results(&self) -> ScMutableMap {
+        ROOT.get_map("results")
+    }
+
+    fn timestamp(&self) -> i64 {
+        ROOT.get_int("timestamp").value()
+    }
+
+    fn trace(&self, text: &str) {
+        set_string(1, key_trace(), text)
+    }
+
+    fn utility(&self) -> ScUtility {
+        ScUtility { utility: ROOT.get_map("utility") }
+    }
+
+    fn view(&self, function: &str) -> ScViewInfo {
+        ScViewInfo::new(function)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScCallContext {}
+
+impl ScBaseContext for ScCallContext {}
+
+impl ScCallContext {
+    pub fn call(&self, function: &str) -> ScCallInfo {
+        ScCallInfo::new(function)
+    }
+
     pub fn incoming(&self) -> ScBalances {
         ScBalances { balances: ROOT.get_map("incoming").immutable() }
     }
 
-    pub fn log(&self, text: &str) {
-        set_string(1, key_log(), text)
-    }
-
-    pub fn params(&self) -> ScImmutableMap {
-        ROOT.get_map("params").immutable()
-    }
-
     pub fn post(&self, function: &str) -> ScPostInfo {
-        ScPostInfo { post: make_request("posts", function) }
-    }
-
-    pub fn results(&self) -> ScMutableMap {
-        ROOT.get_map("results")
+        ScPostInfo::new(function)
     }
 
     pub fn state(&self) -> ScMutableMap {
         ROOT.get_map("state")
     }
 
-    pub fn timestamp(&self) -> i64 {
-        ROOT.get_int("timestamp").value()
-    }
-
     pub fn timestamped_log(&self, key: &str) -> ScLog {
         ScLog { log: ROOT.get_map("logs").get_map_array(key) }
-    }
-
-    pub fn trace(&self, text: &str) {
-        set_string(1, key_trace(), text)
     }
 
     pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
@@ -177,72 +192,20 @@ impl ScCallContext {
         transfer.get_color("color").set_value(color);
         transfer.get_int("amount").set_value(amount);
     }
-
-    pub fn utility(&self) -> ScUtility {
-        ScUtility { utility: ROOT.get_map("utility") }
-    }
-
-    pub fn view(&self, function: &str) -> ScViewInfo {
-        ScViewInfo { view: make_request("views", function) }
-    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScViewContext {}
 
+impl ScBaseContext for ScViewContext {}
+
 impl ScViewContext {
-    pub fn balances(&self) -> ScBalances {
-        ScBalances { balances: ROOT.get_map("balances").immutable() }
-    }
-
-    pub fn caller(&self) -> ScAgent { ROOT.get_agent("caller").value() }
-
-    pub fn contract(&self) -> ScContract {
-        ScContract { contract: ROOT.get_map("contract").immutable() }
-    }
-
-    pub fn error(&self) -> ScMutableString {
-        ROOT.get_string("error")
-    }
-
-    pub fn from(&self, originator: &ScAgent) -> bool {
-        self.caller() == *originator
-    }
-
-    pub fn log(&self, text: &str) {
-        set_string(1, key_log(), text)
-    }
-
-    pub fn params(&self) -> ScImmutableMap {
-        ROOT.get_map("params").immutable()
-    }
-
-    pub fn results(&self) -> ScMutableMap {
-        ROOT.get_map("results")
-    }
-
     pub fn state(&self) -> ScImmutableMap {
         ROOT.get_map("state").immutable()
     }
 
-    pub fn timestamp(&self) -> i64 {
-        ROOT.get_int("timestamp").value()
-    }
-
     pub fn timestamped_log(&self, key: &str) -> ScImmutableMapArray {
         ROOT.get_map("logs").get_map_array(key).immutable()
-    }
-
-    pub fn trace(&self, text: &str) {
-        set_string(1, key_trace(), text)
-    }
-
-    pub fn utility(&self) -> ScUtility {
-        ScUtility { utility: ROOT.get_map("utility") }
-    }
-
-    pub fn view(&self, function: &str) -> ScViewInfo {
-        ScViewInfo { view: make_request("views", function) }
     }
 }

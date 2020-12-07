@@ -1,4 +1,6 @@
-package org.iota.wasplib.client;
+package org.iota.wasplib.client.keys;
+
+import org.iota.wasplib.client.host.Host;
 
 public class Key implements KeyId {
 	String key;

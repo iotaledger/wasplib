@@ -3,8 +3,8 @@
 
 package org.iota.wasplib.client.immutable;
 
-import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.hashtypes.ScAddress;
+import org.iota.wasplib.client.host.Host;
 
 public class ScImmutableAddress {
 	int objId;

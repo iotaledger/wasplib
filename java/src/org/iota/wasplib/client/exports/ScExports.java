@@ -3,9 +3,9 @@
 
 package org.iota.wasplib.client.exports;
 
-import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScViewContext;
+import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableStringArray;
 

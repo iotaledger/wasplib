@@ -3,9 +3,9 @@
 
 package org.iota.wasplib.client.hashtypes;
 
-import org.iota.wasplib.client.Host;
-import org.iota.wasplib.client.KeyId;
 import org.iota.wasplib.client.context.ScUtility;
+import org.iota.wasplib.client.host.Host;
+import org.iota.wasplib.client.keys.KeyId;
 
 import java.util.Arrays;
 

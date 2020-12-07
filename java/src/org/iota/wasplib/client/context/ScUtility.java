@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.client.context;
 
-import org.iota.wasplib.client.Key;
+import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableString;

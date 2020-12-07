@@ -3,10 +3,10 @@
 
 package org.iota.wasplib.client.bytes;
 
-import org.iota.wasplib.client.Host;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.host.Host;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

@@ -3,7 +3,6 @@
 
 package org.iota.wasplib.contracts;
 
-import org.iota.wasplib.client.Key;
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
@@ -13,6 +12,7 @@ import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableBytesArray;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;

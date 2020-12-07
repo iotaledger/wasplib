@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package org.iota.wasplib.client;
+package org.iota.wasplib.client.host;
 
 import java.nio.charset.StandardCharsets;
 

@@ -3,11 +3,11 @@
 
 package org.iota.wasplib.client.mutable;
 
-import org.iota.wasplib.client.Host;
-import org.iota.wasplib.client.KeyId;
-import org.iota.wasplib.client.Keys;
-import org.iota.wasplib.client.ScType;
+import org.iota.wasplib.client.host.Host;
+import org.iota.wasplib.client.host.ScType;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.keys.KeyId;
+import org.iota.wasplib.client.keys.Keys;
 
 public class ScMutableMap {
 	int objId;

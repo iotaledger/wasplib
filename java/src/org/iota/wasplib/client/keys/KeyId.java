@@ -1,4 +1,4 @@
-package org.iota.wasplib.client;
+package org.iota.wasplib.client.keys;
 
 public interface KeyId {
 	int GetId();

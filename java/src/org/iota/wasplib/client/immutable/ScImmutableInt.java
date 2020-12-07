@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.client.immutable;
 
-import org.iota.wasplib.client.Host;
+import org.iota.wasplib.client.host.Host;
 
 public class ScImmutableInt {
 	int objId;
