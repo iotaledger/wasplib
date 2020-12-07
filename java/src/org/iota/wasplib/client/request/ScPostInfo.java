@@ -6,11 +6,10 @@ package org.iota.wasplib.client.request;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.keys.Key;
-import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScPostInfo extends ScBaseInfo {
-	public ScPostInfo(ScMutableMap request) {
-		super(request);
+	public ScPostInfo(String function) {
+		super("posts", function);
 	}
 
 	public ScPostInfo Chain(ScAddress chain) {

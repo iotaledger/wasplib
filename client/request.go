@@ -1,9 +1,19 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 package client
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScBaseInfo struct {
 	request ScMutableMap
+}
+
+func NewScBaseInfo(key Key, function string) ScBaseInfo {
+	requests := root.GetMapArray(key)
+	request := requests.GetMap(requests.Length())
+	request.GetString(Key("function")).SetValue(function)
+	return ScBaseInfo{request}
 }
 
 func (ctx ScBaseInfo) Contract(contract string) ScBaseInfo {

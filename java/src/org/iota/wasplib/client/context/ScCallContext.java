@@ -21,7 +21,7 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public ScCallInfo Call(String function) {
-		return new ScCallInfo(makeRequest(new Key("calls"), function));
+		return new ScCallInfo(function);
 	}
 
 	public ScBalances Incoming() {
@@ -33,7 +33,7 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public ScPostInfo Post(String function) {
-		return new ScPostInfo(makeRequest(new Key("posts"), function));
+		return new ScPostInfo(function);
 	}
 
 	public ScMutableMap State() {

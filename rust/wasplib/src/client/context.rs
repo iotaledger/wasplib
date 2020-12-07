@@ -33,8 +33,8 @@ pub struct ScContract {
 }
 
 impl ScContract {
-    pub fn color(&self) -> ScColor {
-        self.contract.get_color("color").value()
+    pub fn chain(&self) -> ScAddress {
+        self.contract.get_address("chain").value()
     }
 
     pub fn description(&self) -> String {

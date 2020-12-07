@@ -4,11 +4,10 @@
 package org.iota.wasplib.client.request;
 
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScViewInfo extends ScBaseInfo {
-	public ScViewInfo(ScMutableMap request) {
-		super(request);
+	public ScViewInfo(String function) {
+		super("views", function);
 	}
 
 	public ScImmutableMap Results() {

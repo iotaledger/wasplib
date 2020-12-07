@@ -7,10 +7,8 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
-import org.iota.wasplib.client.keys.KeyId;
 import org.iota.wasplib.client.keys.Keys;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.mutable.ScMutableString;
 import org.iota.wasplib.client.request.ScViewInfo;
 
@@ -18,14 +16,6 @@ public class ScBaseContext {
 	protected static final ScMutableMap root = new ScMutableMap(1);
 
 	protected ScBaseContext() {
-	}
-
-	protected static ScMutableMap makeRequest(KeyId key, String function) {
-		ScMutableMap root = new ScMutableMap(1);
-		ScMutableMapArray requests = root.GetMapArray(key);
-		ScMutableMap request = requests.GetMap(requests.Length());
-		request.GetString(new Key("function")).SetValue(function);
-		return request;
 	}
 
 	public ScBalances Balances() {
@@ -73,6 +63,6 @@ public class ScBaseContext {
 	}
 
 	public ScViewInfo View(String function) {
-		return new ScViewInfo(makeRequest(new Key("views"), function));
+		return new ScViewInfo(function);
 	}
 }

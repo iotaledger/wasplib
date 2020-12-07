@@ -5,11 +5,10 @@ package org.iota.wasplib.client.request;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class ScCallInfo extends ScBaseInfo {
-	public ScCallInfo(ScMutableMap request) {
-		super(request);
+	public ScCallInfo(String function) {
+		super("calls", function);
 	}
 
 	public void Call() {

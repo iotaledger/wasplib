@@ -23,8 +23,8 @@ type ScContract struct {
 	contract ScImmutableMap
 }
 
-func (ctx ScContract) Color() *ScColor {
-	return ctx.contract.GetColor(Key("color")).Value()
+func (ctx ScContract) Chain() *ScAddress {
+	return ctx.contract.GetAddress(Key("chain")).Value()
 }
 
 func (ctx ScContract) Description() string {
@@ -123,13 +123,6 @@ func (ctx ScBaseContext) Log(text string) {
 	SetString(1, KeyLog(), text)
 }
 
-func (ctx ScBaseContext) makeRequest(key Key, function string) ScBaseInfo {
-	requests := root.GetMapArray(key)
-	request := requests.GetMap(requests.Length())
-	request.GetString(Key("function")).SetValue(function)
-	return ScBaseInfo{request}
-}
-
 func (ctx ScBaseContext) Params() ScImmutableMap {
 	return root.GetMap(Key("params")).Immutable()
 }
@@ -151,7 +144,7 @@ func (ctx ScBaseContext) Utility() ScUtility {
 }
 
 func (ctx ScBaseContext) View(function string) ScViewInfo {
-	return ScViewInfo{ctx.makeRequest("views", function)}
+	return ScViewInfo{NewScBaseInfo("views", function)}
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -161,7 +154,7 @@ type ScCallContext struct {
 }
 
 func (ctx ScCallContext) Call(function string) ScCallInfo {
-	return ScCallInfo{ctx.makeRequest("calls", function)}
+	return ScCallInfo{NewScBaseInfo("calls", function)}
 }
 
 func (ctx ScCallContext) Incoming() ScBalances {
@@ -169,7 +162,7 @@ func (ctx ScCallContext) Incoming() ScBalances {
 }
 
 func (ctx ScCallContext) Post(function string) ScPostInfo {
-	return ScPostInfo{ctx.makeRequest("posts", function)}
+	return ScPostInfo{NewScBaseInfo("posts", function)}
 }
 
 func (ctx ScCallContext) State() ScMutableMap {
@@ -186,6 +179,8 @@ func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) 
 	transfer.GetAgent(Key("agent")).SetValue(agent)
 	transfer.GetColor(Key("color")).SetValue(color)
 	transfer.GetInt(Key("amount")).SetValue(amount)
+	//TODO simplify to this
+	//transfer.GetInt(color).SetValue(amount)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

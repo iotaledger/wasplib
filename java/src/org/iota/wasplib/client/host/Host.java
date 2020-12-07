@@ -43,6 +43,7 @@ public class Host {
 			return null;
 		}
 		byte[] bytes = new byte[size];
+		//noinspection ResultOfMethodCallIgnored
 		hostGetBytes(objId, keyId, bytes, size);
 		return bytes;
 	}

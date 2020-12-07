@@ -7,12 +7,17 @@ import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
+import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public class ScBaseInfo {
+	protected static final ScMutableMap root = new ScMutableMap(1);
+
 	ScMutableMap request;
 
-	protected ScBaseInfo(ScMutableMap request) {
-		this.request = request;
+	protected ScBaseInfo(String key, String function) {
+		ScMutableMapArray requests = root.GetMapArray(new Key(key));
+		request = requests.GetMap(requests.Length());
+		request.GetString(new Key("function")).SetValue(function);
 	}
 
 	public ScBaseInfo Contract(String contract) {

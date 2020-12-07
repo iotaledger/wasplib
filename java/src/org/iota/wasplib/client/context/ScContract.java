@@ -3,8 +3,8 @@
 
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
 
@@ -15,8 +15,8 @@ public class ScContract {
 		this.contract = contract;
 	}
 
-	public ScColor Color() {
-		return contract.GetColor(new Key("color")).Value();
+	public ScAddress Chain() {
+		return contract.GetAddress(new Key("chain")).Value();
 	}
 
 	public String Description() {
