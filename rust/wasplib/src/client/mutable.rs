@@ -45,7 +45,7 @@ impl ScMutableAddressArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     //TODO exists on arrays?
@@ -60,7 +60,7 @@ impl ScMutableAddressArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -101,7 +101,7 @@ impl ScMutableAgentArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     //TODO exists on arrays?
@@ -116,7 +116,7 @@ impl ScMutableAgentArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -157,7 +157,7 @@ impl ScMutableBytesArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     // index 0..length(), when length() a new one is appended
@@ -170,7 +170,7 @@ impl ScMutableBytesArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -211,7 +211,7 @@ impl ScMutableColorArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     // index 0..length(), when length() a new one is appended
@@ -224,7 +224,7 @@ impl ScMutableColorArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -265,7 +265,7 @@ impl ScMutableIntArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     // index 0..length(), when length() a new one is appended
@@ -278,7 +278,7 @@ impl ScMutableIntArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -294,69 +294,69 @@ impl ScMutableMap {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
-    pub fn get_address<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAddress {
+    pub fn get_address<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAddress {
         ScMutableAddress { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_address_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAddressArray {
+    pub fn get_address_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAddressArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableAddressArray { obj_id: arr_id }
     }
 
-    pub fn get_agent<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAgent {
+    pub fn get_agent<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgent {
         ScMutableAgent { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_agent_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableAgentArray {
+    pub fn get_agent_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgentArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableAgentArray { obj_id: arr_id }
     }
 
-    pub fn get_bytes<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableBytes {
+    pub fn get_bytes<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableBytes {
         ScMutableBytes { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_bytes_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableBytesArray {
+    pub fn get_bytes_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableBytesArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableBytesArray { obj_id: arr_id }
     }
 
-    pub fn get_color<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableColor {
+    pub fn get_color<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColor {
         ScMutableColor { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_color_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableColorArray {
+    pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScMutableColorArray { obj_id: arr_id }
     }
 
-    pub fn get_int<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableInt {
+    pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt {
         ScMutableInt { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_int_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableIntArray {
+    pub fn get_int_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableIntArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT_ARRAY);
         ScMutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_map<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableMap {
+    pub fn get_map<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableMap {
         let map_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP);
         ScMutableMap { obj_id: map_id }
     }
 
-    pub fn get_map_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableMapArray {
+    pub fn get_map_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableMapArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP_ARRAY);
         ScMutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_string<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableString {
+    pub fn get_string<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableString {
         ScMutableString { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_string_array<T: KeyId + ?Sized>(&self, key: &T) -> ScMutableStringArray {
+    pub fn get_string_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableStringArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_STRING_ARRAY);
         ScMutableStringArray { obj_id: arr_id }
     }
@@ -378,7 +378,7 @@ impl ScMutableMapArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
 
@@ -393,7 +393,7 @@ impl ScMutableMapArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -434,7 +434,7 @@ impl ScMutableStringArray {
     }
 
     pub fn clear(&self) {
-        set_int(self.obj_id, key_length(), 0);
+        set_clear(self.obj_id);
     }
 
     // index 0..length(), when length() a new one is appended
@@ -447,6 +447,6 @@ impl ScMutableStringArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }

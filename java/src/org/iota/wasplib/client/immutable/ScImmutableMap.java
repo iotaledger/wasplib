@@ -5,8 +5,8 @@ package org.iota.wasplib.client.immutable;
 
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.host.ScType;
-import org.iota.wasplib.client.keys.KeyId;
-import org.iota.wasplib.client.keys.Keys;
+import org.iota.wasplib.client.keys.Key;
+import org.iota.wasplib.client.keys.MapKey;
 
 public class ScImmutableMap {
 	int objId;
@@ -15,71 +15,71 @@ public class ScImmutableMap {
 		this.objId = objId;
 	}
 
-	public ScImmutableAddress GetAddress(KeyId key) {
+	public ScImmutableAddress GetAddress(MapKey key) {
 		return new ScImmutableAddress(objId, key.GetId());
 	}
 
-	public ScImmutableAddressArray GetAddressArray(KeyId key) {
+	public ScImmutableAddressArray GetAddressArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableAddressArray(arrId);
 	}
 
-	public ScImmutableAgent GetAgent(KeyId key) {
+	public ScImmutableAgent GetAgent(MapKey key) {
 		return new ScImmutableAgent(objId, key.GetId());
 	}
 
-	public ScImmutableAgentArray GetAgentArray(KeyId key) {
+	public ScImmutableAgentArray GetAgentArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableAgentArray(arrId);
 	}
 
-	public ScImmutableBytes GetBytes(KeyId key) {
+	public ScImmutableBytes GetBytes(MapKey key) {
 		return new ScImmutableBytes(objId, key.GetId());
 	}
 
-	public ScImmutableBytesArray GetBytesArray(KeyId key) {
+	public ScImmutableBytesArray GetBytesArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableBytesArray(arrId);
 	}
 
-	public ScImmutableColor GetColor(KeyId key) {
+	public ScImmutableColor GetColor(MapKey key) {
 		return new ScImmutableColor(objId, key.GetId());
 	}
 
-	public ScImmutableColorArray GetColorArray(KeyId key) {
+	public ScImmutableColorArray GetColorArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
 		return new ScImmutableColorArray(arrId);
 	}
 
-	public ScImmutableInt GetInt(KeyId key) {
+	public ScImmutableInt GetInt(MapKey key) {
 		return new ScImmutableInt(objId, key.GetId());
 	}
 
-	public ScImmutableIntArray GetIntArray(KeyId key) {
+	public ScImmutableIntArray GetIntArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_INT_ARRAY);
 		return new ScImmutableIntArray(arrId);
 	}
 
-	public ScImmutableMap GetMap(KeyId key) {
+	public ScImmutableMap GetMap(MapKey key) {
 		int mapId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_MAP);
 		return new ScImmutableMap(mapId);
 	}
 
-	public ScImmutableMapArray GetMapArray(KeyId key) {
+	public ScImmutableMapArray GetMapArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_MAP_ARRAY);
 		return new ScImmutableMapArray(arrId);
 	}
 
-	public ScImmutableString GetString(KeyId key) {
+	public ScImmutableString GetString(MapKey key) {
 		return new ScImmutableString(objId, key.GetId());
 	}
 
-	public ScImmutableStringArray GetStringArray(KeyId key) {
+	public ScImmutableStringArray GetStringArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_STRING_ARRAY);
 		return new ScImmutableStringArray(arrId);
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Keys.KeyLength());
+		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
 	}
 }

@@ -33,7 +33,7 @@ impl ScAddress {
     }
 }
 
-impl KeyId for ScAddress {
+impl MapKey for ScAddress {
     fn get_id(&self) -> i32 {
         get_key(self.to_bytes())
     }
@@ -60,7 +60,7 @@ impl ScAgent {
     }
 }
 
-impl KeyId for ScAgent {
+impl MapKey for ScAgent {
     fn get_id(&self) -> i32 {
         get_key(self.to_bytes())
     }
@@ -90,7 +90,7 @@ impl ScColor {
     }
 }
 
-impl KeyId for ScColor {
+impl MapKey for ScColor {
     fn get_id(&self) -> i32 {
         get_key(self.to_bytes())
     }

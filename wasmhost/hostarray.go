@@ -29,11 +29,11 @@ func (a *HostArray) Dump(w io.Writer) {
 			fmt.Fprintf(w, ",\n")
 		}
 		multiple = true
-		if a.keyId == a.host.CallsId {
+		if a.keyId == KeyCalls {
 			a.host.FindObject(item.(int32)).(*HostCall).Dump(w)
 			continue
 		}
-		if a.keyId == a.host.TransfersId {
+		if a.keyId == KeyTransfers {
 			a.host.FindObject(item.(int32)).(*HostTransfer).Dump(w)
 			continue
 		}
@@ -147,12 +147,12 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case OBJTYPE_INT:
 			a.items = append(a.items, int64(0))
 		case OBJTYPE_MAP:
-			if a.keyId == a.host.CallsId {
+			if a.keyId == KeyCalls {
 				objId := a.host.TrackObject(NewHostCall(a.host, keyId))
 				a.items = append(a.items, objId)
 				break
 			}
-			if a.keyId == a.host.TransfersId {
+			if a.keyId == KeyTransfers {
 				objId := a.host.TrackObject(NewHostTransfer(a.host, keyId))
 				a.items = append(a.items, objId)
 				break

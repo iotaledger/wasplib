@@ -16,8 +16,8 @@ public class ScLog {
 
 	public void Append(long timestamp, byte[] data) {
 		ScMutableMap logEntry = log.GetMap(log.Length());
-		logEntry.GetInt(new Key("timestamp")).SetValue(timestamp);
-		logEntry.GetBytes(new Key("data")).SetValue(data);
+		logEntry.GetInt(Key.Timestamp).SetValue(timestamp);
+		logEntry.GetBytes(Key.Data).SetValue(data);
 	}
 
 	public int Length() {

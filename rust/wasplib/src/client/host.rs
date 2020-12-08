@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::client::KEY_LENGTH;
+
 // all const values should exactly match the counterpart values on the host!
 pub const TYPE_BYTES: i32 = 0;
 pub const TYPE_BYTES_ARRAY: i32 = 1;
@@ -66,6 +68,10 @@ pub fn get_key_id(key: &str) -> i32 {
     }
 }
 
+pub fn get_length(obj_id: i32) -> i32 {
+    get_int(obj_id, KEY_LENGTH) as i32
+}
+
 pub fn get_object_id(obj_id: i32, key_id: i32, type_id: i32) -> i32 {
     unsafe {
         hostGetObjectId(obj_id, key_id, type_id)
@@ -85,6 +91,10 @@ pub fn set_bytes(obj_id: i32, key_id: i32, value: &[u8]) {
     unsafe {
         hostSetBytes(obj_id, key_id, value.as_ptr(), value.len() as i32)
     }
+}
+
+pub fn set_clear(obj_id: i32) {
+    set_int(obj_id, KEY_LENGTH, 0)
 }
 
 pub fn set_int(obj_id: i32, key_id: i32, value: i64) {

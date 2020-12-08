@@ -6,7 +6,7 @@ package org.iota.wasplib.client.mutable;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.host.ScType;
 import org.iota.wasplib.client.immutable.ScImmutableMapArray;
-import org.iota.wasplib.client.keys.Keys;
+import org.iota.wasplib.client.keys.Key;
 
 public class ScMutableMapArray {
 	int objId;
@@ -16,7 +16,7 @@ public class ScMutableMapArray {
 	}
 
 	public void Clear() {
-		Host.SetInt(objId, Keys.KeyLength(), 0);
+		Host.SetInt(objId, Key.KEY_LENGTH, 0);
 	}
 
 	public ScMutableMap GetMap(int index) {
@@ -29,6 +29,6 @@ public class ScMutableMapArray {
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Keys.KeyLength());
+		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
 	}
 }

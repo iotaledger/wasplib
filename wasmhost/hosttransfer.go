@@ -18,8 +18,7 @@ func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
 
 func (a *HostTransfer) SetBytes(keyId int32, value []byte) {
 	a.HostMap.SetBytes(keyId, value)
-	key := string(a.host.GetKeyFromId(keyId))
-	if key == "agent" {
+	if keyId == KeyAgent {
 		a.agent = value
 		return
 	}
@@ -39,7 +38,7 @@ func (a *HostTransfer) SetInt(keyId int32, value int64) {
 	}
 	// check if compacting, in which case no balance change happens
 	contract := a.host.FindSubObject(nil, "contract", OBJTYPE_MAP)
-	scId := contract.GetBytes(a.host.GetKeyId("id"))
+	scId := contract.GetBytes(KeyId)
 	if !bytes.Equal(a.agent, scId) {
 		balances.SetInt(keyId, colorAmount-value)
 	}

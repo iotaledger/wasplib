@@ -7,8 +7,7 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
-import org.iota.wasplib.client.keys.KeyId;
-import org.iota.wasplib.client.keys.Keys;
+import org.iota.wasplib.client.keys.MapKey;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 import org.iota.wasplib.client.request.ScCallInfo;
@@ -25,11 +24,11 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public ScBalances Incoming() {
-		return new ScBalances(root.GetMap(new Key("incoming")).Immutable());
+		return new ScBalances(root.GetMap(Key.Incoming).Immutable());
 	}
 
 	public void Log(String text) {
-		Host.SetString(1, Keys.KeyLog(), text);
+		Host.SetString(1, Key.KEY_LOG, text);
 	}
 
 	public ScPostInfo Post(String function) {
@@ -37,17 +36,17 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public ScMutableMap State() {
-		return root.GetMap(new Key("state"));
+		return root.GetMap(Key.State);
 	}
 
-	public ScLog TimestampedLog(KeyId key) {
-		return new ScLog(root.GetMap(new Key("logs")).GetMapArray(key));
+	public ScLog TimestampedLog(MapKey key) {
+		return new ScLog(root.GetMap(Key.Logs).GetMapArray(key));
 	}
 
 	public void Transfer(ScAgent agent, ScColor color, long amount) {
-		ScMutableMapArray transfers = root.GetMapArray(new Key("transfers"));
+		ScMutableMapArray transfers = root.GetMapArray(Key.Transfers);
 		ScMutableMap transfer = transfers.GetMap(transfers.Length());
-		transfer.GetAgent(new Key("agent")).SetValue(agent);
+		transfer.GetAgent(Key.Agent).SetValue(agent);
 		transfer.GetInt(color).SetValue(amount);
 	}
 }

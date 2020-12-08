@@ -7,7 +7,6 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
-import org.iota.wasplib.client.keys.Keys;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableString;
 import org.iota.wasplib.client.request.ScViewInfo;
@@ -19,19 +18,19 @@ public class ScBaseContext {
 	}
 
 	public ScBalances Balances() {
-		return new ScBalances(root.GetMap(new Key("balances")).Immutable());
+		return new ScBalances(root.GetMap(Key.Balances).Immutable());
 	}
 
 	public ScAgent Caller() {
-		return root.GetAgent(new Key("caller")).Value();
+		return root.GetAgent(Key.Caller).Value();
 	}
 
 	public ScContract Contract() {
-		return new ScContract(root.GetMap(new Key("contract")).Immutable());
+		return new ScContract(root.GetMap(Key.Contract).Immutable());
 	}
 
 	public ScMutableString Error() {
-		return root.GetString(new Key("error"));
+		return root.GetString(Key.Error);
 	}
 
 	public Boolean From(ScAgent originator) {
@@ -39,27 +38,27 @@ public class ScBaseContext {
 	}
 
 	public void Log(String text) {
-		Host.SetString(1, Keys.KeyLog(), text);
+		Host.SetString(1, Key.KEY_LOG, text);
 	}
 
 	public ScImmutableMap Params() {
-		return root.GetMap(new Key("params")).Immutable();
+		return root.GetMap(Key.Params).Immutable();
 	}
 
 	public ScMutableMap Results() {
-		return root.GetMap(new Key("results"));
+		return root.GetMap(Key.Results);
 	}
 
 	public long Timestamp() {
-		return root.GetInt(new Key("timestamp")).Value();
+		return root.GetInt(Key.Timestamp).Value();
 	}
 
 	public void Trace(String text) {
-		Host.SetString(1, Keys.KeyTrace(), text);
+		Host.SetString(1, Key.KEY_TRACE, text);
 	}
 
 	public ScUtility Utility() {
-		return new ScUtility(root.GetMap(new Key("utility")));
+		return new ScUtility(root.GetMap(Key.Utility));
 	}
 
 	public ScViewInfo View(String function) {

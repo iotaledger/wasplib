@@ -68,25 +68,27 @@ func NewJsonTests(pathName string) (*JsonTests, error) {
 }
 
 func (t *JsonTests) ClearData() {
-	t.ClearObjectData("contract", OBJTYPE_MAP)
-	t.ClearObjectData("balances", OBJTYPE_MAP)
-	t.ClearObjectData("incoming", OBJTYPE_MAP)
-	t.ClearObjectData("params", OBJTYPE_MAP)
-	t.ClearObjectData("state", OBJTYPE_MAP)
-	t.ClearObjectData("logs", OBJTYPE_MAP)
-	t.ClearObjectData("results", OBJTYPE_MAP)
-	t.ClearObjectData("calls", OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData("posts", OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData("views", OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData("transfers", OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData(KeyContract, OBJTYPE_MAP)
+	t.ClearObjectData(KeyBalances, OBJTYPE_MAP)
+	t.ClearObjectData(KeyIncoming, OBJTYPE_MAP)
+	t.ClearObjectData(KeyParams, OBJTYPE_MAP)
+	t.ClearObjectData(KeyState, OBJTYPE_MAP)
+	t.ClearObjectData(KeyLogs, OBJTYPE_MAP)
+	t.ClearObjectData(KeyResults, OBJTYPE_MAP)
+	t.ClearObjectData(KeyCalls, OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData(KeyPosts, OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData(KeyViews, OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData(KeyTransfers, OBJTYPE_MAP_ARRAY)
 }
 
-func (t *JsonTests) ClearObjectData(key string, typeId int32) {
+func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
+	key := string(t.host.getKeyFromId(keyId))
 	object := t.FindSubObject(nil, key, typeId)
 	object.SetInt(KeyLength, 0)
 }
 
-func (t *JsonTests) CompareArrayData(key string, array []interface{}) bool {
+func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
+	key := string(t.host.getKeyFromId(keyId))
 	arrayObject := t.FindSubObject(nil, key, OBJTYPE_MAP_ARRAY)
 	if arrayObject.GetInt(KeyLength) != int64(len(array)) {
 		fmt.Printf("FAIL: array %s length\n", key)
@@ -104,17 +106,18 @@ func (t *JsonTests) CompareArrayData(key string, array []interface{}) bool {
 
 func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 	expectData := jsonTest.Expect
-	return t.CompareMapData("balances", expectData.Balances) &&
-		t.CompareMapData("state", expectData.State) &&
-		t.CompareMapData("logs", expectData.Logs) &&
-		t.CompareMapData("results", expectData.Results) &&
-		t.CompareArrayData("calls", expectData.Calls) &&
-		t.CompareArrayData("posts", expectData.Posts) &&
-		t.CompareArrayData("views", expectData.Views) &&
-		t.CompareArrayData("transfers", expectData.Transfers)
+	return t.CompareMapData(KeyBalances, expectData.Balances) &&
+		t.CompareMapData(KeyState, expectData.State) &&
+		t.CompareMapData(KeyLogs, expectData.Logs) &&
+		t.CompareMapData(KeyResults, expectData.Results) &&
+		t.CompareArrayData(KeyCalls, expectData.Calls) &&
+		t.CompareArrayData(KeyPosts, expectData.Posts) &&
+		t.CompareArrayData(KeyViews, expectData.Views) &&
+		t.CompareArrayData(KeyTransfers, expectData.Transfers)
 }
 
-func (t *JsonTests) CompareMapData(key string, values map[string]interface{}) bool {
+func (t *JsonTests) CompareMapData(keyId int32, values map[string]interface{}) bool {
+	key := string(t.host.getKeyFromId(keyId))
 	mapObject := t.FindSubObject(nil, key, OBJTYPE_MAP)
 	if !t.CompareSubMapData(mapObject, values) {
 		fmt.Printf("      map %s\n", key)
@@ -280,22 +283,23 @@ func (t *JsonTests) GetKeyId(key string) int32 {
 }
 
 func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
-	t.LoadMapData("contract", jsonData.Contract)
-	t.LoadMapData("balances", jsonData.Balances)
-	t.LoadMapData("incoming", jsonData.Incoming)
-	t.LoadMapData("params", jsonData.Params)
-	t.LoadMapData("state", jsonData.State)
-	t.LoadMapData("utility", jsonData.Utility)
+	t.LoadMapData(KeyContract, jsonData.Contract)
+	t.LoadMapData(KeyBalances, jsonData.Balances)
+	t.LoadMapData(KeyIncoming, jsonData.Incoming)
+	t.LoadMapData(KeyParams, jsonData.Params)
+	t.LoadMapData(KeyState, jsonData.State)
+	t.LoadMapData(KeyUtility, jsonData.Utility)
 	root := t.host.FindObject(1)
 	if jsonData.Timestamp != 0 {
-		root.SetInt(t.GetKeyId("timestamp"), jsonData.Timestamp)
+		root.SetInt(KeyTimestamp, jsonData.Timestamp)
 	}
 	if jsonData.Caller != "" {
-		root.SetString(t.GetKeyId("caller"), process(jsonData.Caller))
+		root.SetString(KeyCaller, process(jsonData.Caller))
 	}
 }
 
-func (t *JsonTests) LoadMapData(key string, values map[string]interface{}) {
+func (t *JsonTests) LoadMapData(keyId int32, values map[string]interface{}) {
+	key := string(t.host.getKeyFromId(keyId))
 	mapObject := t.FindSubObject(nil, key, OBJTYPE_MAP)
 	t.LoadSubMapData(mapObject, values)
 }
@@ -370,7 +374,7 @@ func (t *JsonTests) makeSubObject(encoder *BytesEncoder, key string, typeName st
 		value = fieldValues[def.FieldName]
 		typeName = def.TypeName
 		switch typeName {
-		case "Address", "Agent", "Bytes", "Color", "RequestId", "TxHash":
+		case "Address", "Agent", "Bytes", "Color":
 			bytes, _ := base58.Decode(process(value.(string)))
 			encoder.Bytes(bytes)
 		case "Int":
@@ -468,13 +472,13 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 	}
 
 	root := t.host.FindObject(1)
-	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(t.GetKeyId("id"))
+	scId := t.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(KeyId)
 	posts := t.FindSubObject(nil, "posts", OBJTYPE_MAP_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)
 	for i := 0; i < expectedCalls && i < int(posts.GetInt(KeyLength)); i++ {
 		post := t.FindIndexedMap(posts, i)
-		delay := post.GetInt(t.GetKeyId("delay"))
+		delay := post.GetInt(KeyDelay)
 		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
 			// only process posts when they have no delay
 			// unless overridden by the nodelay flag
@@ -482,21 +486,21 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 			continue
 		}
 
-		contract := post.GetString(t.GetKeyId("contract"))
+		contract := post.GetString(KeyContract)
 		if contract != "" && contract != scId {
 			// only process posts when they are for the current contract
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
 
-		root.SetString(t.GetKeyId("caller"), scId)
+		root.SetString(KeyCaller, scId)
 		//TODO increment timestamp and pass post.transfers as incoming
 		//TODO how do we pass incoming when we call instead of post?
 		params.SetInt(KeyLength, 0)
 		postParams := t.FindSubObject(post, "params", OBJTYPE_MAP)
 		//TODO how to iterate
 		postParams.(*HostMap).CopyDataTo(params)
-		function := post.GetString(t.GetKeyId("function"))
+		function := post.GetString(KeyFunction)
 		fmt.Printf("    Run function: %s\n", function)
 		err := t.host.RunScFunction(function)
 		if err != nil {

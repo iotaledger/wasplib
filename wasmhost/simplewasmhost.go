@@ -14,19 +14,13 @@ var EnableImmutableChecks = true
 
 type SimpleWasmHost struct {
 	WasmHost
-	CallsId     int32
-	ExportsId   int32
-	TransfersId int32
 }
 
 func NewSimpleWasmHost(vm WasmVM) (*SimpleWasmHost, error) {
 	host := &SimpleWasmHost{}
 	host.vm = vm
 	host.useBase58Keys = true
-	host.Init(NewNullObject(host), NewHostMap(host, 0), nil, host)
-	host.CallsId = host.GetKeyId("calls")
-	host.ExportsId = host.GetKeyId("exports")
-	host.TransfersId = host.GetKeyId("transfers")
+	host.Init(NewNullObject(host), NewHostMap(host, 0), host)
 	err := host.InitVM(vm)
 	if err != nil {
 		return nil, err
@@ -65,6 +59,12 @@ func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 }
 
 func (host *SimpleWasmHost) SetExport(index int32, functionName string) {
+	if index < 0 {
+		if index != KeyZzzzzzz {
+			host.SetError("SetExport: predefined key value mismatch")
+		}
+		return
+	}
 	_, ok := host.funcToCode[functionName]
 	if ok {
 		host.SetError("SetExport: duplicate function name")

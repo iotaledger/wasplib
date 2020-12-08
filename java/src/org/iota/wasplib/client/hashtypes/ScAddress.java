@@ -5,11 +5,11 @@ package org.iota.wasplib.client.hashtypes;
 
 import org.iota.wasplib.client.context.ScUtility;
 import org.iota.wasplib.client.host.Host;
-import org.iota.wasplib.client.keys.KeyId;
+import org.iota.wasplib.client.keys.MapKey;
 
 import java.util.Arrays;
 
-public class ScAddress implements KeyId {
+public class ScAddress implements MapKey {
 	final byte[] address = new byte[33];
 
 	public ScAddress(byte[] bytes) {

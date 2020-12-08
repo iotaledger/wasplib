@@ -31,7 +31,7 @@ func (a *ScAddress) Equals(other *ScAddress) bool {
 	return a.address == other.address
 }
 
-func (a *ScAddress) GetId() int32 {
+func (a *ScAddress) KeyId() int32 {
 	return GetKey(a.Bytes())
 }
 
@@ -62,7 +62,7 @@ func (a *ScAgent) Equals(other *ScAgent) bool {
 	return a.agent == other.agent
 }
 
-func (a *ScAgent) GetId() int32 {
+func (a *ScAgent) KeyId() int32 {
 	return GetKey(a.Bytes())
 }
 
@@ -102,7 +102,7 @@ func (c *ScColor) Equals(other *ScColor) bool {
 	return c.color == other.color
 }
 
-func (c *ScColor) GetId() int32 {
+func (c *ScColor) KeyId() int32 {
 	return GetKey(c.Bytes())
 }
 

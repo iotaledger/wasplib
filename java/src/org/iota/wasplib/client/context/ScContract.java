@@ -16,22 +16,22 @@ public class ScContract {
 	}
 
 	public ScAddress Chain() {
-		return contract.GetAddress(new Key("chain")).Value();
+		return contract.GetAddress(Key.Chain).Value();
 	}
 
 	public String Description() {
-		return contract.GetString(new Key("description")).Value();
+		return contract.GetString(Key.Description).Value();
 	}
 
 	public ScAgent Id() {
-		return contract.GetAgent(new Key("id")).Value();
+		return contract.GetAgent(Key.Id).Value();
 	}
 
 	public String Name() {
-		return contract.GetString(new Key("name")).Value();
+		return contract.GetString(Key.Name).Value();
 	}
 
 	public ScAgent Owner() {
-		return contract.GetAgent(new Key("owner")).Value();
+		return contract.GetAgent(Key.Owner).Value();
 	}
 }

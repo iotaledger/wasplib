@@ -17,28 +17,28 @@ public class ScBaseInfo {
 	protected ScBaseInfo(String key, String function) {
 		ScMutableMapArray requests = root.GetMapArray(new Key(key));
 		request = requests.GetMap(requests.Length());
-		request.GetString(new Key("function")).SetValue(function);
+		request.GetString(Key.Function).SetValue(function);
 	}
 
 	public ScBaseInfo Contract(String contract) {
-		request.GetString(new Key("contract")).SetValue(contract);
+		request.GetString(Key.Contract).SetValue(contract);
 		return this;
 	}
 
 	protected void exec(long delay) {
-		request.GetInt(new Key("delay")).SetValue(delay);
+		request.GetInt(Key.Delay).SetValue(delay);
 	}
 
 	public ScMutableMap Params() {
-		return request.GetMap(new Key("params"));
+		return request.GetMap(Key.Params);
 	}
 
 	protected ScImmutableMap results() {
-		return request.GetMap(new Key("results")).Immutable();
+		return request.GetMap(Key.Results).Immutable();
 	}
 
 	protected void transfer(ScColor color, long amount) {
-		ScMutableMap transfers = request.GetMap(new Key("transfers"));
+		ScMutableMap transfers = request.GetMap(Key.Transfers);
 		transfers.GetInt(color).SetValue(amount);
 	}
 }

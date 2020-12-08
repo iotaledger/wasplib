@@ -9,32 +9,32 @@ type ScBaseInfo struct {
 	request ScMutableMap
 }
 
-func NewScBaseInfo(key Key, function string) ScBaseInfo {
+func NewScBaseInfo(key MapKey, function string) ScBaseInfo {
 	requests := root.GetMapArray(key)
 	request := requests.GetMap(requests.Length())
-	request.GetString(Key("function")).SetValue(function)
+	request.GetString(KeyFunction).SetValue(function)
 	return ScBaseInfo{request}
 }
 
 func (ctx ScBaseInfo) Contract(contract string) ScBaseInfo {
-	ctx.request.GetString(Key("contract")).SetValue(contract)
+	ctx.request.GetString(KeyContract).SetValue(contract)
 	return ctx
 }
 
 func (ctx ScBaseInfo) exec(delay int64) {
-	ctx.request.GetInt(Key("delay")).SetValue(delay)
+	ctx.request.GetInt(KeyDelay).SetValue(delay)
 }
 
 func (ctx ScBaseInfo) Params() ScMutableMap {
-	return ctx.request.GetMap(Key("params"))
+	return ctx.request.GetMap(KeyParams)
 }
 
 func (ctx ScBaseInfo) results() ScImmutableMap {
-	return ctx.request.GetMap(Key("results")).Immutable()
+	return ctx.request.GetMap(KeyResults).Immutable()
 }
 
 func (ctx ScBaseInfo) transfer(color *ScColor, amount int64) {
-	transfers := ctx.request.GetMap(Key("transfers"))
+	transfers := ctx.request.GetMap(KeyTransfers)
 	transfers.GetInt(color).SetValue(amount)
 }
 
@@ -64,7 +64,7 @@ type ScPostInfo struct {
 }
 
 func (ctx ScPostInfo) Chain(chain *ScAddress) ScPostInfo {
-	ctx.request.GetAddress(Key("chain")).SetValue(chain)
+	ctx.request.GetAddress(KeyChain).SetValue(chain)
 	return ctx
 }
 

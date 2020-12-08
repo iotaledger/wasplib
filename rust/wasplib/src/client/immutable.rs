@@ -45,7 +45,7 @@ impl ScImmutableAddressArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -89,7 +89,7 @@ impl ScImmutableAgentArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -131,7 +131,7 @@ impl ScImmutableBytesArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -173,7 +173,7 @@ impl ScImmutableColorArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -215,7 +215,7 @@ impl ScImmutableIntArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -230,72 +230,72 @@ impl ScImmutableMap {
         ScImmutableMap { obj_id }
     }
 
-    pub fn get_address<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableAddress {
+    pub fn get_address<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAddress {
         ScImmutableAddress { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_address_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableAddressArray {
+    pub fn get_address_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAddressArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScImmutableAddressArray { obj_id: arr_id }
     }
 
-    pub fn get_agent<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableAgent {
+    pub fn get_agent<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgent {
         ScImmutableAgent { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_agent_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableAgentArray {
+    pub fn get_agent_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgentArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScImmutableAgentArray { obj_id: arr_id }
     }
 
-    pub fn get_bytes<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableBytes {
+    pub fn get_bytes<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableBytes {
         ScImmutableBytes { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_bytes_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableBytesArray {
+    pub fn get_bytes_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableBytesArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScImmutableBytesArray { obj_id: arr_id }
     }
 
-    pub fn get_color<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableColor {
+    pub fn get_color<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColor {
         ScImmutableColor { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_color_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableColorArray {
+    pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
         ScImmutableColorArray { obj_id: arr_id }
     }
 
-    pub fn get_int<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableInt {
+    pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt {
         ScImmutableInt { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_int_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableIntArray {
+    pub fn get_int_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableIntArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT_ARRAY);
         ScImmutableIntArray { obj_id: arr_id }
     }
 
-    pub fn get_map<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableMap {
+    pub fn get_map<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableMap {
         let map_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP);
         ScImmutableMap { obj_id: map_id }
     }
 
-    pub fn get_map_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableMapArray {
+    pub fn get_map_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableMapArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP_ARRAY);
         ScImmutableMapArray { obj_id: arr_id }
     }
 
-    pub fn get_string<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableString {
+    pub fn get_string<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableString {
         ScImmutableString { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_string_array<T: KeyId + ?Sized>(&self, key: &T) -> ScImmutableStringArray {
+    pub fn get_string_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableStringArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_STRING_ARRAY);
         ScImmutableStringArray { obj_id: arr_id }
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -317,7 +317,7 @@ impl ScImmutableMapArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }
 
@@ -359,6 +359,6 @@ impl ScImmutableStringArray {
     }
 
     pub fn length(&self) -> i32 {
-        get_int(self.obj_id, key_length()) as i32
+        get_length(self.obj_id)
     }
 }

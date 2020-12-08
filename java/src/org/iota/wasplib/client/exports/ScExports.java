@@ -19,7 +19,10 @@ public class ScExports {
 	ScMutableStringArray exports;
 
 	public ScExports() {
-		exports = root.GetStringArray(new Key("exports"));
+		exports = root.GetStringArray(Key.Exports);
+		// tell host what our highest predefined key is
+		// this helps detect missing or extra keys
+		exports.GetString(Key.KEY_ZZZZZZZ).SetValue("Java:KEY_ZZZZZZZ");
 	}
 
 	//export sc_call_entrypoint

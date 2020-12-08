@@ -20,16 +20,6 @@ const (
 	OBJTYPE_STRING_ARRAY int32 = 7
 )
 
-const (
-	KeyError       = int32(-1)
-	KeyLength      = KeyError - 1
-	KeyLog         = KeyLength - 1
-	KeyTrace       = KeyLog - 1
-	KeyTraceHost   = KeyTrace - 1
-	KeyWarning     = KeyTraceHost - 1
-	KeyUserDefined = KeyWarning - 1
-)
-
 type HostObject interface {
 	Exists(keyId int32) bool
 	GetBytes(keyId int32) []byte
@@ -46,15 +36,6 @@ type LogInterface interface {
 	Log(logLevel int32, text string)
 }
 
-var baseKeyMap = map[string]int32{
-	"error":     KeyError,
-	"length":    KeyLength,
-	"log":       KeyLog,
-	"trace":     KeyTrace,
-	"traceHost": KeyTraceHost,
-	"warning":   KeyWarning,
-}
-
 // implements client.ScHost interface
 type WasmHost struct {
 	vm            WasmVM
@@ -64,7 +45,6 @@ type WasmHost struct {
 	funcToIndex   map[string]int32
 	keyIdToKey    [][]byte
 	keyIdToKeyMap [][]byte
-	keyMapToKeyId *map[string]int32
 	keyToKeyId    map[string]int32
 	logger        LogInterface
 	objIdToObj    []HostObject
@@ -75,11 +55,7 @@ func (host *WasmHost) Exists(objId int32, keyId int32) bool {
 	return host.FindObject(objId).Exists(keyId)
 }
 
-func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]int32, logger LogInterface) {
-	if keyMap == nil {
-		keyMap = &baseKeyMap
-	}
-	elements := len(*keyMap) + 1
+func (host *WasmHost) Init(null HostObject, root HostObject, logger LogInterface) {
 	host.codeToFunc = make(map[uint32]string)
 	host.error = ""
 	host.funcToCode = make(map[string]uint32)
@@ -87,10 +63,9 @@ func (host *WasmHost) Init(null HostObject, root HostObject, keyMap *map[string]
 	host.logger = logger
 	host.objIdToObj = nil
 	host.keyIdToKey = [][]byte{[]byte("<null>")}
-	host.keyMapToKeyId = keyMap
 	host.keyToKeyId = make(map[string]int32)
-	host.keyIdToKeyMap = make([][]byte, elements)
-	for k, v := range *keyMap {
+	host.keyIdToKeyMap = make([][]byte, len(keyMap)+1)
+	for k, v := range keyMap {
 		host.keyIdToKeyMap[-v] = []byte(k)
 	}
 	host.TrackObject(null)
@@ -202,7 +177,7 @@ func (host *WasmHost) getKeyId(key []byte) int32 {
 	keyString := string(key)
 
 	// first check predefined key map
-	keyId, ok := (*host.keyMapToKeyId)[keyString]
+	keyId, ok := keyMap[keyString]
 	if ok {
 		return keyId
 	}

@@ -27,7 +27,7 @@ func (o ScImmutableAddressArray) GetAddress(index int32) ScImmutableAddress {
 }
 
 func (o ScImmutableAddressArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -56,7 +56,7 @@ func (o ScImmutableAgentArray) GetAgent(index int32) ScImmutableAgent {
 }
 
 func (o ScImmutableAgentArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -85,7 +85,7 @@ func (o ScImmutableBytesArray) GetBytes(index int32) ScImmutableBytes {
 }
 
 func (o ScImmutableBytesArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -114,7 +114,7 @@ func (o ScImmutableColorArray) GetColor(index int32) ScImmutableColor {
 }
 
 func (o ScImmutableColorArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -143,7 +143,7 @@ func (o ScImmutableIntArray) GetInt(index int32) ScImmutableInt {
 }
 
 func (o ScImmutableIntArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -152,67 +152,67 @@ type ScImmutableMap struct {
 	objId int32
 }
 
-func (o ScImmutableMap) GetAddress(key KeyId) ScImmutableAddress {
-	return ScImmutableAddress{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetAddress(key MapKey) ScImmutableAddress {
+	return ScImmutableAddress{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetAddressArray(key KeyId) ScImmutableAddressArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetAddressArray(key MapKey) ScImmutableAddressArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_BYTES_ARRAY)
 	return ScImmutableAddressArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetAgent(key KeyId) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetAgent(key MapKey) ScImmutableAgent {
+	return ScImmutableAgent{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetAgentArray(key KeyId) ScImmutableAgentArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetAgentArray(key MapKey) ScImmutableAgentArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_BYTES_ARRAY)
 	return ScImmutableAgentArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetBytes(key KeyId) ScImmutableBytes {
-	return ScImmutableBytes{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetBytes(key MapKey) ScImmutableBytes {
+	return ScImmutableBytes{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetBytesArray(key KeyId) ScImmutableBytesArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetBytesArray(key MapKey) ScImmutableBytesArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_BYTES_ARRAY)
 	return ScImmutableBytesArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetColor(key KeyId) ScImmutableColor {
-	return ScImmutableColor{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetColor(key MapKey) ScImmutableColor {
+	return ScImmutableColor{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetColorArray(key KeyId) ScImmutableColorArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_BYTES_ARRAY)
+func (o ScImmutableMap) GetColorArray(key MapKey) ScImmutableColorArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_BYTES_ARRAY)
 	return ScImmutableColorArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetInt(key KeyId) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetInt(key MapKey) ScImmutableInt {
+	return ScImmutableInt{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetIntArray(key KeyId) ScImmutableIntArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_INT_ARRAY)
+func (o ScImmutableMap) GetIntArray(key MapKey) ScImmutableIntArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT_ARRAY)
 	return ScImmutableIntArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetMap(key KeyId) ScImmutableMap {
-	mapId := GetObjectId(o.objId, key.GetId(), TYPE_MAP)
+func (o ScImmutableMap) GetMap(key MapKey) ScImmutableMap {
+	mapId := GetObjectId(o.objId, key.KeyId(), TYPE_MAP)
 	return ScImmutableMap{objId: mapId}
 }
 
-func (o ScImmutableMap) GetMapArray(key KeyId) ScImmutableMapArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_MAP_ARRAY)
+func (o ScImmutableMap) GetMapArray(key MapKey) ScImmutableMapArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_MAP_ARRAY)
 	return ScImmutableMapArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetString(key KeyId) ScImmutableString {
-	return ScImmutableString{objId: o.objId, keyId: key.GetId()}
+func (o ScImmutableMap) GetString(key MapKey) ScImmutableString {
+	return ScImmutableString{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetStringArray(key KeyId) ScImmutableStringArray {
-	arrId := GetObjectId(o.objId, key.GetId(), TYPE_STRING_ARRAY)
+func (o ScImmutableMap) GetStringArray(key MapKey) ScImmutableStringArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_STRING_ARRAY)
 	return ScImmutableStringArray{objId: arrId}
 }
 
@@ -228,7 +228,7 @@ func (o ScImmutableMapArray) GetMap(index int32) ScImmutableMap {
 }
 
 func (o ScImmutableMapArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -257,5 +257,5 @@ func (o ScImmutableStringArray) GetString(index int32) ScImmutableString {
 }
 
 func (o ScImmutableStringArray) Length() int32 {
-	return int32(GetInt(o.objId, KeyLength()))
+	return GetLength(o.objId)
 }

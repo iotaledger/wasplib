@@ -24,8 +24,11 @@ type ScExports struct {
 }
 
 func NewScExports() ScExports {
-	root := ScMutableMap{objId: 1}
-	return ScExports{exports: root.GetStringArray(Key("exports"))}
+	exports := root.GetStringArray(KeyExports)
+	// tell host what our highest predefined key is
+	// this helps detect missing or extra keys
+	exports.GetString(int32(KeyZzzzzzz)).SetValue("Go:KeyZzzzzzz")
+	return ScExports{exports: exports}
 }
 
 func (ctx ScExports) AddCall(name string, f func(sc *ScCallContext)) {

@@ -4,6 +4,7 @@
 // encapsulates standard host entities into a simple interface
 
 use super::context::*;
+use super::keys::*;
 use super::mutable::*;
 
 static mut CALLS: Vec<fn(&ScCallContext)> = vec![];
@@ -29,7 +30,11 @@ pub struct ScExports {
 
 impl ScExports {
     pub fn new() -> ScExports {
-        ScExports { exports: ROOT.get_string_array("exports") }
+        let exports = ROOT.get_string_array(&KEY_EXPORTS);
+        // tell host what our highest predefined key is
+        // this helps detect missing or extra keys
+        exports.get_string(KEY_ZZZZZZZ).set_value("Rust:KEY_ZZZZZZZ");
+        ScExports { exports: exports }
     }
 
     pub fn add_call(&self, name: &str, f: fn(&ScCallContext)) {

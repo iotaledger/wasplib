@@ -1,11 +1,8 @@
-// Copyright 2020 IOTA Stiftung
-// SPDX-License-Identifier: Apache-2.0
-
-package client
+package wasmhost
 
 // @formatter:off
 const (
-	KeyAgent       = Key32(-1)
+	KeyAgent       = int32(-1)
 	KeyAmount      = KeyAgent       -1
 	KeyBalances    = KeyAmount      -1
 	KeyBase58      = KeyBalances    -1
@@ -45,20 +42,41 @@ const (
 )
 // @formatter:on
 
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type MapKey interface {
-	KeyId() int32
-}
-
-type Key string
-
-func (key Key) KeyId() int32 {
-	return GetKeyId(string(key))
-}
-
-type Key32 int32
-
-func (key Key32) KeyId() int32 {
-	return int32(key)
+var keyMap = map[string]int32{
+	"agent":       KeyAgent,
+	"amount":      KeyAmount,
+	"balances":    KeyBalances,
+	"base58":      KeyBase58,
+	"caller":      KeyCaller,
+	"calls":       KeyCalls,
+	"chain":       KeyChain,
+	"color":       KeyColor,
+	"contract":    KeyContract,
+	"data":        KeyData,
+	"delay":       KeyDelay,
+	"description": KeyDescription,
+	"error":       KeyError,
+	"exports":     KeyExports,
+	"function":    KeyFunction,
+	"hash":        KeyHash,
+	"id":          KeyId,
+	"incoming":    KeyIncoming,
+	"iota":        KeyIota,
+	"length":      KeyLength,
+	"log":         KeyLog,
+	"logs":        KeyLogs,
+	"name":        KeyName,
+	"owner":       KeyOwner,
+	"params":      KeyParams,
+	"posts":       KeyPosts,
+	"random":      KeyRandom,
+	"results":     KeyResults,
+	"state":       KeyState,
+	"timestamp":   KeyTimestamp,
+	"trace":       KeyTrace,
+	"traceHost":   KeyTraceHost,
+	"transfers":   KeyTransfers,
+	"utility":     KeyUtility,
+	"views":       KeyViews,
+	"warning":     KeyWarning,
 }

@@ -34,23 +34,23 @@ pub struct ScContract {
 
 impl ScContract {
     pub fn chain(&self) -> ScAddress {
-        self.contract.get_address("chain").value()
+        self.contract.get_address(&KEY_CHAIN).value()
     }
 
     pub fn description(&self) -> String {
-        self.contract.get_string("description").value()
+        self.contract.get_string(&KEY_DESCRIPTION).value()
     }
 
     pub fn id(&self) -> ScAgent {
-        self.contract.get_agent("id").value()
+        self.contract.get_agent(&KEY_ID).value()
     }
 
     pub fn name(&self) -> String {
-        self.contract.get_string("name").value()
+        self.contract.get_string(&KEY_NAME).value()
     }
 
     pub fn owner(&self) -> ScAgent {
-        self.contract.get_agent("owner").value()
+        self.contract.get_agent(&KEY_OWNER).value()
     }
 }
 
@@ -63,8 +63,8 @@ pub struct ScLog {
 impl ScLog {
     pub fn append(&self, timestamp: i64, data: &[u8]) {
         let log_entry = self.log.get_map(self.log.length());
-        log_entry.get_int("timestamp").set_value(timestamp);
-        log_entry.get_bytes("data").set_value(data);
+        log_entry.get_int(&KEY_TIMESTAMP).set_value(timestamp);
+        log_entry.get_bytes(&KEY_DATA).set_value(data);
     }
 
     pub fn length(&self) -> i32 {
@@ -81,29 +81,29 @@ pub struct ScUtility {
 impl ScUtility {
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
         //TODO atomic set/get
-        let decode = self.utility.get_string("base58");
-        let encode = self.utility.get_bytes("base58");
+        let decode = self.utility.get_string(&KEY_BASE58);
+        let encode = self.utility.get_bytes(&KEY_BASE58);
         decode.set_value(value);
         encode.value()
     }
 
     pub fn base58_encode(&self, value: &[u8]) -> String {
         //TODO atomic set/get
-        let decode = self.utility.get_string("base58");
-        let encode = self.utility.get_bytes("base58");
+        let decode = self.utility.get_string(&KEY_BASE58);
+        let encode = self.utility.get_bytes(&KEY_BASE58);
         encode.set_value(value);
         decode.value()
     }
 
     pub fn hash(&self, value: &[u8]) -> Vec<u8> {
         //TODO atomic set/get
-        let hash = self.utility.get_bytes("hash");
+        let hash = self.utility.get_bytes(&KEY_HASH);
         hash.set_value(value);
         hash.value()
     }
 
     pub fn random(&self, max: i64) -> i64 {
-        let rnd = self.utility.get_int("random").value();
+        let rnd = self.utility.get_int(&KEY_RANDOM).value();
         (rnd as u64 % max as u64) as i64
     }
 }
@@ -112,17 +112,17 @@ impl ScUtility {
 
 pub trait ScBaseContext {
     fn balances(&self) -> ScBalances {
-        ScBalances { balances: ROOT.get_map("balances").immutable() }
+        ScBalances { balances: ROOT.get_map(&KEY_BALANCES).immutable() }
     }
 
-    fn caller(&self) -> ScAgent { ROOT.get_agent("caller").value() }
+    fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
 
     fn contract(&self) -> ScContract {
-        ScContract { contract: ROOT.get_map("contract").immutable() }
+        ScContract { contract: ROOT.get_map(&KEY_CONTRACT).immutable() }
     }
 
     fn error(&self) -> ScMutableString {
-        ROOT.get_string("error")
+        ROOT.get_string(&KEY_ERROR)
     }
 
     fn from(&self, originator: &ScAgent) -> bool {
@@ -130,27 +130,27 @@ pub trait ScBaseContext {
     }
 
     fn log(&self, text: &str) {
-        set_string(1, key_log(), text)
+        set_string(1, KEY_LOG, text)
     }
 
     fn params(&self) -> ScImmutableMap {
-        ROOT.get_map("params").immutable()
+        ROOT.get_map(&KEY_PARAMS).immutable()
     }
 
     fn results(&self) -> ScMutableMap {
-        ROOT.get_map("results")
+        ROOT.get_map(&KEY_RESULTS)
     }
 
     fn timestamp(&self) -> i64 {
-        ROOT.get_int("timestamp").value()
+        ROOT.get_int(&KEY_TIMESTAMP).value()
     }
 
     fn trace(&self, text: &str) {
-        set_string(1, key_trace(), text)
+        set_string(1, KEY_TRACE, text)
     }
 
     fn utility(&self) -> ScUtility {
-        ScUtility { utility: ROOT.get_map("utility") }
+        ScUtility { utility: ROOT.get_map(&KEY_UTILITY) }
     }
 
     fn view(&self, function: &str) -> ScViewInfo {
@@ -170,7 +170,7 @@ impl ScCallContext {
     }
 
     pub fn incoming(&self) -> ScBalances {
-        ScBalances { balances: ROOT.get_map("incoming").immutable() }
+        ScBalances { balances: ROOT.get_map(&KEY_INCOMING).immutable() }
     }
 
     pub fn post(&self, function: &str) -> ScPostInfo {
@@ -178,17 +178,17 @@ impl ScCallContext {
     }
 
     pub fn state(&self) -> ScMutableMap {
-        ROOT.get_map("state")
+        ROOT.get_map(&KEY_STATE)
     }
 
-    pub fn timestamped_log(&self, key: &str) -> ScLog {
-        ScLog { log: ROOT.get_map("logs").get_map_array(key) }
+    pub fn timestamped_log<T: MapKey + ?Sized>(&self, key: &T) -> ScLog {
+        ScLog { log: ROOT.get_map(&KEY_LOGS).get_map_array(key) }
     }
 
     pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
-        let transfers = ROOT.get_map_array("transfers");
+        let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let transfer = transfers.get_map(transfers.length());
-        transfer.get_agent("agent").set_value(agent);
+        transfer.get_agent(&KEY_AGENT).set_value(agent);
         transfer.get_int(color).set_value(amount);
     }
 }
@@ -201,10 +201,10 @@ impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
     pub fn state(&self) -> ScImmutableMap {
-        ROOT.get_map("state").immutable()
+        ROOT.get_map(&KEY_STATE).immutable()
     }
 
-    pub fn timestamped_log(&self, key: &str) -> ScImmutableMapArray {
-        ROOT.get_map("logs").get_map_array(key).immutable()
+    pub fn timestamped_log<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableMapArray {
+        ROOT.get_map(&KEY_LOGS).get_map_array(key).immutable()
     }
 }

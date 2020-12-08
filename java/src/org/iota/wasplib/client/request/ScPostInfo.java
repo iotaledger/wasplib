@@ -13,7 +13,7 @@ public class ScPostInfo extends ScBaseInfo {
 	}
 
 	public ScPostInfo Chain(ScAddress chain) {
-		request.GetAddress(new Key("chain")).SetValue(chain);
+		request.GetAddress(Key.Chain).SetValue(chain);
 		return this;
 	}
 

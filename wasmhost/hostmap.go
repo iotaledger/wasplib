@@ -36,7 +36,7 @@ func (m *HostMap) Dump(w io.Writer) {
 		multiple = true
 		key := m.host.GetKeyFromId(keyId)
 		fmt.Fprintf(w, "\"%s\": ", string(key))
-		if keyId == m.host.ExportsId {
+		if keyId == KeyExports {
 			m.host.FindObject(value.(int32)).(*HostExports).Dump(w)
 			continue
 		}
@@ -104,7 +104,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	case OBJTYPE_MAP_ARRAY:
 		o = NewHostArray(m.host, keyId, OBJTYPE_MAP)
 	case OBJTYPE_STRING_ARRAY:
-		if keyId == m.host.ExportsId {
+		if keyId == KeyExports {
 			o = NewHostExports(m.host, keyId)
 			break
 		}

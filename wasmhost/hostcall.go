@@ -25,9 +25,9 @@ func (a *HostCall) call() {
 	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
 	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 
-	scId := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(host.GetKeyId("id"))
-	request.SetString(host.GetKeyId("caller"), scId)
-	request.SetString(host.GetKeyId("function"), a.function)
+	scId := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(KeyId)
+	request.SetString(KeyCaller, scId)
+	request.SetString(KeyFunction, a.function)
 	savedParams := NewHostMap(a.host, 0)
 	reqParams.(*HostMap).CopyDataTo(savedParams)
 	reqParams.SetInt(KeyLength, 0)

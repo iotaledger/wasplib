@@ -20,27 +20,27 @@ public class ScUtility {
 	}
 
 	public byte[] Base58Decode(String value) {
-		ScMutableString decode = utility.GetString(new Key("base58"));
-		ScMutableBytes encode = utility.GetBytes(new Key("base58"));
+		ScMutableString decode = utility.GetString(Key.Base58);
+		ScMutableBytes encode = utility.GetBytes(Key.Base58);
 		decode.SetValue(value);
 		return encode.Value();
 	}
 
 	public String Base58Encode(byte[] value) {
-		ScMutableString decode = utility.GetString(new Key("base58"));
-		ScMutableBytes encode = utility.GetBytes(new Key("base58"));
+		ScMutableString decode = utility.GetString(Key.Base58);
+		ScMutableBytes encode = utility.GetBytes(Key.Base58);
 		encode.SetValue(value);
 		return decode.Value();
 	}
 
 	public String Hash(String value) {
-		ScMutableString hash = utility.GetString(new Key("hash"));
+		ScMutableString hash = utility.GetString(Key.Hash);
 		hash.SetValue(value);
 		return hash.Value();
 	}
 
 	public long Random(long max) {
-		long rnd = utility.GetInt(new Key("random")).Value();
+		long rnd = utility.GetInt(Key.Random).Value();
 		return Long.remainderUnsigned(rnd, max);
 	}
 

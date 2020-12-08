@@ -5,11 +5,11 @@ package org.iota.wasplib.client.hashtypes;
 
 import org.iota.wasplib.client.context.ScUtility;
 import org.iota.wasplib.client.host.Host;
-import org.iota.wasplib.client.keys.KeyId;
+import org.iota.wasplib.client.keys.MapKey;
 
 import java.util.Arrays;
 
-public class ScColor implements KeyId {
+public class ScColor implements MapKey {
 	public static final ScColor IOTA = new ScColor(new byte[32]);
 	public static final ScColor MINT = new ScColor(new byte[32]);
 
