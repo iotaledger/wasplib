@@ -15,8 +15,8 @@ const STATE_VAR_SUPPLY: &str = "s";
 const STATE_VAR_BALANCES: &str = "b";     // map of balances
 
 // params and return variables, used in calls
-const PARAM_SUPPLY: &str = "s";
-const PARAM_CREATOR: &str = "c";
+const PARAM_SUPPLY: &str = "supplyParam";
+const PARAM_CREATOR: &str = "creatorParam";
 const PARAM_ACCOUNT: &str = "ac";
 const PARAM_DELEGATION: &str = "d";
 const PARAM_AMOUNT: &str = "am";
@@ -41,13 +41,15 @@ pub fn onLoad() {
 //   -- PARAM_SUPPLY must be nonzero positive integer
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed
 fn init(ctx: &ScCallContext) {
-    ctx.log("erc20.init. begin");
+    ctx.log("erc20.init.begin");
 
     // validate parameters
     // supply
     let supply = ctx.params().get_int(PARAM_SUPPLY);
     if !supply.exists() || supply.value() <= 0 {
-        ctx.log("er20.init.fail: wrong 'supply' parameter");
+        let err = "er20.init.fail: wrong 'supply' parameter";
+        ctx.log(err);
+        ctx.error().set_value(err);
         return;
     }
     // creator (owner)
@@ -55,7 +57,9 @@ fn init(ctx: &ScCallContext) {
     // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (init)
     let creator = ctx.params().get_agent(PARAM_CREATOR);
     if !creator.exists() {
-        ctx.log("er20.init.fail: wrong 'creator' parameter");
+        let err = "er20.init.fail: wrong 'creator' parameter";
+        ctx.log(err);
+        ctx.error().set_value(err);
         return;
     }
     ctx.state().get_int(STATE_VAR_SUPPLY).set_value(supply.value());
@@ -63,8 +67,11 @@ fn init(ctx: &ScCallContext) {
     // assign the whole supply to creator
     ctx.state().get_map(STATE_VAR_BALANCES).get_int(&creator.value()).set_value(supply.value());
 
-    ctx.log(&("init.success. Supply = ".to_string() + &supply.value().to_string()));
-    ctx.log(&("init.success. Owner = ".to_string() + &creator.value().to_string()));
+    let t = "erc20.init.success. Supply: ".to_string()
+        + &supply.value().to_string()
+        + &", creator:".to_string()
+        + &creator.value().to_string();
+    ctx.log(&t);
 }
 
 // the view returns total supply set when creating the contract.
