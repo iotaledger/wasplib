@@ -26,7 +26,7 @@ fn init(ctx: &ScCallContext) {
     } else{
         ctx.log(&("agentIDParam OK: ".to_string() + &intParam.value().to_string()))
     }
-    let failParam = ctx.params().get_agent("failParam");
+    let failParam = ctx.params().get_bytes("failParam");
     if failParam.exists(){
         // fail on purpose
         ctx.error().set_value("failing on purpose");
