@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use super::host::get_key_id;
+use super::host::get_key_id_from_string;
 
 // @formatter:off
 pub const KEY_AGENT       : i32 =                 -1;
@@ -49,7 +49,7 @@ pub trait MapKey {
 
 impl MapKey for str {
     fn get_id(&self) -> i32 {
-        get_key_id(self)
+        get_key_id_from_string(self)
     }
 }
 

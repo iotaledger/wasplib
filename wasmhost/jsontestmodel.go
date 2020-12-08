@@ -279,7 +279,7 @@ func (t *JsonTests) FindSubObject(mapObject HostObject, key string, typeId int32
 }
 
 func (t *JsonTests) GetKeyId(key string) int32 {
-	return t.host.GetKeyId(key)
+	return t.host.GetKeyIdFromString(key)
 }
 
 func (t *JsonTests) LoadData(jsonData *JsonDataModel) {

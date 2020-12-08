@@ -4,9 +4,11 @@
 package wasmhost
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/mr-tron/base58/base58"
 	"io"
+	"sort"
 )
 
 type HostMap struct {
@@ -27,9 +29,30 @@ func NewHostMap(host *SimpleWasmHost, keyId int32) *HostMap {
 }
 
 func (m *HostMap) Dump(w io.Writer) {
+	keys := make([]int32, len(m.fields))
+	i := 0
+	for k := range m.fields {
+		keys[i] = k
+		i++
+	}
+	sort.Slice(keys, func(i int, j int) bool {
+		lhs := keys[i]
+		rhs := keys[j]
+		lhsFromString := (lhs & KeyFromString) != 0
+		rhsFromString := (rhs & KeyFromString) != 0
+		if lhsFromString != rhsFromString{
+			// strings sort smaller than bytes
+			return lhsFromString
+		}
+		lhsKey := m.host.getKeyFromId(lhs)
+		rhsKey := m.host.getKeyFromId(rhs)
+		return bytes.Compare(lhsKey, rhsKey) < 0
+	})
+
 	fmt.Fprintf(w, "{\n")
 	multiple := false
-	for keyId, value := range m.fields {
+	for _, keyId := range keys {
+		value := m.fields[keyId]
 		if multiple {
 			fmt.Fprintf(w, ",\n")
 		}

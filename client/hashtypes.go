@@ -32,7 +32,7 @@ func (a *ScAddress) Equals(other *ScAddress) bool {
 }
 
 func (a *ScAddress) KeyId() int32 {
-	return GetKey(a.Bytes())
+	return GetKeyIdFromBytes(a.Bytes())
 }
 
 func (a *ScAddress) String() string {
@@ -63,7 +63,7 @@ func (a *ScAgent) Equals(other *ScAgent) bool {
 }
 
 func (a *ScAgent) KeyId() int32 {
-	return GetKey(a.Bytes())
+	return GetKeyIdFromBytes(a.Bytes())
 }
 
 func (a *ScAgent) String() string {
@@ -103,7 +103,7 @@ func (c *ScColor) Equals(other *ScColor) bool {
 }
 
 func (c *ScColor) KeyId() int32 {
-	return GetKey(c.Bytes())
+	return GetKeyIdFromBytes(c.Bytes())
 }
 
 func (c *ScColor) String() string {

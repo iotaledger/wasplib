@@ -18,8 +18,8 @@ type ScHost interface {
 	Exists(objId int32, keyId int32) bool
 	GetBytes(objId int32, keyId int32) []byte
 	GetInt(objId int32, keyId int32) int64
-	GetKey(bytes []byte) int32
-	GetKeyId(key string) int32
+	GetKeyIdFromBytes(bytes []byte) int32
+	GetKeyIdFromString(key string) int32
 	GetObjectId(objId int32, keyId int32, typeId int32) int32
 	GetString(objId int32, keyId int32) string
 	SetBytes(objId int32, keyId int32, value []byte)
@@ -47,12 +47,12 @@ func GetInt(objId int32, keyId int32) int64 {
 	return host.GetInt(objId, keyId)
 }
 
-func GetKey(bytes []byte) int32 {
-	return host.GetKey(bytes)
+func GetKeyIdFromBytes(bytes []byte) int32 {
+	return host.GetKeyIdFromBytes(bytes)
 }
 
-func GetKeyId(key string) int32 {
-	return host.GetKeyId(key)
+func GetKeyIdFromString(key string) int32 {
+	return host.GetKeyIdFromString(key)
 }
 
 func GetLength(objId int32) int32 {

@@ -3,7 +3,7 @@
 
 use std::convert::TryInto;
 
-use crate::client::host::get_key;
+use crate::client::host::get_key_id_from_bytes;
 
 use super::context::*;
 use super::keys::*;
@@ -35,7 +35,7 @@ impl ScAddress {
 
 impl MapKey for ScAddress {
     fn get_id(&self) -> i32 {
-        get_key(self.to_bytes())
+        get_key_id_from_bytes(self.to_bytes())
     }
 }
 
@@ -62,7 +62,7 @@ impl ScAgent {
 
 impl MapKey for ScAgent {
     fn get_id(&self) -> i32 {
-        get_key(self.to_bytes())
+        get_key_id_from_bytes(self.to_bytes())
     }
 }
 
@@ -92,7 +92,7 @@ impl ScColor {
 
 impl MapKey for ScColor {
     fn get_id(&self) -> i32 {
-        get_key(self.to_bytes())
+        get_key_id_from_bytes(self.to_bytes())
     }
 }
 

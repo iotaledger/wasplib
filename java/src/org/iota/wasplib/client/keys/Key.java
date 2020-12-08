@@ -93,6 +93,6 @@ public class Key implements MapKey {
 
 	@Override
 	public int GetId() {
-		return key == null ? keyId : Host.GetKeyId(key);
+		return key == null ? keyId : Host.GetKeyIdFromString(key);
 	}
 }

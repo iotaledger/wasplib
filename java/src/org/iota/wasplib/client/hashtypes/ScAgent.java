@@ -29,7 +29,7 @@ public class ScAgent implements MapKey {
 
 	@Override
 	public int GetId() {
-		return Host.GetKey(agent);
+		return Host.GetKeyIdFromBytes(agent);
 	}
 
 	@Override

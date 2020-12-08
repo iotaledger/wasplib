@@ -75,12 +75,12 @@ func (vm *WasmVmBase) hostGetKeyId(keyRef int32, size int32) int32 {
 	// non-negative size means original key was a string
 	if size >= 0 {
 		bytes := vm.vmGetBytes(keyRef, size)
-		return host.GetKeyId(string(bytes))
+		return host.GetKeyIdFromString(string(bytes))
 	}
 
 	// negative size means original key was a byte slice
 	bytes := vm.vmGetBytes(keyRef, -size-1)
-	return host.GetKey(bytes)
+	return host.GetKeyIdFromBytes(bytes)
 }
 
 func (vm *WasmVmBase) hostGetObjectId(objId int32, keyId int32, typeId int32) int32 {

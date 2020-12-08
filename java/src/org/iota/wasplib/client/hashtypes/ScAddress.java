@@ -33,7 +33,7 @@ public class ScAddress implements MapKey {
 
 	@Override
 	public int GetId() {
-		return Host.GetKey(address);
+		return Host.GetKeyIdFromBytes(address);
 	}
 
 	@Override

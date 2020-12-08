@@ -67,19 +67,21 @@ func (w WasmVmHost) GetInt(objId int32, keyId int32) int64 {
 	return value
 }
 
-func (w WasmVmHost) GetKey(bytes []byte) int32 {
+func (w WasmVmHost) GetKeyIdFromBytes(bytes []byte) int32 {
 	size := int32(len(bytes))
 	// &bytes[0] will panic on zero length slice, so use nil instead
+	// negative size indicates this was from bytes
 	if size == 0 {
 		return hostGetKeyId(nil, -1)
 	}
 	return hostGetKeyId(&bytes[0], -size-1)
 }
 
-func (w WasmVmHost) GetKeyId(key string) int32 {
+func (w WasmVmHost) GetKeyIdFromString(key string) int32 {
 	bytes := []byte(key)
 	size := int32(len(bytes))
 	// &bytes[0] will panic on zero length slice, so use nil instead
+	// non-negative size indicates this was from string
 	if size == 0 {
 		return hostGetKeyId(nil, 0)
 	}

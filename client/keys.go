@@ -54,7 +54,7 @@ type MapKey interface {
 type Key string
 
 func (key Key) KeyId() int32 {
-	return GetKeyId(string(key))
+	return GetKeyIdFromString(string(key))
 }
 
 type Key32 int32

@@ -15,19 +15,19 @@ pub fn onLoad() {
 fn init(ctx: &ScCallContext) {
     ctx.log("init call IN");
     let intParam = ctx.params().get_int("intParam");
-    if !intParam.exists(){
-       ctx.log("intParam does not exist")
-    } else{
+    if !intParam.exists() {
+        ctx.log("intParam does not exist")
+    } else {
         ctx.log(&("intParam OK: ".to_string() + &intParam.value().to_string()))
     }
     let intParam = ctx.params().get_agent("agentIDParam");
-    if !intParam.exists(){
+    if !intParam.exists() {
         ctx.log("agentIDParam does not exist")
-    } else{
+    } else {
         ctx.log(&("agentIDParam OK: ".to_string() + &intParam.value().to_string()))
     }
     let failParam = ctx.params().get_bytes("failParam");
-    if failParam.exists(){
+    if failParam.exists() {
         // fail on purpose
         ctx.error().set_value("failing on purpose");
         return;

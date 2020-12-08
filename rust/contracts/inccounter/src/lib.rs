@@ -133,11 +133,11 @@ fn incrementLocalStatePost(sc: &ScCallContext) {
 }
 
 fn test(_sc: &ScCallContext) {
-    let key_id = get_key_id("timestamp");
+    let key_id = get_key_id_from_string("timestamp");
     set_int(1, key_id, 123456789);
     let timestamp = get_int(1, key_id);
     set_int(1, key_id, timestamp);
-    let key_id2 = get_key_id("string");
+    let key_id2 = get_key_id_from_string("string");
     set_string(1, key_id2, "Test");
     let s1 = get_string(1, key_id2);
     set_string(1, key_id2, "Bleep");

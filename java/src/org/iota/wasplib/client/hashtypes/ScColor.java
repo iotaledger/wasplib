@@ -32,7 +32,7 @@ public class ScColor implements MapKey {
 
 	@Override
 	public int GetId() {
-		return Host.GetKey(color);
+		return Host.GetKeyIdFromBytes(color);
 	}
 
 	@Override

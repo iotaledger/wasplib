@@ -52,14 +52,16 @@ public class Host {
 		return hostGetInt(objId, keyId);
 	}
 
-	public static int GetKey(byte[] key) {
+	public static int GetKeyIdFromBytes(byte[] key) {
 		int size = key.length;
+		// negative size indicates this was from bytes
 		return hostGetKeyId(key, -size - 1);
 	}
 
-	public static int GetKeyId(String key) {
+	public static int GetKeyIdFromString(String key) {
 		byte[] bytes = key.getBytes(StandardCharsets.UTF_8);
 		int size = bytes.length;
+		// non-negative size indicates this was from string
 		return hostGetKeyId(bytes, size);
 	}
 

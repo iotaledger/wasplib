@@ -125,12 +125,12 @@ func incrementLocalStatePost(sc *client.ScCallContext) {
 }
 
 func test(sc *client.ScCallContext) {
-	keyId := client.GetKeyId("timestamp")
+	keyId := client.GetKeyIdFromString("timestamp")
 	client.SetInt(1, keyId, 123456789)
 	timestamp := client.GetInt(1, keyId)
 	client.SetInt(1, keyId, timestamp)
 
-	keyId2 := client.GetKeyId("string")
+	keyId2 := client.GetKeyIdFromString("string")
 	client.SetString(1, keyId2, "Test")
 	s1 := client.GetString(1, keyId2)
 	client.SetString(1, keyId2, "Bleep")

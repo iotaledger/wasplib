@@ -20,6 +20,8 @@ const (
 	OBJTYPE_STRING_ARRAY int32 = 7
 )
 
+const KeyFromString int32 = 0x4000
+
 type HostObject interface {
 	Exists(keyId int32) bool
 	GetBytes(keyId int32) []byte
@@ -89,7 +91,7 @@ func (host *WasmHost) FindSubObject(obj HostObject, key string, typeId int32) Ho
 		// use root object
 		obj = host.FindObject(1)
 	}
-	return host.FindObject(obj.GetObjectId(host.GetKeyId(key), typeId))
+	return host.FindObject(obj.GetObjectId(host.GetKeyIdFromString(key), typeId))
 }
 
 func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
@@ -122,24 +124,24 @@ func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
 	return value
 }
 
-func (host *WasmHost) GetKey(bytes []byte) int32 {
+func (host *WasmHost) GetKeyIdFromBytes(bytes []byte) int32 {
 	encoded := base58.Encode(bytes)
 	if host.useBase58Keys {
 		// transform byte slice key into base58 string
 		// now all keys are byte slices from strings
-		return host.GetKeyId(encoded)
+		return host.GetKeyIdFromString(encoded)
 	}
 
 	// use byte slice key as is
-	keyId := host.getKeyId(bytes)
-	host.Trace("GetKey '%s'=k%d", encoded, keyId)
+	keyId := host.getKeyId(bytes, false)
+	host.Trace("GetKeyIdFromBytes '%s'=k%d", encoded, keyId)
 	return keyId
 }
 
 func (host *WasmHost) GetKeyFromId(keyId int32) []byte {
 	host.TraceHost("GetKeyFromId(k%d)", keyId)
 	key := host.getKeyFromId(keyId)
-	if key[len(key)-1] == 0 {
+	if (keyId & KeyFromString) == 0 {
 		// originally a byte slice key
 		host.Trace("GetKeyFromId k%d='%s'", keyId, base58.Encode(key))
 		return key
@@ -156,21 +158,16 @@ func (host *WasmHost) getKeyFromId(keyId int32) []byte {
 	}
 
 	// find user-defined key
-	if keyId < int32(len(host.keyIdToKey)) {
-		return host.keyIdToKey[keyId]
-	}
-
-	// unknown key
-	return nil
+	return host.keyIdToKey[keyId & ^KeyFromString]
 }
 
-func (host *WasmHost) GetKeyId(key string) int32 {
-	keyId := host.getKeyId([]byte(key))
-	host.Trace("GetKeyId '%s'=k%d", key, keyId)
+func (host *WasmHost) GetKeyIdFromString(key string) int32 {
+	keyId := host.getKeyId([]byte(key), true)
+	host.Trace("GetKeyIdFromString '%s'=k%d", key, keyId)
 	return keyId
 }
 
-func (host *WasmHost) getKeyId(key []byte) int32 {
+func (host *WasmHost) getKeyId(key []byte, fromString bool) int32 {
 	// cannot use []byte as key in maps
 	// so we will convert to (non-utf8) string
 	// most will have started out as string anyway
@@ -190,6 +187,9 @@ func (host *WasmHost) getKeyId(key []byte) int32 {
 
 	// unknown key, add it to user-defined key map
 	keyId = int32(len(host.keyIdToKey))
+	if fromString {
+		keyId |= KeyFromString
+	}
 	host.keyToKeyId[keyString] = keyId
 	host.keyIdToKey = append(host.keyIdToKey, key)
 	return keyId
@@ -262,7 +262,12 @@ func (host *WasmHost) RunScFunction(functionName string) error {
 	if !ok {
 		return errors.New("unknown SC function name: " + functionName)
 	}
-	return host.vm.RunScFunction(index)
+	err := host.vm.RunScFunction(index)
+    if err == nil && host.error != "" {
+		err = errors.New(host.error)
+	}
+	host.error = ""
+	return err
 }
 
 func (host *WasmHost) SetBytes(objId int32, keyId int32, bytes []byte) {

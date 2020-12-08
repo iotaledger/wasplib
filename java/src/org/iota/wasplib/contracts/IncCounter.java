@@ -127,12 +127,12 @@ public class IncCounter {
 	}
 
 	public static void test(ScCallContext sc) {
-		int keyId = Host.GetKeyId("timestamp");
+		int keyId = Host.GetKeyIdFromString("timestamp");
 		Host.SetInt(1, keyId, 123456789);
 		long timestamp = Host.GetInt(1, keyId);
 		Host.SetInt(1, keyId, timestamp);
 
-		int keyId2 = Host.GetKeyId("string");
+		int keyId2 = Host.GetKeyIdFromString("string");
 		Host.SetString(1, keyId2, "Test");
 		String s1 = Host.GetString(1, keyId2);
 		Host.SetString(1, keyId2, "Bleep");
