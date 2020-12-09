@@ -30,14 +30,14 @@ func (a *HostTransfer) SetInt(keyId int32, value int64) {
 		return
 	}
 
-	balances := a.host.FindSubObject(nil, "balances", OBJTYPE_MAP)
+	balances := a.host.FindSubObject(nil, KeyBalances, OBJTYPE_MAP)
 	colorAmount := balances.GetInt(keyId)
 	if colorAmount < value {
 		a.Error("Insufficient funds")
 		return
 	}
 	// check if compacting, in which case no balance change happens
-	contract := a.host.FindSubObject(nil, "contract", OBJTYPE_MAP)
+	contract := a.host.FindSubObject(nil, KeyContract, OBJTYPE_MAP)
 	scId := contract.GetBytes(KeyId)
 	if !bytes.Equal(a.agent, scId) {
 		balances.SetInt(keyId, colorAmount-value)

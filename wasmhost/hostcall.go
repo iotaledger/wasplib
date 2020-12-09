@@ -22,25 +22,29 @@ func NewHostCall(host *SimpleWasmHost, keyId int32) *HostCall {
 
 func (a *HostCall) call() {
 	host := a.host
-	request := host.FindSubObject(nil, "request", OBJTYPE_MAP)
-	reqParams := host.FindSubObject(request, "params", OBJTYPE_MAP)
 
-	scId := host.FindSubObject(nil, "contract", OBJTYPE_MAP).GetString(KeyId)
-	request.SetString(KeyCaller, scId)
-	request.SetString(KeyFunction, a.function)
+	root := host.FindObject(1)
+	savedCaller := root.GetString(KeyCaller)
+	scId := host.FindSubObject(nil, KeyContract, OBJTYPE_MAP).GetString(KeyId)
+	root.SetString(KeyCaller, scId)
+
+	requestParams := host.FindSubObject(nil, KeyParams, OBJTYPE_MAP)
 	savedParams := NewHostMap(a.host, 0)
-	reqParams.(*HostMap).CopyDataTo(savedParams)
-	reqParams.SetInt(KeyLength, 0)
-	params := host.FindSubObject(a, "params", OBJTYPE_MAP)
-	params.(*HostMap).CopyDataTo(reqParams)
+	requestParams.(*HostMap).CopyDataTo(savedParams)
+	requestParams.SetInt(KeyLength, 0)
+	params := host.FindSubObject(a, KeyParams, OBJTYPE_MAP)
+	params.(*HostMap).CopyDataTo(requestParams)
+
 	fmt.Printf("    Call function: %v\n", a.function)
 	err := host.RunScFunction(a.function)
 	if err != nil {
 		fmt.Printf("FAIL: Request function %s: %v\n", a.function, err)
 		a.Error(err.Error())
 	}
-	reqParams.SetInt(KeyLength, 0)
-	savedParams.CopyDataTo(reqParams)
+	
+	requestParams.SetInt(KeyLength, 0)
+	savedParams.CopyDataTo(requestParams)
+	root.SetString(KeyCaller, savedCaller)
 }
 
 func (a *HostCall) SetBytes(keyId int32, value []byte) {

@@ -20,7 +20,9 @@ func NewSimpleWasmHost(vm WasmVM) (*SimpleWasmHost, error) {
 	host := &SimpleWasmHost{}
 	host.vm = vm
 	host.useBase58Keys = true
-	host.Init(NewNullObject(host), NewHostMap(host, 0), host)
+	root := NewHostMap(host, 0)
+	root.InitObj(1, 0)
+	host.Init(NewNullObject(host), root, host)
 	err := host.InitVM(vm)
 	if err != nil {
 		return nil, err

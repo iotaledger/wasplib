@@ -12,19 +12,16 @@ import (
 )
 
 type HostMap struct {
-	host      *SimpleWasmHost
-	fields    map[int32]interface{}
-	immutable bool
-	keyId     int32
-	types     map[int32]int32
+	SimpleObject
+	fields map[int32]interface{}
+	types  map[int32]int32
 }
 
 func NewHostMap(host *SimpleWasmHost, keyId int32) *HostMap {
 	return &HostMap{
-		host:   host,
-		keyId:  keyId,
-		fields: make(map[int32]interface{}),
-		types:  make(map[int32]int32),
+		SimpleObject: SimpleObject{host: host, keyId: keyId},
+		fields:       make(map[int32]interface{}),
+		types:        make(map[int32]int32),
 	}
 }
 
@@ -40,7 +37,7 @@ func (m *HostMap) Dump(w io.Writer) {
 		rhs := keys[j]
 		lhsFromString := (lhs & KeyFromString) != 0
 		rhsFromString := (rhs & KeyFromString) != 0
-		if lhsFromString != rhsFromString{
+		if lhsFromString != rhsFromString {
 			// strings sort smaller than bytes
 			return lhsFromString
 		}
@@ -116,7 +113,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 		return value.(int32)
 	}
 
-	var o HostObject
+	var o VmObject
 	switch typeId {
 	case OBJTYPE_BYTES_ARRAY:
 		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
@@ -137,6 +134,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 		return 0
 	}
 	objId := m.host.TrackObject(o)
+	o.InitObj(objId, m.id)
 	m.fields[keyId] = objId
 	return objId
 }

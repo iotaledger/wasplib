@@ -4,11 +4,13 @@
 package wasmhost
 
 type NullObject struct {
-	host *SimpleWasmHost
+	SimpleObject
 }
 
 func NewNullObject(host *SimpleWasmHost) HostObject {
-	return &NullObject{host: host}
+	return &NullObject{
+		SimpleObject: SimpleObject{host: host},
+	}
 }
 
 func (n *NullObject) Exists(keyId int32) bool {

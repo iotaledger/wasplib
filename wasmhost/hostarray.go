@@ -10,15 +10,16 @@ import (
 )
 
 type HostArray struct {
-	host      *SimpleWasmHost
-	items     []interface{}
-	immutable bool
-	keyId     int32
-	typeId    int32
+	SimpleObject
+	items  []interface{}
+	typeId int32
 }
 
 func NewHostArray(host *SimpleWasmHost, keyId int32, typeId int32) *HostArray {
-	return &HostArray{host: host, keyId: keyId, typeId: typeId}
+	return &HostArray{
+		SimpleObject: SimpleObject{host: host, keyId: keyId},
+		typeId:       typeId,
+	}
 }
 
 func (a *HostArray) Dump(w io.Writer) {
@@ -134,6 +135,10 @@ func (a *HostArray) SetString(keyId int32, value string) {
 	a.items[keyId] = value
 }
 
+func (a *HostArray) Suffix(keyId int32) string {
+	return fmt.Sprintf("[%d]", keyId)
+}
+
 func (a *HostArray) valid(keyId int32, typeId int32) bool {
 	if a.typeId != typeId {
 		a.Error("Array.valid: Invalid access")
@@ -147,18 +152,18 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case OBJTYPE_INT:
 			a.items = append(a.items, int64(0))
 		case OBJTYPE_MAP:
-			if a.keyId == KeyCalls {
-				objId := a.host.TrackObject(NewHostCall(a.host, keyId))
-				a.items = append(a.items, objId)
-				break
+			var o VmObject
+			switch a.keyId {
+			case KeyCalls:
+				o = NewHostCall(a.host, keyId)
+			case KeyTransfers:
+				o = NewHostTransfer(a.host, keyId)
+			default:
+				o = NewHostMap(a.host, keyId)
 			}
-			if a.keyId == KeyTransfers {
-				objId := a.host.TrackObject(NewHostTransfer(a.host, keyId))
-				a.items = append(a.items, objId)
-				break
-			}
-			objId := a.host.TrackObject(NewHostMap(a.host, keyId))
+			objId := a.host.TrackObject(o)
 			a.items = append(a.items, objId)
+			o.InitObj(objId, a.id)
 		case OBJTYPE_STRING:
 			a.items = append(a.items, "")
 		default:

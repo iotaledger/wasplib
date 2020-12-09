@@ -80,7 +80,7 @@ func execTest(path string, language string) {
 			continue
 		}
 		if language == "sc" && strings.Contains(test.Flags, "failWhenSC") {
-			fmt.Printf("PASS (fail)\n")
+			fmt.Printf("PASS (fail was expected)\n")
 			passed++
 			continue
 		}

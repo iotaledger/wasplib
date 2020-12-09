@@ -86,12 +86,12 @@ func (host *WasmHost) FindObject(objId int32) HostObject {
 	return host.objIdToObj[objId]
 }
 
-func (host *WasmHost) FindSubObject(obj HostObject, key string, typeId int32) HostObject {
+func (host *WasmHost) FindSubObject(obj HostObject, keyId int32, typeId int32) HostObject {
 	if obj == nil {
 		// use root object
 		obj = host.FindObject(1)
 	}
-	return host.FindObject(obj.GetObjectId(host.GetKeyIdFromString(key), typeId))
+	return host.FindObject(obj.GetObjectId(keyId, typeId))
 }
 
 func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
@@ -129,10 +129,9 @@ func (host *WasmHost) GetKeyIdFromBytes(bytes []byte) int32 {
 	if host.useBase58Keys {
 		// transform byte slice key into base58 string
 		// now all keys are byte slices from strings
-		return host.GetKeyIdFromString(encoded)
+		bytes = []byte(encoded)
 	}
 
-	// use byte slice key as is
 	keyId := host.getKeyId(bytes, false)
 	host.Trace("GetKeyIdFromBytes '%s'=k%d", encoded, keyId)
 	return keyId
@@ -263,7 +262,7 @@ func (host *WasmHost) RunScFunction(functionName string) error {
 		return errors.New("unknown SC function name: " + functionName)
 	}
 	err := host.vm.RunScFunction(index)
-    if err == nil && host.error != "" {
+	if err == nil && host.error != "" {
 		err = errors.New(host.error)
 	}
 	host.error = ""
