@@ -12,11 +12,11 @@ use wasplib::client::*;
 // state variable
 const STATE_VAR_SUPPLY: &str = "s";
 // supply constant
-const STATE_VAR_BALANCES: &str = "b";     // map of balances
+const STATE_VAR_BALANCES: &str = "b";     // name of the map of balances
 
 // params and return variables, used in calls
-const PARAM_SUPPLY: &str = "supplyParam";
-const PARAM_CREATOR: &str = "creatorParam";
+const PARAM_SUPPLY: &str = "s";
+const PARAM_CREATOR: &str = "c";
 const PARAM_ACCOUNT: &str = "ac";
 const PARAM_DELEGATION: &str = "d";
 const PARAM_AMOUNT: &str = "am";
@@ -36,13 +36,13 @@ pub fn onLoad() {
 
 // TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-// init is a constructor entry point. It initializes the smart contract with the initial value of the token supply
+// init is a constructor entry point. It initializes the smart contract with the
+// initial value of the token supply and the owner of that supply
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed
 fn init(ctx: &ScCallContext) {
     ctx.log("erc20.init.begin");
-
     // validate parameters
     // supply
     let supply = ctx.params().get_int(PARAM_SUPPLY);
@@ -74,7 +74,7 @@ fn init(ctx: &ScCallContext) {
     ctx.log(&t);
 }
 
-// the view returns total supply set when creating the contract.
+// the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
 fn total_supply(ctx: &ScViewContext) {
@@ -88,7 +88,9 @@ fn total_supply(ctx: &ScViewContext) {
 fn balance_of(ctx: &ScViewContext) {
     let account = ctx.params().get_agent(PARAM_ACCOUNT);
     if !account.exists() {
-        ctx.log(&("wrong or non existing parameter: ".to_string() + &account.value().to_string()));
+        let m: &str = &("wrong or non existing parameter: ".to_string() + &account.value().to_string());
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let balances = ctx.state().get_map(STATE_VAR_BALANCES);
@@ -109,13 +111,17 @@ fn allowance(ctx: &ScViewContext) {
     // account
     let owner = ctx.params().get_agent(PARAM_ACCOUNT);
     if !owner.exists() {
-        ctx.log("er20.allowance.fail: wrong 'account' parameter");
+        let m: &str = "er20.allowance.fail: wrong 'account' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     // delegation
     let delegation = ctx.params().get_agent(PARAM_DELEGATION);
     if !delegation.exists() {
-        ctx.log("er20.allowance.fail: wrong 'delegation' parameter");
+        let m: &str = "er20.allowance.fail: wrong 'delegation' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     // all allowances of the address 'owner' are stored in the map of the same name
@@ -136,27 +142,35 @@ fn transfer(ctx: &ScCallContext) {
     // account
     let target_addr = params.get_agent(PARAM_ACCOUNT);
     if !target_addr.exists() {
-        ctx.log("er20.transfer.fail: wrong 'account' parameter");
+        let m: &str = "er20.transfer.fail: wrong 'account' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let target_addr = target_addr.value();
     // amount
     let amount = params.get_int(PARAM_AMOUNT).value();
     if amount <= 0 {
-        ctx.log("erc20.transfer.fail: wrong 'amount' parameter");
+        let m: &str = "erc20.transfer.fail: wrong 'amount' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let balances = ctx.state().get_map(STATE_VAR_BALANCES);
     let source_balance = balances.get_int(&ctx.caller());
 
     if source_balance.value() < amount {
-        ctx.log("erc20.transfer.fail: not enough funds");
+        let m: &str = "erc20.transfer.fail: not enough funds";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let target_balance = balances.get_int(&target_addr);
     let result = target_balance.value() + amount;
     if result <= 0 {
-        ctx.log("erc20.transfer.fail: overflow");
+        let m: &str = "erc20.transfer.fail: overflow";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     source_balance.set_value(source_balance.value() - amount);
@@ -172,19 +186,24 @@ fn approve(ctx: &ScCallContext) {
     ctx.log("erc20.approve");
 
     // validate parameters
-    let account = ctx.params().get_agent(PARAM_DELEGATION);
-    if !account.exists() {
-        ctx.log("erc20.approve.fail: wrong 'delegation' parameter");
+    let delegation = ctx.params().get_agent(PARAM_DELEGATION);
+    if !delegation.exists() {
+        let m: &str = "erc20.approve.fail: wrong 'delegation' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
-    let account = account.value();
+    let delegation = delegation.value();
     let amount = ctx.params().get_int(PARAM_AMOUNT).value();
     if amount <= 0 {
-        ctx.log("erc20.approve.fail: wrong 'amount' parameter");
+        let m: &str = "erc20.approve.fail: wrong 'amount' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
+    // all allowances are in the map under the name of he owner
     let allowances = ctx.state().get_map(&ctx.caller());
-    allowances.get_int(&account).set_value(amount);
+    allowances.get_int(&delegation).set_value(amount);
     ctx.log("erc20.approve.success");
 }
 
@@ -200,19 +219,25 @@ fn transfer_from(ctx: &ScCallContext) {
     // validate parameters
     let account = ctx.params().get_agent(PARAM_ACCOUNT);
     if !account.exists() {
-        ctx.log("erc20.approve.fail: wrong 'account' parameter");
+        let m: &str = "erc20.transfer_from.fail: wrong 'account' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let account = account.value();
     let recipient = ctx.params().get_agent(PARAM_RECIPIENT);
     if !recipient.exists() {
-        ctx.log("erc20.approve.fail: wrong 'recipient' parameter");
+        let m: &str = "erc20.transfer_from.fail: wrong 'recipient' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let recipient = recipient.value();
     let amount = ctx.params().get_int(PARAM_AMOUNT);
     if !amount.exists() {
-        ctx.log("erc20.approve.fail: wrong 'amount' parameter");
+        let m: &str = "erc20.transfer_from.fail: wrong 'amount' parameter";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let amount = amount.value();
@@ -221,19 +246,25 @@ fn transfer_from(ctx: &ScCallContext) {
     let allowances = ctx.state().get_map(&account);
     let allowance = allowances.get_int(&recipient);
     if allowance.value() < amount {
-        ctx.log("erc20.approve.fail: not enough allowance");
+        let m: &str = "erc20.transfer_from.fail: not enough allowance";
+        ctx.log(m);
+        ctx.error().set_value(m);
+        return;
     }
-
     let balances = ctx.state().get_map(STATE_VAR_BALANCES);
     let source_balance = balances.get_int(&account);
     if source_balance.value() < amount {
-        ctx.log("erc20.transfer.fail: not enough funds");
+        let m: &str = "erc20.transfer_from.fail: not enough funds";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     let recipient_balance = balances.get_int(&recipient);
     let result = recipient_balance.value() + amount;
     if result <= 0 {
-        ctx.log("erc20.transfer.fail: overflow");
+        let m: &str = "erc20.transfer_from.fail: overflow";
+        ctx.log(m);
+        ctx.error().set_value(m);
         return;
     }
     source_balance.set_value(source_balance.value() - amount);
