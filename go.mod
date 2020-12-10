@@ -6,16 +6,19 @@ require (
 	github.com/Microsoft/go-winio v0.4.15 // indirect
 	github.com/bytecodealliance/wasmtime-go v0.21.0
 	github.com/cockroachdb/pebble v0.0.0-20201207144514-2a2e77e39fd2 // indirect
+	github.com/gobuffalo/packr/v2 v2.8.0 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340
 	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb // indirect
+	github.com/iotaledger/iota.go v1.0.0-beta.15 // indirect
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20201209082022-99f8f9543942
+	github.com/iotaledger/wasp v0.0.2-0.20201210122916-e8c99960cd6e
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mr-tron/base58 v1.2.0
 	github.com/oasisprotocol/ed25519 v0.0.0-20201103162138-a1dadbe24dd5 // indirect
+	github.com/perlin-network/life v0.0.0-20191203030451-05c0e0f7eaea // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	go.nanomsg.org/mangos/v3 v3.1.3 // indirect
