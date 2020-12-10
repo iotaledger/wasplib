@@ -4,7 +4,6 @@ go 1.15
 
 require (
 	github.com/Microsoft/go-winio v0.4.15 // indirect
-	github.com/alecthomas/units v0.0.0-20201120081800-1786d5ef83d4 // indirect
 	github.com/bytecodealliance/wasmtime-go v0.21.0
 	github.com/cockroachdb/pebble v0.0.0-20201207144514-2a2e77e39fd2 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
@@ -17,8 +16,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mr-tron/base58 v1.2.0
 	github.com/oasisprotocol/ed25519 v0.0.0-20201103162138-a1dadbe24dd5 // indirect
-	github.com/prometheus/common v0.15.0 // indirect
-	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	go.nanomsg.org/mangos/v3 v3.1.3 // indirect

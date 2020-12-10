@@ -14,6 +14,11 @@ public class ScImmutableString {
 		this.keyId = keyId;
 	}
 
+	@Override
+	public String toString() {
+		return Value();
+	}
+
 	public String Value() {
 		return Host.GetString(objId, keyId);
 	}

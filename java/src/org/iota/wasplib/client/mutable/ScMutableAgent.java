@@ -23,6 +23,11 @@ public class ScMutableAgent {
 		Host.SetBytes(objId, keyId, value.toBytes());
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScAgent Value() {
 		return new ScAgent(Host.GetBytes(objId, keyId));
 	}

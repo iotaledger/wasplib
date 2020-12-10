@@ -3,6 +3,7 @@
 
 // types encapsulating immutable host objects
 
+use super::context::*;
 use super::hashtypes::*;
 use super::host::*;
 use super::keys::*;
@@ -19,6 +20,10 @@ impl ScImmutableAddress {
 
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
     }
 
     pub fn value(&self) -> ScAddress {
@@ -65,6 +70,10 @@ impl ScImmutableAgent {
         exists(self.obj_id, self.key_id)
     }
 
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
     pub fn value(&self) -> ScAgent {
         ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
@@ -109,6 +118,10 @@ impl ScImmutableBytes {
         exists(self.obj_id, self.key_id)
     }
 
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.value())
+    }
+
     pub fn value(&self) -> Vec<u8> {
         get_bytes(self.obj_id, self.key_id)
     }
@@ -151,6 +164,10 @@ impl ScImmutableColor {
         exists(self.obj_id, self.key_id)
     }
 
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
     pub fn value(&self) -> ScColor {
         ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
@@ -191,6 +208,10 @@ impl ScImmutableInt {
 
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
     }
 
     pub fn value(&self) -> i64 {
@@ -335,6 +356,10 @@ impl ScImmutableString {
 
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value()
     }
 
     pub fn value(&self) -> String {

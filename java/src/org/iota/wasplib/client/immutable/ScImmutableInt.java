@@ -18,6 +18,11 @@ public class ScImmutableInt {
 		return Host.Exists(objId, keyId);
 	}
 
+	@Override
+	public String toString() {
+		return "" + Value();
+	}
+
 	public long Value() {
 		return Host.GetInt(objId, keyId);
 	}

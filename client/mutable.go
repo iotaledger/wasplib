@@ -3,6 +3,8 @@
 
 package client
 
+import "strconv"
+
 var root = ScMutableMap{objId: 1}
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -18,6 +20,10 @@ func (o ScMutableAddress) Exists() bool {
 
 func (o ScMutableAddress) SetValue(value *ScAddress) {
 	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableAddress) String() string {
+	return o.Value().String()
 }
 
 func (o ScMutableAddress) Value() *ScAddress {
@@ -61,6 +67,10 @@ func (o ScMutableAgent) SetValue(value *ScAgent) {
 	SetBytes(o.objId, o.keyId, value.Bytes())
 }
 
+func (o ScMutableAgent) String() string {
+	return o.Value().String()
+}
+
 func (o ScMutableAgent) Value() *ScAgent {
 	return NewScAgent(GetBytes(o.objId, o.keyId))
 }
@@ -100,6 +110,10 @@ func (o ScMutableBytes) Exists() bool {
 
 func (o ScMutableBytes) SetValue(value []byte) {
 	SetBytes(o.objId, o.keyId, value)
+}
+
+func (o ScMutableBytes) String() string {
+	return base58Encode(o.Value())
 }
 
 func (o ScMutableBytes) Value() []byte {
@@ -143,6 +157,10 @@ func (o ScMutableColor) SetValue(value *ScColor) {
 	SetBytes(o.objId, o.keyId, value.Bytes())
 }
 
+func (o ScMutableColor) String() string {
+	return o.Value().String()
+}
+
 func (o ScMutableColor) Value() *ScColor {
 	return NewScColor(GetBytes(o.objId, o.keyId))
 }
@@ -182,6 +200,10 @@ func (o ScMutableInt) Exists() bool {
 
 func (o ScMutableInt) SetValue(value int64) {
 	SetInt(o.objId, o.keyId, value)
+}
+
+func (o ScMutableInt) String() string {
+	return strconv.FormatInt(o.Value(), 10)
 }
 
 func (o ScMutableInt) Value() int64 {
@@ -324,6 +346,10 @@ func (o ScMutableString) Exists() bool {
 
 func (o ScMutableString) SetValue(value string) {
 	SetString(o.objId, o.keyId, value)
+}
+
+func (o ScMutableString) String() string {
+	return o.Value()
 }
 
 func (o ScMutableString) Value() string {

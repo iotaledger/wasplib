@@ -19,6 +19,11 @@ public class ScImmutableAddress {
 		return Host.Exists(objId, keyId);
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScAddress Value() {
 		return new ScAddress(Host.GetBytes(objId, keyId));
 	}

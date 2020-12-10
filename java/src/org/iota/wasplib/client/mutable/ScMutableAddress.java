@@ -23,6 +23,11 @@ public class ScMutableAddress {
 		Host.SetBytes(objId, keyId, value.toBytes());
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScAddress Value() {
 		return new ScAddress(Host.GetBytes(objId, keyId));
 	}

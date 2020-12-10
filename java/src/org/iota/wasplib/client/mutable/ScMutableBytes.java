@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.mutable;
 
+import org.iota.wasplib.client.context.ScUtility;
 import org.iota.wasplib.client.host.Host;
 
 public class ScMutableBytes {
@@ -20,6 +21,11 @@ public class ScMutableBytes {
 
 	public void SetValue(byte[] value) {
 		Host.SetBytes(objId, keyId, value);
+	}
+
+	@Override
+	public String toString() {
+		return ScUtility.Base58String(Value());
 	}
 
 	public byte[] Value() {

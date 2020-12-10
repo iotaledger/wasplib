@@ -18,6 +18,11 @@ public class ScMutableString {
 		Host.SetString(objId, keyId, value);
 	}
 
+	@Override
+	public String toString() {
+		return Value();
+	}
+
 	public String Value() {
 		return Host.GetString(objId, keyId);
 	}

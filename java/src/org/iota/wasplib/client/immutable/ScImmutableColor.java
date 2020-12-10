@@ -19,6 +19,11 @@ public class ScImmutableColor {
 		return Host.Exists(objId, keyId);
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScColor Value() {
 		return new ScColor(Host.GetBytes(objId, keyId));
 	}

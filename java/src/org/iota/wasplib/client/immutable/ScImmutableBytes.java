@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.immutable;
 
+import org.iota.wasplib.client.context.ScUtility;
 import org.iota.wasplib.client.host.Host;
 
 public class ScImmutableBytes {
@@ -16,6 +17,11 @@ public class ScImmutableBytes {
 
 	public boolean Exists() {
 		return Host.Exists(objId, keyId);
+	}
+
+	@Override
+	public String toString() {
+		return ScUtility.Base58String(Value());
 	}
 
 	public byte[] Value() {

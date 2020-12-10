@@ -23,6 +23,11 @@ public class ScMutableColor {
 		Host.SetBytes(objId, keyId, value.toBytes());
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScColor Value() {
 		return new ScColor(Host.GetBytes(objId, keyId));
 	}

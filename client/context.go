@@ -94,6 +94,10 @@ func (ctx ScUtility) String(value int64) string {
 	return strconv.FormatInt(value, 10)
 }
 
+func base58Encode(bytes []byte) string {
+	return ScCallContext{}.Utility().Base58Encode(bytes)
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScBaseContext struct {

@@ -3,6 +3,8 @@
 
 package client
 
+import "strconv"
+
 type ScImmutableAddress struct {
 	objId int32
 	keyId int32
@@ -10,6 +12,10 @@ type ScImmutableAddress struct {
 
 func (o ScImmutableAddress) Exists() bool {
 	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableAddress) String() string {
+	return o.Value().String()
 }
 
 func (o ScImmutableAddress) Value() *ScAddress {
@@ -41,6 +47,10 @@ func (o ScImmutableAgent) Exists() bool {
 	return Exists(o.objId, o.keyId)
 }
 
+func (o ScImmutableAgent) String() string {
+	return o.Value().String()
+}
+
 func (o ScImmutableAgent) Value() *ScAgent {
 	return NewScAgent(GetBytes(o.objId, o.keyId))
 }
@@ -68,6 +78,10 @@ type ScImmutableBytes struct {
 
 func (o ScImmutableBytes) Exists() bool {
 	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableBytes) String() string {
+	return base58Encode(o.Value())
 }
 
 func (o ScImmutableBytes) Value() []byte {
@@ -99,6 +113,10 @@ func (o ScImmutableColor) Exists() bool {
 	return Exists(o.objId, o.keyId)
 }
 
+func (o ScImmutableColor) String() string {
+	return o.Value().String()
+}
+
 func (o ScImmutableColor) Value() *ScColor {
 	return NewScColor(GetBytes(o.objId, o.keyId))
 }
@@ -126,6 +144,10 @@ type ScImmutableInt struct {
 
 func (o ScImmutableInt) Exists() bool {
 	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableInt) String() string {
+	return strconv.FormatInt(o.Value(), 10)
 }
 
 func (o ScImmutableInt) Value() int64 {
@@ -240,6 +262,10 @@ type ScImmutableString struct {
 
 func (o ScImmutableString) Exists() bool {
 	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableString) String() string {
+	return o.Value()
 }
 
 func (o ScImmutableString) Value() string {

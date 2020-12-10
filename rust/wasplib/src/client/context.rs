@@ -108,6 +108,10 @@ impl ScUtility {
     }
 }
 
+pub(crate) fn base58_encode(bytes: &[u8]) -> String {
+    ScCallContext {}.utility().base58_encode(bytes)
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub trait ScBaseContext {

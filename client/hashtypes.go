@@ -109,9 +109,3 @@ func (c *ScColor) KeyId() int32 {
 func (c *ScColor) String() string {
 	return base58Encode(c.color[:])
 }
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-func base58Encode(bytes []byte) string {
-	return ScCallContext{}.Utility().Base58Encode(bytes)
-}

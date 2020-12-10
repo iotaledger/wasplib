@@ -1,4 +1,4 @@
-// Copyright 2020 IOTA Stiftung
+    // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
 use std::convert::TryInto;
@@ -94,10 +94,4 @@ impl MapKey for ScColor {
     fn get_id(&self) -> i32 {
         get_key_id_from_bytes(self.to_bytes())
     }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-fn base58_encode(bytes: &[u8]) -> String {
-    ScCallContext {}.utility().base58_encode(bytes)
 }

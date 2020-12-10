@@ -43,8 +43,4 @@ public class ScUtility {
 		long rnd = utility.GetInt(Key.Random).Value();
 		return Long.remainderUnsigned(rnd, max);
 	}
-
-	public String String(long value) {
-		return "" + value;
-	}
 }

@@ -19,6 +19,11 @@ public class ScImmutableAgent {
 		return Host.Exists(objId, keyId);
 	}
 
+	@Override
+	public String toString() {
+		return Value().toString();
+	}
+
 	public ScAgent Value() {
 		return new ScAgent(Host.GetBytes(objId, keyId));
 	}

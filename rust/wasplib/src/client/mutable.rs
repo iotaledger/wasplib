@@ -3,6 +3,7 @@
 
 // types encapsulating mutable host objects
 
+use super::context::*;
 use super::hashtypes::*;
 use super::host::*;
 use super::immutable::*;
@@ -26,6 +27,10 @@ impl ScMutableAddress {
 
     pub fn set_value(&self, val: &ScAddress) {
         set_bytes(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
     }
 
     pub fn value(&self) -> ScAddress {
@@ -84,6 +89,10 @@ impl ScMutableAgent {
         set_bytes(self.obj_id, self.key_id, val.to_bytes());
     }
 
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
     pub fn value(&self) -> ScAgent {
         ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
@@ -140,6 +149,10 @@ impl ScMutableBytes {
         set_bytes(self.obj_id, self.key_id, val);
     }
 
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.value())
+    }
+
     pub fn value(&self) -> Vec<u8> {
         get_bytes(self.obj_id, self.key_id)
     }
@@ -194,6 +207,10 @@ impl ScMutableColor {
         set_bytes(self.obj_id, self.key_id, val.to_bytes());
     }
 
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
     pub fn value(&self) -> ScColor {
         ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
@@ -246,6 +263,10 @@ impl ScMutableInt {
 
     pub fn set_value(&self, val: i64) {
         set_int(self.obj_id, self.key_id, val);
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
     }
 
     pub fn value(&self) -> i64 {
@@ -415,6 +436,10 @@ impl ScMutableString {
 
     pub fn set_value(&self, val: &str) {
         set_string(self.obj_id, self.key_id, val);
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value()
     }
 
     pub fn value(&self) -> String {

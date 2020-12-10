@@ -63,7 +63,7 @@ public class Dividend {
 				totalFactor.SetValue(total);
 				bytes = encodeMember(member);
 				members.GetBytes(i).SetValue(bytes);
-				sc.Log("Updated: " + member.address.toString());
+				sc.Log("Updated: " + member.address);
 				return;
 			}
 		}
@@ -71,7 +71,7 @@ public class Dividend {
 		totalFactor.SetValue(total);
 		byte[] bytes = encodeMember(member);
 		members.GetBytes(size).SetValue(bytes);
-		sc.Log("Appended: " + member.address.toString());
+		sc.Log("Appended: " + member.address);
 	}
 
 	public static void divide(ScCallContext sc) {
@@ -100,7 +100,7 @@ public class Dividend {
 			// there could be some small remainder left in the contract, but
 			// that will be picked up in the next round as part of the balance
 			long remainder = amount - parts;
-			sc.Log("Remainder in contract: " + sc.Utility().String(remainder));
+			sc.Log("Remainder in contract: " + remainder);
 		}
 	}
 
