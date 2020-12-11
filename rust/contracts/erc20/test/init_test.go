@@ -13,82 +13,87 @@ const (
 )
 
 func TestDeployErc20(t *testing.T) {
-	e := alone.New(t, false, false)
-	defer e.WaitEmptyBacklog()
+	glb := alone.New(t, false, false)
+	chain := glb.NewChain(nil, "chain1")
+	defer chain.WaitEmptyBacklog()
 
-	creator := e.NewSigScheme()
+	creator := glb.NewSigSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
-	err := e.DeployWasmContract(nil, erc20name, erc20file,
+	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, _, rec := e.GetInfo()
+	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 
-	_, err = e.FindContract(erc20name)
+	_, err = chain.FindContract(erc20name)
 	require.NoError(t, err)
 
 	// deploy second time
-	err = e.DeployWasmContract(nil, erc20name, erc20file,
+	err = chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec = e.GetInfo()
+	_, _, rec = chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 }
 
 func TestDeployErc20Fail1(t *testing.T) {
-	e := alone.New(t, false, false)
-	err := e.DeployWasmContract(nil, erc20name, erc20file)
+	glb := alone.New(t, false, false)
+	chain := glb.NewChain(nil, "chain1")
+	err := chain.DeployWasmContract(nil, erc20name, erc20file)
 	require.Error(t, err)
-	_, _, rec := e.GetInfo()
+	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 3, len(rec))
 }
 
 func TestDeployErc20Fail2(t *testing.T) {
-	e := alone.New(t, false, false)
-	err := e.DeployWasmContract(nil, erc20name, erc20file,
+	glb := alone.New(t, false, false)
+	chain := glb.NewChain(nil, "chain1")
+	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
 	)
 	require.Error(t, err)
-	_, _, rec := e.GetInfo()
+	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 3, len(rec))
 }
 
 func TestDeployErc20Fail3(t *testing.T) {
-	e := alone.New(t, false, false)
-	creator := e.NewSigScheme()
+	glb := alone.New(t, false, false)
+	chain := glb.NewChain(nil, "chain1")
+	creator := glb.NewSigSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
-	err := e.DeployWasmContract(nil, erc20name, erc20file,
+	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec := e.GetInfo()
+	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 3, len(rec))
 }
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
-	e := alone.New(t, false, false)
-	creator := e.NewSigScheme()
+	glb := alone.New(t, false, false)
+	chain := glb.NewChain(nil, "chain1")
+	creator := glb.NewSigSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
-	err := e.DeployWasmContract(nil, erc20name, erc20file,
+	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec := e.GetInfo()
+	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 3, len(rec))
 
 	// repeat after failure
-	err = e.DeployWasmContract(nil, erc20name, erc20file,
+	err = chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, _, rec = e.GetInfo()
+	_, _, rec = chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 
-	_, err = e.FindContract(erc20name)
+	_, err = chain.FindContract(erc20name)
 	require.NoError(t, err)
 }
