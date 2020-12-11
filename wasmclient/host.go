@@ -39,9 +39,10 @@ func ConnectWasmHost() {
 }
 
 func (w WasmVmHost) Exists(objId int32, keyId int32) bool {
+	// negative length (-1) means only test for existence
 	// returned size -1 indicates keyId not found (or error)
 	// this removes the need for a separate hostExists function
-	return hostGetBytes(objId, keyId, nil, 0) >= 0
+	return hostGetBytes(objId, keyId, nil, -1) >= 0
 }
 
 func (w WasmVmHost) GetBytes(objId int32, keyId int32) []byte {

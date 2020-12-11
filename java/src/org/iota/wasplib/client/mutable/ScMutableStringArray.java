@@ -5,7 +5,6 @@ package org.iota.wasplib.client.mutable;
 
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableStringArray;
-import org.iota.wasplib.client.keys.Key;
 
 public class ScMutableStringArray {
 	int objId;
@@ -15,7 +14,7 @@ public class ScMutableStringArray {
 	}
 
 	public void Clear() {
-		Host.SetInt(objId, Key.KEY_LENGTH, 0);
+		Host.SetClear(objId);
 	}
 
 	public ScMutableString GetString(int index) {
@@ -27,6 +26,6 @@ public class ScMutableStringArray {
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
+		return Host.GetLength(objId);
 	}
 }

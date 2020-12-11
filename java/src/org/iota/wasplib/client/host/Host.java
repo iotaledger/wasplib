@@ -3,6 +3,8 @@
 
 package org.iota.wasplib.client.host;
 
+import org.iota.wasplib.client.keys.Key;
+
 import java.nio.charset.StandardCharsets;
 
 public class Host {
@@ -34,14 +36,21 @@ public class Host {
 	}
 
 	public static boolean Exists(int objId, int keyId) {
-		return hostGetBytes(objId, keyId, null, 0) >= 0;
+		// negative length (-1) means only test for existence
+		// returned size -1 indicates keyId not found (or error)
+		// this removes the need for a separate hostExists function
+		return hostGetBytes(objId, keyId, null, -1) >= 0;
 	}
 
 	public static byte[] GetBytes(int objId, int keyId) {
+		// first query length of bytes array
 		int size = hostGetBytes(objId, keyId, null, 0);
 		if (size <= 0) {
 			return null;
 		}
+
+		// allocate a byte array in Wasm memory and
+		// copy the actual data bytes to Wasm byte array
 		byte[] bytes = new byte[size];
 		//noinspection ResultOfMethodCallIgnored
 		hostGetBytes(objId, keyId, bytes, size);
@@ -65,11 +74,18 @@ public class Host {
 		return hostGetKeyId(bytes, size);
 	}
 
+	public static int GetLength(int objId) {
+		return (int) GetInt(objId, Key.KEY_LENGTH);
+	}
+
 	public static int GetObjectId(int objId, int keyId, int typeId) {
 		return hostGetObjectId(objId, keyId, typeId);
 	}
 
 	public static String GetString(int objId, int keyId) {
+		// convert UTF8-encoded bytes array to string
+		// negative object id indicates to host that this is a string
+		// this removes the need for a separate hostGetString function
 		byte[] bytes = GetBytes(-objId, keyId);
 		return bytes == null ? "" : new String(bytes, StandardCharsets.UTF_8);
 	}
@@ -82,11 +98,18 @@ public class Host {
 		hostSetBytes(objId, keyId, value, value.length);
 	}
 
+	public static void SetClear(int objId) {
+		SetInt(objId, Key.KEY_LENGTH, 0);
+	}
+
 	public static void SetInt(int objId, int keyId, long value) {
 		hostSetInt(objId, keyId, value);
 	}
 
 	public static void SetString(int objId, int keyId, String value) {
+		// convert string to UTF8-encoded bytes array
+		// negative object id indicates to host that this is a string
+		// this removes the need for a separate hostSetString function
 		SetBytes(-objId, keyId, value.getBytes(StandardCharsets.UTF_8));
 	}
 }

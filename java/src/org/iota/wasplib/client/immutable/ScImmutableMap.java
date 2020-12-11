@@ -5,7 +5,6 @@ package org.iota.wasplib.client.immutable;
 
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.host.ScType;
-import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.keys.MapKey;
 
 public class ScImmutableMap {
@@ -80,6 +79,6 @@ public class ScImmutableMap {
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
+		return Host.GetLength(objId);
 	}
 }

@@ -53,10 +53,6 @@ type WasmHost struct {
 	useBase58Keys bool
 }
 
-func (host *WasmHost) Exists(objId int32, keyId int32) bool {
-	return host.FindObject(objId).Exists(keyId)
-}
-
 func (host *WasmHost) Init(null HostObject, root HostObject, logger LogInterface) {
 	host.codeToFunc = make(map[uint32]string)
 	host.error = ""
@@ -76,6 +72,10 @@ func (host *WasmHost) Init(null HostObject, root HostObject, logger LogInterface
 
 func (host *WasmHost) InitVM(vm WasmVM) error {
 	return vm.LinkHost(host)
+}
+
+func (host *WasmHost) Exists(objId int32, keyId int32) bool {
+	return host.FindObject(objId).Exists(keyId)
 }
 
 func (host *WasmHost) FindObject(objId int32) HostObject {

@@ -29,8 +29,10 @@ extern {
 
 pub fn exists(obj_id: i32, key_id: i32) -> bool {
     unsafe {
-        // query length of bytes array, negative means error or does not exist
-        hostGetBytes(obj_id, key_id, std::ptr::null_mut(), 0) >= 0_i32
+        // negative length (-1) means only test for existence
+        // returned size -1 indicates keyId not found (or error)
+        // this removes the need for a separate hostExists function
+        hostGetBytes(obj_id, key_id, std::ptr::null_mut(), -1) >= 0_i32
     }
 }
 
@@ -83,6 +85,7 @@ pub fn get_object_id(obj_id: i32, key_id: i32, type_id: i32) -> i32 {
 pub fn get_string(obj_id: i32, key_id: i32) -> String {
     // convert UTF8-encoded bytes array to string
     // negative object id indicates to host that this is a string
+    // this removes the need for a separate hostGetString function
     unsafe {
         let bytes = get_bytes(-obj_id, key_id);
         return String::from_utf8_unchecked(bytes);
@@ -106,5 +109,8 @@ pub fn set_int(obj_id: i32, key_id: i32, value: i64) {
 }
 
 pub fn set_string(obj_id: i32, key_id: i32, value: &str) {
+    // convert string to UTF8-encoded bytes array
+    // negative object id indicates to host that this is a string
+    // this removes the need for a separate hostSetString function
     set_bytes(-obj_id, key_id, value.as_bytes())
 }

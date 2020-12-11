@@ -40,6 +40,17 @@ func (vm *WasmVmBase) hostFdWrite(fd int32, iovs int32, size int32, written int3
 func (vm *WasmVmBase) hostGetBytes(objId int32, keyId int32, stringRef int32, size int32) int32 {
 	host := vm.host
 	host.TraceHost("hostGetBytes(o%d,k%d,r%d,s%d)", objId, keyId, stringRef, size)
+
+	// negative size means only check for existence
+	if size < 0 {
+		if objId < 0 {
+			objId = -objId
+		}
+		if host.Exists(objId, keyId) { return 0 }
+		// missing key is indicated by -1
+		return -1
+	}
+
 	if objId < 0 {
 		// negative objId means get string
 		value := host.getString(-objId, keyId)
