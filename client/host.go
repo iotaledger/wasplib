@@ -56,7 +56,7 @@ func GetKeyIdFromString(key string) int32 {
 }
 
 func GetLength(objId int32) int32 {
-	return int32(GetInt(objId, int32(KeyLength)))
+	return int32(host.GetInt(objId, int32(KeyLength)))
 }
 
 func GetObjectId(objId int32, keyId int32, typeId int32) int32 {
@@ -72,7 +72,7 @@ func SetBytes(objId int32, keyId int32, value []byte) {
 }
 
 func SetClear(objId int32) {
-	SetInt(objId, int32(KeyLength), 0)
+	host.SetInt(objId, int32(KeyLength), 0)
 }
 
 func SetInt(objId int32, keyId int32, value int64) {

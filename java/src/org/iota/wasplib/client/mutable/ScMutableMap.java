@@ -6,7 +6,6 @@ package org.iota.wasplib.client.mutable;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.host.ScType;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
-import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.keys.MapKey;
 
 public class ScMutableMap {
@@ -17,7 +16,7 @@ public class ScMutableMap {
 	}
 
 	public void Clear() {
-		Host.SetInt(objId, Key.KEY_LENGTH, 0);
+		Host.SetClear(objId);
 	}
 
 	public ScMutableAddress GetAddress(MapKey key) {
@@ -89,6 +88,6 @@ public class ScMutableMap {
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
+		return Host.GetLength(objId);
 	}
 }

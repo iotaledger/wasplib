@@ -5,7 +5,6 @@ package org.iota.wasplib.client.mutable;
 
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableColorArray;
-import org.iota.wasplib.client.keys.Key;
 
 public class ScMutableColorArray {
 	int objId;
@@ -15,7 +14,7 @@ public class ScMutableColorArray {
 	}
 
 	public void Clear() {
-		Host.SetInt(objId, Key.KEY_LENGTH, 0);
+		Host.SetClear(objId);
 	}
 
 	public ScMutableColor GetColor(int index) {
@@ -27,6 +26,6 @@ public class ScMutableColorArray {
 	}
 
 	public int Length() {
-		return (int) Host.GetInt(objId, Key.KEY_LENGTH);
+		return Host.GetLength(objId);
 	}
 }
