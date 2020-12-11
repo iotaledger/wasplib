@@ -1,7 +1,30 @@
 {
+  "balances": {
+    "iota": 1000000,
+    "base58HashOfColor": 27
+  },
   "caller": "base58HashOfCaller",
-  "timestamp": 1234567890,
-  "error": "errorTextOrEmptyStringWhenNoError",
+  "calls": [
+    {
+      "contract": "contractNameOrEmpty",
+      "function": "functionName",
+      "delay": -1,
+      "params": {
+        "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+        "paramInt": 987654321,
+        "paramString": "someValue"
+      },
+      "results": {
+        "resultBytes": "0x[fe dc ba 98 76 54 32 10]",
+        "resultInt": 987654321,
+        "resultString": "someValue"
+      },
+      "transfers": [
+        {"iota": 10},
+        {"base58HashOfColor": 1}
+      ]
+    }
+  ],
   "contract": {
     "chain": "base58HashOfSmartContractChainId",
     "description": "descriptionOfSmartContract",
@@ -9,24 +32,11 @@
     "name": "nameOfSmartContract",
     "owner": "base58HashOfChainOwner"
   },
-  "balances": {
-    "iota": 1000000,
-    "base58HashOfColor": 27
-  },
+  "error": "errorTextOrEmptyStringWhenNoError",
   "function": "nameOfRequestedFunction",
   "incoming": {
     "iota": 1000,
     "base58HashOfColor": 27
-  },
-  "params": {
-    "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
-    "paramInt": 987654321,
-    "paramString": "someValue"
-  },
-  "results": {
-    "resultBytes": "0x[fe dc ba 98 76 54 32 10]",
-    "resultInt": 987654321,
-    "resultString": "someValue"
   },
   "logs": {
     "logName": [
@@ -34,27 +44,15 @@
       {"timestamp": 20191231235959, "data": "0x[fe dc ba 98 76 54 32 10]"}
     ]
   },
-  "state": {
-    "bytesVar": "0x[fe dc ba 98 76 54 32 10]",
-    "bytesArrayVar": ["0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]"],
-    "intVar": 123,
-    "stringVar": "blabla",
-    "mapVar": {
-      "keyBytes": "0x[fe dc ba 98 76 54 32 10]",
-      "keyInt": 987,
-      "keyString": "foo"
-    },
-    "intArrayVar": [1, 2, 3],
-    "stringArrayVar": ["a", "b", "c"]
+  "params": {
+    "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+    "paramInt": 987654321,
+    "paramString": "someValue"
   },
-  "transfers": [
-    {"agent": "base58HashOfTargetAgent", "#iota": 10},
-    {"agent": "base58HashOfTargetAgent", "base58HashOfColor": 1}
-  ],
   "posts": [
     {
-      "chain": "base58HashOfSmartContractChainId",
-      "contract": "contractName",
+      "chain": "base58HashOfSmartContractChainIdOrEmpty",
+      "contract": "contractNameOrEmpty",
       "function": "functionName",
       "delay": 3600,
       "params": {
@@ -73,9 +71,49 @@
       ]
     }
   ],
+  "results": {
+    "resultBytes": "0x[fe dc ba 98 76 54 32 10]",
+    "resultInt": 987654321,
+    "resultString": "someValue"
+  },
+  "state": {
+    "bytesVar": "0x[fe dc ba 98 76 54 32 10]",
+    "bytesArrayVar": ["0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]", "0x[fe dc ba 98 76 54 32 10]"],
+    "intVar": 123,
+    "stringVar": "blabla",
+    "mapVar": {
+      "keyBytes": "0x[fe dc ba 98 76 54 32 10]",
+      "keyInt": 987,
+      "keyString": "foo"
+    },
+    "intArrayVar": [1, 2, 3],
+    "stringArrayVar": ["a", "b", "c"]
+  },
+  "timestamp": 1234567890,
+  "transfers": [
+    {"agent": "base58HashOfTargetAgent", "#iota": 10},
+    {"agent": "base58HashOfTargetAgent", "base58HashOfColor": 1}
+  ],
   "utility": {
     "base58": "base58codec",
     "random": 123456789,
     "hash": "0x[fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10 fe dc ba 98 76 54 32 10]"
-  }
+  },
+  "views": [
+    {
+      "contract": "contractNameOrEmpty",
+      "function": "functionName",
+      "delay": -2,
+      "params": {
+        "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
+        "paramInt": 987654321,
+        "paramString": "someValue"
+      },
+      "results": {
+        "resultBytes": "0x[fe dc ba 98 76 54 32 10]",
+        "resultInt": 987654321,
+        "resultString": "someValue"
+      }
+    }
+  ]
 }
