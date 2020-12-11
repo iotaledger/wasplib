@@ -12,7 +12,7 @@ require (
 	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb // indirect
 	github.com/iotaledger/iota.go v1.0.0-beta.15 // indirect
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20201211140457-cdd305090670
+	github.com/iotaledger/wasp v0.0.2-0.20201211171719-a5a694596d2c
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
