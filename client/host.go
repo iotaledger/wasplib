@@ -4,14 +4,16 @@
 package client
 
 const (
-	TYPE_BYTES        int32 = 0
-	TYPE_BYTES_ARRAY  int32 = 1
-	TYPE_INT          int32 = 2
-	TYPE_INT_ARRAY    int32 = 3
-	TYPE_MAP          int32 = 4
-	TYPE_MAP_ARRAY    int32 = 5
-	TYPE_STRING       int32 = 6
-	TYPE_STRING_ARRAY int32 = 7
+	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
+	TYPE_ARRAY int32 = 0x20
+
+	TYPE_ADDRESS int32 = 1
+	TYPE_AGENT   int32 = 2
+	TYPE_BYTES   int32 = 3
+	TYPE_COLOR   int32 = 4
+	TYPE_INT     int32 = 5
+	TYPE_MAP     int32 = 6
+	TYPE_STRING  int32 = 7
 )
 
 type ScHost interface {

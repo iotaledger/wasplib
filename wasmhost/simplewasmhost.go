@@ -32,7 +32,10 @@ func NewSimpleWasmHost(vm WasmVM) (*SimpleWasmHost, error) {
 
 func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	switch typeId {
-	case OBJTYPE_BYTES:
+	case OBJTYPE_ADDRESS,
+	 OBJTYPE_AGENT,
+	 OBJTYPE_BYTES,
+	 OBJTYPE_COLOR:
 		fmt.Fprintf(w, "\"%s\"", base58.Encode(value.([]byte)))
 	case OBJTYPE_INT:
 		fmt.Fprintf(w, "%d", value.(int64))
@@ -40,7 +43,10 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 		host.FindObject(value.(int32)).(*HostMap).Dump(w)
 	case OBJTYPE_STRING:
 		fmt.Fprintf(w, "\"%s\"", value.(string))
-	case OBJTYPE_BYTES_ARRAY, OBJTYPE_INT_ARRAY, OBJTYPE_MAP_ARRAY, OBJTYPE_STRING_ARRAY:
+	default:
+		if (typeId & OBJTYPE_ARRAY) == 0 {
+			panic("typeId is not an array")
+		}
 		host.FindObject(value.(int32)).(*HostArray).Dump(w)
 	}
 }

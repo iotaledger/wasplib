@@ -115,21 +115,22 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 
 	var o VmObject
 	switch typeId {
-	case OBJTYPE_BYTES_ARRAY:
-		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
-	case OBJTYPE_INT_ARRAY:
+	case OBJTYPE_INT | OBJTYPE_ARRAY:
 		o = NewHostArray(m.host, keyId, OBJTYPE_INT)
 	case OBJTYPE_MAP:
 		o = NewHostMap(m.host, keyId)
-	case OBJTYPE_MAP_ARRAY:
+	case OBJTYPE_MAP | OBJTYPE_ARRAY:
 		o = NewHostArray(m.host, keyId, OBJTYPE_MAP)
-	case OBJTYPE_STRING_ARRAY:
+	default:
 		if keyId == KeyExports {
 			o = NewHostExports(m.host, keyId)
 			break
 		}
-		o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
-	default:
+		if (typeId & OBJTYPE_ARRAY) != 0 {
+			// all bytes types are treated as string
+			o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
+			break
+		}
 		m.Error("Map.GetObjectId: Invalid type id")
 		return 0
 	}
@@ -168,13 +169,9 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 		return
 	}
 	if keyId == KeyLength {
-		for k, v := range m.types {
-			switch v {
-			case OBJTYPE_MAP,
-				OBJTYPE_BYTES_ARRAY,
-				OBJTYPE_INT_ARRAY,
-				OBJTYPE_STRING_ARRAY:
-				field, ok := m.fields[k]
+		for fieldId, typeId := range m.types {
+			if typeId == OBJTYPE_MAP || (typeId&OBJTYPE_ARRAY) != 0 {
+				field, ok := m.fields[fieldId]
 				if ok {
 					// tell object to clear itself
 					m.host.SetInt(field.(int32), keyId, 0)

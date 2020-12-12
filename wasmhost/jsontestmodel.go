@@ -75,10 +75,10 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData(KeyState, OBJTYPE_MAP)
 	t.ClearObjectData(KeyLogs, OBJTYPE_MAP)
 	t.ClearObjectData(KeyResults, OBJTYPE_MAP)
-	t.ClearObjectData(KeyCalls, OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData(KeyPosts, OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData(KeyViews, OBJTYPE_MAP_ARRAY)
-	t.ClearObjectData(KeyTransfers, OBJTYPE_MAP_ARRAY)
+	t.ClearObjectData(KeyCalls, OBJTYPE_MAP|OBJTYPE_ARRAY)
+	t.ClearObjectData(KeyPosts, OBJTYPE_MAP|OBJTYPE_ARRAY)
+	t.ClearObjectData(KeyViews, OBJTYPE_MAP|OBJTYPE_ARRAY)
+	t.ClearObjectData(KeyTransfers, OBJTYPE_MAP|OBJTYPE_ARRAY)
 }
 
 func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
@@ -87,7 +87,7 @@ func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
 }
 
 func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
-	arrayObject := t.FindSubObject(nil, keyId, OBJTYPE_MAP_ARRAY)
+	arrayObject := t.FindSubObject(nil, keyId, OBJTYPE_MAP|OBJTYPE_ARRAY)
 	if arrayObject.GetInt(KeyLength) != int64(len(array)) {
 		key := string(t.host.getKeyFromId(keyId))
 		fmt.Printf("FAIL: array %s length\n", key)
@@ -130,12 +130,20 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 	elem := array[0]
 	typeId := mapObject.GetTypeId(keyId)
 	arrayObject := t.FindSubObject(mapObject, keyId, typeId)
+	if (typeId & OBJTYPE_ARRAY) == 0 {
+		return arrayObject.Fail("not an array")
+	}
 	if int(arrayObject.GetInt(KeyLength)) != len(array) {
 		return arrayObject.Fail("length mismatch")
 	}
+	typeId &= ^OBJTYPE_ARRAY
 	switch ty := elem.(type) {
 	case string:
-		if typeId != OBJTYPE_BYTES_ARRAY && typeId != OBJTYPE_STRING_ARRAY {
+		if typeId != OBJTYPE_ADDRESS &&
+			typeId != OBJTYPE_AGENT &&
+			typeId != OBJTYPE_BYTES &&
+			typeId != OBJTYPE_COLOR &&
+			typeId != OBJTYPE_STRING {
 			return arrayObject.Fail("not a bytes or string array")
 		}
 		for i, elem := range array {
@@ -147,7 +155,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case float64:
-		if typeId != OBJTYPE_INT_ARRAY {
+		if typeId != OBJTYPE_INT {
 			return arrayObject.Fail("not an int array")
 		}
 		for i, elem := range array {
@@ -159,7 +167,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case map[string]interface{}:
-		if typeId == OBJTYPE_MAP_ARRAY {
+		if typeId == OBJTYPE_MAP {
 			for i := range array {
 				mapObject := t.FindIndexedMap(arrayObject, i)
 				if !t.CompareSubMapData(mapObject, array[i].(map[string]interface{})) {
@@ -169,7 +177,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 			return true
 		}
 
-		if typeId != OBJTYPE_BYTES_ARRAY {
+		if typeId != OBJTYPE_BYTES {
 			return arrayObject.Fail("not a bytes array")
 		}
 		for i, elem := range array {
@@ -336,7 +344,7 @@ func (t *JsonTests) LoadSubMapData(mapObject VmObject, values map[string]interfa
 			subMapObject := t.FindSubObject(mapObject, keyId, OBJTYPE_MAP)
 			t.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		case []interface{}:
-			subArrayObject := t.FindSubObject(mapObject, keyId, OBJTYPE_STRING_ARRAY)
+			subArrayObject := t.FindSubObject(mapObject, keyId, OBJTYPE_STRING|OBJTYPE_ARRAY)
 			t.LoadSubArrayData(subArrayObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", ty))
@@ -496,7 +504,7 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 
 	root := t.FindObject(1)
 	scId := t.FindSubObject(nil, KeyContract, OBJTYPE_MAP).GetString(KeyId)
-	posts := t.FindSubObject(nil, KeyPosts, OBJTYPE_MAP_ARRAY)
+	posts := t.FindSubObject(nil, KeyPosts, OBJTYPE_MAP|OBJTYPE_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)
 	for i := 0; i < expectedCalls && i < int(posts.GetInt(KeyLength)); i++ {

@@ -323,7 +323,7 @@ impl ScMutableMap {
     }
 
     pub fn get_address_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAddressArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_ADDRESS | TYPE_ARRAY);
         ScMutableAddressArray { obj_id: arr_id }
     }
 
@@ -332,7 +332,7 @@ impl ScMutableMap {
     }
 
     pub fn get_agent_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgentArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_AGENT | TYPE_ARRAY);
         ScMutableAgentArray { obj_id: arr_id }
     }
 
@@ -341,7 +341,7 @@ impl ScMutableMap {
     }
 
     pub fn get_bytes_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableBytesArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES | TYPE_ARRAY);
         ScMutableBytesArray { obj_id: arr_id }
     }
 
@@ -350,7 +350,7 @@ impl ScMutableMap {
     }
 
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColorArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_BYTES_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_COLOR | TYPE_ARRAY);
         ScMutableColorArray { obj_id: arr_id }
     }
 
@@ -359,7 +359,7 @@ impl ScMutableMap {
     }
 
     pub fn get_int_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableIntArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT | TYPE_ARRAY);
         ScMutableIntArray { obj_id: arr_id }
     }
 
@@ -369,7 +369,7 @@ impl ScMutableMap {
     }
 
     pub fn get_map_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableMapArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP | TYPE_ARRAY);
         ScMutableMapArray { obj_id: arr_id }
     }
 
@@ -378,7 +378,7 @@ impl ScMutableMap {
     }
 
     pub fn get_string_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableStringArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_STRING_ARRAY);
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_STRING | TYPE_ARRAY);
         ScMutableStringArray { obj_id: arr_id }
     }
 

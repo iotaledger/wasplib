@@ -24,7 +24,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableAddressArray GetAddressArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_ADDRESS | ScType.TYPE_ARRAY);
 		return new ScMutableAddressArray(arrId);
 	}
 
@@ -33,7 +33,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableAgentArray GetAgentArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_AGENT | ScType.TYPE_ARRAY);
 		return new ScMutableAgentArray(arrId);
 	}
 
@@ -42,7 +42,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableBytesArray GetBytesArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES | ScType.TYPE_ARRAY);
 		return new ScMutableBytesArray(arrId);
 	}
 
@@ -51,7 +51,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableColorArray GetColorArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_BYTES_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_COLOR | ScType.TYPE_ARRAY);
 		return new ScMutableColorArray(arrId);
 	}
 
@@ -60,7 +60,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableIntArray GetIntArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_INT_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_INT | ScType.TYPE_ARRAY);
 		return new ScMutableIntArray(arrId);
 	}
 
@@ -70,7 +70,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableMapArray GetMapArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_MAP_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_MAP | ScType.TYPE_ARRAY);
 		return new ScMutableMapArray(arrId);
 	}
 
@@ -79,7 +79,7 @@ public class ScMutableMap {
 	}
 
 	public ScMutableStringArray GetStringArray(MapKey key) {
-		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_STRING_ARRAY);
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_STRING | ScType.TYPE_ARRAY);
 		return new ScMutableStringArray(arrId);
 	}
 
