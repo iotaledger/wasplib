@@ -11,7 +11,7 @@ const (
 	keyAddress     = client.Key("address")
 	keyFactor      = client.Key("factor")
 	keyMembers     = client.Key("members")
-	keyTotalFactor = client.Key("totalFactor")
+	keyTotalFactor = client.Key("total_factor")
 )
 
 type Member struct {

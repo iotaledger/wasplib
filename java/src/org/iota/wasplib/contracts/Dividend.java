@@ -21,9 +21,9 @@ public class Dividend {
 	private static final Key keyAddress = new Key("address");
 	private static final Key keyFactor = new Key("factor");
 	private static final Key keyMembers = new Key("members");
-	private static final Key keyTotalFactor = new Key("totalFactor");
+	private static final Key keyTotalFactor = new Key("total_factor");
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("member", Dividend::member);

@@ -1,16 +1,13 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 const KEY_BETS: &str = "bets";
 const KEY_COLOR: &str = "color";
-const KEY_LAST_WINNING_COLOR: &str = "lastWinningColor";
-const KEY_LOCKED_BETS: &str = "lockedBets";
-const KEY_PLAY_PERIOD: &str = "playPeriod";
+const KEY_LAST_WINNING_COLOR: &str = "last_winning_color";
+const KEY_LOCKED_BETS: &str = "locked_bets";
+const KEY_PLAY_PERIOD: &str = "play_period";
 
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
@@ -22,16 +19,16 @@ struct BetInfo {
 }
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("placeBet", placeBet);
-    exports.add_call("lockBets", lockBets);
-    exports.add_call("payWinners", payWinners);
-    exports.add_call("playPeriod", playPeriod);
+    exports.add_call("place_bet", place_bet);
+    exports.add_call("lock_bets", lock_bets);
+    exports.add_call("pay_winners", pay_winners);
+    exports.add_call("play_period", play_period);
     exports.add_call("nothing", ScExports::nothing);
 }
 
-fn placeBet(sc: &ScCallContext) {
+fn place_bet(sc: &ScCallContext) {
     let amount = sc.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
         sc.log("Empty bet...");
@@ -56,18 +53,18 @@ fn placeBet(sc: &ScCallContext) {
     let state = sc.state();
     let bets = state.get_bytes_array(KEY_BETS);
     let bet_nr = bets.length();
-    let bytes = encodeBetInfo(&bet);
+    let bytes = encode_bet_info(&bet);
     bets.get_bytes(bet_nr).set_value(&bytes);
     if bet_nr == 0 {
         let mut play_period = state.get_int(KEY_PLAY_PERIOD).value();
         if play_period < 10 {
             play_period = PLAY_PERIOD;
         }
-        sc.post("lockBets").post(play_period);
+        sc.post("lock_bets").post(play_period);
     }
 }
 
-fn lockBets(sc: &ScCallContext) {
+fn lock_bets(sc: &ScCallContext) {
     // can only be sent by SC itself
     if !sc.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
@@ -78,17 +75,17 @@ fn lockBets(sc: &ScCallContext) {
     let state = sc.state();
     let bets = state.get_bytes_array(KEY_BETS);
     let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
-    let nrBets = bets.length();
-    for i in 0..nrBets {
+    let nr_bets = bets.length();
+    for i in 0..nr_bets {
         let bytes = bets.get_bytes(i).value();
         locked_bets.get_bytes(i).set_value(&bytes);
     }
     bets.clear();
 
-    sc.post("payWinners").post(0);
+    sc.post("pay_winners").post(0);
 }
 
-fn payWinners(sc: &ScCallContext) {
+fn pay_winners(sc: &ScCallContext) {
     // can only be sent by SC itself
     let sc_id = sc.contract().id();
     if !sc.from(&sc_id) {
@@ -105,10 +102,10 @@ fn payWinners(sc: &ScCallContext) {
     let mut total_win_amount = 0_i64;
     let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
     let mut winners: Vec<BetInfo> = Vec::new();
-    let nrBets = locked_bets.length();
-    for i in 0..nrBets {
+    let nr_bets = locked_bets.length();
+    for i in 0..nr_bets {
         let bytes = locked_bets.get_bytes(i).value();
-        let bet = decodeBetInfo(&bytes);
+        let bet = decode_bet_info(&bytes);
         total_bet_amount += bet.amount;
         if bet.color == winning_color {
             total_win_amount += bet.amount;
@@ -146,7 +143,7 @@ fn payWinners(sc: &ScCallContext) {
     }
 }
 
-fn playPeriod(sc: &ScCallContext) {
+fn play_period(sc: &ScCallContext) {
     // can only be sent by SC owner
     if !sc.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
@@ -162,7 +159,7 @@ fn playPeriod(sc: &ScCallContext) {
     sc.state().get_int(KEY_PLAY_PERIOD).set_value(play_period);
 }
 
-fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
+fn decode_bet_info(bytes: &[u8]) -> BetInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BetInfo {
         better: decoder.agent(),
@@ -171,7 +168,7 @@ fn decodeBetInfo(bytes: &[u8]) -> BetInfo {
     }
 }
 
-fn encodeBetInfo(bet: &BetInfo) -> Vec<u8> {
+fn encode_bet_info(bet: &BetInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.agent(&bet.better);
     encoder.int(bet.amount);

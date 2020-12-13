@@ -1,17 +1,14 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 const KEY_AUCTIONS: &str = "auctions";
 const KEY_COLOR: &str = "color";
 const KEY_DESCRIPTION: &str = "description";
 const KEY_DURATION: &str = "duration";
-const KEY_MINIMU_BID: &str = "minimum";
-const KEY_OWNER_MARGIN: &str = "ownerMargin";
+const KEY_MINIMUM_BID: &str = "minimum";
+const KEY_OWNER_MARGIN: &str = "owner_margin";
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
@@ -25,22 +22,22 @@ struct AuctionInfo {
     // color of tokens for sale
     color: ScColor,
     // number of tokens for sale
-    numTokens: i64,
+    num_tokens: i64,
     // minimum bid. Set by the auction initiator
-    minimumBid: i64,
+    minimum_bid: i64,
     // any text, like "AuctionOwner of the token have a right to call me for a date". Set by auction initiator
     description: String,
     // timestamp when auction started
-    whenStarted: i64,
+    when_started: i64,
     // duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes
     duration: i64,
     // agent who issued StartAuction transaction
-    auctionOwner: ScAgent,
+    auction_owner: ScAgent,
     // deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same
     // transaction.
     deposit: i64,
     // AuctionOwner's margin in promilles, taken at the moment of creation of smart contract
-    ownerMargin: i64,
+    owner_margin: i64,
     // list of bids to the auction
     bids: Vec<BidInfo>,
 }
@@ -55,15 +52,15 @@ struct BidInfo {
 }
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("startAuction", startAuction);
-    exports.add_call("finalizeAuction", finalizeAuction);
-    exports.add_call("placeBid", placeBid);
-    exports.add_call("setOwnerMargin", setOwnerMargin);
+    exports.add_call("start_auction", start_auction);
+    exports.add_call("finalize_auction", finalize_auction);
+    exports.add_call("place_bid", place_bid);
+    exports.add_call("set_owner_margin", set_owner_margin);
 }
 
-fn startAuction(sc: &ScCallContext) {
+fn start_auction(sc: &ScCallContext) {
     let deposit = sc.incoming().balance(&ScColor::IOTA);
     if deposit < 1 {
         sc.log("Empty deposit...");
@@ -71,38 +68,38 @@ fn startAuction(sc: &ScCallContext) {
     }
 
     let state = sc.state();
-    let mut ownerMargin = state.get_int(KEY_OWNER_MARGIN).value();
-    if ownerMargin == 0 {
-        ownerMargin = OWNER_MARGIN_DEFAULT;
+    let mut owner_margin = state.get_int(KEY_OWNER_MARGIN).value();
+    if owner_margin == 0 {
+        owner_margin = OWNER_MARGIN_DEFAULT;
     }
 
     let params = sc.params();
-    let colorParam = params.get_color(KEY_COLOR);
-    if !colorParam.exists() {
+    let color_param = params.get_color(KEY_COLOR);
+    if !color_param.exists() {
         refund(sc, deposit / 2, "Missing token color...");
         return;
     }
-    let color = colorParam.value();
+    let color = color_param.value();
 
     if color == ScColor::IOTA || color == ScColor::MINT {
         refund(sc, deposit / 2, "Reserved token color...");
         return;
     }
 
-    let numTokens = sc.incoming().balance(&color);
-    if numTokens == 0 {
+    let num_tokens = sc.incoming().balance(&color);
+    if num_tokens == 0 {
         refund(sc, deposit / 2, "Auction tokens missing from request...");
         return;
     }
 
-    let minimumBid = params.get_int(KEY_MINIMU_BID).value();
-    if minimumBid == 0 {
+    let minimum_bid = params.get_int(KEY_MINIMUM_BID).value();
+    if minimum_bid == 0 {
         refund(sc, deposit / 2, "Missing minimum bid...");
         return;
     }
 
     // need at least 1 iota to run SC
-    let mut margin = minimumBid * ownerMargin / 1000;
+    let mut margin = minimum_bid * owner_margin / 1000;
     if margin == 0 {
         margin = 1;
     }
@@ -133,67 +130,67 @@ fn startAuction(sc: &ScCallContext) {
     }
 
     let auctions = state.get_map(KEY_AUCTIONS);
-    let currentAuction = auctions.get_bytes(&color);
-    if currentAuction.value().len() != 0 {
+    let current_auction = auctions.get_bytes(&color);
+    if current_auction.value().len() != 0 {
         refund(sc, deposit / 2, "Auction for this token already exists...");
         return;
     }
 
     let auction = &AuctionInfo {
         color: color,
-        numTokens: numTokens,
-        minimumBid: minimumBid,
+        num_tokens: num_tokens,
+        minimum_bid,
         description: description,
-        whenStarted: sc.timestamp(),
+        when_started: sc.timestamp(),
         duration: duration,
-        auctionOwner: sc.caller(),
+        auction_owner: sc.caller(),
         deposit: deposit,
-        ownerMargin: ownerMargin,
+        owner_margin: owner_margin,
         bids: Vec::new(),
     };
-    let bytes = encodeAuctionInfo(auction);
-    currentAuction.set_value(&bytes);
+    let bytes = encode_auction_info(auction);
+    current_auction.set_value(&bytes);
 
-    let finalize_request = sc.post("finalizeAuction");
+    let finalize_request = sc.post("finalize_auction");
     let finalize_params = finalize_request.params();
     finalize_params.get_color(KEY_COLOR).set_value(&auction.color);
     finalize_request.post(duration * 60);
     sc.log("New auction started...");
 }
 
-fn finalizeAuction(sc: &ScCallContext) {
+fn finalize_auction(sc: &ScCallContext) {
     // can only be sent by SC itself
     if !sc.from(&sc.contract().id()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let colorParam = sc.params().get_color(KEY_COLOR);
-    if !colorParam.exists() {
+    let color_param = sc.params().get_color(KEY_COLOR);
+    if !color_param.exists() {
         sc.log("INTERNAL INCONSISTENCY: missing color");
         return;
     }
-    let color = colorParam.value();
+    let color = color_param.value();
 
     let state = sc.state();
     let auctions = state.get_map(KEY_AUCTIONS);
-    let currentAuction = auctions.get_bytes(&color);
-    let bytes = currentAuction.value();
+    let current_auction = auctions.get_bytes(&color);
+    let bytes = current_auction.value();
     if bytes.len() == 0 {
         sc.log("INTERNAL INCONSISTENCY missing auction info");
         return;
     }
-    let auction = decodeAuctionInfo(&bytes);
+    let auction = decode_auction_info(&bytes);
     if auction.bids.len() == 0 {
         sc.log(&("No one bid on ".to_string() + &color.to_string()));
-        let mut ownerFee = auction.minimumBid * auction.ownerMargin / 1000;
-        if ownerFee == 0 {
-            ownerFee = 1
+        let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
+        if owner_fee == 0 {
+            owner_fee = 1
         }
         // finalizeAuction request token was probably not confirmed yet
-        sc.transfer(&sc.contract().owner(), &ScColor::IOTA, ownerFee - 1);
-        sc.transfer(&auction.auctionOwner, &auction.color, auction.numTokens);
-        sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit - ownerFee);
+        sc.transfer(&sc.contract().owner(), &ScColor::IOTA, owner_fee - 1);
+        sc.transfer(&auction.auction_owner, &auction.color, auction.num_tokens);
+        sc.transfer(&auction.auction_owner, &ScColor::IOTA, auction.deposit - owner_fee);
         return;
     }
 
@@ -211,9 +208,9 @@ fn finalizeAuction(sc: &ScCallContext) {
             }
         }
     }
-    let mut ownerFee = winner.amount * auction.ownerMargin / 1000;
-    if ownerFee == 0 {
-        ownerFee = 1;
+    let mut owner_fee = winner.amount * auction.owner_margin / 1000;
+    if owner_fee == 0 {
+        owner_fee = 1;
     }
 
     // return staked bids to losers
@@ -224,94 +221,94 @@ fn finalizeAuction(sc: &ScCallContext) {
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    sc.transfer(&sc.contract().owner(), &ScColor::IOTA, ownerFee - 1);
-    sc.transfer(&winner.bidder, &auction.color, auction.numTokens);
-    sc.transfer(&auction.auctionOwner, &ScColor::IOTA, auction.deposit + winner.amount - ownerFee);
+    sc.transfer(&sc.contract().owner(), &ScColor::IOTA, owner_fee - 1);
+    sc.transfer(&winner.bidder, &auction.color, auction.num_tokens);
+    sc.transfer(&auction.auction_owner, &ScColor::IOTA, auction.deposit + winner.amount - owner_fee);
 }
 
-fn placeBid(sc: &ScCallContext) {
-    let bidAmount = sc.incoming().balance(&ScColor::IOTA);
-    if bidAmount == 0 {
+fn place_bid(sc: &ScCallContext) {
+    let bid_amount = sc.incoming().balance(&ScColor::IOTA);
+    if bid_amount == 0 {
         sc.log("Insufficient bid amount");
         return;
     }
 
-    let colorParam = sc.params().get_color(KEY_COLOR);
-    if !colorParam.exists() {
-        refund(sc, bidAmount, "Missing token color");
+    let color_param = sc.params().get_color(KEY_COLOR);
+    if !color_param.exists() {
+        refund(sc, bid_amount, "Missing token color");
         return;
     }
-    let color = colorParam.value();
+    let color = color_param.value();
 
     let state = sc.state();
     let auctions = state.get_map(KEY_AUCTIONS);
-    let currentAuction = auctions.get_bytes(&color);
-    let bytes = currentAuction.value();
+    let current_auction = auctions.get_bytes(&color);
+    let bytes = current_auction.value();
     if bytes.len() == 0 {
-        refund(sc, bidAmount, "Missing auction");
+        refund(sc, bid_amount, "Missing auction");
         return;
     }
 
     let caller = sc.caller();
-    let mut auction = decodeAuctionInfo(&bytes);
-    let mut bidIndex = auction.bids.iter().position(|b| b.bidder == caller);
-    if bidIndex == None {
+    let mut auction = decode_auction_info(&bytes);
+    let mut bid_index = auction.bids.iter().position(|b| b.bidder == caller);
+    if bid_index == None {
         sc.log(&("New bid from: ".to_string() + &caller.to_string()));
         let bid = BidInfo { bidder: caller, amount: 0, when: 0 };
-        bidIndex = Some(auction.bids.len());
+        bid_index = Some(auction.bids.len());
         auction.bids.push(bid);
     }
-    let mut bid = auction.bids.get_mut(bidIndex.unwrap()).unwrap();
-    bid.amount += bidAmount;
+    let mut bid = auction.bids.get_mut(bid_index.unwrap()).unwrap();
+    bid.amount += bid_amount;
     bid.when = sc.timestamp();
 
-    let bytes = encodeAuctionInfo(&auction);
-    currentAuction.set_value(&bytes);
+    let bytes = encode_auction_info(&auction);
+    current_auction.set_value(&bytes);
     sc.log("Updated auction with bid...");
 }
 
-fn setOwnerMargin(sc: &ScCallContext) {
+fn set_owner_margin(sc: &ScCallContext) {
     // can only be sent by SC owner
     if !sc.from(&sc.contract().owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
 
-    let mut ownerMargin = sc.params().get_int(KEY_OWNER_MARGIN).value();
-    if ownerMargin < OWNER_MARGIN_MIN {
-        ownerMargin = OWNER_MARGIN_MIN;
+    let mut owner_margin = sc.params().get_int(KEY_OWNER_MARGIN).value();
+    if owner_margin < OWNER_MARGIN_MIN {
+        owner_margin = OWNER_MARGIN_MIN;
     }
-    if ownerMargin > OWNER_MARGIN_MAX {
-        ownerMargin = OWNER_MARGIN_MAX;
+    if owner_margin > OWNER_MARGIN_MAX {
+        owner_margin = OWNER_MARGIN_MAX;
     }
-    sc.state().get_int("ownerMargin").set_value(ownerMargin);
+    sc.state().get_int("owner_margin").set_value(owner_margin);
     sc.log("Updated owner margin...");
 }
 
-fn decodeAuctionInfo(bytes: &[u8]) -> AuctionInfo {
+fn decode_auction_info(bytes: &[u8]) -> AuctionInfo {
     let mut decoder = BytesDecoder::new(bytes);
     let mut auction = AuctionInfo {
         color: decoder.color(),
-        numTokens: decoder.int(),
-        minimumBid: decoder.int(),
+        num_tokens: decoder.int(),
+        minimum_bid: decoder.int(),
         description: decoder.string(),
-        whenStarted: decoder.int(),
+        when_started: decoder.int(),
         duration: decoder.int(),
-        auctionOwner: decoder.agent(),
+        auction_owner: decoder.agent(),
         deposit: decoder.int(),
-        ownerMargin: decoder.int(),
+        owner_margin: decoder.int(),
         bids: Vec::new(),
     };
     let bids = decoder.int();
     for _ in 0..bids {
         let bytes = decoder.bytes();
-        let bid = decodeBidInfo(&bytes);
+        let bid = decode_bid_info(&bytes);
         auction.bids.push(bid);
     }
     return auction;
 }
 
-fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
+fn decode_bid_info(bytes: &[u8]) -> BidInfo {
     let mut decoder = BytesDecoder::new(bytes);
     BidInfo {
         bidder: decoder.agent(),
@@ -320,26 +317,26 @@ fn decodeBidInfo(bytes: &[u8]) -> BidInfo {
     }
 }
 
-fn encodeAuctionInfo(auction: &AuctionInfo) -> Vec<u8> {
+fn encode_auction_info(auction: &AuctionInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.color(&auction.color);
-    encoder.int(auction.numTokens);
-    encoder.int(auction.minimumBid);
+    encoder.int(auction.num_tokens);
+    encoder.int(auction.minimum_bid);
     encoder.string(&auction.description);
-    encoder.int(auction.whenStarted);
+    encoder.int(auction.when_started);
     encoder.int(auction.duration);
-    encoder.agent(&auction.auctionOwner);
+    encoder.agent(&auction.auction_owner);
     encoder.int(auction.deposit);
-    encoder.int(auction.ownerMargin);
+    encoder.int(auction.owner_margin);
     encoder.int(auction.bids.len() as i64);
     for bid in &auction.bids {
-        let bytes = encodeBidInfo(&bid);
+        let bytes = encode_bid_info(&bid);
         encoder.bytes(&bytes);
     }
     return encoder.data();
 }
 
-fn encodeBidInfo(bid: &BidInfo) -> Vec<u8> {
+fn encode_bid_info(bid: &BidInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.agent(&bid.bidder);
     encoder.int(bid.amount);

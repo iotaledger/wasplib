@@ -11,7 +11,7 @@ static mut CALLS: Vec<fn(&ScCallContext)> = vec![];
 static mut VIEWS: Vec<fn(&ScViewContext)> = vec![];
 
 #[no_mangle]
-fn sc_call_entrypoint(index: i32) {
+fn on_call_entrypoint(index: i32) {
     unsafe {
         if (index & 0x8000) != 0 {
             VIEWS[(index & 0x7fff) as usize](&ScViewContext {});

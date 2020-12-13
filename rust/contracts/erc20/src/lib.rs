@@ -4,9 +4,6 @@
 // implementation of ERC-20 smart contract for ISCP
 // following https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 // state variable
@@ -23,41 +20,41 @@ const PARAM_AMOUNT: &str = "am";
 const PARAM_RECIPIENT: &str = "r";
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("init", init);
-    exports.add_view("totalSupply", total_supply);
-    exports.add_view("balanceOf", balance_of);
+    exports.add_call("init", on_init);
+    exports.add_view("total_supply", total_supply);
+    exports.add_view("balance_of", balance_of);
     exports.add_view("allowance", allowance);
     exports.add_call("transfer", transfer);
     exports.add_call("approve", approve);
-    exports.add_call("transferFrom", transfer_from);
+    exports.add_call("transfer_from", transfer_from);
 }
 
 // TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-// init is a constructor entry point. It initializes the smart contract with the
+// on_init is a constructor entry point. It initializes the smart contract with the
 // initial value of the token supply and the owner of that supply
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed
-fn init(ctx: &ScCallContext) {
-    ctx.log("erc20.init.begin");
+fn on_init(ctx: &ScCallContext) {
+    ctx.log("erc20.on_init.begin");
     // validate parameters
     // supply
     let supply = ctx.params().get_int(PARAM_SUPPLY);
     if !supply.exists() || supply.value() <= 0 {
-        let err = "er20.init.fail: wrong 'supply' parameter";
+        let err = "er20.on_init.fail: wrong 'supply' parameter";
         ctx.log(err);
         ctx.error().set_value(err);
         return;
     }
     // creator (owner)
-    // we cannot use 'caller' here because the init is always called from the 'root'
-    // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (init)
+    // we cannot use 'caller' here because on_init is always called from the 'root'
+    // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
     let creator = ctx.params().get_agent(PARAM_CREATOR);
     if !creator.exists() {
-        let err = "er20.init.fail: wrong 'creator' parameter";
+        let err = "er20.on_init.fail: wrong 'creator' parameter";
         ctx.log(err);
         ctx.error().set_value(err);
         return;
@@ -67,7 +64,7 @@ fn init(ctx: &ScCallContext) {
     // assign the whole supply to creator
     ctx.state().get_map(STATE_VAR_BALANCES).get_int(&creator.value()).set_value(supply.value());
 
-    let t = "erc20.init.success. Supply: ".to_string()
+    let t = "erc20.on_init.success. Supply: ".to_string()
         + &supply.value().to_string()
         + &", creator:".to_string()
         + &creator.value().to_string();

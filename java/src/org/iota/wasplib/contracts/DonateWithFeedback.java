@@ -28,17 +28,17 @@ public class DonateWithFeedback {
 	private static final Key keyError = new Key("error");
 	private static final Key keyFeedback = new Key("feedback");
 	private static final Key keyLog = new Key("log");
-	private static final Key keyMaxDonation = new Key("maxDonation");
+	private static final Key keyMaxDonation = new Key("max_donation");
 	private static final Key keyTimestamp = new Key("timestamp");
-	private static final Key keyTotalDonation = new Key("totalDonation");
+	private static final Key keyTotalDonation = new Key("total_donation");
 	private static final Key keyWithdrawAmount = new Key("withdraw");
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("donate", DonateWithFeedback::donate);
 		exports.AddCall("withdraw", DonateWithFeedback::withdraw);
-		exports.AddView("viewDonations", DonateWithFeedback::viewDonations);
+		exports.AddView("view_donations", DonateWithFeedback::viewDonations);
 	}
 
 	public static void donate(ScCallContext sc) {

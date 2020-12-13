@@ -125,9 +125,9 @@ func (vm *WasmTimeVM) RunFunction(functionName string) error {
 }
 
 func (vm *WasmTimeVM) RunScFunction(index int32) error {
-	export := vm.instance.GetExport("sc_call_entrypoint")
+	export := vm.instance.GetExport("on_call_entrypoint")
 	if export == nil {
-		return errors.New("unknown export function: 'sc_call_entrypoint'")
+		return errors.New("unknown export function: 'on_call_entrypoint'")
 	}
 	frame := vm.preCall()
 	_, err := export.Func().Call(index)

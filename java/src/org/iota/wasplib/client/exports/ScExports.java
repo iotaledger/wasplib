@@ -25,7 +25,7 @@ public class ScExports {
 		exports.GetString(Key.KEY_ZZZZZZZ).SetValue("Java:KEY_ZZZZZZZ");
 	}
 
-	//export sc_call_entrypoint
+	//export on_call_entrypoint
 	static void scCallEntrypoint(int index) {
 		if ((index & 0x8000) != 0) {
 			ScView view = views.get(index & 0x7fff);

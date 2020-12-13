@@ -1,17 +1,14 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("helloWorld", helloWorld);
+    exports.add_call("hello_world", hello_world);
 }
 
-fn helloWorld(sc: &ScCallContext) {
+fn hello_world(sc: &ScCallContext) {
     sc.log("Hello, world!");
 }

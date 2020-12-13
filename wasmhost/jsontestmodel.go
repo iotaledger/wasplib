@@ -285,7 +285,7 @@ func (t *JsonTests) FindSubObject(mapObject VmObject, keyId int32, typeId int32)
 func (t *JsonTests) GetKeyId(key string) int32 {
 	keyValue := process(key)
 	if keyValue != key {
-		bytes,_ := base58.Decode(keyValue)
+		bytes, _ := base58.Decode(keyValue)
 		return t.host.GetKeyIdFromBytes(bytes)
 	}
 	return t.host.GetKeyIdFromString(key)

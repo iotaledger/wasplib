@@ -8,7 +8,7 @@ var (
 	views []func(sc *ScViewContext)
 )
 
-//export sc_call_entrypoint
+//export on_call_entrypoint
 func ScCallEntrypoint(index int32) {
 	if (index & 0x8000) != 0 {
 		views[index&0x7fff](&ScViewContext{})

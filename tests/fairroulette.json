@@ -23,7 +23,7 @@
     {
       "name": "placeOneBet",
       "setup": "default",
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -42,14 +42,14 @@
           ]
         },
         "logs": {},
-        "posts": [{"function": "lockBets", "delay": 120}],
+        "posts": [{"function": "lock_bets", "delay": 120}],
         "transfers": []
       }
     },
     {
       "name": "placeTwoBets",
       "setup": "default",
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -58,7 +58,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@caller2",
-          "function": "placeBet",
+          "function": "place_bet",
           "incoming": {"#iota": 200},
           "params": {
             "color": 1
@@ -86,7 +86,7 @@
           ]
         },
         "logs": {},
-        "posts": [{"function": "lockBets", "delay": 120}],
+        "posts": [{"function": "lock_bets", "delay": 120}],
         "transfers": []
       }
     },
@@ -95,7 +95,7 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 1},
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -103,12 +103,12 @@
       "expect": {
         "balances": {"#iota": 200},
         "state": {
-          "lastWinningColor": 2
+          "last_winning_color": 2
         },
         "logs": {},
         "posts": [
-          {"function": "lockBets", "delay": 120},
-          {"function": "payWinners", "delay": 0}
+          {"function": "lock_bets", "delay": 120},
+          {"function": "pay_winners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@scId", "#iota": 100}
@@ -120,7 +120,7 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -128,12 +128,12 @@
       "expect": {
         "balances": {"#iota": 100},
         "state": {
-          "lastWinningColor": 3
+          "last_winning_color": 3
         },
         "logs": {},
         "posts": [
-          {"function": "lockBets", "delay": 120},
-          {"function": "payWinners", "delay": 0}
+          {"function": "lock_bets", "delay": 120},
+          {"function": "pay_winners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@caller", "#iota": 100}
@@ -145,7 +145,7 @@
       "setup": "default",
       "flags": "nodelay",
       "utility": {"random": 2},
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -154,7 +154,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@caller2",
-          "function": "placeBet",
+          "function": "place_bet",
           "incoming": {"#iota": 200},
           "params": {
             "color": 1
@@ -164,12 +164,12 @@
       "expect": {
         "balances": {"#iota": 100},
         "state": {
-          "lastWinningColor": 3
+          "last_winning_color": 3
         },
         "logs": {},
         "posts": [
-          {"function": "lockBets", "delay": 120},
-          {"function": "payWinners", "delay": 0}
+          {"function": "lock_bets", "delay": 120},
+          {"function": "pay_winners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@caller", "#iota": 300}
@@ -182,7 +182,7 @@
       "flags": "nodelay",
       "utility": {"random": 2},
       "caller": "@better1",
-      "function": "placeBet",
+      "function": "place_bet",
       "incoming": {"#iota": 100},
       "params": {
         "color": 3
@@ -191,7 +191,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@better2",
-          "function": "placeBet",
+          "function": "place_bet",
           "incoming": {"#iota": 200},
           "params": {
             "color": 3
@@ -201,12 +201,12 @@
       "expect": {
         "balances": {"#iota": 100},
         "state": {
-          "lastWinningColor": 3
+          "last_winning_color": 3
         },
         "logs": {},
         "posts": [
-          {"function": "lockBets", "delay": 120},
-          {"function": "payWinners", "delay": 0}
+          {"function": "lock_bets", "delay": 120},
+          {"function": "pay_winners", "delay": 0}
         ],
         "transfers": [
           {"agent": "@better1", "#iota": 100},

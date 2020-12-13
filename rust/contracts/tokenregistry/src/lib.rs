@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![allow(dead_code)]
-#![allow(non_snake_case)]
 
 use wasplib::client::*;
 
-const KEY_COLOR_LIST: &str = "colorList";
+const KEY_COLOR_LIST: &str = "color_list";
 const KEY_DESCRIPTION: &str = "description";
 const KEY_REGISTRY: &str = "registry";
-const KEY_USER_DEFINED: &str = "userDefined";
+const KEY_USER_DEFINED: &str = "user_defined";
 
 struct TokenInfo {
     supply: i64,
@@ -22,14 +21,14 @@ struct TokenInfo {
 }
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("mintSupply", mintSupply);
-    exports.add_call("updateMetadata", updateMetadata);
-    exports.add_call("transferOwnership", transferOwnership);
+    exports.add_call("mint_supply", mint_supply);
+    exports.add_call("update_metadata", update_metadata);
+    exports.add_call("transfer_ownership", transfer_ownership);
 }
 
-fn mintSupply(sc: &ScCallContext) {
+fn mint_supply(sc: &ScCallContext) {
     let minted = sc.incoming().minted();
     if minted == ScColor::MINT {
         sc.log("TokenRegistry: No newly minted tokens found");
@@ -58,21 +57,21 @@ fn mintSupply(sc: &ScCallContext) {
     if token.description.is_empty() {
         token.description += "no dscr";
     }
-    let data = encodeTokenInfo(&token);
+    let data = encode_token_info(&token);
     registry.set_value(&data);
     let colors = state.get_color_array(KEY_COLOR_LIST);
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-fn updateMetadata(_sc: &ScCallContext) {
+fn update_metadata(_sc: &ScCallContext) {
     //TODO
 }
 
-fn transferOwnership(_sc: &ScCallContext) {
+fn transfer_ownership(_sc: &ScCallContext) {
     //TODO
 }
 
-fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
+fn decode_token_info(bytes: &[u8]) -> TokenInfo {
     let mut decoder = BytesDecoder::new(bytes);
     TokenInfo {
         supply: decoder.int(),
@@ -85,7 +84,7 @@ fn decodeTokenInfo(bytes: &[u8]) -> TokenInfo {
     }
 }
 
-fn encodeTokenInfo(token: &TokenInfo) -> Vec<u8> {
+fn encode_token_info(token: &TokenInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(token.supply);
     encoder.agent(&token.minted_by);

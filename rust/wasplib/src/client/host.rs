@@ -18,7 +18,6 @@ pub const TYPE_STRING: i32 = 7;
 // entered an error state will immediately return without action.
 // Any return value will be zero or empty string in that case
 #[link(wasm_import_module = "wasplib")]
-#[no_mangle]
 extern {
     pub fn hostGetBytes(obj_id: i32, key_id: i32, value: *mut u8, len: i32) -> i32;
     pub fn hostGetInt(obj_id: i32, key_id: i32) -> i64;

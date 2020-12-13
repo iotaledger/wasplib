@@ -33,9 +33,9 @@ func NewSimpleWasmHost(vm WasmVM) (*SimpleWasmHost, error) {
 func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	switch typeId {
 	case OBJTYPE_ADDRESS,
-	 OBJTYPE_AGENT,
-	 OBJTYPE_BYTES,
-	 OBJTYPE_COLOR:
+		OBJTYPE_AGENT,
+		OBJTYPE_BYTES,
+		OBJTYPE_COLOR:
 		fmt.Fprintf(w, "\"%s\"", base58.Encode(value.([]byte)))
 	case OBJTYPE_INT:
 		fmt.Fprintf(w, "%d", value.(int64))

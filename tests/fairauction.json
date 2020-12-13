@@ -2,14 +2,14 @@
   "types": {
     "AuctionInfo": [
       {"field": "color", "type": "Color"},
-      {"field": "numTokens", "type": "Int"},
-      {"field": "minimumBid", "type": "Int"},
+      {"field": "num_tokens", "type": "Int"},
+      {"field": "minimum_bid", "type": "Int"},
       {"field": "description", "type": "String"},
-      {"field": "whenStarted", "type": "Int"},
+      {"field": "when_started", "type": "Int"},
       {"field": "duration", "type": "Int"},
-      {"field": "auctionOwner", "type": "Agent"},
+      {"field": "auction_owner", "type": "Agent"},
       {"field": "deposit", "type": "Int"},
-      {"field": "ownerMargin", "type": "Int"},
+      {"field": "owner_margin", "type": "Int"},
       {"field": "bids", "type": "[]BidInfo"}
     ],
     "BidInfo": [
@@ -35,7 +35,7 @@
     {
       "name": "startAuction",
       "setup": "default",
-      "function": "startAuction",
+      "function": "start_auction",
       "incoming": {"#iota": 100, "#tokenColor": 1},
       "params": {
         "color": "#tokenColor",
@@ -48,14 +48,14 @@
             "#tokenColor": {
               "AuctionInfo": {
                 "color": "#tokenColor",
-                "numTokens": 1,
-                "minimumBid": 500,
+                "num_tokens": 1,
+                "minimum_bid": 500,
                 "description": "N/A",
-                "whenStarted": 20201027172138,
+                "when_started": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@caller",
+                "auction_owner": "@caller",
                 "deposit": 100,
-                "ownerMargin": 50,
+                "owner_margin": 50,
                 "bids": []
               }
             }
@@ -64,7 +64,7 @@
         "logs": {},
         "posts": [
           {
-            "function": "finalizeAuction", "delay": 3600,
+            "function": "finalize_auction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -75,7 +75,7 @@
       "name": "noBids",
       "setup": "default",
       "flags": "nodelay",
-      "function": "startAuction",
+      "function": "start_auction",
       "incoming": {"#iota": 100, "#tokenColor": 1},
       "params": {
         "color": "#tokenColor",
@@ -88,14 +88,14 @@
             "#tokenColor": {
               "AuctionInfo": {
                 "color": "#tokenColor",
-                "numTokens": 1,
-                "minimumBid": 500,
+                "num_tokens": 1,
+                "minimum_bid": 500,
                 "description": "N/A",
-                "whenStarted": 20201027172138,
+                "when_started": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@caller",
+                "auction_owner": "@caller",
                 "deposit": 100,
-                "ownerMargin": 50,
+                "owner_margin": 50,
                 "bids": []
               }
             }
@@ -104,7 +104,7 @@
         "logs": {},
         "posts": [
           {
-            "function": "finalizeAuction", "delay": 3600,
+            "function": "finalize_auction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -118,7 +118,7 @@
     {
       "name": "singleBid",
       "setup": "default",
-      "function": "startAuction",
+      "function": "start_auction",
       "incoming": {"#iota": 100, "#tokenColor": 1},
       "params": {
         "color": "#tokenColor",
@@ -128,7 +128,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@bidder1",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
@@ -142,14 +142,14 @@
             "#tokenColor": {
               "AuctionInfo": {
                 "color": "#tokenColor",
-                "numTokens": 1,
-                "minimumBid": 500,
+                "num_tokens": 1,
+                "minimum_bid": 500,
                 "description": "N/A",
-                "whenStarted": 20201027172138,
+                "when_started": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@caller",
+                "auction_owner": "@caller",
                 "deposit": 100,
-                "ownerMargin": 50,
+                "owner_margin": 50,
                 "bids": [
                   {
                     "bidder": "@bidder1",
@@ -164,7 +164,7 @@
         "logs": {},
         "posts": [
           {
-            "function": "finalizeAuction", "delay": 3600,
+            "function": "finalize_auction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -174,7 +174,7 @@
     {
       "name": "fourBids",
       "setup": "default",
-      "function": "startAuction",
+      "function": "start_auction",
       "incoming": {"#iota": 100, "#tokenColor": 1},
       "params": {
         "color": "#tokenColor",
@@ -184,7 +184,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@bidder1",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
@@ -193,7 +193,7 @@
         {
           "timestamp": 20201027172140,
           "caller": "@bidder2",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
@@ -202,7 +202,7 @@
         {
           "timestamp": 20201027172141,
           "caller": "@bidder3",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
@@ -211,7 +211,7 @@
         {
           "timestamp": 20201027172142,
           "caller": "@bidder4",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
@@ -225,14 +225,14 @@
             "#tokenColor": {
               "AuctionInfo": {
                 "color": "#tokenColor",
-                "numTokens": 1,
-                "minimumBid": 500,
+                "num_tokens": 1,
+                "minimum_bid": 500,
                 "description": "N/A",
-                "whenStarted": 20201027172138,
+                "when_started": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@caller",
+                "auction_owner": "@caller",
                 "deposit": 100,
-                "ownerMargin": 50,
+                "owner_margin": 50,
                 "bids": [
                   {
                     "bidder": "@bidder1",
@@ -262,7 +262,7 @@
         "logs": {},
         "posts": [
           {
-            "function": "finalizeAuction", "delay": 3600,
+            "function": "finalize_auction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],
@@ -273,7 +273,7 @@
       "name": "fourBidsAndFinalize",
       "setup": "default",
       "flags": "nodelay",
-      "function": "startAuction",
+      "function": "start_auction",
       "incoming": {"#iota": 100, "#tokenColor": 1},
       "params": {
         "color": "#tokenColor",
@@ -283,7 +283,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@bidder1",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
@@ -292,7 +292,7 @@
         {
           "timestamp": 20201027172140,
           "caller": "@bidder2",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
@@ -301,7 +301,7 @@
         {
           "timestamp": 20201027172141,
           "caller": "@bidder3",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 700},
           "params": {
             "color": "#tokenColor"
@@ -310,7 +310,7 @@
         {
           "timestamp": 20201027172142,
           "caller": "@bidder4",
-          "function": "placeBid",
+          "function": "place_bid",
           "incoming": {"#iota": 600},
           "params": {
             "color": "#tokenColor"
@@ -324,14 +324,14 @@
             "#tokenColor": {
               "AuctionInfo": {
                 "color": "#tokenColor",
-                "numTokens": 1,
-                "minimumBid": 500,
+                "num_tokens": 1,
+                "minimum_bid": 500,
                 "description": "N/A",
-                "whenStarted": 20201027172138,
+                "when_started": 20201027172138,
                 "duration": 60,
-                "auctionOwner": "@caller",
+                "auction_owner": "@caller",
                 "deposit": 100,
-                "ownerMargin": 50,
+                "owner_margin": 50,
                 "bids": [
                   {
                     "bidder": "@bidder1",
@@ -361,7 +361,7 @@
         "logs": {},
         "posts": [
           {
-            "function": "finalizeAuction", "delay": 3600,
+            "function": "finalize_auction", "delay": 3600,
             "params": {"color": "#tokenColor"}
           }
         ],

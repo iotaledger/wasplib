@@ -15,9 +15,9 @@ const (
 	keyError          = client.Key("error")
 	keyFeedback       = client.Key("feedback")
 	keyLog            = client.Key("log")
-	keyMaxDonation    = client.Key("maxDonation")
+	keyMaxDonation    = client.Key("max_donation")
 	keyTimestamp      = client.Key("timestamp")
-	keyTotalDonation  = client.Key("totalDonation")
+	keyTotalDonation  = client.Key("total_donation")
 	keyWithdrawAmount = client.Key("withdraw")
 )
 
@@ -33,7 +33,7 @@ func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("donate", donate)
 	exports.AddCall("withdraw", withdraw)
-	exports.AddView("viewDonations", viewDonations)
+	exports.AddView("view_donations", viewDonations)
 }
 
 func donate(sc *client.ScCallContext) {

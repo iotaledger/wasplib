@@ -1,9 +1,6 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 const KEY_AMOUNT: &str = "amount";
@@ -13,9 +10,9 @@ const KEY_DONATOR: &str = "donator";
 const KEY_ERROR: &str = "error";
 const KEY_FEEDBACK: &str = "feedback";
 const KEY_LOG: &str = "log";
-const KEY_MAX_DONATION: &str = "maxDonation";
+const KEY_MAX_DONATION: &str = "max_donation";
 const KEY_TIMESTAMP: &str = "timestamp";
-const KEY_TOTAL_DONATION: &str = "totalDonation";
+const KEY_TOTAL_DONATION: &str = "total_donation";
 const KEY_WITHDRAW_AMOUNT: &str = "withdraw";
 
 struct DonationInfo {
@@ -27,11 +24,11 @@ struct DonationInfo {
 }
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
     exports.add_call("donate", donate);
     exports.add_call("withdraw", withdraw);
-    exports.add_view("viewDonations", viewDonations);
+    exports.add_view("view_donations", view_donations);
 }
 
 fn donate(sc: &ScCallContext) {
@@ -50,7 +47,7 @@ fn donate(sc: &ScCallContext) {
             donation.amount = 0;
         }
     }
-    let bytes = encodeDonationInfo(&donation);
+    let bytes = encode_donation_info(&donation);
     tlog.append(sc.timestamp(), &bytes);
 
     let state = sc.state();
@@ -80,14 +77,14 @@ fn withdraw(sc: &ScCallContext) {
     sc.transfer(&sc_owner, &ScColor::IOTA, withdraw_amount);
 }
 
-fn viewDonations(sc: &ScViewContext) {
+fn view_donations(sc: &ScViewContext) {
     let state = sc.state();
-    let largestDonation = state.get_int(KEY_MAX_DONATION);
-    let totalDonated = state.get_int(KEY_TOTAL_DONATION);
+    let largest_donation = state.get_int(KEY_MAX_DONATION);
+    let total_donated = state.get_int(KEY_TOTAL_DONATION);
     let tlog = sc.timestamped_log(KEY_LOG);
     let results = sc.results();
-    results.get_int(KEY_MAX_DONATION).set_value(largestDonation.value());
-    results.get_int(KEY_TOTAL_DONATION).set_value(totalDonated.value());
+    results.get_int(KEY_MAX_DONATION).set_value(largest_donation.value());
+    results.get_int(KEY_TOTAL_DONATION).set_value(total_donated.value());
     let donations = results.get_map_array(KEY_DONATIONS);
     let size = tlog.length();
     for i in 0..size {
@@ -95,7 +92,7 @@ fn viewDonations(sc: &ScViewContext) {
         let donation = donations.get_map(i);
         donation.get_int(KEY_TIMESTAMP).set_value(log.get_int(KEY_TIMESTAMP).value());
         let bytes = log.get_bytes(KEY_DATA).value();
-        let di = decodeDonationInfo(&bytes);
+        let di = decode_donation_info(&bytes);
         donation.get_int(KEY_AMOUNT).set_value(di.amount);
         donation.get_string(KEY_FEEDBACK).set_value(&di.feedback);
         donation.get_string(KEY_DONATOR).set_value(&di.donator.to_string());
@@ -103,7 +100,7 @@ fn viewDonations(sc: &ScViewContext) {
     }
 }
 
-fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
+fn decode_donation_info(bytes: &[u8]) -> DonationInfo {
     let mut decoder = BytesDecoder::new(bytes);
     DonationInfo {
         seq: decoder.int(),
@@ -114,7 +111,7 @@ fn decodeDonationInfo(bytes: &[u8]) -> DonationInfo {
     }
 }
 
-fn encodeDonationInfo(donation: &DonationInfo) -> Vec<u8> {
+fn encode_donation_info(donation: &DonationInfo) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.int(donation.seq);
     encoder.agent(&donation.donator);

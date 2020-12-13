@@ -41,7 +41,7 @@ func (a *HostCall) call() {
 		fmt.Printf("FAIL: Request function %s: %v\n", a.function, err)
 		a.Error(err.Error())
 	}
-	
+
 	requestParams.SetInt(KeyLength, 0)
 	savedParams.CopyDataTo(requestParams)
 	root.SetString(KeyCaller, savedCaller)

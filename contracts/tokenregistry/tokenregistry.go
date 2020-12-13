@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	keyColorList   = client.Key("colorList")
+	keyColorList   = client.Key("color_list")
 	keyDescription = client.Key("description")
 	keyRegistry    = client.Key("registry")
-	keyUserDefined = client.Key("userDefined")
+	keyUserDefined = client.Key("user_defined")
 )
 
 type TokenInfo struct {
@@ -26,9 +26,9 @@ type TokenInfo struct {
 
 func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("mintSupply", mintSupply)
-	exports.AddCall("updateMetadata", updateMetadata)
-	exports.AddCall("transferOwnership", transferOwnership)
+	exports.AddCall("mint_supply", mintSupply)
+	exports.AddCall("update_metadata", updateMetadata)
+	exports.AddCall("transfer_ownership", transferOwnership)
 }
 
 func mintSupply(sc *client.ScCallContext) {

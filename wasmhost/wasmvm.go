@@ -46,7 +46,9 @@ func (vm *WasmVmBase) hostGetBytes(objId int32, keyId int32, stringRef int32, si
 		if objId < 0 {
 			objId = -objId
 		}
-		if host.Exists(objId, keyId) { return 0 }
+		if host.Exists(objId, keyId) {
+			return 0
+		}
 		// missing key is indicated by -1
 		return -1
 	}

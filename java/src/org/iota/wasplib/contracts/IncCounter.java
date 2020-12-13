@@ -12,23 +12,23 @@ import org.iota.wasplib.client.mutable.ScMutableInt;
 
 public class IncCounter {
 	private static final Key keyCounter = new Key("counter");
-	private static final Key keyNumRepeats = new Key("numRepeats");
+	private static final Key keyNumRepeats = new Key("num_repeats");
 	private static boolean localStateMustIncrement = false;
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("init", IncCounter::init);
 		exports.AddCall("increment", IncCounter::increment);
-		exports.AddCall("incrementCallIncrement", IncCounter::incrementCallIncrement);
-		exports.AddCall("incrementCallIncrementRecurse5x", IncCounter::incrementCallIncrementRecurse5x);
-		exports.AddCall("incrementPostIncrement", IncCounter::incrementPostIncrement);
-		exports.AddView("incrementViewCounter", IncCounter::incrementViewCounter);
-		exports.AddCall("incrementRepeatMany", IncCounter::incrementRepeatMany);
-		exports.AddCall("incrementWhenMustIncrement", IncCounter::incrementWhenMustIncrement);
-		exports.AddCall("incrementLocalStateInternalCall", IncCounter::incrementLocalStateInternalCall);
-		exports.AddCall("incrementLocalStateSandboxCall", IncCounter::incrementLocalStateSandboxCall);
-		exports.AddCall("incrementLocalStatePost", IncCounter::incrementLocalStatePost);
+		exports.AddCall("increment_call_increment", IncCounter::incrementCallIncrement);
+		exports.AddCall("increment_call_increment_recurse5x", IncCounter::incrementCallIncrementRecurse5x);
+		exports.AddCall("increment_post_increment", IncCounter::incrementPostIncrement);
+		exports.AddView("increment_view_counter", IncCounter::incrementViewCounter);
+		exports.AddCall("increment_repeat_many", IncCounter::incrementRepeatMany);
+		exports.AddCall("increment_when_must_increment", IncCounter::incrementWhenMustIncrement);
+		exports.AddCall("increment_local_state_internal_call", IncCounter::incrementLocalStateInternalCall);
+		exports.AddCall("increment_local_state_sandbox_call", IncCounter::incrementLocalStateSandboxCall);
+		exports.AddCall("increment_local_state_post", IncCounter::incrementLocalStatePost);
 		exports.AddCall("nothing", ScExports::nothing);
 		exports.AddCall("test", IncCounter::test);
 	}
@@ -51,7 +51,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.Call("incrementCallIncrement").Call();
+			sc.Call("increment_call_increment").Call();
 		}
 	}
 
@@ -60,7 +60,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
-			sc.Call("incrementCallIncrementRecurse5x").Call();
+			sc.Call("increment_call_increment_recurse5x").Call();
 		}
 	}
 
@@ -69,7 +69,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			sc.Post("incrementPostIncrement").Post(0);
+			sc.Post("increment_post_increment").Post(0);
 		}
 	}
 
@@ -91,11 +91,11 @@ public class IncCounter {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		sc.Post("incrementRepeatMany").Post(0);
+		sc.Post("increment_repeat_many").Post(0);
 	}
 
 	public static void incrementWhenMustIncrement(ScCallContext sc) {
-		sc.Log("incrementWhenMustIncrement called");
+		sc.Log("increment_when_must_increment called");
 		if (localStateMustIncrement) {
 			ScMutableInt counter = sc.State().GetInt(keyCounter);
 			counter.SetValue(counter.Value() + 1);
@@ -111,18 +111,18 @@ public class IncCounter {
 	}
 
 	public static void incrementLocalStateSandboxCall(ScCallContext sc) {
-		sc.Call("incrementWhenMustIncrement").Call();
+		sc.Call("increment_when_must_increment").Call();
 		localStateMustIncrement = true;
-		sc.Call("incrementWhenMustIncrement").Call();
-		sc.Call("incrementWhenMustIncrement").Call();
+		sc.Call("increment_when_must_increment").Call();
+		sc.Call("increment_when_must_increment").Call();
 		// counter ends up as 0
 	}
 
 	public static void incrementLocalStatePost(ScCallContext sc) {
-		sc.Post("incrementWhenMustIncrement").Post(0);
+		sc.Post("increment_when_must_increment").Post(0);
 		localStateMustIncrement = true;
-		sc.Post("incrementWhenMustIncrement").Post(0);
-		sc.Post("incrementWhenMustIncrement").Post(0);
+		sc.Post("increment_when_must_increment").Post(0);
+		sc.Post("increment_when_must_increment").Post(0);
 		// counter ends up as 0
 	}
 

@@ -1,36 +1,33 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 use wasplib::client::host::*;
 
 const KEY_COUNTER: &str = "counter";
-const KEY_NUM_REPEATS: &str = "numRepeats";
+const KEY_NUM_REPEATS: &str = "num_repeats";
 
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("init", init);
+    exports.add_call("init", on_init);
     exports.add_call("increment", increment);
-    exports.add_call("incrementCallIncrement", incrementCallIncrement);
-    exports.add_call("incrementCallIncrementRecurse5x", incrementCallIncrementRecurse5x);
-    exports.add_call("incrementPostIncrement", incrementPostIncrement);
-    exports.add_view("incrementViewCounter", incrementViewCounter);
-    exports.add_call("incrementRepeatMany", incrementRepeatMany);
-    exports.add_call("incrementWhenMustIncrement", incrementWhenMustIncrement);
-    exports.add_call("incrementLocalStateInternalCall", incrementLocalStateInternalCall);
-    exports.add_call("incrementLocalStateSandboxCall", incrementLocalStateSandboxCall);
-    exports.add_call("incrementLocalStatePost", incrementLocalStatePost);
+    exports.add_call("increment_call_increment", increment_call_increment);
+    exports.add_call("increment_call_increment_recurse5x", increment_call_increment_recurse5x);
+    exports.add_call("increment_post_increment", increment_post_increment);
+    exports.add_view("increment_view_counter", increment_view_counter);
+    exports.add_call("increment_repeat_many", increment_repeat_many);
+    exports.add_call("increment_when_must_increment", increment_when_must_increment);
+    exports.add_call("increment_local_state_internal_call", increment_local_state_internal_call);
+    exports.add_call("increment_local_state_sandbox_call", increment_local_state_sandbox_call);
+    exports.add_call("increment_local_state_post", increment_local_state_post);
     exports.add_call("nothing", ScExports::nothing);
     exports.add_call("test", test);
 }
 
-fn init(sc: &ScCallContext) {
+fn on_init(sc: &ScCallContext) {
     let counter = sc.params().get_int(KEY_COUNTER).value();
     if counter == 0 {
         return;
@@ -43,39 +40,39 @@ fn increment(sc: &ScCallContext) {
     counter.set_value(counter.value() + 1);
 }
 
-fn incrementCallIncrement(sc: &ScCallContext) {
+fn increment_call_increment(sc: &ScCallContext) {
     let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.call("incrementCallIncrement").call();
+        sc.call("increment_call_increment").call();
     }
 }
 
-fn incrementCallIncrementRecurse5x(sc: &ScCallContext) {
+fn increment_call_increment_recurse5x(sc: &ScCallContext) {
     let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        sc.call("incrementCallIncrementRecurse5x").call();
+        sc.call("increment_call_increment_recurse5x").call();
     }
 }
 
-fn incrementPostIncrement(sc: &ScCallContext) {
+fn increment_post_increment(sc: &ScCallContext) {
     let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.post("incrementPostIncrement").post(0);
+        sc.post("increment_post_increment").post(0);
     }
 }
 
-fn incrementViewCounter(sc: &ScViewContext) {
+fn increment_view_counter(sc: &ScViewContext) {
     let counter = sc.state().get_int(KEY_COUNTER).value();
     sc.results().get_int(KEY_COUNTER).set_value(counter);
 }
 
-fn incrementRepeatMany(sc: &ScCallContext) {
+fn increment_repeat_many(sc: &ScCallContext) {
     let counter = sc.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -88,11 +85,11 @@ fn incrementRepeatMany(sc: &ScCallContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.post("incrementRepeatMany").post(0);
+    sc.post("increment_repeat_many").post(0);
 }
 
-fn incrementWhenMustIncrement(sc: &ScCallContext) {
-    sc.log("incrementWhenMustIncrement called");
+fn increment_when_must_increment(sc: &ScCallContext) {
+    sc.log("increment_when_must_increment called");
     unsafe {
         if !LOCAL_STATE_MUST_INCREMENT {
             return;
@@ -102,33 +99,33 @@ fn incrementWhenMustIncrement(sc: &ScCallContext) {
     counter.set_value(counter.value() + 1);
 }
 
-fn incrementLocalStateInternalCall(sc: &ScCallContext) {
-    incrementWhenMustIncrement(sc);
+fn increment_local_state_internal_call(sc: &ScCallContext) {
+    increment_when_must_increment(sc);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    incrementWhenMustIncrement(sc);
-    incrementWhenMustIncrement(sc);
+    increment_when_must_increment(sc);
+    increment_when_must_increment(sc);
     // counter ends up as 2
 }
 
-fn incrementLocalStateSandboxCall(sc: &ScCallContext) {
-    sc.call("incrementWhenMustIncrement").call();
+fn increment_local_state_sandbox_call(sc: &ScCallContext) {
+    sc.call("increment_when_must_increment").call();
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.call("incrementWhenMustIncrement").call();
-    sc.call("incrementWhenMustIncrement").call();
+    sc.call("increment_when_must_increment").call();
+    sc.call("increment_when_must_increment").call();
     // counter ends up as 0
 }
 
-fn incrementLocalStatePost(sc: &ScCallContext) {
-    sc.post("incrementWhenMustIncrement").post(0);
+fn increment_local_state_post(sc: &ScCallContext) {
+    sc.post("increment_when_must_increment").post(0);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.post("incrementWhenMustIncrement").post(0);
-    sc.post("incrementWhenMustIncrement").post(0);
+    sc.post("increment_when_must_increment").post(0);
+    sc.post("increment_when_must_increment").post(0);
     // counter ends up as 0
 }
 

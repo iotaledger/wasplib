@@ -9,7 +9,7 @@ import (
 
 const (
 	keyCounter    = client.Key("counter")
-	keyNumRepeats = client.Key("numRepeats")
+	keyNumRepeats = client.Key("num_repeats")
 )
 
 var localStateMustIncrement = false
@@ -18,15 +18,15 @@ func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("init", onInit)
 	exports.AddCall("increment", increment)
-	exports.AddCall("incrementCallIncrement", incrementCallIncrement)
-	exports.AddCall("incrementCallIncrementRecurse5x", incrementCallIncrementRecurse5x)
-	exports.AddCall("incrementPostIncrement", incrementPostIncrement)
-	exports.AddView("incrementViewCounter", incrementViewCounter)
-	exports.AddCall("incrementRepeatMany", incrementRepeatMany)
-	exports.AddCall("incrementWhenMustIncrement", incrementWhenMustIncrement)
-	exports.AddCall("incrementLocalStateInternalCall", incrementLocalStateInternalCall)
-	exports.AddCall("incrementLocalStateSandboxCall", incrementLocalStateSandboxCall)
-	exports.AddCall("incrementLocalStatePost", incrementLocalStatePost)
+	exports.AddCall("increment_call_increment", incrementCallIncrement)
+	exports.AddCall("increment_call_increment_recurse5x", incrementCallIncrementRecurse5x)
+	exports.AddCall("increment_post_increment", incrementPostIncrement)
+	exports.AddView("increment_view_counter", incrementViewCounter)
+	exports.AddCall("increment_repeat_many", incrementRepeatMany)
+	exports.AddCall("increment_when_must_increment", incrementWhenMustIncrement)
+	exports.AddCall("increment_local_state_internal_call", incrementLocalStateInternalCall)
+	exports.AddCall("increment_local_state_sandbox_call", incrementLocalStateSandboxCall)
+	exports.AddCall("increment_local_state_post", incrementLocalStatePost)
 	exports.AddCall("nothing", client.Nothing)
 	exports.AddCall("test", test)
 }
@@ -49,7 +49,7 @@ func incrementCallIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.Call("incrementCallIncrement").Call()
+		sc.Call("increment_call_increment").Call()
 	}
 }
 
@@ -58,7 +58,7 @@ func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
-		sc.Call("incrementCallIncrementRecurse5x").Call()
+		sc.Call("increment_call_increment_recurse5x").Call()
 	}
 }
 
@@ -67,7 +67,7 @@ func incrementPostIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.Post("incrementPostIncrement").Post(0)
+		sc.Post("increment_post_increment").Post(0)
 	}
 }
 
@@ -89,11 +89,11 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	sc.Post("incrementRepeatMany").Post(0)
+	sc.Post("increment_repeat_many").Post(0)
 }
 
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
-	sc.Log("incrementWhenMustIncrement called")
+	sc.Log("increment_when_must_increment called")
 	if localStateMustIncrement {
 		counter := sc.State().GetInt(keyCounter)
 		counter.SetValue(counter.Value() + 1)
@@ -109,18 +109,18 @@ func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 }
 
 func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
-	sc.Call("incrementWhenMustIncrement").Call()
+	sc.Call("increment_when_must_increment").Call()
 	localStateMustIncrement = true
-	sc.Call("incrementWhenMustIncrement").Call()
-	sc.Call("incrementWhenMustIncrement").Call()
+	sc.Call("increment_when_must_increment").Call()
+	sc.Call("increment_when_must_increment").Call()
 	// counter ends up as 0
 }
 
 func incrementLocalStatePost(sc *client.ScCallContext) {
-	sc.Post("incrementWhenMustIncrement").Post(0)
+	sc.Post("increment_when_must_increment").Post(0)
 	localStateMustIncrement = true
-	sc.Post("incrementWhenMustIncrement").Post(0)
-	sc.Post("incrementWhenMustIncrement").Post(0)
+	sc.Post("increment_when_must_increment").Post(0)
+	sc.Post("increment_when_must_increment").Post(0)
 	// counter ends up as 0
 }
 

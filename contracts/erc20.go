@@ -11,7 +11,7 @@ import (
 func main() {
 }
 
-//export onLoad
+//export on_load
 func erc20OnLoad() {
 	wasmclient.ConnectWasmHost()
 	erc20.OnLoad()

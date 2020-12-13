@@ -7,10 +7,10 @@ import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
 
 public class HelloWorld {
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("helloWorld", HelloWorld::helloWorld);
+		exports.AddCall("hello_world", HelloWorld::helloWorld);
 	}
 
 	public static void helloWorld(ScCallContext sc) {

@@ -220,7 +220,7 @@
         {
           "timestamp": 20201027172139,
           "caller": "@caller3",
-          "function": "viewDonations"
+          "function": "view_donations"
         }
       ],
       "expect": {
@@ -259,8 +259,8 @@
         "views": [],
         "transfers": [],
         "results": {
-          "maxDonation": 750,
-          "totalDonation": 1250,
+          "max_donation": 750,
+          "total_donation": 1250,
           "donations": [
             {
               "timestamp": 20201027172138,

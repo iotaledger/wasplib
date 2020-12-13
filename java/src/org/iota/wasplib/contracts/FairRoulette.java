@@ -18,19 +18,19 @@ import java.util.ArrayList;
 public class FairRoulette {
 	private static final Key keyBets = new Key("bets");
 	private static final Key keyColor = new Key("color");
-	private static final Key keyLastWinningColor = new Key("lastWinningColor");
-	private static final Key keyLockedBets = new Key("lockedBets");
-	private static final Key keyPlayPeriod = new Key("playPeriod");
+	private static final Key keyLastWinningColor = new Key("last_winning_color");
+	private static final Key keyLockedBets = new Key("locked_bets");
+	private static final Key keyPlayPeriod = new Key("play_period");
 	private static final long NUM_COLORS = 5;
 	private static final long PLAY_PERIOD = 120;
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("placeBet", FairRoulette::placeBet);
-		exports.AddCall("lockBets", FairRoulette::lockBets);
-		exports.AddCall("payWinners", FairRoulette::payWinners);
-		exports.AddCall("playPeriod", FairRoulette::playPeriod);
+		exports.AddCall("place_bet", FairRoulette::placeBet);
+		exports.AddCall("lock_bets", FairRoulette::lockBets);
+		exports.AddCall("pay_winners", FairRoulette::payWinners);
+		exports.AddCall("play_period", FairRoulette::playPeriod);
 		exports.AddCall("nothing", ScExports::nothing);
 	}
 
@@ -65,7 +65,7 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = PLAY_PERIOD;
 			}
-			sc.Post("lockBets").Post(playPeriod);
+			sc.Post("lock_bets").Post(playPeriod);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		sc.Post("payWinners").Post(0);
+		sc.Post("pay_winners").Post(0);
 	}
 
 	public static void payWinners(ScCallContext sc) {

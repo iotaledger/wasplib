@@ -32,42 +32,43 @@ public class Erc20 {
 	private static final Key PARAM_AMOUNT = new Key("am");
 	private static final Key PARAM_RECIPIENT = new Key("r");
 
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("init", Erc20::onInit);
-		exports.AddView("totalSupply", Erc20::total_supply);
-		exports.AddView("balanceOf", Erc20::balance_of);
+		exports.AddView("total_supply", Erc20::total_supply);
+		exports.AddView("balance_of", Erc20::balance_of);
 		exports.AddView("allowance", Erc20::allowance);
 		exports.AddCall("transfer", Erc20::transfer);
 		exports.AddCall("approve", Erc20::approve);
-		exports.AddCall("transferFrom", Erc20::transfer_from);
+		exports.AddCall("transfer_from", Erc20::transfer_from);
 	}
 
 	// TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-	// init is a private static final Keyructor entry point. It initializes the smart contract with the
+	// onInit is a private static final Keyructor entry point. It initializes the smart contract with the
 	// initial value of the token supply and the owner of that supply
 	// - input:
 	//   -- PARAM_SUPPLY must be nonzero positive integer
 	//   -- PARAM_CREATOR is the AgentID where initial supply is placed
 	public static void onInit(ScCallContext ctx) {
-		ctx.Log("erc20.init.begin");
+		ctx.Log("erc20.onInit.begin");
 		// validate parameters
 		// supply
 		ScImmutableInt supply = ctx.Params().GetInt(PARAM_SUPPLY);
 		String err;
 		if (!supply.Exists() || supply.Value() <= 0) {
-			err = "er20.init.fail: wrong 'supply' parameter";
+			err = "er20.onInit.fail: wrong 'supply' parameter";
 			ctx.Log(err);
 			ctx.Error().SetValue(err);
 			return;
 		}
 		// creator (owner);
-		// we cannot use 'caller' here because the init is always called from the 'root'
-		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to private static final Keyructor (init);
+		// we cannot use 'caller' here because onInit is always called from the 'root'
+		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to private static final constructor (onInit);
 		ScImmutableAgent creator = ctx.Params().GetAgent(PARAM_CREATOR);
 		if (!creator.Exists()) {
-			err = "er20.init.fail: wrong 'creator' parameter";
+			err = "er20.onInit.fail: wrong 'creator' parameter";
 			ctx.Log(err);
 			ctx.Error().SetValue(err);
 			return;
@@ -77,7 +78,7 @@ public class Erc20 {
 		// assign the whole supply to creator
 		ctx.State().GetMap(STATE_VAR_BALANCES).GetInt(creator.Value()).SetValue(supply.Value());
 
-		String t = "erc20.init.success. Supply: " + supply + ", creator:" + creator;
+		String t = "erc20.onInit.success. Supply: " + supply + ", creator:" + creator;
 		ctx.Log(t);
 	}
 

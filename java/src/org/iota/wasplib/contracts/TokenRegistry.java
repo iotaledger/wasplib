@@ -16,17 +16,17 @@ import org.iota.wasplib.client.mutable.ScMutableColorArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class TokenRegistry {
-	private static final Key keyColorList = new Key("colorList");
+	private static final Key keyColorList = new Key("color_list");
 	private static final Key keyDescription = new Key("description");
 	private static final Key keyRegistry = new Key("registry");
-	private static final Key keyUserDefined = new Key("userDefined");
+	private static final Key keyUserDefined = new Key("user_defined");
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("mintSupply", TokenRegistry::mintSupply);
-		exports.AddCall("updateMetadata", TokenRegistry::updateMetadata);
-		exports.AddCall("transferOwnership", TokenRegistry::transferOwnership);
+		exports.AddCall("mint_supply", TokenRegistry::mintSupply);
+		exports.AddCall("update_metadata", TokenRegistry::updateMetadata);
+		exports.AddCall("transfer_ownership", TokenRegistry::transferOwnership);
 	}
 
 	public static void mintSupply(ScCallContext sc) {

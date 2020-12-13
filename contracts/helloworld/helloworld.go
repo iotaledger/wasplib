@@ -9,7 +9,7 @@ import (
 
 func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("helloWorld", helloWorld)
+	exports.AddCall("hello_world", helloWorld)
 }
 
 func helloWorld(sc *client.ScCallContext) {

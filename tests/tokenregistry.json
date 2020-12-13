@@ -2,12 +2,12 @@
   "types": {
     "TokenInfo": [
       {"field": "supply", "type": "Int"},
-      {"field": "mintedBy", "type": "Agent"},
+      {"field": "minted_by", "type": "Agent"},
       {"field": "owner", "type": "Agent"},
       {"field": "created", "type": "Int"},
       {"field": "updated", "type": "Int"},
       {"field": "description", "type": "String"},
-      {"field": "userDefined", "type": "String"}
+      {"field": "user_defined", "type": "String"}
     ]
   },
   "setups": {
@@ -27,7 +27,7 @@
     {
       "name": "mintSupply",
       "setup": "default",
-      "function": "mintSupply",
+      "function": "mint_supply",
       "incoming": {"#mint": "#token1", "#token1": 1},
       "params": {
         "description": "My very valuable token"
@@ -39,16 +39,16 @@
             "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@caller",
+                "minted_by": "@caller",
                 "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
-                "userDefined": ""
+                "user_defined": ""
               }
             }
           },
-          "colorList": ["#token1"]
+          "color_list": ["#token1"]
         },
         "logs": {},
         "calls": [],
@@ -60,7 +60,7 @@
     {
       "name": "mintWithMissingDescription",
       "setup": "default",
-      "function": "mintSupply",
+      "function": "mint_supply",
       "incoming": {"#mint": "#token1", "#token1": 1},
       "params": {},
       "expect": {
@@ -70,16 +70,16 @@
             "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@caller",
+                "minted_by": "@caller",
                 "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "no dscr",
-                "userDefined": ""
+                "user_defined": ""
               }
             }
           },
-          "colorList": ["#token1"]
+          "color_list": ["#token1"]
         },
         "logs": {},
         "calls": [],
@@ -91,7 +91,7 @@
     {
       "name": "mintWithMissingSupply",
       "setup": "default",
-      "function": "mintSupply",
+      "function": "mint_supply",
       "incoming": {"#mint": "#token1", "#iota": 1},
       "params": {
         "description": "Sending 1 iota instead of minting a token"
@@ -101,7 +101,7 @@
         "state": {
           "registry": {
           },
-          "colorList": []
+          "color_list": []
         },
         "logs": {},
         "calls": [],
@@ -113,7 +113,7 @@
     {
       "name": "mintSecondSupply",
       "setup": "default",
-      "function": "mintSupply",
+      "function": "mint_supply",
       "incoming": {"#mint": "#token1", "#token1": 1},
       "params": {
         "description": "My very valuable token"
@@ -122,11 +122,11 @@
         {
           "timestamp": 20201027172139,
           "caller": "@caller2",
-          "function": "mintSupply",
+          "function": "mint_supply",
           "incoming": {"#mint": "#token2", "#token2": 750},
           "params": {
             "description": "My shares in the IOTA Foundation",
-            "userDefined": "Some user defined data"
+            "user_defined": "Some user defined data"
           }
         }
       ],
@@ -137,27 +137,27 @@
             "#token1": {
               "TokenInfo": {
                 "supply": 1,
-                "mintedBy": "@caller",
+                "minted_by": "@caller",
                 "owner": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
-                "userDefined": ""
+                "user_defined": ""
               }
             },
             "#token2": {
               "TokenInfo": {
                 "supply": 750,
-                "mintedBy": "@caller2",
+                "minted_by": "@caller2",
                 "owner": "@caller2",
                 "created": 20201027172139,
                 "updated": 20201027172139,
                 "description": "My shares in the IOTA Foundation",
-                "userDefined": "Some user defined data"
+                "user_defined": "Some user defined data"
               }
             }
           },
-          "colorList": ["#token1", "#token2"]
+          "color_list": ["#token1", "#token2"]
         },
         "logs": {},
         "calls": [],

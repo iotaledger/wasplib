@@ -24,7 +24,7 @@ public class FairAuction {
 	private static final Key keyDescription = new Key("description");
 	private static final Key keyDuration = new Key("duration");
 	private static final Key keyMinimum = new Key("minimum");
-	private static final Key keyOwnerMargin = new Key("ownerMargin");
+	private static final Key keyOwnerMargin = new Key("owner_margin");
 	private static final int durationDefault = 60;
 	private static final int durationMin = 1;
 	private static final int durationMax = 120;
@@ -33,13 +33,13 @@ public class FairAuction {
 	private static final int ownerMarginMin = 5;
 	private static final int ownerMarginMax = 100;
 
-	//export onLoad
+	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("startAuction", FairAuction::startAuction);
-		exports.AddCall("finalizeAuction", FairAuction::finalizeAuction);
-		exports.AddCall("placeBid", FairAuction::placeBid);
-		exports.AddCall("setOwnerMargin", FairAuction::setOwnerMargin);
+		exports.AddCall("start_auction", FairAuction::startAuction);
+		exports.AddCall("finalize_auction", FairAuction::finalizeAuction);
+		exports.AddCall("place_bid", FairAuction::placeBid);
+		exports.AddCall("set_owner_margin", FairAuction::setOwnerMargin);
 	}
 
 	public static void startAuction(ScCallContext sc) {
@@ -130,7 +130,7 @@ public class FairAuction {
 		byte[] bytes2 = encodeAuctionInfo(auction);
 		currentAuction.SetValue(bytes2);
 
-		ScPostInfo finalizeRequest = sc.Post("finalizeAuction");
+		ScPostInfo finalizeRequest = sc.Post("finalize_auction");
 		ScMutableMap finalizeParams = finalizeRequest.Params();
 		finalizeParams.GetColor(keyColor).SetValue(auction.color);
 		finalizeRequest.Post(auction.duration * 60);

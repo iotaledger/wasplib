@@ -11,7 +11,7 @@ import (
 func main() {
 }
 
-//export onLoad
+//export on_load
 func dividendOnLoad() {
 	wasmclient.ConnectWasmHost()
 	dividend.OnLoad()

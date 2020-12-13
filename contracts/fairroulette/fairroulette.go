@@ -10,9 +10,9 @@ import (
 const (
 	keyBets             = client.Key("bets")
 	keyColor            = client.Key("color")
-	keyLastWinningColor = client.Key("lastWinningColor")
-	keyLockedBets       = client.Key("lockedBets")
-	keyPlayPeriod       = client.Key("playPeriod")
+	keyLastWinningColor = client.Key("last_winning_color")
+	keyLockedBets       = client.Key("locked_bets")
+	keyPlayPeriod       = client.Key("play_period")
 )
 
 const NUM_COLORS int64 = 5
@@ -26,10 +26,10 @@ type BetInfo struct {
 
 func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("placeBet", placeBet)
-	exports.AddCall("lockBets", lockBets)     //TODO sc internal only
-	exports.AddCall("payWinners", payWinners) //TODO sc internal only
-	exports.AddCall("playPeriod", playPeriod)
+	exports.AddCall("place_bet", placeBet)
+	exports.AddCall("lock_bets", lockBets)     //TODO sc internal only
+	exports.AddCall("pay_winners", payWinners) //TODO sc internal only
+	exports.AddCall("play_period", playPeriod)
 	exports.AddCall("nothing", client.Nothing)
 }
 
@@ -65,7 +65,7 @@ func placeBet(sc *client.ScCallContext) {
 		if playPeriod < 10 {
 			playPeriod = PLAY_PERIOD
 		}
-		sc.Post("lockBets").Post(playPeriod)
+		sc.Post("lock_bets").Post(playPeriod)
 	}
 }
 
@@ -86,7 +86,7 @@ func lockBets(sc *client.ScCallContext) {
 	}
 	bets.Clear()
 
-	sc.Post("payWinners").Post(0)
+	sc.Post("pay_winners").Post(0)
 }
 
 func payWinners(sc *client.ScCallContext) {

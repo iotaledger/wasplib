@@ -13,7 +13,7 @@ const (
 	keyDescription = client.Key("description")
 	keyDuration    = client.Key("duration")
 	keyMinimum     = client.Key("minimum")
-	keyOwnerMargin = client.Key("ownerMargin")
+	keyOwnerMargin = client.Key("owner_margin")
 )
 
 const (
@@ -61,10 +61,10 @@ type BidInfo struct {
 
 func OnLoad() {
 	exports := client.NewScExports()
-	exports.AddCall("startAuction", startAuction)
-	exports.AddCall("finalizeAuction", finalizeAuction)
-	exports.AddCall("placeBid", placeBid)
-	exports.AddCall("setOwnerMargin", setOwnerMargin)
+	exports.AddCall("start_auction", startAuction)
+	exports.AddCall("finalize_auction", finalizeAuction)
+	exports.AddCall("place_bid", placeBid)
+	exports.AddCall("set_owner_margin", setOwnerMargin)
 }
 
 func startAuction(sc *client.ScCallContext) {
@@ -155,7 +155,7 @@ func startAuction(sc *client.ScCallContext) {
 	}
 	bytes := encodeAuctionInfo(auction)
 	currentAuction.SetValue(bytes)
-	finalizeRequest := sc.Post("finalizeAuction")
+	finalizeRequest := sc.Post("finalize_auction")
 	finalizeParams := finalizeRequest.Params()
 	finalizeParams.GetColor(keyColor).SetValue(auction.color)
 	finalizeRequest.Post(auction.duration * 60)

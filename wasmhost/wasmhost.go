@@ -245,7 +245,7 @@ func (host *WasmHost) LoadWasm(wasmData []byte) error {
 	if err != nil {
 		return err
 	}
-	err = host.vm.RunFunction("onLoad")
+	err = host.vm.RunFunction("on_load")
 	if err != nil {
 		return err
 	}

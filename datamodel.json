@@ -7,7 +7,7 @@
   "calls": [
     {
       "contract": "contractNameOrEmpty",
-      "function": "functionName",
+      "function": "function_name",
       "delay": -1,
       "params": {
         "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
@@ -33,7 +33,7 @@
     "owner": "base58HashOfChainOwner"
   },
   "error": "errorTextOrEmptyStringWhenNoError",
-  "function": "nameOfRequestedFunction",
+  "function": "name_of_requested_function",
   "incoming": {
     "iota": 1000,
     "base58HashOfColor": 27
@@ -53,7 +53,7 @@
     {
       "chain": "base58HashOfSmartContractChainIdOrEmpty",
       "contract": "contractNameOrEmpty",
-      "function": "functionName",
+      "function": "function_name",
       "delay": 3600,
       "params": {
         "paramBytes": "0x[fe dc ba 98 76 54 32 10]",
@@ -102,7 +102,7 @@
   "views": [
     {
       "contract": "contractNameOrEmpty",
-      "function": "functionName",
+      "function": "function_name",
       "delay": -2,
       "params": {
         "paramBytes": "0x[fe dc ba 98 76 54 32 10]",

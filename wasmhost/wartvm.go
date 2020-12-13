@@ -135,7 +135,7 @@ func (vm *WartVM) RunScFunction(index int32) error {
 	params := make([]sections.Variable, 1)
 	params[0].I32 = index
 	frame := vm.preCall()
-	err := vm.runner.RunExport("sc_call_entrypoint", params)
+	err := vm.runner.RunExport("on_call_entrypoint", params)
 	vm.postCall(frame)
 	return err
 }

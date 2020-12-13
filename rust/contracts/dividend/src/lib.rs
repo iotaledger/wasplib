@@ -1,15 +1,12 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-#![allow(non_snake_case)]
-
 use wasplib::client::*;
 
 const KEY_ADDRESS: &str = "address";
 const KEY_FACTOR: &str = "factor";
 const KEY_MEMBERS: &str = "members";
-const KEY_TOTAL_FACTOR: &str = "totalFactor";
+const KEY_TOTAL_FACTOR: &str = "total_factor";
 
 struct Member {
     address: ScAddress,
@@ -17,7 +14,7 @@ struct Member {
 }
 
 #[no_mangle]
-pub fn onLoad() {
+fn on_load() {
     let exports = ScExports::new();
     exports.add_call("member", member);
     exports.add_call("dividend", dividend);
@@ -44,26 +41,26 @@ fn member(sc: &ScCallContext) {
         factor: factor.value(),
     };
     let state = sc.state();
-    let totalFactor = state.get_int(KEY_TOTAL_FACTOR);
-    let mut total = totalFactor.value();
+    let total_factor = state.get_int(KEY_TOTAL_FACTOR);
+    let mut total = total_factor.value();
     let members = state.get_bytes_array(KEY_MEMBERS);
     let size = members.length();
     for i in 0..size {
         let bytes = members.get_bytes(i).value();
-        let m = decodeMember(&bytes);
+        let m = decode_member(&bytes);
         if m.address == member.address {
             total -= m.factor;
             total += member.factor;
-            totalFactor.set_value(total);
-            let bytes = encodeMember(&member);
+            total_factor.set_value(total);
+            let bytes = encode_member(&member);
             members.get_bytes(i).set_value(&bytes);
             sc.log(&("Updated: ".to_string() + &member.address.to_string()));
             return;
         }
     }
     total += member.factor;
-    totalFactor.set_value(total);
-    let bytes = encodeMember(&member);
+    total_factor.set_value(total);
+    let bytes = encode_member(&member);
     members.get_bytes(size).set_value(&bytes);
     sc.log(&("Appended: ".to_string() + &member.address.to_string()));
 }
@@ -75,14 +72,14 @@ fn dividend(sc: &ScCallContext) {
         return;
     }
     let state = sc.state();
-    let totalFactor = state.get_int(KEY_TOTAL_FACTOR);
-    let total = totalFactor.value();
+    let total_factor = state.get_int(KEY_TOTAL_FACTOR);
+    let total = total_factor.value();
     let members = state.get_bytes_array(KEY_MEMBERS);
     let size = members.length();
     let mut parts = 0_i64;
     for i in 0..size {
         let bytes = members.get_bytes(i).value();
-        let m = decodeMember(&bytes);
+        let m = decode_member(&bytes);
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;
@@ -98,7 +95,7 @@ fn dividend(sc: &ScCallContext) {
     }
 }
 
-fn decodeMember(bytes: &[u8]) -> Member {
+fn decode_member(bytes: &[u8]) -> Member {
     let mut decoder = BytesDecoder::new(bytes);
     Member {
         address: decoder.address(),
@@ -106,7 +103,7 @@ fn decodeMember(bytes: &[u8]) -> Member {
     }
 }
 
-fn encodeMember(member: &Member) -> Vec<u8> {
+fn encode_member(member: &Member) -> Vec<u8> {
     let mut encoder = BytesEncoder::new();
     encoder.address(&member.address);
     encoder.int(member.factor);

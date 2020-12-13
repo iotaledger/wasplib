@@ -29,7 +29,7 @@ func deployErc20(t *testing.T) *alone.Chain {
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 
-	res, err := chain.CallView(erc20name, "totalSupply")
+	res, err := chain.CallView(erc20name, "total_supply")
 	require.NoError(t, err)
 	sup, ok, err := codec.DecodeInt64(res.MustGet(PARAM_SUPPLY))
 	require.NoError(t, err)
@@ -41,7 +41,7 @@ func deployErc20(t *testing.T) *alone.Chain {
 }
 
 func checkErc20Balance(e *alone.Chain, account coretypes.AgentID, amount int64) {
-	res, err := e.CallView(erc20name, "balanceOf", PARAM_ACCOUNT, account)
+	res, err := e.CallView(erc20name, "balance_of", PARAM_ACCOUNT, account)
 	require.NoError(e.Glb.T, err)
 	sup, ok, err := codec.DecodeInt64(res.MustGet(PARAM_AMOUNT))
 	require.NoError(e.Glb.T, err)

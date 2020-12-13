@@ -27,38 +27,38 @@ const PARAM_RECIPIENT = client.Key("r")
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("init", onInit)
-	exports.AddView("totalSupply", total_supply)
-	exports.AddView("balanceOf", balance_of)
+	exports.AddView("total_supply", total_supply)
+	exports.AddView("balance_of", balance_of)
 	exports.AddView("allowance", allowance)
 	exports.AddCall("transfer", transfer)
 	exports.AddCall("approve", approve)
-	exports.AddCall("transferFrom", transfer_from)
+	exports.AddCall("transfer_from", transfer_from)
 }
 
 // TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-// init is a constructor entry point. It initializes the smart contract with the
+// onInit is a constructor entry point. It initializes the smart contract with the
 // initial value of the token supply and the owner of that supply
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed
 func onInit(ctx *client.ScCallContext) {
-	ctx.Log("erc20.init.begin")
+	ctx.Log("erc20.onInit.begin")
 	// validate parameters
 	// supply
 	supply := ctx.Params().GetInt(PARAM_SUPPLY)
 	if !supply.Exists() || supply.Value() <= 0 {
-		err := "er20.init.fail: wrong 'supply' parameter"
+		err := "er20.onInit.fail: wrong 'supply' parameter"
 		ctx.Log(err)
 		ctx.Error().SetValue(err)
 		return
 	}
 	// creator (owner)
-	// we cannot use 'caller' here because the init is always called from the 'root'
-	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (init)
+	// we cannot use 'caller' here because onInit is always called from the 'root'
+	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (onInit)
 	creator := ctx.Params().GetAgent(PARAM_CREATOR)
 	if !creator.Exists() {
-		err := "er20.init.fail: wrong 'creator' parameter"
+		err := "er20.onInit.fail: wrong 'creator' parameter"
 		ctx.Log(err)
 		ctx.Error().SetValue(err)
 		return
@@ -68,8 +68,8 @@ func onInit(ctx *client.ScCallContext) {
 	// assign the whole supply to creator
 	ctx.State().GetMap(STATE_VAR_BALANCES).GetInt(creator.Value()).SetValue(supply.Value())
 
-	t := "erc20.init.success. Supply: " + supply.String() +
-	    ", creator:" + creator.Value().String()
+	t := "erc20.onInit.success. Supply: " + supply.String() +
+		", creator:" + creator.Value().String()
 	ctx.Log(t)
 }
 
@@ -87,7 +87,7 @@ func total_supply(ctx *client.ScViewContext) {
 func balance_of(ctx *client.ScViewContext) {
 	account := ctx.Params().GetAgent(PARAM_ACCOUNT)
 	if !account.Exists() {
-		m := "wrong or non existing parameter: " +account.Value().String()
+		m := "wrong or non existing parameter: " + account.Value().String()
 		ctx.Log(m)
 		ctx.Error().SetValue(m)
 		return

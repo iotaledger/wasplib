@@ -11,7 +11,7 @@ import (
 func main() {
 }
 
-//export onLoad
+//export on_load
 func fairrouletteOnLoad() {
 	wasmclient.ConnectWasmHost()
 	fairroulette.OnLoad()

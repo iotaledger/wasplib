@@ -11,7 +11,7 @@ import (
 func main() {
 }
 
-//export onLoad
+//export on_load
 func inccounterOnLoad() {
 	wasmclient.ConnectWasmHost()
 	inccounter.OnLoad()
