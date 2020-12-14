@@ -58,7 +58,7 @@ public class Erc20 {
 		ScImmutableInt supply = ctx.Params().GetInt(PARAM_SUPPLY);
 		String err;
 		if (!supply.Exists() || supply.Value() <= 0) {
-			err = "er20.onInit.fail: wrong 'supply' parameter";
+			err = "erc20.onInit.fail: wrong 'supply' parameter";
 			ctx.Log(err);
 			ctx.Error().SetValue(err);
 			return;
@@ -68,7 +68,7 @@ public class Erc20 {
 		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to private static final constructor (onInit);
 		ScImmutableAgent creator = ctx.Params().GetAgent(PARAM_CREATOR);
 		if (!creator.Exists()) {
-			err = "er20.onInit.fail: wrong 'creator' parameter";
+			err = "erc20.onInit.fail: wrong 'creator' parameter";
 			ctx.Log(err);
 			ctx.Error().SetValue(err);
 			return;
@@ -120,7 +120,7 @@ public class Erc20 {
 		ScImmutableAgent owner = ctx.Params().GetAgent(PARAM_ACCOUNT);
 		String m;
 		if (!owner.Exists()) {
-			m = "er20.allowance.fail: wrong 'account' parameter";
+			m = "erc20.allowance.fail: wrong 'account' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
@@ -128,7 +128,7 @@ public class Erc20 {
 		// delegation
 		ScImmutableAgent delegation = ctx.Params().GetAgent(PARAM_DELEGATION);
 		if (!delegation.Exists()) {
-			m = "er20.allowance.fail: wrong 'delegation' parameter";
+			m = "erc20.allowance.fail: wrong 'delegation' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
@@ -152,7 +152,7 @@ public class Erc20 {
 		ScImmutableAgent target_addrParam = params.GetAgent(PARAM_ACCOUNT);
 		String m;
 		if (!target_addrParam.Exists()) {
-			m = "er20.transfer.fail: wrong 'account' parameter";
+			m = "erc20.transfer.fail: wrong 'account' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;

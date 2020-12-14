@@ -48,7 +48,7 @@ func onInit(ctx *client.ScCallContext) {
 	// supply
 	supply := ctx.Params().GetInt(PARAM_SUPPLY)
 	if !supply.Exists() || supply.Value() <= 0 {
-		err := "er20.onInit.fail: wrong 'supply' parameter"
+		err := "erc20.onInit.fail: wrong 'supply' parameter"
 		ctx.Log(err)
 		ctx.Error().SetValue(err)
 		return
@@ -58,7 +58,7 @@ func onInit(ctx *client.ScCallContext) {
 	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (onInit)
 	creator := ctx.Params().GetAgent(PARAM_CREATOR)
 	if !creator.Exists() {
-		err := "er20.onInit.fail: wrong 'creator' parameter"
+		err := "erc20.onInit.fail: wrong 'creator' parameter"
 		ctx.Log(err)
 		ctx.Error().SetValue(err)
 		return
@@ -110,7 +110,7 @@ func allowance(ctx *client.ScViewContext) {
 	// account
 	owner := ctx.Params().GetAgent(PARAM_ACCOUNT)
 	if !owner.Exists() {
-		m := "er20.allowance.fail: wrong 'account' parameter"
+		m := "erc20.allowance.fail: wrong 'account' parameter"
 		ctx.Log(m)
 		ctx.Error().SetValue(m)
 		return
@@ -118,7 +118,7 @@ func allowance(ctx *client.ScViewContext) {
 	// delegation
 	delegation := ctx.Params().GetAgent(PARAM_DELEGATION)
 	if !delegation.Exists() {
-		m := "er20.allowance.fail: wrong 'delegation' parameter"
+		m := "erc20.allowance.fail: wrong 'delegation' parameter"
 		ctx.Log(m)
 		ctx.Error().SetValue(m)
 		return
@@ -141,7 +141,7 @@ func transfer(ctx *client.ScCallContext) {
 	// account
 	target_addrParam := params.GetAgent(PARAM_ACCOUNT)
 	if !target_addrParam.Exists() {
-		m := "er20.transfer.fail: wrong 'account' parameter"
+		m := "erc20.transfer.fail: wrong 'account' parameter"
 		ctx.Log(m)
 		ctx.Error().SetValue(m)
 		return

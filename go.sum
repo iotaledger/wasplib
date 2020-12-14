@@ -374,6 +374,8 @@ github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANyt
 github.com/influxdata/influxdb1-client v0.0.0-20191209144304-8bf82d3c094d/go.mod h1:qj24IKcXYK6Iy9ceXlo3Tc+vtHo9lIhSX5JddghvEPo=
 github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340 h1:V/bb71c/7B9BZ1fYqXHYWOOOJ79GIkRQ9gNmoKZcz74=
 github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340/go.mod h1:x3ORhDZdi0mlwNM+s9/4OWWzc1MC96xei4vqHcDf+nI=
+github.com/iotaledger/goshimmer v0.3.1-0.20201213113317-6a0695f09ecb h1:Ut9OaYtYu2znZQyRq+W4LLIFIsiApdXjUVICHaAmcgA=
+github.com/iotaledger/goshimmer v0.3.1-0.20201213113317-6a0695f09ecb/go.mod h1:x3ORhDZdi0mlwNM+s9/4OWWzc1MC96xei4vqHcDf+nI=
 github.com/iotaledger/hive.go v0.0.0-20201203130604-bd82d648670e h1:ZfkyczJhHUdhfnLiF0WKg9jR7412jLcvmgb9sm3ztcs=
 github.com/iotaledger/hive.go v0.0.0-20201203130604-bd82d648670e/go.mod h1:dFt9vuTF3FdDPx7ve+uSDiNrX2PW2eV8sq7N06jeaFw=
 github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb h1:mwgyqVdXn7T4/VqPJdl59Ay0a5L3a+qJPlAx7Cgca/k=
@@ -405,6 +407,10 @@ github.com/iotaledger/wasp v0.0.2-0.20201212180122-d91efdfff3c2 h1:O2hlfmmtEE3Me
 github.com/iotaledger/wasp v0.0.2-0.20201212180122-d91efdfff3c2/go.mod h1:SqRLFFnZhFmZkW9GZnsfEKhbh6+l2Ugg0vfZGc/+XEE=
 github.com/iotaledger/wasp v0.0.2-0.20201212194358-a80306e8754f h1:OqYKluL9r8A1l6TuuaaLnlSRe+9NtbZ0wJvSh63pF+E=
 github.com/iotaledger/wasp v0.0.2-0.20201212194358-a80306e8754f/go.mod h1:SqRLFFnZhFmZkW9GZnsfEKhbh6+l2Ugg0vfZGc/+XEE=
+github.com/iotaledger/wasp v0.0.2-0.20201213193645-ee11378113e6 h1:xV1ylcqaETsY0DslGwU0P0mZzfyjFRyG4QrFXEFHFlI=
+github.com/iotaledger/wasp v0.0.2-0.20201213193645-ee11378113e6/go.mod h1:hASUm/Y8t6dzIfrfnbYlWnN97Ktz5UkFFN/hl7jsm8c=
+github.com/iotaledger/wasp v0.0.2-0.20201214032012-91ca60338b59 h1:CzU2jNcajm0tO3eNCcLtW6WWy4FJY5ip/Xcqd6lqhsk=
+github.com/iotaledger/wasp v0.0.2-0.20201214032012-91ca60338b59/go.mod h1:hASUm/Y8t6dzIfrfnbYlWnN97Ktz5UkFFN/hl7jsm8c=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=

@@ -44,7 +44,7 @@ fn on_init(ctx: &ScCallContext) {
     // supply
     let supply = ctx.params().get_int(PARAM_SUPPLY);
     if !supply.exists() || supply.value() <= 0 {
-        let err = "er20.on_init.fail: wrong 'supply' parameter";
+        let err = "erc20.on_init.fail: wrong 'supply' parameter";
         ctx.log(err);
         ctx.error().set_value(err);
         return;
@@ -54,7 +54,7 @@ fn on_init(ctx: &ScCallContext) {
     // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
     let creator = ctx.params().get_agent(PARAM_CREATOR);
     if !creator.exists() {
-        let err = "er20.on_init.fail: wrong 'creator' parameter";
+        let err = "erc20.on_init.fail: wrong 'creator' parameter";
         ctx.log(err);
         ctx.error().set_value(err);
         return;
@@ -108,7 +108,7 @@ fn allowance(ctx: &ScViewContext) {
     // account
     let owner = ctx.params().get_agent(PARAM_ACCOUNT);
     if !owner.exists() {
-        let m: &str = "er20.allowance.fail: wrong 'account' parameter";
+        let m: &str = "erc20.allowance.fail: wrong 'account' parameter";
         ctx.log(m);
         ctx.error().set_value(m);
         return;
@@ -116,7 +116,7 @@ fn allowance(ctx: &ScViewContext) {
     // delegation
     let delegation = ctx.params().get_agent(PARAM_DELEGATION);
     if !delegation.exists() {
-        let m: &str = "er20.allowance.fail: wrong 'delegation' parameter";
+        let m: &str = "erc20.allowance.fail: wrong 'delegation' parameter";
         ctx.log(m);
         ctx.error().set_value(m);
         return;
@@ -139,7 +139,7 @@ fn transfer(ctx: &ScCallContext) {
     // account
     let target_addr = params.get_agent(PARAM_ACCOUNT);
     if !target_addr.exists() {
-        let m: &str = "er20.transfer.fail: wrong 'account' parameter";
+        let m: &str = "erc20.transfer.fail: wrong 'account' parameter";
         ctx.log(m);
         ctx.error().set_value(m);
         return;

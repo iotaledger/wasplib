@@ -8,11 +8,11 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20201207144514-2a2e77e39fd2 // indirect
 	github.com/gobuffalo/packr/v2 v2.8.0 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
-	github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340
+	github.com/iotaledger/goshimmer v0.3.1-0.20201213113317-6a0695f09ecb
 	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb // indirect
 	github.com/iotaledger/iota.go v1.0.0-beta.15 // indirect
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20201212194358-a80306e8754f
+	github.com/iotaledger/wasp v0.0.2-0.20201214032012-91ca60338b59
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
