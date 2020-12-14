@@ -169,7 +169,7 @@ func TestTransferFromOk1(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transferFrom",
+	req = alone.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 50,
@@ -195,7 +195,7 @@ func TestTransferFromOk2(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transferFrom",
+	req = alone.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 100,
@@ -221,7 +221,7 @@ func TestTransferFromFail(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transferFrom",
+	req = alone.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 101,
