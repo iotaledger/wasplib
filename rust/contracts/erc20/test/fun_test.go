@@ -4,7 +4,7 @@ import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
-	"github.com/iotaledger/wasp/packages/vm/alone"
+	"github.com/iotaledger/wasp/packages/vm/solo"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -16,8 +16,8 @@ var (
 	creatorAgentID coretypes.AgentID
 )
 
-func deployErc20(t *testing.T) *alone.Chain {
-	glb := alone.New(t, false, false)
+func deployErc20(t *testing.T) *solo.Chain {
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	creator = glb.NewSigSchemeWithFunds()
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
@@ -40,7 +40,7 @@ func deployErc20(t *testing.T) *alone.Chain {
 	return chain
 }
 
-func checkErc20Balance(e *alone.Chain, account coretypes.AgentID, amount int64) {
+func checkErc20Balance(e *solo.Chain, account coretypes.AgentID, amount int64) {
 	res, err := e.CallView(erc20name, "balance_of", PARAM_ACCOUNT, account)
 	require.NoError(e.Glb.T, err)
 	sup, ok, err := codec.DecodeInt64(res.MustGet(PARAM_AMOUNT))
@@ -49,7 +49,7 @@ func checkErc20Balance(e *alone.Chain, account coretypes.AgentID, amount int64) 
 	require.EqualValues(e.Glb.T, sup, amount)
 }
 
-func checkErc20Allowance(e *alone.Chain, account coretypes.AgentID, delegation coretypes.AgentID, amount int64) {
+func checkErc20Allowance(e *solo.Chain, account coretypes.AgentID, delegation coretypes.AgentID, amount int64) {
 	res, err := e.CallView(erc20name, "allowance", PARAM_ACCOUNT, account, PARAM_DELEGATION, delegation)
 	require.NoError(e.Glb.T, err)
 	del, ok, err := codec.DecodeInt64(res.MustGet(PARAM_AMOUNT))
@@ -69,7 +69,7 @@ func TestTransferOk1(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
-	req := alone.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -84,14 +84,14 @@ func TestTransferOk2(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
-	req := alone.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, supply-amount)
 	checkErc20Balance(chain, userAgentID, amount)
 
-	req = alone.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
+	req = solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
 	_, err = chain.PostRequest(req, user)
 	require.NoError(t, err)
 
@@ -109,7 +109,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req := alone.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, creator)
 	require.Error(t, err)
 
@@ -127,7 +127,7 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req := alone.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, user)
 	require.Error(t, err)
 
@@ -147,7 +147,7 @@ func TestApprove(t *testing.T) {
 	user := chain.Glb.NewSigSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := alone.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -161,7 +161,7 @@ func TestTransferFromOk1(t *testing.T) {
 	user := chain.Glb.NewSigSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := alone.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -169,7 +169,7 @@ func TestTransferFromOk1(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transfer_from",
+	req = solo.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 50,
@@ -187,7 +187,7 @@ func TestTransferFromOk2(t *testing.T) {
 	user := chain.Glb.NewSigSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := alone.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -195,7 +195,7 @@ func TestTransferFromOk2(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transfer_from",
+	req = solo.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 100,
@@ -213,7 +213,7 @@ func TestTransferFromFail(t *testing.T) {
 	user := chain.Glb.NewSigSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := alone.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -221,7 +221,7 @@ func TestTransferFromFail(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = alone.NewCall(erc20name, "transfer_from",
+	req = solo.NewCall(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 101,

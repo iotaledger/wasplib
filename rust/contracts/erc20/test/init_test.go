@@ -2,7 +2,7 @@ package erc20
 
 import (
 	"github.com/iotaledger/wasp/packages/coretypes"
-	"github.com/iotaledger/wasp/packages/vm/alone"
+	"github.com/iotaledger/wasp/packages/vm/solo"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -13,7 +13,7 @@ const (
 )
 
 func TestDeployErc20(t *testing.T) {
-	glb := alone.New(t, false, false)
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	defer chain.WaitEmptyBacklog()
 
@@ -41,7 +41,7 @@ func TestDeployErc20(t *testing.T) {
 }
 
 func TestDeployErc20Fail1(t *testing.T) {
-	glb := alone.New(t, false, false)
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, erc20name, erc20file)
 	require.Error(t, err)
@@ -50,7 +50,7 @@ func TestDeployErc20Fail1(t *testing.T) {
 }
 
 func TestDeployErc20Fail2(t *testing.T) {
-	glb := alone.New(t, false, false)
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
@@ -61,7 +61,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 }
 
 func TestDeployErc20Fail3(t *testing.T) {
-	glb := alone.New(t, false, false)
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	creator := glb.NewSigSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
@@ -74,7 +74,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 }
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
-	glb := alone.New(t, false, false)
+	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
 	creator := glb.NewSigSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
