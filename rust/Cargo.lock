@@ -164,16 +164,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_dummy"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
 name = "tokenregistry"
 version = "0.1.0"
 dependencies = [

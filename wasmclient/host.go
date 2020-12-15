@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+// +build wasm
+
 package wasmclient
 
 import "github.com/iotaledger/wasplib/client"
