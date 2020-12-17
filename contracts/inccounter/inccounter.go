@@ -29,6 +29,10 @@ func OnLoad() {
 	exports.AddCall("increment_local_state_post", incrementLocalStatePost)
 	exports.AddCall("nothing", client.Nothing)
 	exports.AddCall("test", test)
+	exports.AddCall("state_test", stateTest)
+	exports.AddView("state_check", stateCheck)
+	exports.AddCall("results_test", resultsTest)
+	exports.AddView("results_check", resultsCheck)
 }
 
 func onInit(sc *client.ScCallContext) {
@@ -140,4 +144,75 @@ func test(sc *client.ScCallContext) {
 	client.SetString(1, keyId2, s1)
 	client.SetString(1, keyId2, s2)
 	client.SetString(1, keyId2, s3)
+}
+
+func resultsTest(sc *client.ScCallContext) {
+	testKvstore(sc.Results())
+	checkKvstore(sc.Results().Immutable())
+	//sc.call("results_check")
+}
+
+func stateTest(sc *client.ScCallContext) {
+	testKvstore(sc.State())
+	sc.Call("state_check")
+}
+
+func resultsCheck(sc *client.ScViewContext) {
+	checkKvstore(sc.Results().Immutable())
+}
+
+func stateCheck(sc *client.ScViewContext) {
+	checkKvstore(sc.State())
+}
+
+func testKvstore(kvstore client.ScMutableMap) {
+	int1 := kvstore.GetInt(client.Key("int1"))
+	check(int1.Value() == 0)
+	int1.SetValue(1)
+
+	string1 := kvstore.GetString(client.Key("string1"))
+	check(string1.Value() == "")
+	string1.SetValue("a")
+
+	ia1 := kvstore.GetIntArray(client.Key("ia1"))
+	int2 := ia1.GetInt(0)
+	check(int2.Value() == 0)
+	int2.SetValue(2)
+	int3 := ia1.GetInt(1)
+	check(int3.Value() == 0)
+	int3.SetValue(3)
+
+	sa1 := kvstore.GetStringArray(client.Key("sa1"))
+	string2 := sa1.GetString(0)
+	check(string2.Value() == "")
+	string2.SetValue("bc")
+	string3 := sa1.GetString(1)
+	check(string3.Value() == "")
+	string3.SetValue("def")
+}
+
+func checkKvstore(kvstore client.ScImmutableMap) {
+	int1 := kvstore.GetInt(client.Key("int1"))
+	check(int1.Value() == 1)
+
+	string1 := kvstore.GetString(client.Key("string1"))
+	check(string1.Value() == "a")
+
+	ia1 := kvstore.GetIntArray(client.Key("ia1"))
+	int2 := ia1.GetInt(0)
+	check(int2.Value() == 2)
+	int3 := ia1.GetInt(1)
+	check(int3.Value() == 3)
+
+	sa1 := kvstore.GetStringArray(client.Key("sa1"))
+	string2 := sa1.GetString(0)
+	check(string2.Value() == "bc")
+	string3 := sa1.GetString(1)
+	check(string3.Value() == "def")
+}
+
+func check(condition bool) {
+	if !condition {
+		panic("Check failed!")
+	}
 }

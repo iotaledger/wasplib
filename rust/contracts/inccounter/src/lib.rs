@@ -25,6 +25,10 @@ fn on_load() {
     exports.add_call("increment_local_state_post", increment_local_state_post);
     exports.add_call("nothing", ScExports::nothing);
     exports.add_call("test", test);
+    exports.add_call("state_test", state_test);
+    exports.add_view("state_check", state_check);
+    exports.add_call("results_test", results_test);
+    exports.add_view("results_check", results_check);
 }
 
 fn on_init(sc: &ScCallContext) {
@@ -144,4 +148,75 @@ fn test(_sc: &ScCallContext) {
     set_string(1, key_id2, &s1);
     set_string(1, key_id2, &s2);
     set_string(1, key_id2, &s3);
+}
+
+fn results_test(sc: &ScCallContext) {
+    test_map(sc.results());
+    check_map(sc.results().immutable());
+    //sc.call("results_check");
+}
+
+fn state_test(sc: &ScCallContext) {
+    test_map(sc.state());
+    sc.call("state_check");
+}
+
+fn results_check(sc: &ScViewContext) {
+    check_map(sc.results().immutable());
+}
+
+fn state_check(sc: &ScViewContext) {
+    check_map(sc.state());
+}
+
+fn test_map(kvstore: ScMutableMap) {
+    let int1 = kvstore.get_int("int1");
+    check(int1.value() == 0);
+    int1.set_value(1);
+
+    let string1 = kvstore.get_string("string1");
+    check(string1.value() == "");
+    string1.set_value("a");
+
+    let ia1 = kvstore.get_int_array("ia1");
+    let int2 = ia1.get_int(0);
+    check(int2.value() == 0);
+    int2.set_value(2);
+    let int3 = ia1.get_int(1);
+    check(int3.value() == 0);
+    int3.set_value(3);
+
+    let sa1 = kvstore.get_string_array("sa1");
+    let string2 = sa1.get_string(0);
+    check(string2.value() == "");
+    string2.set_value("bc");
+    let string3 = sa1.get_string(1);
+    check(string3.value() == "");
+    string3.set_value("def");
+}
+
+fn check_map(kvstore: ScImmutableMap) {
+    let int1 = kvstore.get_int("int1");
+    check(int1.value() == 1);
+
+    let string1 = kvstore.get_string("string1");
+    check(string1.value() == "a");
+
+    let ia1 = kvstore.get_int_array("ia1");
+    let int2 = ia1.get_int(0);
+    check(int2.value() == 2);
+    let int3 = ia1.get_int(1);
+    check(int3.value() == 3);
+
+    let sa1 = kvstore.get_string_array("sa1");
+    let string2 = sa1.get_string(0);
+    check(string2.value() == "bc");
+    let string3 = sa1.get_string(1);
+    check(string3.value() == "def");
+}
+
+fn check(condition: bool) {
+    if !condition {
+        panic!("Check failed!")
+    }
 }
