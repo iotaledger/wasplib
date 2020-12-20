@@ -73,6 +73,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "hellonewworld"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "wasm-bindgen-test",
+ "wasplib",
+ "wee_alloc",
+]
+
+[[package]]
 name = "helloworld"
 version = "0.1.0"
 dependencies = [
