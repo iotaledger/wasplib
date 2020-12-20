@@ -13,7 +13,7 @@ fn on_load() {
 fn hello(ctx: &ScCallContext) {
     let counter = ctx.state().get_int("counter");
     let msg = "Hello, new world! #".to_string() + &counter.to_string();
-    ctx.log(&msg);
+    ctx.log(&msg);  // TODO info and debug levels, not events!
     counter.set_value(counter.value()+1);
 }
 
