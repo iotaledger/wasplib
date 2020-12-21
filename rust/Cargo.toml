@@ -7,6 +7,7 @@ members = [
     "contracts/fairauction",
     "contracts/fairroulette",
     "contracts/helloworld",
+    "contracts/hellonewworld",
     "contracts/inccounter",
     "contracts/tokenregistry",
 ]

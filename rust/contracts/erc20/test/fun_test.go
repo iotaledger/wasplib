@@ -4,7 +4,7 @@ import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
-	"github.com/iotaledger/wasp/packages/vm/solo"
+	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -19,7 +19,7 @@ var (
 func deployErc20(t *testing.T) *solo.Chain {
 	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "chain1")
-	creator = glb.NewSigSchemeWithFunds()
+	creator = glb.NewSignatureSchemeWithFunds()
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, supply,
@@ -65,7 +65,7 @@ func TestInitial(t *testing.T) {
 func TestTransferOk1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
@@ -80,7 +80,7 @@ func TestTransferOk1(t *testing.T) {
 func TestTransferOk2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
@@ -102,7 +102,7 @@ func TestTransferOk2(t *testing.T) {
 func TestTransferNotEnoughFunds1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(1338)
 
@@ -120,7 +120,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 func TestTransferNotEnoughFunds2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(1338)
 
@@ -137,14 +137,14 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 
 func TestNoAllowance(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
 }
 
 func TestApprove(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -158,7 +158,7 @@ func TestApprove(t *testing.T) {
 
 func TestTransferFromOk1(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -184,7 +184,7 @@ func TestTransferFromOk1(t *testing.T) {
 
 func TestTransferFromOk2(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -210,7 +210,7 @@ func TestTransferFromOk2(t *testing.T) {
 
 func TestTransferFromFail(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSigSchemeWithFunds()
+	user := chain.Glb.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
