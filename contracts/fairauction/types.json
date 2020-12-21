@@ -1,0 +1,59 @@
+{
+  "AuctionInfo": [
+    {
+      "//": "agent who issued StartAuction transaction",
+      "auction_owner": "agent"
+    },
+    {
+      "//": "color of tokens for sale",
+      "color": "color"
+    },
+    {
+      "//": "deposit by the auction owner. Iotas sent by the auction owner together with the tokens for sale in the same transaction.",
+      "deposit": "int"
+    },
+    {
+      "//": "any text, like \"AuctionOwner of the token have a right to call me for a date\". Set by auction initiator",
+      "description": "string"
+    },
+    {
+      "//": "duration of the auctions in minutes. Should be >= MinAuctionDurationMinutes",
+      "duration": "int"
+    },
+    {
+      "//": "",
+      "highest_bid": "int"
+    },
+    {
+      "//": "",
+      "highest_bidder": "agent"
+    },
+    {
+      "//": "minimum bid. Set by the auction initiator",
+      "minimum_bid": "int"
+    },
+    {
+      "//": "number of tokens for sale",
+      "num_tokens": "int"
+    },
+    {
+      "//": "AuctionOwner's margin in promilles, taken at the moment of creation of smart contract",
+      "owner_margin": "int"
+    },
+    {
+      "//": "timestamp when auction started",
+      "when_started": "int"
+    }
+  ],
+  "BidInfo": [
+    {
+      "//": "the amount is a cumulative sum of all bids from the same bidder",
+      "amount": "int"},
+    {
+      "//": "index in the bidder list",
+      "index": "int"},
+    {
+      "//": "most recent bid update time",
+      "timestamp": "int"}
+  ]
+}

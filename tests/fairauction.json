@@ -1,21 +1,22 @@
 {
   "types": {
     "AuctionInfo": [
-      {"field": "color", "type": "Color"},
-      {"field": "num_tokens", "type": "Int"},
-      {"field": "minimum_bid", "type": "Int"},
-      {"field": "description", "type": "String"},
-      {"field": "when_started", "type": "Int"},
-      {"field": "duration", "type": "Int"},
       {"field": "auction_owner", "type": "Agent"},
+      {"field": "color", "type": "Color"},
       {"field": "deposit", "type": "Int"},
+      {"field": "description", "type": "String"},
+      {"field": "duration", "type": "Int"},
+      {"field": "highest_bid", "type": "Int"},
+      {"field": "highest_bidder", "type": "Agent"},
+      {"field": "minimum_bid", "type": "Int"},
+      {"field": "num_tokens", "type": "Int"},
       {"field": "owner_margin", "type": "Int"},
-      {"field": "bids", "type": "[]BidInfo"}
+      {"field": "when_started", "type": "Int"}
     ],
     "BidInfo": [
-      {"field": "bidder", "type": "Agent"},
       {"field": "amount", "type": "Int"},
-      {"field": "when", "type": "Int"}
+      {"field": "index", "type": "Int"},
+      {"field": "timestamp", "type": "Int"}
     ]
   },
   "setups": {
@@ -46,17 +47,20 @@
         "state": {
           "auctions": {
             "#tokenColor": {
-              "AuctionInfo": {
-                "color": "#tokenColor",
-                "num_tokens": 1,
-                "minimum_bid": 500,
-                "description": "N/A",
-                "when_started": 20201027172138,
-                "duration": 60,
-                "auction_owner": "@caller",
-                "deposit": 100,
-                "owner_margin": 50,
-                "bids": []
+              "info": {
+                "AuctionInfo": {
+                  "auction_owner": "@caller",
+                  "color": "#tokenColor",
+                  "deposit": 100,
+                  "description": "N/A",
+                  "duration": 60,
+                  "highest_bid": -1,
+                  "highest_bidder": "@",
+                  "minimum_bid": 500,
+                  "num_tokens": 1,
+                  "owner_margin": 50,
+                  "when_started": 20201027172138
+                }
               }
             }
           }
@@ -86,17 +90,20 @@
         "state": {
           "auctions": {
             "#tokenColor": {
-              "AuctionInfo": {
-                "color": "#tokenColor",
-                "num_tokens": 1,
-                "minimum_bid": 500,
-                "description": "N/A",
-                "when_started": 20201027172138,
-                "duration": 60,
-                "auction_owner": "@caller",
-                "deposit": 100,
-                "owner_margin": 50,
-                "bids": []
+              "info": {
+                "AuctionInfo": {
+                  "auction_owner": "@caller",
+                  "color": "#tokenColor",
+                  "deposit": 100,
+                  "description": "N/A",
+                  "duration": 60,
+                  "highest_bid": -1,
+                  "highest_bidder": "@",
+                  "minimum_bid": 500,
+                  "num_tokens": 1,
+                  "owner_margin": 50,
+                  "when_started": 20201027172138
+                }
               }
             }
           }
@@ -140,23 +147,30 @@
         "state": {
           "auctions": {
             "#tokenColor": {
-              "AuctionInfo": {
-                "color": "#tokenColor",
-                "num_tokens": 1,
-                "minimum_bid": 500,
-                "description": "N/A",
-                "when_started": 20201027172138,
-                "duration": 60,
-                "auction_owner": "@caller",
-                "deposit": 100,
-                "owner_margin": 50,
-                "bids": [
-                  {
-                    "bidder": "@bidder1",
+              "info": {
+                "AuctionInfo": {
+                  "auction_owner": "@caller",
+                  "color": "#tokenColor",
+                  "deposit": 100,
+                  "description": "N/A",
+                  "duration": 60,
+                  "highest_bid": 600,
+                  "highest_bidder": "@bidder1",
+                  "minimum_bid": 500,
+                  "num_tokens": 1,
+                  "owner_margin": 50,
+                  "when_started": 20201027172138
+                }
+              },
+              "bidder_list": ["@bidder1"],
+              "bidders": {
+                "bidder": {
+                  "BidInfo": {
+                    "index": 0,
                     "amount": 600,
-                    "when": 20201027172139
+                    "timestamp": 20201027172139
                   }
-                ]
+                }
               }
             }
           }
@@ -223,38 +237,51 @@
         "state": {
           "auctions": {
             "#tokenColor": {
-              "AuctionInfo": {
-                "color": "#tokenColor",
-                "num_tokens": 1,
-                "minimum_bid": 500,
-                "description": "N/A",
-                "when_started": 20201027172138,
-                "duration": 60,
-                "auction_owner": "@caller",
-                "deposit": 100,
-                "owner_margin": 50,
-                "bids": [
-                  {
-                    "bidder": "@bidder1",
+              "info": {
+                "AuctionInfo": {
+                  "auction_owner": "@caller",
+                  "color": "#tokenColor",
+                  "deposit": 100,
+                  "description": "N/A",
+                  "duration": 60,
+                  "highest_bid": 700,
+                  "highest_bidder": "@bidder2",
+                  "minimum_bid": 500,
+                  "num_tokens": 1,
+                  "owner_margin": 50,
+                  "when_started": 20201027172138
+                }
+              },
+              "bidder_list": ["@bidder1", "@bidder2", "@bidder3", "@bidder4"],
+              "bids": {
+                "@bidder1": {
+                  "BidInfo": {
+                    "index": 0,
                     "amount": 600,
-                    "when": 20201027172139
-                  },
-                  {
-                    "bidder": "@bidder2",
-                    "amount": 700,
-                    "when": 20201027172140
-                  },
-                  {
-                    "bidder": "@bidder3",
-                    "amount": 700,
-                    "when": 20201027172141
-                  },
-                  {
-                    "bidder": "@bidder4",
-                    "amount": 600,
-                    "when": 20201027172142
+                    "timestamp": 20201027172139
                   }
-                ]
+                },
+                "@bidder2": {
+                  "BidInfo": {
+                    "index": 1,
+                    "amount": 700,
+                    "timestamp": 20201027172140
+                  }
+                },
+                "@bidder3": {
+                  "BidInfo": {
+                    "index": 2,
+                    "amount": 700,
+                    "timestamp": 20201027172141
+                  }
+                },
+                "@bidder4": {
+                  "BidInfo": {
+                    "index": 3,
+                    "amount": 600,
+                    "timestamp": 20201027172142
+                  }
+                }
               }
             }
           }
@@ -322,38 +349,51 @@
         "state": {
           "auctions": {
             "#tokenColor": {
-              "AuctionInfo": {
-                "color": "#tokenColor",
-                "num_tokens": 1,
-                "minimum_bid": 500,
-                "description": "N/A",
-                "when_started": 20201027172138,
-                "duration": 60,
-                "auction_owner": "@caller",
-                "deposit": 100,
-                "owner_margin": 50,
-                "bids": [
-                  {
-                    "bidder": "@bidder1",
+              "info": {
+                "AuctionInfo": {
+                  "auction_owner": "@caller",
+                  "color": "#tokenColor",
+                  "deposit": 100,
+                  "description": "N/A",
+                  "duration": 60,
+                  "highest_bid": 700,
+                  "highest_bidder": "@bidder2",
+                  "minimum_bid": 500,
+                  "num_tokens": 1,
+                  "owner_margin": 50,
+                  "when_started": 20201027172138
+                }
+              },
+              "bidder_list": ["@bidder1", "@bidder2", "@bidder3", "@bidder4"],
+              "bidders": {
+                "@bidder1": {
+                  "BidInfo": {
+                    "index": 0,
                     "amount": 600,
-                    "when": 20201027172139
-                  },
-                  {
-                    "bidder": "@bidder2",
-                    "amount": 700,
-                    "when": 20201027172140
-                  },
-                  {
-                    "bidder": "@bidder3",
-                    "amount": 700,
-                    "when": 20201027172141
-                  },
-                  {
-                    "bidder": "@bidder4",
-                    "amount": 600,
-                    "when": 20201027172142
+                    "timestamp": 20201027172139
                   }
-                ]
+                },
+                "@bidder2": {
+                  "BidInfo": {
+                    "index": 1,
+                    "amount": 700,
+                    "timestamp": 20201027172140
+                  }
+                },
+                "@bidder3": {
+                  "BidInfo": {
+                    "index": 2,
+                    "amount": 700,
+                    "timestamp": 20201027172141
+                  }
+                },
+                "@bidder4": {
+                  "BidInfo": {
+                    "index": 3,
+                    "amount": 600,
+                    "timestamp": 20201027172142
+                  }
+                }
               }
             }
           }

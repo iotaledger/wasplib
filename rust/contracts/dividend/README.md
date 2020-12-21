@@ -2,4 +2,7 @@
 
 Simple dividend smart contract
 
-    ISCP version of the ubiquitous "Hello, world!" program.
+- Allows for setting up automatic dividend dispersal to a number of recipients according to
+  distribution factors per recipient. Any tokens sent to this contract will automatically
+  be divided accordingly over these recipients.
+

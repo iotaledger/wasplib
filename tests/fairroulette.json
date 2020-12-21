@@ -1,8 +1,8 @@
 {
   "types": {
     "BetInfo": [
-      {"field": "better", "type": "Agent"},
       {"field": "amount", "type": "Int"},
+      {"field": "better", "type": "Agent"},
       {"field": "color", "type": "Int"}
     ]
   },

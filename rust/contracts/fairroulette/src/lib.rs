@@ -1,6 +1,9 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+mod types;
+
+use types::*;
 use wasplib::client::*;
 
 const KEY_BETS: &str = "bets";
@@ -11,12 +14,6 @@ const KEY_PLAY_PERIOD: &str = "play_period";
 
 const NUM_COLORS: i64 = 5;
 const PLAY_PERIOD: i64 = 120;
-
-struct BetInfo {
-    better: ScAgent,
-    amount: i64,
-    color: i64,
-}
 
 #[no_mangle]
 fn on_load() {
@@ -157,21 +154,4 @@ fn play_period(sc: &ScCallContext) {
     }
 
     sc.state().get_int(KEY_PLAY_PERIOD).set_value(play_period);
-}
-
-fn decode_bet_info(bytes: &[u8]) -> BetInfo {
-    let mut decoder = BytesDecoder::new(bytes);
-    BetInfo {
-        better: decoder.agent(),
-        amount: decoder.int(),
-        color: decoder.int(),
-    }
-}
-
-fn encode_bet_info(bet: &BetInfo) -> Vec<u8> {
-    let mut encoder = BytesEncoder::new();
-    encoder.agent(&bet.better);
-    encoder.int(bet.amount);
-    encoder.int(bet.color);
-    encoder.data()
 }

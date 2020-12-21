@@ -18,12 +18,6 @@ const (
 const NUM_COLORS int64 = 5
 const PLAY_PERIOD int64 = 120
 
-type BetInfo struct {
-	better *client.ScAgent
-	amount int64
-	color  int64
-}
-
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("place_bet", placeBet)
@@ -158,21 +152,4 @@ func playPeriod(sc *client.ScCallContext) {
 	}
 
 	sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod)
-}
-
-func decodeBetInfo(bytes []byte) *BetInfo {
-	decoder := client.NewBytesDecoder(bytes)
-	return &BetInfo{
-		better: decoder.Agent(),
-		amount: decoder.Int(),
-		color:  decoder.Int(),
-	}
-}
-
-func encodeBetInfo(bet *BetInfo) []byte {
-	return client.NewBytesEncoder().
-		Agent(bet.better).
-		Int(bet.amount).
-		Int(bet.color).
-		Data()
 }

@@ -1,0 +1,20 @@
+{
+  "AuctionInfo": [
+    {"auction_owner": "agent"},
+    {"color": "color"},
+    {"deposit": "int"},
+    {"description": "string"},
+    {"duration": "int"},
+    {"highest_bid": "int"},
+    {"highest_bidder": "agent"},
+    {"minimum_bid": "int"},
+    {"num_tokens": "int"},
+    {"owner_margin": "int"},
+    {"when_started": "int"}
+  ],
+  "BidInfo": [
+    {"amount": "int"},
+    {"index": "int"},
+    {"timestamp": "int"}
+  ]
+}

@@ -21,14 +21,6 @@ const (
 	keyWithdrawAmount = client.Key("withdraw")
 )
 
-type DonationInfo struct {
-	seq      int64
-	donator  *client.ScAgent
-	amount   int64
-	feedback string
-	error    string
-}
-
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("donate", donate)
@@ -37,9 +29,8 @@ func OnLoad() {
 }
 
 func donate(sc *client.ScCallContext) {
-	tlog := sc.TimestampedLog(keyLog)
 	donation := &DonationInfo{
-		seq:      int64(tlog.Length()),
+		timestamp:      sc.Timestamp(),
 		amount:   sc.Incoming().Balance(client.IOTA),
 		donator:  sc.Caller(),
 		error:    "",
@@ -52,10 +43,11 @@ func donate(sc *client.ScCallContext) {
 			donation.amount = 0
 		}
 	}
-	bytes := encodeDonationInfo(donation)
-	tlog.Append(sc.Timestamp(), bytes)
 
 	state := sc.State()
+	log := state.GetBytesArray(keyLog)
+	log.GetBytes(log.Length()).SetValue(encodeDonationInfo(donation))
+
 	largestDonation := state.GetInt(keyMaxDonation)
 	totalDonated := state.GetInt(keyTotalDonation)
 	if donation.amount > largestDonation.Value() {
@@ -88,42 +80,19 @@ func viewDonations(sc *client.ScViewContext) {
 	state := sc.State()
 	largestDonation := state.GetInt(keyMaxDonation)
 	totalDonated := state.GetInt(keyTotalDonation)
-	tlog := sc.TimestampedLog(keyLog)
 	results := sc.Results()
 	results.GetInt(keyMaxDonation).SetValue(largestDonation.Value())
 	results.GetInt(keyTotalDonation).SetValue(totalDonated.Value())
 	donations := results.GetMapArray(keyDonations)
-	size := tlog.Length()
+	log := state.GetBytesArray(keyLog)
+	size := log.Length()
 	for i := int32(0); i < size; i++ {
-		log := tlog.GetMap(i)
+		di := decodeDonationInfo(log.GetBytes(i).Value())
 		donation := donations.GetMap(i)
-		donation.GetInt(keyTimestamp).SetValue(log.GetInt(keyTimestamp).Value())
-		bytes := log.GetBytes(keyData).Value()
-		di := decodeDonationInfo(bytes)
 		donation.GetInt(keyAmount).SetValue(di.amount)
-		donation.GetString(keyFeedback).SetValue(di.feedback)
 		donation.GetString(keyDonator).SetValue(di.donator.String())
 		donation.GetString(keyError).SetValue(di.error)
+		donation.GetString(keyFeedback).SetValue(di.feedback)
+		donation.GetInt(keyTimestamp).SetValue(di.timestamp)
 	}
-}
-
-func decodeDonationInfo(bytes []byte) *DonationInfo {
-	decoder := client.NewBytesDecoder(bytes)
-	data := &DonationInfo{}
-	data.seq = decoder.Int()
-	data.donator = decoder.Agent()
-	data.amount = decoder.Int()
-	data.feedback = decoder.String()
-	data.error = decoder.String()
-	return data
-}
-
-func encodeDonationInfo(donation *DonationInfo) []byte {
-	return client.NewBytesEncoder().
-		Int(donation.seq).
-		Agent(donation.donator).
-		Int(donation.amount).
-		String(donation.feedback).
-		String(donation.error).
-		Data()
 }

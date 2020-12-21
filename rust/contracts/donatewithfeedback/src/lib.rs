@@ -1,10 +1,12 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+mod types;
+
+use types::*;
 use wasplib::client::*;
 
 const KEY_AMOUNT: &str = "amount";
-const KEY_DATA: &str = "data";
 const KEY_DONATIONS: &str = "donations";
 const KEY_DONATOR: &str = "donator";
 const KEY_ERROR: &str = "error";
@@ -15,14 +17,6 @@ const KEY_TIMESTAMP: &str = "timestamp";
 const KEY_TOTAL_DONATION: &str = "total_donation";
 const KEY_WITHDRAW_AMOUNT: &str = "withdraw";
 
-struct DonationInfo {
-    seq: i64,
-    donator: ScAgent,
-    amount: i64,
-    feedback: String,
-    error: String,
-}
-
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
@@ -32,13 +26,12 @@ fn on_load() {
 }
 
 fn donate(sc: &ScCallContext) {
-    let tlog = sc.timestamped_log(KEY_LOG);
     let mut donation = DonationInfo {
-        seq: tlog.length() as i64,
         amount: sc.incoming().balance(&ScColor::IOTA),
         donator: sc.caller(),
         error: String::new(),
         feedback: sc.params().get_string(KEY_FEEDBACK).value(),
+        timestamp: sc.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
@@ -47,10 +40,10 @@ fn donate(sc: &ScCallContext) {
             donation.amount = 0;
         }
     }
-    let bytes = encode_donation_info(&donation);
-    tlog.append(sc.timestamp(), &bytes);
-
     let state = sc.state();
+    let log = state.get_bytes_array(KEY_LOG);
+    log.get_bytes(log.length()).set_value(&encode_donation_info(&donation));
+
     let largest_donation = state.get_int(KEY_MAX_DONATION);
     let total_donated = state.get_int(KEY_TOTAL_DONATION);
     if donation.amount > largest_donation.value() { largest_donation.set_value(donation.amount); }
@@ -81,42 +74,19 @@ fn view_donations(sc: &ScViewContext) {
     let state = sc.state();
     let largest_donation = state.get_int(KEY_MAX_DONATION);
     let total_donated = state.get_int(KEY_TOTAL_DONATION);
-    let tlog = sc.timestamped_log(KEY_LOG);
+    let log = state.get_bytes_array(KEY_LOG);
     let results = sc.results();
     results.get_int(KEY_MAX_DONATION).set_value(largest_donation.value());
     results.get_int(KEY_TOTAL_DONATION).set_value(total_donated.value());
     let donations = results.get_map_array(KEY_DONATIONS);
-    let size = tlog.length();
-    for i in 0..size {
-        let log = tlog.get_map(i);
+    for i in 0..log.length() {
+        let log = log.get_bytes(i);
+        let di = decode_donation_info(&log.value());
         let donation = donations.get_map(i);
-        donation.get_int(KEY_TIMESTAMP).set_value(log.get_int(KEY_TIMESTAMP).value());
-        let bytes = log.get_bytes(KEY_DATA).value();
-        let di = decode_donation_info(&bytes);
         donation.get_int(KEY_AMOUNT).set_value(di.amount);
-        donation.get_string(KEY_FEEDBACK).set_value(&di.feedback);
         donation.get_string(KEY_DONATOR).set_value(&di.donator.to_string());
         donation.get_string(KEY_ERROR).set_value(&di.error);
+        donation.get_string(KEY_FEEDBACK).set_value(&di.feedback);
+        donation.get_int(KEY_TIMESTAMP).set_value(di.timestamp);
     }
-}
-
-fn decode_donation_info(bytes: &[u8]) -> DonationInfo {
-    let mut decoder = BytesDecoder::new(bytes);
-    DonationInfo {
-        seq: decoder.int(),
-        donator: decoder.agent(),
-        amount: decoder.int(),
-        feedback: decoder.string(),
-        error: decoder.string(),
-    }
-}
-
-fn encode_donation_info(donation: &DonationInfo) -> Vec<u8> {
-    let mut encoder = BytesEncoder::new();
-    encoder.int(donation.seq);
-    encoder.agent(&donation.donator);
-    encoder.int(donation.amount);
-    encoder.string(&donation.feedback);
-    encoder.string(&donation.error);
-    encoder.data()
 }

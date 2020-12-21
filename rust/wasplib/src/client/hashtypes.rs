@@ -47,6 +47,8 @@ pub struct ScAgent {
 }
 
 impl ScAgent {
+    pub const NONE: ScAgent = ScAgent { agent: [0x00; 37] };
+
     pub fn from_bytes(bytes: &[u8]) -> ScAgent {
         ScAgent { agent: bytes.try_into().expect("agent id should be 37 bytes") }
     }

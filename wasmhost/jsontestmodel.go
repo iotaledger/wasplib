@@ -536,6 +536,8 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 		err := t.host.RunScFunction(function)
 		if err != nil {
 			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
+			// dump even when failing so that we can examine why it failed
+			t.Dump(test)
 			return false
 		}
 	}

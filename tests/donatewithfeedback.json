@@ -1,11 +1,11 @@
 {
   "types": {
     "DonationInfo": [
-      {"field": "seq", "type": "Int"},
-      {"field": "donator", "type": "Agent"},
       {"field": "amount", "type": "Int"},
+      {"field": "donator", "type": "Agent"},
+      {"field": "error", "type": "String"},
       {"field": "feedback", "type": "String"},
-      {"field": "error", "type": "String"}
+      {"field": "timestamp", "type": "Int"}
     ]
   },
   "setups": {
@@ -32,19 +32,15 @@
       },
       "expect": {
         "balances": {"#iota": 600},
-        "state": {},
-        "logs": {
+        "state": {
           "log": [
             {
-              "timestamp": 20201027172138,
-              "data": {
-                "DonationInfo": {
-                  "seq": 0,
-                  "donator": "@caller",
-                  "amount": 500,
-                  "feedback": "Here, have some iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 500,
+                "donator": "@caller",
+                "error": "",
+                "feedback": "Here, have some iotas",
+                "timestamp": 20201027172138
               }
             }
           ]
@@ -76,31 +72,24 @@
       ],
       "expect": {
         "balances": {"#iota": 1350},
-        "state": {},
-        "logs": {
+        "state": {
           "log": [
             {
-              "timestamp": 20201027172138,
-              "data": {
-                "DonationInfo": {
-                  "seq": 0,
-                  "donator": "@caller",
-                  "amount": 500,
-                  "feedback": "Here, have some iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 500,
+                "donator": "@caller",
+                "error": "",
+                "feedback": "Here, have some iotas",
+                "timestamp": 20201027172138
               }
             },
             {
-              "timestamp": 20201027172139,
-              "data": {
-                "DonationInfo": {
-                  "seq": 1,
-                  "donator": "@caller2",
-                  "amount": 750,
-                  "feedback": "Here, have some more iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 750,
+                "donator": "@caller2",
+                "error": "",
+                "feedback": "Here, have some more iotas",
+                "timestamp": 20201027172139
               }
             }
           ]
@@ -131,19 +120,15 @@
       ],
       "expect": {
         "balances": {"#iota": 350},
-        "state": {},
-        "logs": {
+        "state": {
           "log": [
             {
-              "timestamp": 20201027172138,
-              "data": {
-                "DonationInfo": {
-                  "seq": 0,
-                  "donator": "@caller",
-                  "amount": 500,
-                  "feedback": "Here, have some iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 500,
+                "donator": "@caller",
+                "error": "",
+                "feedback": "Here, have some iotas",
+                "timestamp": 20201027172138
               }
             }
           ]
@@ -176,19 +161,15 @@
       ],
       "expect": {
         "balances": {"#iota": 600},
-        "state": {},
-        "logs": {
+        "state": {
           "log": [
             {
-              "timestamp": 20201027172138,
-              "data": {
-                "DonationInfo": {
-                  "seq": 0,
-                  "donator": "@caller",
-                  "amount": 500,
-                  "feedback": "Here, have some iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 500,
+                "donator": "@caller",
+                "error": "",
+                "feedback": "Here, have some iotas",
+                "timestamp": 20201027172138
               }
             }
           ]
@@ -225,31 +206,24 @@
       ],
       "expect": {
         "balances": {"#iota": 1350},
-        "state": {},
-        "logs": {
+        "state": {
           "log": [
             {
-              "timestamp": 20201027172138,
-              "data": {
-                "DonationInfo": {
-                  "seq": 0,
-                  "donator": "@caller",
-                  "amount": 500,
-                  "feedback": "Here, have some iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 500,
+                "donator": "@caller",
+                "error": "",
+                "feedback": "Here, have some iotas",
+                "timestamp": 20201027172138
               }
             },
             {
-              "timestamp": 20201027172139,
-              "data": {
-                "DonationInfo": {
-                  "seq": 1,
-                  "donator": "@caller2",
-                  "amount": 750,
-                  "feedback": "Here, have some more iotas",
-                  "error": ""
-                }
+              "DonationInfo": {
+                "amount": 750,
+                "donator": "@caller2",
+                "error": "",
+                "feedback": "Here, have some more iotas",
+                "timestamp": 20201027172139
               }
             }
           ]

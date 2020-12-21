@@ -1,0 +1,7 @@
+{
+  "BetInfo": [
+    {"amount": "int"},
+    {"better": "agent"},
+    {"color": "int"}
+  ]
+}

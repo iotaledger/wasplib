@@ -14,16 +14,6 @@ const (
 	keyUserDefined = client.Key("user_defined")
 )
 
-type TokenInfo struct {
-	supply      int64
-	mintedBy    *client.ScAgent
-	owner       *client.ScAgent
-	created     int64
-	updated     int64
-	description string
-	userDefined string
-}
-
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("mint_supply", mintSupply)
@@ -72,29 +62,4 @@ func updateMetadata(sc *client.ScCallContext) {
 
 func transferOwnership(sc *client.ScCallContext) {
 	//TODO
-}
-
-func decodeTokenInfo(bytes []byte) *TokenInfo {
-	decoder := client.NewBytesDecoder(bytes)
-	data := &TokenInfo{}
-	data.supply = decoder.Int()
-	data.mintedBy = decoder.Agent()
-	data.owner = decoder.Agent()
-	data.created = decoder.Int()
-	data.updated = decoder.Int()
-	data.description = decoder.String()
-	data.userDefined = decoder.String()
-	return data
-}
-
-func encodeTokenInfo(token *TokenInfo) []byte {
-	return client.NewBytesEncoder().
-		Int(token.supply).
-		Agent(token.mintedBy).
-		Agent(token.owner).
-		Int(token.created).
-		Int(token.updated).
-		String(token.description).
-		String(token.userDefined).
-		Data()
 }

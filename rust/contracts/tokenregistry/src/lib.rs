@@ -3,22 +3,15 @@
 
 #![allow(dead_code)]
 
+mod types;
+
+use types::*;
 use wasplib::client::*;
 
 const KEY_COLOR_LIST: &str = "color_list";
 const KEY_DESCRIPTION: &str = "description";
 const KEY_REGISTRY: &str = "registry";
 const KEY_USER_DEFINED: &str = "user_defined";
-
-struct TokenInfo {
-    supply: i64,
-    minted_by: ScAgent,
-    owner: ScAgent,
-    created: i64,
-    updated: i64,
-    description: String,
-    user_defined: String,
-}
 
 #[no_mangle]
 fn on_load() {
@@ -69,29 +62,4 @@ fn update_metadata(_sc: &ScCallContext) {
 
 fn transfer_ownership(_sc: &ScCallContext) {
     //TODO
-}
-
-fn decode_token_info(bytes: &[u8]) -> TokenInfo {
-    let mut decoder = BytesDecoder::new(bytes);
-    TokenInfo {
-        supply: decoder.int(),
-        minted_by: decoder.agent(),
-        owner: decoder.agent(),
-        created: decoder.int(),
-        updated: decoder.int(),
-        description: decoder.string(),
-        user_defined: decoder.string(),
-    }
-}
-
-fn encode_token_info(token: &TokenInfo) -> Vec<u8> {
-    let mut encoder = BytesEncoder::new();
-    encoder.int(token.supply);
-    encoder.agent(&token.minted_by);
-    encoder.agent(&token.owner);
-    encoder.int(token.created);
-    encoder.int(token.updated);
-    encoder.string(&token.description);
-    encoder.string(&token.user_defined);
-    encoder.data()
 }
