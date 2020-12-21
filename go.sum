@@ -376,6 +376,8 @@ github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340 h1:V/bb71c/
 github.com/iotaledger/goshimmer v0.3.1-0.20201208193646-4ba3e1441340/go.mod h1:x3ORhDZdi0mlwNM+s9/4OWWzc1MC96xei4vqHcDf+nI=
 github.com/iotaledger/goshimmer v0.3.1-0.20201213113317-6a0695f09ecb h1:Ut9OaYtYu2znZQyRq+W4LLIFIsiApdXjUVICHaAmcgA=
 github.com/iotaledger/goshimmer v0.3.1-0.20201213113317-6a0695f09ecb/go.mod h1:x3ORhDZdi0mlwNM+s9/4OWWzc1MC96xei4vqHcDf+nI=
+github.com/iotaledger/goshimmer v0.3.1-0.20201221105018-a31367264316 h1:ou83YgpQsJh7e8l0FjO1W0CVF+/jtMdLQWeAQgKTsJg=
+github.com/iotaledger/goshimmer v0.3.1-0.20201221105018-a31367264316/go.mod h1:x3ORhDZdi0mlwNM+s9/4OWWzc1MC96xei4vqHcDf+nI=
 github.com/iotaledger/hive.go v0.0.0-20201203130604-bd82d648670e h1:ZfkyczJhHUdhfnLiF0WKg9jR7412jLcvmgb9sm3ztcs=
 github.com/iotaledger/hive.go v0.0.0-20201203130604-bd82d648670e/go.mod h1:dFt9vuTF3FdDPx7ve+uSDiNrX2PW2eV8sq7N06jeaFw=
 github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb h1:mwgyqVdXn7T4/VqPJdl59Ay0a5L3a+qJPlAx7Cgca/k=
@@ -427,6 +429,8 @@ github.com/iotaledger/wasp v0.0.2-0.20201218225535-79924badf094 h1:HH9kud3ohe+lc
 github.com/iotaledger/wasp v0.0.2-0.20201218225535-79924badf094/go.mod h1:hASUm/Y8t6dzIfrfnbYlWnN97Ktz5UkFFN/hl7jsm8c=
 github.com/iotaledger/wasp v0.0.2-0.20201220204343-123610c93969 h1:H//Jzsub+V6r3p8db2Wb6EIvMNAuXtwO3j93LnNfONk=
 github.com/iotaledger/wasp v0.0.2-0.20201220204343-123610c93969/go.mod h1:g11V/5KNcYxM+VP9nXxcelr4mUPbTUqv0qOJAVAVU+s=
+github.com/iotaledger/wasp v0.0.2-0.20201221123930-ee8ecca9089f h1:WO8+xvGvMl5VJbVgRARrqglLU5pC7YblyAzIUtKrc9w=
+github.com/iotaledger/wasp v0.0.2-0.20201221123930-ee8ecca9089f/go.mod h1:KA8cfioiJqN4jpN7RtmKbqWC1KJbH2B+L2iCJQpuMg0=
 github.com/iotaledger/wasp v0.0.2 h1:+iCS0sVNNvr/lMfQ50kJzx4epzT65AdV0EhGC7QBPOw=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
