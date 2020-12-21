@@ -62,9 +62,15 @@ func GenerateRustTypes(t *testing.T, jsonTypes JsonTypes, path string) error {
 		fields := jsonTypes[structName]
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				comment := ""
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					comment = " // " + strings.TrimSpace(typeName[index+2:])
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				rustType, ok := rustTypes[typeName]
 				require.True(t, ok)
-				fmt.Fprintf(file, "    pub %s: %s,\n", name, rustType)
+				fmt.Fprintf(file, "    pub %s: %s,%s\n", name, rustType, comment)
 			}
 		}
 		fmt.Fprintf(file, "}\n")
@@ -82,6 +88,10 @@ func GenerateRustTypes(t *testing.T, jsonTypes JsonTypes, path string) error {
 		fmt.Fprintf(file, "    let mut e = BytesEncoder::new();\n")
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				ref := "&"
 				if typeName == "int" {
 					ref = ""
@@ -95,6 +105,10 @@ func GenerateRustTypes(t *testing.T, jsonTypes JsonTypes, path string) error {
 		fmt.Fprintf(file, "    let mut d = BytesDecoder::new(bytes);\n    %s {\n", structName)
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				fmt.Fprintf(file, "        %s: d.%s(),\n", name, typeName)
 			}
 		}
@@ -138,9 +152,15 @@ func GenerateGoTypes(t *testing.T, jsonTypes JsonTypes, path string, contract st
 		fields := jsonTypes[structName]
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				comment := ""
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					comment = " // " + strings.TrimSpace(typeName[index+2:])
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				goType, ok := goTypes[typeName]
 				require.True(t, ok)
-				fmt.Fprintf(file, "    %s %s\n", camelcase(name), goType)
+				fmt.Fprintf(file, "    %s %s%s\n", camelcase(name), goType, comment)
 			}
 		}
 		fmt.Fprintf(file, "}\n")
@@ -154,6 +174,10 @@ func GenerateGoTypes(t *testing.T, jsonTypes JsonTypes, path string, contract st
 		fmt.Fprintf(file, "    return client.NewBytesEncoder().\n")
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				typeName = strings.ToUpper(typeName[:1]) + typeName[1:]
 				fmt.Fprintf(file, "        %s(o.%s).\n", typeName, camelcase(name))
 			}
@@ -164,6 +188,10 @@ func GenerateGoTypes(t *testing.T, jsonTypes JsonTypes, path string, contract st
 		fmt.Fprintf(file, "    d := client.NewBytesDecoder(bytes)\n    data := &%s{}\n", structName)
 		for _, fld := range fields {
 			for name, typeName := range fld {
+				index := strings.Index(typeName, "//")
+				if index > 0 {
+					typeName = strings.TrimSpace(typeName[:index])
+				}
 				typeName = strings.ToUpper(typeName[:1]) + typeName[1:]
 				fmt.Fprintf(file, "    data.%s = d.%s()\n", camelcase(name), typeName)
 			}
@@ -187,7 +215,7 @@ func camelcase(name string) string {
 }
 
 func TestRustTypes(t *testing.T) {
-	contract := "tokenregistry"
+	contract := "fairauction"
 	path := "../rust/contracts/" + contract + "/src"
 	jsonTypes, err := LoadTypes(path + "/types.json")
 	require.NoError(t, err)
@@ -197,7 +225,7 @@ func TestRustTypes(t *testing.T) {
 }
 
 func TestGoTypes(t *testing.T) {
-	contract := "donatewithfeedback"
+	contract := "fairauction"
 	path := "../contracts/" + contract
 	jsonTypes, err := LoadTypes(path + "/types.json")
 	require.NoError(t, err)

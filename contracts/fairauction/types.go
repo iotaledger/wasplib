@@ -6,23 +6,23 @@ package fairauction
 import "github.com/iotaledger/wasplib/client"
 
 type AuctionInfo struct {
-    auctionOwner *client.ScAgent
-    color *client.ScColor
-    deposit int64
-    description string
-    duration int64
-    highestBid int64
-    highestBidder *client.ScAgent
-    minimumBid int64
-    numTokens int64
-    ownerMargin int64
-    whenStarted int64
+    auctionOwner *client.ScAgent // issuer of start_auction transaction
+    color *client.ScColor // color of tokens for sale
+    deposit int64 // deposit by auction owner to cover the SC fees
+    description string // auction description
+    duration int64 // auction duration in minutes
+    highestBid int64 // the current highest bid amount
+    highestBidder *client.ScAgent // the current highest bidder
+    minimumBid int64 // minimum bid amount
+    numTokens int64 // number of tokens for sale
+    ownerMargin int64 // auction owner's margin in promilles
+    whenStarted int64 // timestamp when auction started
 }
 
 type BidInfo struct {
-    amount int64
-    index int64
-    timestamp int64
+    amount int64 // cumulative amount of bids from same bidder
+    index int64 // index of bidder in bidder list
+    timestamp int64 // timestamp of most recent bid
 }
 
 func encodeAuctionInfo(o *AuctionInfo) []byte {

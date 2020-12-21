@@ -4,23 +4,23 @@
 use wasplib::client::*;
 
 pub struct AuctionInfo {
-    pub auction_owner: ScAgent,
-    pub color: ScColor,
-    pub deposit: i64,
-    pub description: String,
-    pub duration: i64,
-    pub highest_bid: i64,
-    pub highest_bidder: ScAgent,
-    pub minimum_bid: i64,
-    pub num_tokens: i64,
-    pub owner_margin: i64,
-    pub when_started: i64,
+    pub auction_owner: ScAgent, // issuer of start_auction transaction
+    pub color: ScColor, // color of tokens for sale
+    pub deposit: i64, // deposit by auction owner to cover the SC fees
+    pub description: String, // auction description
+    pub duration: i64, // auction duration in minutes
+    pub highest_bid: i64, // the current highest bid amount
+    pub highest_bidder: ScAgent, // the current highest bidder
+    pub minimum_bid: i64, // minimum bid amount
+    pub num_tokens: i64, // number of tokens for sale
+    pub owner_margin: i64, // auction owner's margin in promilles
+    pub when_started: i64, // timestamp when auction started
 }
 
 pub struct BidInfo {
-    pub amount: i64,
-    pub index: i64,
-    pub timestamp: i64,
+    pub amount: i64, // cumulative amount of bids from same bidder
+    pub index: i64, // index of bidder in bidder list
+    pub timestamp: i64, // timestamp of most recent bid
 }
 
 pub fn encode_auction_info(o: &AuctionInfo) -> Vec<u8> {
