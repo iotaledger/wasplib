@@ -3,16 +3,12 @@
 
 package tokenregistry
 
-import (
-	"github.com/iotaledger/wasplib/client"
-)
+import "github.com/iotaledger/wasplib/client"
 
-const (
-	keyColorList   = client.Key("color_list")
-	keyDescription = client.Key("description")
-	keyRegistry    = client.Key("registry")
-	keyUserDefined = client.Key("user_defined")
-)
+const keyColorList = client.Key("color_list")
+const keyDescription = client.Key("description")
+const keyRegistry = client.Key("registry")
+const keyUserDefined = client.Key("user_defined")
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -35,11 +31,11 @@ func mintSupply(sc *client.ScCallContext) {
 	}
 	params := sc.Params()
 	token := &TokenInfo{
-		supply:      sc.Incoming().Balance(minted),
-		mintedBy:    sc.Caller(),
-		owner:       sc.Caller(),
-		created:     sc.Timestamp(),
-		updated:     sc.Timestamp(),
+		supply: sc.Incoming().Balance(minted),
+		mintedBy: sc.Caller(),
+		owner: sc.Caller(),
+		created: sc.Timestamp(),
+		updated: sc.Timestamp(),
 		description: params.GetString(keyDescription).Value(),
 		userDefined: params.GetString(keyUserDefined).Value(),
 	}
@@ -50,16 +46,15 @@ func mintSupply(sc *client.ScCallContext) {
 	if len(token.description) == 0 {
 		token.description += "no dscr"
 	}
-	bytes := encodeTokenInfo(token)
-	registry.SetValue(bytes)
+	registry.SetValue(encodeTokenInfo(token))
 	colors := state.GetColorArray(keyColorList)
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 
-func updateMetadata(sc *client.ScCallContext) {
+func updateMetadata(_sc *client.ScCallContext) {
 	//TODO
 }
 
-func transferOwnership(sc *client.ScCallContext) {
+func transferOwnership(_sc *client.ScCallContext) {
 	//TODO
 }

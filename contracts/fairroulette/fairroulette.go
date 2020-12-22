@@ -3,26 +3,22 @@
 
 package fairroulette
 
-import (
-	"github.com/iotaledger/wasplib/client"
-)
+import "github.com/iotaledger/wasplib/client"
 
-const (
-	keyBets             = client.Key("bets")
-	keyColor            = client.Key("color")
-	keyLastWinningColor = client.Key("last_winning_color")
-	keyLockedBets       = client.Key("locked_bets")
-	keyPlayPeriod       = client.Key("play_period")
-)
+const keyBets = client.Key("bets")
+const keyColor = client.Key("color")
+const keyLastWinningColor = client.Key("last_winning_color")
+const keyLockedBets = client.Key("locked_bets")
+const keyPlayPeriod = client.Key("play_period")
 
-const NUM_COLORS int64 = 5
-const PLAY_PERIOD int64 = 120
+const numColors = 5
+const defaultPlayPeriod = 120
 
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("place_bet", placeBet)
-	exports.AddCall("lock_bets", lockBets)     //TODO sc internal only
-	exports.AddCall("pay_winners", payWinners) //TODO sc internal only
+	exports.AddCall("lock_bets", lockBets)
+	exports.AddCall("pay_winners", payWinners)
 	exports.AddCall("play_period", playPeriod)
 	exports.AddCall("nothing", client.Nothing)
 }
@@ -38,12 +34,12 @@ func placeBet(sc *client.ScCallContext) {
 		sc.Log("No color...")
 		return
 	}
-	if color < 1 || color > NUM_COLORS {
+	if color < 1 || color > numColors {
 		sc.Log("Invalid color...")
 		return
 	}
 
-	bet := BetInfo{
+	bet := &BetInfo{
 		better: sc.Caller(),
 		amount: amount,
 		color:  color,
@@ -52,12 +48,11 @@ func placeBet(sc *client.ScCallContext) {
 	state := sc.State()
 	bets := state.GetBytesArray(keyBets)
 	betNr := bets.Length()
-	bytes := encodeBetInfo(&bet)
-	bets.GetBytes(betNr).SetValue(bytes)
+	bets.GetBytes(betNr).SetValue(encodeBetInfo(bet))
 	if betNr == 0 {
 		playPeriod := state.GetInt(keyPlayPeriod).Value()
 		if playPeriod < 10 {
-			playPeriod = PLAY_PERIOD
+			playPeriod = defaultPlayPeriod
 		}
 		sc.Post("lock_bets").Post(playPeriod)
 	}
@@ -70,6 +65,7 @@ func lockBets(sc *client.ScCallContext) {
 		return
 	}
 
+	// move all current bets to the locked_bets array
 	state := sc.State()
 	bets := state.GetBytesArray(keyBets)
 	lockedBets := state.GetBytesArray(keyLockedBets)
@@ -95,6 +91,7 @@ func payWinners(sc *client.ScCallContext) {
 	state := sc.State()
 	state.GetInt(keyLastWinningColor).SetValue(winningColor)
 
+	// gather all winners and calculate some totals
 	totalBetAmount := int64(0)
 	totalWinAmount := int64(0)
 	lockedBets := state.GetBytesArray(keyLockedBets)
@@ -118,8 +115,10 @@ func payWinners(sc *client.ScCallContext) {
 		return
 	}
 
+	// pay out the winners proportionally to their bet amount
 	totalPayout := int64(0)
-	for i := 0; i < len(winners); i++ {
+	size := len(winners)
+	for i := 0; i < size; i++ {
 		bet := winners[i]
 		payout := totalBetAmount * bet.amount / totalWinAmount
 		if payout != 0 {
@@ -130,6 +129,7 @@ func payWinners(sc *client.ScCallContext) {
 		sc.Log(text)
 	}
 
+	// any truncation left-overs are fair picking for the smart contract
 	if totalPayout != totalBetAmount {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + sc.Utility().String(remainder)

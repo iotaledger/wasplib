@@ -1,17 +1,15 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use types::*;
 use wasplib::client::*;
+
+mod types;
 
 const KEY_ADDRESS: &str = "address";
 const KEY_FACTOR: &str = "factor";
 const KEY_MEMBERS: &str = "members";
 const KEY_TOTAL_FACTOR: &str = "total_factor";
-
-struct Member {
-    address: ScAddress,
-    factor: i64,
-}
 
 #[no_mangle]
 fn on_load() {
@@ -52,16 +50,14 @@ fn member(sc: &ScCallContext) {
             total -= m.factor;
             total += member.factor;
             total_factor.set_value(total);
-            let bytes = encode_member(&member);
-            members.get_bytes(i).set_value(&bytes);
+            members.get_bytes(i).set_value(&encode_member(&member));
             sc.log(&("Updated: ".to_string() + &member.address.to_string()));
             return;
         }
     }
     total += member.factor;
     total_factor.set_value(total);
-    let bytes = encode_member(&member);
-    members.get_bytes(size).set_value(&bytes);
+    members.get_bytes(size).set_value(&encode_member(&member));
     sc.log(&("Appended: ".to_string() + &member.address.to_string()));
 }
 
@@ -75,8 +71,8 @@ fn dividend(sc: &ScCallContext) {
     let total_factor = state.get_int(KEY_TOTAL_FACTOR);
     let total = total_factor.value();
     let members = state.get_bytes_array(KEY_MEMBERS);
-    let size = members.length();
     let mut parts = 0_i64;
+    let size = members.length();
     for i in 0..size {
         let bytes = members.get_bytes(i).value();
         let m = decode_member(&bytes);
@@ -93,19 +89,4 @@ fn dividend(sc: &ScCallContext) {
         let remainder = amount - parts;
         sc.log(&("Remainder in contract: ".to_string() + &remainder.to_string()));
     }
-}
-
-fn decode_member(bytes: &[u8]) -> Member {
-    let mut decoder = BytesDecoder::new(bytes);
-    Member {
-        address: decoder.address(),
-        factor: decoder.int(),
-    }
-}
-
-fn encode_member(member: &Member) -> Vec<u8> {
-    let mut encoder = BytesEncoder::new();
-    encoder.address(&member.address);
-    encoder.int(member.factor);
-    encoder.data()
 }

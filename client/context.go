@@ -13,6 +13,10 @@ func (ctx ScBalances) Balance(color *ScColor) int64 {
 	return ctx.balances.GetInt(color).Value()
 }
 
+func (ctx ScBalances) Colors() ScImmutableColorArray {
+	return ctx.balances.GetColorArray(KeyColor)
+}
+
 func (ctx ScBalances) Minted() *ScColor {
 	return NewScColor(ctx.balances.GetBytes(MINT).Value())
 }

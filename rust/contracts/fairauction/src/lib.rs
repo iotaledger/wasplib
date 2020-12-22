@@ -1,10 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-mod types;
-
 use types::*;
 use wasplib::client::*;
+
+mod types;
 
 const KEY_AUCTIONS: &str = "auctions";
 const KEY_BIDDERS: &str = "bidders";
@@ -141,7 +141,7 @@ fn finalize_auction(sc: &ScCallContext) {
 
     let color_param = sc.params().get_color(KEY_COLOR);
     if !color_param.exists() {
-        sc.log("INTERNAL INCONSISTENCY: missing color");
+        sc.log("Internal inconsistency: missing color");
         return;
     }
     let color = color_param.value();
@@ -151,7 +151,7 @@ fn finalize_auction(sc: &ScCallContext) {
     let current_auction = auctions.get_map(&color);
     let current_info = current_auction.get_bytes(KEY_INFO);
     if !current_info.exists() {
-        sc.log("INTERNAL INCONSISTENCY missing auction info");
+        sc.log("Internal inconsistency: missing auction info");
         return;
     }
     let auction = decode_auction_info(&current_info.value());
@@ -176,7 +176,8 @@ fn finalize_auction(sc: &ScCallContext) {
     // return staked bids to losers
     let bidders = current_auction.get_map(KEY_BIDDERS);
     let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
-    for i in 0..bidder_list.length() {
+    let size = bidder_list.length();
+    for i in 0..size {
         let bidder = bidder_list.get_agent(i).value();
         if bidder != auction.highest_bidder {
             let loser = bidders.get_bytes(&bidder);
@@ -266,19 +267,19 @@ fn refund(sc: &ScCallContext, amount: i64, reason: &str) {
     if amount != 0 {
         sc.transfer(&caller, &ScColor::IOTA, amount);
     }
-    let deposit = sc.incoming().balance(&ScColor::IOTA);
+    let incoming = sc.incoming();
+    let deposit = incoming.balance(&ScColor::IOTA);
     if deposit - amount != 0 {
         sc.transfer(&sc.contract().owner(), &ScColor::IOTA, deposit - amount);
     }
 
-    //TODO iterate over sc.incoming() balances
-    // // refund all other token colors, don't keep tokens that were to be auctioned
-    // let colors = request.colors();
-    // let items = colors.length();
-    // for i in 0..items {
-    //     let color = colors.get_color(i).value();
-    //     if color != ScColor::IOTA {
-    //         sc.transfer(&caller, &color, sc.incoming().balance(&color));
-    //     }
-    // }
+    // refund all other token colors, don't keep tokens that were to be auctioned
+    let colors = incoming.colors();
+    let size = colors.length();
+    for i in 0..size {
+        let color = colors.get_color(i).value();
+        if color != ScColor::IOTA {
+            sc.transfer(&caller, &color, incoming.balance(&color));
+        }
+    }
 }

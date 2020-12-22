@@ -3,10 +3,10 @@
 
 #![allow(dead_code)]
 
-mod types;
-
 use types::*;
 use wasplib::client::*;
+
+mod types;
 
 const KEY_COLOR_LIST: &str = "color_list";
 const KEY_DESCRIPTION: &str = "description";
@@ -50,8 +50,7 @@ fn mint_supply(sc: &ScCallContext) {
     if token.description.is_empty() {
         token.description += "no dscr";
     }
-    let data = encode_token_info(&token);
-    registry.set_value(&data);
+    registry.set_value(&encode_token_info(&token));
     let colors = state.get_color_array(KEY_COLOR_LIST);
     colors.get_color(colors.length()).set_value(&minted);
 }

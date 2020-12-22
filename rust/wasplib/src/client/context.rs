@@ -21,8 +21,12 @@ impl ScBalances {
         self.balances.get_int(color).value()
     }
 
+    pub fn colors(&self) -> ScImmutableColorArray {
+        self.balances.get_color_array(&KEY_COLOR)
+    }
+
     pub fn minted(&self) -> ScColor {
-        return ScColor::from_bytes(&self.balances.get_bytes(&ScColor::MINT).value());
+        ScColor::from_bytes(&self.balances.get_bytes(&ScColor::MINT).value())
     }
 }
 

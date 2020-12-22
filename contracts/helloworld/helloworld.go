@@ -3,9 +3,7 @@
 
 package helloworld
 
-import (
-	"github.com/iotaledger/wasplib/client"
-)
+import "github.com/iotaledger/wasplib/client"
 
 func OnLoad() {
 	exports := client.NewScExports()

@@ -3,26 +3,17 @@
 
 package dividend
 
-import (
-	"github.com/iotaledger/wasplib/client"
-)
+import "github.com/iotaledger/wasplib/client"
 
-const (
-	keyAddress     = client.Key("address")
-	keyFactor      = client.Key("factor")
-	keyMembers     = client.Key("members")
-	keyTotalFactor = client.Key("total_factor")
-)
-
-type Member struct {
-	address *client.ScAddress
-	factor  int64
-}
+const keyAddress = client.Key("address")
+const keyFactor = client.Key("factor")
+const keyMembers = client.Key("members")
+const keyTotalFactor = client.Key("total_factor")
 
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("member", member)
-	exports.AddCall("divide", divide)
+	exports.AddCall("dividend", dividend)
 }
 
 func member(sc *client.ScCallContext) {
@@ -57,20 +48,18 @@ func member(sc *client.ScCallContext) {
 			total -= m.factor
 			total += member.factor
 			totalFactor.SetValue(total)
-			bytes := encodeMember(member)
-			members.GetBytes(i).SetValue(bytes)
+			members.GetBytes(i).SetValue(encodeMember(member))
 			sc.Log("Updated: " + member.address.String())
 			return
 		}
 	}
 	total += member.factor
 	totalFactor.SetValue(total)
-	bytes := encodeMember(member)
-	members.GetBytes(size).SetValue(bytes)
+	members.GetBytes(size).SetValue(encodeMember(member))
 	sc.Log("Appended: " + member.address.String())
 }
 
-func divide(sc *client.ScCallContext) {
+func dividend(sc *client.ScCallContext) {
 	amount := sc.Balances().Balance(client.IOTA)
 	if amount == 0 {
 		sc.Log("Nothing to divide")
@@ -80,8 +69,8 @@ func divide(sc *client.ScCallContext) {
 	totalFactor := state.GetInt(keyTotalFactor)
 	total := totalFactor.Value()
 	members := state.GetBytesArray(keyMembers)
-	size := members.Length()
 	parts := int64(0)
+	size := members.Length()
 	for i := int32(0); i < size; i++ {
 		bytes := members.GetBytes(i).Value()
 		m := decodeMember(bytes)
@@ -98,19 +87,4 @@ func divide(sc *client.ScCallContext) {
 		remainder := amount - parts
 		sc.Log("Remainder in contract: " + sc.Utility().String(remainder))
 	}
-}
-
-func encodeMember(member *Member) []byte {
-	return client.NewBytesEncoder().
-		Address(member.address).
-		Int(member.factor).
-		Data()
-}
-
-func decodeMember(bytes []byte) *Member {
-	decoder := client.NewBytesDecoder(bytes)
-	member := &Member{}
-	member.address = decoder.Address()
-	member.factor = decoder.Int()
-	return member
 }

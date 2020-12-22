@@ -1,10 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-mod types;
-
 use types::*;
 use wasplib::client::*;
+
+mod types;
 
 const KEY_BETS: &str = "bets";
 const KEY_COLOR: &str = "color";
@@ -13,7 +13,7 @@ const KEY_LOCKED_BETS: &str = "locked_bets";
 const KEY_PLAY_PERIOD: &str = "play_period";
 
 const NUM_COLORS: i64 = 5;
-const PLAY_PERIOD: i64 = 120;
+const DEFAULT_PLAY_PERIOD: i64 = 120;
 
 #[no_mangle]
 fn on_load() {
@@ -43,19 +43,18 @@ fn place_bet(sc: &ScCallContext) {
 
     let bet = BetInfo {
         better: sc.caller(),
-        amount,
-        color,
+        amount: amount,
+        color: color,
     };
 
     let state = sc.state();
     let bets = state.get_bytes_array(KEY_BETS);
     let bet_nr = bets.length();
-    let bytes = encode_bet_info(&bet);
-    bets.get_bytes(bet_nr).set_value(&bytes);
+    bets.get_bytes(bet_nr).set_value(&encode_bet_info(&bet));
     if bet_nr == 0 {
         let mut play_period = state.get_int(KEY_PLAY_PERIOD).value();
         if play_period < 10 {
-            play_period = PLAY_PERIOD;
+            play_period = DEFAULT_PLAY_PERIOD;
         }
         sc.post("lock_bets").post(play_period);
     }
@@ -120,7 +119,8 @@ fn pay_winners(sc: &ScCallContext) {
 
     // pay out the winners proportionally to their bet amount
     let mut total_payout = 0_i64;
-    for i in 0..winners.len() {
+    let size = winners.len();
+    for i in 0..size {
         let bet = &winners[i];
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {

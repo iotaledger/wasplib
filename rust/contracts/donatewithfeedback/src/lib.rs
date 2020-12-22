@@ -1,10 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-mod types;
-
 use types::*;
 use wasplib::client::*;
+
+mod types;
 
 const KEY_AMOUNT: &str = "amount";
 const KEY_DONATIONS: &str = "donations";
@@ -46,7 +46,9 @@ fn donate(sc: &ScCallContext) {
 
     let largest_donation = state.get_int(KEY_MAX_DONATION);
     let total_donated = state.get_int(KEY_TOTAL_DONATION);
-    if donation.amount > largest_donation.value() { largest_donation.set_value(donation.amount); }
+    if donation.amount > largest_donation.value() {
+        largest_donation.set_value(donation.amount);
+    }
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
@@ -79,7 +81,8 @@ fn view_donations(sc: &ScViewContext) {
     results.get_int(KEY_MAX_DONATION).set_value(largest_donation.value());
     results.get_int(KEY_TOTAL_DONATION).set_value(total_donated.value());
     let donations = results.get_map_array(KEY_DONATIONS);
-    for i in 0..log.length() {
+    let size = log.length();
+    for i in 0..size {
         let log = log.get_bytes(i);
         let di = decode_donation_info(&log.value());
         let donation = donations.get_map(i);
