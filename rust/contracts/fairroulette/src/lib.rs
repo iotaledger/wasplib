@@ -100,8 +100,7 @@ fn pay_winners(sc: &ScCallContext) {
     let mut winners: Vec<BetInfo> = Vec::new();
     let nr_bets = locked_bets.length();
     for i in 0..nr_bets {
-        let bytes = locked_bets.get_bytes(i).value();
-        let bet = decode_bet_info(&bytes);
+        let bet = decode_bet_info(&locked_bets.get_bytes(i).value());
         total_bet_amount += bet.amount;
         if bet.color == winning_color {
             total_win_amount += bet.amount;

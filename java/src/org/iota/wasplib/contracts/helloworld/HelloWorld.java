@@ -1,13 +1,12 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package org.iota.wasplib.contracts;
+package org.iota.wasplib.contracts.helloworld;
 
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
 
 public class HelloWorld {
-	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("hello_world", HelloWorld::helloWorld);

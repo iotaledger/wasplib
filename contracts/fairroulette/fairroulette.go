@@ -98,8 +98,7 @@ func payWinners(sc *client.ScCallContext) {
 	winners := make([]*BetInfo, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
-		bytes := lockedBets.GetBytes(i).Value()
-		bet := decodeBetInfo(bytes)
+		bet := decodeBetInfo(lockedBets.GetBytes(i).Value())
 		totalBetAmount += bet.amount
 		if bet.color == winningColor {
 			totalWinAmount += bet.amount

@@ -24,11 +24,11 @@ func OnLoad() {
 }
 
 func donate(sc *client.ScCallContext) {
-	donation := &DonationInfo {
-		amount: sc.Incoming().Balance(client.IOTA),
-		donator: sc.Caller(),
-		error: "",
-		feedback: sc.Params().GetString(keyFeedback).Value(),
+	donation := &DonationInfo{
+		amount:    sc.Incoming().Balance(client.IOTA),
+		donator:   sc.Caller(),
+		error:     "",
+		feedback:  sc.Params().GetString(keyFeedback).Value(),
 		timestamp: sc.Timestamp(),
 	}
 	if donation.amount == 0 || len(donation.feedback) == 0 {
@@ -81,8 +81,7 @@ func viewDonations(sc *client.ScViewContext) {
 	donations := results.GetMapArray(keyDonations)
 	size := log.Length()
 	for i := int32(0); i < size; i++ {
-		log := log.GetBytes(i)
-		di := decodeDonationInfo(log.Value())
+		di := decodeDonationInfo(log.GetBytes(i).Value())
 		donation := donations.GetMap(i)
 		donation.GetInt(keyAmount).SetValue(di.amount)
 		donation.GetString(keyDonator).SetValue(di.donator.String())

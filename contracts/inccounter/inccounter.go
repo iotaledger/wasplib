@@ -3,14 +3,10 @@
 
 package inccounter
 
-import (
-	"github.com/iotaledger/wasplib/client"
-)
+import "github.com/iotaledger/wasplib/client"
 
-const (
-	keyCounter    = client.Key("counter")
-	keyNumRepeats = client.Key("num_repeats")
-)
+const keyCounter = client.Key("counter")
+const keyNumRepeats = client.Key("num_repeats")
 
 var localStateMustIncrement = false
 
@@ -98,15 +94,20 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
 	sc.Log("increment_when_must_increment called")
-	if localStateMustIncrement {
-		counter := sc.State().GetInt(keyCounter)
-		counter.SetValue(counter.Value() + 1)
+	{
+		if !localStateMustIncrement {
+			return
+		}
 	}
+	counter := sc.State().GetInt(keyCounter)
+	counter.SetValue(counter.Value() + 1)
 }
 
 func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 	incrementWhenMustIncrement(sc)
-	localStateMustIncrement = true
+	{
+		localStateMustIncrement = true
+	}
 	incrementWhenMustIncrement(sc)
 	incrementWhenMustIncrement(sc)
 	// counter ends up as 2
@@ -114,7 +115,9 @@ func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 
 func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
 	sc.Call("increment_when_must_increment").Call()
-	localStateMustIncrement = true
+	{
+		localStateMustIncrement = true
+	}
 	sc.Call("increment_when_must_increment").Call()
 	sc.Call("increment_when_must_increment").Call()
 	// counter ends up as 0
@@ -122,18 +125,19 @@ func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
 
 func incrementLocalStatePost(sc *client.ScCallContext) {
 	sc.Post("increment_when_must_increment").Post(0)
-	localStateMustIncrement = true
+	{
+		localStateMustIncrement = true
+	}
 	sc.Post("increment_when_must_increment").Post(0)
 	sc.Post("increment_when_must_increment").Post(0)
 	// counter ends up as 0
 }
 
-func test(sc *client.ScCallContext) {
+func test(_sc *client.ScCallContext) {
 	keyId := client.GetKeyIdFromString("timestamp")
 	client.SetInt(1, keyId, 123456789)
 	timestamp := client.GetInt(1, keyId)
 	client.SetInt(1, keyId, timestamp)
-
 	keyId2 := client.GetKeyIdFromString("string")
 	client.SetString(1, keyId2, "Test")
 	s1 := client.GetString(1, keyId2)
@@ -147,25 +151,25 @@ func test(sc *client.ScCallContext) {
 }
 
 func resultsTest(sc *client.ScCallContext) {
-	testKvstore(sc.Results())
-	checkKvstore(sc.Results().Immutable())
-	//sc.call("results_check")
+	testMap(sc.Results())
+	checkMap(sc.Results().Immutable())
+	//sc.call("results_check");
 }
 
 func stateTest(sc *client.ScCallContext) {
-	testKvstore(sc.State())
+	testMap(sc.State())
 	sc.Call("state_check")
 }
 
 func resultsCheck(sc *client.ScViewContext) {
-	checkKvstore(sc.Results().Immutable())
+	checkMap(sc.Results().Immutable())
 }
 
 func stateCheck(sc *client.ScViewContext) {
-	checkKvstore(sc.State())
+	checkMap(sc.State())
 }
 
-func testKvstore(kvstore client.ScMutableMap) {
+func testMap(kvstore client.ScMutableMap) {
 	int1 := kvstore.GetInt(client.Key("int1"))
 	check(int1.Value() == 0)
 	int1.SetValue(1)
@@ -191,7 +195,7 @@ func testKvstore(kvstore client.ScMutableMap) {
 	string3.SetValue("def")
 }
 
-func checkKvstore(kvstore client.ScImmutableMap) {
+func checkMap(kvstore client.ScImmutableMap) {
 	int1 := kvstore.GetInt(client.Key("int1"))
 	check(int1.Value() == 1)
 
@@ -209,6 +213,26 @@ func checkKvstore(kvstore client.ScImmutableMap) {
 	check(string2.Value() == "bc")
 	string3 := sa1.GetString(1)
 	check(string3.Value() == "def")
+}
+
+func checkMapRev(kvstore client.ScImmutableMap) {
+	sa1 := kvstore.GetStringArray(client.Key("sa1"))
+	string3 := sa1.GetString(1)
+	check(string3.Value() == "def")
+	string2 := sa1.GetString(0)
+	check(string2.Value() == "bc")
+
+	ia1 := kvstore.GetIntArray(client.Key("ia1"))
+	int3 := ia1.GetInt(1)
+	check(int3.Value() == 3)
+	int2 := ia1.GetInt(0)
+	check(int2.Value() == 2)
+
+	string1 := kvstore.GetString(client.Key("string1"))
+	check(string1.Value() == "a")
+
+	int1 := kvstore.GetInt(client.Key("int1"))
+	check(int1.Value() == 1)
 }
 
 func check(condition bool) {

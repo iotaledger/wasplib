@@ -44,8 +44,7 @@ fn member(sc: &ScCallContext) {
     let members = state.get_bytes_array(KEY_MEMBERS);
     let size = members.length();
     for i in 0..size {
-        let bytes = members.get_bytes(i).value();
-        let m = decode_member(&bytes);
+        let m = decode_member(&members.get_bytes(i).value());
         if m.address == member.address {
             total -= m.factor;
             total += member.factor;
@@ -74,8 +73,7 @@ fn dividend(sc: &ScCallContext) {
     let mut parts = 0_i64;
     let size = members.length();
     for i in 0..size {
-        let bytes = members.get_bytes(i).value();
-        let m = decode_member(&bytes);
+        let m = decode_member(&members.get_bytes(i).value());
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;

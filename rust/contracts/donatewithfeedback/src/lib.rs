@@ -83,8 +83,7 @@ fn view_donations(sc: &ScViewContext) {
     let donations = results.get_map_array(KEY_DONATIONS);
     let size = log.length();
     for i in 0..size {
-        let log = log.get_bytes(i);
-        let di = decode_donation_info(&log.value());
+        let di = decode_donation_info(&log.get_bytes(i).value());
         let donation = donations.get_map(i);
         donation.get_int(KEY_AMOUNT).set_value(di.amount);
         donation.get_string(KEY_DONATOR).set_value(&di.donator.to_string());

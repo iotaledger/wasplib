@@ -4,7 +4,7 @@
 // implementation of ERC-20 smart contract for ISCP
 // following https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/
 
-package org.iota.wasplib.contracts;
+package org.iota.wasplib.contracts.erc20;
 
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScViewContext;
@@ -18,35 +18,36 @@ import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class Erc20 {
-	// state variable
-	private static final Key STATE_VAR_SUPPLY = new Key("s");
+	// implementation of ERC-20 smart contract for ISCP
+	// following https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/
 
-	// supply private static final Keyant
-	private static final Key STATE_VAR_BALANCES = new Key("b"); // name of the map of balances
+	// state variable
+	private static final Key stateVarSupply = new Key("s");
+	// supply constant
+	private static final Key stateVarBalances = new Key("b");     // name of the map of balances
 
 	// params and return variables, used in calls
-	private static final Key PARAM_SUPPLY = new Key("s");
-	private static final Key PARAM_CREATOR = new Key("c");
-	private static final Key PARAM_ACCOUNT = new Key("ac");
-	private static final Key PARAM_DELEGATION = new Key("d");
-	private static final Key PARAM_AMOUNT = new Key("am");
-	private static final Key PARAM_RECIPIENT = new Key("r");
+	private static final Key paramSupply = new Key("s");
+	private static final Key paramCreator = new Key("c");
+	private static final Key paramAccount = new Key("ac");
+	private static final Key paramDelegation = new Key("d");
+	private static final Key paramAmount = new Key("am");
+	private static final Key paramRecipient = new Key("r");
 
-	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("init", Erc20::onInit);
-		exports.AddView("total_supply", Erc20::total_supply);
-		exports.AddView("balance_of", Erc20::balance_of);
+		exports.AddView("total_supply", Erc20::totalSupply);
+		exports.AddView("balance_of", Erc20::balanceOf);
 		exports.AddView("allowance", Erc20::allowance);
 		exports.AddCall("transfer", Erc20::transfer);
 		exports.AddCall("approve", Erc20::approve);
-		exports.AddCall("transfer_from", Erc20::transfer_from);
+		exports.AddCall("transfer_from", Erc20::transferFrom);
 	}
 
 	// TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
 
-	// onInit is a private static final Keyructor entry point. It initializes the smart contract with the
+	// on_init is a constructor entry point. It initializes the smart contract with the
 	// initial value of the token supply and the owner of that supply
 	// - input:
 	//   -- PARAM_SUPPLY must be nonzero positive integer
@@ -55,7 +56,7 @@ public class Erc20 {
 		ctx.Log("erc20.onInit.begin");
 		// validate parameters
 		// supply
-		ScImmutableInt supply = ctx.Params().GetInt(PARAM_SUPPLY);
+		ScImmutableInt supply = ctx.Params().GetInt(paramSupply);
 		String err;
 		if (!supply.Exists() || supply.Value() <= 0) {
 			err = "erc20.onInit.fail: wrong 'supply' parameter";
@@ -63,47 +64,50 @@ public class Erc20 {
 			ctx.Error().SetValue(err);
 			return;
 		}
-		// creator (owner);
-		// we cannot use 'caller' here because onInit is always called from the 'root'
-		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to private static final constructor (onInit);
-		ScImmutableAgent creator = ctx.Params().GetAgent(PARAM_CREATOR);
+		// creator (owner)
+		// we cannot use 'caller' here because on_init is always called from the 'root'
+		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
+		ScImmutableAgent creator = ctx.Params().GetAgent(paramCreator);
 		if (!creator.Exists()) {
 			err = "erc20.onInit.fail: wrong 'creator' parameter";
 			ctx.Log(err);
 			ctx.Error().SetValue(err);
 			return;
 		}
-		ctx.State().GetInt(STATE_VAR_SUPPLY).SetValue(supply.Value());
+		ctx.State().GetInt(stateVarSupply).SetValue(supply.Value());
 
 		// assign the whole supply to creator
-		ctx.State().GetMap(STATE_VAR_BALANCES).GetInt(creator.Value()).SetValue(supply.Value());
+		ctx.State().GetMap(stateVarBalances).GetInt(creator.Value()).SetValue(supply.Value());
 
-		String t = "erc20.onInit.success. Supply: " + supply + ", creator:" + creator;
+		String t = "erc20.onInit.success. Supply: "
+				+ supply.Value()
+				+ ", creator:"
+				+ creator.Value();
 		ctx.Log(t);
 	}
 
-	// the view returns total supply set when creating the contract (a private static final Keyant).
+	// the view returns total supply set when creating the contract (a constant).
 	// Output:
 	// - PARAM_SUPPLY: i64
-	public static void total_supply(ScViewContext ctx) {
-		long supply = ctx.State().GetInt(STATE_VAR_SUPPLY).Value();
-		ctx.Results().GetInt(PARAM_SUPPLY).SetValue(supply);
+	public static void totalSupply(ScViewContext ctx) {
+		long supply = ctx.State().GetInt(stateVarSupply).Value();
+		ctx.Results().GetInt(paramSupply).SetValue(supply);
 	}
 
 	// the view returns balance of the token held in the account
 	// Input:
 	// - PARAM_ACCOUNT: agentID
-	public static void balance_of(ScViewContext ctx) {
-		ScImmutableAgent account = ctx.Params().GetAgent(PARAM_ACCOUNT);
+	public static void balanceOf(ScViewContext ctx) {
+		ScImmutableAgent account = ctx.Params().GetAgent(paramAccount);
 		if (!account.Exists()) {
-			String m = "wrong or non existing parameter: " + account;
+			String m = ("wrong or non existing parameter: " + account.Value());
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScImmutableMap balances = ctx.State().GetMap(STATE_VAR_BALANCES);
-		long balance = balances.GetInt(account.Value()).Value(); // 0 if doesn't exist
-		ctx.Results().GetInt(PARAM_AMOUNT).SetValue(balance);
+		ScImmutableMap balances = ctx.State().GetMap(stateVarBalances);
+		long balance = balances.GetInt(account.Value()).Value();  // 0 if doesn't exist
+		ctx.Results().GetInt(paramAmount).SetValue(balance);
 	}
 
 	// the view returns max number of tokens the owner PARAM_ACCOUNT of the account
@@ -117,7 +121,7 @@ public class Erc20 {
 		ctx.Log("erc20.allowance");
 		// validate parameters
 		// account
-		ScImmutableAgent owner = ctx.Params().GetAgent(PARAM_ACCOUNT);
+		ScImmutableAgent owner = ctx.Params().GetAgent(paramAccount);
 		String m;
 		if (!owner.Exists()) {
 			m = "erc20.allowance.fail: wrong 'account' parameter";
@@ -126,7 +130,7 @@ public class Erc20 {
 			return;
 		}
 		// delegation
-		ScImmutableAgent delegation = ctx.Params().GetAgent(PARAM_DELEGATION);
+		ScImmutableAgent delegation = ctx.Params().GetAgent(paramDelegation);
 		if (!delegation.Exists()) {
 			m = "erc20.allowance.fail: wrong 'delegation' parameter";
 			ctx.Log(m);
@@ -136,7 +140,7 @@ public class Erc20 {
 		// all allowances of the address 'owner' are stored in the map of the same name
 		ScImmutableMap allowances = ctx.State().GetMap(owner.Value());
 		long allow = allowances.GetInt(delegation.Value()).Value();
-		ctx.Results().GetInt(PARAM_AMOUNT).SetValue(allow);
+		ctx.Results().GetInt(paramAmount).SetValue(allow);
 	}
 
 	// transfer moves tokens from caller's account to target account
@@ -149,42 +153,42 @@ public class Erc20 {
 		// validate params
 		ScImmutableMap params = ctx.Params();
 		// account
-		ScImmutableAgent target_addrParam = params.GetAgent(PARAM_ACCOUNT);
+		ScImmutableAgent targetAddrParam = params.GetAgent(paramAccount);
 		String m;
-		if (!target_addrParam.Exists()) {
+		if (!targetAddrParam.Exists()) {
 			m = "erc20.transfer.fail: wrong 'account' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScAgent target_addr = target_addrParam.Value();
+		ScAgent targetAddr = targetAddrParam.Value();
 		// amount
-		long amount = params.GetInt(PARAM_AMOUNT).Value();
+		long amount = params.GetInt(paramAmount).Value();
 		if (amount <= 0) {
 			m = "erc20.transfer.fail: wrong 'amount' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScMutableMap balances = ctx.State().GetMap(STATE_VAR_BALANCES);
-		ScMutableInt source_balance = balances.GetInt(ctx.Caller());
+		ScMutableMap balances = ctx.State().GetMap(stateVarBalances);
+		ScMutableInt sourceBalance = balances.GetInt(ctx.Caller());
 
-		if (source_balance.Value() < amount) {
+		if (sourceBalance.Value() < amount) {
 			m = "erc20.transfer.fail: not enough funds";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScMutableInt target_balance = balances.GetInt(target_addr);
-		long result = target_balance.Value() + amount;
+		ScMutableInt targetBalance = balances.GetInt(targetAddr);
+		long result = targetBalance.Value() + amount;
 		if (result <= 0) {
 			m = "erc20.transfer.fail: overflow";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		source_balance.SetValue(source_balance.Value() - amount);
-		target_balance.SetValue(target_balance.Value() + amount);
+		sourceBalance.SetValue(sourceBalance.Value() - amount);
+		targetBalance.SetValue(targetBalance.Value() + amount);
 		ctx.Log("erc20.transfer.success");
 	}
 
@@ -196,7 +200,7 @@ public class Erc20 {
 		ctx.Log("erc20.approve");
 
 		// validate parameters
-		ScImmutableAgent delegationParam = ctx.Params().GetAgent(PARAM_DELEGATION);
+		ScImmutableAgent delegationParam = ctx.Params().GetAgent(paramDelegation);
 		String m;
 		if (!delegationParam.Exists()) {
 			m = "erc20.approve.fail: wrong 'delegation' parameter";
@@ -205,7 +209,7 @@ public class Erc20 {
 			return;
 		}
 		ScAgent delegation = delegationParam.Value();
-		long amount = ctx.Params().GetInt(PARAM_AMOUNT).Value();
+		long amount = ctx.Params().GetInt(paramAmount).Value();
 		if (amount <= 0) {
 			m = "erc20.approve.fail: wrong 'amount' parameter";
 			ctx.Log(m);
@@ -224,30 +228,30 @@ public class Erc20 {
 	// - PARAM_ACCOUNT: agentID   the spender
 	// - PARAM_RECIPIENT: agentID   the target
 	// - PARAM_AMOUNT: i64
-	public static void transfer_from(ScCallContext ctx) {
-		ctx.Log("erc20.transfer_from");
+	public static void transferFrom(ScCallContext ctx) {
+		ctx.Log("erc20.transferFrom");
 
 		// validate parameters
-		ScImmutableAgent accountParam = ctx.Params().GetAgent(PARAM_ACCOUNT);
+		ScImmutableAgent accountParam = ctx.Params().GetAgent(paramAccount);
 		String m;
 		if (!accountParam.Exists()) {
-			m = "erc20.transfer_from.fail: wrong 'account' parameter";
+			m = "erc20.transferFrom.fail: wrong 'account' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
 		ScAgent account = accountParam.Value();
-		ScImmutableAgent recipientParam = ctx.Params().GetAgent(PARAM_RECIPIENT);
+		ScImmutableAgent recipientParam = ctx.Params().GetAgent(paramRecipient);
 		if (!recipientParam.Exists()) {
-			m = "erc20.transfer_from.fail: wrong 'recipient' parameter";
+			m = "erc20.transferFrom.fail: wrong 'recipient' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
 		ScAgent recipient = recipientParam.Value();
-		ScImmutableInt amountParam = ctx.Params().GetInt(PARAM_AMOUNT);
+		ScImmutableInt amountParam = ctx.Params().GetInt(paramAmount);
 		if (!amountParam.Exists()) {
-			m = "erc20.transfer_from.fail: wrong 'amount' parameter";
+			m = "erc20.transferFrom.fail: wrong 'amount' parameter";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
@@ -258,31 +262,31 @@ public class Erc20 {
 		ScMutableMap allowances = ctx.State().GetMap(account);
 		ScMutableInt allowance = allowances.GetInt(recipient);
 		if (allowance.Value() < amount) {
-			m = "erc20.transfer_from.fail: not enough allowance";
+			m = "erc20.transferFrom.fail: not enough allowance";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScMutableMap balances = ctx.State().GetMap(STATE_VAR_BALANCES);
-		ScMutableInt source_balance = balances.GetInt(account);
-		if (source_balance.Value() < amount) {
-			m = "erc20.transfer_from.fail: not enough funds";
+		ScMutableMap balances = ctx.State().GetMap(stateVarBalances);
+		ScMutableInt sourceBalance = balances.GetInt(account);
+		if (sourceBalance.Value() < amount) {
+			m = "erc20.transferFrom.fail: not enough funds";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		ScMutableInt recipient_balance = balances.GetInt(recipient);
-		long result = recipient_balance.Value() + amount;
+		ScMutableInt recipientBalance = balances.GetInt(recipient);
+		long result = recipientBalance.Value() + amount;
 		if (result <= 0) {
-			m = "erc20.transfer_from.fail: overflow";
+			m = "erc20.transferFrom.fail: overflow";
 			ctx.Log(m);
 			ctx.Error().SetValue(m);
 			return;
 		}
-		source_balance.SetValue(source_balance.Value() - amount);
-		recipient_balance.SetValue(recipient_balance.Value() + amount);
+		sourceBalance.SetValue(sourceBalance.Value() - amount);
+		recipientBalance.SetValue(recipientBalance.Value() + amount);
 		allowance.SetValue(allowance.Value() - amount);
 
-		ctx.Log("erc20.transfer_from.success");
+		ctx.Log("erc20.transferFrom.success");
 	}
 }

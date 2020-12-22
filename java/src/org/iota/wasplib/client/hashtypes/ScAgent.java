@@ -10,6 +10,8 @@ import org.iota.wasplib.client.keys.MapKey;
 import java.util.Arrays;
 
 public class ScAgent implements MapKey {
+	public static final ScAgent NONE = new ScAgent(new byte[37]);
+
 	final byte[] agent = new byte[37];
 
 	public ScAgent(byte[] bytes) {

@@ -1,13 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package org.iota.wasplib.contracts;
+package org.iota.wasplib.contracts.dividend;
 
-import org.iota.wasplib.client.bytes.BytesDecoder;
-import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
-import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
 import org.iota.wasplib.client.immutable.ScImmutableInt;
@@ -23,11 +20,10 @@ public class Dividend {
 	private static final Key keyMembers = new Key("members");
 	private static final Key keyTotalFactor = new Key("total_factor");
 
-	//export on_load
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("member", Dividend::member);
-		exports.AddCall("divide", Dividend::divide);
+		exports.AddCall("dividend", Dividend::dividend);
 	}
 
 	public static void member(ScCallContext sc) {
@@ -47,34 +43,33 @@ public class Dividend {
 			return;
 		}
 		Member member = new Member();
-		member.address = address.Value();
-		member.factor = factor.Value();
+		{
+			member.address = address.Value();
+			member.factor = factor.Value();
+		}
 		ScMutableMap state = sc.State();
 		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
 		long total = totalFactor.Value();
 		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
-			byte[] bytes = members.GetBytes(i).Value();
-			Member m = decodeMember(bytes);
+			Member m = Member.decode(members.GetBytes(i).Value());
 			if (m.address.equals(member.address)) {
 				total -= m.factor;
 				total += member.factor;
 				totalFactor.SetValue(total);
-				bytes = encodeMember(member);
-				members.GetBytes(i).SetValue(bytes);
+				members.GetBytes(i).SetValue(Member.encode(member));
 				sc.Log("Updated: " + member.address);
 				return;
 			}
 		}
 		total += member.factor;
 		totalFactor.SetValue(total);
-		byte[] bytes = encodeMember(member);
-		members.GetBytes(size).SetValue(bytes);
+		members.GetBytes(size).SetValue(Member.encode(member));
 		sc.Log("Appended: " + member.address);
 	}
 
-	public static void divide(ScCallContext sc) {
+	public static void dividend(ScCallContext sc) {
 		long amount = sc.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Log("Nothing to divide");
@@ -84,11 +79,10 @@ public class Dividend {
 		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
 		long total = totalFactor.Value();
 		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
-		int size = members.Length();
 		long parts = 0;
+		int size = members.Length();
 		for (int i = 0; i < size; i++) {
-			byte[] bytes = members.GetBytes(i).Value();
-			Member m = decodeMember(bytes);
+			Member m = Member.decode(members.GetBytes(i).Value());
 			long part = amount * m.factor / total;
 			if (part != 0) {
 				parts += part;
@@ -102,25 +96,5 @@ public class Dividend {
 			long remainder = amount - parts;
 			sc.Log("Remainder in contract: " + remainder);
 		}
-	}
-
-	public static Member decodeMember(byte[] bytes) {
-		BytesDecoder decoder = new BytesDecoder(bytes);
-		Member bet = new Member();
-		bet.address = decoder.Address();
-		bet.factor = decoder.Int();
-		return bet;
-	}
-
-	public static byte[] encodeMember(Member donation) {
-		return new BytesEncoder().
-				Address(donation.address).
-				Int(donation.factor).
-				Data();
-	}
-
-	public static class Member {
-		ScAddress address;
-		long factor;
 	}
 }

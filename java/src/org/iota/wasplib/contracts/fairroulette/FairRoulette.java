@@ -1,10 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package org.iota.wasplib.contracts;
+package org.iota.wasplib.contracts.fairroulette;
 
-import org.iota.wasplib.client.bytes.BytesDecoder;
-import org.iota.wasplib.client.bytes.BytesEncoder;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -21,10 +19,10 @@ public class FairRoulette {
 	private static final Key keyLastWinningColor = new Key("last_winning_color");
 	private static final Key keyLockedBets = new Key("locked_bets");
 	private static final Key keyPlayPeriod = new Key("play_period");
-	private static final long NUM_COLORS = 5;
-	private static final long PLAY_PERIOD = 120;
 
-	//export on_load
+	private static final int numColors = 5;
+	private static final int defaultPlayPeriod = 120;
+
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("place_bet", FairRoulette::placeBet);
@@ -35,7 +33,7 @@ public class FairRoulette {
 	}
 
 	public static void placeBet(ScCallContext sc) {
-		long amount = sc.Balances().Balance(ScColor.IOTA);
+		long amount = sc.Incoming().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Log("Empty bet...");
 			return;
@@ -45,25 +43,26 @@ public class FairRoulette {
 			sc.Log("No color...");
 			return;
 		}
-		if (color < 1 || color > NUM_COLORS) {
+		if (color < 1 || color > numColors) {
 			sc.Log("Invalid color...");
 			return;
 		}
 
 		BetInfo bet = new BetInfo();
-		bet.better = sc.Caller();
-		bet.amount = amount;
-		bet.color = color;
+		{
+			bet.better = sc.Caller();
+			bet.amount = amount;
+			bet.color = color;
+		}
 
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
 		int betNr = bets.Length();
-		byte[] bytes = encodeBetInfo(bet);
-		bets.GetBytes(betNr).SetValue(bytes);
+		bets.GetBytes(betNr).SetValue(BetInfo.encode(bet));
 		if (betNr == 0) {
 			long playPeriod = state.GetInt(keyPlayPeriod).Value();
 			if (playPeriod < 10) {
-				playPeriod = PLAY_PERIOD;
+				playPeriod = defaultPlayPeriod;
 			}
 			sc.Post("lock_bets").Post(playPeriod);
 		}
@@ -76,6 +75,7 @@ public class FairRoulette {
 			return;
 		}
 
+		// move all current bets to the locked_bets array
 		ScMutableMap state = sc.State();
 		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
 		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
@@ -101,14 +101,14 @@ public class FairRoulette {
 		ScMutableMap state = sc.State();
 		state.GetInt(keyLastWinningColor).SetValue(winningColor);
 
+		// gather all winners and calculate some totals
 		long totalBetAmount = 0;
 		long totalWinAmount = 0;
 		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
-		ArrayList<BetInfo> winners = new ArrayList<>();
+		ArrayList<BetInfo> winners = new ArrayList<BetInfo>();
 		int nrBets = lockedBets.Length();
 		for (int i = 0; i < nrBets; i++) {
-			byte[] bytes = lockedBets.GetBytes(i).Value();
-			BetInfo bet = decodeBetInfo(bytes);
+			BetInfo bet = BetInfo.decode(lockedBets.GetBytes(i).Value());
 			totalBetAmount += bet.amount;
 			if (bet.color == winningColor) {
 				totalWinAmount += bet.amount;
@@ -124,21 +124,25 @@ public class FairRoulette {
 			return;
 		}
 
-		long totalPayout = 0;
-		for (int i = 0; i < winners.size(); i++) {
+		// pay out the winners proportionally to their bet amount
+		int totalPayout = 0;
+		int size = winners.size();
+		String text;
+		for (int i = 0; i < size; i++) {
 			BetInfo bet = winners.get(i);
 			long payout = totalBetAmount * bet.amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
 				sc.Transfer(bet.better, ScColor.IOTA, payout);
 			}
-			String text = "Pay " + payout + " to " + bet.better;
+			text = "Pay " + payout + " to " + bet.better;
 			sc.Log(text);
 		}
 
+		// any truncation left-overs are fair picking for the smart contract
 		if (totalPayout != totalBetAmount) {
 			long remainder = totalBetAmount - totalPayout;
-			String text = "Remainder is " + remainder;
+			text = "Remainder is " + remainder;
 			sc.Log(text);
 			sc.Transfer(scId, ScColor.IOTA, remainder);
 		}
@@ -158,28 +162,5 @@ public class FairRoulette {
 		}
 
 		sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod);
-	}
-
-	public static BetInfo decodeBetInfo(byte[] bytes) {
-		BytesDecoder decoder = new BytesDecoder(bytes);
-		BetInfo bet = new BetInfo();
-		bet.better = decoder.Agent();
-		bet.amount = decoder.Int();
-		bet.color = decoder.Int();
-		return bet;
-	}
-
-	public static byte[] encodeBetInfo(BetInfo bet) {
-		return new BytesEncoder().
-				Agent(bet.better).
-				Int(bet.amount).
-				Int(bet.color).
-				Data();
-	}
-
-	public static class BetInfo {
-		ScAgent better;
-		long amount;
-		long color;
 	}
 }

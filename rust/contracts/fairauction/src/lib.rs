@@ -215,8 +215,7 @@ fn place_bid(sc: &ScCallContext) {
         return;
     }
 
-    let bytes = current_info.value();
-    let mut auction = decode_auction_info(&bytes);
+    let mut auction = decode_auction_info(&current_info.value());
     let bidders = current_auction.get_map(KEY_BIDDERS);
     let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
     let caller = sc.caller();
@@ -232,7 +231,11 @@ fn place_bid(sc: &ScCallContext) {
         sc.log(&("New bid from: ".to_string() + &caller.to_string()));
         let index = bidder_list.length();
         bidder_list.get_agent(index).set_value(&caller);
-        let bid = BidInfo { index: index as i64, amount: bid_amount, timestamp: sc.timestamp() };
+        let bid = BidInfo {
+            index: index as i64,
+            amount: bid_amount,
+            timestamp: sc.timestamp(),
+        };
         bidder.set_value(&encode_bid_info(&bid));
     }
     if bid_amount > auction.highest_bid {

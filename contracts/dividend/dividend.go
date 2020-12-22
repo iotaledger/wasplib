@@ -42,8 +42,7 @@ func member(sc *client.ScCallContext) {
 	members := state.GetBytesArray(keyMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		bytes := members.GetBytes(i).Value()
-		m := decodeMember(bytes)
+		m := decodeMember(members.GetBytes(i).Value())
 		if m.address.Equals(member.address) {
 			total -= m.factor
 			total += member.factor
@@ -72,8 +71,7 @@ func dividend(sc *client.ScCallContext) {
 	parts := int64(0)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		bytes := members.GetBytes(i).Value()
-		m := decodeMember(bytes)
+		m := decodeMember(members.GetBytes(i).Value())
 		part := amount * m.factor / total
 		if part != 0 {
 			parts += part

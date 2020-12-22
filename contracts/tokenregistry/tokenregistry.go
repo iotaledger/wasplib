@@ -31,11 +31,11 @@ func mintSupply(sc *client.ScCallContext) {
 	}
 	params := sc.Params()
 	token := &TokenInfo{
-		supply: sc.Incoming().Balance(minted),
-		mintedBy: sc.Caller(),
-		owner: sc.Caller(),
-		created: sc.Timestamp(),
-		updated: sc.Timestamp(),
+		supply:      sc.Incoming().Balance(minted),
+		mintedBy:    sc.Caller(),
+		owner:       sc.Caller(),
+		created:     sc.Timestamp(),
+		updated:     sc.Timestamp(),
 		description: params.GetString(keyDescription).Value(),
 		userDefined: params.GetString(keyUserDefined).Value(),
 	}

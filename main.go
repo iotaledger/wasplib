@@ -10,6 +10,7 @@ import (
 	"github.com/iotaledger/wasplib/contracts/erc20"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/iotaledger/wasplib/contracts/fairroulette"
+	"github.com/iotaledger/wasplib/contracts/hellonewworld"
 	"github.com/iotaledger/wasplib/contracts/helloworld"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/contracts/tokenregistry"
@@ -27,6 +28,7 @@ var scForGoVM = map[string]func(){
 	"fairauction":        fairauction.OnLoad,
 	"fairroulette":       fairroulette.OnLoad,
 	"helloworld":         helloworld.OnLoad,
+	"hellonewworld":      hellonewworld.OnLoad,
 	"inccounter":         inccounter.OnLoad,
 	"tokenregistry":      tokenregistry.OnLoad,
 }
