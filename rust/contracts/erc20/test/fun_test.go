@@ -26,7 +26,7 @@ func deployErc20(t *testing.T) *solo.Chain {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 5, len(rec))
 
 	res, err := chain.CallView(erc20name, "total_supply")

@@ -23,7 +23,7 @@ func TestDeployErc20(t *testing.T) {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 5, len(rec))
 
 	_, err = chain.FindContract(erc20name)
@@ -35,7 +35,7 @@ func TestDeployErc20(t *testing.T) {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec = chain.GetInfo()
+	_, rec = chain.GetInfo()
 	require.EqualValues(t, 5, len(rec))
 }
 
@@ -44,7 +44,7 @@ func TestDeployErc20Fail1(t *testing.T) {
 	chain := glb.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, erc20name, erc20file)
 	require.Error(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 }
 
@@ -55,7 +55,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 		PARAM_SUPPLY, 1000000,
 	)
 	require.Error(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 }
 
@@ -68,7 +68,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 }
 
@@ -81,7 +81,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, _, rec := chain.GetInfo()
+	_, rec := chain.GetInfo()
 	require.EqualValues(t, 4, len(rec))
 
 	// repeat after failure
@@ -90,7 +90,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 		PARAM_CREATOR, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, _, rec = chain.GetInfo()
+	_, rec = chain.GetInfo()
 	require.EqualValues(t, 5, len(rec))
 
 	_, err = chain.FindContract(erc20name)
