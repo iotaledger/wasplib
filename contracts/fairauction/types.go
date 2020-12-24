@@ -42,19 +42,19 @@ func encodeAuctionInfo(o *AuctionInfo) []byte {
 }
 
 func decodeAuctionInfo(bytes []byte) *AuctionInfo {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &AuctionInfo{}
-	data.auctionOwner = d.Agent()
-	data.color = d.Color()
-	data.deposit = d.Int()
-	data.description = d.String()
-	data.duration = d.Int()
-	data.highestBid = d.Int()
-	data.highestBidder = d.Agent()
-	data.minimumBid = d.Int()
-	data.numTokens = d.Int()
-	data.ownerMargin = d.Int()
-	data.whenStarted = d.Int()
+	data.auctionOwner = decode.Agent()
+	data.color = decode.Color()
+	data.deposit = decode.Int()
+	data.description = decode.String()
+	data.duration = decode.Int()
+	data.highestBid = decode.Int()
+	data.highestBidder = decode.Agent()
+	data.minimumBid = decode.Int()
+	data.numTokens = decode.Int()
+	data.ownerMargin = decode.Int()
+	data.whenStarted = decode.Int()
 	return data
 }
 
@@ -67,10 +67,10 @@ func encodeBidInfo(o *BidInfo) []byte {
 }
 
 func decodeBidInfo(bytes []byte) *BidInfo {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &BidInfo{}
-	data.amount = d.Int()
-	data.index = d.Int()
-	data.timestamp = d.Int()
+	data.amount = decode.Int()
+	data.index = decode.Int()
+	data.timestamp = decode.Int()
 	return data
 }

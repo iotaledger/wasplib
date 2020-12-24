@@ -28,14 +28,14 @@ func encodeTokenInfo(o *TokenInfo) []byte {
 }
 
 func decodeTokenInfo(bytes []byte) *TokenInfo {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &TokenInfo{}
-	data.created = d.Int()
-	data.description = d.String()
-	data.mintedBy = d.Agent()
-	data.owner = d.Agent()
-	data.supply = d.Int()
-	data.updated = d.Int()
-	data.userDefined = d.String()
+	data.created = decode.Int()
+	data.description = decode.String()
+	data.mintedBy = decode.Agent()
+	data.owner = decode.Agent()
+	data.supply = decode.Int()
+	data.updated = decode.Int()
+	data.userDefined = decode.String()
 	return data
 }

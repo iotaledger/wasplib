@@ -4,24 +4,26 @@
 use wasplib::client::*;
 
 pub struct BetInfo {
+    //@formatter:off
     pub amount: i64,
     pub better: ScAgent,
-    pub color: i64,
+    pub color:  i64,
+    //@formatter:on
 }
 
 pub fn encode_bet_info(o: &BetInfo) -> Vec<u8> {
-    let mut e = BytesEncoder::new();
-    e.int(o.amount);
-    e.agent(&o.better);
-    e.int(o.color);
-    return e.data();
+    let mut encode = BytesEncoder::new();
+    encode.int(o.amount);
+    encode.agent(&o.better);
+    encode.int(o.color);
+    return encode.data();
 }
 
 pub fn decode_bet_info(bytes: &[u8]) -> BetInfo {
-    let mut d = BytesDecoder::new(bytes);
+    let mut decode = BytesDecoder::new(bytes);
     BetInfo {
-        amount: d.int(),
-        better: d.agent(),
-        color: d.int(),
+        amount: decode.int(),
+        better: decode.agent(),
+        color: decode.int(),
     }
 }

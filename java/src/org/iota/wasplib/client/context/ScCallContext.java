@@ -5,7 +5,6 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.keys.MapKey;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -25,10 +24,6 @@ public class ScCallContext extends ScBaseContext {
 
 	public ScBalances Incoming() {
 		return new ScBalances(root.GetMap(Key.Incoming).Immutable());
-	}
-
-	public void Log(String text) {
-		Host.SetString(1, Key.KEY_LOG, text);
 	}
 
 	public ScPostInfo Post(String function) {

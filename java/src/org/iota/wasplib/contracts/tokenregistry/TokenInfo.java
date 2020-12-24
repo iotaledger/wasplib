@@ -5,18 +5,22 @@ package org.iota.wasplib.contracts.tokenregistry;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
+import org.iota.wasplib.client.hashtypes.ScColor;
 
-public class TokenInfo {
-	public long created;
-	public String description;
+public class TokenInfo{
+	//@formatter:off
+	public long    created;
+	public String  description;
 	public ScAgent mintedBy;
 	public ScAgent owner;
-	public long supply;
-	public long updated;
-	public String userDefined;
+	public long    supply;
+	public long    updated;
+	public String  userDefined;
+	//@formatter:on
 
-	public static byte[] encode(TokenInfo o) {
+	public static byte[] encode(TokenInfo o){
 		return new BytesEncoder().
 				Int(o.created).
 				String(o.description).
@@ -29,15 +33,15 @@ public class TokenInfo {
 	}
 
 	public static TokenInfo decode(byte[] bytes) {
-		BytesDecoder d = new BytesDecoder(bytes);
-		TokenInfo data = new TokenInfo();
-		data.created = d.Int();
-		data.description = d.String();
-		data.mintedBy = d.Agent();
-		data.owner = d.Agent();
-		data.supply = d.Int();
-		data.updated = d.Int();
-		data.userDefined = d.String();
+		BytesDecoder decode = new BytesDecoder(bytes);
+        TokenInfo data = new TokenInfo();
+		data.created = decode.Int();
+		data.description = decode.String();
+		data.mintedBy = decode.Agent();
+		data.owner = decode.Agent();
+		data.supply = decode.Int();
+		data.updated = decode.Int();
+		data.userDefined = decode.String();
 		return data;
 	}
 }

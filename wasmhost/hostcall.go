@@ -49,7 +49,7 @@ func (a *HostCall) call() {
 
 func (a *HostCall) SetBytes(keyId int32, value []byte) {
 	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceHost("Call.SetBytes %s = %s", key, base58.Encode(value))
+	a.host.TraceAll("Call.SetBytes %s = %s", key, base58.Encode(value))
 	a.HostMap.SetBytes(keyId, value)
 	if key == "chain" {
 		a.chain = value
@@ -59,7 +59,7 @@ func (a *HostCall) SetBytes(keyId int32, value []byte) {
 
 func (a *HostCall) SetInt(keyId int32, value int64) {
 	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceHost("Call.SetInt %s = %d\n", key, value)
+	a.host.TraceAll("Call.SetInt %s = %d\n", key, value)
 	a.HostMap.SetInt(keyId, value)
 	if key != "delay" {
 		return
@@ -75,7 +75,7 @@ func (a *HostCall) SetInt(keyId int32, value int64) {
 
 func (a *HostCall) SetString(keyId int32, value string) {
 	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceHost("Call.SetString %s = %s\n", key, value)
+	a.host.TraceAll("Call.SetString %s = %s\n", key, value)
 	a.HostMap.SetString(keyId, value)
 	if key == "contract" {
 		a.contract = value

@@ -131,6 +131,10 @@ func (ctx ScBaseContext) Log(text string) {
 	SetString(1, int32(KeyLog), text)
 }
 
+func (ctx ScBaseContext) Panic(text string) {
+	SetString(1, int32(KeyPanic), text)
+}
+
 func (ctx ScBaseContext) Params() ScImmutableMap {
 	return root.GetMap(KeyParams).Immutable()
 }

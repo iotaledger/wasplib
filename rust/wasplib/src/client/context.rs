@@ -141,6 +141,10 @@ pub trait ScBaseContext {
         set_string(1, KEY_LOG, text)
     }
 
+    fn panic(&self, text: &str) {
+        set_string(1, KEY_PANIC, text)
+    }
+
     fn params(&self) -> ScImmutableMap {
         ROOT.get_map(&KEY_PARAMS).immutable()
     }

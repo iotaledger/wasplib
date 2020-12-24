@@ -27,7 +27,7 @@ type WasmVmBase struct {
 
 func (vm *WasmVmBase) hostFdWrite(fd int32, iovs int32, size int32, written int32) int32 {
 	host := vm.host
-	host.TraceHost("hostFdWrite(...)")
+	host.TraceAll("hostFdWrite(...)")
 	// very basic implementation that expects fd to be stdout and iovs to be only one element
 	ptr := vm.impl.UnsafeMemory()
 	txt := binary.LittleEndian.Uint32(ptr[iovs : iovs+4])
@@ -39,7 +39,7 @@ func (vm *WasmVmBase) hostFdWrite(fd int32, iovs int32, size int32, written int3
 
 func (vm *WasmVmBase) hostGetBytes(objId int32, keyId int32, stringRef int32, size int32) int32 {
 	host := vm.host
-	host.TraceHost("hostGetBytes(o%d,k%d,r%d,s%d)", objId, keyId, stringRef, size)
+	host.TraceAll("hostGetBytes(o%d,k%d,r%d,s%d)", objId, keyId, stringRef, size)
 
 	// negative size means only check for existence
 	if size < 0 {
@@ -72,19 +72,19 @@ func (vm *WasmVmBase) hostGetBytes(objId int32, keyId int32, stringRef int32, si
 
 func (vm *WasmVmBase) hostGetInt(objId int32, keyId int32) int64 {
 	host := vm.host
-	host.TraceHost("hostGetInt(o%d,k%d)", objId, keyId)
+	host.TraceAll("hostGetInt(o%d,k%d)", objId, keyId)
 	return host.GetInt(objId, keyId)
 }
 
 func (vm *WasmVmBase) hostGetIntRef(objId int32, keyId int32, intRef int32) {
 	host := vm.host
-	host.TraceHost("hostGetIntRef(o%d,k%d,r%d)", objId, keyId, intRef)
+	host.TraceAll("hostGetIntRef(o%d,k%d,r%d)", objId, keyId, intRef)
 	vm.vmSetInt(intRef, host.GetInt(objId, keyId))
 }
 
 func (vm *WasmVmBase) hostGetKeyId(keyRef int32, size int32) int32 {
 	host := vm.host
-	host.TraceHost("hostGetKeyId(r%d,s%d)", keyRef, size)
+	host.TraceAll("hostGetKeyId(r%d,s%d)", keyRef, size)
 	// non-negative size means original key was a string
 	if size >= 0 {
 		bytes := vm.vmGetBytes(keyRef, size)
@@ -98,13 +98,13 @@ func (vm *WasmVmBase) hostGetKeyId(keyRef int32, size int32) int32 {
 
 func (vm *WasmVmBase) hostGetObjectId(objId int32, keyId int32, typeId int32) int32 {
 	host := vm.host
-	host.TraceHost("hostGetObjectId(o%d,k%d,t%d)", objId, keyId, typeId)
+	host.TraceAll("hostGetObjectId(o%d,k%d,t%d)", objId, keyId, typeId)
 	return host.GetObjectId(objId, keyId, typeId)
 }
 
 func (vm *WasmVmBase) hostSetBytes(objId int32, keyId int32, stringRef int32, size int32) {
 	host := vm.host
-	host.TraceHost("hostSetBytes(o%d,k%d,r%d,s%d)", objId, keyId, stringRef, size)
+	host.TraceAll("hostSetBytes(o%d,k%d,r%d,s%d)", objId, keyId, stringRef, size)
 	bytes := vm.vmGetBytes(stringRef, size)
 	if objId < 0 {
 		host.SetString(-objId, keyId, string(bytes))
@@ -115,13 +115,13 @@ func (vm *WasmVmBase) hostSetBytes(objId int32, keyId int32, stringRef int32, si
 
 func (vm *WasmVmBase) hostSetInt(objId int32, keyId int32, value int64) {
 	host := vm.host
-	host.TraceHost("hostSetInt(o%d,k%d,v%d)", objId, keyId, value)
+	host.TraceAll("hostSetInt(o%d,k%d,v%d)", objId, keyId, value)
 	host.SetInt(objId, keyId, value)
 }
 
 func (vm *WasmVmBase) hostSetIntRef(objId int32, keyId int32, intRef int32) {
 	host := vm.host
-	host.TraceHost("hostSetIntRef(o%d,k%d,r%d)", objId, keyId, intRef)
+	host.TraceAll("hostSetIntRef(o%d,k%d,r%d)", objId, keyId, intRef)
 	host.SetInt(objId, keyId, vm.vmGetInt(intRef))
 }
 

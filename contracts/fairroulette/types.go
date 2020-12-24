@@ -20,10 +20,10 @@ func encodeBetInfo(o *BetInfo) []byte {
 }
 
 func decodeBetInfo(bytes []byte) *BetInfo {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &BetInfo{}
-	data.amount = d.Int()
-	data.better = d.Agent()
-	data.color = d.Int()
+	data.amount = decode.Int()
+	data.better = decode.Agent()
+	data.color = decode.Int()
 	return data
 }

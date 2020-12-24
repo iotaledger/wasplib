@@ -18,9 +18,9 @@ func encodeMember(o *Member) []byte {
 }
 
 func decodeMember(bytes []byte) *Member {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &Member{}
-	data.address = d.Address()
-	data.factor = d.Int()
+	data.address = decode.Address()
+	data.factor = decode.Int()
 	return data
 }

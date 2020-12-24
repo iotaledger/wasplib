@@ -4,30 +4,32 @@
 use wasplib::client::*;
 
 pub struct DonationInfo {
-    pub amount: i64,
-    pub donator: ScAgent,
-    pub error: String,
-    pub feedback: String,
+    //@formatter:off
+    pub amount:    i64,
+    pub donator:   ScAgent,
+    pub error:     String,
+    pub feedback:  String,
     pub timestamp: i64,
+    //@formatter:on
 }
 
 pub fn encode_donation_info(o: &DonationInfo) -> Vec<u8> {
-    let mut e = BytesEncoder::new();
-    e.int(o.amount);
-    e.agent(&o.donator);
-    e.string(&o.error);
-    e.string(&o.feedback);
-    e.int(o.timestamp);
-    return e.data();
+    let mut encode = BytesEncoder::new();
+    encode.int(o.amount);
+    encode.agent(&o.donator);
+    encode.string(&o.error);
+    encode.string(&o.feedback);
+    encode.int(o.timestamp);
+    return encode.data();
 }
 
 pub fn decode_donation_info(bytes: &[u8]) -> DonationInfo {
-    let mut d = BytesDecoder::new(bytes);
+    let mut decode = BytesDecoder::new(bytes);
     DonationInfo {
-        amount: d.int(),
-        donator: d.agent(),
-        error: d.string(),
-        feedback: d.string(),
-        timestamp: d.int(),
+        amount: decode.int(),
+        donator: decode.agent(),
+        error: decode.string(),
+        feedback: decode.string(),
+        timestamp: decode.int(),
     }
 }

@@ -53,7 +53,7 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 
 func (host *SimpleWasmHost) Log(logLevel int32, text string) {
 	switch logLevel {
-	case KeyTraceHost:
+	case KeyTraceAll:
 		//fmt.Println(text)
 	case KeyTrace:
 		//fmt.Println(text)

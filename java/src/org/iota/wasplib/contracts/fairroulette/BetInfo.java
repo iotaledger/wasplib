@@ -5,14 +5,18 @@ package org.iota.wasplib.contracts.fairroulette;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
+import org.iota.wasplib.client.hashtypes.ScColor;
 
-public class BetInfo {
-	public long amount;
+public class BetInfo{
+	//@formatter:off
+	public long    amount;
 	public ScAgent better;
-	public long color;
+	public long    color;
+	//@formatter:on
 
-	public static byte[] encode(BetInfo o) {
+	public static byte[] encode(BetInfo o){
 		return new BytesEncoder().
 				Int(o.amount).
 				Agent(o.better).
@@ -21,11 +25,11 @@ public class BetInfo {
 	}
 
 	public static BetInfo decode(byte[] bytes) {
-		BytesDecoder d = new BytesDecoder(bytes);
-		BetInfo data = new BetInfo();
-		data.amount = d.Int();
-		data.better = d.Agent();
-		data.color = d.Int();
+		BytesDecoder decode = new BytesDecoder(bytes);
+        BetInfo data = new BetInfo();
+		data.amount = decode.Int();
+		data.better = decode.Agent();
+		data.color = decode.Int();
 		return data;
 	}
 }

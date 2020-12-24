@@ -110,7 +110,7 @@ func (host *WasmHost) GetBytes(objId int32, keyId int32) []byte {
 }
 
 func (host *WasmHost) GetInt(objId int32, keyId int32) int64 {
-	host.TraceHost("GetInt(o%d,k%d)", objId, keyId)
+	host.TraceAll("GetInt(o%d,k%d)", objId, keyId)
 	if keyId == KeyError && objId == 1 {
 		if host.HasError() {
 			return 1
@@ -139,7 +139,7 @@ func (host *WasmHost) GetKeyIdFromBytes(bytes []byte) int32 {
 }
 
 func (host *WasmHost) GetKeyFromId(keyId int32) []byte {
-	host.TraceHost("GetKeyFromId(k%d)", keyId)
+	host.TraceAll("GetKeyFromId(k%d)", keyId)
 	key := host.getKeyFromId(keyId)
 	if (keyId & KeyFromString) == 0 {
 		// originally a byte slice key
@@ -196,7 +196,7 @@ func (host *WasmHost) getKeyId(key []byte, fromString bool) int32 {
 }
 
 func (host *WasmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 {
-	host.TraceHost("GetObjectId(o%d,k%d)", objId, keyId)
+	host.TraceAll("GetObjectId(o%d,k%d,t%d)", objId, keyId, typeId)
 	if host.HasError() {
 		return 0
 	}
@@ -287,7 +287,7 @@ func (host *WasmHost) SetError(text string) {
 }
 
 func (host *WasmHost) SetInt(objId int32, keyId int32, value int64) {
-	host.TraceHost("SetInt(o%d,k%d)", objId, keyId)
+	host.TraceAll("SetInt(o%d,k%d)", objId, keyId)
 	if host.HasError() {
 		return
 	}
@@ -302,7 +302,7 @@ func (host *WasmHost) SetString(objId int32, keyId int32, value string) {
 		case KeyError:
 			host.SetError(value)
 			return
-		case KeyLog, KeyTrace, KeyTraceHost:
+		case KeyLog, KeyPanic, KeyTrace, KeyTraceAll:
 			host.logger.Log(keyId, value)
 			return
 		}
@@ -319,8 +319,8 @@ func (host *WasmHost) Trace(format string, a ...interface{}) {
 	host.logger.Log(KeyTrace, fmt.Sprintf(format, a...))
 }
 
-func (host *WasmHost) TraceHost(format string, a ...interface{}) {
-	host.logger.Log(KeyTraceHost, fmt.Sprintf(format, a...))
+func (host *WasmHost) TraceAll(format string, a ...interface{}) {
+	host.logger.Log(KeyTraceAll, fmt.Sprintf(format, a...))
 }
 
 func (host *WasmHost) TrackObject(obj HostObject) int32 {

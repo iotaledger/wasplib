@@ -26,15 +26,16 @@ const (
 	KeyLogs        = KeyLog         -1
 	KeyName        = KeyLogs        -1
 	KeyOwner       = KeyName        -1
-	KeyParams      = KeyOwner       -1
+	KeyPanic       = KeyOwner       -1
+	KeyParams      = KeyPanic       -1
 	KeyPosts       = KeyParams      -1
 	KeyRandom      = KeyPosts       -1
 	KeyResults     = KeyRandom      -1
 	KeyState       = KeyResults     -1
 	KeyTimestamp   = KeyState       -1
 	KeyTrace       = KeyTimestamp   -1
-	KeyTraceHost   = KeyTrace       -1
-	KeyTransfers   = KeyTraceHost   -1
+	KeyTraceAll    = KeyTrace       -1
+	KeyTransfers   = KeyTraceAll    -1
 	KeyUtility     = KeyTransfers   -1
 	KeyViews       = KeyUtility     -1
 	KeyWarning     = KeyViews       -1
@@ -67,6 +68,7 @@ var keyMap = map[string]int32{
 	"logs":        KeyLogs,
 	"name":        KeyName,
 	"owner":       KeyOwner,
+	"panic":       KeyPanic,
 	"params":      KeyParams,
 	"posts":       KeyPosts,
 	"random":      KeyRandom,
@@ -74,7 +76,7 @@ var keyMap = map[string]int32{
 	"state":       KeyState,
 	"timestamp":   KeyTimestamp,
 	"trace":       KeyTrace,
-	"traceHost":   KeyTraceHost,
+	"traceAll":    KeyTraceAll,
 	"transfers":   KeyTransfers,
 	"utility":     KeyUtility,
 	"views":       KeyViews,

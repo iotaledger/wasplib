@@ -41,6 +41,10 @@ public class ScBaseContext {
 		Host.SetString(1, Key.KEY_LOG, text);
 	}
 
+	public void Panic(String text) {
+		Host.SetString(1, Key.KEY_PANIC, text);
+	}
+
 	public ScImmutableMap Params() {
 		return root.GetMap(Key.Params).Immutable();
 	}

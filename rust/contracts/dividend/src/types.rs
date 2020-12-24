@@ -4,21 +4,23 @@
 use wasplib::client::*;
 
 pub struct Member {
+    //@formatter:off
     pub address: ScAddress,
-    pub factor: i64,
+    pub factor:  i64,
+    //@formatter:on
 }
 
 pub fn encode_member(o: &Member) -> Vec<u8> {
-    let mut e = BytesEncoder::new();
-    e.address(&o.address);
-    e.int(o.factor);
-    return e.data();
+    let mut encode = BytesEncoder::new();
+    encode.address(&o.address);
+    encode.int(o.factor);
+    return encode.data();
 }
 
 pub fn decode_member(bytes: &[u8]) -> Member {
-    let mut d = BytesDecoder::new(bytes);
+    let mut decode = BytesDecoder::new(bytes);
     Member {
-        address: d.address(),
-        factor: d.int(),
+        address: decode.address(),
+        factor: decode.int(),
     }
 }

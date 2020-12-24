@@ -24,12 +24,12 @@ func encodeDonationInfo(o *DonationInfo) []byte {
 }
 
 func decodeDonationInfo(bytes []byte) *DonationInfo {
-	d := client.NewBytesDecoder(bytes)
+	decode := client.NewBytesDecoder(bytes)
 	data := &DonationInfo{}
-	data.amount = d.Int()
-	data.donator = d.Agent()
-	data.error = d.String()
-	data.feedback = d.String()
-	data.timestamp = d.Int()
+	data.amount = decode.Int()
+	data.donator = decode.Agent()
+	data.error = decode.String()
+	data.feedback = decode.String()
+	data.timestamp = decode.Int()
 	return data
 }

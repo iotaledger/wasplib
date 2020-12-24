@@ -28,15 +28,16 @@ public class Key implements MapKey {
 	public static final int KEY_LOGS        = KEY_LOG         -1;
 	public static final int KEY_NAME        = KEY_LOGS        -1;
 	public static final int KEY_OWNER       = KEY_NAME        -1;
-	public static final int KEY_PARAMS      = KEY_OWNER       -1;
+	public static final int KEY_PANIC       = KEY_OWNER       -1;
+	public static final int KEY_PARAMS      = KEY_PANIC       -1;
 	public static final int KEY_POSTS       = KEY_PARAMS      -1;
 	public static final int KEY_RANDOM      = KEY_POSTS       -1;
 	public static final int KEY_RESULTS     = KEY_RANDOM      -1;
 	public static final int KEY_STATE       = KEY_RESULTS     -1;
 	public static final int KEY_TIMESTAMP   = KEY_STATE       -1;
 	public static final int KEY_TRACE       = KEY_TIMESTAMP   -1;
-	public static final int KEY_TRACEHOST   = KEY_TRACE       -1;
-	public static final int KEY_TRANSFERS   = KEY_TRACEHOST   -1;
+	public static final int KEY_TRACE_ALL   = KEY_TRACE       -1;
+	public static final int KEY_TRANSFERS   = KEY_TRACE_ALL   -1;
 	public static final int KEY_UTILITY     = KEY_TRANSFERS   -1;
 	public static final int KEY_VIEWS       = KEY_UTILITY     -1;
 	public static final int KEY_WARNING     = KEY_VIEWS       -1;
@@ -66,6 +67,7 @@ public class Key implements MapKey {
 	public static final Key Logs        = new Key(KEY_LOGS);
 	public static final Key Name        = new Key(KEY_NAME);
 	public static final Key Owner       = new Key(KEY_OWNER);
+	public static final Key Panic       = new Key(KEY_PANIC);
 	public static final Key Params      = new Key(KEY_PARAMS);
 	public static final Key Posts       = new Key(KEY_POSTS);
 	public static final Key Random      = new Key(KEY_RANDOM);
@@ -73,7 +75,7 @@ public class Key implements MapKey {
 	public static final Key State       = new Key(KEY_STATE);
 	public static final Key Timestamp   = new Key(KEY_TIMESTAMP);
 	public static final Key Trace       = new Key(KEY_TRACE);
-	public static final Key TraceHost   = new Key(KEY_TRACEHOST);
+	public static final Key TraceAll    = new Key(KEY_TRACE_ALL);
 	public static final Key Transfers   = new Key(KEY_TRANSFERS);
 	public static final Key Utility     = new Key(KEY_UTILITY);
 	public static final Key Views       = new Key(KEY_VIEWS);
