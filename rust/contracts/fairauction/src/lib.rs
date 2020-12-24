@@ -162,7 +162,7 @@ fn finalize_auction(sc: &ScCallContext) {
             owner_fee = 1
         }
         // finalizeAuction request token was probably not confirmed yet
-        sc.transfer(&sc.contract().owner(), &ScColor::IOTA, owner_fee - 1);
+        sc.transfer(&sc.contract().chain_owner(), &ScColor::IOTA, owner_fee - 1);
         sc.transfer(&auction.auction_owner, &auction.color, auction.num_tokens);
         sc.transfer(&auction.auction_owner, &ScColor::IOTA, auction.deposit - owner_fee);
         return;
@@ -187,7 +187,7 @@ fn finalize_auction(sc: &ScCallContext) {
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    sc.transfer(&sc.contract().owner(), &ScColor::IOTA, owner_fee - 1);
+    sc.transfer(&sc.contract().chain_owner(), &ScColor::IOTA, owner_fee - 1);
     sc.transfer(&auction.highest_bidder, &auction.color, auction.num_tokens);
     sc.transfer(&auction.auction_owner, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
@@ -248,7 +248,7 @@ fn place_bid(sc: &ScCallContext) {
 
 fn set_owner_margin(sc: &ScCallContext) {
     // can only be sent by SC owner
-    if !sc.from(&sc.contract().owner()) {
+    if !sc.from(&sc.contract().chain_owner()) {
         sc.log("Cancel spoofed request");
         return;
     }
@@ -273,7 +273,7 @@ fn refund(sc: &ScCallContext, amount: i64, reason: &str) {
     let incoming = sc.incoming();
     let deposit = incoming.balance(&ScColor::IOTA);
     if deposit - amount != 0 {
-        sc.transfer(&sc.contract().owner(), &ScColor::IOTA, deposit - amount);
+        sc.transfer(&sc.contract().chain_owner(), &ScColor::IOTA, deposit - amount);
     }
 
     // refund all other token colors, don't keep tokens that were to be auctioned

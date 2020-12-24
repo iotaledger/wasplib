@@ -141,7 +141,7 @@ fn pay_winners(sc: &ScCallContext) {
 
 fn play_period(sc: &ScCallContext) {
     // can only be sent by SC owner
-    if !sc.from(&sc.contract().owner()) {
+    if !sc.from(&sc.contract().chain_owner()) {
         sc.log("Cancel spoofed request");
         return;
     }

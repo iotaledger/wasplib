@@ -53,8 +53,8 @@ impl ScContract {
         self.contract.get_string(&KEY_NAME).value()
     }
 
-    pub fn owner(&self) -> ScAgent {
-        self.contract.get_agent(&KEY_OWNER).value()
+    pub fn chain_owner(&self) -> ScAgent {
+        self.contract.get_agent(&KEY_CHAIN_OWNER).value()
     }
 }
 
