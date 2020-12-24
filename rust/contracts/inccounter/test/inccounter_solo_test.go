@@ -20,6 +20,8 @@ const varCounter = "counter"
 const varNumRepeats = "num_repeats"
 
 func TestIncSoloInc(t *testing.T) {
+	t.SkipNow()
+
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, incName, incFile)
@@ -36,6 +38,8 @@ func TestIncSoloInc(t *testing.T) {
 }
 
 func TestIncSoloRepeatMany(t *testing.T) {
+	t.SkipNow()
+
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, incName, incFile)
@@ -53,6 +57,8 @@ func TestIncSoloRepeatMany(t *testing.T) {
 }
 
 func TestIncSoloResultsTest(t *testing.T) {
+	t.SkipNow()
+
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, incName, incFile)
@@ -67,6 +73,8 @@ func TestIncSoloResultsTest(t *testing.T) {
 }
 
 func TestIncSoloStateTest(t *testing.T) {
+	t.SkipNow()
+
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, incName, incFile)
