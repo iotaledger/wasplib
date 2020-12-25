@@ -4,7 +4,7 @@
 package client
 
 const (
-	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
+	// all TYPE_* values should exactly match the counterpart wasmhost.OBJTYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20
 
 	TYPE_ADDRESS int32 = 1

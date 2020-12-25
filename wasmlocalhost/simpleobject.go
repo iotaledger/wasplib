@@ -1,9 +1,12 @@
-package wasmhost
+package wasmlocalhost
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+)
 
 type VmObject interface {
-	HostObject
+	wasmhost.HostObject
 	InitObj(id int32, ownerId int32)
 	Fail(format string, args ...interface{}) bool
 	//FindOrMakeObjectId(keyId int32, factory ObjFactory) int32
@@ -36,15 +39,15 @@ func (o *SimpleObject) Name() string {
 	case 1:
 		return "root"
 	default:
-		owner := o.host.objIdToObj[o.ownerId].(VmObject)
+		owner := o.host.FindObject(o.ownerId).(VmObject)
 		if o.ownerId == 1 {
 			// root sub object, skip the "root." prefix
-			return string(o.host.getKeyFromId(o.keyId))
+			return string(o.host.GetKeyFromId(o.keyId))
 		}
 		return owner.Name() + owner.Suffix(o.keyId)
 	}
 }
 
 func (o *SimpleObject) Suffix(keyId int32) string {
-	return "." + string(o.host.getKeyFromId(keyId))
+	return "." + string(o.host.GetKeyFromId(keyId))
 }

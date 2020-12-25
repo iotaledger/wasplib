@@ -1,11 +1,12 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package wasmhost
+package wasmlocalhost
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/mr-tron/base58/base58"
 	"io"
 	"sort"
@@ -35,14 +36,14 @@ func (m *HostMap) Dump(w io.Writer) {
 	sort.Slice(keys, func(i int, j int) bool {
 		lhs := keys[i]
 		rhs := keys[j]
-		lhsFromString := (lhs & KeyFromString) != 0
-		rhsFromString := (rhs & KeyFromString) != 0
+		lhsFromString := (lhs & wasmhost.KeyFromString) != 0
+		rhsFromString := (rhs & wasmhost.KeyFromString) != 0
 		if lhsFromString != rhsFromString {
 			// strings sort smaller than bytes
 			return lhsFromString
 		}
-		lhsKey := m.host.getKeyFromId(lhs)
-		rhsKey := m.host.getKeyFromId(rhs)
+		lhsKey := m.host.GetKeyFromId(lhs)
+		rhsKey := m.host.GetKeyFromId(rhs)
 		return bytes.Compare(lhsKey, rhsKey) < 0
 	})
 
@@ -56,7 +57,7 @@ func (m *HostMap) Dump(w io.Writer) {
 		multiple = true
 		key := m.host.GetKeyFromId(keyId)
 		fmt.Fprintf(w, "\"%s\": ", string(key))
-		if keyId == KeyExports {
+		if keyId == wasmhost.KeyExports {
 			m.host.FindObject(value.(int32)).(*HostExports).Dump(w)
 			continue
 		}
@@ -89,11 +90,11 @@ func (m *HostMap) GetBytes(keyId int32) []byte {
 
 func (m *HostMap) GetInt(keyId int32) int64 {
 	switch keyId {
-	case KeyLength:
+	case wasmhost.KeyLength:
 		return int64(len(m.fields))
 	}
 
-	if !m.valid(keyId, OBJTYPE_INT) {
+	if !m.valid(keyId, wasmhost.OBJTYPE_INT) {
 		return 0
 	}
 
@@ -115,20 +116,20 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 
 	var o VmObject
 	switch typeId {
-	case OBJTYPE_INT | OBJTYPE_ARRAY:
-		o = NewHostArray(m.host, keyId, OBJTYPE_INT)
-	case OBJTYPE_MAP:
+	case wasmhost.OBJTYPE_INT | wasmhost.OBJTYPE_ARRAY:
+		o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_INT)
+	case wasmhost.OBJTYPE_MAP:
 		o = NewHostMap(m.host, keyId)
-	case OBJTYPE_MAP | OBJTYPE_ARRAY:
-		o = NewHostArray(m.host, keyId, OBJTYPE_MAP)
+	case wasmhost.OBJTYPE_MAP | wasmhost.OBJTYPE_ARRAY:
+		o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_MAP)
 	default:
-		if keyId == KeyExports {
+		if keyId == wasmhost.KeyExports {
 			o = NewHostExports(m.host, keyId)
 			break
 		}
-		if (typeId & OBJTYPE_ARRAY) != 0 {
+		if (typeId & wasmhost.OBJTYPE_ARRAY) != 0 {
 			// all bytes types are treated as string
-			o = NewHostArray(m.host, keyId, OBJTYPE_STRING)
+			o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_STRING)
 			break
 		}
 		m.Error("Map.GetObjectId: Invalid type id")
@@ -141,7 +142,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 }
 
 func (m *HostMap) GetString(keyId int32) string {
-	if !m.valid(keyId, OBJTYPE_STRING) {
+	if !m.valid(keyId, wasmhost.OBJTYPE_STRING) {
 		return ""
 	}
 	value, ok := m.fields[keyId]
@@ -168,9 +169,9 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 		m.Error("Map.SetInt: Immutable")
 		return
 	}
-	if keyId == KeyLength {
+	if keyId == wasmhost.KeyLength {
 		for fieldId, typeId := range m.types {
-			if typeId == OBJTYPE_MAP || (typeId&OBJTYPE_ARRAY) != 0 {
+			if typeId == wasmhost.OBJTYPE_MAP || (typeId&wasmhost.OBJTYPE_ARRAY) != 0 {
 				field, ok := m.fields[fieldId]
 				if ok {
 					// tell object to clear itself
@@ -182,7 +183,7 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 		m.fields = make(map[int32]interface{})
 		return
 	}
-	if !m.valid(keyId, OBJTYPE_INT) {
+	if !m.valid(keyId, wasmhost.OBJTYPE_INT) {
 		return
 	}
 	m.fields[keyId] = value
@@ -193,7 +194,7 @@ func (m *HostMap) SetString(keyId int32, value string) {
 		m.Error("Map.SetString: Immutable")
 		return
 	}
-	if !m.valid(keyId, OBJTYPE_STRING) {
+	if !m.valid(keyId, wasmhost.OBJTYPE_STRING) {
 		return
 	}
 	m.fields[keyId] = value
@@ -216,14 +217,14 @@ func (m *HostMap) valid(keyId int32, typeId int32) bool {
 	return true
 }
 
-func (m *HostMap) CopyDataTo(other HostObject) {
+func (m *HostMap) CopyDataTo(other wasmhost.HostObject) {
 	for k, v := range m.fields {
 		switch m.types[k] {
-		case OBJTYPE_BYTES:
+		case wasmhost.OBJTYPE_BYTES:
 			other.SetBytes(k, v.([]byte))
-		case OBJTYPE_INT:
+		case wasmhost.OBJTYPE_INT:
 			other.SetInt(k, v.(int64))
-		case OBJTYPE_STRING:
+		case wasmhost.OBJTYPE_STRING:
 			other.SetString(k, v.(string))
 		default:
 			//TODO what about recursion?

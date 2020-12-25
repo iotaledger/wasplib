@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -68,58 +69,6 @@ var matchParam = regexp.MustCompile("(\\(|, ?)(\\w+): &?(\\w+)")
 var matchToString = regexp.MustCompile("\\+ &([^ ]+)\\.ToString\\(\\)")
 var matchVarName = regexp.MustCompile(".[a-z][a-z_]+")
 
-func RustToGo(path string, contract string) error {
-	file, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	out, err := os.Create("../contracts/" + contract + "/lib.go")
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		text := scanner.Text()
-		line := rustToGoLine(text)
-		if strings.HasPrefix(line, "use wasplib::client::*") {
-			line = fmt.Sprintf("package %s\n\nimport \"github.com/iotaledger/wasplib/client\"", contract)
-		}
-		if line == "" && text != "" {
-			continue
-		}
-		fmt.Fprintln(out, line)
-	}
-	return scanner.Err()
-}
-
-func RustToJava(path string, contract string) error {
-	file, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	out, err := os.Create("../java/src/org/iota/wasplib/contracts/" + contract + "/lib.java")
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		text := scanner.Text()
-		line := rustToJavaLine(text)
-		if strings.HasPrefix(line, "use wasplib::client::*") {
-			line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;", contract)
-		}
-		if line == "" && text != "" {
-			continue
-		}
-		fmt.Fprintln(out, "    ", line)
-	}
-	return scanner.Err()
-}
-
 func replaceConst(m string) string {
 	// replace Rust upper snake case to Go camel case
 	return replaceVarName(strings.ToLower(m))
@@ -143,7 +92,42 @@ func replaceVarName(m string) string {
 	return m
 }
 
-func rustToGoLine(line string) string {
+func RustConvertor(convertLine func(string, string) string, outPath string) error {
+	return filepath.Walk("../rust/contracts",
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if !strings.HasSuffix(path, "\\lib.rs") {
+				return nil
+			}
+			var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wsrc\\W.+")
+			contract := matchContract.ReplaceAllString(path, "$1")
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			out, err := os.Create(strings.Replace(outPath, "$1", contract, 1))
+			if err != nil {
+				return err
+			}
+			defer out.Close()
+			scanner := bufio.NewScanner(file)
+			for scanner.Scan() {
+				text := scanner.Text()
+				line := convertLine(text, contract)
+				if line == "" && text != "" {
+					continue
+				}
+				fmt.Fprintln(out, line)
+			}
+			return scanner.Err()
+		})
+
+}
+
+func RustToGoLine(line string, contract string) string {
 	if matchComment.MatchString(line) {
 		return line
 	}
@@ -164,10 +148,14 @@ func rustToGoLine(line string) string {
 
 	line = matchExtraBraces.ReplaceAllString(line, "$1")
 
+	if strings.HasPrefix(line, "use wasplib::client::*") {
+		line = fmt.Sprintf("package %s\n\nimport \"github.com/iotaledger/wasplib/client\"", contract)
+	}
+
 	return line
 }
 
-func rustToJavaLine(line string) string {
+func RustToJavaLine(line string, contract string) string {
 	if matchComment.MatchString(line) {
 		return line
 	}
@@ -191,6 +179,9 @@ func rustToJavaLine(line string) string {
 
 	line = matchExtraBraces.ReplaceAllString(line, "$1")
 
+	if strings.HasPrefix(line, "use wasplib::client::*") {
+		line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;", contract)
+	}
+
 	return line
 }
-

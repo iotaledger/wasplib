@@ -1,13 +1,15 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package wasmhost
+package wasmlocalhost
+
+import "github.com/iotaledger/wasp/packages/vm/wasmhost"
 
 type NullObject struct {
 	SimpleObject
 }
 
-func NewNullObject(host *SimpleWasmHost) HostObject {
+func NewNullObject(host *SimpleWasmHost) wasmhost.HostObject {
 	return &NullObject{
 		SimpleObject: SimpleObject{host: host},
 	}

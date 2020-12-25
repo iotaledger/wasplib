@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"testing"
 )
@@ -56,34 +55,12 @@ func TestRustTypes(t *testing.T) {
 
 func TestRustToGo(t *testing.T) {
 	t.SkipNow()
-	err := filepath.Walk("../rust/contracts",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.HasSuffix(path, "\\lib.rs") {
-				var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wsrc\\W.+")
-				contract := matchContract.ReplaceAllString(path, "$1")
-				return RustToGo(path, contract)
-			}
-			return nil
-		})
+	err := RustConvertor(RustToGoLine, "../contracts/$1/lib.go")
 	require.NoError(t, err)
 }
 
 func TestRustToJava(t *testing.T) {
 	t.SkipNow()
-	err := filepath.Walk("../rust/contracts",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.HasSuffix(path, "\\lib.rs") {
-				var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wsrc\\W.+")
-				contract := matchContract.ReplaceAllString(path, "$1")
-				return RustToJava(path, contract)
-			}
-			return nil
-		})
+	err := RustConvertor(RustToJavaLine, "../java/src/org/iota/wasplib/contracts/$1/lib.java")
 	require.NoError(t, err)
 }

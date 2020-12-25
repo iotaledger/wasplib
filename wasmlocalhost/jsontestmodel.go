@@ -1,12 +1,13 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package wasmhost
+package wasmlocalhost
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"os"
@@ -47,7 +48,7 @@ type JsonTest struct {
 }
 
 type JsonTests struct {
-	host   *WasmHost
+	host   *wasmhost.WasmHost
 	Types  map[string][]*JsonFieldType `json:"types"`
 	Setups map[string]*JsonDataModel   `json:"setups"`
 	Tests  []*JsonTest                 `json:"tests"`
@@ -68,28 +69,28 @@ func NewJsonTests(pathName string) (*JsonTests, error) {
 }
 
 func (t *JsonTests) ClearData() {
-	t.ClearObjectData(KeyContract, OBJTYPE_MAP)
-	t.ClearObjectData(KeyBalances, OBJTYPE_MAP)
-	t.ClearObjectData(KeyIncoming, OBJTYPE_MAP)
-	t.ClearObjectData(KeyParams, OBJTYPE_MAP)
-	t.ClearObjectData(KeyState, OBJTYPE_MAP)
-	t.ClearObjectData(KeyLogs, OBJTYPE_MAP)
-	t.ClearObjectData(KeyResults, OBJTYPE_MAP)
-	t.ClearObjectData(KeyCalls, OBJTYPE_MAP|OBJTYPE_ARRAY)
-	t.ClearObjectData(KeyPosts, OBJTYPE_MAP|OBJTYPE_ARRAY)
-	t.ClearObjectData(KeyViews, OBJTYPE_MAP|OBJTYPE_ARRAY)
-	t.ClearObjectData(KeyTransfers, OBJTYPE_MAP|OBJTYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyContract, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyState, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyLogs, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyResults, wasmhost.OBJTYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyCalls, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyPosts, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyViews, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyTransfers, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
 }
 
 func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
 	object := t.FindSubObject(nil, keyId, typeId)
-	object.SetInt(KeyLength, 0)
+	object.SetInt(wasmhost.KeyLength, 0)
 }
 
 func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
-	arrayObject := t.FindSubObject(nil, keyId, OBJTYPE_MAP|OBJTYPE_ARRAY)
-	if arrayObject.GetInt(KeyLength) != int64(len(array)) {
-		key := string(t.host.getKeyFromId(keyId))
+	arrayObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	if arrayObject.GetInt(wasmhost.KeyLength) != int64(len(array)) {
+		key := string(t.host.GetKeyFromId(keyId))
 		fmt.Printf("FAIL: array %s length\n", key)
 		return false
 	}
@@ -104,18 +105,18 @@ func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
 
 func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 	expectData := jsonTest.Expect
-	return t.CompareMapData(KeyBalances, expectData.Balances) &&
-		t.CompareMapData(KeyState, expectData.State) &&
-		t.CompareMapData(KeyLogs, expectData.Logs) &&
-		t.CompareMapData(KeyResults, expectData.Results) &&
-		t.CompareArrayData(KeyCalls, expectData.Calls) &&
-		t.CompareArrayData(KeyPosts, expectData.Posts) &&
-		t.CompareArrayData(KeyViews, expectData.Views) &&
-		t.CompareArrayData(KeyTransfers, expectData.Transfers)
+	return t.CompareMapData(wasmhost.KeyBalances, expectData.Balances) &&
+		t.CompareMapData(wasmhost.KeyState, expectData.State) &&
+		t.CompareMapData(wasmhost.KeyLogs, expectData.Logs) &&
+		t.CompareMapData(wasmhost.KeyResults, expectData.Results) &&
+		t.CompareArrayData(wasmhost.KeyCalls, expectData.Calls) &&
+		t.CompareArrayData(wasmhost.KeyPosts, expectData.Posts) &&
+		t.CompareArrayData(wasmhost.KeyViews, expectData.Views) &&
+		t.CompareArrayData(wasmhost.KeyTransfers, expectData.Transfers)
 }
 
 func (t *JsonTests) CompareMapData(keyId int32, values map[string]interface{}) bool {
-	mapObject := t.FindSubObject(nil, keyId, OBJTYPE_MAP)
+	mapObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP)
 	return t.CompareSubMapData(mapObject, values)
 }
 
@@ -130,20 +131,20 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 	elem := array[0]
 	typeId := mapObject.GetTypeId(keyId)
 	arrayObject := t.FindSubObject(mapObject, keyId, typeId)
-	if (typeId & OBJTYPE_ARRAY) == 0 {
+	if (typeId & wasmhost.OBJTYPE_ARRAY) == 0 {
 		return arrayObject.Fail("not an array")
 	}
-	if int(arrayObject.GetInt(KeyLength)) != len(array) {
+	if int(arrayObject.GetInt(wasmhost.KeyLength)) != len(array) {
 		return arrayObject.Fail("length mismatch")
 	}
-	typeId &= ^OBJTYPE_ARRAY
+	typeId &= ^wasmhost.OBJTYPE_ARRAY
 	switch ty := elem.(type) {
 	case string:
-		if typeId != OBJTYPE_ADDRESS &&
-			typeId != OBJTYPE_AGENT &&
-			typeId != OBJTYPE_BYTES &&
-			typeId != OBJTYPE_COLOR &&
-			typeId != OBJTYPE_STRING {
+		if typeId != wasmhost.OBJTYPE_ADDRESS &&
+			typeId != wasmhost.OBJTYPE_AGENT &&
+			typeId != wasmhost.OBJTYPE_BYTES &&
+			typeId != wasmhost.OBJTYPE_COLOR &&
+			typeId != wasmhost.OBJTYPE_STRING {
 			return arrayObject.Fail("not a bytes or string array")
 		}
 		for i, elem := range array {
@@ -155,7 +156,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case float64:
-		if typeId != OBJTYPE_INT {
+		if typeId != wasmhost.OBJTYPE_INT {
 			return arrayObject.Fail("not an int array")
 		}
 		for i, elem := range array {
@@ -167,7 +168,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case map[string]interface{}:
-		if typeId == OBJTYPE_MAP {
+		if typeId == wasmhost.OBJTYPE_MAP {
 			for i := range array {
 				mapObject := t.FindIndexedMap(arrayObject, i)
 				if !t.CompareSubMapData(mapObject, array[i].(map[string]interface{})) {
@@ -177,7 +178,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 			return true
 		}
 
-		if typeId != OBJTYPE_BYTES {
+		if typeId != wasmhost.OBJTYPE_BYTES {
 			return arrayObject.Fail("not a bytes array")
 		}
 		for i, elem := range array {
@@ -220,12 +221,12 @@ func (t *JsonTests) CompareSubMapData(mapObject VmObject, values map[string]inte
 			}
 		case map[string]interface{}:
 			typeId := mapObject.GetTypeId(keyId)
-			if typeId == OBJTYPE_MAP {
-				subMapObject := t.FindSubObject(mapObject, keyId, OBJTYPE_MAP)
+			if typeId == wasmhost.OBJTYPE_MAP {
+				subMapObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_MAP)
 				return t.CompareSubMapData(subMapObject, field.(map[string]interface{}))
 			}
 
-			if typeId != OBJTYPE_STRING {
+			if typeId != wasmhost.OBJTYPE_STRING {
 				return mapObject.Fail("%s: not a string field", key)
 			}
 
@@ -267,7 +268,7 @@ func (t *JsonTests) Dump(test *JsonTest) {
 }
 
 func (t *JsonTests) FindIndexedMap(arrayObject VmObject, index int) VmObject {
-	return t.FindObject(arrayObject.GetObjectId(int32(index), OBJTYPE_MAP))
+	return t.FindObject(arrayObject.GetObjectId(int32(index), wasmhost.OBJTYPE_MAP))
 }
 
 func (t *JsonTests) FindObject(objId int32) VmObject {
@@ -292,23 +293,23 @@ func (t *JsonTests) GetKeyId(key string) int32 {
 }
 
 func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
-	t.LoadMapData(KeyContract, jsonData.Contract)
-	t.LoadMapData(KeyBalances, jsonData.Balances)
-	t.LoadMapData(KeyIncoming, jsonData.Incoming)
-	t.LoadMapData(KeyParams, jsonData.Params)
-	t.LoadMapData(KeyState, jsonData.State)
-	t.LoadMapData(KeyUtility, jsonData.Utility)
+	t.LoadMapData(wasmhost.KeyContract, jsonData.Contract)
+	t.LoadMapData(wasmhost.KeyBalances, jsonData.Balances)
+	t.LoadMapData(wasmhost.KeyIncoming, jsonData.Incoming)
+	t.LoadMapData(wasmhost.KeyParams, jsonData.Params)
+	t.LoadMapData(wasmhost.KeyState, jsonData.State)
+	t.LoadMapData(wasmhost.KeyUtility, jsonData.Utility)
 	root := t.FindObject(1)
 	if jsonData.Timestamp != 0 {
-		root.SetInt(KeyTimestamp, jsonData.Timestamp)
+		root.SetInt(wasmhost.KeyTimestamp, jsonData.Timestamp)
 	}
 	if jsonData.Caller != "" {
-		root.SetString(KeyCaller, process(jsonData.Caller))
+		root.SetString(wasmhost.KeyCaller, process(jsonData.Caller))
 	}
 }
 
 func (t *JsonTests) LoadMapData(keyId int32, values map[string]interface{}) {
-	mapObject := t.FindSubObject(nil, keyId, OBJTYPE_MAP)
+	mapObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP)
 	t.LoadSubMapData(mapObject, values)
 }
 
@@ -320,10 +321,10 @@ func (t *JsonTests) LoadSubArrayData(arrayObject VmObject, values []interface{})
 		//case float64:
 		//	mapObject.SetInt(t.GetKeyId(key), int64(field.(float64)))
 		//case map[string]interface{}:
-		//	subMapObject := t.FindSubObject(mapObject, key, OBJTYPE_MAP)
+		//	subMapObject := t.FindSubObject(mapObject, key, wasmhost.OBJTYPE_MAP)
 		//	t.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		//case []interface{}:
-		//	subMapObject := t.FindSubObject(mapObject, key, OBJTYPE_STRING_ARRAY)
+		//	subMapObject := t.FindSubObject(mapObject, key, wasmhost.OBJTYPE_STRING_ARRAY)
 		//	t.LoadSubArrayData(subMapObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", ty))
@@ -341,10 +342,10 @@ func (t *JsonTests) LoadSubMapData(mapObject VmObject, values map[string]interfa
 		case float64:
 			mapObject.SetInt(keyId, int64(field.(float64)))
 		case map[string]interface{}:
-			subMapObject := t.FindSubObject(mapObject, keyId, OBJTYPE_MAP)
+			subMapObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_MAP)
 			t.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		case []interface{}:
-			subArrayObject := t.FindSubObject(mapObject, keyId, OBJTYPE_STRING|OBJTYPE_ARRAY)
+			subArrayObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_STRING|wasmhost.OBJTYPE_ARRAY)
 			t.LoadSubArrayData(subArrayObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", ty))
@@ -453,8 +454,8 @@ func processHash(value string, size int) string {
 }
 
 func (t *JsonTests) runRequest(function string) bool {
-	incoming := t.FindSubObject(nil, KeyIncoming, OBJTYPE_MAP).(*HostMap)
-	balances := t.FindSubObject(nil, KeyBalances, OBJTYPE_MAP).(*HostMap)
+	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP).(*HostMap)
+	balances := t.FindSubObject(nil, wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP).(*HostMap)
 	mintKeyId := t.GetKeyId("#mint")
 	for keyId := range incoming.fields {
 		if keyId != mintKeyId {
@@ -471,7 +472,7 @@ func (t *JsonTests) runRequest(function string) bool {
 	return true
 }
 
-func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
+func (t *JsonTests) RunTest(host *wasmhost.WasmHost, test *JsonTest) bool {
 	t.host = host
 	fmt.Printf("Test: %s\n", test.Name)
 	if test.Expect == nil {
@@ -491,11 +492,11 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 	if !t.runRequest(test.Function) {
 		return false
 	}
-	incoming := t.FindSubObject(nil, KeyIncoming, OBJTYPE_MAP)
-	params := t.FindSubObject(nil, KeyParams, OBJTYPE_MAP)
+	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP)
+	params := t.FindSubObject(nil, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
 	for _, jsonRequest := range test.AdditionalRequests {
-		incoming.SetInt(KeyLength, 0)
-		params.SetInt(KeyLength, 0)
+		incoming.SetInt(wasmhost.KeyLength, 0)
+		params.SetInt(wasmhost.KeyLength, 0)
 		t.LoadData(jsonRequest)
 		if !t.runRequest(jsonRequest.Function) {
 			return false
@@ -503,13 +504,13 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 	}
 
 	root := t.FindObject(1)
-	scId := t.FindSubObject(nil, KeyContract, OBJTYPE_MAP).GetString(KeyId)
-	posts := t.FindSubObject(nil, KeyPosts, OBJTYPE_MAP|OBJTYPE_ARRAY)
+	scId := t.FindSubObject(nil, wasmhost.KeyContract, wasmhost.OBJTYPE_MAP).GetString(wasmhost.KeyId)
+	posts := t.FindSubObject(nil, wasmhost.KeyPosts, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)
-	for i := 0; i < expectedCalls && i < int(posts.GetInt(KeyLength)); i++ {
+	for i := 0; i < expectedCalls && i < int(posts.GetInt(wasmhost.KeyLength)); i++ {
 		post := t.FindIndexedMap(posts, i)
-		delay := post.GetInt(KeyDelay)
+		delay := post.GetInt(wasmhost.KeyDelay)
 		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
 			// only process posts when they have no delay
 			// unless overridden by the nodelay flag
@@ -517,21 +518,21 @@ func (t *JsonTests) RunTest(host *WasmHost, test *JsonTest) bool {
 			continue
 		}
 
-		contract := post.GetString(KeyContract)
+		contract := post.GetString(wasmhost.KeyContract)
 		if contract != "" && contract != scId {
 			// only process posts when they are for the current contract
 			// those are the only ones that will be incorporated in the final state
 			continue
 		}
 
-		root.SetString(KeyCaller, scId)
+		root.SetString(wasmhost.KeyCaller, scId)
 		//TODO increment timestamp and pass post.transfers as incoming
 		//TODO how do we pass incoming when we call instead of post?
-		params.SetInt(KeyLength, 0)
-		postParams := t.FindSubObject(post, KeyParams, OBJTYPE_MAP)
+		params.SetInt(wasmhost.KeyLength, 0)
+		postParams := t.FindSubObject(post, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
 		//TODO how to iterate
 		postParams.(*HostMap).CopyDataTo(params)
-		function := post.GetString(KeyFunction)
+		function := post.GetString(wasmhost.KeyFunction)
 		fmt.Printf("    Run function: %s\n", function)
 		err := t.host.RunScFunction(function)
 		if err != nil {

@@ -1,10 +1,11 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package wasmhost
+package wasmlocalhost
 
 import (
 	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/mr-tron/base58"
 )
 
@@ -24,15 +25,15 @@ func (a *HostCall) call() {
 	host := a.host
 
 	root := host.FindObject(1)
-	savedCaller := root.GetString(KeyCaller)
-	scId := host.FindSubObject(nil, KeyContract, OBJTYPE_MAP).GetString(KeyId)
-	root.SetString(KeyCaller, scId)
+	savedCaller := root.GetString(wasmhost.KeyCaller)
+	scId := host.FindSubObject(nil, wasmhost.KeyContract, wasmhost.OBJTYPE_MAP).GetString(wasmhost.KeyId)
+	root.SetString(wasmhost.KeyCaller, scId)
 
-	requestParams := host.FindSubObject(nil, KeyParams, OBJTYPE_MAP)
+	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
 	savedParams := NewHostMap(a.host, 0)
 	requestParams.(*HostMap).CopyDataTo(savedParams)
-	requestParams.SetInt(KeyLength, 0)
-	params := host.FindSubObject(a, KeyParams, OBJTYPE_MAP)
+	requestParams.SetInt(wasmhost.KeyLength, 0)
+	params := host.FindSubObject(a, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
 	params.(*HostMap).CopyDataTo(requestParams)
 
 	fmt.Printf("    Call function: %v\n", a.function)
@@ -42,9 +43,9 @@ func (a *HostCall) call() {
 		a.Error(err.Error())
 	}
 
-	requestParams.SetInt(KeyLength, 0)
+	requestParams.SetInt(wasmhost.KeyLength, 0)
 	savedParams.CopyDataTo(requestParams)
-	root.SetString(KeyCaller, savedCaller)
+	root.SetString(wasmhost.KeyCaller, savedCaller)
 }
 
 func (a *HostCall) SetBytes(keyId int32, value []byte) {

@@ -1,10 +1,11 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package wasmhost
+package wasmlocalhost
 
 import (
 	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/mr-tron/base58"
 	"io"
 )
@@ -30,11 +31,11 @@ func (a *HostArray) Dump(w io.Writer) {
 			fmt.Fprintf(w, ",\n")
 		}
 		multiple = true
-		if a.keyId == KeyCalls {
+		if a.keyId == wasmhost.KeyCalls {
 			a.host.FindObject(item.(int32)).(*HostCall).Dump(w)
 			continue
 		}
-		if a.keyId == KeyTransfers {
+		if a.keyId == wasmhost.KeyTransfers {
 			a.host.FindObject(item.(int32)).(*HostTransfer).Dump(w)
 			continue
 		}
@@ -66,11 +67,11 @@ func (a *HostArray) GetBytes(keyId int32) []byte {
 
 func (a *HostArray) GetInt(keyId int32) int64 {
 	switch keyId {
-	case KeyLength:
+	case wasmhost.KeyLength:
 		return int64(len(a.items))
 	}
 
-	if !a.valid(keyId, OBJTYPE_INT) {
+	if !a.valid(keyId, wasmhost.OBJTYPE_INT) {
 		return 0
 	}
 	return a.items[keyId].(int64)
@@ -88,7 +89,7 @@ func (a *HostArray) GetObjectId(keyId int32, typeId int32) int32 {
 }
 
 func (a *HostArray) GetString(keyId int32) string {
-	if !a.valid(keyId, OBJTYPE_STRING) {
+	if !a.valid(keyId, wasmhost.OBJTYPE_STRING) {
 		return ""
 	}
 	return a.items[keyId].(string)
@@ -107,8 +108,8 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 		a.Error("Array.SetInt: Immutable")
 		return
 	}
-	if keyId == KeyLength {
-		if a.typeId == OBJTYPE_MAP {
+	if keyId == wasmhost.KeyLength {
+		if a.typeId == wasmhost.OBJTYPE_MAP {
 			// tell objects to clear themselves
 			for i := len(a.items) - 1; i >= 0; i-- {
 				a.host.SetInt(a.items[i].(int32), keyId, 0)
@@ -118,7 +119,7 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 		a.items = nil
 		return
 	}
-	if !a.valid(keyId, OBJTYPE_INT) {
+	if !a.valid(keyId, wasmhost.OBJTYPE_INT) {
 		return
 	}
 	a.items[keyId] = value
@@ -129,7 +130,7 @@ func (a *HostArray) SetString(keyId int32, value string) {
 		a.Error("Array.SetString: Immutable")
 		return
 	}
-	if !a.valid(keyId, OBJTYPE_STRING) {
+	if !a.valid(keyId, wasmhost.OBJTYPE_STRING) {
 		return
 	}
 	a.items[keyId] = value
@@ -147,16 +148,16 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 	max := int32(len(a.items))
 	if keyId == max && !a.immutable {
 		switch typeId {
-		case OBJTYPE_BYTES:
+		case wasmhost.OBJTYPE_BYTES:
 			a.items = append(a.items, []byte(nil))
-		case OBJTYPE_INT:
+		case wasmhost.OBJTYPE_INT:
 			a.items = append(a.items, int64(0))
-		case OBJTYPE_MAP:
+		case wasmhost.OBJTYPE_MAP:
 			var o VmObject
 			switch a.keyId {
-			case KeyCalls:
+			case wasmhost.KeyCalls:
 				o = NewHostCall(a.host, keyId)
-			case KeyTransfers:
+			case wasmhost.KeyTransfers:
 				o = NewHostTransfer(a.host, keyId)
 			default:
 				o = NewHostMap(a.host, keyId)
@@ -164,7 +165,7 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 			objId := a.host.TrackObject(o)
 			a.items = append(a.items, objId)
 			o.InitObj(objId, a.id)
-		case OBJTYPE_STRING:
+		case wasmhost.OBJTYPE_STRING:
 			a.items = append(a.items, "")
 		default:
 			a.Error("Array.valid: Invalid typeId")

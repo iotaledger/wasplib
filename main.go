@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/contracts/dividend"
 	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
 	"github.com/iotaledger/wasplib/contracts/erc20"
@@ -14,7 +15,7 @@ import (
 	"github.com/iotaledger/wasplib/contracts/helloworld"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/contracts/tokenregistry"
-	"github.com/iotaledger/wasplib/wasmhost"
+	"github.com/iotaledger/wasplib/wasmlocalhost"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -70,7 +71,7 @@ func execTest(path string, language string) {
 	contract := path[6 : len(path)-5]
 	host := setupVM(contract, language)
 
-	jsonTests, err := wasmhost.NewJsonTests(path)
+	jsonTests, err := wasmlocalhost.NewJsonTests(path)
 	if err != nil {
 		panic(err)
 	}
@@ -90,21 +91,20 @@ func execTest(path string, language string) {
 	}
 }
 
-func setupVM(contract string, language string) *wasmhost.SimpleWasmHost {
+func setupVM(contract string, language string) *wasmlocalhost.SimpleWasmHost {
 	if language == "sc" {
-		host, err := wasmhost.NewSimpleWasmHost(wasmhost.NewGoVM())
+		host, err := wasmlocalhost.NewSimpleWasmHost(wasmlocalhost.NewGoVM(scForGoVM))
 		if err != nil {
 			panic(err)
 		}
-		onLoad, ok := scForGoVM[contract]
-		if !ok {
-			panic("Unknown contract: " + contract)
+		err = host.LoadWasm([]byte("go:" + contract))
+		if err != nil {
+			panic(err)
 		}
-		onLoad()
 		return host
 	}
 
-	host, err := wasmhost.NewSimpleWasmHost(wasmhost.NewWasmTimeVM())
+	host, err := wasmlocalhost.NewSimpleWasmHost(wasmhost.NewWasmTimeVM())
 	if err != nil {
 		panic(err)
 	}
