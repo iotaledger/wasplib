@@ -4,6 +4,7 @@ members = [
     "contracts/dividend",
     "contracts/donatewithfeedback",
     "contracts/erc20",
+    "contracts/dummy",
     "contracts/fairauction",
     "contracts/fairroulette",
     "contracts/helloworld",
