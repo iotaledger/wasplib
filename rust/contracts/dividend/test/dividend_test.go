@@ -41,7 +41,7 @@ func TestAddMemberOk(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestAddMembeParamFail1(t *testing.T) {
+func TestAddMemberParamFail1(t *testing.T) {
 	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "ch1")
 
