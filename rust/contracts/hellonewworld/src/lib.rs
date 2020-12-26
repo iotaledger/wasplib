@@ -12,7 +12,7 @@ fn on_load() {
     exports.add_view("getCounter", get_counter);
 }
 
-// Function hello implement smart contract entry point "hello".
+// Function hello implements smart contract entry point "hello".
 // Function hello logs the message "Hello, new world!" with the counter and increments the counter
 fn hello(ctx: &ScCallContext) {
     let counter = ctx.state().get_int(KEY_COUNTER);
