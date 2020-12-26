@@ -1,10 +1,10 @@
 ## WaspLib for Go
 
-`NOTE: The Go version is mostly for educational purposes until we have a better Go to Wasm compiler. It allows us to compare identical Rust/Go/Java smart contracts to highlight the simplicity and consistency of our programming model along different programming languages.`
+`NOTE: This library allows us to compare identical Rust/Go/Java smart contracts to highlight the simplicity and consistency of our programming model along different programming languages.`
 
-`NOTE 2: Due to the limited Wasm capabilities of Go we currently use TinyGo to compile the Go smart contracts into functioning Wasm code. The resulting Wasm files are still about double the size of than their Rust equivalent, and one needs to take care to avoid certain unsupported packages for now. Having said that, all the smart contracts provided work 100% identical to their Rust equivalents.`
+`NOTE 2: We currently use TinyGo to compile the Go smart contracts into functioning Wasm code. The resulting Wasm files are still about double the size of their Rust equivalent, and one must avoid a few unsupported packages for now. Having said that, all the smart contracts provided work 100% identical to their Rust equivalents.`
 
-`WaspLib` allows developers to create Go smart contracts that compile into Wasm. The interface provided by `WaspLib`
+`WaspLib` allows developers to create Rust or Go smart contracts that compile into Wasm. The interface provided by `WaspLib`
 hides the underlying complexities of the Iota Smart Contract Protocol (ISCP) as implemented by Iota's ISCP-enabled Wasp
 nodes.
 `WaspLib` treats the programming of smart contracts as simple access to a key/value data storage where smart contract
