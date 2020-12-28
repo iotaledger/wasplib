@@ -31,6 +31,14 @@ func (ctx ScContract) Chain() *ScAddress {
 	return ctx.contract.GetAddress(KeyChain).Value()
 }
 
+func (ctx ScContract) ChainOwner() *ScAgent {
+	return ctx.contract.GetAgent(KeyChainOwner).Value()
+}
+
+func (ctx ScContract) Creator() *ScAgent {
+	return ctx.contract.GetAgent(KeyCreator).Value()
+}
+
 func (ctx ScContract) Description() string {
 	return ctx.contract.GetString(KeyDescription).Value()
 }
@@ -41,10 +49,6 @@ func (ctx ScContract) Id() *ScAgent {
 
 func (ctx ScContract) Name() string {
 	return ctx.contract.GetString(KeyName).Value()
-}
-
-func (ctx ScContract) Owner() *ScAgent {
-	return ctx.contract.GetAgent(KeyOwner).Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -119,8 +123,8 @@ func (ctx ScBaseContext) Contract() ScContract {
 	return ScContract{root.GetMap(KeyContract).Immutable()}
 }
 
-func (ctx ScBaseContext) Error() ScMutableString {
-	return root.GetString(KeyError)
+func (ctx ScBaseContext) Error() string {
+	return root.GetString(KeyError).Value()
 }
 
 func (ctx ScBaseContext) From(originator *ScAgent) bool {
@@ -128,11 +132,11 @@ func (ctx ScBaseContext) From(originator *ScAgent) bool {
 }
 
 func (ctx ScBaseContext) Log(text string) {
-	SetString(1, int32(KeyLog), text)
+	root.GetString(KeyLog).SetValue(text)
 }
 
 func (ctx ScBaseContext) Panic(text string) {
-	SetString(1, int32(KeyPanic), text)
+	root.GetString(KeyPanic).SetValue(text)
 }
 
 func (ctx ScBaseContext) Params() ScImmutableMap {
@@ -148,7 +152,7 @@ func (ctx ScBaseContext) Timestamp() int64 {
 }
 
 func (ctx ScBaseContext) Trace(text string) {
-	SetString(1, int32(KeyTrace), text)
+	root.GetString(KeyTrace).SetValue(text)
 }
 
 func (ctx ScBaseContext) Utility() ScUtility {
@@ -175,6 +179,10 @@ func (ctx ScCallContext) Incoming() ScBalances {
 
 func (ctx ScCallContext) Post(function string) ScPostInfo {
 	return ScPostInfo{NewScBaseInfo(KeyPosts, function)}
+}
+
+func (ctx ScBaseContext) SignalEvent(text string) {
+	root.GetString(KeyEvent).SetValue(text)
 }
 
 func (ctx ScCallContext) State() ScMutableMap {

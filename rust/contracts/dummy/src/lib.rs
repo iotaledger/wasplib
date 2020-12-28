@@ -12,10 +12,7 @@ fn on_load() {
 // fails with error if failInitParam exists
 fn on_init(ctx: &ScCallContext) {
     let fail_param = ctx.params().get_int("failInitParam");
-    if fail_param.exists(){
-        let err = "dummy: failing on purpose";
-        ctx.log(err);
-        ctx.error().set_value(err);
-        return;
+    if fail_param.exists() {
+        ctx.panic("dummy: failing on purpose");
     }
 }

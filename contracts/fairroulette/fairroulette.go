@@ -139,7 +139,7 @@ func payWinners(sc *client.ScCallContext) {
 
 func playPeriod(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	if !sc.From(sc.Contract().Owner()) {
+	if !sc.From(sc.Contract().Creator()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}

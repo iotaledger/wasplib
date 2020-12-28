@@ -159,7 +159,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 			ownerFee = 1
 		}
 		// finalizeAuction request token was probably not confirmed yet
-		sc.Transfer(sc.Contract().Owner(), client.IOTA, ownerFee-1)
+		sc.Transfer(sc.Contract().Creator(), client.IOTA, ownerFee-1)
 		sc.Transfer(auction.auctionOwner, auction.color, auction.numTokens)
 		sc.Transfer(auction.auctionOwner, client.IOTA, auction.deposit-ownerFee)
 		return
@@ -184,7 +184,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 	}
 
 	// finalizeAuction request token was probably not confirmed yet
-	sc.Transfer(sc.Contract().Owner(), client.IOTA, ownerFee-1)
+	sc.Transfer(sc.Contract().Creator(), client.IOTA, ownerFee-1)
 	sc.Transfer(auction.highestBidder, auction.color, auction.numTokens)
 	sc.Transfer(auction.auctionOwner, client.IOTA, auction.deposit+auction.highestBid-ownerFee)
 }
@@ -245,7 +245,7 @@ func placeBid(sc *client.ScCallContext) {
 
 func setOwnerMargin(sc *client.ScCallContext) {
 	// can only be sent by SC owner
-	if !sc.From(sc.Contract().Owner()) {
+	if !sc.From(sc.Contract().Creator()) {
 		sc.Log("Cancel spoofed request")
 		return
 	}
@@ -270,7 +270,7 @@ func refund(sc *client.ScCallContext, amount int64, reason string) {
 	incoming := sc.Incoming()
 	deposit := incoming.Balance(client.IOTA)
 	if deposit-amount != 0 {
-		sc.Transfer(sc.Contract().Owner(), client.IOTA, deposit-amount)
+		sc.Transfer(sc.Contract().Creator(), client.IOTA, deposit-amount)
 	}
 
 	// refund all other token colors, don't keep tokens that were to be auctioned

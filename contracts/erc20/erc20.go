@@ -46,20 +46,14 @@ func onInit(ctx *client.ScCallContext) {
 	// supply
 	supply := ctx.Params().GetInt(paramSupply)
 	if !supply.Exists() || supply.Value() <= 0 {
-		err := "erc20.onInit.fail: wrong 'supply' parameter"
-		ctx.Log(err)
-		ctx.Error().SetValue(err)
-		return
+		ctx.Panic("erc20.onInit.fail: wrong 'supply' parameter")
 	}
 	// creator (owner)
 	// we cannot use 'caller' here because on_init is always called from the 'root'
 	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
 	creator := ctx.Params().GetAgent(paramCreator)
 	if !creator.Exists() {
-		err := "erc20.onInit.fail: wrong 'creator' parameter"
-		ctx.Log(err)
-		ctx.Error().SetValue(err)
-		return
+		ctx.Panic("erc20.onInit.fail: wrong 'creator' parameter")
 	}
 	ctx.State().GetInt(stateVarSupply).SetValue(supply.Value())
 
@@ -85,10 +79,7 @@ func totalSupply(ctx *client.ScViewContext) {
 func balanceOf(ctx *client.ScViewContext) {
 	account := ctx.Params().GetAgent(paramAccount)
 	if !account.Exists() {
-		m := "wrong or non existing parameter: " + account.String()
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("wrong or non existing parameter: " + account.String())
 	}
 	balances := ctx.State().GetMap(stateVarBalances)
 	balance := balances.GetInt(account.Value()).Value() // 0 if doesn't exist
@@ -108,18 +99,12 @@ func allowance(ctx *client.ScViewContext) {
 	// account
 	owner := ctx.Params().GetAgent(paramAccount)
 	if !owner.Exists() {
-		m := "erc20.allowance.fail: wrong 'account' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.allowance.fail: wrong 'account' parameter")
 	}
 	// delegation
 	delegation := ctx.Params().GetAgent(paramDelegation)
 	if !delegation.Exists() {
-		m := "erc20.allowance.fail: wrong 'delegation' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.allowance.fail: wrong 'delegation' parameter")
 	}
 	// all allowances of the address 'owner' are stored in the map of the same name
 	allowances := ctx.State().GetMap(owner.Value())
@@ -139,36 +124,24 @@ func transfer(ctx *client.ScCallContext) {
 	// account
 	targetAddrParam := params.GetAgent(paramAccount)
 	if !targetAddrParam.Exists() {
-		m := "erc20.transfer.fail: wrong 'account' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transfer.fail: wrong 'account' parameter")
 	}
 	targetAddr := targetAddrParam.Value()
 	// amount
 	amount := params.GetInt(paramAmount).Value()
 	if amount <= 0 {
-		m := "erc20.transfer.fail: wrong 'amount' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transfer.fail: wrong 'amount' parameter")
 	}
 	balances := ctx.State().GetMap(stateVarBalances)
 	sourceBalance := balances.GetInt(ctx.Caller())
 
 	if sourceBalance.Value() < amount {
-		m := "erc20.transfer.fail: not enough funds"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transfer.fail: not enough funds")
 	}
 	targetBalance := balances.GetInt(targetAddr)
 	result := targetBalance.Value() + amount
 	if result <= 0 {
-		m := "erc20.transfer.fail: overflow"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transfer.fail: overflow")
 	}
 	sourceBalance.SetValue(sourceBalance.Value() - amount)
 	targetBalance.SetValue(targetBalance.Value() + amount)
@@ -185,18 +158,12 @@ func approve(ctx *client.ScCallContext) {
 	// validate parameters
 	delegationParam := ctx.Params().GetAgent(paramDelegation)
 	if !delegationParam.Exists() {
-		m := "erc20.approve.fail: wrong 'delegation' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.approve.fail: wrong 'delegation' parameter")
 	}
 	delegation := delegationParam.Value()
 	amount := ctx.Params().GetInt(paramAmount).Value()
 	if amount <= 0 {
-		m := "erc20.approve.fail: wrong 'amount' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.approve.fail: wrong 'amount' parameter")
 	}
 	// all allowances are in the map under the name of he owner
 	allowances := ctx.State().GetMap(ctx.Caller())
@@ -216,26 +183,17 @@ func transferFrom(ctx *client.ScCallContext) {
 	// validate parameters
 	accountParam := ctx.Params().GetAgent(paramAccount)
 	if !accountParam.Exists() {
-		m := "erc20.transferFrom.fail: wrong 'account' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: wrong 'account' parameter")
 	}
 	account := accountParam.Value()
 	recipientParam := ctx.Params().GetAgent(paramRecipient)
 	if !recipientParam.Exists() {
-		m := "erc20.transferFrom.fail: wrong 'recipient' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: wrong 'recipient' parameter")
 	}
 	recipient := recipientParam.Value()
 	amountParam := ctx.Params().GetInt(paramAmount)
 	if !amountParam.Exists() {
-		m := "erc20.transferFrom.fail: wrong 'amount' parameter"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: wrong 'amount' parameter")
 	}
 	amount := amountParam.Value()
 
@@ -243,26 +201,17 @@ func transferFrom(ctx *client.ScCallContext) {
 	allowances := ctx.State().GetMap(account)
 	allowance := allowances.GetInt(recipient)
 	if allowance.Value() < amount {
-		m := "erc20.transferFrom.fail: not enough allowance"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: not enough allowance")
 	}
 	balances := ctx.State().GetMap(stateVarBalances)
 	sourceBalance := balances.GetInt(account)
 	if sourceBalance.Value() < amount {
-		m := "erc20.transferFrom.fail: not enough funds"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: not enough funds")
 	}
 	recipientBalance := balances.GetInt(recipient)
 	result := recipientBalance.Value() + amount
 	if result <= 0 {
-		m := "erc20.transferFrom.fail: overflow"
-		ctx.Log(m)
-		ctx.Error().SetValue(m)
-		return
+		ctx.Panic("erc20.transferFrom.fail: overflow")
 	}
 	sourceBalance.SetValue(sourceBalance.Value() - amount)
 	recipientBalance.SetValue(recipientBalance.Value() + amount)

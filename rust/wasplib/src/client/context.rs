@@ -4,7 +4,6 @@
 // encapsulates standard host entities into a simple interface
 
 use super::hashtypes::*;
-use super::host::set_string;
 use super::immutable::*;
 use super::keys::*;
 use super::mutable::*;
@@ -41,6 +40,14 @@ impl ScContract {
         self.contract.get_address(&KEY_CHAIN).value()
     }
 
+    pub fn chain_owner(&self) -> ScAgent {
+        self.contract.get_agent(&KEY_CHAIN_OWNER).value()
+    }
+
+    pub fn creator(&self) -> ScAgent {
+        self.contract.get_agent(&KEY_CREATOR).value()
+    }
+
     pub fn description(&self) -> String {
         self.contract.get_string(&KEY_DESCRIPTION).value()
     }
@@ -51,10 +58,6 @@ impl ScContract {
 
     pub fn name(&self) -> String {
         self.contract.get_string(&KEY_NAME).value()
-    }
-
-    pub fn chain_owner(&self) -> ScAgent {
-        self.contract.get_agent(&KEY_CHAIN_OWNER).value()
     }
 }
 
@@ -129,8 +132,8 @@ pub trait ScBaseContext {
         ScContract { contract: ROOT.get_map(&KEY_CONTRACT).immutable() }
     }
 
-    fn error(&self) -> ScMutableString {
-        ROOT.get_string(&KEY_ERROR)
+    fn error(&self) -> String {
+        ROOT.get_string(&KEY_ERROR).value()
     }
 
     fn from(&self, originator: &ScAgent) -> bool {
@@ -138,11 +141,11 @@ pub trait ScBaseContext {
     }
 
     fn log(&self, text: &str) {
-        set_string(1, KEY_LOG, text)
+        ROOT.get_string(&KEY_LOG).set_value(text)
     }
 
     fn panic(&self, text: &str) {
-        set_string(1, KEY_PANIC, text)
+        ROOT.get_string(&KEY_PANIC).set_value(text)
     }
 
     fn params(&self) -> ScImmutableMap {
@@ -158,7 +161,7 @@ pub trait ScBaseContext {
     }
 
     fn trace(&self, text: &str) {
-        set_string(1, KEY_TRACE, text)
+        ROOT.get_string(&KEY_TRACE).set_value(text)
     }
 
     fn utility(&self) -> ScUtility {
@@ -187,6 +190,10 @@ impl ScCallContext {
 
     pub fn post(&self, function: &str) -> ScPostInfo {
         ScPostInfo::new(function)
+    }
+
+    fn signal_event(&self, text: &str) {
+        ROOT.get_string(&KEY_EVENT).set_value(text)
     }
 
     pub fn state(&self) -> ScMutableMap {

@@ -19,25 +19,17 @@ fn on_load() {
 }
 
 fn member(sc: &ScCallContext) {
-    if !sc.from(&sc.contract().chain_owner()) {
-        // TODO chain owner having rights to distribute dividend is not entirely correct
-        // instead smart contract owner should be implemented
-        // call 'Sandbox::ContractCreator' may be used for this
-        sc.log("Cancel spoofed request");
-        return;
+    if !sc.from(&sc.contract().creator()) {
+        sc.panic("Cancel spoofed request");
     }
     let params = sc.params();
     let address = params.get_address(KEY_ADDRESS);
     if !address.exists() {
-        sc.log("Missing address");
-        sc.error().set_value("Missing address");
-        return;
+        sc.panic("Missing address");
     }
     let factor = params.get_int(KEY_FACTOR);
     if !factor.exists() {
-        sc.log("Missing factor");
-        sc.error().set_value("Missing factor");
-        return;
+        sc.panic("Missing factor");
     }
     let member = Member {
         address: address.value(),

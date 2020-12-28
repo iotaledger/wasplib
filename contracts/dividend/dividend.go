@@ -17,20 +17,17 @@ func OnLoad() {
 }
 
 func member(sc *client.ScCallContext) {
-	if !sc.From(sc.Contract().Owner()) {
-		sc.Log("Cancel spoofed request")
-		return
+	if !sc.From(sc.Contract().Creator()) {
+		sc.Panic("Cancel spoofed request")
 	}
 	params := sc.Params()
 	address := params.GetAddress(keyAddress)
 	if !address.Exists() {
-		sc.Log("Missing address")
-		return
+		sc.Panic("Missing address")
 	}
 	factor := params.GetInt(keyFactor)
 	if !factor.Exists() {
-		sc.Log("Missing factor")
-		return
+		sc.Panic("Missing factor")
 	}
 	member := &Member{
 		address: address.Value(),
