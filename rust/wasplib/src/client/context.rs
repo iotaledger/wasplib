@@ -144,6 +144,12 @@ pub trait ScBaseContext {
         ROOT.get_string(&KEY_LOG).set_value(text)
     }
 
+    // TODO needed implementation for direct mapping of sandbox calls to Rust environment
+    //  Event() to 'event'
+    //  Log().Info (to 'log' or 'log_info'
+    //  Log().Debug to 'debug'
+    //  Log().Panic to 'panic'
+
     fn panic(&self, text: &str) {
         ROOT.get_string(&KEY_PANIC).set_value(text)
     }
