@@ -4,11 +4,9 @@
 package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableString;
 import org.iota.wasplib.client.request.ScViewInfo;
 
 public class ScBaseContext {

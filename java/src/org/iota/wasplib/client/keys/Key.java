@@ -5,8 +5,7 @@ import org.iota.wasplib.client.host.Host;
 public class Key implements MapKey {
 	// @formatter:off
 	public static final int KEY_AGENT       = -1;
-	public static final int KEY_AMOUNT      = KEY_AGENT       -1;
-	public static final int KEY_BALANCES    = KEY_AMOUNT      -1;
+	public static final int KEY_BALANCES    = KEY_AGENT       -1;
 	public static final int KEY_BASE58      = KEY_BALANCES    -1;
 	public static final int KEY_CALLER      = KEY_BASE58      -1;
 	public static final int KEY_CALLS       = KEY_CALLER      -1;
@@ -18,15 +17,13 @@ public class Key implements MapKey {
 	public static final int KEY_DATA        = KEY_CREATOR     -1;
 	public static final int KEY_DELAY       = KEY_DATA        -1;
 	public static final int KEY_DESCRIPTION = KEY_DELAY       -1;
-	public static final int KEY_ERROR       = KEY_DESCRIPTION -1;
-	public static final int KEY_EVENT       = KEY_ERROR       -1;
+	public static final int KEY_EVENT       = KEY_DESCRIPTION -1;
 	public static final int KEY_EXPORTS     = KEY_EVENT       -1;
 	public static final int KEY_FUNCTION    = KEY_EXPORTS     -1;
 	public static final int KEY_HASH        = KEY_FUNCTION    -1;
 	public static final int KEY_ID          = KEY_HASH        -1;
 	public static final int KEY_INCOMING    = KEY_ID          -1;
-	public static final int KEY_IOTA        = KEY_INCOMING    -1;
-	public static final int KEY_LENGTH      = KEY_IOTA        -1;
+	public static final int KEY_LENGTH      = KEY_INCOMING    -1;
 	public static final int KEY_LOG         = KEY_LENGTH      -1;
 	public static final int KEY_LOGS        = KEY_LOG         -1;
 	public static final int KEY_NAME        = KEY_LOGS        -1;
@@ -41,11 +38,9 @@ public class Key implements MapKey {
 	public static final int KEY_TRANSFERS   = KEY_TRACE       -1;
 	public static final int KEY_UTILITY     = KEY_TRANSFERS   -1;
 	public static final int KEY_VIEWS       = KEY_UTILITY     -1;
-	public static final int KEY_WARNING     = KEY_VIEWS       -1;
-	public static final int KEY_ZZZZZZZ     = KEY_WARNING     -1;
+	public static final int KEY_ZZZZZZZ     = KEY_VIEWS       -1;
 
 	public static final Key Agent       = new Key(KEY_AGENT);
-	public static final Key Amount      = new Key(KEY_AMOUNT);
 	public static final Key Balances    = new Key(KEY_BALANCES);
 	public static final Key Base58      = new Key(KEY_BASE58);
 	public static final Key Caller      = new Key(KEY_CALLER);
@@ -58,14 +53,12 @@ public class Key implements MapKey {
 	public static final Key Data        = new Key(KEY_DATA);
 	public static final Key Delay       = new Key(KEY_DELAY);
 	public static final Key Description = new Key(KEY_DESCRIPTION);
-	public static final Key Error       = new Key(KEY_ERROR);
 	public static final Key Event       = new Key(KEY_EVENT);
 	public static final Key Exports     = new Key(KEY_EXPORTS);
 	public static final Key Function    = new Key(KEY_FUNCTION);
 	public static final Key Hash        = new Key(KEY_HASH);
 	public static final Key Id          = new Key(KEY_ID);
 	public static final Key Incoming    = new Key(KEY_INCOMING);
-	public static final Key Iota        = new Key(KEY_IOTA);
 	public static final Key Length      = new Key(KEY_LENGTH);
 	public static final Key Log         = new Key(KEY_LOG);
 	public static final Key Logs        = new Key(KEY_LOGS);
@@ -81,7 +74,6 @@ public class Key implements MapKey {
 	public static final Key Transfers   = new Key(KEY_TRANSFERS);
 	public static final Key Utility     = new Key(KEY_UTILITY);
 	public static final Key Views       = new Key(KEY_VIEWS);
-	public static final Key Warning     = new Key(KEY_WARNING);
 	// @formatter:on
 
 	int keyId;

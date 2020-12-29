@@ -57,22 +57,15 @@ public class Erc20 {
 		// validate parameters
 		// supply
 		ScImmutableInt supply = ctx.Params().GetInt(paramSupply);
-		String err;
 		if (!supply.Exists() || supply.Value() <= 0) {
-			err = "erc20.onInit.fail: wrong 'supply' parameter";
-			ctx.Log(err);
-			ctx.Error().SetValue(err);
-			return;
+			ctx.Panic("erc20.onInit.fail: wrong 'supply' parameter");
 		}
 		// creator (owner)
 		// we cannot use 'caller' here because on_init is always called from the 'root'
 		// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
 		ScImmutableAgent creator = ctx.Params().GetAgent(paramCreator);
 		if (!creator.Exists()) {
-			err = "erc20.onInit.fail: wrong 'creator' parameter";
-			ctx.Log(err);
-			ctx.Error().SetValue(err);
-			return;
+			ctx.Panic("erc20.onInit.fail: wrong 'creator' parameter");
 		}
 		ctx.State().GetInt(stateVarSupply).SetValue(supply.Value());
 
@@ -100,10 +93,7 @@ public class Erc20 {
 	public static void balanceOf(ScViewContext ctx) {
 		ScImmutableAgent account = ctx.Params().GetAgent(paramAccount);
 		if (!account.Exists()) {
-			String m = ("wrong or non existing parameter: " + account.Value());
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("wrong or non existing parameter: " + account.Value());
 		}
 		ScImmutableMap balances = ctx.State().GetMap(stateVarBalances);
 		long balance = balances.GetInt(account.Value()).Value();  // 0 if doesn't exist
@@ -122,20 +112,13 @@ public class Erc20 {
 		// validate parameters
 		// account
 		ScImmutableAgent owner = ctx.Params().GetAgent(paramAccount);
-		String m;
 		if (!owner.Exists()) {
-			m = "erc20.allowance.fail: wrong 'account' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.allowance.fail: wrong 'account' parameter");
 		}
 		// delegation
 		ScImmutableAgent delegation = ctx.Params().GetAgent(paramDelegation);
 		if (!delegation.Exists()) {
-			m = "erc20.allowance.fail: wrong 'delegation' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.allowance.fail: wrong 'delegation' parameter");
 		}
 		// all allowances of the address 'owner' are stored in the map of the same name
 		ScImmutableMap allowances = ctx.State().GetMap(owner.Value());
@@ -154,38 +137,25 @@ public class Erc20 {
 		ScImmutableMap params = ctx.Params();
 		// account
 		ScImmutableAgent targetAddrParam = params.GetAgent(paramAccount);
-		String m;
 		if (!targetAddrParam.Exists()) {
-			m = "erc20.transfer.fail: wrong 'account' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transfer.fail: wrong 'account' parameter");
 		}
 		ScAgent targetAddr = targetAddrParam.Value();
 		// amount
 		long amount = params.GetInt(paramAmount).Value();
 		if (amount <= 0) {
-			m = "erc20.transfer.fail: wrong 'amount' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transfer.fail: wrong 'amount' parameter");
 		}
 		ScMutableMap balances = ctx.State().GetMap(stateVarBalances);
 		ScMutableInt sourceBalance = balances.GetInt(ctx.Caller());
 
 		if (sourceBalance.Value() < amount) {
-			m = "erc20.transfer.fail: not enough funds";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transfer.fail: not enough funds");
 		}
 		ScMutableInt targetBalance = balances.GetInt(targetAddr);
 		long result = targetBalance.Value() + amount;
 		if (result <= 0) {
-			m = "erc20.transfer.fail: overflow";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transfer.fail: overflow");
 		}
 		sourceBalance.SetValue(sourceBalance.Value() - amount);
 		targetBalance.SetValue(targetBalance.Value() + amount);
@@ -201,20 +171,13 @@ public class Erc20 {
 
 		// validate parameters
 		ScImmutableAgent delegationParam = ctx.Params().GetAgent(paramDelegation);
-		String m;
 		if (!delegationParam.Exists()) {
-			m = "erc20.approve.fail: wrong 'delegation' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.approve.fail: wrong 'delegation' parameter");
 		}
 		ScAgent delegation = delegationParam.Value();
 		long amount = ctx.Params().GetInt(paramAmount).Value();
 		if (amount <= 0) {
-			m = "erc20.approve.fail: wrong 'amount' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.approve.fail: wrong 'amount' parameter");
 		}
 		// all allowances are in the map under the name of he owner
 		ScMutableMap allowances = ctx.State().GetMap(ctx.Caller());
@@ -233,28 +196,18 @@ public class Erc20 {
 
 		// validate parameters
 		ScImmutableAgent accountParam = ctx.Params().GetAgent(paramAccount);
-		String m;
 		if (!accountParam.Exists()) {
-			m = "erc20.transferFrom.fail: wrong 'account' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: wrong 'account' parameter");
 		}
 		ScAgent account = accountParam.Value();
 		ScImmutableAgent recipientParam = ctx.Params().GetAgent(paramRecipient);
 		if (!recipientParam.Exists()) {
-			m = "erc20.transferFrom.fail: wrong 'recipient' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: wrong 'recipient' parameter");
 		}
 		ScAgent recipient = recipientParam.Value();
 		ScImmutableInt amountParam = ctx.Params().GetInt(paramAmount);
 		if (!amountParam.Exists()) {
-			m = "erc20.transferFrom.fail: wrong 'amount' parameter";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: wrong 'amount' parameter");
 		}
 		long amount = amountParam.Value();
 
@@ -262,26 +215,17 @@ public class Erc20 {
 		ScMutableMap allowances = ctx.State().GetMap(account);
 		ScMutableInt allowance = allowances.GetInt(recipient);
 		if (allowance.Value() < amount) {
-			m = "erc20.transferFrom.fail: not enough allowance";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: not enough allowance");
 		}
 		ScMutableMap balances = ctx.State().GetMap(stateVarBalances);
 		ScMutableInt sourceBalance = balances.GetInt(account);
 		if (sourceBalance.Value() < amount) {
-			m = "erc20.transferFrom.fail: not enough funds";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: not enough funds");
 		}
 		ScMutableInt recipientBalance = balances.GetInt(recipient);
 		long result = recipientBalance.Value() + amount;
 		if (result <= 0) {
-			m = "erc20.transferFrom.fail: overflow";
-			ctx.Log(m);
-			ctx.Error().SetValue(m);
-			return;
+			ctx.Panic("erc20.transferFrom.fail: overflow");
 		}
 		sourceBalance.SetValue(sourceBalance.Value() - amount);
 		recipientBalance.SetValue(recipientBalance.Value() + amount);

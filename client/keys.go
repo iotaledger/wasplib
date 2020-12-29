@@ -6,8 +6,7 @@ package client
 // @formatter:off
 const (
 	KeyAgent       = Key32(-1)
-	KeyAmount      = KeyAgent       -1
-	KeyBalances    = KeyAmount      -1
+	KeyBalances    = KeyAgent       -1
 	KeyBase58      = KeyBalances    -1
 	KeyCaller      = KeyBase58      -1
 	KeyCalls       = KeyCaller      -1
@@ -19,15 +18,13 @@ const (
 	KeyData        = KeyCreator     -1
 	KeyDelay       = KeyData        -1
 	KeyDescription = KeyDelay       -1
-	KeyError       = KeyDescription -1
-	KeyEvent       = KeyError       -1
+	KeyEvent       = KeyDescription -1
 	KeyExports     = KeyEvent       -1
 	KeyFunction    = KeyExports     -1
 	KeyHash        = KeyFunction    -1
 	KeyId          = KeyHash        -1
 	KeyIncoming    = KeyId          -1
-	KeyIota        = KeyIncoming    -1
-	KeyLength      = KeyIota        -1
+	KeyLength      = KeyIncoming    -1
 	KeyLog         = KeyLength      -1
 	KeyLogs        = KeyLog         -1
 	KeyName        = KeyLogs        -1
@@ -42,8 +39,7 @@ const (
 	KeyTransfers   = KeyTrace       -1
 	KeyUtility     = KeyTransfers   -1
 	KeyViews       = KeyUtility     -1
-	KeyWarning     = KeyViews       -1
-	KeyZzzzzzz     = KeyWarning     -1
+	KeyZzzzzzz     = KeyViews       -1
 )
 // @formatter:on
 

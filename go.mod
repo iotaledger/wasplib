@@ -6,9 +6,9 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20201207144514-2a2e77e39fd2 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/iotaledger/goshimmer v0.3.1-0.20201221105018-a31367264316
-	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb // indirect
+	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20201229014027-b779716ad1e7
+	github.com/iotaledger/wasp v0.0.2-0.20201229032243-cec2c6ede40c
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mr-tron/base58 v1.2.0
