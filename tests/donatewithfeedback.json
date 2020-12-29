@@ -14,7 +14,7 @@
         "name": "donatewithfeedback",
         "description": "Donate iotas and give feedback",
         "id": "@scId",
-        "owner": "@scOwner"
+        "creator": "@scCreator"
       },
       "balances": {"#iota": 100},
       "timestamp": 20201027172138,
@@ -111,7 +111,7 @@
       "additionalRequests": [
         {
           "timestamp": 20201027172139,
-          "caller": "@scOwner",
+          "caller": "@scCreator",
           "function": "withdraw",
           "params": {
             "withdraw": 250
@@ -137,7 +137,7 @@
         "posts": [],
         "views": [],
         "transfers": [
-          {"agent": "@scOwner", "#iota": 250}
+          {"agent": "@scCreator", "#iota": 250}
         ]
       }
     },

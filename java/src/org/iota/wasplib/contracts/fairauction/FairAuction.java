@@ -173,7 +173,7 @@ public class FairAuction {
 				ownerFee = 1;
 			}
 			// finalizeAuction request token was probably not confirmed yet
-			sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
+			sc.Transfer(sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
 			sc.Transfer(auction.auctionOwner, auction.color, auction.numTokens);
 			sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit - ownerFee);
 			return;
@@ -198,7 +198,7 @@ public class FairAuction {
 		}
 
 		// finalizeAuction request token was probably not confirmed yet
-		sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, ownerFee - 1);
+		sc.Transfer(sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
 		sc.Transfer(auction.highestBidder, auction.color, auction.numTokens);
 		sc.Transfer(auction.auctionOwner, ScColor.IOTA, auction.deposit + auction.highestBid - ownerFee);
 	}
@@ -261,7 +261,7 @@ public class FairAuction {
 
 	public static void setOwnerMargin(ScCallContext sc) {
 		// can only be sent by SC owner
-		if (!sc.From(sc.Contract().Owner())) {
+		if (!sc.From(sc.Contract().Creator())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}
@@ -286,7 +286,7 @@ public class FairAuction {
 		ScBalances incoming = sc.Incoming();
 		long deposit = incoming.Balance(ScColor.IOTA);
 		if (deposit - amount != 0) {
-			sc.Transfer(sc.Contract().Owner(), ScColor.IOTA, deposit - amount);
+			sc.Transfer(sc.Contract().Creator(), ScColor.IOTA, deposit - amount);
 		}
 
 		// refund all other token colors, don't keep tokens that were to be auctioned

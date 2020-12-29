@@ -25,7 +25,7 @@
         "name": "fairauction",
         "description": "Auction colored tokens",
         "id": "@scId",
-        "owner": "@scOwner"
+        "creator": "@scCreator"
       },
       "balances": {"#iota": 100},
       "timestamp": 20201027172138,
@@ -116,7 +116,7 @@
           }
         ],
         "transfers": [
-          {"agent": "@scOwner", "#iota": 24},
+          {"agent": "@scCreator", "#iota": 24},
           {"agent": "@caller", "#tokenColor": 1},
           {"agent": "@caller", "#iota": 75}
         ]
@@ -409,7 +409,7 @@
           {"agent": "@bidder1", "#iota": 600},
           {"agent": "@bidder3", "#iota": 700},
           {"agent": "@bidder4", "#iota": 600},
-          {"agent": "@scOwner", "#iota": 34},
+          {"agent": "@scCreator", "#iota": 34},
           {"agent": "@bidder2", "#tokenColor": 1},
           {"agent": "@caller", "#iota": 765}
         ]

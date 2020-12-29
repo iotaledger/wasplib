@@ -5,12 +5,19 @@ package wasmlocalhost
 
 import (
 	"fmt"
+	"github.com/iotaledger/hive.go/logger"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/mr-tron/base58"
 	"io"
 )
 
 var EnableImmutableChecks = true
+var cfgDefault = logger.Config{
+	Level:         "warn", // warn, info, or debug
+	Encoding:      "console",
+	OutputPaths:   []string{"stdout"},
+	DisableEvents: true,
+}
 
 type SimpleWasmHost struct {
 	wasmhost.WasmHost
@@ -24,7 +31,9 @@ func NewSimpleWasmHost(vm wasmhost.WasmVM) (*SimpleWasmHost, error) {
 	}
 	root := NewHostMap(host, 0)
 	root.InitObj(1, 0)
-	host.Init(NewNullObject(host), root, host)
+
+	rootLogger, err := logger.NewRootLogger(cfgDefault)
+	host.Init(NewNullObject(host), root, rootLogger)
 	return host, nil
 }
 
@@ -49,17 +58,6 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	}
 }
 
-func (host *SimpleWasmHost) Log(logLevel int32, text string) {
-	switch logLevel {
-	case wasmhost.KeyTraceAll:
-		//fmt.Println(text)
-	case wasmhost.KeyTrace:
-		//fmt.Println(text)
-	case wasmhost.KeyLog:
-		fmt.Println(text)
-	case wasmhost.KeyWarning:
-		fmt.Println(text)
-	case wasmhost.KeyError:
-		fmt.Println(text)
-	}
+func (host *SimpleWasmHost) SetError(text string) {
+	panic(text)
 }

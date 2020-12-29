@@ -19,6 +19,14 @@ public class ScContract {
 		return contract.GetAddress(Key.Chain).Value();
 	}
 
+	public ScAgent ChainOwner() {
+		return contract.GetAgent(Key.ChainOwner).Value();
+	}
+
+	public ScAgent Creator() {
+		return contract.GetAgent(Key.Creator).Value();
+	}
+
 	public String Description() {
 		return contract.GetString(Key.Description).Value();
 	}
@@ -29,9 +37,5 @@ public class ScContract {
 
 	public String Name() {
 		return contract.GetString(Key.Name).Value();
-	}
-
-	public ScAgent Owner() {
-		return contract.GetAgent(Key.Owner).Value();
 	}
 }

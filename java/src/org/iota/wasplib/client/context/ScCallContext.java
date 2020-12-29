@@ -30,6 +30,10 @@ public class ScCallContext extends ScBaseContext {
 		return new ScPostInfo(function);
 	}
 
+	public void SignalEvent(String text) {
+		root.GetString(Key.Event).SetValue(text);
+	}
+
 	public ScMutableMap State() {
 		return root.GetMap(Key.State);
 	}

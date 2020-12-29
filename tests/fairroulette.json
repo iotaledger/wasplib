@@ -12,7 +12,7 @@
         "name": "fairroulette",
         "description": "Simple gambling app",
         "id": "@scId",
-        "owner": "@scOwner"
+        "creator": "@scCreator"
       },
       "balances": {"#iota": 100},
       "timestamp": 20201027172138,

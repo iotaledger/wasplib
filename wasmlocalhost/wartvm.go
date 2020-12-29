@@ -127,8 +127,7 @@ func (vm *WartVM) LoadWasm(wasmData []byte) error {
 }
 
 func (vm *WartVM) RunFunction(functionName string) error {
-	err := vm.runner.RunExport(functionName, nil)
-	return err
+	return vm.runner.RunExport(functionName, nil)
 }
 
 func (vm *WartVM) RunScFunction(index int32) error {

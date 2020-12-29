@@ -59,7 +59,7 @@ func (a *HostArray) GetBytes(keyId int32) []byte {
 	}
 	bytes, err := base58.Decode(value)
 	if err != nil {
-		a.Error("Map.GetBytes: " + err.Error())
+		a.Error("Array.GetBytes: " + err.Error())
 		return []byte(nil)
 	}
 	return bytes

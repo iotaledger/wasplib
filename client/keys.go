@@ -39,8 +39,7 @@ const (
 	KeyState       = KeyResults     -1
 	KeyTimestamp   = KeyState       -1
 	KeyTrace       = KeyTimestamp   -1
-	KeyTraceAll    = KeyTrace       -1
-	KeyTransfers   = KeyTraceAll    -1
+	KeyTransfers   = KeyTrace       -1
 	KeyUtility     = KeyTransfers   -1
 	KeyViews       = KeyUtility     -1
 	KeyWarning     = KeyViews       -1

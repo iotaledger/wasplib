@@ -123,10 +123,6 @@ func (ctx ScBaseContext) Contract() ScContract {
 	return ScContract{root.GetMap(KeyContract).Immutable()}
 }
 
-func (ctx ScBaseContext) Error() string {
-	return root.GetString(KeyError).Value()
-}
-
 func (ctx ScBaseContext) From(originator *ScAgent) bool {
 	return ctx.Caller().Equals(originator)
 }

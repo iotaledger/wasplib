@@ -3,7 +3,7 @@
     "TokenInfo": [
       {"field": "supply", "type": "Int"},
       {"field": "minted_by", "type": "Agent"},
-      {"field": "owner", "type": "Agent"},
+      {"field": "creator", "type": "Agent"},
       {"field": "created", "type": "Int"},
       {"field": "updated", "type": "Int"},
       {"field": "description", "type": "String"},
@@ -19,7 +19,7 @@
         "name": "tokenregistry",
         "description": "Register colored tokens on the Tangle",
         "id": "@scId",
-        "owner": "@scOwner"
+        "creator": "@scCreator"
       }
     }
   },
@@ -40,7 +40,7 @@
               "TokenInfo": {
                 "supply": 1,
                 "minted_by": "@caller",
-                "owner": "@caller",
+                "creator": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
@@ -71,7 +71,7 @@
               "TokenInfo": {
                 "supply": 1,
                 "minted_by": "@caller",
-                "owner": "@caller",
+                "creator": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "no dscr",
@@ -138,7 +138,7 @@
               "TokenInfo": {
                 "supply": 1,
                 "minted_by": "@caller",
-                "owner": "@caller",
+                "creator": "@caller",
                 "created": 20201027172138,
                 "updated": 20201027172138,
                 "description": "My very valuable token",
@@ -149,7 +149,7 @@
               "TokenInfo": {
                 "supply": 750,
                 "minted_by": "@caller2",
-                "owner": "@caller2",
+                "creator": "@caller2",
                 "created": 20201027172139,
                 "updated": 20201027172139,
                 "description": "My shares in the IOTA Foundation",

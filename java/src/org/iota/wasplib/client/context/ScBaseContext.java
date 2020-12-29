@@ -29,20 +29,16 @@ public class ScBaseContext {
 		return new ScContract(root.GetMap(Key.Contract).Immutable());
 	}
 
-	public ScMutableString Error() {
-		return root.GetString(Key.Error);
-	}
-
 	public Boolean From(ScAgent originator) {
 		return Caller().equals(originator);
 	}
 
 	public void Log(String text) {
-		Host.SetString(1, Key.KEY_LOG, text);
+		root.GetString(Key.Log).SetValue(text);
 	}
 
 	public void Panic(String text) {
-		Host.SetString(1, Key.KEY_PANIC, text);
+		root.GetString(Key.Panic).SetValue(text);
 	}
 
 	public ScImmutableMap Params() {
@@ -58,7 +54,7 @@ public class ScBaseContext {
 	}
 
 	public void Trace(String text) {
-		Host.SetString(1, Key.KEY_TRACE, text);
+		root.GetString(Key.Trace).SetValue(text);
 	}
 
 	public ScUtility Utility() {

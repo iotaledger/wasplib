@@ -27,7 +27,7 @@ public class Dividend {
 	}
 
 	public static void member(ScCallContext sc) {
-		if (!sc.From(sc.Contract().Owner())) {
+		if (!sc.From(sc.Contract().Creator())) {
 			sc.Log("Cancel spoofed request");
 			return;
 		}

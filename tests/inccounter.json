@@ -6,7 +6,7 @@
         "name": "inccounter",
         "description": "Test basic functionality",
         "id": "@scId",
-        "owner": "@scOwner"
+        "creator": "@scCreator"
       },
       "balances": {"#iota": 100},
       "timestamp": 20201027172138,
