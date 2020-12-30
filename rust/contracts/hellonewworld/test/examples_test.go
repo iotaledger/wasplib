@@ -49,15 +49,13 @@ func TestEx4(t *testing.T) {
 	require.NoError(t, err)
 
 	req := solo.NewCall("hnw1", "hello")
-	for i := 0; i < 3; i++ {
-		_, err = chain.PostRequest(req, nil)
-		require.NoError(t, err)
-	}
+	_, err = chain.PostRequest(req, nil)
+	require.NoError(t, err)
 
 	res, err := chain.CallView("hnw1", "getCounter")
 	require.NoError(t, err)
 	counter, exists, err := codec.DecodeInt64(res.MustGet("counter"))
 	require.NoError(t, err)
 	require.True(t, exists)
-	require.EqualValues(t, 3, counter)
+	require.EqualValues(t, 1, counter)
 }
