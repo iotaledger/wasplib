@@ -21,6 +21,7 @@ var cfgDefault = logger.Config{
 
 type SimpleWasmHost struct {
 	wasmhost.WasmHost
+	panicked bool
 }
 
 func NewSimpleWasmHost(vm wasmhost.WasmVM) (*SimpleWasmHost, error) {
@@ -58,6 +59,6 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	}
 }
 
-func (host *SimpleWasmHost) SetError(text string) {
+func (host *SimpleWasmHost) Error(text string) {
 	panic(text)
 }

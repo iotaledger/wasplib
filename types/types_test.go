@@ -1,3 +1,5 @@
+// +build feature_types
+
 package types
 
 import (
@@ -9,7 +11,7 @@ import (
 )
 
 func TestGoTypes(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := filepath.Walk("../contracts",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -24,7 +26,7 @@ func TestGoTypes(t *testing.T) {
 }
 
 func TestJavaTypes(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := filepath.Walk("../contracts",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -39,7 +41,7 @@ func TestJavaTypes(t *testing.T) {
 }
 
 func TestRustTypes(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := filepath.Walk("../rust/contracts",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {

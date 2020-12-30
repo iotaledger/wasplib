@@ -9,10 +9,10 @@ import (
 type Generator struct {
 	jsonTypes JsonTypes
 	keys      []string
-	maxCamel   int
+	maxCamel  int
 	maxName   int
 	maxType   int
-	camels     map[string]string
+	camels    map[string]string
 	types     map[string]string
 	comments  map[string]string
 }

@@ -18,7 +18,7 @@ const incName = "inccounter"
 const varCounter = "counter"
 const varNumRepeats = "num_repeats"
 
-var contracts = map[string]func() {
+var contracts = map[string]func(){
 	incName: inccounter.OnLoad,
 }
 

@@ -13,7 +13,7 @@ import (
 type GoVM struct {
 	wasmhost.WasmVmBase
 	contract string
-	onLoad map[string]func()
+	onLoad   map[string]func()
 }
 
 func NewGoVM(onLoad map[string]func()) *GoVM {
@@ -30,7 +30,7 @@ func (vm *GoVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error {
 
 func (vm *GoVM) LoadWasm(wasmData []byte) error {
 	contract := string(wasmData)
-	if !strings.HasPrefix(contract,"go:") {
+	if !strings.HasPrefix(contract, "go:") {
 		return errors.New("GoVM: not a Go contract: " + contract)
 	}
 	vm.contract = contract[3:]

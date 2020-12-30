@@ -21,8 +21,8 @@ func NewHostCall(host *SimpleWasmHost, keyId int32) *HostCall {
 	return &HostCall{HostMap: *NewHostMap(host, keyId)}
 }
 
-func (a *HostCall) call() {
-	host := a.host
+func (m *HostCall) call() {
+	host := m.host
 
 	root := host.FindObject(1)
 	savedCaller := root.GetString(wasmhost.KeyCaller)
@@ -30,17 +30,17 @@ func (a *HostCall) call() {
 	root.SetString(wasmhost.KeyCaller, scId)
 
 	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
-	savedParams := NewHostMap(a.host, 0)
+	savedParams := NewHostMap(m.host, 0)
 	requestParams.(*HostMap).CopyDataTo(savedParams)
 	requestParams.SetInt(wasmhost.KeyLength, 0)
-	params := host.FindSubObject(a, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+	params := host.FindSubObject(m, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
 	params.(*HostMap).CopyDataTo(requestParams)
 
-	fmt.Printf("    Call function: %v\n", a.function)
-	err := host.RunScFunction(a.function)
+	fmt.Printf("    Call function: %v\n", m.function)
+	err := host.RunScFunction(m.function)
 	if err != nil {
-		fmt.Printf("FAIL: Request function %s: %v\n", a.function, err)
-		a.Error(err.Error())
+		fmt.Printf("FAIL: Request function %s: %v\n", m.function, err)
+		m.Error(err.Error())
 	}
 
 	requestParams.SetInt(wasmhost.KeyLength, 0)
@@ -48,42 +48,42 @@ func (a *HostCall) call() {
 	root.SetString(wasmhost.KeyCaller, savedCaller)
 }
 
-func (a *HostCall) SetBytes(keyId int32, value []byte) {
-	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceAll("Call.SetBytes %s = %s", key, base58.Encode(value))
-	a.HostMap.SetBytes(keyId, value)
+func (m *HostCall) SetBytes(keyId int32, value []byte) {
+	key := string(m.host.GetKeyFromId(keyId))
+	m.host.TraceAll("Call.SetBytes %s = %s", key, base58.Encode(value))
+	m.HostMap.SetBytes(keyId, value)
 	if key == "chain" {
-		a.chain = value
+		m.chain = value
 		return
 	}
 }
 
-func (a *HostCall) SetInt(keyId int32, value int64) {
-	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceAll("Call.SetInt %s = %d\n", key, value)
-	a.HostMap.SetInt(keyId, value)
+func (m *HostCall) SetInt(keyId int32, value int64) {
+	key := string(m.host.GetKeyFromId(keyId))
+	m.host.TraceAll("Call.SetInt %s = %d\n", key, value)
+	m.HostMap.SetInt(keyId, value)
 	if key != "delay" {
 		return
 	}
-	if a.contract == "" {
+	if m.contract == "" {
 		// call to self, immediately executed
-		a.call()
+		m.call()
 		return
 	}
 	panic("Call.SetInt: call to other contract not implemented yet")
 	//TODO take return values from json
 }
 
-func (a *HostCall) SetString(keyId int32, value string) {
-	key := string(a.host.GetKeyFromId(keyId))
-	a.host.TraceAll("Call.SetString %s = %s\n", key, value)
-	a.HostMap.SetString(keyId, value)
+func (m *HostCall) SetString(keyId int32, value string) {
+	key := string(m.host.GetKeyFromId(keyId))
+	m.host.TraceAll("Call.SetString %s = %s\n", key, value)
+	m.HostMap.SetString(keyId, value)
 	if key == "contract" {
-		a.contract = value
+		m.contract = value
 		return
 	}
 	if key == "function" {
-		a.function = value
+		m.function = value
 		return
 	}
 }

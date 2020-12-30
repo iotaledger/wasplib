@@ -16,43 +16,43 @@ func NewNullObject(host *SimpleWasmHost) wasmhost.HostObject {
 }
 
 func (n *NullObject) Exists(keyId int32) bool {
-	n.host.SetError("Null.Exists")
+	n.host.Error("Null.Exists")
 	return false
 }
 
 func (n *NullObject) GetBytes(keyId int32) []byte {
-	n.host.SetError("Null.GetBytes")
+	n.host.Error("Null.GetBytes")
 	return nil
 }
 
 func (n *NullObject) GetInt(keyId int32) int64 {
-	n.host.SetError("Null.GetInt")
+	n.host.Error("Null.GetInt")
 	return 0
 }
 
 func (n *NullObject) GetObjectId(keyId int32, typeId int32) int32 {
-	n.host.SetError("Null.GetObjectId")
+	n.host.Error("Null.GetObjectId")
 	return 0
 }
 
 func (n *NullObject) GetString(keyId int32) string {
-	n.host.SetError("Null.GetString")
+	n.host.Error("Null.GetString")
 	return ""
 }
 
 func (n *NullObject) GetTypeId(keyId int32) int32 {
-	n.host.SetError("Null.GetTypeId")
+	n.host.Error("Null.GetTypeId")
 	return -1
 }
 
 func (n *NullObject) SetBytes(keyId int32, value []byte) {
-	n.host.SetError("Null.SetBytes")
+	n.host.Error("Null.SetBytes")
 }
 
 func (n *NullObject) SetInt(keyId int32, value int64) {
-	n.host.SetError("Null.SetInt")
+	n.host.Error("Null.SetInt")
 }
 
 func (n *NullObject) SetString(keyId int32, value string) {
-	n.host.SetError("Null.SetString")
+	n.host.Error("Null.SetString")
 }

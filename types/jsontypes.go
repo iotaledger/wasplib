@@ -22,4 +22,3 @@ func LoadTypes(path string) (JsonTypes, error) {
 	}
 	return jsonTypes, nil
 }
-

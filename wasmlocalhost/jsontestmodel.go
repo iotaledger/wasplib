@@ -48,7 +48,7 @@ type JsonTest struct {
 }
 
 type JsonTests struct {
-	host   *wasmhost.WasmHost
+	host   *SimpleWasmHost
 	Types  map[string][]*JsonFieldType `json:"types"`
 	Setups map[string]*JsonDataModel   `json:"setups"`
 	Tests  []*JsonTest                 `json:"tests"`
@@ -453,7 +453,7 @@ func processHash(value string, size int) string {
 	return base58.Encode(hash)
 }
 
-func (t *JsonTests) runRequest(function string) bool {
+func (t *JsonTests) runRequest(function string) (success bool) {
 	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP).(*HostMap)
 	balances := t.FindSubObject(nil, wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP).(*HostMap)
 	mintKeyId := t.GetKeyId("#mint")
@@ -462,6 +462,17 @@ func (t *JsonTests) runRequest(function string) bool {
 			balances.SetInt(keyId, balances.GetInt(keyId)+incoming.GetInt(keyId))
 		}
 	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			// deliberate panic call by SC??
+			success = t.host.panicked
+			t.host.panicked = false
+			if !success {
+				fmt.Printf("FAIL: Function %s: %v\n", function, err)
+			}
+		}
+	}()
 
 	fmt.Printf("    Run function: %s\n", function)
 	err := t.host.RunScFunction(function)
@@ -472,7 +483,7 @@ func (t *JsonTests) runRequest(function string) bool {
 	return true
 }
 
-func (t *JsonTests) RunTest(host *wasmhost.WasmHost, test *JsonTest) bool {
+func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	t.host = host
 	fmt.Printf("Test: %s\n", test.Name)
 	if test.Expect == nil {

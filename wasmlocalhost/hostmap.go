@@ -67,7 +67,7 @@ func (m *HostMap) Dump(w io.Writer) {
 }
 
 func (m *HostMap) Error(text string) {
-	m.host.SetError(text)
+	m.host.Error(text)
 }
 
 func (m *HostMap) Exists(keyId int32) bool {
@@ -198,6 +198,10 @@ func (m *HostMap) SetString(keyId int32, value string) {
 		return
 	}
 	m.fields[keyId] = value
+	if keyId == wasmhost.KeyPanic {
+		m.host.panicked = true
+		m.host.Error(value)
+	}
 }
 
 func (m *HostMap) valid(keyId int32, typeId int32) bool {

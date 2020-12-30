@@ -2,13 +2,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use wasplib::client::*;
+
 const KEY_COUNTER: &str = "counter";
+
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
     exports.add_call("hello", hello);
     exports.add_view("getCounter", get_counter);
 }
+
 // Function hello implements smart contract entry point "hello".
 // It logs the message "Hello, new world!" with the counter and increments the counter
 // The counter is a variable stored in the smart contract state

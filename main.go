@@ -77,7 +77,7 @@ func execTest(path string, language string) {
 	}
 
 	for _, test := range jsonTests.Tests {
-		if jsonTests.RunTest(&host.WasmHost, test) {
+		if jsonTests.RunTest(host, test) {
 			fmt.Printf("PASS\n")
 			passed++
 			continue

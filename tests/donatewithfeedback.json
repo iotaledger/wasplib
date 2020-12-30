@@ -33,6 +33,8 @@
       "expect": {
         "balances": {"#iota": 600},
         "state": {
+          "max_donation": 500,
+          "total_donation": 500,
           "log": [
             {
               "DonationInfo": {
@@ -73,6 +75,8 @@
       "expect": {
         "balances": {"#iota": 1350},
         "state": {
+          "max_donation": 750,
+          "total_donation": 1250,
           "log": [
             {
               "DonationInfo": {
@@ -121,6 +125,8 @@
       "expect": {
         "balances": {"#iota": 350},
         "state": {
+          "max_donation": 500,
+          "total_donation": 500,
           "log": [
             {
               "DonationInfo": {
@@ -160,8 +166,11 @@
         }
       ],
       "expect": {
+        "panic": "Cancel spoofed request",
         "balances": {"#iota": 600},
         "state": {
+           "max_donation": 500,
+          "total_donation": 500,
           "log": [
             {
               "DonationInfo": {
@@ -207,6 +216,8 @@
       "expect": {
         "balances": {"#iota": 1350},
         "state": {
+          "max_donation": 750,
+          "total_donation": 1250,
           "log": [
             {
               "DonationInfo": {

@@ -45,7 +45,7 @@ func (a *HostArray) Dump(w io.Writer) {
 }
 
 func (a *HostArray) Error(text string) {
-	a.host.SetError(text)
+	a.host.Error(text)
 }
 
 func (a *HostArray) Exists(keyId int32) bool {
