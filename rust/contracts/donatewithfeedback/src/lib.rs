@@ -55,8 +55,7 @@ fn donate(sc: &ScCallContext) {
 fn withdraw(sc: &ScCallContext) {
     let sc_owner = sc.contract().creator();
     if !sc.from(&sc_owner) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     let amount = sc.balances().balance(&ScColor::IOTA);
@@ -65,7 +64,7 @@ fn withdraw(sc: &ScCallContext) {
         withdraw_amount = amount;
     }
     if withdraw_amount == 0 {
-        sc.log("DonateWithFeedback: withdraw. nothing to withdraw");
+        sc.log("DonateWithFeedback: nothing to withdraw");
         return;
     }
 

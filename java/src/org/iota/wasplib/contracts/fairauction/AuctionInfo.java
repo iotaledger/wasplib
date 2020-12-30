@@ -5,11 +5,10 @@ package org.iota.wasplib.contracts.fairauction;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 
-public class AuctionInfo{
+public class AuctionInfo {
 	//@formatter:off
 	public ScAgent auctionOwner;  // issuer of start_auction transaction
 	public ScColor color;         // color of tokens for sale
@@ -24,7 +23,7 @@ public class AuctionInfo{
 	public long    whenStarted;   // timestamp when auction started
 	//@formatter:on
 
-	public static byte[] encode(AuctionInfo o){
+	public static byte[] encode(AuctionInfo o) {
 		return new BytesEncoder().
 				Agent(o.auctionOwner).
 				Color(o.color).
@@ -42,7 +41,7 @@ public class AuctionInfo{
 
 	public static AuctionInfo decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
-        AuctionInfo data = new AuctionInfo();
+		AuctionInfo data = new AuctionInfo();
 		data.auctionOwner = decode.Agent();
 		data.color = decode.Color();
 		data.deposit = decode.Int();

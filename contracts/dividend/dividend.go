@@ -58,8 +58,7 @@ func member(sc *client.ScCallContext) {
 func dividend(sc *client.ScCallContext) {
 	amount := sc.Balances().Balance(client.IOTA)
 	if amount == 0 {
-		sc.Log("Nothing to divide")
-		return
+		sc.Panic("Nothing to divide")
 	}
 	state := sc.State()
 	totalFactor := state.GetInt(keyTotalFactor)

@@ -60,8 +60,7 @@ fn member(sc: &ScCallContext) {
 fn dividend(sc: &ScCallContext) {
     let amount = sc.balances().balance(&ScColor::IOTA);
     if amount == 0 {
-        sc.log("Nothing to divide");
-        return;
+        sc.panic("Nothing to divide");
     }
     let state = sc.state();
     let total_factor = state.get_int(KEY_TOTAL_FACTOR);

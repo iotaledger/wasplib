@@ -247,7 +247,7 @@ fn place_bid(sc: &ScCallContext) {
 }
 
 fn set_owner_margin(sc: &ScCallContext) {
-    // can only be sent by SC owner
+    // can only be sent by SC creator
     if !sc.from(&sc.contract().creator()) {
         sc.log("Cancel spoofed request");
         return;

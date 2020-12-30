@@ -260,7 +260,7 @@ public class FairAuction {
 	}
 
 	public static void setOwnerMargin(ScCallContext sc) {
-		// can only be sent by SC owner
+		// can only be sent by SC creator
 		if (!sc.From(sc.Contract().Creator())) {
 			sc.Log("Cancel spoofed request");
 			return;

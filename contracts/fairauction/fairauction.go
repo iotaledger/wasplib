@@ -244,7 +244,7 @@ func placeBid(sc *client.ScCallContext) {
 }
 
 func setOwnerMargin(sc *client.ScCallContext) {
-	// can only be sent by SC owner
+	// can only be sent by SC creator
 	if !sc.From(sc.Contract().Creator()) {
 		sc.Log("Cancel spoofed request")
 		return

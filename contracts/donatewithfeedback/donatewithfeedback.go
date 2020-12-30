@@ -53,8 +53,7 @@ func donate(sc *client.ScCallContext) {
 func withdraw(sc *client.ScCallContext) {
 	scOwner := sc.Contract().Creator()
 	if !sc.From(scOwner) {
-		sc.Log("Cancel spoofed request")
-		return
+		sc.Panic("Cancel spoofed request")
 	}
 
 	amount := sc.Balances().Balance(client.IOTA)
@@ -63,7 +62,7 @@ func withdraw(sc *client.ScCallContext) {
 		withdrawAmount = amount
 	}
 	if withdrawAmount == 0 {
-		sc.Log("DonateWithFeedback: withdraw. nothing to withdraw")
+		sc.Log("DonateWithFeedback: nothing to withdraw")
 		return
 	}
 

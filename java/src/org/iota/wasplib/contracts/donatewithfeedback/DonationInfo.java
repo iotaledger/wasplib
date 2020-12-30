@@ -5,11 +5,9 @@ package org.iota.wasplib.contracts.donatewithfeedback;
 
 import org.iota.wasplib.client.bytes.BytesDecoder;
 import org.iota.wasplib.client.bytes.BytesEncoder;
-import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.hashtypes.ScColor;
 
-public class DonationInfo{
+public class DonationInfo {
 	//@formatter:off
 	public long    amount;
 	public ScAgent donator;
@@ -18,7 +16,7 @@ public class DonationInfo{
 	public long    timestamp;
 	//@formatter:on
 
-	public static byte[] encode(DonationInfo o){
+	public static byte[] encode(DonationInfo o) {
 		return new BytesEncoder().
 				Int(o.amount).
 				Agent(o.donator).
@@ -30,7 +28,7 @@ public class DonationInfo{
 
 	public static DonationInfo decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
-        DonationInfo data = new DonationInfo();
+		DonationInfo data = new DonationInfo();
 		data.amount = decode.Int();
 		data.donator = decode.Agent();
 		data.error = decode.String();

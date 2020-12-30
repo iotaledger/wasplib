@@ -67,8 +67,7 @@ public class DonateWithFeedback {
 	public static void withdraw(ScCallContext sc) {
 		ScAgent scOwner = sc.Contract().Creator();
 		if (!sc.From(scOwner)) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		long amount = sc.Balances().Balance(ScColor.IOTA);
@@ -77,7 +76,7 @@ public class DonateWithFeedback {
 			withdrawAmount = amount;
 		}
 		if (withdrawAmount == 0) {
-			sc.Log("DonateWithFeedback: withdraw. nothing to withdraw");
+			sc.Log("DonateWithFeedback: nothing to withdraw");
 			return;
 		}
 

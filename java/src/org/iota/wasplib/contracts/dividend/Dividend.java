@@ -28,19 +28,16 @@ public class Dividend {
 
 	public static void member(ScCallContext sc) {
 		if (!sc.From(sc.Contract().Creator())) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 		ScImmutableMap params = sc.Params();
 		ScImmutableAddress address = params.GetAddress(keyAddress);
 		if (!address.Exists()) {
-			sc.Log("Missing address");
-			return;
+			sc.Panic("Missing address");
 		}
 		ScImmutableInt factor = params.GetInt(keyFactor);
 		if (!factor.Exists()) {
-			sc.Log("Missing factor");
-			return;
+			sc.Panic("Missing factor");
 		}
 		Member member = new Member();
 		{
@@ -72,8 +69,7 @@ public class Dividend {
 	public static void dividend(ScCallContext sc) {
 		long amount = sc.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
-			sc.Log("Nothing to divide");
-			return;
+			sc.Panic("Nothing to divide");
 		}
 		ScMutableMap state = sc.State();
 		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
