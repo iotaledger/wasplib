@@ -28,17 +28,14 @@ fn on_load() {
 fn place_bet(sc: &ScCallContext) {
     let amount = sc.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
-        sc.log("Empty bet...");
-        return;
+        sc.panic("Empty bet...");
     }
     let color = sc.params().get_int(KEY_COLOR).value();
     if color == 0 {
-        sc.log("No color...");
-        return;
+        sc.panic("No color...");
     }
     if color < 1 || color > NUM_COLORS {
-        sc.log("Invalid color...");
-        return;
+        sc.panic("Invalid color...");
     }
 
     let bet = BetInfo {
@@ -63,8 +60,7 @@ fn place_bet(sc: &ScCallContext) {
 fn lock_bets(sc: &ScCallContext) {
     // can only be sent by SC itself
     if !sc.from(&sc.contract().id()) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     // move all current bets to the locked_bets array
@@ -85,8 +81,7 @@ fn pay_winners(sc: &ScCallContext) {
     // can only be sent by SC itself
     let sc_id = sc.contract().id();
     if !sc.from(&sc_id) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     let winning_color = sc.utility().random(5) + 1;
@@ -142,14 +137,12 @@ fn pay_winners(sc: &ScCallContext) {
 fn play_period(sc: &ScCallContext) {
     // can only be sent by SC creator
     if !sc.from(&sc.contract().creator()) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     let play_period = sc.params().get_int(KEY_PLAY_PERIOD).value();
     if play_period < 10 {
-        sc.log("Invalid play period...");
-        return;
+        sc.panic("Invalid play period...");
     }
 
     sc.state().get_int(KEY_PLAY_PERIOD).set_value(play_period);

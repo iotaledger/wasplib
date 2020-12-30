@@ -34,8 +34,7 @@ func OnLoad() {
 func startAuction(sc *client.ScCallContext) {
 	deposit := sc.Incoming().Balance(client.IOTA)
 	if deposit < 1 {
-		sc.Log("Empty deposit...")
-		return
+		sc.Panic("Empty deposit...")
 	}
 
 	state := sc.State()
@@ -132,14 +131,12 @@ func startAuction(sc *client.ScCallContext) {
 func finalizeAuction(sc *client.ScCallContext) {
 	// can only be sent by SC itself
 	if !sc.From(sc.Contract().Id()) {
-		sc.Log("Cancel spoofed request")
-		return
+		sc.Panic("Cancel spoofed request")
 	}
 
 	colorParam := sc.Params().GetColor(keyColor)
 	if !colorParam.Exists() {
-		sc.Log("Internal inconsistency: missing color")
-		return
+		sc.Panic("Internal inconsistency: missing color")
 	}
 	color := colorParam.Value()
 
@@ -148,8 +145,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 	currentAuction := auctions.GetMap(color)
 	currentInfo := currentAuction.GetBytes(keyInfo)
 	if !currentInfo.Exists() {
-		sc.Log("Internal inconsistency: missing auction info")
-		return
+		sc.Panic("Internal inconsistency: missing auction info")
 	}
 	auction := decodeAuctionInfo(currentInfo.Value())
 	if auction.highestBid < 0 {
@@ -192,8 +188,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 func placeBid(sc *client.ScCallContext) {
 	bidAmount := sc.Incoming().Balance(client.IOTA)
 	if bidAmount == 0 {
-		sc.Log("Insufficient bid amount")
-		return
+		sc.Panic("Insufficient bid amount")
 	}
 
 	colorParam := sc.Params().GetColor(keyColor)
@@ -246,8 +241,7 @@ func placeBid(sc *client.ScCallContext) {
 func setOwnerMargin(sc *client.ScCallContext) {
 	// can only be sent by SC creator
 	if !sc.From(sc.Contract().Creator()) {
-		sc.Log("Cancel spoofed request")
-		return
+		sc.Panic("Cancel spoofed request")
 	}
 
 	ownerMargin := sc.Params().GetInt(keyOwnerMargin).Value()

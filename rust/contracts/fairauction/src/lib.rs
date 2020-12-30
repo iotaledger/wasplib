@@ -36,8 +36,7 @@ fn on_load() {
 fn start_auction(sc: &ScCallContext) {
     let deposit = sc.incoming().balance(&ScColor::IOTA);
     if deposit < 1 {
-        sc.log("Empty deposit...");
-        return;
+        sc.panic("Empty deposit...");
     }
 
     let state = sc.state();
@@ -135,14 +134,12 @@ fn start_auction(sc: &ScCallContext) {
 fn finalize_auction(sc: &ScCallContext) {
     // can only be sent by SC itself
     if !sc.from(&sc.contract().id()) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     let color_param = sc.params().get_color(KEY_COLOR);
     if !color_param.exists() {
-        sc.log("Internal inconsistency: missing color");
-        return;
+        sc.panic("Internal inconsistency: missing color");
     }
     let color = color_param.value();
 
@@ -151,8 +148,7 @@ fn finalize_auction(sc: &ScCallContext) {
     let current_auction = auctions.get_map(&color);
     let current_info = current_auction.get_bytes(KEY_INFO);
     if !current_info.exists() {
-        sc.log("Internal inconsistency: missing auction info");
-        return;
+        sc.panic("Internal inconsistency: missing auction info");
     }
     let auction = decode_auction_info(&current_info.value());
     if auction.highest_bid < 0 {
@@ -195,8 +191,7 @@ fn finalize_auction(sc: &ScCallContext) {
 fn place_bid(sc: &ScCallContext) {
     let mut bid_amount = sc.incoming().balance(&ScColor::IOTA);
     if bid_amount == 0 {
-        sc.log("Insufficient bid amount");
-        return;
+        sc.panic("Insufficient bid amount");
     }
 
     let color_param = sc.params().get_color(KEY_COLOR);
@@ -249,8 +244,7 @@ fn place_bid(sc: &ScCallContext) {
 fn set_owner_margin(sc: &ScCallContext) {
     // can only be sent by SC creator
     if !sc.from(&sc.contract().creator()) {
-        sc.log("Cancel spoofed request");
-        return;
+        sc.panic("Cancel spoofed request");
     }
 
     let mut owner_margin = sc.params().get_int(KEY_OWNER_MARGIN).value();

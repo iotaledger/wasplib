@@ -35,17 +35,14 @@ public class FairRoulette {
 	public static void placeBet(ScCallContext sc) {
 		long amount = sc.Incoming().Balance(ScColor.IOTA);
 		if (amount == 0) {
-			sc.Log("Empty bet...");
-			return;
+			sc.Panic("Empty bet...");
 		}
 		long color = sc.Params().GetInt(keyColor).Value();
 		if (color == 0) {
-			sc.Log("No color...");
-			return;
+			sc.Panic("No color...");
 		}
 		if (color < 1 || color > numColors) {
-			sc.Log("Invalid color...");
-			return;
+			sc.Panic("Invalid color...");
 		}
 
 		BetInfo bet = new BetInfo();
@@ -71,8 +68,7 @@ public class FairRoulette {
 	public static void lockBets(ScCallContext sc) {
 		// can only be sent by SC itself
 		if (!sc.From(sc.Contract().Id())) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		// move all current bets to the locked_bets array
@@ -93,8 +89,7 @@ public class FairRoulette {
 		// can only be sent by SC itself
 		ScAgent scId = sc.Contract().Id();
 		if (!sc.From(scId)) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		long winningColor = sc.Utility().Random(5) + 1;
@@ -151,14 +146,12 @@ public class FairRoulette {
 	public static void playPeriod(ScCallContext sc) {
 		// can only be sent by SC creator
 		if (!sc.From(sc.Contract().Creator())) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		long playPeriod = sc.Params().GetInt(keyPlayPeriod).Value();
 		if (playPeriod < 10) {
-			sc.Log("Invalid play period...");
-			return;
+			sc.Panic("Invalid play period...");
 		}
 
 		sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod);

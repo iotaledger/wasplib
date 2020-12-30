@@ -47,8 +47,7 @@ public class FairAuction {
 	public static void startAuction(ScCallContext sc) {
 		long deposit = sc.Incoming().Balance(ScColor.IOTA);
 		if (deposit < 1) {
-			sc.Log("Empty deposit...");
-			return;
+			sc.Panic("Empty deposit...");
 		}
 
 		ScMutableMap state = sc.State();
@@ -146,14 +145,12 @@ public class FairAuction {
 	public static void finalizeAuction(ScCallContext sc) {
 		// can only be sent by SC itself
 		if (!sc.From(sc.Contract().Id())) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		ScImmutableColor colorParam = sc.Params().GetColor(keyColor);
 		if (!colorParam.Exists()) {
-			sc.Log("Internal inconsistency: missing color");
-			return;
+			sc.Panic("Internal inconsistency: missing color");
 		}
 		ScColor color = colorParam.Value();
 
@@ -162,8 +159,7 @@ public class FairAuction {
 		ScMutableMap currentAuction = auctions.GetMap(color);
 		ScMutableBytes currentInfo = currentAuction.GetBytes(keyInfo);
 		if (!currentInfo.Exists()) {
-			sc.Log("Internal inconsistency: missing auction info");
-			return;
+			sc.Panic("Internal inconsistency: missing auction info");
 		}
 		AuctionInfo auction = AuctionInfo.decode(currentInfo.Value());
 		if (auction.highestBid < 0) {
@@ -206,8 +202,7 @@ public class FairAuction {
 	public static void placeBid(ScCallContext sc) {
 		long bidAmount = sc.Incoming().Balance(ScColor.IOTA);
 		if (bidAmount == 0) {
-			sc.Log("Insufficient bid amount");
-			return;
+			sc.Panic("Insufficient bid amount");
 		}
 
 		ScImmutableColor colorParam = sc.Params().GetColor(keyColor);
@@ -262,8 +257,7 @@ public class FairAuction {
 	public static void setOwnerMargin(ScCallContext sc) {
 		// can only be sent by SC creator
 		if (!sc.From(sc.Contract().Creator())) {
-			sc.Log("Cancel spoofed request");
-			return;
+			sc.Panic("Cancel spoofed request");
 		}
 
 		long ownerMargin = sc.Params().GetInt(keyOwnerMargin).Value();

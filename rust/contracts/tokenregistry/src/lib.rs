@@ -24,14 +24,12 @@ fn on_load() {
 fn mint_supply(sc: &ScCallContext) {
     let minted = sc.incoming().minted();
     if minted == ScColor::MINT {
-        sc.log("TokenRegistry: No newly minted tokens found");
-        return;
+        sc.panic("TokenRegistry: No newly minted tokens found");
     }
     let state = sc.state();
     let registry = state.get_map(KEY_REGISTRY).get_bytes(&minted);
     if registry.exists() {
-        sc.log("TokenRegistry: Color already exists");
-        return;
+        sc.panic("TokenRegistry: Color already exists");
     }
     let params = sc.params();
     let mut token = TokenInfo {
@@ -44,8 +42,7 @@ fn mint_supply(sc: &ScCallContext) {
         user_defined: params.get_string(KEY_USER_DEFINED).value(),
     };
     if token.supply <= 0 {
-        sc.log("TokenRegistry: Insufficient supply");
-        return;
+        sc.panic("TokenRegistry: Insufficient supply");
     }
     if token.description.is_empty() {
         token.description += "no dscr";

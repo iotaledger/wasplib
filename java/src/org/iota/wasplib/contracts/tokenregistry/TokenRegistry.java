@@ -28,14 +28,12 @@ public class TokenRegistry {
 	public static void mintSupply(ScCallContext sc) {
 		ScColor minted = sc.Incoming().Minted();
 		if (minted.equals(ScColor.MINT)) {
-			sc.Log("TokenRegistry: No newly minted tokens found");
-			return;
+			sc.Panic("TokenRegistry: No newly minted tokens found");
 		}
 		ScMutableMap state = sc.State();
 		ScMutableBytes registry = state.GetMap(keyRegistry).GetBytes(minted);
 		if (registry.Exists()) {
-			sc.Log("TokenRegistry: Color already exists");
-			return;
+			sc.Panic("TokenRegistry: Color already exists");
 		}
 		ScImmutableMap params = sc.Params();
 		TokenInfo token = new TokenInfo();
@@ -49,8 +47,7 @@ public class TokenRegistry {
 			token.userDefined = params.GetString(keyUserDefined).Value();
 		}
 		if (token.supply <= 0) {
-			sc.Log("TokenRegistry: Insufficient supply");
-			return;
+			sc.Panic("TokenRegistry: Insufficient supply");
 		}
 		if (token.description.isEmpty()) {
 			token.description += "no dscr";

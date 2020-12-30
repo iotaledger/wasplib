@@ -76,8 +76,7 @@ public class DonateWithFeedback {
 			withdrawAmount = amount;
 		}
 		if (withdrawAmount == 0) {
-			sc.Log("DonateWithFeedback: nothing to withdraw");
-			return;
+			sc.Panic("DonateWithFeedback: nothing to withdraw");
 		}
 
 		sc.Transfer(scOwner, ScColor.IOTA, withdrawAmount);

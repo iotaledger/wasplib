@@ -20,14 +20,12 @@ func OnLoad() {
 func mintSupply(sc *client.ScCallContext) {
 	minted := sc.Incoming().Minted()
 	if minted.Equals(client.MINT) {
-		sc.Log("TokenRegistry: No newly minted tokens found")
-		return
+		sc.Panic("TokenRegistry: No newly minted tokens found")
 	}
 	state := sc.State()
 	registry := state.GetMap(keyRegistry).GetBytes(minted)
 	if registry.Exists() {
-		sc.Log("TokenRegistry: Color already exists")
-		return
+		sc.Panic("TokenRegistry: Color already exists")
 	}
 	params := sc.Params()
 	token := &TokenInfo{
@@ -40,8 +38,7 @@ func mintSupply(sc *client.ScCallContext) {
 		userDefined: params.GetString(keyUserDefined).Value(),
 	}
 	if token.supply <= 0 {
-		sc.Log("TokenRegistry: Insufficient supply")
-		return
+		sc.Panic("TokenRegistry: Insufficient supply")
 	}
 	if len(token.description) == 0 {
 		token.description += "no dscr"
