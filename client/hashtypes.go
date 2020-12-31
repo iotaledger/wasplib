@@ -109,3 +109,34 @@ func (c *ScColor) KeyId() int32 {
 func (c *ScColor) String() string {
 	return base58Encode(c.color[:])
 }
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScHash struct {
+	hash [32]byte
+}
+
+func NewScHash(bytes []byte) *ScHash {
+	if len(bytes) != 32 {
+		panic("hash should be 32 bytes")
+	}
+	a := &ScHash{}
+	copy(a.hash[:], bytes)
+	return a
+}
+
+func (c *ScHash) Bytes() []byte {
+	return c.hash[:]
+}
+
+func (c *ScHash) Equals(other *ScHash) bool {
+	return c.hash == other.hash
+}
+
+func (c *ScHash) KeyId() int32 {
+	return GetKeyIdFromBytes(c.Bytes())
+}
+
+func (c *ScHash) String() string {
+	return base58Encode(c.hash[:])
+}

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/iotaledger/hive.go/logger"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"io"
 )
@@ -40,19 +41,19 @@ func NewSimpleWasmHost(vm wasmhost.WasmVM) (*SimpleWasmHost, error) {
 
 func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	switch typeId {
-	case wasmhost.OBJTYPE_ADDRESS,
-		wasmhost.OBJTYPE_AGENT,
-		wasmhost.OBJTYPE_BYTES,
-		wasmhost.OBJTYPE_COLOR:
+	case client.TYPE_ADDRESS,
+		client.TYPE_AGENT,
+		client.TYPE_BYTES,
+		client.TYPE_COLOR:
 		fmt.Fprintf(w, "\"%s\"", base58.Encode(value.([]byte)))
-	case wasmhost.OBJTYPE_INT:
+	case client.TYPE_INT:
 		fmt.Fprintf(w, "%d", value.(int64))
-	case wasmhost.OBJTYPE_MAP:
+	case client.TYPE_MAP:
 		host.FindObject(value.(int32)).(*HostMap).Dump(w)
-	case wasmhost.OBJTYPE_STRING:
+	case client.TYPE_STRING:
 		fmt.Fprintf(w, "\"%s\"", value.(string))
 	default:
-		if (typeId & wasmhost.OBJTYPE_ARRAY) == 0 {
+		if (typeId & client.TYPE_ARRAY) == 0 {
 			panic("typeId is not an array")
 		}
 		host.FindObject(value.(int32)).(*HostArray).Dump(w)

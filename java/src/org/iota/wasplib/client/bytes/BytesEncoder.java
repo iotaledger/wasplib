@@ -6,6 +6,7 @@ package org.iota.wasplib.client.bytes;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScHash;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,6 +42,10 @@ public class BytesEncoder {
 
 	public byte[] Data() {
 		return data.toByteArray();
+	}
+
+	public BytesEncoder Hash(ScHash value) {
+		return Bytes(value.toBytes());
 	}
 
 	public BytesEncoder Int(long value) {

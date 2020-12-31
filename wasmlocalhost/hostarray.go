@@ -6,6 +6,7 @@ package wasmlocalhost
 import (
 	"fmt"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 	"io"
 )
@@ -71,7 +72,7 @@ func (a *HostArray) GetInt(keyId int32) int64 {
 		return int64(len(a.items))
 	}
 
-	if !a.valid(keyId, wasmhost.OBJTYPE_INT) {
+	if !a.valid(keyId, client.TYPE_INT) {
 		return 0
 	}
 	return a.items[keyId].(int64)
@@ -89,7 +90,7 @@ func (a *HostArray) GetObjectId(keyId int32, typeId int32) int32 {
 }
 
 func (a *HostArray) GetString(keyId int32) string {
-	if !a.valid(keyId, wasmhost.OBJTYPE_STRING) {
+	if !a.valid(keyId, client.TYPE_STRING) {
 		return ""
 	}
 	return a.items[keyId].(string)
@@ -109,7 +110,7 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 		return
 	}
 	if keyId == wasmhost.KeyLength {
-		if a.typeId == wasmhost.OBJTYPE_MAP {
+		if a.typeId == client.TYPE_MAP {
 			// tell objects to clear themselves
 			for i := len(a.items) - 1; i >= 0; i-- {
 				a.host.SetInt(a.items[i].(int32), keyId, 0)
@@ -119,7 +120,7 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 		a.items = nil
 		return
 	}
-	if !a.valid(keyId, wasmhost.OBJTYPE_INT) {
+	if !a.valid(keyId, client.TYPE_INT) {
 		return
 	}
 	a.items[keyId] = value
@@ -130,7 +131,7 @@ func (a *HostArray) SetString(keyId int32, value string) {
 		a.Error("Array.SetString: Immutable")
 		return
 	}
-	if !a.valid(keyId, wasmhost.OBJTYPE_STRING) {
+	if !a.valid(keyId, client.TYPE_STRING) {
 		return
 	}
 	a.items[keyId] = value
@@ -148,11 +149,11 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 	max := int32(len(a.items))
 	if keyId == max && !a.immutable {
 		switch typeId {
-		case wasmhost.OBJTYPE_BYTES:
+		case client.TYPE_BYTES:
 			a.items = append(a.items, []byte(nil))
-		case wasmhost.OBJTYPE_INT:
+		case client.TYPE_INT:
 			a.items = append(a.items, int64(0))
-		case wasmhost.OBJTYPE_MAP:
+		case client.TYPE_MAP:
 			var o VmObject
 			switch a.keyId {
 			case wasmhost.KeyCalls:
@@ -165,7 +166,7 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 			objId := a.host.TrackObject(o)
 			a.items = append(a.items, objId)
 			o.InitObj(objId, a.id)
-		case wasmhost.OBJTYPE_STRING:
+		case client.TYPE_STRING:
 			a.items = append(a.items, "")
 		default:
 			a.Error("Array.valid: Invalid typeId")

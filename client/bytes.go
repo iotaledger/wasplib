@@ -33,6 +33,10 @@ func (d *BytesDecoder) Color() *ScColor {
 	return NewScColor(d.Bytes())
 }
 
+func (d *BytesDecoder) Hash() *ScHash {
+	return NewScHash(d.Bytes())
+}
+
 func (d *BytesDecoder) Int() int64 {
 	// leb128 decoder
 	val := int64(0)
@@ -93,6 +97,10 @@ func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
 
 func (e *BytesEncoder) Data() []byte {
 	return e.data
+}
+
+func (e *BytesEncoder) Hash(value *ScHash) *BytesEncoder {
+	return e.Bytes(value.Bytes())
 }
 
 func (e *BytesEncoder) Int(value int64) *BytesEncoder {

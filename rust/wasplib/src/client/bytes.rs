@@ -34,6 +34,10 @@ impl BytesDecoder<'_> {
         ScColor::from_bytes(self.bytes())
     }
 
+    pub fn hash(&mut self) -> ScHash {
+        ScHash::from_bytes(self.bytes())
+    }
+
     pub fn int(&mut self) -> i64 {
         // leb128 decoder
         let mut val = 0_i64;
@@ -99,6 +103,11 @@ impl BytesEncoder {
 
     pub fn data(&self) -> Vec<u8> {
         self.data.clone()
+    }
+
+    pub fn hash(&mut self, value: &ScHash) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
     }
 
     pub fn int(&mut self, mut val: i64) -> &BytesEncoder {

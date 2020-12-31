@@ -74,6 +74,30 @@ impl ScContract {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScDeployInfo {
+    deploy: ScMutableMap,
+}
+
+impl ScDeployInfo {
+    pub fn new(name: &str, description: &str) -> ScDeployInfo {
+        let deploys = ROOT.get_map_array(&KEY_DEPLOYS);
+        let deploy = deploys.get_map(deploys.length());
+        deploy.get_string(&KEY_NAME).set_value(name);
+        deploy.get_string(&KEY_DESCRIPTION).set_value(description);
+        ScDeployInfo { deploy: deploy }
+    }
+
+    pub fn deploy(&self, program_hash: &ScHash) {
+        self.deploy.get_hash(&KEY_HASH).set_value(program_hash);
+    }
+
+    pub fn params(&self) -> ScMutableMap {
+        self.deploy.get_map(&KEY_PARAMS)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScLog {
     log: ScMutableMapArray,
 }
@@ -118,11 +142,11 @@ impl ScUtility {
     }
 
     // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-    pub fn hash(&self, value: &[u8]) -> Vec<u8> {
+    pub fn hash(&self, value: &[u8]) -> ScHash {
         //TODO atomic set/get
         let hash = self.utility.get_bytes(&KEY_HASH);
         hash.set_value(value);
-        hash.value()
+        ScHash::from_bytes(&hash.value())
     }
 
     // generates a random value from 0 to max (exclusive max) using a deterministic RNG
@@ -211,6 +235,11 @@ impl ScCallContext {
     // starts a call to a smart contract function
     pub fn call(&self, function: &str) -> ScCallInfo {
         ScCallInfo::new(function)
+    }
+
+    // starts deployment of a smart contract
+    pub fn deploy(&self, name: &str, description: &str) -> ScDeployInfo {
+        ScDeployInfo::new(name, description)
     }
 
     // access the incoming balances for all token colors

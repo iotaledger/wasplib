@@ -11,7 +11,8 @@ public class ScType {
 	public static int TYPE_AGENT = 2;
 	public static int TYPE_BYTES = 3;
 	public static int TYPE_COLOR = 4;
-	public static int TYPE_INT = 5;
-	public static int TYPE_MAP = 6;
-	public static int TYPE_STRING = 7;
+	public static int TYPE_HASH = 5;
+	public static int TYPE_INT = 6;
+	public static int TYPE_MAP = 7;
+	public static int TYPE_STRING = 8;
 }

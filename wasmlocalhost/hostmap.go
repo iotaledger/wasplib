@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58/base58"
 	"io"
 	"sort"
@@ -94,7 +95,7 @@ func (m *HostMap) GetInt(keyId int32) int64 {
 		return int64(len(m.fields))
 	}
 
-	if !m.valid(keyId, wasmhost.OBJTYPE_INT) {
+	if !m.valid(keyId, client.TYPE_INT) {
 		return 0
 	}
 
@@ -116,20 +117,20 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 
 	var o VmObject
 	switch typeId {
-	case wasmhost.OBJTYPE_INT | wasmhost.OBJTYPE_ARRAY:
-		o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_INT)
-	case wasmhost.OBJTYPE_MAP:
+	case client.TYPE_INT | client.TYPE_ARRAY:
+		o = NewHostArray(m.host, keyId, client.TYPE_INT)
+	case client.TYPE_MAP:
 		o = NewHostMap(m.host, keyId)
-	case wasmhost.OBJTYPE_MAP | wasmhost.OBJTYPE_ARRAY:
-		o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_MAP)
+	case client.TYPE_MAP | client.TYPE_ARRAY:
+		o = NewHostArray(m.host, keyId, client.TYPE_MAP)
 	default:
 		if keyId == wasmhost.KeyExports {
 			o = NewHostExports(m.host, keyId)
 			break
 		}
-		if (typeId & wasmhost.OBJTYPE_ARRAY) != 0 {
+		if (typeId & client.TYPE_ARRAY) != 0 {
 			// all bytes types are treated as string
-			o = NewHostArray(m.host, keyId, wasmhost.OBJTYPE_STRING)
+			o = NewHostArray(m.host, keyId, client.TYPE_STRING)
 			break
 		}
 		m.Error("Map.GetObjectId: Invalid type id")
@@ -142,7 +143,7 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 }
 
 func (m *HostMap) GetString(keyId int32) string {
-	if !m.valid(keyId, wasmhost.OBJTYPE_STRING) {
+	if !m.valid(keyId, client.TYPE_STRING) {
 		return ""
 	}
 	value, ok := m.fields[keyId]
@@ -171,7 +172,7 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 	}
 	if keyId == wasmhost.KeyLength {
 		for fieldId, typeId := range m.types {
-			if typeId == wasmhost.OBJTYPE_MAP || (typeId&wasmhost.OBJTYPE_ARRAY) != 0 {
+			if typeId == client.TYPE_MAP || (typeId&client.TYPE_ARRAY) != 0 {
 				field, ok := m.fields[fieldId]
 				if ok {
 					// tell object to clear itself
@@ -183,7 +184,7 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 		m.fields = make(map[int32]interface{})
 		return
 	}
-	if !m.valid(keyId, wasmhost.OBJTYPE_INT) {
+	if !m.valid(keyId, client.TYPE_INT) {
 		return
 	}
 	m.fields[keyId] = value
@@ -194,7 +195,7 @@ func (m *HostMap) SetString(keyId int32, value string) {
 		m.Error("Map.SetString: Immutable")
 		return
 	}
-	if !m.valid(keyId, wasmhost.OBJTYPE_STRING) {
+	if !m.valid(keyId, client.TYPE_STRING) {
 		return
 	}
 	m.fields[keyId] = value
@@ -224,11 +225,11 @@ func (m *HostMap) valid(keyId int32, typeId int32) bool {
 func (m *HostMap) CopyDataTo(other wasmhost.HostObject) {
 	for k, v := range m.fields {
 		switch m.types[k] {
-		case wasmhost.OBJTYPE_BYTES:
+		case client.TYPE_BYTES:
 			other.SetBytes(k, v.([]byte))
-		case wasmhost.OBJTYPE_INT:
+		case client.TYPE_INT:
 			other.SetInt(k, v.(int64))
-		case wasmhost.OBJTYPE_STRING:
+		case client.TYPE_STRING:
 			other.SetString(k, v.(string))
 		default:
 			//TODO what about recursion?

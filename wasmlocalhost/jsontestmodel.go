@@ -69,17 +69,17 @@ func NewJsonTests(pathName string) (*JsonTests, error) {
 }
 
 func (t *JsonTests) ClearData() {
-	t.ClearObjectData(wasmhost.KeyContract, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyState, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyLogs, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyResults, wasmhost.OBJTYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyCalls, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
-	t.ClearObjectData(wasmhost.KeyPosts, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
-	t.ClearObjectData(wasmhost.KeyViews, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
-	t.ClearObjectData(wasmhost.KeyTransfers, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyContract, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyBalances, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyIncoming, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyParams, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyState, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyLogs, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyResults, client.TYPE_MAP)
+	t.ClearObjectData(wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyPosts, client.TYPE_MAP|client.TYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyViews, client.TYPE_MAP|client.TYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyTransfers, client.TYPE_MAP|client.TYPE_ARRAY)
 }
 
 func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
@@ -88,7 +88,7 @@ func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
 }
 
 func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
-	arrayObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	arrayObject := t.FindSubObject(nil, keyId, client.TYPE_MAP|client.TYPE_ARRAY)
 	if arrayObject.GetInt(wasmhost.KeyLength) != int64(len(array)) {
 		key := string(t.host.GetKeyFromId(keyId))
 		fmt.Printf("FAIL: array %s length\n", key)
@@ -116,7 +116,7 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 }
 
 func (t *JsonTests) CompareMapData(keyId int32, values map[string]interface{}) bool {
-	mapObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP)
+	mapObject := t.FindSubObject(nil, keyId, client.TYPE_MAP)
 	return t.CompareSubMapData(mapObject, values)
 }
 
@@ -131,20 +131,20 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 	elem := array[0]
 	typeId := mapObject.GetTypeId(keyId)
 	arrayObject := t.FindSubObject(mapObject, keyId, typeId)
-	if (typeId & wasmhost.OBJTYPE_ARRAY) == 0 {
+	if (typeId & client.TYPE_ARRAY) == 0 {
 		return arrayObject.Fail("not an array")
 	}
 	if int(arrayObject.GetInt(wasmhost.KeyLength)) != len(array) {
 		return arrayObject.Fail("length mismatch")
 	}
-	typeId &= ^wasmhost.OBJTYPE_ARRAY
+	typeId &= ^client.TYPE_ARRAY
 	switch ty := elem.(type) {
 	case string:
-		if typeId != wasmhost.OBJTYPE_ADDRESS &&
-			typeId != wasmhost.OBJTYPE_AGENT &&
-			typeId != wasmhost.OBJTYPE_BYTES &&
-			typeId != wasmhost.OBJTYPE_COLOR &&
-			typeId != wasmhost.OBJTYPE_STRING {
+		if typeId != client.TYPE_ADDRESS &&
+			typeId != client.TYPE_AGENT &&
+			typeId != client.TYPE_BYTES &&
+			typeId != client.TYPE_COLOR &&
+			typeId != client.TYPE_STRING {
 			return arrayObject.Fail("not a bytes or string array")
 		}
 		for i, elem := range array {
@@ -156,7 +156,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case float64:
-		if typeId != wasmhost.OBJTYPE_INT {
+		if typeId != client.TYPE_INT {
 			return arrayObject.Fail("not an int array")
 		}
 		for i, elem := range array {
@@ -168,7 +168,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		}
 		return true
 	case map[string]interface{}:
-		if typeId == wasmhost.OBJTYPE_MAP {
+		if typeId == client.TYPE_MAP {
 			for i := range array {
 				mapObject := t.FindIndexedMap(arrayObject, i)
 				if !t.CompareSubMapData(mapObject, array[i].(map[string]interface{})) {
@@ -178,7 +178,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 			return true
 		}
 
-		if typeId != wasmhost.OBJTYPE_BYTES {
+		if typeId != client.TYPE_BYTES {
 			return arrayObject.Fail("not a bytes array")
 		}
 		for i, elem := range array {
@@ -221,12 +221,12 @@ func (t *JsonTests) CompareSubMapData(mapObject VmObject, values map[string]inte
 			}
 		case map[string]interface{}:
 			typeId := mapObject.GetTypeId(keyId)
-			if typeId == wasmhost.OBJTYPE_MAP {
-				subMapObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_MAP)
+			if typeId == client.TYPE_MAP {
+				subMapObject := t.FindSubObject(mapObject, keyId, client.TYPE_MAP)
 				return t.CompareSubMapData(subMapObject, field.(map[string]interface{}))
 			}
 
-			if typeId != wasmhost.OBJTYPE_STRING {
+			if typeId != client.TYPE_STRING {
 				return mapObject.Fail("%s: not a string field", key)
 			}
 
@@ -268,7 +268,7 @@ func (t *JsonTests) Dump(test *JsonTest) {
 }
 
 func (t *JsonTests) FindIndexedMap(arrayObject VmObject, index int) VmObject {
-	return t.FindObject(arrayObject.GetObjectId(int32(index), wasmhost.OBJTYPE_MAP))
+	return t.FindObject(arrayObject.GetObjectId(int32(index), client.TYPE_MAP))
 }
 
 func (t *JsonTests) FindObject(objId int32) VmObject {
@@ -309,7 +309,7 @@ func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
 }
 
 func (t *JsonTests) LoadMapData(keyId int32, values map[string]interface{}) {
-	mapObject := t.FindSubObject(nil, keyId, wasmhost.OBJTYPE_MAP)
+	mapObject := t.FindSubObject(nil, keyId, client.TYPE_MAP)
 	t.LoadSubMapData(mapObject, values)
 }
 
@@ -321,10 +321,10 @@ func (t *JsonTests) LoadSubArrayData(arrayObject VmObject, values []interface{})
 		//case float64:
 		//	mapObject.SetInt(t.GetKeyId(key), int64(field.(float64)))
 		//case map[string]interface{}:
-		//	subMapObject := t.FindSubObject(mapObject, key, wasmhost.OBJTYPE_MAP)
+		//	subMapObject := t.FindSubObject(mapObject, key, client.TYPE_MAP)
 		//	t.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		//case []interface{}:
-		//	subMapObject := t.FindSubObject(mapObject, key, wasmhost.OBJTYPE_STRING_ARRAY)
+		//	subMapObject := t.FindSubObject(mapObject, key, client.TYPE_STRING_ARRAY)
 		//	t.LoadSubArrayData(subMapObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", ty))
@@ -342,10 +342,10 @@ func (t *JsonTests) LoadSubMapData(mapObject VmObject, values map[string]interfa
 		case float64:
 			mapObject.SetInt(keyId, int64(field.(float64)))
 		case map[string]interface{}:
-			subMapObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_MAP)
+			subMapObject := t.FindSubObject(mapObject, keyId, client.TYPE_MAP)
 			t.LoadSubMapData(subMapObject, field.(map[string]interface{}))
 		case []interface{}:
-			subArrayObject := t.FindSubObject(mapObject, keyId, wasmhost.OBJTYPE_STRING|wasmhost.OBJTYPE_ARRAY)
+			subArrayObject := t.FindSubObject(mapObject, keyId, client.TYPE_STRING|client.TYPE_ARRAY)
 			t.LoadSubArrayData(subArrayObject, field.([]interface{}))
 		default:
 			panic(fmt.Sprintf("Invalid type: %T", ty))
@@ -454,8 +454,8 @@ func processHash(value string, size int) string {
 }
 
 func (t *JsonTests) runRequest(function string) (success bool) {
-	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP).(*HostMap)
-	balances := t.FindSubObject(nil, wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP).(*HostMap)
+	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, client.TYPE_MAP).(*HostMap)
+	balances := t.FindSubObject(nil, wasmhost.KeyBalances, client.TYPE_MAP).(*HostMap)
 	mintKeyId := t.GetKeyId("#mint")
 	for keyId := range incoming.fields {
 		if keyId != mintKeyId {
@@ -503,8 +503,8 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	if !t.runRequest(test.Function) {
 		return false
 	}
-	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, wasmhost.OBJTYPE_MAP)
-	params := t.FindSubObject(nil, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+	incoming := t.FindSubObject(nil, wasmhost.KeyIncoming, client.TYPE_MAP)
+	params := t.FindSubObject(nil, wasmhost.KeyParams, client.TYPE_MAP)
 	for _, jsonRequest := range test.AdditionalRequests {
 		incoming.SetInt(wasmhost.KeyLength, 0)
 		params.SetInt(wasmhost.KeyLength, 0)
@@ -515,8 +515,8 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	}
 
 	root := t.FindObject(1)
-	scId := t.FindSubObject(nil, wasmhost.KeyContract, wasmhost.OBJTYPE_MAP).GetString(wasmhost.KeyId)
-	posts := t.FindSubObject(nil, wasmhost.KeyPosts, wasmhost.OBJTYPE_MAP|wasmhost.OBJTYPE_ARRAY)
+	scId := t.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP).GetString(wasmhost.KeyId)
+	posts := t.FindSubObject(nil, wasmhost.KeyPosts, client.TYPE_MAP|client.TYPE_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)
 	for i := 0; i < expectedCalls && i < int(posts.GetInt(wasmhost.KeyLength)); i++ {
@@ -540,7 +540,7 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 		//TODO increment timestamp and pass post.transfers as incoming
 		//TODO how do we pass incoming when we call instead of post?
 		params.SetInt(wasmhost.KeyLength, 0)
-		postParams := t.FindSubObject(post, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+		postParams := t.FindSubObject(post, wasmhost.KeyParams, client.TYPE_MAP)
 		//TODO how to iterate
 		postParams.(*HostMap).CopyDataTo(params)
 		function := post.GetString(wasmhost.KeyFunction)

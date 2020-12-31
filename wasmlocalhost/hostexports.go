@@ -5,7 +5,7 @@ package wasmlocalhost
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 )
 
 type HostExports struct {
@@ -13,7 +13,7 @@ type HostExports struct {
 }
 
 func NewHostExports(host *SimpleWasmHost, keyId int32) *HostExports {
-	return &HostExports{HostArray: *NewHostArray(host, keyId, wasmhost.OBJTYPE_STRING)}
+	return &HostExports{HostArray: *NewHostArray(host, keyId, client.TYPE_STRING)}
 }
 
 func (a *HostExports) SetString(keyId int32, value string) {

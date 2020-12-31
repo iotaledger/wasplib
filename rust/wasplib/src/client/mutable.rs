@@ -247,6 +247,64 @@ impl ScMutableColorArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScMutableHash {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScMutableHash {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableHash {
+        ScMutableHash { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: &ScHash) {
+        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> ScHash {
+        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScMutableHashArray {
+    obj_id: i32
+}
+
+impl ScMutableHashArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableHashArray {
+        ScMutableHashArray { obj_id }
+    }
+
+    pub fn clear(&self) {
+        set_clear(self.obj_id);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_hash(&self, index: i32) -> ScMutableHash {
+        ScMutableHash { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn immutable(&self) -> ScImmutableHashArray {
+        ScImmutableHashArray::new(self.obj_id)
+    }
+
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScMutableInt {
     obj_id: i32,
     key_id: i32,
@@ -352,6 +410,15 @@ impl ScMutableMap {
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_COLOR | TYPE_ARRAY);
         ScMutableColorArray { obj_id: arr_id }
+    }
+
+    pub fn get_hash<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHash {
+        ScMutableHash { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
+    pub fn get_hash_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHashArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_HASH | TYPE_ARRAY);
+        ScMutableHashArray { obj_id: arr_id }
     }
 
     pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt {

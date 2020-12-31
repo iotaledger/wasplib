@@ -6,6 +6,7 @@ package wasmlocalhost
 import (
 	"fmt"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 	"github.com/mr-tron/base58"
 )
 
@@ -26,14 +27,14 @@ func (m *HostCall) call() {
 
 	root := host.FindObject(1)
 	savedCaller := root.GetString(wasmhost.KeyCaller)
-	scId := host.FindSubObject(nil, wasmhost.KeyContract, wasmhost.OBJTYPE_MAP).GetString(wasmhost.KeyId)
+	scId := host.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP).GetString(wasmhost.KeyId)
 	root.SetString(wasmhost.KeyCaller, scId)
 
-	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, client.TYPE_MAP)
 	savedParams := NewHostMap(m.host, 0)
 	requestParams.(*HostMap).CopyDataTo(savedParams)
 	requestParams.SetInt(wasmhost.KeyLength, 0)
-	params := host.FindSubObject(m, wasmhost.KeyParams, wasmhost.OBJTYPE_MAP)
+	params := host.FindSubObject(m, wasmhost.KeyParams, client.TYPE_MAP)
 	params.(*HostMap).CopyDataTo(requestParams)
 
 	fmt.Printf("    Call function: %v\n", m.function)

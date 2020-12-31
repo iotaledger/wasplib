@@ -97,3 +97,30 @@ impl MapKey for ScColor {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Eq, PartialEq)]
+pub struct ScHash {
+    hash: [u8; 32],
+}
+
+impl ScHash {
+    pub fn from_bytes(bytes: &[u8]) -> ScHash {
+        ScHash { hash: bytes.try_into().expect("hash should be 32 bytes") }
+    }
+
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.hash
+    }
+
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.hash)
+    }
+}
+
+impl MapKey for ScHash {
+    fn get_id(&self) -> i32 {
+        get_key_id_from_bytes(self.to_bytes())
+    }
+}

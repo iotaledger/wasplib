@@ -6,6 +6,7 @@ package wasmlocalhost
 import (
 	"bytes"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/client"
 )
 
 type HostTransfer struct {
@@ -31,14 +32,14 @@ func (m *HostTransfer) SetInt(keyId int32, value int64) {
 		return
 	}
 
-	balances := m.host.FindSubObject(nil, wasmhost.KeyBalances, wasmhost.OBJTYPE_MAP)
+	balances := m.host.FindSubObject(nil, wasmhost.KeyBalances, client.TYPE_MAP)
 	colorAmount := balances.GetInt(keyId)
 	if colorAmount < value {
 		m.Error("Insufficient funds")
 		return
 	}
 	// check if compacting, in which case no balance change happens
-	contract := m.host.FindSubObject(nil, wasmhost.KeyContract, wasmhost.OBJTYPE_MAP)
+	contract := m.host.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP)
 	scId := contract.GetBytes(wasmhost.KeyId)
 	if !bytes.Equal(m.agent, scId) {
 		balances.SetInt(keyId, colorAmount-value)

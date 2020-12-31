@@ -50,6 +50,15 @@ public class ScImmutableMap {
 		return new ScImmutableColorArray(arrId);
 	}
 
+	public ScImmutableHash GetHash(MapKey key) {
+		return new ScImmutableHash(objId, key.GetId());
+	}
+
+	public ScImmutableHashArray GetHashArray(MapKey key) {
+		int arrId = Host.GetObjectId(objId, key.GetId(), ScType.TYPE_HASH | ScType.TYPE_ARRAY);
+		return new ScImmutableHashArray(arrId);
+	}
+
 	public ScImmutableInt GetInt(MapKey key) {
 		return new ScImmutableInt(objId, key.GetId());
 	}

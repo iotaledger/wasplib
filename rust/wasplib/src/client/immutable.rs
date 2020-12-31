@@ -196,6 +196,52 @@ impl ScImmutableColorArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScImmutableHash {
+    obj_id: i32,
+    key_id: i32,
+}
+
+impl ScImmutableHash {
+    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableHash {
+        ScImmutableHash { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> ScHash {
+        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableHashArray {
+    obj_id: i32
+}
+
+impl ScImmutableHashArray {
+    pub(crate) fn new(obj_id: i32) -> ScImmutableHashArray {
+        ScImmutableHashArray { obj_id }
+    }
+
+    // index 0..length(), exclusive
+    pub fn get_hash(&self, index: i32) -> ScImmutableHash {
+        ScImmutableHash { obj_id: self.obj_id, key_id: index }
+    }
+
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScImmutableInt {
     obj_id: i32,
     key_id: i32,
@@ -285,6 +331,15 @@ impl ScImmutableMap {
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_COLOR | TYPE_ARRAY);
         ScImmutableColorArray { obj_id: arr_id }
+    }
+
+    pub fn get_hash<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableHash {
+        ScImmutableHash { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
+    pub fn get_hash_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableHashArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_HASH | TYPE_ARRAY);
+        ScImmutableHashArray { obj_id: arr_id }
     }
 
     pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt {

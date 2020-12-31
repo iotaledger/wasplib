@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.hashtypes.ScHash;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
 import org.iota.wasplib.client.mutable.ScMutableMap;
@@ -33,10 +34,10 @@ public class ScUtility {
 		return decode.Value();
 	}
 
-	public String Hash(String value) {
-		ScMutableString hash = utility.GetString(Key.Hash);
+	public ScHash Hash(byte[] value) {
+		ScMutableBytes hash = utility.GetBytes(Key.Hash);
 		hash.SetValue(value);
-		return hash.Value();
+		return new ScHash(hash.Value());
 	}
 
 	public long Random(long max) {

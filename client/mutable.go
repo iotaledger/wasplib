@@ -189,6 +189,51 @@ func (o ScMutableColorArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScMutableHash struct {
+	objId int32
+	keyId int32
+}
+
+func (o ScMutableHash) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableHash) SetValue(value *ScHash) {
+	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableHash) String() string {
+	return o.Value().String()
+}
+
+func (o ScMutableHash) Value() *ScHash {
+	return NewScHash(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableHashArray struct {
+	objId int32
+}
+
+func (o ScMutableHashArray) Clear() {
+	SetClear(o.objId)
+}
+
+func (o ScMutableHashArray) GetHash(index int32) ScMutableHash {
+	return ScMutableHash{objId: o.objId, keyId: index}
+}
+
+func (o ScMutableHashArray) Immutable() ScImmutableHashArray {
+	return ScImmutableHashArray{objId: o.objId}
+}
+
+func (o ScMutableHashArray) Length() int32 {
+	return GetLength(o.objId)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScMutableInt struct {
 	objId int32
 	keyId int32
@@ -276,6 +321,15 @@ func (o ScMutableMap) GetColor(key MapKey) ScMutableColor {
 func (o ScMutableMap) GetColorArray(key MapKey) ScMutableColorArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_COLOR|TYPE_ARRAY)
 	return ScMutableColorArray{objId: arrId}
+}
+
+func (o ScMutableMap) GetHash(key MapKey) ScMutableHash {
+	return ScMutableHash{objId: o.objId, keyId: key.KeyId()}
+}
+
+func (o ScMutableMap) GetHashArray(key MapKey) ScMutableHashArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_HASH|TYPE_ARRAY)
+	return ScMutableHashArray{objId: arrId}
 }
 
 func (o ScMutableMap) GetInt(key MapKey) ScMutableInt {

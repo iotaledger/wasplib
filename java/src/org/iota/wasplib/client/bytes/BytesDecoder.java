@@ -6,6 +6,7 @@ package org.iota.wasplib.client.bytes;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.hashtypes.ScHash;
 import org.iota.wasplib.client.host.Host;
 
 import java.nio.charset.StandardCharsets;
@@ -38,6 +39,10 @@ public class BytesDecoder {
 
 	public ScColor Color() {
 		return new ScColor(Bytes());
+	}
+
+	public ScHash Hash() {
+		return new ScHash(Bytes());
 	}
 
 	public long Int() {

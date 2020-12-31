@@ -10,9 +10,10 @@ pub const TYPE_ADDRESS: i32 = 1;
 pub const TYPE_AGENT: i32 = 2;
 pub const TYPE_BYTES: i32 = 3;
 pub const TYPE_COLOR: i32 = 4;
-pub const TYPE_INT: i32 = 5;
-pub const TYPE_MAP: i32 = 6;
-pub const TYPE_STRING: i32 = 7;
+pub const TYPE_HASH: i32 = 5;
+pub const TYPE_INT: i32 = 6;
+pub const TYPE_MAP: i32 = 7;
+pub const TYPE_STRING: i32 = 8;
 
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.

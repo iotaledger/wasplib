@@ -16,7 +16,8 @@ public class Key implements MapKey {
 	public static final int KEY_CREATOR     = KEY_CONTRACT    -1;
 	public static final int KEY_DATA        = KEY_CREATOR     -1;
 	public static final int KEY_DELAY       = KEY_DATA        -1;
-	public static final int KEY_DESCRIPTION = KEY_DELAY       -1;
+	public static final int KEY_DEPLOYS     = KEY_DELAY       -1;
+	public static final int KEY_DESCRIPTION = KEY_DEPLOYS     -1;
 	public static final int KEY_EVENT       = KEY_DESCRIPTION -1;
 	public static final int KEY_EXPORTS     = KEY_EVENT       -1;
 	public static final int KEY_FUNCTION    = KEY_EXPORTS     -1;
@@ -52,6 +53,7 @@ public class Key implements MapKey {
 	public static final Key Creator     = new Key(KEY_CREATOR);
 	public static final Key Data        = new Key(KEY_DATA);
 	public static final Key Delay       = new Key(KEY_DELAY);
+	public static final Key Deploys     = new Key(KEY_DEPLOYS);
 	public static final Key Description = new Key(KEY_DESCRIPTION);
 	public static final Key Event       = new Key(KEY_EVENT);
 	public static final Key Exports     = new Key(KEY_EXPORTS);

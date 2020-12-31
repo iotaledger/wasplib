@@ -66,6 +66,28 @@ func (ctx ScContract) Name() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScDeployInfo struct {
+	deploy ScMutableMap
+}
+
+func NewScDeployInfo(name string, description string) ScDeployInfo {
+	deploys := root.GetMapArray(KeyDeploys)
+	deploy := deploys.GetMap(deploys.Length())
+	deploy.GetString(KeyName).SetValue(name)
+	deploy.GetString(KeyDescription).SetValue(description)
+	return ScDeployInfo{deploy}
+}
+
+func (ctx ScDeployInfo) Deploy(programHash *ScHash) {
+	ctx.deploy.GetHash(KeyHash).SetValue(programHash)
+}
+
+func (ctx ScDeployInfo) Params() ScMutableMap {
+	return ctx.deploy.GetMap(KeyParams)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScLog struct {
 	log ScMutableMapArray
 }
@@ -105,10 +127,10 @@ func (ctx ScUtility) Base58Encode(value []byte) string {
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-func (ctx ScUtility) Hash(value []byte) []byte {
+func (ctx ScUtility) Hash(value []byte) *ScHash {
 	hash := ctx.utility.GetBytes(KeyHash)
 	hash.SetValue(value)
-	return hash.Value()
+	return NewScHash(hash.Value())
 }
 
 // generates a random value from 0 to max (exclusive max) using a deterministic RNG
@@ -203,6 +225,11 @@ type ScCallContext struct {
 // starts a call to a smart contract function
 func (ctx ScCallContext) Call(function string) ScCallInfo {
 	return ScCallInfo{NewScBaseInfo(KeyCalls, function)}
+}
+
+// starts a call to a smart contract function
+func (ctx ScCallContext) Deploy(name string, description string) ScDeployInfo {
+	return NewScDeployInfo(name, description)
 }
 
 // access the incoming balances for all token colors

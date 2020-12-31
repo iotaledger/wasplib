@@ -22,6 +22,10 @@ public class ScCallContext extends ScBaseContext {
 		return new ScCallInfo(function);
 	}
 
+	public ScDeployInfo Deploy(String name, String description) {
+		return new ScDeployInfo(name, description);
+	}
+
 	public ScBalances Incoming() {
 		return new ScBalances(root.GetMap(Key.Incoming).Immutable());
 	}
