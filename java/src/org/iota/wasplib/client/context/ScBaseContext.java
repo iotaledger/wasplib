@@ -3,11 +3,11 @@
 
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.builders.ScViewBuilder;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.request.ScViewInfo;
 
 public class ScBaseContext {
 	protected static final ScMutableMap root = new ScMutableMap(1);
@@ -59,7 +59,7 @@ public class ScBaseContext {
 		return new ScUtility(root.GetMap(Key.Utility));
 	}
 
-	public ScViewInfo View(String function) {
-		return new ScViewInfo(function);
+	public ScViewBuilder View(String function) {
+		return new ScViewBuilder(function);
 	}
 }

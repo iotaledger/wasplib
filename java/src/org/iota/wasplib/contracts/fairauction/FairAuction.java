@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.contracts.fairauction;
 
+import org.iota.wasplib.client.builders.ScPostBuilder;
 import org.iota.wasplib.client.context.ScBalances;
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.exports.ScExports;
@@ -15,7 +16,6 @@ import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableAgentArray;
 import org.iota.wasplib.client.mutable.ScMutableBytes;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.request.ScPostInfo;
 
 public class FairAuction {
 	private static final Key keyAuctions = new Key("auctions");
@@ -135,7 +135,7 @@ public class FairAuction {
 		}
 		currentInfo.SetValue(AuctionInfo.encode(auction));
 
-		ScPostInfo finalizeRequest = sc.Post("finalize_auction");
+		ScPostBuilder finalizeRequest = sc.Post("finalize_auction");
 		ScMutableMap finalizeParams = finalizeRequest.Params();
 		finalizeParams.GetColor(keyColor).SetValue(auction.color);
 		finalizeRequest.Post(duration * 60);

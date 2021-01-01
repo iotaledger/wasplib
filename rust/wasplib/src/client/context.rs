@@ -3,11 +3,11 @@
 
 // encapsulates standard host entities into a simple interface
 
+use super::builders::*;
 use super::hashtypes::*;
 use super::immutable::*;
 use super::keys::*;
 use super::mutable::*;
-use super::request::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -69,30 +69,6 @@ impl ScContract {
     // retrieve this contract's name
     pub fn name(&self) -> String {
         self.contract.get_string(&KEY_NAME).value()
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-pub struct ScDeployInfo {
-    deploy: ScMutableMap,
-}
-
-impl ScDeployInfo {
-    pub fn new(name: &str, description: &str) -> ScDeployInfo {
-        let deploys = ROOT.get_map_array(&KEY_DEPLOYS);
-        let deploy = deploys.get_map(deploys.length());
-        deploy.get_string(&KEY_NAME).set_value(name);
-        deploy.get_string(&KEY_DESCRIPTION).set_value(description);
-        ScDeployInfo { deploy: deploy }
-    }
-
-    pub fn deploy(&self, program_hash: &ScHash) {
-        self.deploy.get_hash(&KEY_HASH).set_value(program_hash);
-    }
-
-    pub fn params(&self) -> ScMutableMap {
-        self.deploy.get_map(&KEY_PARAMS)
     }
 }
 
@@ -219,8 +195,8 @@ pub trait ScBaseContext {
     }
 
     // starts a call to a smart contract view function.
-    fn view(&self, function: &str) -> ScViewInfo {
-        ScViewInfo::new(function)
+    fn view(&self, function: &str) -> ScViewBuilder {
+        ScViewBuilder::new(function)
     }
 }
 
@@ -233,13 +209,13 @@ impl ScBaseContext for ScCallContext {}
 
 impl ScCallContext {
     // starts a call to a smart contract function
-    pub fn call(&self, function: &str) -> ScCallInfo {
-        ScCallInfo::new(function)
+    pub fn call(&self, function: &str) -> ScCallBuilder {
+        ScCallBuilder::new(function)
     }
 
     // starts deployment of a smart contract
-    pub fn deploy(&self, name: &str, description: &str) -> ScDeployInfo {
-        ScDeployInfo::new(name, description)
+    pub fn deploy(&self, name: &str, description: &str) -> ScDeployBuilder {
+        ScDeployBuilder::new(name, description)
     }
 
     // access the incoming balances for all token colors
@@ -248,8 +224,8 @@ impl ScCallContext {
     }
 
     // starts a (delayed) post to a smart contract function.
-    pub fn post(&self, function: &str) -> ScPostInfo {
-        ScPostInfo::new(function)
+    pub fn post(&self, function: &str) -> ScPostBuilder {
+        ScPostBuilder::new(function)
     }
 
     // signals an event on the chain that entities can register for

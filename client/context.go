@@ -66,28 +66,6 @@ func (ctx ScContract) Name() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScDeployInfo struct {
-	deploy ScMutableMap
-}
-
-func NewScDeployInfo(name string, description string) ScDeployInfo {
-	deploys := root.GetMapArray(KeyDeploys)
-	deploy := deploys.GetMap(deploys.Length())
-	deploy.GetString(KeyName).SetValue(name)
-	deploy.GetString(KeyDescription).SetValue(description)
-	return ScDeployInfo{deploy}
-}
-
-func (ctx ScDeployInfo) Deploy(programHash *ScHash) {
-	ctx.deploy.GetHash(KeyHash).SetValue(programHash)
-}
-
-func (ctx ScDeployInfo) Params() ScMutableMap {
-	return ctx.deploy.GetMap(KeyParams)
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScLog struct {
 	log ScMutableMapArray
 }
@@ -211,8 +189,8 @@ func (ctx ScBaseContext) Utility() ScUtility {
 }
 
 // starts a call to a smart contract view function.
-func (ctx ScBaseContext) View(function string) ScViewInfo {
-	return ScViewInfo{NewScBaseInfo(KeyViews, function)}
+func (ctx ScBaseContext) View(function string) ScViewBuilder {
+	return ScViewBuilder{newScRequestBuilder(KeyViews, function)}
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -223,13 +201,13 @@ type ScCallContext struct {
 }
 
 // starts a call to a smart contract function
-func (ctx ScCallContext) Call(function string) ScCallInfo {
-	return ScCallInfo{NewScBaseInfo(KeyCalls, function)}
+func (ctx ScCallContext) Call(function string) ScCallBuilder {
+	return ScCallBuilder{newScRequestBuilder(KeyCalls, function)}
 }
 
-// starts a call to a smart contract function
-func (ctx ScCallContext) Deploy(name string, description string) ScDeployInfo {
-	return NewScDeployInfo(name, description)
+// starts deployment of a smart contract
+func (ctx ScCallContext) Deploy(name string, description string) ScDeployBuilder {
+	return NewScDeployBuilder(name, description)
 }
 
 // access the incoming balances for all token colors
@@ -238,8 +216,8 @@ func (ctx ScCallContext) Incoming() ScBalances {
 }
 
 // starts a (delayed) post to a smart contract function.
-func (ctx ScCallContext) Post(function string) ScPostInfo {
-	return ScPostInfo{NewScBaseInfo(KeyPosts, function)}
+func (ctx ScCallContext) Post(function string) ScPostBuilder {
+	return ScPostBuilder{newScRequestBuilder(KeyPosts, function)}
 }
 
 // signals an event on the chain that entities can register for
