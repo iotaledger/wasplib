@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -36,6 +37,48 @@ func TestExample3(t *testing.T) {
 	glb := solo.New(t, false, false)
 	chain := glb.NewChain(nil, "ex3")
 
+	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
+	require.NoError(t, err)
+
+	req := solo.NewCall("hello_new_world_1", "hello")
+	_, err = chain.PostRequest(req, nil)
+	require.NoError(t, err)
+
+	// call the contract to extract the value of the 'counter'. Must be equal 1
+	res, err := chain.CallView("hello_new_world_1", "getCounter")
+	require.NoError(t, err)
+	counter, exists, err := codec.DecodeInt64(res.MustGet("counter"))
+	require.NoError(t, err)
+	require.True(t, exists)
+	require.EqualValues(t, 1, counter)
+}
+
+func TestExample4(t *testing.T) {
+	glb := solo.New(t, false, false)
+	chain := glb.NewChain(nil, "ex4")
+
+	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
+	require.NoError(t, err)
+
+	// call to panic on purpose
+	req := solo.NewCall("hello_new_world_1", "hello",
+		"panic", 1)
+	_, err = chain.PostRequest(req, nil)
+	require.Error(t, err) // expect error
+
+	// call the contract to extract the value of the 'counter'. Must be equal 0
+	res, err := chain.CallView("hello_new_world_1", "getCounter")
+	require.NoError(t, err)
+	counter, exists, err := codec.DecodeInt64(res.MustGet("counter"))
+	require.NoError(t, err)
+	require.True(t, exists)
+	require.EqualValues(t, 0, counter)
+}
+
+func TestExample5(t *testing.T) {
+	glb := solo.New(t, false, false)
+	chain := glb.NewChain(nil, "ex5")
+
 	userWallet := glb.NewSignatureSchemeWithFunds()
 	userAddress := userWallet.Address()
 	t.Logf("Address of the userWallet is: %s", userAddress)
@@ -61,4 +104,65 @@ func TestExample3(t *testing.T) {
 
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0) // empty
 	glb.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
+}
+
+func TestExample6(t *testing.T) {
+	glb := solo.New(t, false, false)
+	chain := glb.NewChain(nil, "ex6")
+
+	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
+	require.NoError(t, err)
+
+	userWallet := glb.NewSignatureSchemeWithFunds()
+
+	contractName := "hello_new_world_1"
+	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(contractName))
+	contractAgentID := coretypes.NewAgentIDFromContractID(contractID)
+
+	req := solo.NewCall(contractName, "hello").WithTransfer(map[balance.Color]int64{
+		balance.ColorIOTA: 7,
+	},
+	)
+	_, err = chain.PostRequest(req, userWallet)
+	require.NoError(t, err)
+
+	// call the contract to extract the value of the 'counter'. Must be equal 1
+	res, err := chain.CallView("hello_new_world_1", "getCounter")
+	require.NoError(t, err)
+	counter, exists, err := codec.DecodeInt64(res.MustGet("counter"))
+	require.NoError(t, err)
+	require.True(t, exists)
+	require.EqualValues(t, 1, counter)
+
+	// check the balance of the smart contract. Expect 7 iotas
+	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 7)
+	// check the balance of the user address. Must be 8 iotas less
+	glb.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-8)
+}
+
+func TestExample7(t *testing.T) {
+	glb := solo.New(t, false, false)
+	chain := glb.NewChain(nil, "ex7")
+
+	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
+	require.NoError(t, err)
+
+	userWallet := glb.NewSignatureSchemeWithFunds()
+
+	contractName := "hello_new_world_1"
+	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(contractName))
+	contractAgentID := coretypes.NewAgentIDFromContractID(contractID)
+
+	req := solo.NewCall(contractName, "hello", "panic", 1).
+		WithTransfer(map[balance.Color]int64{
+			balance.ColorIOTA: 7,
+		},
+		)
+	_, err = chain.PostRequest(req, userWallet)
+	require.Error(t, err)
+
+	// check the balance of the smart contract. Expect 0 iotas
+	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
+	// check the balance of the user address. Must be 1 iotas less (for request)
+	glb.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-1)
 }
