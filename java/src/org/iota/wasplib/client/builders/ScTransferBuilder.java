@@ -14,7 +14,7 @@ public class ScTransferBuilder {
 	ScMutableMap transfer;
 
 	public ScTransferBuilder(ScAgent agent) {
-		this(null, agent);
+		this(ScRequestBuilder.root.GetMap(Key.Contract).GetAddress(Key.Chain).Value(), agent);
 	}
 
 	public ScTransferBuilder(ScAddress address) {
@@ -30,7 +30,7 @@ public class ScTransferBuilder {
 		}
 	}
 
-	public void Post() {
+	public void Send() {
 		transfer.GetInt(ScColor.MINT).SetValue(-1);
 	}
 

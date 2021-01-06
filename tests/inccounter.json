@@ -3,6 +3,7 @@
   "setups": {
     "default": {
       "contract": {
+        "chain": "$chainId",
         "name": "inccounter",
         "description": "Test basic functionality",
         "id": "@scId",

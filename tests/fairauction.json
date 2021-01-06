@@ -22,6 +22,7 @@
   "setups": {
     "default": {
       "contract": {
+        "chain": "$chainId",
         "name": "fairauction",
         "description": "Auction colored tokens",
         "id": "@scId",

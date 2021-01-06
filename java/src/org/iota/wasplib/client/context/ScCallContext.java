@@ -49,7 +49,7 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public void Transfer(ScAgent agent, ScColor color, long amount) {
-		new ScTransferBuilder(agent).Transfer(color, amount).Post();
+		new ScTransferBuilder(agent).Transfer(color, amount).Send();
 	}
 
 	public ScTransferBuilder TransferToAddress(ScAddress address) {

@@ -430,6 +430,10 @@ func process(value string) string {
 	// preprocesses keys and values by replacing special named values
 	size := 32
 	switch value[0] {
+	case '@': // 37-byte agent
+		size = 37
+	case '$': // 33-byte address
+		size = 33
 	case '#': // 32-byte hash value
 		if value == "#iota" {
 			return base58.Encode(client.IOTA.Bytes())
@@ -437,10 +441,6 @@ func process(value string) string {
 		if value == "#mint" {
 			return base58.Encode(client.MINT.Bytes())
 		}
-	case '@': // 37-byte agent
-		size = 37
-	case '$': // 34-byte request id
-		size = 34
 	default:
 		return value
 	}

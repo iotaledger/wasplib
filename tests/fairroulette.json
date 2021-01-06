@@ -9,6 +9,7 @@
   "setups": {
     "default": {
       "contract": {
+        "chain": "$chainId",
         "name": "fairroulette",
         "description": "Simple gambling app",
         "id": "@scId",

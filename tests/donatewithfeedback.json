@@ -11,6 +11,7 @@
   "setups": {
     "default": {
       "contract": {
+        "chain": "$chainId",
         "name": "donatewithfeedback",
         "description": "Donate iotas and give feedback",
         "id": "@scId",

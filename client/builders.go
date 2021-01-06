@@ -102,10 +102,10 @@ type ScTransferBuilder struct {
 	transfer ScMutableMap
 }
 
-// start a transfer to the agent account on the same chain
-// a shorthand version of this is used in ScCallContext.Transfer
-func NewTransferToAgent(agent *ScAgent) ScTransferBuilder {
-	return NewTransferCrossChain(nil, agent)
+// start a transfer to the specified local chain agent account
+func NewTransfer(agent *ScAgent) ScTransferBuilder {
+	localChain := root.GetMap(KeyContract).GetAddress(KeyChain).Value()
+	return NewTransferCrossChain(localChain, agent)
 }
 
 // start a transfer to a Tangle ledger address
@@ -113,7 +113,7 @@ func NewTransferToAddress(address *ScAddress) ScTransferBuilder {
 	return NewTransferCrossChain(nil, address.AsAgent())
 }
 
-// starts a cross chain transfer
+// start a transfer to the specified cross chain agent account
 func NewTransferCrossChain(chain *ScAddress, agent *ScAgent) ScTransferBuilder {
 	transfers := root.GetMapArray(KeyTransfers)
 	transfer := transfers.GetMap(transfers.Length())
@@ -124,8 +124,8 @@ func NewTransferCrossChain(chain *ScAddress, agent *ScAgent) ScTransferBuilder {
 	return ScTransferBuilder{transfer: transfer}
 }
 
-// posts the complete built transfer to the node
-func (ctx ScTransferBuilder) Post() {
+// sends the complete built transfer to the node
+func (ctx ScTransferBuilder) Send() {
 	ctx.transfer.GetInt(MINT).SetValue(-1)
 }
 

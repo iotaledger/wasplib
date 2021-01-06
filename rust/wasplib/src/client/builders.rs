@@ -120,10 +120,10 @@ pub struct ScTransferBuilder {
 }
 
 impl ScTransferBuilder {
-    // start a transfer to the agent account on the same chain
-    // a shorthand version of this is used in ScCallContext.Transfer
-    pub fn new_transfer_to_agent(agent: &ScAgent) -> ScTransferBuilder {
-        ScTransferBuilder::new_transfer_cross_chain(&ScAddress::NULL, agent)
+    // start a transfer to the specified local chain agent account
+    pub fn new_transfer(agent: &ScAgent) -> ScTransferBuilder {
+        let local_chain = ROOT.get_map(&KEY_CONTRACT).get_address(&KEY_CHAIN).value();
+        ScTransferBuilder::new_transfer_cross_chain(&local_chain, agent)
     }
 
     // start a transfer to a Tangle ledger address
@@ -131,7 +131,7 @@ impl ScTransferBuilder {
         ScTransferBuilder::new_transfer_cross_chain(&ScAddress::NULL, &address.as_agent())
     }
 
-    // starts a cross chain transfer
+    // start a transfer to the specified cross chain agent account
     pub fn new_transfer_cross_chain(chain: &ScAddress, agent: &ScAgent) -> ScTransferBuilder {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let transfer = transfers.get_map(transfers.length());
@@ -142,8 +142,8 @@ impl ScTransferBuilder {
         ScTransferBuilder { transfer: transfer }
     }
 
-    // posts the complete built transfer to the node
-    pub fn post(&self) {
+    // sends the complete built transfer to the node
+    pub fn send(&self) {
         self.transfer.get_int(&ScColor::MINT).set_value(-1);
     }
 
