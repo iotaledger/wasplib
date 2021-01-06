@@ -14,6 +14,8 @@ pub struct ScAddress {
 }
 
 impl ScAddress {
+    pub const NULL: ScAddress = ScAddress { address: [0x00; 33] };
+
     pub fn as_agent(&self) -> ScAgent {
         let mut agent = ScAgent { agent: [0; 37] };
         agent.agent[0..33].copy_from_slice(&self.address[0..33]);
@@ -47,7 +49,7 @@ pub struct ScAgent {
 }
 
 impl ScAgent {
-    pub const NONE: ScAgent = ScAgent { agent: [0x00; 37] };
+    pub const NULL: ScAgent = ScAgent { agent: [0x00; 37] };
 
     pub fn from_bytes(bytes: &[u8]) -> ScAgent {
         ScAgent { agent: bytes.try_into().expect("agent id should be 37 bytes") }
@@ -106,6 +108,8 @@ pub struct ScHash {
 }
 
 impl ScHash {
+    pub const NULL: ScHash = ScHash { hash: [0x00; 32] };
+
     pub fn from_bytes(bytes: &[u8]) -> ScHash {
         ScHash { hash: bytes.try_into().expect("hash should be 32 bytes") }
     }

@@ -237,10 +237,17 @@ func (ctx ScCallContext) TimestampedLog(key MapKey) ScLog {
 
 // transfer the specified amount of tokens of the specified color to the specified agent
 func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) {
-	transfers := root.GetMapArray(KeyTransfers)
-	transfer := transfers.GetMap(transfers.Length())
-	transfer.GetAgent(KeyAgent).SetValue(agent)
-	transfer.GetInt(color).SetValue(amount)
+	NewTransferToAgent(agent).Transfer(color, amount).Post()
+}
+
+// start a transfer to a Tangle ledger address
+func (ctx ScCallContext) TransferToAddress(address *ScAddress) ScTransferBuilder {
+	return NewTransferToAddress(address)
+}
+
+// start a cross chain transfer
+func (ctx ScCallContext) TransferCrossChain(chain *ScAddress, agent *ScAgent) ScTransferBuilder {
+	return NewTransferCrossChain(chain, agent)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

@@ -127,7 +127,7 @@ public class FairAuction {
 			auction.description = description;
 			auction.duration = duration;
 			auction.highestBid = -1;
-			auction.highestBidder = ScAgent.NONE;
+			auction.highestBidder = ScAgent.NULL;
 			auction.minimumBid = minimumBid;
 			auction.numTokens = numTokens;
 			auction.ownerMargin = ownerMargin;

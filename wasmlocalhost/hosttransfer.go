@@ -12,6 +12,7 @@ import (
 type HostTransfer struct {
 	HostMap
 	agent []byte
+	chain []byte
 }
 
 func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
@@ -22,6 +23,10 @@ func (m *HostTransfer) SetBytes(keyId int32, value []byte) {
 	m.HostMap.SetBytes(keyId, value)
 	if keyId == wasmhost.KeyAgent {
 		m.agent = value
+		return
+	}
+	if keyId == wasmhost.KeyChain {
+		m.chain = value
 		return
 	}
 }

@@ -9,12 +9,10 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public class ScDeployBuilder {
-	private static final ScMutableMap root = new ScMutableMap(1);
-
 	ScMutableMap deploy;
 
 	public ScDeployBuilder(String name, String description) {
-		ScMutableMapArray deploys = root.GetMapArray(Key.Deploys);
+		ScMutableMapArray deploys = ScRequestBuilder.root.GetMapArray(Key.Deploys);
 		deploy = deploys.GetMap(deploys.Length());
 		deploy.GetString(Key.Name).SetValue(name);
 		deploy.GetString(Key.Description).SetValue(description);

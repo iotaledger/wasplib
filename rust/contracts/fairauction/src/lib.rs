@@ -116,7 +116,7 @@ fn start_auction(sc: &ScCallContext) {
         description: description,
         duration: duration,
         highest_bid: -1,
-        highest_bidder: ScAgent::NONE,
+        highest_bidder: ScAgent::NULL,
         minimum_bid: minimum_bid,
         num_tokens: num_tokens,
         owner_margin: owner_margin,

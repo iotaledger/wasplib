@@ -6,12 +6,13 @@ package org.iota.wasplib.client.context;
 import org.iota.wasplib.client.builders.ScCallBuilder;
 import org.iota.wasplib.client.builders.ScDeployBuilder;
 import org.iota.wasplib.client.builders.ScPostBuilder;
+import org.iota.wasplib.client.builders.ScTransferBuilder;
+import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.keys.MapKey;
 import org.iota.wasplib.client.mutable.ScMutableMap;
-import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public class ScCallContext extends ScBaseContext {
 	private static final ScMutableMap root = new ScMutableMap(1);
@@ -48,9 +49,14 @@ public class ScCallContext extends ScBaseContext {
 	}
 
 	public void Transfer(ScAgent agent, ScColor color, long amount) {
-		ScMutableMapArray transfers = root.GetMapArray(Key.Transfers);
-		ScMutableMap transfer = transfers.GetMap(transfers.Length());
-		transfer.GetAgent(Key.Agent).SetValue(agent);
-		transfer.GetInt(color).SetValue(amount);
+		new ScTransferBuilder(agent).Transfer(color, amount).Post();
+	}
+
+	public ScTransferBuilder TransferToAddress(ScAddress address) {
+		return new ScTransferBuilder(address);
+	}
+
+	public ScTransferBuilder TransferCrossChain(ScAddress chain, ScAgent agent) {
+		return new ScTransferBuilder(chain, agent);
 	}
 }

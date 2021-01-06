@@ -10,6 +10,8 @@ import org.iota.wasplib.client.keys.MapKey;
 import java.util.Arrays;
 
 public class ScAddress implements MapKey {
+	public static final ScAddress NULL = new ScAddress(new byte[33]);
+
 	final byte[] address = new byte[33];
 
 	public ScAddress(byte[] bytes) {

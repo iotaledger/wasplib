@@ -115,6 +115,49 @@ impl ScPostBuilder {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScTransferBuilder {
+    transfer: ScMutableMap,
+}
+
+impl ScTransferBuilder {
+    // start a transfer to the agent account on the same chain
+    // a shorthand version of this is used in ScCallContext.Transfer
+    pub fn new_transfer_to_agent(agent: &ScAgent) -> ScTransferBuilder {
+        ScTransferBuilder::new_transfer_cross_chain(&ScAddress::NULL, agent)
+    }
+
+    // start a transfer to a Tangle ledger address
+    pub fn new_transfer_to_address(address: &ScAddress) -> ScTransferBuilder {
+        ScTransferBuilder::new_transfer_cross_chain(&ScAddress::NULL, &address.as_agent())
+    }
+
+    // starts a cross chain transfer
+    pub fn new_transfer_cross_chain(chain: &ScAddress, agent: &ScAgent) -> ScTransferBuilder {
+        let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
+        let transfer = transfers.get_map(transfers.length());
+        transfer.get_agent(&KEY_AGENT).set_value(agent);
+        if *chain != ScAddress::NULL {
+            transfer.get_address(&KEY_CHAIN).set_value(chain);
+        }
+        ScTransferBuilder { transfer: transfer }
+    }
+
+    // posts the complete built transfer to the node
+    pub fn post(&self) {
+        self.transfer.get_int(&ScColor::MINT).set_value(-1);
+    }
+
+    // transfer the specified amount of tokens of the specified color as part of this transfer
+    // concatenate one of these for each separate color/amount combination
+    // amount is supposed to be > 0, unique colors can appear only once
+    pub fn transfer(&self, color: &ScColor, amount: i64) -> &ScTransferBuilder {
+        self.transfer.get_int(color).set_value(amount);
+        self
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScViewBuilder {
     base: ScRequestBuilder,
 }

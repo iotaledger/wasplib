@@ -10,6 +10,8 @@ import org.iota.wasplib.client.keys.MapKey;
 import java.util.Arrays;
 
 public class ScHash implements MapKey {
+	public static final ScHash NULL = new ScHash(new byte[32]);
+
 	final byte[] hash = new byte[32];
 
 	public ScHash(byte[] bytes) {

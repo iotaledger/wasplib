@@ -18,7 +18,7 @@ fn on_load() {
 // Otherwise it logs the message "Hello, new world!" with the counter and increments the counter
 // The counter is a variable stored in the smart contract state
 fn hello(ctx: &ScCallContext) {
-    if ctx.params().get_bytes(KEY_PANIC).exists(){
+    if ctx.params().get_bytes(KEY_PANIC).exists() {
         ctx.panic("panic instead of Hello");
         return;
     }

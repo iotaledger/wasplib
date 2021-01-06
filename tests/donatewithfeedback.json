@@ -169,7 +169,7 @@
         "panic": "Cancel spoofed request",
         "balances": {"#iota": 600},
         "state": {
-           "max_donation": 500,
+          "max_donation": 500,
           "total_donation": 500,
           "log": [
             {

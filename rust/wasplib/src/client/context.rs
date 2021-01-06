@@ -245,10 +245,17 @@ impl ScCallContext {
 
     // transfer the specified amount of tokens of the specified color to the specified agent
     pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
-        let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
-        let transfer = transfers.get_map(transfers.length());
-        transfer.get_agent(&KEY_AGENT).set_value(agent);
-        transfer.get_int(color).set_value(amount);
+        ScTransferBuilder::new_transfer_to_agent(agent).transfer(color, amount).post();
+    }
+
+    // start a transfer to a Tangle ledger address
+    pub fn transfer_to_address(&self, address: &ScAddress) -> ScTransferBuilder {
+        ScTransferBuilder::new_transfer_to_address(address)
+    }
+
+    // start a cross chain transfer
+    pub fn transfer_cross_chain(&self, chain: &ScAddress, agent: &ScAgent) -> ScTransferBuilder {
+        ScTransferBuilder::new_transfer_cross_chain(chain, agent)
     }
 }
 
