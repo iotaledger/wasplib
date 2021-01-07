@@ -1,6 +1,6 @@
 [package]
-name = "hellonewworld"
-description = "Extended hello world ISCP smart contract"
+name = "example1"
+description = "Example1 ISCP smart contract to the tutorial"
 license = "Apache-2.0"
 version = "0.1.0"
 authors = ["Evaldas Drasutis <evaldas.drasutis@iota.org>"]
@@ -14,7 +14,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-wasplib = { path = "../../wasplib" }
+wasplib = { path = "../../../wasplib" }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

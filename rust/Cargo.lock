@@ -63,6 +63,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "example1"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "wasm-bindgen-test",
+ "wasplib",
+ "wee_alloc",
+]
+
+[[package]]
 name = "fairauction"
 version = "0.1.0"
 dependencies = [
@@ -74,16 +84,6 @@ dependencies = [
 
 [[package]]
 name = "fairroulette"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "hellonewworld"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
