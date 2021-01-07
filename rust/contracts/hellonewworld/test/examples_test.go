@@ -10,12 +10,10 @@ import (
 )
 
 func TestExample1(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex1")
 
-	chainInfo, coreContracts := chain.GetInfo()   // calls view root::GetInfo
-	require.EqualValues(t, 4, len(coreContracts)) // 4 core contracts deployed by default
-
+	chainInfo, coreContracts := chain.GetInfo() // calls view root::GetInfo
 	t.Logf("chainID: %s", chainInfo.ChainID)
 	t.Logf("chain owner ID: %s", chainInfo.ChainOwnerID)
 	for hname, rec := range coreContracts {
@@ -24,18 +22,18 @@ func TestExample1(t *testing.T) {
 }
 
 func TestExample2(t *testing.T) {
-	glb := solo.New(t, false, false)
-	userWallet := glb.NewSignatureSchemeWithFunds()
+	env := solo.New(t, false, false)
+	userWallet := env.NewSignatureSchemeWithFunds()
 	userAddress := userWallet.Address()
 	t.Logf("Address of the userWallet is: %s", userAddress)
-	numIotas := glb.GetUtxodbBalance(userAddress, balance.ColorIOTA)
+	numIotas := env.GetUtxodbBalance(userAddress, balance.ColorIOTA)
 	t.Logf("balance of the userWallet is: %d iota", numIotas)
-	glb.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
+	env.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
 }
 
 func TestExample3(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex3")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex3")
 
 	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
 	require.NoError(t, err)
@@ -54,8 +52,8 @@ func TestExample3(t *testing.T) {
 }
 
 func TestExample4(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex4")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex4")
 
 	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
 	require.NoError(t, err)
@@ -76,15 +74,15 @@ func TestExample4(t *testing.T) {
 }
 
 func TestExample5(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex5")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex5")
 
-	userWallet := glb.NewSignatureSchemeWithFunds()
+	userWallet := env.NewSignatureSchemeWithFunds()
 	userAddress := userWallet.Address()
 	t.Logf("Address of the userWallet is: %s", userAddress)
-	numIotas := glb.GetUtxodbBalance(userAddress, balance.ColorIOTA)
+	numIotas := env.GetUtxodbBalance(userAddress, balance.ColorIOTA)
 	t.Logf("balance of the userWallet is: %d iota", numIotas)
-	glb.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
+	env.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
 
 	// send 42 iotas to the own account on-chain
 	req := solo.NewCall("accounts", "deposit").
@@ -103,17 +101,17 @@ func TestExample5(t *testing.T) {
 	require.NoError(t, err)
 
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0) // empty
-	glb.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
+	env.AssertUtxodbBalance(userAddress, balance.ColorIOTA, 1337)
 }
 
 func TestExample6(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex6")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex6")
 
 	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
 	require.NoError(t, err)
 
-	userWallet := glb.NewSignatureSchemeWithFunds()
+	userWallet := env.NewSignatureSchemeWithFunds()
 
 	contractName := "hello_new_world_1"
 	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(contractName))
@@ -137,17 +135,17 @@ func TestExample6(t *testing.T) {
 	// check the balance of the smart contract. Expect 7 iotas
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 7)
 	// check the balance of the user address. Must be 8 iotas less
-	glb.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-8)
+	env.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-8)
 }
 
 func TestExample7(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ex7")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "ex7")
 
 	err := chain.DeployWasmContract(nil, "hello_new_world_1", WASM_FILE)
 	require.NoError(t, err)
 
-	userWallet := glb.NewSignatureSchemeWithFunds()
+	userWallet := env.NewSignatureSchemeWithFunds()
 
 	contractName := "hello_new_world_1"
 	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(contractName))
@@ -164,5 +162,5 @@ func TestExample7(t *testing.T) {
 	// check the balance of the smart contract. Expect 0 iotas
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
 	// check the balance of the user address. Must be 1 iotas less (for request)
-	glb.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-1)
+	env.AssertUtxodbBalance(userWallet.Address(), balance.ColorIOTA, 1337-1)
 }
