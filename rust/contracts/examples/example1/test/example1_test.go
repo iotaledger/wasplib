@@ -67,9 +67,7 @@ func TestExample1Test3(t *testing.T) {
 
 	theString := "Hello, world!"
 	req := solo.NewCall("example1", "storeString",
-		"paramString", theString).WithTransfer(map[balance.Color]int64{
-		balance.ColorIOTA: 42,
-	})
+		"paramString", theString).WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 

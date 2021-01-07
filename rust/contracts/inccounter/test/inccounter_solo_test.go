@@ -25,7 +25,7 @@ func TestIncSoloInc(t *testing.T) {
 	err := chain.DeployWasmContract(nil, incName, incFile)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "increment").
-		WithTransfer(map[balance.Color]int64{balance.ColorIOTA: 1})
+		WithTransfer(balance.ColorIOTA, 1)
 	_, err = chain.PostRequest(req, nil)
 	require.NoError(t, err)
 	ret, err := chain.CallView(incName, "increment_view_counter")
@@ -41,7 +41,7 @@ func TestIncSoloRepeatMany(t *testing.T) {
 	err := chain.DeployWasmContract(nil, incName, incFile)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "increment_repeat_many", varNumRepeats, 2).
-		WithTransfer(map[balance.Color]int64{balance.ColorIOTA: 1})
+		WithTransfer(balance.ColorIOTA, 1)
 	_, err = chain.PostRequest(req, nil)
 	require.NoError(t, err)
 	chain.WaitForEmptyBacklog()
@@ -58,7 +58,7 @@ func TestIncSoloResultsTest(t *testing.T) {
 	err := chain.DeployWasmContract(nil, incName, incFile)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "results_test").
-		WithTransfer(map[balance.Color]int64{balance.ColorIOTA: 1})
+		WithTransfer(balance.ColorIOTA, 1)
 	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 	//ret, err = chain.CallView(incName, "results_check")
@@ -72,7 +72,7 @@ func TestIncSoloStateTest(t *testing.T) {
 	err := chain.DeployWasmContract(nil, incName, incFile)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "state_test").
-		WithTransfer(map[balance.Color]int64{balance.ColorIOTA: 1})
+		WithTransfer(balance.ColorIOTA, 1)
 	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 	ret, err = chain.CallView(incName, "state_check")
