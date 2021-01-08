@@ -8,7 +8,7 @@ require (
 	github.com/iotaledger/goshimmer v0.3.1-0.20201229190325-903bd925f4de
 	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20210107201725-e99e98aab38b
+	github.com/iotaledger/wasp v0.0.2-0.20210108110254-74c80c2375f0
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mr-tron/base58 v1.2.0
