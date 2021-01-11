@@ -1,7 +1,7 @@
 {
   "AuctionInfo": [
-    {"auction_owner": "agent // issuer of start_auction transaction"},
     {"color": "color // color of tokens for sale"},
+    {"creator": "agent // issuer of start_auction transaction"},
     {"deposit": "int // deposit by auction owner to cover the SC fees"},
     {"description": "string // auction description"},
     {"duration": "int // auction duration in minutes"},

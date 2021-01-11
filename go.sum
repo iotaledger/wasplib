@@ -393,6 +393,16 @@ github.com/iotaledger/wasp v0.0.2-0.20210107161711-e285d25fc0d9 h1:CdhjpTtOeusFU
 github.com/iotaledger/wasp v0.0.2-0.20210107161711-e285d25fc0d9/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
 github.com/iotaledger/wasp v0.0.2-0.20210107201725-e99e98aab38b h1:EB/2+0RwNtPQ2Zmo6RSDdXXYN4qfvbvhFKpm8BrSNyo=
 github.com/iotaledger/wasp v0.0.2-0.20210107201725-e99e98aab38b/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
+github.com/iotaledger/wasp v0.0.2-0.20210108110254-74c80c2375f0 h1:+UA3Rd6g1NO6c2Vu3yVk42lJ4ykMHPsAWFkhy3Jo04c=
+github.com/iotaledger/wasp v0.0.2-0.20210108110254-74c80c2375f0/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
+github.com/iotaledger/wasp v0.0.2-0.20210108194140-21c3842148fb h1:RVTL1axstwg9sA3JC11+KpV35C6uFLMkXEntE9kuCz4=
+github.com/iotaledger/wasp v0.0.2-0.20210108194140-21c3842148fb/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
+github.com/iotaledger/wasp v0.0.2-0.20210108231048-f5f952573fc0 h1:e3zMzNKNRpwqpC6E/XwXN6N21gv8ORy0nejEeSdyu6A=
+github.com/iotaledger/wasp v0.0.2-0.20210108231048-f5f952573fc0/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
+github.com/iotaledger/wasp v0.0.2-0.20210111012314-350fa7e8ba10 h1:JvTyWjNRd4DCWLbZsTdOCRUCu00XmGLTna2VB0xA5Hw=
+github.com/iotaledger/wasp v0.0.2-0.20210111012314-350fa7e8ba10/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
+github.com/iotaledger/wasp v0.0.2-0.20210111012831-337274dc4fdb h1:9A11B+9ilje3CsarUIH9Q4eJnbJAczJmNY0SnSWISfc=
+github.com/iotaledger/wasp v0.0.2-0.20210111012831-337274dc4fdb/go.mod h1:uu1XWZDnwk7aaZ/mdZECgLU1LA3V8ypisbJWxIp6IjI=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=

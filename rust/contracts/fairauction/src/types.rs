@@ -5,8 +5,8 @@ use wasplib::client::*;
 
 pub struct AuctionInfo {
     //@formatter:off
-    pub auction_owner:  ScAgent, // issuer of start_auction transaction
     pub color:          ScColor, // color of tokens for sale
+    pub creator:        ScAgent, // issuer of start_auction transaction
     pub deposit:        i64,     // deposit by auction owner to cover the SC fees
     pub description:    String,  // auction description
     pub duration:       i64,     // auction duration in minutes
@@ -29,8 +29,8 @@ pub struct BidInfo {
 
 pub fn encode_auction_info(o: &AuctionInfo) -> Vec<u8> {
     let mut encode = BytesEncoder::new();
-    encode.agent(&o.auction_owner);
     encode.color(&o.color);
+    encode.agent(&o.creator);
     encode.int(o.deposit);
     encode.string(&o.description);
     encode.int(o.duration);
@@ -46,8 +46,8 @@ pub fn encode_auction_info(o: &AuctionInfo) -> Vec<u8> {
 pub fn decode_auction_info(bytes: &[u8]) -> AuctionInfo {
     let mut decode = BytesDecoder::new(bytes);
     AuctionInfo {
-        auction_owner: decode.agent(),
         color: decode.color(),
+        creator: decode.agent(),
         deposit: decode.int(),
         description: decode.string(),
         duration: decode.int(),
