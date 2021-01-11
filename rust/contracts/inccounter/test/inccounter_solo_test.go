@@ -63,7 +63,7 @@ func TestIncSoloResultsTest(t *testing.T) {
 	require.NoError(t, err)
 	//ret, err = chain.CallView(incName, "results_check")
 	//require.NoError(t, err)
-	require.EqualValues(t, 6, len(ret))
+	require.EqualValues(t, 8, len(ret))
 }
 
 func TestIncSoloStateTest(t *testing.T) {

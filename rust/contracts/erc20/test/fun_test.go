@@ -42,20 +42,20 @@ func deployErc20(t *testing.T) *solo.Chain {
 
 func checkErc20Balance(e *solo.Chain, account coretypes.AgentID, amount int64) {
 	res, err := e.CallView(erc20name, "balance_of", PARAM_ACCOUNT, account)
-	require.NoError(e.Glb.T, err)
+	require.NoError(e.Env.T, err)
 	sup, ok, err := codec.DecodeInt64(res.MustGet(PARAM_AMOUNT))
-	require.NoError(e.Glb.T, err)
-	require.True(e.Glb.T, ok)
-	require.EqualValues(e.Glb.T, sup, amount)
+	require.NoError(e.Env.T, err)
+	require.True(e.Env.T, ok)
+	require.EqualValues(e.Env.T, sup, amount)
 }
 
 func checkErc20Allowance(e *solo.Chain, account coretypes.AgentID, delegation coretypes.AgentID, amount int64) {
 	res, err := e.CallView(erc20name, "allowance", PARAM_ACCOUNT, account, PARAM_DELEGATION, delegation)
-	require.NoError(e.Glb.T, err)
+	require.NoError(e.Env.T, err)
 	del, ok, err := codec.DecodeInt64(res.MustGet(PARAM_AMOUNT))
-	require.NoError(e.Glb.T, err)
-	require.True(e.Glb.T, ok)
-	require.EqualValues(e.Glb.T, del, amount)
+	require.NoError(e.Env.T, err)
+	require.True(e.Env.T, ok)
+	require.EqualValues(e.Env.T, del, amount)
 }
 
 func TestInitial(t *testing.T) {
@@ -65,7 +65,7 @@ func TestInitial(t *testing.T) {
 func TestTransferOk1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
@@ -80,7 +80,7 @@ func TestTransferOk1(t *testing.T) {
 func TestTransferOk2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
@@ -102,7 +102,7 @@ func TestTransferOk2(t *testing.T) {
 func TestTransferNotEnoughFunds1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(1338)
 
@@ -120,7 +120,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 func TestTransferNotEnoughFunds2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(1338)
 
@@ -137,14 +137,14 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 
 func TestNoAllowance(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
 }
 
 func TestApprove(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -158,7 +158,7 @@ func TestApprove(t *testing.T) {
 
 func TestTransferFromOk1(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -184,7 +184,7 @@ func TestTransferFromOk1(t *testing.T) {
 
 func TestTransferFromOk2(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
@@ -210,7 +210,7 @@ func TestTransferFromOk2(t *testing.T) {
 
 func TestTransferFromFail(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Glb.NewSignatureSchemeWithFunds()
+	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
 	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
