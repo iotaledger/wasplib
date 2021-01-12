@@ -90,7 +90,7 @@ func (t *JsonTests) ClearObjectData(keyId int32, typeId int32) {
 func (t *JsonTests) CompareArrayData(keyId int32, array []interface{}) bool {
 	arrayObject := t.FindSubObject(nil, keyId, client.TYPE_MAP|client.TYPE_ARRAY)
 	if arrayObject.GetInt(wasmhost.KeyLength) != int64(len(array)) {
-		key := string(t.host.GetKeyFromId(keyId))
+		key := t.host.GetKeyStringFromId(keyId)
 		fmt.Printf("FAIL: array %s length\n", key)
 		return false
 	}
@@ -125,7 +125,7 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 		return true
 	}
 	if !mapObject.Exists(keyId) {
-		key := string(t.host.GetKeyFromId(keyId))
+		key := t.host.GetKeyStringFromId(keyId)
 		return mapObject.Fail("missing array %s", key)
 	}
 	elem := array[0]
@@ -356,7 +356,7 @@ func (t *JsonTests) LoadSubMapData(mapObject VmObject, values map[string]interfa
 func (t *JsonTests) makeSerializedObject(keyId int32, field interface{}) (string, bool) {
 	object := field.(map[string]interface{})
 	if len(object) != 1 {
-		key := string(t.host.GetKeyFromId(keyId))
+		key := t.host.GetKeyStringFromId(keyId)
 		fmt.Printf("FAIL: bytes array %s: object type not found\n", key)
 	}
 	encoder := NewBytesEncoder()
@@ -372,13 +372,13 @@ func (t *JsonTests) makeSerializedObject(keyId int32, field interface{}) (string
 func (t *JsonTests) makeSubObject(encoder *BytesEncoder, keyId int32, typeName string, value interface{}) bool {
 	fieldDefs, ok := t.Types[typeName]
 	if !ok {
-		key := string(t.host.GetKeyFromId(keyId))
+		key := t.host.GetKeyStringFromId(keyId)
 		fmt.Printf("FAIL: bytes array %s: object typedef for %s missing\n", key, typeName)
 		return false
 	}
 	fieldValues := value.(map[string]interface{})
 	if len(fieldValues) != len(fieldDefs) {
-		key := string(t.host.GetKeyFromId(keyId))
+		key := t.host.GetKeyStringFromId(keyId)
 		fmt.Printf("FAIL: bytes array %s: object typedef for %s mismatch\n", key, typeName)
 		return false
 	}
@@ -416,7 +416,7 @@ func (t *JsonTests) makeSubObject(encoder *BytesEncoder, keyId int32, typeName s
 				}
 				return true
 			}
-			key := string(t.host.GetKeyFromId(keyId))
+			key := t.host.GetKeyStringFromId(keyId)
 			panic("Unhandled type '" + typeName + "' of field in" + key)
 		}
 	}

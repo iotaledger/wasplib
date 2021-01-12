@@ -188,7 +188,7 @@ func getClientMap(t *testing.T, keyId int32, kvStore kv.KVStore) client.ScImmuta
 	root := wasmproc.NewScDictFromKvStore(host, kvStore)
 	host.Init(null, root, logger)
 	root.InitObj(1, keyId, root)
-	logger.Info("Direct access to %s", string(host.GetKeyFromId(keyId)))
+	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
 	client.ConnectHost(host)
 	return client.Root.Immutable()
 }

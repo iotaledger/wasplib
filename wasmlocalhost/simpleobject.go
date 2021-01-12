@@ -42,12 +42,12 @@ func (o *SimpleObject) Name() string {
 		owner := o.host.FindObject(o.ownerId).(VmObject)
 		if o.ownerId == 1 {
 			// root sub object, skip the "root." prefix
-			return string(o.host.GetKeyFromId(o.keyId))
+			return o.host.GetKeyStringFromId(o.keyId)
 		}
 		return owner.Name() + owner.Suffix(o.keyId)
 	}
 }
 
 func (o *SimpleObject) Suffix(keyId int32) string {
-	return "." + string(o.host.GetKeyFromId(keyId))
+	return "." + o.host.GetKeyStringFromId(keyId)
 }
