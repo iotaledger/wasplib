@@ -5,15 +5,15 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/client"
 
-const keyAuctions = client.Key("auctions")
-const keyBidders = client.Key("bidders")
-const keyBidderList = client.Key("bidder_list")
-const keyColor = client.Key("color")
-const keyDescription = client.Key("description")
-const keyDuration = client.Key("duration")
-const keyInfo = client.Key("info")
-const keyMinimumBid = client.Key("minimum")
-const keyOwnerMargin = client.Key("owner_margin")
+const KeyAuctions = client.Key("auctions")
+const KeyBidders = client.Key("bidders")
+const KeyBidderList = client.Key("bidder_list")
+const KeyColor = client.Key("color")
+const KeyDescription = client.Key("description")
+const KeyDuration = client.Key("duration")
+const KeyInfo = client.Key("info")
+const KeyMinimumBid = client.Key("minimum")
+const KeyOwnerMargin = client.Key("owner_margin")
 
 const durationDefault = 60
 const durationMin = 1
@@ -38,13 +38,13 @@ func startAuction(sc *client.ScCallContext) {
 	}
 
 	state := sc.State()
-	ownerMargin := state.GetInt(keyOwnerMargin).Value()
+	ownerMargin := state.GetInt(KeyOwnerMargin).Value()
 	if ownerMargin == 0 {
 		ownerMargin = ownerMarginDefault
 	}
 
 	params := sc.Params()
-	colorParam := params.GetColor(keyColor)
+	colorParam := params.GetColor(KeyColor)
 	if !colorParam.Exists() {
 		refund(sc, deposit/2, "Missing token color...")
 		return
@@ -62,7 +62,7 @@ func startAuction(sc *client.ScCallContext) {
 		return
 	}
 
-	minimumBid := params.GetInt(keyMinimumBid).Value()
+	minimumBid := params.GetInt(KeyMinimumBid).Value()
 	if minimumBid == 0 {
 		refund(sc, deposit/2, "Missing minimum bid...")
 		return
@@ -79,7 +79,7 @@ func startAuction(sc *client.ScCallContext) {
 	}
 
 	// duration in minutes
-	duration := params.GetInt(keyDuration).Value()
+	duration := params.GetInt(KeyDuration).Value()
 	if duration == 0 {
 		duration = durationDefault
 	}
@@ -90,7 +90,7 @@ func startAuction(sc *client.ScCallContext) {
 		duration = durationMax
 	}
 
-	description := params.GetString(keyDescription).Value()
+	description := params.GetString(KeyDescription).Value()
 	if description == "" {
 		description = "N/A"
 	}
@@ -98,9 +98,9 @@ func startAuction(sc *client.ScCallContext) {
 		description = description[:maxDescriptionLength] + "[...]"
 	}
 
-	auctions := state.GetMap(keyAuctions)
+	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
-	currentInfo := currentAuction.GetBytes(keyInfo)
+	currentInfo := currentAuction.GetBytes(KeyInfo)
 	if currentInfo.Exists() {
 		refund(sc, deposit/2, "Auction for this token already exists...")
 		return
@@ -123,7 +123,7 @@ func startAuction(sc *client.ScCallContext) {
 
 	finalizeRequest := sc.Post("finalize_auction")
 	finalizeParams := finalizeRequest.Params()
-	finalizeParams.GetColor(keyColor).SetValue(auction.color)
+	finalizeParams.GetColor(KeyColor).SetValue(auction.color)
 	finalizeRequest.Post(duration * 60)
 	sc.Log("New auction started...")
 }
@@ -134,16 +134,16 @@ func finalizeAuction(sc *client.ScCallContext) {
 		sc.Panic("Cancel spoofed request")
 	}
 
-	colorParam := sc.Params().GetColor(keyColor)
+	colorParam := sc.Params().GetColor(KeyColor)
 	if !colorParam.Exists() {
 		sc.Panic("Internal inconsistency: missing color")
 	}
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetMap(keyAuctions)
+	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
-	currentInfo := currentAuction.GetBytes(keyInfo)
+	currentInfo := currentAuction.GetBytes(KeyInfo)
 	if !currentInfo.Exists() {
 		sc.Panic("Internal inconsistency: missing auction info")
 	}
@@ -167,8 +167,8 @@ func finalizeAuction(sc *client.ScCallContext) {
 	}
 
 	// return staked bids to losers
-	bidders := currentAuction.GetMap(keyBidders)
-	bidderList := currentAuction.GetAgentArray(keyBidderList)
+	bidders := currentAuction.GetMap(KeyBidders)
+	bidderList := currentAuction.GetAgentArray(KeyBidderList)
 	size := bidderList.Length()
 	for i := int32(0); i < size; i++ {
 		bidder := bidderList.GetAgent(i).Value()
@@ -191,7 +191,7 @@ func placeBid(sc *client.ScCallContext) {
 		sc.Panic("Insufficient bid amount")
 	}
 
-	colorParam := sc.Params().GetColor(keyColor)
+	colorParam := sc.Params().GetColor(KeyColor)
 	if !colorParam.Exists() {
 		refund(sc, bidAmount, "Missing token color")
 		return
@@ -199,17 +199,17 @@ func placeBid(sc *client.ScCallContext) {
 	color := colorParam.Value()
 
 	state := sc.State()
-	auctions := state.GetMap(keyAuctions)
+	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
-	currentInfo := currentAuction.GetBytes(keyInfo)
+	currentInfo := currentAuction.GetBytes(KeyInfo)
 	if !currentInfo.Exists() {
 		refund(sc, bidAmount, "Missing auction")
 		return
 	}
 
 	auction := decodeAuctionInfo(currentInfo.Value())
-	bidders := currentAuction.GetMap(keyBidders)
-	bidderList := currentAuction.GetAgentArray(keyBidderList)
+	bidders := currentAuction.GetMap(KeyBidders)
+	bidderList := currentAuction.GetAgentArray(KeyBidderList)
 	caller := sc.Caller()
 	bidder := bidders.GetBytes(caller)
 	if bidder.Exists() {
@@ -244,14 +244,14 @@ func setOwnerMargin(sc *client.ScCallContext) {
 		sc.Panic("Cancel spoofed request")
 	}
 
-	ownerMargin := sc.Params().GetInt(keyOwnerMargin).Value()
+	ownerMargin := sc.Params().GetInt(KeyOwnerMargin).Value()
 	if ownerMargin < ownerMarginMin {
 		ownerMargin = ownerMarginMin
 	}
 	if ownerMargin > ownerMarginMax {
 		ownerMargin = ownerMarginMax
 	}
-	sc.State().GetInt(keyOwnerMargin).SetValue(ownerMargin)
+	sc.State().GetInt(KeyOwnerMargin).SetValue(ownerMargin)
 	sc.Log("Updated owner margin...")
 }
 

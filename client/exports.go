@@ -24,7 +24,7 @@ type ScExports struct {
 }
 
 func NewScExports() ScExports {
-	exports := root.GetStringArray(KeyExports)
+	exports := Root.GetStringArray(KeyExports)
 	// tell host what our highest predefined key is
 	// this helps detect missing or extra keys
 	exports.GetString(int32(KeyZzzzzzz)).SetValue("Go:KeyZzzzzzz")

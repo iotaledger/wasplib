@@ -5,7 +5,7 @@ package client
 
 import "strconv"
 
-var root = ScMutableMap{objId: 1}
+var Root = ScMutableMap{objId: 1}
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 

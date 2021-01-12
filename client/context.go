@@ -135,17 +135,17 @@ type ScBaseContext struct {
 
 // access the current balances for all token colors
 func (ctx ScBaseContext) Balances() ScBalances {
-	return ScBalances{root.GetMap(KeyBalances).Immutable()}
+	return ScBalances{Root.GetMap(KeyBalances).Immutable()}
 }
 
 // retrieve the agent id of the caller of the smart contract
 func (ctx ScBaseContext) Caller() *ScAgent {
-	return root.GetAgent(KeyCaller).Value()
+	return Root.GetAgent(KeyCaller).Value()
 }
 
 // groups contract-related information under one access space
 func (ctx ScBaseContext) Contract() ScContract {
-	return ScContract{root.GetMap(KeyContract).Immutable()}
+	return ScContract{Root.GetMap(KeyContract).Immutable()}
 }
 
 // quick check to see if the caller of the smart contract was the specified originator agent
@@ -155,37 +155,37 @@ func (ctx ScBaseContext) From(originator *ScAgent) bool {
 
 // logs informational text message
 func (ctx ScBaseContext) Log(text string) {
-	root.GetString(KeyLog).SetValue(text)
+	Root.GetString(KeyLog).SetValue(text)
 }
 
 // logs error text message and then panics
 func (ctx ScBaseContext) Panic(text string) {
-	root.GetString(KeyPanic).SetValue(text)
+	Root.GetString(KeyPanic).SetValue(text)
 }
 
 // retrieve parameters passed to the smart contract function that was called
 func (ctx ScBaseContext) Params() ScImmutableMap {
-	return root.GetMap(KeyParams).Immutable()
+	return Root.GetMap(KeyParams).Immutable()
 }
 
 // any results returned by the smart contract function call are returned here
 func (ctx ScBaseContext) Results() ScMutableMap {
-	return root.GetMap(KeyResults)
+	return Root.GetMap(KeyResults)
 }
 
 // deterministic time stamp fixed at the moment of calling the smart contract
 func (ctx ScBaseContext) Timestamp() int64 {
-	return root.GetInt(KeyTimestamp).Value()
+	return Root.GetInt(KeyTimestamp).Value()
 }
 
 // logs debugging trace text message
 func (ctx ScBaseContext) Trace(text string) {
-	root.GetString(KeyTrace).SetValue(text)
+	Root.GetString(KeyTrace).SetValue(text)
 }
 
 // access diverse utility functions
 func (ctx ScBaseContext) Utility() ScUtility {
-	return ScUtility{root.GetMap(KeyUtility)}
+	return ScUtility{Root.GetMap(KeyUtility)}
 }
 
 // starts a call to a smart contract view function.
@@ -212,7 +212,7 @@ func (ctx ScCallContext) Deploy(name string, description string) ScDeployBuilder
 
 // access the incoming balances for all token colors
 func (ctx ScCallContext) Incoming() ScBalances {
-	return ScBalances{root.GetMap(KeyIncoming).Immutable()}
+	return ScBalances{Root.GetMap(KeyIncoming).Immutable()}
 }
 
 // starts a (delayed) post to a smart contract function.
@@ -222,17 +222,17 @@ func (ctx ScCallContext) Post(function string) ScPostBuilder {
 
 // signals an event on the chain that entities can register for
 func (ctx ScBaseContext) SignalEvent(text string) {
-	root.GetString(KeyEvent).SetValue(text)
+	Root.GetString(KeyEvent).SetValue(text)
 }
 
 // access to mutable state storage
 func (ctx ScCallContext) State() ScMutableMap {
-	return root.GetMap(KeyState)
+	return Root.GetMap(KeyState)
 }
 
 // access to mutable named timestamped log
 func (ctx ScCallContext) TimestampedLog(key MapKey) ScLog {
-	return ScLog{root.GetMap(KeyLogs).GetMapArray(key)}
+	return ScLog{Root.GetMap(KeyLogs).GetMapArray(key)}
 }
 
 // transfer the specified amount of the specified token color to the specified agent account
@@ -259,10 +259,10 @@ type ScViewContext struct {
 
 // access to immutable state storage
 func (ctx ScViewContext) State() ScImmutableMap {
-	return root.GetMap(KeyState).Immutable()
+	return Root.GetMap(KeyState).Immutable()
 }
 
 // access to immutable named timestamped log
 func (ctx ScViewContext) TimestampedLog(key MapKey) ScImmutableMapArray {
-	return root.GetMap(KeyLogs).GetMapArray(key).Immutable()
+	return Root.GetMap(KeyLogs).GetMapArray(key).Immutable()
 }

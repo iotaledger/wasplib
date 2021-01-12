@@ -45,7 +45,7 @@ type ScDeployBuilder struct {
 
 // start deployment of a smart contract with the specified name and description
 func NewScDeployBuilder(name string, description string) ScDeployBuilder {
-	deploys := root.GetMapArray(KeyDeploys)
+	deploys := Root.GetMapArray(KeyDeploys)
 	deploy := deploys.GetMap(deploys.Length())
 	deploy.GetString(KeyName).SetValue(name)
 	deploy.GetString(KeyDescription).SetValue(description)
@@ -104,7 +104,7 @@ type ScTransferBuilder struct {
 
 // start a transfer to the specified local chain agent account
 func NewTransfer(agent *ScAgent) ScTransferBuilder {
-	localChain := root.GetMap(KeyContract).GetAddress(KeyChain).Value()
+	localChain := Root.GetMap(KeyContract).GetAddress(KeyChain).Value()
 	return NewTransferCrossChain(localChain, agent)
 }
 
@@ -115,7 +115,7 @@ func NewTransferToAddress(address *ScAddress) ScTransferBuilder {
 
 // start a transfer to the specified cross chain agent account
 func NewTransferCrossChain(chain *ScAddress, agent *ScAgent) ScTransferBuilder {
-	transfers := root.GetMapArray(KeyTransfers)
+	transfers := Root.GetMapArray(KeyTransfers)
 	transfer := transfers.GetMap(transfers.Length())
 	transfer.GetAgent(KeyAgent).SetValue(agent)
 	if chain != nil {
@@ -173,7 +173,7 @@ type ScRequestBuilder struct {
 
 // start building a request for the specified smart contract function
 func newScRequestBuilder(key MapKey, function string) ScRequestBuilder {
-	requests := root.GetMapArray(key)
+	requests := Root.GetMapArray(key)
 	request := requests.GetMap(requests.Length())
 	request.GetString(KeyFunction).SetValue(function)
 	return ScRequestBuilder{request}

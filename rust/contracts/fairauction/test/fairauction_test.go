@@ -8,7 +8,11 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/dict"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasp/packages/vm/wasmproc"
+	"github.com/iotaledger/wasplib/client"
+	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
@@ -159,4 +163,32 @@ func TestFaOneBid(t *testing.T) {
 	requireInt64(t, res, "bidders", 1)
 	requireInt64(t, res, "highest_bid", 500)
 	requireAgent(t, res, "highest_bidder", bidderId[0])
+}
+
+func TestFaClientAccess(t *testing.T) {
+	setupFaTest(t)
+
+	// wait for finalize_auction
+	env.AdvanceClockBy(61 * time.Minute)
+	chain.WaitForEmptyBacklog()
+
+	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	require.NoError(t, err)
+
+	requireInt64(t, res, "bidders", 0)
+
+	dict := getClientMap(t, wasmhost.KeyResults, res)
+	require.EqualValues(t, 0, dict.GetInt(fairauction.KeyBidders).Value())
+}
+
+func getClientMap(t *testing.T, keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
+	logger := testutil.NewLogger(t, "04:05.000")
+	host := &wasmhost.KvStoreHost{}
+	null := wasmproc.NewNullObject(host)
+	root := wasmproc.NewScDictFromKvStore(host, kvStore)
+	host.Init(null, root, logger)
+	root.InitObj(1, keyId, root)
+	logger.Info("Direct access to %s", string(host.GetKeyFromId(keyId)))
+	client.ConnectHost(host)
+	return client.Root.Immutable()
 }
