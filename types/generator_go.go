@@ -60,7 +60,7 @@ func GenerateGoTypes(path string) error {
 	//  write encoder and decoder for structs
 	for _, structName := range gen.keys {
 		funcName := "code" + structName
-		fmt.Fprintf(file, "\nfunc en%s(o *%s) []byte {\n", funcName, structName)
+		fmt.Fprintf(file, "\nfunc En%s(o *%s) []byte {\n", funcName, structName)
 		fmt.Fprintf(file, "\treturn client.NewBytesEncoder().\n")
 		for _, fld := range gen.jsonTypes[structName] {
 			for name, typeName := range fld {
@@ -74,7 +74,7 @@ func GenerateGoTypes(path string) error {
 		}
 		fmt.Fprintf(file, "\t\tData()\n}\n")
 
-		fmt.Fprintf(file, "\nfunc de%s(bytes []byte) *%s {\n", funcName, structName)
+		fmt.Fprintf(file, "\nfunc De%s(bytes []byte) *%s {\n", funcName, structName)
 		fmt.Fprintf(file, "\tdecode := client.NewBytesDecoder(bytes)\n\tdata := &%s{}\n", structName)
 		for _, fld := range gen.jsonTypes[structName] {
 			for name, typeName := range fld {

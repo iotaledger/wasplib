@@ -37,15 +37,15 @@ func placeBet(sc *client.ScCallContext) {
 	}
 
 	bet := &BetInfo{
-		better: sc.Caller(),
-		amount: amount,
-		color:  color,
+		Better: sc.Caller(),
+		Amount: amount,
+		Color:  color,
 	}
 
 	state := sc.State()
 	bets := state.GetBytesArray(keyBets)
 	betNr := bets.Length()
-	bets.GetBytes(betNr).SetValue(encodeBetInfo(bet))
+	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
 	if betNr == 0 {
 		playPeriod := state.GetInt(keyPlayPeriod).Value()
 		if playPeriod < 10 {
@@ -93,10 +93,10 @@ func payWinners(sc *client.ScCallContext) {
 	winners := make([]*BetInfo, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
-		bet := decodeBetInfo(lockedBets.GetBytes(i).Value())
-		totalBetAmount += bet.amount
-		if bet.color == winningColor {
-			totalWinAmount += bet.amount
+		bet := DecodeBetInfo(lockedBets.GetBytes(i).Value())
+		totalBetAmount += bet.Amount
+		if bet.Color == winningColor {
+			totalWinAmount += bet.Amount
 			winners = append(winners, bet)
 		}
 	}
@@ -114,12 +114,12 @@ func payWinners(sc *client.ScCallContext) {
 	size := len(winners)
 	for i := 0; i < size; i++ {
 		bet := winners[i]
-		payout := totalBetAmount * bet.amount / totalWinAmount
+		payout := totalBetAmount * bet.Amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.Transfer(bet.better, client.IOTA, payout)
+			sc.Transfer(bet.Better, client.IOTA, payout)
 		}
-		text := "Pay " + sc.Utility().String(payout) + " to " + bet.better.String()
+		text := "Pay " + sc.Utility().String(payout) + " to " + bet.Better.String()
 		sc.Log(text)
 	}
 

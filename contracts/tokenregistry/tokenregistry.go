@@ -29,21 +29,21 @@ func mintSupply(sc *client.ScCallContext) {
 	}
 	params := sc.Params()
 	token := &TokenInfo{
-		supply:      sc.Incoming().Balance(minted),
-		mintedBy:    sc.Caller(),
-		owner:       sc.Caller(),
-		created:     sc.Timestamp(),
-		updated:     sc.Timestamp(),
-		description: params.GetString(keyDescription).Value(),
-		userDefined: params.GetString(keyUserDefined).Value(),
+		Supply:      sc.Incoming().Balance(minted),
+		MintedBy:    sc.Caller(),
+		Owner:       sc.Caller(),
+		Created:     sc.Timestamp(),
+		Updated:     sc.Timestamp(),
+		Description: params.GetString(keyDescription).Value(),
+		UserDefined: params.GetString(keyUserDefined).Value(),
 	}
-	if token.supply <= 0 {
+	if token.Supply <= 0 {
 		sc.Panic("TokenRegistry: Insufficient supply")
 	}
-	if len(token.description) == 0 {
-		token.description += "no dscr"
+	if len(token.Description) == 0 {
+		token.Description += "no dscr"
 	}
-	registry.SetValue(encodeTokenInfo(token))
+	registry.SetValue(EncodeTokenInfo(token))
 	colors := state.GetColorArray(keyColorList)
 	colors.GetColor(colors.Length()).SetValue(minted)
 }

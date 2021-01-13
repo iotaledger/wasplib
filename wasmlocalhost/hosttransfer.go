@@ -5,6 +5,7 @@ package wasmlocalhost
 
 import (
 	"bytes"
+	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/client"
 )
@@ -34,6 +35,10 @@ func (m *HostTransfer) SetBytes(keyId int32, value []byte) {
 func (m *HostTransfer) SetInt(keyId int32, value int64) {
 	m.HostMap.SetInt(keyId, value)
 	if keyId == wasmhost.KeyLength {
+		return
+	}
+
+	if keyId == m.host.GetKeyIdFromBytes(balance.ColorNew[:]) && value == -1 {
 		return
 	}
 

@@ -30,8 +30,8 @@ func member(sc *client.ScCallContext) {
 		sc.Panic("Missing factor")
 	}
 	member := &Member{
-		address: address.Value(),
-		factor:  factor.Value(),
+		Address: address.Value(),
+		Factor:  factor.Value(),
 	}
 	state := sc.State()
 	totalFactor := state.GetInt(keyTotalFactor)
@@ -39,20 +39,20 @@ func member(sc *client.ScCallContext) {
 	members := state.GetBytesArray(keyMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		m := decodeMember(members.GetBytes(i).Value())
-		if m.address.Equals(member.address) {
-			total -= m.factor
-			total += member.factor
+		m := DecodeMember(members.GetBytes(i).Value())
+		if m.Address.Equals(member.Address) {
+			total -= m.Factor
+			total += member.Factor
 			totalFactor.SetValue(total)
-			members.GetBytes(i).SetValue(encodeMember(member))
-			sc.Log("Updated: " + member.address.String())
+			members.GetBytes(i).SetValue(EncodeMember(member))
+			sc.Log("Updated: " + member.Address.String())
 			return
 		}
 	}
-	total += member.factor
+	total += member.Factor
 	totalFactor.SetValue(total)
-	members.GetBytes(size).SetValue(encodeMember(member))
-	sc.Log("Appended: " + member.address.String())
+	members.GetBytes(size).SetValue(EncodeMember(member))
+	sc.Log("Appended: " + member.Address.String())
 }
 
 func dividend(sc *client.ScCallContext) {
@@ -67,11 +67,11 @@ func dividend(sc *client.ScCallContext) {
 	parts := int64(0)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		m := decodeMember(members.GetBytes(i).Value())
-		part := amount * m.factor / total
+		m := DecodeMember(members.GetBytes(i).Value())
+		part := amount * m.Factor / total
 		if part != 0 {
 			parts += part
-			sc.Transfer(m.address.AsAgent(), client.IOTA, part)
+			sc.Transfer(m.Address.AsAgent(), client.IOTA, part)
 		}
 	}
 	if parts != amount {

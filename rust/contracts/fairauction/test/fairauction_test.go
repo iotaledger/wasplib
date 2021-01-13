@@ -32,8 +32,8 @@ var env *solo.Solo
 var tokenColor balance.Color
 
 func setupFaTest(t *testing.T) {
-	wasmhost.HostTracing = true
-	env = solo.New(t, true, false)
+	wasmhost.HostTracing = false
+	env = solo.New(t, false, false)
 	chain = env.NewChain(nil, "ch1")
 	contractID = coretypes.NewContractID(chain.ChainID, coretypes.Hn(SC_NAME))
 	contractAgentID = coretypes.NewAgentIDFromContractID(contractID)
@@ -179,6 +179,32 @@ func TestFaClientAccess(t *testing.T) {
 
 	dict := getClientMap(t, wasmhost.KeyResults, res)
 	require.EqualValues(t, 0, dict.GetInt(fairauction.KeyBidders).Value())
+}
+
+func TestFaClientFullAccess(t *testing.T) {
+	setupFaTest(t)
+
+	req := solo.NewCall(SC_NAME, "place_bid", "color", tokenColor).
+		WithTransfer(balance.ColorIOTA, 500)
+	_, err := chain.PostRequest(req, bidderWallet[0])
+	require.NoError(t, err)
+
+	// wait for finalize_auction
+	env.AdvanceClockBy(61 * time.Minute)
+	chain.WaitForEmptyBacklog()
+
+	res, err := chain.CallView(SC_NAME, "copy_all_state")
+	require.NoError(t, err)
+
+	state := getClientMap(t, wasmhost.KeyResults, res)
+	auctions := state.GetMap(fairauction.KeyAuctions)
+	color := client.NewScColor(tokenColor[:])
+	currentAuction := auctions.GetMap(color)
+	currentInfo := currentAuction.GetBytes(fairauction.KeyInfo)
+	require.True(t, currentInfo.Exists())
+	auction := fairauction.DecodeAuctionInfo(currentInfo.Value())
+	require.EqualValues(t, 500, auction.HighestBid)
+	require.EqualValues(t, bidderId[0][:], auction.HighestBidder.Bytes())
 }
 
 func getClientMap(t *testing.T, keyId int32, kvStore kv.KVStore) client.ScImmutableMap {

@@ -14,11 +14,11 @@ var goReplacements = []string{
 	"fn ", "func ",
 	"ScExports::new", "client.NewScExports",
 	"ScExports::nothing", "client.Nothing",
-	"ScAddress::null", "&client.ScAddress{}",
-	"ScAgent::null", "&client.ScAgent{}",
-	"ScHash::null", "&client.ScHash{}",
-	"ScColor::iota", "client.IOTA",
-	"ScColor::mint", "client.MINT",
+	"ScAddress::Null", "&client.ScAddress{}",
+	"ScAgent::Null", "&client.ScAgent{}",
+	"ScHash::Null", "&client.ScHash{}",
+	"ScColor::Iota", "client.IOTA",
+	"ScColor::Mint", "client.MINT",
 	"(&", "(",
 	", &", ", ",
 	": &Sc", " *client.Sc",
@@ -73,7 +73,8 @@ var matchVarName = regexp.MustCompile(".[a-z][a-z_]+")
 
 func replaceConst(m string) string {
 	// replace Rust upper snake case to Go camel case
-	return replaceVarName(strings.ToLower(m))
+	name := replaceVarName(strings.ToLower(m))
+	return strings.ToUpper(name[:1]) + name[1:]
 }
 
 func replaceFuncCall(m string) string {

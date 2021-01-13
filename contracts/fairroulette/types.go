@@ -6,24 +6,24 @@ package fairroulette
 import "github.com/iotaledger/wasplib/client"
 
 type BetInfo struct {
-	amount int64
-	better *client.ScAgent
-	color  int64
+	Amount int64
+	Better *client.ScAgent
+	Color  int64
 }
 
-func encodeBetInfo(o *BetInfo) []byte {
+func EncodeBetInfo(o *BetInfo) []byte {
 	return client.NewBytesEncoder().
-		Int(o.amount).
-		Agent(o.better).
-		Int(o.color).
+		Int(o.Amount).
+		Agent(o.Better).
+		Int(o.Color).
 		Data()
 }
 
-func decodeBetInfo(bytes []byte) *BetInfo {
+func DecodeBetInfo(bytes []byte) *BetInfo {
 	decode := client.NewBytesDecoder(bytes)
 	data := &BetInfo{}
-	data.amount = decode.Int()
-	data.better = decode.Agent()
-	data.color = decode.Int()
+	data.Amount = decode.Int()
+	data.Better = decode.Agent()
+	data.Color = decode.Int()
 	return data
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/vm/core/accounts"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -91,7 +92,7 @@ func TestExample3(t *testing.T) {
 	glb.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337)
 
 	// send 42 iotas to the own account on-chain
-	req := solo.NewCall("accounts", "deposit").
+	req := solo.NewCall(accounts.Name, accounts.FuncDeposit).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
@@ -100,7 +101,7 @@ func TestExample3(t *testing.T) {
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 43) // 43!!
 
 	// withdraw back all iotas
-	req = solo.NewCall("accounts", "withdraw")
+	req = solo.NewCall(accounts.Name, accounts.FuncWithdrawToAddress)
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 

@@ -6,36 +6,36 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/client"
 
 type TokenInfo struct {
-	created     int64
-	description string
-	mintedBy    *client.ScAgent
-	owner       *client.ScAgent
-	supply      int64
-	updated     int64
-	userDefined string
+	Created     int64
+	Description string
+	MintedBy    *client.ScAgent
+	Owner       *client.ScAgent
+	Supply      int64
+	Updated     int64
+	UserDefined string
 }
 
-func encodeTokenInfo(o *TokenInfo) []byte {
+func EncodeTokenInfo(o *TokenInfo) []byte {
 	return client.NewBytesEncoder().
-		Int(o.created).
-		String(o.description).
-		Agent(o.mintedBy).
-		Agent(o.owner).
-		Int(o.supply).
-		Int(o.updated).
-		String(o.userDefined).
+		Int(o.Created).
+		String(o.Description).
+		Agent(o.MintedBy).
+		Agent(o.Owner).
+		Int(o.Supply).
+		Int(o.Updated).
+		String(o.UserDefined).
 		Data()
 }
 
-func decodeTokenInfo(bytes []byte) *TokenInfo {
+func DecodeTokenInfo(bytes []byte) *TokenInfo {
 	decode := client.NewBytesDecoder(bytes)
 	data := &TokenInfo{}
-	data.created = decode.Int()
-	data.description = decode.String()
-	data.mintedBy = decode.Agent()
-	data.owner = decode.Agent()
-	data.supply = decode.Int()
-	data.updated = decode.Int()
-	data.userDefined = decode.String()
+	data.Created = decode.Int()
+	data.Description = decode.String()
+	data.MintedBy = decode.Agent()
+	data.Owner = decode.Agent()
+	data.Supply = decode.Int()
+	data.Updated = decode.Int()
+	data.UserDefined = decode.String()
 	return data
 }

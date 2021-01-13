@@ -6,21 +6,21 @@ package dividend
 import "github.com/iotaledger/wasplib/client"
 
 type Member struct {
-	address *client.ScAddress
-	factor  int64
+	Address *client.ScAddress
+	Factor  int64
 }
 
-func encodeMember(o *Member) []byte {
+func EncodeMember(o *Member) []byte {
 	return client.NewBytesEncoder().
-		Address(o.address).
-		Int(o.factor).
+		Address(o.Address).
+		Int(o.Factor).
 		Data()
 }
 
-func decodeMember(bytes []byte) *Member {
+func DecodeMember(bytes []byte) *Member {
 	decode := client.NewBytesDecoder(bytes)
 	data := &Member{}
-	data.address = decode.Address()
-	data.factor = decode.Int()
+	data.Address = decode.Address()
+	data.Factor = decode.Int()
 	return data
 }

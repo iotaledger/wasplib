@@ -6,71 +6,71 @@ package fairauction
 import "github.com/iotaledger/wasplib/client"
 
 type AuctionInfo struct {
-	auctionOwner  *client.ScAgent // issuer of start_auction transaction
-	color         *client.ScColor // color of tokens for sale
-	deposit       int64           // deposit by auction owner to cover the SC fees
-	description   string          // auction description
-	duration      int64           // auction duration in minutes
-	highestBid    int64           // the current highest bid amount
-	highestBidder *client.ScAgent // the current highest bidder
-	minimumBid    int64           // minimum bid amount
-	numTokens     int64           // number of tokens for sale
-	ownerMargin   int64           // auction owner's margin in promilles
-	whenStarted   int64           // timestamp when auction started
+	Color         *client.ScColor // color of tokens for sale
+	Creator       *client.ScAgent // issuer of start_auction transaction
+	Deposit       int64           // deposit by auction owner to cover the SC fees
+	Description   string          // auction description
+	Duration      int64           // auction duration in minutes
+	HighestBid    int64           // the current highest bid amount
+	HighestBidder *client.ScAgent // the current highest bidder
+	MinimumBid    int64           // minimum bid amount
+	NumTokens     int64           // number of tokens for sale
+	OwnerMargin   int64           // auction owner's margin in promilles
+	WhenStarted   int64           // timestamp when auction started
 }
 
 type BidInfo struct {
-	amount    int64 // cumulative amount of bids from same bidder
-	index     int64 // index of bidder in bidder list
-	timestamp int64 // timestamp of most recent bid
+	Amount    int64 // cumulative amount of bids from same bidder
+	Index     int64 // index of bidder in bidder list
+	Timestamp int64 // timestamp of most recent bid
 }
 
-func encodeAuctionInfo(o *AuctionInfo) []byte {
+func EncodeAuctionInfo(o *AuctionInfo) []byte {
 	return client.NewBytesEncoder().
-		Agent(o.auctionOwner).
-		Color(o.color).
-		Int(o.deposit).
-		String(o.description).
-		Int(o.duration).
-		Int(o.highestBid).
-		Agent(o.highestBidder).
-		Int(o.minimumBid).
-		Int(o.numTokens).
-		Int(o.ownerMargin).
-		Int(o.whenStarted).
+		Color(o.Color).
+		Agent(o.Creator).
+		Int(o.Deposit).
+		String(o.Description).
+		Int(o.Duration).
+		Int(o.HighestBid).
+		Agent(o.HighestBidder).
+		Int(o.MinimumBid).
+		Int(o.NumTokens).
+		Int(o.OwnerMargin).
+		Int(o.WhenStarted).
 		Data()
 }
 
-func decodeAuctionInfo(bytes []byte) *AuctionInfo {
+func DecodeAuctionInfo(bytes []byte) *AuctionInfo {
 	decode := client.NewBytesDecoder(bytes)
 	data := &AuctionInfo{}
-	data.auctionOwner = decode.Agent()
-	data.color = decode.Color()
-	data.deposit = decode.Int()
-	data.description = decode.String()
-	data.duration = decode.Int()
-	data.highestBid = decode.Int()
-	data.highestBidder = decode.Agent()
-	data.minimumBid = decode.Int()
-	data.numTokens = decode.Int()
-	data.ownerMargin = decode.Int()
-	data.whenStarted = decode.Int()
+	data.Color = decode.Color()
+	data.Creator = decode.Agent()
+	data.Deposit = decode.Int()
+	data.Description = decode.String()
+	data.Duration = decode.Int()
+	data.HighestBid = decode.Int()
+	data.HighestBidder = decode.Agent()
+	data.MinimumBid = decode.Int()
+	data.NumTokens = decode.Int()
+	data.OwnerMargin = decode.Int()
+	data.WhenStarted = decode.Int()
 	return data
 }
 
-func encodeBidInfo(o *BidInfo) []byte {
+func EncodeBidInfo(o *BidInfo) []byte {
 	return client.NewBytesEncoder().
-		Int(o.amount).
-		Int(o.index).
-		Int(o.timestamp).
+		Int(o.Amount).
+		Int(o.Index).
+		Int(o.Timestamp).
 		Data()
 }
 
-func decodeBidInfo(bytes []byte) *BidInfo {
+func DecodeBidInfo(bytes []byte) *BidInfo {
 	decode := client.NewBytesDecoder(bytes)
 	data := &BidInfo{}
-	data.amount = decode.Int()
-	data.index = decode.Int()
-	data.timestamp = decode.Int()
+	data.Amount = decode.Int()
+	data.Index = decode.Int()
+	data.Timestamp = decode.Int()
 	return data
 }

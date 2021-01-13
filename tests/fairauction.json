@@ -1,8 +1,8 @@
 {
   "types": {
     "AuctionInfo": [
-      {"field": "auction_owner", "type": "Agent"},
       {"field": "color", "type": "Color"},
+      {"field": "creator", "type": "Agent"},
       {"field": "deposit", "type": "Int"},
       {"field": "description", "type": "String"},
       {"field": "duration", "type": "Int"},
@@ -50,8 +50,8 @@
             "#tokenColor": {
               "info": {
                 "AuctionInfo": {
-                  "auction_owner": "@caller",
                   "color": "#tokenColor",
+                  "creator": "@caller",
                   "deposit": 100,
                   "description": "N/A",
                   "duration": 60,
@@ -93,8 +93,8 @@
             "#tokenColor": {
               "info": {
                 "AuctionInfo": {
-                  "auction_owner": "@caller",
                   "color": "#tokenColor",
+                  "creator": "@caller",
                   "deposit": 100,
                   "description": "N/A",
                   "duration": 60,
@@ -150,8 +150,8 @@
             "#tokenColor": {
               "info": {
                 "AuctionInfo": {
-                  "auction_owner": "@caller",
                   "color": "#tokenColor",
+                  "creator": "@caller",
                   "deposit": 100,
                   "description": "N/A",
                   "duration": 60,
@@ -240,8 +240,8 @@
             "#tokenColor": {
               "info": {
                 "AuctionInfo": {
-                  "auction_owner": "@caller",
                   "color": "#tokenColor",
+                  "creator": "@caller",
                   "deposit": 100,
                   "description": "N/A",
                   "duration": 60,
@@ -352,8 +352,8 @@
             "#tokenColor": {
               "info": {
                 "AuctionInfo": {
-                  "auction_owner": "@caller",
                   "color": "#tokenColor",
+                  "creator": "@caller",
                   "deposit": 100,
                   "description": "N/A",
                   "duration": 60,

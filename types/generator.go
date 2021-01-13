@@ -24,7 +24,7 @@ func camelcase(name string) string {
 		name = name[:index] + strings.ToUpper(c) + name[index+2:]
 		index = strings.Index(name, "_")
 	}
-	return name
+	return strings.ToUpper(name[:1]) + name[1:]
 }
 
 func (gen *Generator) LoadTypes(path string) error {
