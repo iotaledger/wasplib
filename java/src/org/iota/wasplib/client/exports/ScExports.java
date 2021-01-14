@@ -5,21 +5,20 @@ package org.iota.wasplib.client.exports;
 
 import org.iota.wasplib.client.context.ScCallContext;
 import org.iota.wasplib.client.context.ScViewContext;
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
-import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableStringArray;
 
 import java.util.ArrayList;
 
 public class ScExports {
-	private static final ScMutableMap root = new ScMutableMap(1);
 	private static final ArrayList<ScCall> calls = new ArrayList<>();
 	private static final ArrayList<ScView> views = new ArrayList<>();
 
 	ScMutableStringArray exports;
 
 	public ScExports() {
-		exports = root.GetStringArray(Key.Exports);
+		exports = Host.root.GetStringArray(Key.Exports);
 		// tell host what our highest predefined key is
 		// this helps detect missing or extra keys
 		exports.GetString(Key.KEY_ZZZZZZZ).SetValue("Java:KEY_ZZZZZZZ");

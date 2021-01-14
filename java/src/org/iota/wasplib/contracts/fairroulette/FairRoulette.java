@@ -14,11 +14,11 @@ import org.iota.wasplib.client.mutable.ScMutableMap;
 import java.util.ArrayList;
 
 public class FairRoulette {
-	private static final Key keyBets = new Key("bets");
-	private static final Key keyColor = new Key("color");
-	private static final Key keyLastWinningColor = new Key("last_winning_color");
-	private static final Key keyLockedBets = new Key("locked_bets");
-	private static final Key keyPlayPeriod = new Key("play_period");
+	private static final Key KeyBets = new Key("bets");
+	private static final Key KeyColor = new Key("color");
+	private static final Key KeyLastWinningColor = new Key("last_winning_color");
+	private static final Key KeyLockedBets = new Key("locked_bets");
+	private static final Key KeyPlayPeriod = new Key("play_period");
 
 	private static final int numColors = 5;
 	private static final int defaultPlayPeriod = 120;
@@ -37,7 +37,7 @@ public class FairRoulette {
 		if (amount == 0) {
 			sc.Panic("Empty bet...");
 		}
-		long color = sc.Params().GetInt(keyColor).Value();
+		long color = sc.Params().GetInt(KeyColor).Value();
 		if (color == 0) {
 			sc.Panic("No color...");
 		}
@@ -47,17 +47,17 @@ public class FairRoulette {
 
 		BetInfo bet = new BetInfo();
 		{
-			bet.better = sc.Caller();
-			bet.amount = amount;
-			bet.color = color;
+			bet.Better = sc.Caller();
+			bet.Amount = amount;
+			bet.Color = color;
 		}
 
 		ScMutableMap state = sc.State();
-		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
+		ScMutableBytesArray bets = state.GetBytesArray(KeyBets);
 		int betNr = bets.Length();
 		bets.GetBytes(betNr).SetValue(BetInfo.encode(bet));
 		if (betNr == 0) {
-			long playPeriod = state.GetInt(keyPlayPeriod).Value();
+			long playPeriod = state.GetInt(KeyPlayPeriod).Value();
 			if (playPeriod < 10) {
 				playPeriod = defaultPlayPeriod;
 			}
@@ -73,8 +73,8 @@ public class FairRoulette {
 
 		// move all current bets to the locked_bets array
 		ScMutableMap state = sc.State();
-		ScMutableBytesArray bets = state.GetBytesArray(keyBets);
-		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
+		ScMutableBytesArray bets = state.GetBytesArray(KeyBets);
+		ScMutableBytesArray lockedBets = state.GetBytesArray(KeyLockedBets);
 		int nrBets = bets.Length();
 		for (int i = 0; i < nrBets; i++) {
 			byte[] bytes = bets.GetBytes(i).Value();
@@ -94,19 +94,19 @@ public class FairRoulette {
 
 		long winningColor = sc.Utility().Random(5) + 1;
 		ScMutableMap state = sc.State();
-		state.GetInt(keyLastWinningColor).SetValue(winningColor);
+		state.GetInt(KeyLastWinningColor).SetValue(winningColor);
 
 		// gather all winners and calculate some totals
 		long totalBetAmount = 0;
 		long totalWinAmount = 0;
-		ScMutableBytesArray lockedBets = state.GetBytesArray(keyLockedBets);
+		ScMutableBytesArray lockedBets = state.GetBytesArray(KeyLockedBets);
 		ArrayList<BetInfo> winners = new ArrayList<BetInfo>();
 		int nrBets = lockedBets.Length();
 		for (int i = 0; i < nrBets; i++) {
 			BetInfo bet = BetInfo.decode(lockedBets.GetBytes(i).Value());
-			totalBetAmount += bet.amount;
-			if (bet.color == winningColor) {
-				totalWinAmount += bet.amount;
+			totalBetAmount += bet.Amount;
+			if (bet.Color == winningColor) {
+				totalWinAmount += bet.Amount;
 				winners.add(bet);
 			}
 		}
@@ -125,12 +125,12 @@ public class FairRoulette {
 		String text;
 		for (int i = 0; i < size; i++) {
 			BetInfo bet = winners.get(i);
-			long payout = totalBetAmount * bet.amount / totalWinAmount;
+			long payout = totalBetAmount * bet.Amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
-				sc.Transfer(bet.better, ScColor.IOTA, payout);
+				sc.Transfer(bet.Better, ScColor.IOTA, payout);
 			}
-			text = "Pay " + payout + " to " + bet.better;
+			text = "Pay " + payout + " to " + bet.Better;
 			sc.Log(text);
 		}
 
@@ -149,11 +149,11 @@ public class FairRoulette {
 			sc.Panic("Cancel spoofed request");
 		}
 
-		long playPeriod = sc.Params().GetInt(keyPlayPeriod).Value();
+		long playPeriod = sc.Params().GetInt(KeyPlayPeriod).Value();
 		if (playPeriod < 10) {
 			sc.Panic("Invalid play period...");
 		}
 
-		sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod);
+		sc.State().GetInt(KeyPlayPeriod).SetValue(playPeriod);
 	}
 }

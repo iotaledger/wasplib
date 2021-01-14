@@ -97,7 +97,7 @@ func TestFaStartAuction(t *testing.T) {
 	env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-35-1)
 
 	//TODO: seems silly to force creator to withdraw this 1 iota from chain account?
-    // also look at how to send this back/retrieve it when creator was SC on other chain
+	// also look at how to send this back/retrieve it when creator was SC on other chain
 
 	// 1 used for request was sent back to account on chain
 	chain.AssertAccountBalance(creatorId, balance.ColorIOTA, 1)
@@ -177,8 +177,8 @@ func TestFaClientAccess(t *testing.T) {
 
 	requireInt64(t, res, "bidders", 0)
 
-	dict := getClientMap(t, wasmhost.KeyResults, res)
-	require.EqualValues(t, 0, dict.GetInt(fairauction.KeyBidders).Value())
+	results := getClientMap(t, wasmhost.KeyResults, res)
+	require.EqualValues(t, 0, results.GetInt(fairauction.KeyBidders).Value())
 }
 
 func TestFaClientFullAccess(t *testing.T) {

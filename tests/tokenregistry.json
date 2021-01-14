@@ -12,16 +12,16 @@
   },
   "setups": {
     "default": {
-      "caller": "@caller",
-      "timestamp": 20201027172138,
-      "balances": {"#iota": 100},
       "contract": {
-        "chain": "$chainId",
         "name": "tokenregistry",
-        "description": "Register colored tokens on the Tangle",
-        "id": "@scId",
-        "creator": "@scCreator"
-      }
+        "description": "Register colored tokens on the Tangle"
+      },
+      "balances": {"#iota": 100},
+      "caller": "@caller",
+      "chain": "$chainId",
+      "creator": "@scCreator",
+      "id": "@scId",
+      "timestamp": 20201027172138
     }
   },
   "tests": [

@@ -3,6 +3,7 @@
 
 package org.iota.wasplib.client.context;
 
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.immutable.ScImmutableMapArray;
 import org.iota.wasplib.client.keys.Key;
@@ -13,10 +14,10 @@ public class ScViewContext extends ScBaseContext {
 	}
 
 	public ScImmutableMap State() {
-		return root.GetMap(Key.State).Immutable();
+		return Host.root.GetMap(Key.State).Immutable();
 	}
 
 	public ScImmutableMapArray TimestampedLog(MapKey key) {
-		return root.GetMap(Key.Logs).GetMapArray(key).Immutable();
+		return Host.root.GetMap(Key.Logs).GetMapArray(key).Immutable();
 	}
 }

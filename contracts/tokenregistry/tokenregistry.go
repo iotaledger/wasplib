@@ -5,10 +5,10 @@ package tokenregistry
 
 import "github.com/iotaledger/wasplib/client"
 
-const keyColorList = client.Key("color_list")
-const keyDescription = client.Key("description")
-const keyRegistry = client.Key("registry")
-const keyUserDefined = client.Key("user_defined")
+const KeyColorList = client.Key("color_list")
+const KeyDescription = client.Key("description")
+const KeyRegistry = client.Key("registry")
+const KeyUserDefined = client.Key("user_defined")
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -23,7 +23,7 @@ func mintSupply(sc *client.ScCallContext) {
 		sc.Panic("TokenRegistry: No newly minted tokens found")
 	}
 	state := sc.State()
-	registry := state.GetMap(keyRegistry).GetBytes(minted)
+	registry := state.GetMap(KeyRegistry).GetBytes(minted)
 	if registry.Exists() {
 		sc.Panic("TokenRegistry: Color already exists")
 	}
@@ -34,8 +34,8 @@ func mintSupply(sc *client.ScCallContext) {
 		Owner:       sc.Caller(),
 		Created:     sc.Timestamp(),
 		Updated:     sc.Timestamp(),
-		Description: params.GetString(keyDescription).Value(),
-		UserDefined: params.GetString(keyUserDefined).Value(),
+		Description: params.GetString(KeyDescription).Value(),
+		UserDefined: params.GetString(KeyUserDefined).Value(),
 	}
 	if token.Supply <= 0 {
 		sc.Panic("TokenRegistry: Insufficient supply")
@@ -44,7 +44,7 @@ func mintSupply(sc *client.ScCallContext) {
 		token.Description += "no dscr"
 	}
 	registry.SetValue(EncodeTokenInfo(token))
-	colors := state.GetColorArray(keyColorList)
+	colors := state.GetColorArray(KeyColorList)
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 

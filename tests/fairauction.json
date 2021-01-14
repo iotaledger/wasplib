@@ -22,15 +22,15 @@
   "setups": {
     "default": {
       "contract": {
-        "chain": "$chainId",
         "name": "fairauction",
-        "description": "Auction colored tokens",
-        "id": "@scId",
-        "creator": "@scCreator"
+        "description": "Auction colored tokens"
       },
       "balances": {"#iota": 100},
-      "timestamp": 20201027172138,
-      "caller": "@caller"
+      "caller": "@caller",
+      "chain": "$chainId",
+      "creator": "@scCreator",
+      "id": "@scId",
+      "timestamp": 20201027172138
     }
   },
   "tests": [

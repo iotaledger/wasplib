@@ -9,22 +9,22 @@ import org.iota.wasplib.client.hashtypes.ScAddress;
 
 public class Member {
 	//@formatter:off
-	public ScAddress address;
-	public long      factor;
+	public ScAddress Address;
+	public long      Factor;
 	//@formatter:on
 
 	public static byte[] encode(Member o) {
 		return new BytesEncoder().
-				Address(o.address).
-				Int(o.factor).
+				Address(o.Address).
+				Int(o.Factor).
 				Data();
 	}
 
 	public static Member decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
 		Member data = new Member();
-		data.address = decode.Address();
-		data.factor = decode.Int();
+		data.Address = decode.Address();
+		data.Factor = decode.Int();
 		return data;
 	}
 }

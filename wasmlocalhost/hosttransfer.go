@@ -49,8 +49,8 @@ func (m *HostTransfer) SetInt(keyId int32, value int64) {
 		return
 	}
 	// check if compacting, in which case no balance change happens
-	contract := m.host.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP)
-	scId := contract.GetBytes(wasmhost.KeyId)
+	root := m.host.FindObject(1)
+	scId := root.GetBytes(wasmhost.KeyId)
 	if !bytes.Equal(m.agent, scId) {
 		balances.SetInt(keyId, colorAmount-value)
 	}

@@ -13,10 +13,10 @@ import org.iota.wasplib.client.mutable.ScMutableColorArray;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class TokenRegistry {
-	private static final Key keyColorList = new Key("color_list");
-	private static final Key keyDescription = new Key("description");
-	private static final Key keyRegistry = new Key("registry");
-	private static final Key keyUserDefined = new Key("user_defined");
+	private static final Key KeyColorList = new Key("color_list");
+	private static final Key KeyDescription = new Key("description");
+	private static final Key KeyRegistry = new Key("registry");
+	private static final Key KeyUserDefined = new Key("user_defined");
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
@@ -31,29 +31,29 @@ public class TokenRegistry {
 			sc.Panic("TokenRegistry: No newly minted tokens found");
 		}
 		ScMutableMap state = sc.State();
-		ScMutableBytes registry = state.GetMap(keyRegistry).GetBytes(minted);
+		ScMutableBytes registry = state.GetMap(KeyRegistry).GetBytes(minted);
 		if (registry.Exists()) {
 			sc.Panic("TokenRegistry: Color already exists");
 		}
 		ScImmutableMap params = sc.Params();
 		TokenInfo token = new TokenInfo();
 		{
-			token.supply = sc.Incoming().Balance(minted);
-			token.mintedBy = sc.Caller();
-			token.owner = sc.Caller();
-			token.created = sc.Timestamp();
-			token.updated = sc.Timestamp();
-			token.description = params.GetString(keyDescription).Value();
-			token.userDefined = params.GetString(keyUserDefined).Value();
+			token.Supply = sc.Incoming().Balance(minted);
+			token.MintedBy = sc.Caller();
+			token.Owner = sc.Caller();
+			token.Created = sc.Timestamp();
+			token.Updated = sc.Timestamp();
+			token.Description = params.GetString(KeyDescription).Value();
+			token.UserDefined = params.GetString(KeyUserDefined).Value();
 		}
-		if (token.supply <= 0) {
+		if (token.Supply <= 0) {
 			sc.Panic("TokenRegistry: Insufficient supply");
 		}
-		if (token.description.isEmpty()) {
-			token.description += "no dscr";
+		if (token.Description.isEmpty()) {
+			token.Description += "no dscr";
 		}
 		registry.SetValue(TokenInfo.encode(token));
-		ScMutableColorArray colors = state.GetColorArray(keyColorList);
+		ScMutableColorArray colors = state.GetColorArray(KeyColorList);
 		colors.GetColor(colors.Length()).SetValue(minted);
 	}
 

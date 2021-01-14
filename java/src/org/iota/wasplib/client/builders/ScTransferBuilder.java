@@ -6,6 +6,7 @@ package org.iota.wasplib.client.builders;
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
@@ -14,7 +15,7 @@ public class ScTransferBuilder {
 	ScMutableMap transfer;
 
 	public ScTransferBuilder(ScAgent agent) {
-		this(ScRequestBuilder.root.GetMap(Key.Contract).GetAddress(Key.Chain).Value(), agent);
+		this(Host.root.GetAddress(Key.Chain).Value(), agent);
 	}
 
 	public ScTransferBuilder(ScAddress address) {
@@ -22,7 +23,7 @@ public class ScTransferBuilder {
 	}
 
 	public ScTransferBuilder(ScAddress chain, ScAgent agent) {
-		ScMutableMapArray transfers = ScRequestBuilder.root.GetMapArray(Key.Transfers);
+		ScMutableMapArray transfers = Host.root.GetMapArray(Key.Transfers);
 		transfer = transfers.GetMap(transfers.Length());
 		transfer.GetAgent(Key.Agent).SetValue(agent);
 		if (chain != null) {

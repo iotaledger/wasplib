@@ -20,7 +20,10 @@ type JsonDataModel struct {
 	Balances  map[string]interface{} `json:"balances"`
 	Timestamp int64                  `json:"timestamp"`
 	Caller    string                 `json:"caller"`
+	Chain     string                 `json:"chain"`
+	Creator   string                 `json:"creator"`
 	Function  string                 `json:"function"`
+	Id        string                 `json:"id"`
 	Incoming  map[string]interface{} `json:"incoming"`
 	Params    map[string]interface{} `json:"params"`
 	State     map[string]interface{} `json:"state"`
@@ -69,7 +72,6 @@ func NewJsonTests(pathName string) (*JsonTests, error) {
 }
 
 func (t *JsonTests) ClearData() {
-	t.ClearObjectData(wasmhost.KeyContract, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyBalances, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyIncoming, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyParams, client.TYPE_MAP)
@@ -293,7 +295,6 @@ func (t *JsonTests) GetKeyId(key string) int32 {
 }
 
 func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
-	t.LoadMapData(wasmhost.KeyContract, jsonData.Contract)
 	t.LoadMapData(wasmhost.KeyBalances, jsonData.Balances)
 	t.LoadMapData(wasmhost.KeyIncoming, jsonData.Incoming)
 	t.LoadMapData(wasmhost.KeyParams, jsonData.Params)
@@ -305,6 +306,15 @@ func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
 	}
 	if jsonData.Caller != "" {
 		root.SetString(wasmhost.KeyCaller, process(jsonData.Caller))
+	}
+	if jsonData.Chain != "" {
+		root.SetString(wasmhost.KeyChain, process(jsonData.Chain))
+	}
+	if jsonData.Creator != "" {
+		root.SetString(wasmhost.KeyCreator, process(jsonData.Creator))
+	}
+	if jsonData.Id != "" {
+		root.SetString(wasmhost.KeyId, process(jsonData.Id))
 	}
 }
 
@@ -515,7 +525,7 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	}
 
 	root := t.FindObject(1)
-	scId := t.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP).GetString(wasmhost.KeyId)
+	scId := root.GetString(wasmhost.KeyId)
 	posts := t.FindSubObject(nil, wasmhost.KeyPosts, client.TYPE_MAP|client.TYPE_ARRAY)
 
 	expectedCalls := len(test.Expect.Posts)

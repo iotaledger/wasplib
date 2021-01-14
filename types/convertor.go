@@ -31,6 +31,8 @@ var goReplacements = []string{
 	".Value().String()", ".String()",
 	".ToString()", ".String()",
 	" onLoad()", " OnLoad()",
+	"decode", "Decode",
+	"encode", "Encode",
 	"#[noMangle]", "",
 	"mod types", "",
 	"use types::*", "",
@@ -40,9 +42,9 @@ var javaReplacements = []string{
 	"pub fn ", "public static void ",
 	"fn ", "public static void ",
 	"ScExports::new", "new ScExports",
-	"::null", ".NONE",
-	"::iota", ".IOTA",
-	"::mint", ".MINT",
+	"::Null", ".NULL",
+	"::Iota", ".IOTA",
+	"::Mint", ".MINT",
 	"(&", "(",
 	", &", ", ",
 	"};", "}",
@@ -69,7 +71,10 @@ var matchInitializerHeader = regexp.MustCompile("(\\w+) :?= &?(\\w+) {")
 var matchLet = regexp.MustCompile("let (mut )?(\\w+)(: &str)? =")
 var matchParam = regexp.MustCompile("(\\(|, ?)(\\w+): &?(\\w+)")
 var matchToString = regexp.MustCompile("\\+ &([^ ]+)\\.ToString\\(\\)")
+var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_]+")
 var matchVarName = regexp.MustCompile(".[a-z][a-z_]+")
+
+var lastInit string
 
 func replaceConst(m string) string {
 	// replace Rust upper snake case to Go camel case
@@ -80,6 +85,19 @@ func replaceConst(m string) string {
 func replaceFuncCall(m string) string {
 	// replace Rust . lower snake case ( to Go capitalized camel case
 	return replaceVarName(strings.ToUpper(m[:2]) + m[2:])
+}
+
+func replaceFieldName(m string) string {
+	if m[:1] == "\"" {
+		return m
+	}
+	// replace Rust lower snake case to Go camel case
+	index := strings.Index(m, "_")
+	for index > 0 {
+		m = m[:index] + strings.ToUpper(m[index+1:index+2]) + m[index+2:]
+		index = strings.Index(m, "_")
+	}
+	return strings.ToUpper(m[:2]) +  m[2:]
 }
 
 func replaceVarName(m string) string {
@@ -138,11 +156,12 @@ func RustToGoLine(line string, contract string) string {
 	line = matchConstStr.ReplaceAllString(line, "const $1 = client.Key($2)")
 	line = matchConstInt.ReplaceAllString(line, "const $1 = $2")
 	line = matchLet.ReplaceAllString(line, "$2 :=")
+	line = matchForLoop.ReplaceAllString(line, "for $1 := int32($2); $1 < $3; $1++")
 	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
 	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
+	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
 	line = matchToString.ReplaceAllString(line, "+ $1.String()")
-	line = matchForLoop.ReplaceAllString(line, "for $1 := int32($2); $1 < $3; $1++")
 	line = matchInitializerHeader.ReplaceAllString(line, "$1 := &$2 {")
 
 	for i := 0; i < len(goReplacements); i += 2 {
@@ -165,15 +184,20 @@ func RustToJavaLine(line string, contract string) string {
 	line = matchConstStr.ReplaceAllString(line, "private static final Key $1 = new Key($2)")
 	line = matchConstInt.ReplaceAllString(line, "private static final int $1 = $2")
 	line = matchLet.ReplaceAllString(line, "$2 =")
+	line = matchForLoop.ReplaceAllString(line, "for (int $1 = $2; $1 < $3; $1++)")
 	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
 	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
+	line = matchInitializer.ReplaceAllString(line, lastInit + ".$1 = $2;")
+	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
 	line = matchToString.ReplaceAllString(line, "+ $1")
-	line = matchForLoop.ReplaceAllString(line, "for (int $1 = $2; $1 < $3; $1++)")
 	line = matchIf.ReplaceAllString(line, "if ($1) {")
 	line = matchParam.ReplaceAllString(line, "$1$3 $2")
-	line = matchInitializer.ReplaceAllString(line, "xxx.$1 = $2;")
 	line = matchCodec.ReplaceAllString(line, "$2.$1")
+	initParts := matchInitializerHeader.FindStringSubmatch(line)
+	if initParts != nil {
+		lastInit = initParts[1]
+	}
 	line = matchInitializerHeader.ReplaceAllString(line, "$2 $1 = new $2();\n         {")
 
 	for i := 0; i < len(javaReplacements); i += 2 {

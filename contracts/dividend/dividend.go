@@ -5,10 +5,10 @@ package dividend
 
 import "github.com/iotaledger/wasplib/client"
 
-const keyAddress = client.Key("address")
-const keyFactor = client.Key("factor")
-const keyMembers = client.Key("members")
-const keyTotalFactor = client.Key("total_factor")
+const KeyAddress = client.Key("address")
+const KeyFactor = client.Key("factor")
+const KeyMembers = client.Key("members")
+const KeyTotalFactor = client.Key("total_factor")
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -21,11 +21,11 @@ func member(sc *client.ScCallContext) {
 		sc.Panic("Cancel spoofed request")
 	}
 	params := sc.Params()
-	address := params.GetAddress(keyAddress)
+	address := params.GetAddress(KeyAddress)
 	if !address.Exists() {
 		sc.Panic("Missing address")
 	}
-	factor := params.GetInt(keyFactor)
+	factor := params.GetInt(KeyFactor)
 	if !factor.Exists() {
 		sc.Panic("Missing factor")
 	}
@@ -34,9 +34,9 @@ func member(sc *client.ScCallContext) {
 		Factor:  factor.Value(),
 	}
 	state := sc.State()
-	totalFactor := state.GetInt(keyTotalFactor)
+	totalFactor := state.GetInt(KeyTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray(keyMembers)
+	members := state.GetBytesArray(KeyMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
 		m := DecodeMember(members.GetBytes(i).Value())
@@ -61,9 +61,9 @@ func dividend(sc *client.ScCallContext) {
 		sc.Panic("Nothing to divide")
 	}
 	state := sc.State()
-	totalFactor := state.GetInt(keyTotalFactor)
+	totalFactor := state.GetInt(KeyTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray(keyMembers)
+	members := state.GetBytesArray(KeyMembers)
 	parts := int64(0)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {

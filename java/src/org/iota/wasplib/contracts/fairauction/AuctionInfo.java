@@ -10,49 +10,49 @@ import org.iota.wasplib.client.hashtypes.ScColor;
 
 public class AuctionInfo {
 	//@formatter:off
-	public ScAgent auctionOwner;  // issuer of start_auction transaction
-	public ScColor color;         // color of tokens for sale
-	public long    deposit;       // deposit by auction owner to cover the SC fees
-	public String  description;   // auction description
-	public long    duration;      // auction duration in minutes
-	public long    highestBid;    // the current highest bid amount
-	public ScAgent highestBidder; // the current highest bidder
-	public long    minimumBid;    // minimum bid amount
-	public long    numTokens;     // number of tokens for sale
-	public long    ownerMargin;   // auction owner's margin in promilles
-	public long    whenStarted;   // timestamp when auction started
+	public ScColor Color;         // color of tokens for sale
+	public ScAgent Creator;       // issuer of start_auction transaction
+	public long    Deposit;       // deposit by auction owner to cover the SC fees
+	public String  Description;   // auction description
+	public long    Duration;      // auction duration in minutes
+	public long    HighestBid;    // the current highest bid amount
+	public ScAgent HighestBidder; // the current highest bidder
+	public long    MinimumBid;    // minimum bid amount
+	public long    NumTokens;     // number of tokens for sale
+	public long    OwnerMargin;   // auction owner's margin in promilles
+	public long    WhenStarted;   // timestamp when auction started
 	//@formatter:on
 
 	public static byte[] encode(AuctionInfo o) {
 		return new BytesEncoder().
-				Agent(o.auctionOwner).
-				Color(o.color).
-				Int(o.deposit).
-				String(o.description).
-				Int(o.duration).
-				Int(o.highestBid).
-				Agent(o.highestBidder).
-				Int(o.minimumBid).
-				Int(o.numTokens).
-				Int(o.ownerMargin).
-				Int(o.whenStarted).
+				Color(o.Color).
+				Agent(o.Creator).
+				Int(o.Deposit).
+				String(o.Description).
+				Int(o.Duration).
+				Int(o.HighestBid).
+				Agent(o.HighestBidder).
+				Int(o.MinimumBid).
+				Int(o.NumTokens).
+				Int(o.OwnerMargin).
+				Int(o.WhenStarted).
 				Data();
 	}
 
 	public static AuctionInfo decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
 		AuctionInfo data = new AuctionInfo();
-		data.auctionOwner = decode.Agent();
-		data.color = decode.Color();
-		data.deposit = decode.Int();
-		data.description = decode.String();
-		data.duration = decode.Int();
-		data.highestBid = decode.Int();
-		data.highestBidder = decode.Agent();
-		data.minimumBid = decode.Int();
-		data.numTokens = decode.Int();
-		data.ownerMargin = decode.Int();
-		data.whenStarted = decode.Int();
+		data.Color = decode.Color();
+		data.Creator = decode.Agent();
+		data.Deposit = decode.Int();
+		data.Description = decode.String();
+		data.Duration = decode.Int();
+		data.HighestBid = decode.Int();
+		data.HighestBidder = decode.Agent();
+		data.MinimumBid = decode.Int();
+		data.NumTokens = decode.Int();
+		data.OwnerMargin = decode.Int();
+		data.WhenStarted = decode.Int();
 		return data;
 	}
 }

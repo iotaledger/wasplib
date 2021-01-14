@@ -36,39 +36,27 @@ impl ScBalances {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // used to retrieve any information related to the current smart contract
-pub struct ScContract {
-    contract: ScImmutableMap,
-}
+pub struct ScContract {}
 
 impl ScContract {
     // retrieve the chain id of the chain this contract lives on
     pub fn chain(&self) -> ScAddress {
-        self.contract.get_address(&KEY_CHAIN).value()
+        ROOT.get_address(&KEY_CHAIN).value()
     }
 
     // retrieve the agent id of the owner of the chain this contract lives on
     pub fn chain_owner(&self) -> ScAgent {
-        self.contract.get_agent(&KEY_CHAIN_OWNER).value()
+        ROOT.get_agent(&KEY_CHAIN_OWNER).value()
     }
 
     // retrieve the agent id of the creator of this contract
     pub fn creator(&self) -> ScAgent {
-        self.contract.get_agent(&KEY_CREATOR).value()
-    }
-
-    // retrieve this contract's description
-    pub fn description(&self) -> String {
-        self.contract.get_string(&KEY_DESCRIPTION).value()
+        ROOT.get_agent(&KEY_CREATOR).value()
     }
 
     // retrieve the id of this contract
     pub fn id(&self) -> ScAgent {
-        self.contract.get_agent(&KEY_ID).value()
-    }
-
-    // retrieve this contract's name
-    pub fn name(&self) -> String {
-        self.contract.get_string(&KEY_NAME).value()
+        ROOT.get_agent(&KEY_ID).value()
     }
 }
 
@@ -151,7 +139,7 @@ pub trait ScBaseContext {
 
     // groups contract-related information under one access space
     fn contract(&self) -> ScContract {
-        ScContract { contract: ROOT.get_map(&KEY_CONTRACT).immutable() }
+        ScContract {}
     }
 
     // quick check to see if the caller of the smart contract was the specified originator agent

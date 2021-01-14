@@ -3,15 +3,15 @@
   "setups": {
     "default": {
       "contract": {
-        "chain": "$chainId",
         "name": "inccounter",
-        "description": "Test basic functionality",
-        "id": "@scId",
-        "creator": "@scCreator"
+        "description": "Test basic functionality"
       },
+      "id": "@scId",
+      "creator": "@scCreator",
+      "chain": "$chainId",
       "balances": {"#iota": 100},
-      "timestamp": 20201027172138,
-      "caller": "@caller"
+      "caller": "@caller",
+      "timestamp": 20201027172138
     }
   },
   "tests": [

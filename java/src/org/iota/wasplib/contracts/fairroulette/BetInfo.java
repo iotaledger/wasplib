@@ -9,25 +9,25 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 
 public class BetInfo {
 	//@formatter:off
-	public long    amount;
-	public ScAgent better;
-	public long    color;
+	public long    Amount;
+	public ScAgent Better;
+	public long    Color;
 	//@formatter:on
 
 	public static byte[] encode(BetInfo o) {
 		return new BytesEncoder().
-				Int(o.amount).
-				Agent(o.better).
-				Int(o.color).
+				Int(o.Amount).
+				Agent(o.Better).
+				Int(o.Color).
 				Data();
 	}
 
 	public static BetInfo decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
 		BetInfo data = new BetInfo();
-		data.amount = decode.Int();
-		data.better = decode.Agent();
-		data.color = decode.Int();
+		data.Amount = decode.Int();
+		data.Better = decode.Agent();
+		data.Color = decode.Int();
 		return data;
 	}
 }

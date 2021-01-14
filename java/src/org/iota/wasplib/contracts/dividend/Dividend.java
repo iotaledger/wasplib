@@ -15,10 +15,10 @@ import org.iota.wasplib.client.mutable.ScMutableInt;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
 public class Dividend {
-	private static final Key keyAddress = new Key("address");
-	private static final Key keyFactor = new Key("factor");
-	private static final Key keyMembers = new Key("members");
-	private static final Key keyTotalFactor = new Key("total_factor");
+	private static final Key KeyAddress = new Key("address");
+	private static final Key KeyFactor = new Key("factor");
+	private static final Key KeyMembers = new Key("members");
+	private static final Key KeyTotalFactor = new Key("total_factor");
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
@@ -31,39 +31,39 @@ public class Dividend {
 			sc.Panic("Cancel spoofed request");
 		}
 		ScImmutableMap params = sc.Params();
-		ScImmutableAddress address = params.GetAddress(keyAddress);
+		ScImmutableAddress address = params.GetAddress(KeyAddress);
 		if (!address.Exists()) {
 			sc.Panic("Missing address");
 		}
-		ScImmutableInt factor = params.GetInt(keyFactor);
+		ScImmutableInt factor = params.GetInt(KeyFactor);
 		if (!factor.Exists()) {
 			sc.Panic("Missing factor");
 		}
 		Member member = new Member();
 		{
-			member.address = address.Value();
-			member.factor = factor.Value();
+			member.Address = address.Value();
+			member.Factor = factor.Value();
 		}
 		ScMutableMap state = sc.State();
-		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
+		ScMutableInt totalFactor = state.GetInt(KeyTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
+		ScMutableBytesArray members = state.GetBytesArray(KeyMembers);
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
 			Member m = Member.decode(members.GetBytes(i).Value());
-			if (m.address.equals(member.address)) {
-				total -= m.factor;
-				total += member.factor;
+			if (m.Address.equals(member.Address)) {
+				total -= m.Factor;
+				total += member.Factor;
 				totalFactor.SetValue(total);
 				members.GetBytes(i).SetValue(Member.encode(member));
-				sc.Log("Updated: " + member.address);
+				sc.Log("Updated: " + member.Address);
 				return;
 			}
 		}
-		total += member.factor;
+		total += member.Factor;
 		totalFactor.SetValue(total);
 		members.GetBytes(size).SetValue(Member.encode(member));
-		sc.Log("Appended: " + member.address);
+		sc.Log("Appended: " + member.Address);
 	}
 
 	public static void dividend(ScCallContext sc) {
@@ -72,17 +72,17 @@ public class Dividend {
 			sc.Panic("Nothing to divide");
 		}
 		ScMutableMap state = sc.State();
-		ScMutableInt totalFactor = state.GetInt(keyTotalFactor);
+		ScMutableInt totalFactor = state.GetInt(KeyTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray(keyMembers);
+		ScMutableBytesArray members = state.GetBytesArray(KeyMembers);
 		long parts = 0;
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
 			Member m = Member.decode(members.GetBytes(i).Value());
-			long part = amount * m.factor / total;
+			long part = amount * m.Factor / total;
 			if (part != 0) {
 				parts += part;
-				sc.Transfer(m.address.AsAgent(), ScColor.IOTA, part);
+				sc.Transfer(m.Address.AsAgent(), ScColor.IOTA, part);
 			}
 		}
 		if (parts != amount) {

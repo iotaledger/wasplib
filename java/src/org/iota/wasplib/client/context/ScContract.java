@@ -5,37 +5,26 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.hashtypes.ScAddress;
 import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.immutable.ScImmutableMap;
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
 
 public class ScContract {
-	ScImmutableMap contract;
-
-	ScContract(ScImmutableMap contract) {
-		this.contract = contract;
+	ScContract() {
 	}
 
 	public ScAddress Chain() {
-		return contract.GetAddress(Key.Chain).Value();
+		return Host.root.GetAddress(Key.Chain).Value();
 	}
 
 	public ScAgent ChainOwner() {
-		return contract.GetAgent(Key.ChainOwner).Value();
+		return Host.root.GetAgent(Key.ChainOwner).Value();
 	}
 
 	public ScAgent Creator() {
-		return contract.GetAgent(Key.Creator).Value();
-	}
-
-	public String Description() {
-		return contract.GetString(Key.Description).Value();
+		return Host.root.GetAgent(Key.Creator).Value();
 	}
 
 	public ScAgent Id() {
-		return contract.GetAgent(Key.Id).Value();
-	}
-
-	public String Name() {
-		return contract.GetString(Key.Name).Value();
+		return Host.root.GetAgent(Key.Id).Value();
 	}
 }

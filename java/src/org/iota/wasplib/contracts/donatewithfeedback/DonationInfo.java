@@ -9,31 +9,31 @@ import org.iota.wasplib.client.hashtypes.ScAgent;
 
 public class DonationInfo {
 	//@formatter:off
-	public long    amount;
-	public ScAgent donator;
-	public String  error;
-	public String  feedback;
-	public long    timestamp;
+	public long    Amount;
+	public ScAgent Donator;
+	public String  Error;
+	public String  Feedback;
+	public long    Timestamp;
 	//@formatter:on
 
 	public static byte[] encode(DonationInfo o) {
 		return new BytesEncoder().
-				Int(o.amount).
-				Agent(o.donator).
-				String(o.error).
-				String(o.feedback).
-				Int(o.timestamp).
+				Int(o.Amount).
+				Agent(o.Donator).
+				String(o.Error).
+				String(o.Feedback).
+				Int(o.Timestamp).
 				Data();
 	}
 
 	public static DonationInfo decode(byte[] bytes) {
 		BytesDecoder decode = new BytesDecoder(bytes);
 		DonationInfo data = new DonationInfo();
-		data.amount = decode.Int();
-		data.donator = decode.Agent();
-		data.error = decode.String();
-		data.feedback = decode.String();
-		data.timestamp = decode.Int();
+		data.Amount = decode.Int();
+		data.Donator = decode.Agent();
+		data.Error = decode.String();
+		data.Feedback = decode.String();
+		data.Timestamp = decode.Int();
 		return data;
 	}
 }

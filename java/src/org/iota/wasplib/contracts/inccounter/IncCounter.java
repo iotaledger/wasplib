@@ -12,8 +12,8 @@ import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.*;
 
 public class IncCounter {
-	private static final Key keyCounter = new Key("counter");
-	private static final Key keyNumRepeats = new Key("num_repeats");
+	private static final Key KeyCounter = new Key("counter");
+	private static final Key KeyNumRepeats = new Key("num_repeats");
 
 	static boolean localStateMustIncrement = false;
 
@@ -39,20 +39,20 @@ public class IncCounter {
 	}
 
 	public static void onInit(ScCallContext sc) {
-		long counter = sc.Params().GetInt(keyCounter).Value();
+		long counter = sc.Params().GetInt(KeyCounter).Value();
 		if (counter == 0) {
 			return;
 		}
-		sc.State().GetInt(keyCounter).SetValue(counter);
+		sc.State().GetInt(KeyCounter).SetValue(counter);
 	}
 
 	public static void increment(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
 	public static void incrementCallIncrement(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
@@ -61,7 +61,7 @@ public class IncCounter {
 	}
 
 	public static void incrementCallIncrementRecurse5x(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
@@ -70,7 +70,7 @@ public class IncCounter {
 	}
 
 	public static void incrementPostIncrement(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
@@ -79,16 +79,16 @@ public class IncCounter {
 	}
 
 	public static void incrementViewCounter(ScViewContext sc) {
-		long counter = sc.State().GetInt(keyCounter).Value();
-		sc.Results().GetInt(keyCounter).SetValue(counter);
+		long counter = sc.State().GetInt(KeyCounter).Value();
+		sc.Results().GetInt(KeyCounter).SetValue(counter);
 	}
 
 	public static void incrementRepeatMany(ScCallContext sc) {
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
-		ScMutableInt stateRepeats = sc.State().GetInt(keyNumRepeats);
-		long repeats = sc.Params().GetInt(keyNumRepeats).Value();
+		ScMutableInt stateRepeats = sc.State().GetInt(KeyNumRepeats);
+		long repeats = sc.Params().GetInt(KeyNumRepeats).Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {
@@ -106,7 +106,7 @@ public class IncCounter {
 				return;
 			}
 		}
-		ScMutableInt counter = sc.State().GetInt(keyCounter);
+		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
@@ -141,20 +141,20 @@ public class IncCounter {
 	}
 
 	public static void test(ScCallContext _sc) {
-		int keyId = Host.GetKeyIdFromString("timestamp");
-		Host.SetInt(1, keyId, 123456789);
-		long timestamp = Host.GetInt(1, keyId);
-		Host.SetInt(1, keyId, timestamp);
-		int keyId2 = Host.GetKeyIdFromString("string");
-		Host.SetString(1, keyId2, "Test");
-		String s1 = Host.GetString(1, keyId2);
-		Host.SetString(1, keyId2, "Bleep");
-		String s2 = Host.GetString(1, keyId2);
-		Host.SetString(1, keyId2, "Klunky");
-		String s3 = Host.GetString(1, keyId2);
-		Host.SetString(1, keyId2, s1);
-		Host.SetString(1, keyId2, s2);
-		Host.SetString(1, keyId2, s3);
+		int KeyId = Host.GetKeyIdFromString("timestamp");
+		Host.SetInt(1, KeyId, 123456789);
+		long timestamp = Host.GetInt(1, KeyId);
+		Host.SetInt(1, KeyId, timestamp);
+		int KeyId2 = Host.GetKeyIdFromString("string");
+		Host.SetString(1, KeyId2, "Test");
+		String s1 = Host.GetString(1, KeyId2);
+		Host.SetString(1, KeyId2, "Bleep");
+		String s2 = Host.GetString(1, KeyId2);
+		Host.SetString(1, KeyId2, "Klunky");
+		String s3 = Host.GetString(1, KeyId2);
+		Host.SetString(1, KeyId2, s1);
+		Host.SetString(1, KeyId2, s2);
+		Host.SetString(1, KeyId2, s3);
 	}
 
 	public static void resultsTest(ScCallContext sc) {

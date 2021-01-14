@@ -4,10 +4,13 @@
 package org.iota.wasplib.client.host;
 
 import org.iota.wasplib.client.keys.Key;
+import org.iota.wasplib.client.mutable.ScMutableMap;
 
 import java.nio.charset.StandardCharsets;
 
 public class Host {
+	public static final ScMutableMap root = new ScMutableMap(1);
+
 	//TODO figure out how to specify extern hostXxxx functions for each
 	// of the functions below to call in Wasm module "waspJava"
 

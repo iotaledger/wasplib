@@ -36,32 +36,22 @@ type ScContract struct {
 
 // retrieve the chain id of the chain this contract lives on
 func (ctx ScContract) Chain() *ScAddress {
-	return ctx.contract.GetAddress(KeyChain).Value()
+	return Root.GetAddress(KeyChain).Value()
 }
 
 // retrieve the agent id of the owner of the chain this contract lives on
 func (ctx ScContract) ChainOwner() *ScAgent {
-	return ctx.contract.GetAgent(KeyChainOwner).Value()
+	return Root.GetAgent(KeyChainOwner).Value()
 }
 
 // retrieve the agent id of the creator of this contract
 func (ctx ScContract) Creator() *ScAgent {
-	return ctx.contract.GetAgent(KeyCreator).Value()
-}
-
-// retrieve this contract's description
-func (ctx ScContract) Description() string {
-	return ctx.contract.GetString(KeyDescription).Value()
+	return Root.GetAgent(KeyCreator).Value()
 }
 
 // retrieve the id of this contract
 func (ctx ScContract) Id() *ScAgent {
-	return ctx.contract.GetAgent(KeyId).Value()
-}
-
-// retrieve this contract's name
-func (ctx ScContract) Name() string {
-	return ctx.contract.GetString(KeyName).Value()
+	return Root.GetAgent(KeyId).Value()
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -145,7 +135,7 @@ func (ctx ScBaseContext) Caller() *ScAgent {
 
 // groups contract-related information under one access space
 func (ctx ScBaseContext) Contract() ScContract {
-	return ScContract{Root.GetMap(KeyContract).Immutable()}
+	return ScContract{}
 }
 
 // quick check to see if the caller of the smart contract was the specified originator agent

@@ -4,6 +4,7 @@
 package org.iota.wasplib.client.builders;
 
 import org.iota.wasplib.client.hashtypes.ScHash;
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
@@ -12,7 +13,7 @@ public class ScDeployBuilder {
 	ScMutableMap deploy;
 
 	public ScDeployBuilder(String name, String description) {
-		ScMutableMapArray deploys = ScRequestBuilder.root.GetMapArray(Key.Deploys);
+		ScMutableMapArray deploys = Host.root.GetMapArray(Key.Deploys);
 		deploy = deploys.GetMap(deploys.Length());
 		deploy.GetString(Key.Name).SetValue(name);
 		deploy.GetString(Key.Description).SetValue(description);

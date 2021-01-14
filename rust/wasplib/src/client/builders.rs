@@ -122,7 +122,7 @@ pub struct ScTransferBuilder {
 impl ScTransferBuilder {
     // start a transfer to the specified local chain agent account
     pub fn new_transfer(agent: &ScAgent) -> ScTransferBuilder {
-        let local_chain = ROOT.get_map(&KEY_CONTRACT).get_address(&KEY_CHAIN).value();
+        let local_chain = ROOT.get_address(&KEY_CHAIN).value();
         ScTransferBuilder::new_transfer_cross_chain(&local_chain, agent)
     }
 

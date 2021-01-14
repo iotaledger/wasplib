@@ -104,7 +104,7 @@ type ScTransferBuilder struct {
 
 // start a transfer to the specified local chain agent account
 func NewTransfer(agent *ScAgent) ScTransferBuilder {
-	localChain := Root.GetMap(KeyContract).GetAddress(KeyChain).Value()
+	localChain := Root.GetAddress(KeyChain).Value()
 	return NewTransferCrossChain(localChain, agent)
 }
 

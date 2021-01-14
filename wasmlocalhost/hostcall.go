@@ -27,7 +27,7 @@ func (m *HostCall) call() {
 
 	root := host.FindObject(1)
 	savedCaller := root.GetString(wasmhost.KeyCaller)
-	scId := host.FindSubObject(nil, wasmhost.KeyContract, client.TYPE_MAP).GetString(wasmhost.KeyId)
+	scId := root.GetString(wasmhost.KeyId)
 	root.SetString(wasmhost.KeyCaller, scId)
 
 	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, client.TYPE_MAP)

@@ -10,7 +10,7 @@ import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableInt;
 
 public class HelloNewWorld {
-	private static final Key keyCounter = new Key("counter");
+	private static final Key KeyCounter = new Key("counter");
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
@@ -21,7 +21,7 @@ public class HelloNewWorld {
 	// Function hello implement smart contract entry point "hello".
 	// Function hello logs the message "Hello, new world!" with the counter and increments the counter
 	public static void hello(ScCallContext ctx) {
-		ScMutableInt counter = ctx.State().GetInt(keyCounter);
+		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		String msg = "Hello, new world! #" + counter;
 		ctx.Log(msg);  // todo info and debug levels, not events!
 		counter.SetValue(counter.Value() + 1);
@@ -30,7 +30,7 @@ public class HelloNewWorld {
 	// Function get_counter implements smart contract VIEW entry point "getCounter".
 	// It return counter value in the result dictionary with the key "counter"
 	public static void getCounter(ScViewContext ctx) {
-		long counter = ctx.State().GetInt(keyCounter).Value();
-		ctx.Results().GetInt(keyCounter).SetValue(counter);
+		long counter = ctx.State().GetInt(KeyCounter).Value();
+		ctx.Results().GetInt(KeyCounter).SetValue(counter);
 	}
 }

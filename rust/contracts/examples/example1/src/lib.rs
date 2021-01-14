@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use wasplib::client::*;
+
 #[no_mangle]
 fn on_load() {
     // declare entry points of the smart contract
@@ -14,7 +15,7 @@ fn on_load() {
 fn store_string(ctx: &ScCallContext) {
     // take parameter paramString
     let par = ctx.params().get_string("paramString");
-    if !par.exists(){
+    if !par.exists() {
         ctx.panic("string parameter not found") // panic if parameter does not exist
     }
     // store the string in "storedString" variable

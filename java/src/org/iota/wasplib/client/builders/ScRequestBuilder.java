@@ -4,18 +4,17 @@
 package org.iota.wasplib.client.builders;
 
 import org.iota.wasplib.client.hashtypes.ScColor;
+import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 import org.iota.wasplib.client.mutable.ScMutableMapArray;
 
 public abstract class ScRequestBuilder {
-	protected static final ScMutableMap root = new ScMutableMap(1);
-
 	ScMutableMap request;
 
 	protected ScRequestBuilder(String key, String function) {
-		ScMutableMapArray requests = root.GetMapArray(new Key(key));
+		ScMutableMapArray requests = Host.root.GetMapArray(new Key(key));
 		request = requests.GetMap(requests.Length());
 		request.GetString(Key.Function).SetValue(function);
 	}

@@ -5,14 +5,14 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/client"
 
-const keyBets = client.Key("bets")
-const keyColor = client.Key("color")
-const keyLastWinningColor = client.Key("last_winning_color")
-const keyLockedBets = client.Key("locked_bets")
-const keyPlayPeriod = client.Key("play_period")
+const KeyBets = client.Key("bets")
+const KeyColor = client.Key("color")
+const KeyLastWinningColor = client.Key("last_winning_color")
+const KeyLockedBets = client.Key("locked_bets")
+const KeyPlayPeriod = client.Key("play_period")
 
-const numColors = 5
-const defaultPlayPeriod = 120
+const NumColors = 5
+const DefaultPlayPeriod = 120
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -28,11 +28,11 @@ func placeBet(sc *client.ScCallContext) {
 	if amount == 0 {
 		sc.Panic("Empty bet...")
 	}
-	color := sc.Params().GetInt(keyColor).Value()
+	color := sc.Params().GetInt(KeyColor).Value()
 	if color == 0 {
 		sc.Panic("No color...")
 	}
-	if color < 1 || color > numColors {
+	if color < 1 || color > NumColors {
 		sc.Panic("Invalid color...")
 	}
 
@@ -43,13 +43,13 @@ func placeBet(sc *client.ScCallContext) {
 	}
 
 	state := sc.State()
-	bets := state.GetBytesArray(keyBets)
+	bets := state.GetBytesArray(KeyBets)
 	betNr := bets.Length()
 	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
 	if betNr == 0 {
-		playPeriod := state.GetInt(keyPlayPeriod).Value()
+		playPeriod := state.GetInt(KeyPlayPeriod).Value()
 		if playPeriod < 10 {
-			playPeriod = defaultPlayPeriod
+			playPeriod = DefaultPlayPeriod
 		}
 		sc.Post("lock_bets").Post(playPeriod)
 	}
@@ -63,8 +63,8 @@ func lockBets(sc *client.ScCallContext) {
 
 	// move all current bets to the locked_bets array
 	state := sc.State()
-	bets := state.GetBytesArray(keyBets)
-	lockedBets := state.GetBytesArray(keyLockedBets)
+	bets := state.GetBytesArray(KeyBets)
+	lockedBets := state.GetBytesArray(KeyLockedBets)
 	nrBets := bets.Length()
 	for i := int32(0); i < nrBets; i++ {
 		bytes := bets.GetBytes(i).Value()
@@ -84,12 +84,12 @@ func payWinners(sc *client.ScCallContext) {
 
 	winningColor := sc.Utility().Random(5) + 1
 	state := sc.State()
-	state.GetInt(keyLastWinningColor).SetValue(winningColor)
+	state.GetInt(KeyLastWinningColor).SetValue(winningColor)
 
 	// gather all winners and calculate some totals
 	totalBetAmount := int64(0)
 	totalWinAmount := int64(0)
-	lockedBets := state.GetBytesArray(keyLockedBets)
+	lockedBets := state.GetBytesArray(KeyLockedBets)
 	winners := make([]*BetInfo, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
@@ -138,10 +138,10 @@ func playPeriod(sc *client.ScCallContext) {
 		sc.Panic("Cancel spoofed request")
 	}
 
-	playPeriod := sc.Params().GetInt(keyPlayPeriod).Value()
+	playPeriod := sc.Params().GetInt(KeyPlayPeriod).Value()
 	if playPeriod < 10 {
 		sc.Panic("Invalid play period...")
 	}
 
-	sc.State().GetInt(keyPlayPeriod).SetValue(playPeriod)
+	sc.State().GetInt(KeyPlayPeriod).SetValue(playPeriod)
 }

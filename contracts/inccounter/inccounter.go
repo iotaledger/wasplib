@@ -5,10 +5,10 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/client"
 
-const keyCounter = client.Key("counter")
-const keyNumRepeats = client.Key("num_repeats")
+const KeyCounter = client.Key("counter")
+const KeyNumRepeats = client.Key("num_repeats")
 
-var localStateMustIncrement = false
+var LocalStateMustIncrement = false
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -32,20 +32,20 @@ func OnLoad() {
 }
 
 func onInit(sc *client.ScCallContext) {
-	counter := sc.Params().GetInt(keyCounter).Value()
+	counter := sc.Params().GetInt(KeyCounter).Value()
 	if counter == 0 {
 		return
 	}
-	sc.State().GetInt(keyCounter).SetValue(counter)
+	sc.State().GetInt(KeyCounter).SetValue(counter)
 }
 
 func increment(sc *client.ScCallContext) {
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	counter.SetValue(counter.Value() + 1)
 }
 
 func incrementCallIncrement(sc *client.ScCallContext) {
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
@@ -54,7 +54,7 @@ func incrementCallIncrement(sc *client.ScCallContext) {
 }
 
 func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
@@ -63,7 +63,7 @@ func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
 }
 
 func incrementPostIncrement(sc *client.ScCallContext) {
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
@@ -72,16 +72,16 @@ func incrementPostIncrement(sc *client.ScCallContext) {
 }
 
 func incrementViewCounter(sc *client.ScViewContext) {
-	counter := sc.State().GetInt(keyCounter).Value()
-	sc.Results().GetInt(keyCounter).SetValue(counter)
+	counter := sc.State().GetInt(KeyCounter).Value()
+	sc.Results().GetInt(KeyCounter).SetValue(counter)
 }
 
 func incrementRepeatMany(sc *client.ScCallContext) {
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
-	stateRepeats := sc.State().GetInt(keyNumRepeats)
-	repeats := sc.Params().GetInt(keyNumRepeats).Value()
+	stateRepeats := sc.State().GetInt(KeyNumRepeats)
+	repeats := sc.Params().GetInt(KeyNumRepeats).Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -95,18 +95,18 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
 	sc.Log("increment_when_must_increment called")
 	{
-		if !localStateMustIncrement {
+		if !LocalStateMustIncrement {
 			return
 		}
 	}
-	counter := sc.State().GetInt(keyCounter)
+	counter := sc.State().GetInt(KeyCounter)
 	counter.SetValue(counter.Value() + 1)
 }
 
 func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 	incrementWhenMustIncrement(sc)
 	{
-		localStateMustIncrement = true
+		LocalStateMustIncrement = true
 	}
 	incrementWhenMustIncrement(sc)
 	incrementWhenMustIncrement(sc)
@@ -116,7 +116,7 @@ func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
 	sc.Call("increment_when_must_increment").Call()
 	{
-		localStateMustIncrement = true
+		LocalStateMustIncrement = true
 	}
 	sc.Call("increment_when_must_increment").Call()
 	sc.Call("increment_when_must_increment").Call()
@@ -126,7 +126,7 @@ func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
 func incrementLocalStatePost(sc *client.ScCallContext) {
 	sc.Post("increment_when_must_increment").Post(0)
 	{
-		localStateMustIncrement = true
+		LocalStateMustIncrement = true
 	}
 	sc.Post("increment_when_must_increment").Post(0)
 	sc.Post("increment_when_must_increment").Post(0)
@@ -134,20 +134,20 @@ func incrementLocalStatePost(sc *client.ScCallContext) {
 }
 
 func test(_sc *client.ScCallContext) {
-	keyId := client.GetKeyIdFromString("timestamp")
-	client.SetInt(1, keyId, 123456789)
-	timestamp := client.GetInt(1, keyId)
-	client.SetInt(1, keyId, timestamp)
-	keyId2 := client.GetKeyIdFromString("string")
-	client.SetString(1, keyId2, "Test")
-	s1 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Bleep")
-	s2 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, "Klunky")
-	s3 := client.GetString(1, keyId2)
-	client.SetString(1, keyId2, s1)
-	client.SetString(1, keyId2, s2)
-	client.SetString(1, keyId2, s3)
+	KeyId := client.GetKeyIdFromString("timestamp")
+	client.SetInt(1, KeyId, 123456789)
+	timestamp := client.GetInt(1, KeyId)
+	client.SetInt(1, KeyId, timestamp)
+	KeyId2 := client.GetKeyIdFromString("string")
+	client.SetString(1, KeyId2, "Test")
+	s1 := client.GetString(1, KeyId2)
+	client.SetString(1, KeyId2, "Bleep")
+	s2 := client.GetString(1, KeyId2)
+	client.SetString(1, KeyId2, "Klunky")
+	s3 := client.GetString(1, KeyId2)
+	client.SetString(1, KeyId2, s1)
+	client.SetString(1, KeyId2, s2)
+	client.SetString(1, KeyId2, s3)
 }
 
 func resultsTest(sc *client.ScCallContext) {
