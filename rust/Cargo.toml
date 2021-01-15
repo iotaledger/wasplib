@@ -11,6 +11,7 @@ members = [
     "contracts/examples/example1",
     "contracts/inccounter",
     "contracts/tokenregistry",
+    "contracts/testcore",
 ]
 
 [profile.release]
