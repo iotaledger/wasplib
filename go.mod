@@ -5,10 +5,10 @@ go 1.15
 require (
 	github.com/cockroachdb/pebble v0.0.0-20201207144514-2a2e77e39fd2 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
-	github.com/iotaledger/goshimmer v0.3.1-0.20201229190325-903bd925f4de
-	github.com/iotaledger/hive.go v0.0.0-20201207224237-fbc0ad4a44eb
+	github.com/iotaledger/goshimmer v0.3.5-0.20210114131917-c927d8a4ed4f
+	github.com/iotaledger/hive.go v0.0.0-20210107100912-23832b944f60
 	github.com/iotaledger/wart v0.2.2
-	github.com/iotaledger/wasp v0.0.2-0.20210114040100-d4411d30f936
+	github.com/iotaledger/wasp v0.0.2-0.20210115190028-987be01b3520
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mr-tron/base58 v1.2.0
