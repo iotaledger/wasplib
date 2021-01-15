@@ -21,6 +21,10 @@ public class ScAgent implements MapKey {
 		System.arraycopy(bytes, 0, agent, 0, agent.length);
 	}
 
+	public ScAddress Address() {
+		return new ScAddress(Arrays.copyOf(agent, 33));
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -37,6 +41,10 @@ public class ScAgent implements MapKey {
 	@Override
 	public int hashCode() {
 		return Arrays.hashCode(agent);
+	}
+
+	public boolean IsAddress() {
+		return Address().AsAgent().equals(this);
 	}
 
 	public byte[] toBytes() {

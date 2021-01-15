@@ -17,7 +17,7 @@ func OnLoad() {
 }
 
 func member(sc *client.ScCallContext) {
-	if !sc.From(sc.Contract().Creator()) {
+	if !sc.From(sc.ContractCreator()) {
 		sc.Panic("Cancel spoofed request")
 	}
 	params := sc.Params()

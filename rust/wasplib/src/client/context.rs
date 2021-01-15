@@ -35,33 +35,6 @@ impl ScBalances {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// used to retrieve any information related to the current smart contract
-pub struct ScContract {}
-
-impl ScContract {
-    // retrieve the chain id of the chain this contract lives on
-    pub fn chain(&self) -> ScAddress {
-        ROOT.get_address(&KEY_CHAIN).value()
-    }
-
-    // retrieve the agent id of the owner of the chain this contract lives on
-    pub fn chain_owner(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_CHAIN_OWNER).value()
-    }
-
-    // retrieve the agent id of the creator of this contract
-    pub fn creator(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_CREATOR).value()
-    }
-
-    // retrieve the id of this contract
-    pub fn id(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_ID).value()
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 pub struct ScLog {
     log: ScMutableMapArray,
 }
@@ -137,14 +110,24 @@ pub trait ScBaseContext {
     // retrieve the agent id of the caller of the smart contract
     fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
 
-    // groups contract-related information under one access space
-    fn contract(&self) -> ScContract {
-        ScContract {}
+    // retrieve the agent id of the owner of the chain this contract lives on
+    fn chain_owner(&self) -> ScAgent {
+        ROOT.get_agent(&KEY_CHAIN_OWNER).value()
+    }
+
+    // retrieve the agent id of the creator of this contract
+    fn contract_creator(&self) -> ScAgent {
+        ROOT.get_agent(&KEY_CREATOR).value()
+    }
+
+    // retrieve the id of this contract
+    fn contract_id(&self) -> ScAgent {
+        ROOT.get_agent(&KEY_ID).value()
     }
 
     // quick check to see if the caller of the smart contract was the specified originator agent
     fn from(&self, originator: &ScAgent) -> bool {
-        self.caller() == *originator
+        self.caller().equals(originator)
     }
 
     // logs informational text message
@@ -206,6 +189,11 @@ impl ScCallContext {
         ScDeployBuilder::new(name, description)
     }
 
+    // signals an event on the node that external entities can subscribe to
+    fn event(&self, text: &str) {
+        ROOT.get_string(&KEY_EVENT).set_value(text)
+    }
+
     // access the incoming balances for all token colors
     pub fn incoming(&self) -> ScBalances {
         ScBalances { balances: ROOT.get_map(&KEY_INCOMING).immutable() }
@@ -214,11 +202,6 @@ impl ScCallContext {
     // starts a (delayed) post to a smart contract function.
     pub fn post(&self, function: &str) -> ScPostBuilder {
         ScPostBuilder::new(function)
-    }
-
-    // signals an event on the chain that entities can register for
-    fn signal_event(&self, text: &str) {
-        ROOT.get_string(&KEY_EVENT).set_value(text)
     }
 
     // access to mutable state storage

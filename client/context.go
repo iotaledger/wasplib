@@ -29,33 +29,6 @@ func (ctx ScBalances) Minted() *ScColor {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// used to retrieve any information related to the current smart contract
-type ScContract struct {
-	contract ScImmutableMap
-}
-
-// retrieve the chain id of the chain this contract lives on
-func (ctx ScContract) Chain() *ScAddress {
-	return Root.GetAddress(KeyChain).Value()
-}
-
-// retrieve the agent id of the owner of the chain this contract lives on
-func (ctx ScContract) ChainOwner() *ScAgent {
-	return Root.GetAgent(KeyChainOwner).Value()
-}
-
-// retrieve the agent id of the creator of this contract
-func (ctx ScContract) Creator() *ScAgent {
-	return Root.GetAgent(KeyCreator).Value()
-}
-
-// retrieve the id of this contract
-func (ctx ScContract) Id() *ScAgent {
-	return Root.GetAgent(KeyId).Value()
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScLog struct {
 	log ScMutableMapArray
 }
@@ -133,9 +106,19 @@ func (ctx ScBaseContext) Caller() *ScAgent {
 	return Root.GetAgent(KeyCaller).Value()
 }
 
-// groups contract-related information under one access space
-func (ctx ScBaseContext) Contract() ScContract {
-	return ScContract{}
+// retrieve the agent id of the owner of the chain this contract lives on
+func (ctx ScBaseContext) ChainOwner() *ScAgent {
+	return Root.GetAgent(KeyChainOwner).Value()
+}
+
+// retrieve the agent id of the creator of this contract
+func (ctx ScBaseContext) ContractCreator() *ScAgent {
+	return Root.GetAgent(KeyCreator).Value()
+}
+
+// retrieve the id of this contract
+func (ctx ScBaseContext) ContractId() *ScAgent {
+	return Root.GetAgent(KeyId).Value()
 }
 
 // quick check to see if the caller of the smart contract was the specified originator agent
@@ -210,8 +193,8 @@ func (ctx ScCallContext) Post(function string) ScPostBuilder {
 	return ScPostBuilder{newScRequestBuilder(KeyPosts, function)}
 }
 
-// signals an event on the chain that entities can register for
-func (ctx ScBaseContext) SignalEvent(text string) {
+// signals an event on the node that external entities can subscribe to
+func (ctx ScBaseContext) Event(text string) {
 	Root.GetString(KeyEvent).SetValue(text)
 }
 

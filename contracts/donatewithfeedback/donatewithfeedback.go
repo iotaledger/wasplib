@@ -51,7 +51,7 @@ func donate(sc *client.ScCallContext) {
 }
 
 func withdraw(sc *client.ScCallContext) {
-	scOwner := sc.Contract().Creator()
+	scOwner := sc.ContractCreator()
 	if !sc.From(scOwner) {
 		sc.Panic("Cancel spoofed request")
 	}

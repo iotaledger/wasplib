@@ -19,7 +19,7 @@ fn on_load() {
 }
 
 fn member(sc: &ScCallContext) {
-    if !sc.from(&sc.contract().creator()) {
+    if !sc.from(&sc.contract_creator()) {
         sc.panic("Cancel spoofed request");
     }
     let params = sc.params();
@@ -42,7 +42,7 @@ fn member(sc: &ScCallContext) {
     let size = members.length();
     for i in 0..size {
         let m = decode_member(&members.get_bytes(i).value());
-        if m.address == member.address {
+        if m.address.equals(&member.address) {
             total -= m.factor;
             total += member.factor;
             total_factor.set_value(total);

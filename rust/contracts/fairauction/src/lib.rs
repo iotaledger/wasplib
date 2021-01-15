@@ -47,7 +47,7 @@ fn start_auction(sc: &ScCallContext) {
         sc.panic("Missing auction token color");
     }
     let color = color_param.value();
-    if color == ScColor::IOTA || color == ScColor::MINT {
+    if color.equals(&ScColor::IOTA) || color.equals(&ScColor::MINT) {
         sc.panic("Reserved auction token color");
     }
     let num_tokens = sc.incoming().balance(&color);
@@ -128,7 +128,7 @@ fn start_auction(sc: &ScCallContext) {
 
 fn finalize_auction(sc: &ScCallContext) {
     // can only be sent by SC itself
-    if !sc.from(&sc.contract().id()) {
+    if !sc.from(&sc.contract_id()) {
         sc.panic("Cancel spoofed request");
     }
 
@@ -153,9 +153,9 @@ fn finalize_auction(sc: &ScCallContext) {
             owner_fee = 1
         }
         // finalizeAuction request token was probably not confirmed yet
-        sc.transfer(&sc.contract().creator(), &ScColor::IOTA, owner_fee - 1);
-        sc.transfer(&auction.creator, &auction.color, auction.num_tokens);
-        sc.transfer(&auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
+        transfer(sc, &sc.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+        transfer(sc, &auction.creator, &auction.color, auction.num_tokens);
+        transfer(sc, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
         return;
     }
 
@@ -170,17 +170,17 @@ fn finalize_auction(sc: &ScCallContext) {
     let size = bidder_list.length();
     for i in 0..size {
         let bidder = bidder_list.get_agent(i).value();
-        if bidder != auction.highest_bidder {
+        if !bidder.equals(&auction.highest_bidder) {
             let loser = bidders.get_bytes(&bidder);
             let bid = decode_bid_info(&loser.value());
-            sc.transfer(&bidder, &ScColor::IOTA, bid.amount);
+            transfer(sc, &bidder, &ScColor::IOTA, bid.amount);
         }
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    sc.transfer(&sc.contract().creator(), &ScColor::IOTA, owner_fee - 1);
-    sc.transfer(&auction.highest_bidder, &auction.color, auction.num_tokens);
-    sc.transfer(&auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
+    transfer(sc, &sc.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+    transfer(sc, &auction.highest_bidder, &auction.color, auction.num_tokens);
+    transfer(sc, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
 fn place_bid(sc: &ScCallContext) {
@@ -239,7 +239,7 @@ fn place_bid(sc: &ScCallContext) {
 
 fn set_owner_margin(sc: &ScCallContext) {
     // can only be sent by SC creator
-    if !sc.from(&sc.contract().creator()) {
+    if !sc.from(&sc.contract_creator()) {
         sc.panic("Cancel spoofed request");
     }
 
@@ -285,4 +285,15 @@ fn get_info(sc: &ScViewContext) {
 
     let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
     results.get_int(KEY_BIDDERS).set_value(bidder_list.length() as i64);
+}
+
+fn transfer(sc: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {
+    if !agent.is_address() {
+        // not an address, deposit into account on chain
+        sc.transfer(agent, color, amount);
+        return;
+    }
+
+    // send to original Tangle address
+    sc.transfer_to_address(&agent.address()).transfer(color, amount).send();
 }

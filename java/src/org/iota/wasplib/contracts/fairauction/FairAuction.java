@@ -140,7 +140,7 @@ public class FairAuction {
 
 	public static void finalizeAuction(ScCallContext sc) {
 		// can only be sent by SC itself
-		if (!sc.From(sc.Contract().Id())) {
+		if (!sc.From(sc.ContractId())) {
 			sc.Panic("Cancel spoofed request");
 		}
 
@@ -166,9 +166,9 @@ public class FairAuction {
 				ownerFee = 1;
 			}
 			// finalizeAuction request token was probably not confirmed yet
-			sc.Transfer(sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
-			sc.Transfer(auction.Creator, auction.Color, auction.NumTokens);
-			sc.Transfer(auction.Creator, ScColor.IOTA, auction.Deposit - ownerFee);
+			transfer(sc, sc.ContractCreator(), ScColor.IOTA, ownerFee - 1);
+			transfer(sc, auction.Creator, auction.Color, auction.NumTokens);
+			transfer(sc, auction.Creator, ScColor.IOTA, auction.Deposit - ownerFee);
 			return;
 		}
 
@@ -186,14 +186,14 @@ public class FairAuction {
 			if (!bidder.equals(auction.HighestBidder)) {
 				ScMutableBytes loser = bidders.GetBytes(bidder);
 				BidInfo bid = BidInfo.decode(loser.Value());
-				sc.Transfer(bidder, ScColor.IOTA, bid.Amount);
+				transfer(sc, bidder, ScColor.IOTA, bid.Amount);
 			}
 		}
 
 		// finalizeAuction request token was probably not confirmed yet
-		sc.Transfer(sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
-		sc.Transfer(auction.HighestBidder, auction.Color, auction.NumTokens);
-		sc.Transfer(auction.Creator, ScColor.IOTA, auction.Deposit + auction.HighestBid - ownerFee);
+		transfer(sc, sc.ContractCreator(), ScColor.IOTA, ownerFee - 1);
+		transfer(sc, auction.HighestBidder, auction.Color, auction.NumTokens);
+		transfer(sc, auction.Creator, ScColor.IOTA, auction.Deposit + auction.HighestBid - ownerFee);
 	}
 
 	public static void placeBid(ScCallContext sc) {
@@ -253,7 +253,7 @@ public class FairAuction {
 
 	public static void setOwnerMargin(ScCallContext sc) {
 		// can only be sent by SC creator
-		if (!sc.From(sc.Contract().Creator())) {
+		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");
 		}
 
@@ -299,5 +299,16 @@ public class FairAuction {
 
 		ScImmutableAgentArray bidderList = currentAuction.GetAgentArray(KeyBidderList);
 		results.GetInt(KeyBidders).SetValue(bidderList.Length());
+	}
+
+	private static void transfer(ScCallContext sc, ScAgent agent, ScColor color, long amount) {
+		if (!agent.IsAddress()) {
+			// not an address, deposit into account on chain
+			sc.Transfer(agent, color, amount);
+			return;
+		}
+
+		// send to original Tangle address
+		sc.TransferToAddress(agent.Address()).Transfer(color, amount).Send();
 	}
 }
