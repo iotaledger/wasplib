@@ -22,8 +22,16 @@ public class ScBaseContext {
 		return Host.root.GetAgent(Key.Caller).Value();
 	}
 
-	public ScContract Contract() {
-		return new ScContract();
+	public ScAgent ChainOwner() {
+		return Host.root.GetAgent(Key.ChainOwner).Value();
+	}
+
+	public ScAgent ContractCreator() {
+		return Host.root.GetAgent(Key.Creator).Value();
+	}
+
+	public ScAgent ContractId() {
+		return Host.root.GetAgent(Key.Id).Value();
 	}
 
 	public Boolean From(ScAgent originator) {

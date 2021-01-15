@@ -27,7 +27,7 @@ public class Dividend {
 	}
 
 	public static void member(ScCallContext sc) {
-		if (!sc.From(sc.Contract().Creator())) {
+		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");
 		}
 		ScImmutableMap params = sc.Params();

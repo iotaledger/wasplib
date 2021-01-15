@@ -65,7 +65,7 @@ public class DonateWithFeedback {
 	}
 
 	public static void withdraw(ScCallContext sc) {
-		ScAgent scOwner = sc.Contract().Creator();
+		ScAgent scOwner = sc.ContractCreator();
 		if (!sc.From(scOwner)) {
 			sc.Panic("Cancel spoofed request");
 		}

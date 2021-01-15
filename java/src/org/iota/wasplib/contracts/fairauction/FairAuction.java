@@ -140,7 +140,7 @@ public class FairAuction {
 
 	public static void finalizeAuction(ScCallContext sc) {
 		// can only be sent by SC itself
-		if (!sc.From(sc.Contract().Id())) {
+		if (!sc.From(sc.ContractId())) {
 			sc.Panic("Cancel spoofed request");
 		}
 
@@ -166,7 +166,7 @@ public class FairAuction {
 				ownerFee = 1;
 			}
 			// finalizeAuction request token was probably not confirmed yet
-			transfer(sc, sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
+			transfer(sc, sc.ContractCreator(), ScColor.IOTA, ownerFee - 1);
 			transfer(sc, auction.Creator, auction.Color, auction.NumTokens);
 			transfer(sc, auction.Creator, ScColor.IOTA, auction.Deposit - ownerFee);
 			return;
@@ -191,7 +191,7 @@ public class FairAuction {
 		}
 
 		// finalizeAuction request token was probably not confirmed yet
-		transfer(sc, sc.Contract().Creator(), ScColor.IOTA, ownerFee - 1);
+		transfer(sc, sc.ContractCreator(), ScColor.IOTA, ownerFee - 1);
 		transfer(sc, auction.HighestBidder, auction.Color, auction.NumTokens);
 		transfer(sc, auction.Creator, ScColor.IOTA, auction.Deposit + auction.HighestBid - ownerFee);
 	}
@@ -253,7 +253,7 @@ public class FairAuction {
 
 	public static void setOwnerMargin(ScCallContext sc) {
 		// can only be sent by SC creator
-		if (!sc.From(sc.Contract().Creator())) {
+		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");
 		}
 

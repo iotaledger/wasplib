@@ -57,7 +57,7 @@ func placeBet(sc *client.ScCallContext) {
 
 func lockBets(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.Contract().Id()) {
+	if !sc.From(sc.ContractId()) {
 		sc.Panic("Cancel spoofed request")
 	}
 
@@ -77,7 +77,7 @@ func lockBets(sc *client.ScCallContext) {
 
 func payWinners(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	scId := sc.Contract().Id()
+	scId := sc.ContractId()
 	if !sc.From(scId) {
 		sc.Panic("Cancel spoofed request")
 	}
@@ -134,7 +134,7 @@ func payWinners(sc *client.ScCallContext) {
 
 func playPeriod(sc *client.ScCallContext) {
 	// can only be sent by SC creator
-	if !sc.From(sc.Contract().Creator()) {
+	if !sc.From(sc.ContractCreator()) {
 		sc.Panic("Cancel spoofed request")
 	}
 

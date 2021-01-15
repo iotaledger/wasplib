@@ -128,7 +128,7 @@ fn start_auction(sc: &ScCallContext) {
 
 fn finalize_auction(sc: &ScCallContext) {
     // can only be sent by SC itself
-    if !sc.from(&sc.contract().id()) {
+    if !sc.from(&sc.contract_id()) {
         sc.panic("Cancel spoofed request");
     }
 
@@ -153,7 +153,7 @@ fn finalize_auction(sc: &ScCallContext) {
             owner_fee = 1
         }
         // finalizeAuction request token was probably not confirmed yet
-        transfer(sc, &sc.contract().creator(), &ScColor::IOTA, owner_fee - 1);
+        transfer(sc, &sc.contract_creator(), &ScColor::IOTA, owner_fee - 1);
         transfer(sc, &auction.creator, &auction.color, auction.num_tokens);
         transfer(sc, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
         return;
@@ -178,7 +178,7 @@ fn finalize_auction(sc: &ScCallContext) {
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    transfer(sc, &sc.contract().creator(), &ScColor::IOTA, owner_fee - 1);
+    transfer(sc, &sc.contract_creator(), &ScColor::IOTA, owner_fee - 1);
     transfer(sc, &auction.highest_bidder, &auction.color, auction.num_tokens);
     transfer(sc, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
@@ -239,7 +239,7 @@ fn place_bid(sc: &ScCallContext) {
 
 fn set_owner_margin(sc: &ScCallContext) {
     // can only be sent by SC creator
-    if !sc.from(&sc.contract().creator()) {
+    if !sc.from(&sc.contract_creator()) {
         sc.panic("Cancel spoofed request");
     }
 

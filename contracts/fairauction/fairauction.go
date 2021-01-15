@@ -125,7 +125,7 @@ func startAuction(sc *client.ScCallContext) {
 
 func finalizeAuction(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.Contract().Id()) {
+	if !sc.From(sc.ContractId()) {
 		sc.Panic("Cancel spoofed request")
 	}
 
@@ -150,7 +150,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 			ownerFee = 1
 		}
 		// finalizeAuction request token was probably not confirmed yet
-		transfer(sc, sc.Contract().Creator(), client.IOTA, ownerFee - 1)
+		transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee - 1)
 		transfer(sc, auction.Creator, auction.Color, auction.NumTokens)
 		transfer(sc, auction.Creator, client.IOTA, auction.Deposit - ownerFee)
 		return
@@ -175,7 +175,7 @@ func finalizeAuction(sc *client.ScCallContext) {
 	}
 
 	// finalizeAuction request token was probably not confirmed yet
-	transfer(sc, sc.Contract().Creator(), client.IOTA, ownerFee-1)
+	transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee-1)
 	transfer(sc, auction.HighestBidder, auction.Color, auction.NumTokens)
 	transfer(sc, auction.Creator, client.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
@@ -236,7 +236,7 @@ func placeBid(sc *client.ScCallContext) {
 
 func setOwnerMargin(sc *client.ScCallContext) {
 	// can only be sent by SC creator
-	if !sc.From(sc.Contract().Creator()) {
+	if !sc.From(sc.ContractCreator()) {
 		sc.Panic("Cancel spoofed request")
 	}
 

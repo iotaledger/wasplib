@@ -19,7 +19,7 @@ fn on_load() {
 }
 
 fn member(sc: &ScCallContext) {
-    if !sc.from(&sc.contract().creator()) {
+    if !sc.from(&sc.contract_creator()) {
         sc.panic("Cancel spoofed request");
     }
     let params = sc.params();

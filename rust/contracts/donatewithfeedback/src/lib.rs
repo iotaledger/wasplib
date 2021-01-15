@@ -53,7 +53,7 @@ fn donate(sc: &ScCallContext) {
 }
 
 fn withdraw(sc: &ScCallContext) {
-    let sc_owner = sc.contract().creator();
+    let sc_owner = sc.contract_creator();
     if !sc.from(&sc_owner) {
         sc.panic("Cancel spoofed request");
     }
