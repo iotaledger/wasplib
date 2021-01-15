@@ -8,7 +8,6 @@ use crate::client::host::get_key_id_from_bytes;
 use super::context::*;
 use super::keys::*;
 
-#[derive(Eq, PartialEq)]
 pub struct ScAddress {
     address: [u8; 33],
 }
@@ -18,8 +17,12 @@ impl ScAddress {
 
     pub fn as_agent(&self) -> ScAgent {
         let mut agent = ScAgent { agent: [0; 37] };
-        agent.agent[0..33].copy_from_slice(&self.address[0..33]);
+        agent.agent[..33].copy_from_slice(&self.address[..33]);
         agent
+    }
+
+    pub fn equals(&self, other: &ScAddress) -> bool {
+        self.address == other.address
     }
 
     pub fn from_bytes(bytes: &[u8]) -> ScAddress {
@@ -43,7 +46,6 @@ impl MapKey for ScAddress {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Eq, PartialEq)]
 pub struct ScAgent {
     agent: [u8; 37],
 }
@@ -51,8 +53,22 @@ pub struct ScAgent {
 impl ScAgent {
     pub const NULL: ScAgent = ScAgent { agent: [0x00; 37] };
 
+    pub fn address(&self) -> ScAddress {
+        let mut address = ScAddress { address: [0; 33] };
+        address.address[..33].copy_from_slice(&self.agent[..33]);
+        address
+    }
+
+    pub fn equals(&self, other: &ScAgent) -> bool {
+        self.agent == other.agent
+    }
+
     pub fn from_bytes(bytes: &[u8]) -> ScAgent {
         ScAgent { agent: bytes.try_into().expect("agent id should be 37 bytes") }
+    }
+
+    pub fn is_address(&self) -> bool {
+        self.address().as_agent().equals(self)
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -72,7 +88,6 @@ impl MapKey for ScAgent {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Eq, PartialEq)]
 pub struct ScColor {
     color: [u8; 32],
 }
@@ -80,6 +95,10 @@ pub struct ScColor {
 impl ScColor {
     pub const IOTA: ScColor = ScColor { color: [0x00; 32] };
     pub const MINT: ScColor = ScColor { color: [0xff; 32] };
+
+    pub fn equals(&self, other: &ScColor) -> bool {
+        self.color == other.color
+    }
 
     pub fn from_bytes(bytes: &[u8]) -> ScColor {
         ScColor { color: bytes.try_into().expect("color id should be 32 bytes") }
@@ -102,13 +121,16 @@ impl MapKey for ScColor {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Eq, PartialEq)]
 pub struct ScHash {
     hash: [u8; 32],
 }
 
 impl ScHash {
     pub const NULL: ScHash = ScHash { hash: [0x00; 32] };
+
+    pub fn equals(&self, other: &ScHash) -> bool {
+        self.hash == other.hash
+    }
 
     pub fn from_bytes(bytes: &[u8]) -> ScHash {
         ScHash { hash: bytes.try_into().expect("hash should be 32 bytes") }

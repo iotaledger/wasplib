@@ -106,7 +106,7 @@ fn pay_winners(sc: &ScCallContext) {
 
     if winners.is_empty() {
         sc.log("Nobody wins!");
-        // compact separate UTXOs into a single one
+        // compact separate bet deposit UTXOs into a single one
         sc.transfer(&sc_id, &ScColor::IOTA, total_bet_amount);
         return;
     }

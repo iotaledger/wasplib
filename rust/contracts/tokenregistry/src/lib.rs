@@ -23,7 +23,7 @@ fn on_load() {
 
 fn mint_supply(sc: &ScCallContext) {
     let minted = sc.incoming().minted();
-    if minted == ScColor::MINT {
+    if minted.equals(&ScColor::MINT) {
         sc.panic("TokenRegistry: No newly minted tokens found");
     }
     let state = sc.state();

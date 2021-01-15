@@ -42,7 +42,7 @@ fn member(sc: &ScCallContext) {
     let size = members.length();
     for i in 0..size {
         let m = decode_member(&members.get_bytes(i).value());
-        if m.address == member.address {
+        if m.address.equals(&member.address) {
             total -= m.factor;
             total += member.factor;
             total_factor.set_value(total);

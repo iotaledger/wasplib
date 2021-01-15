@@ -144,7 +144,7 @@ pub trait ScBaseContext {
 
     // quick check to see if the caller of the smart contract was the specified originator agent
     fn from(&self, originator: &ScAgent) -> bool {
-        self.caller() == *originator
+        self.caller().equals(originator)
     }
 
     // logs informational text message

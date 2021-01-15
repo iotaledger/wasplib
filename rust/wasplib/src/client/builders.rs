@@ -136,7 +136,7 @@ impl ScTransferBuilder {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let transfer = transfers.get_map(transfers.length());
         transfer.get_agent(&KEY_AGENT).set_value(agent);
-        if *chain != ScAddress::NULL {
+        if !chain.equals(&ScAddress::NULL) {
             transfer.get_address(&KEY_CHAIN).set_value(chain);
         }
         ScTransferBuilder { transfer: transfer }

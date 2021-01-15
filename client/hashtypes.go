@@ -54,6 +54,12 @@ func NewScAgent(bytes []byte) *ScAgent {
 	return a
 }
 
+func (a *ScAgent) Address() *ScAddress {
+	address := &ScAddress{}
+	copy(address.address[:], a.agent[:])
+	return address
+}
+
 func (a *ScAgent) Bytes() []byte {
 	return a.agent[:]
 }
@@ -64,6 +70,10 @@ func (a *ScAgent) Equals(other *ScAgent) bool {
 
 func (a *ScAgent) KeyId() int32 {
 	return GetKeyIdFromBytes(a.Bytes())
+}
+
+func (a *ScAgent) IsAddress() bool {
+	return a.Address().AsAgent().Equals(a)
 }
 
 func (a *ScAgent) String() string {
