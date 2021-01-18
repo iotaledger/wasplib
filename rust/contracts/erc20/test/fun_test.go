@@ -69,7 +69,10 @@ func TestTransferOk1(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
-	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCall(erc20name, "transfer",
+		PARAM_ACCOUNT, userAgentID,
+		PARAM_AMOUNT, amount,
+	)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
