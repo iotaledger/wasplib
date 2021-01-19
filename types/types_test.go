@@ -1,4 +1,4 @@
-// +build feature_types
+// + build feature_types
 
 package types
 
@@ -10,6 +10,16 @@ import (
 	"testing"
 )
 
+func TestGoCoreSchema(t *testing.T){
+	err := GenerateGoCoreSchema()
+	require.NoError(t, err)
+}
+
+func TestRustCoreSchema(t *testing.T){
+	err := GenerateRustCoreSchema()
+	require.NoError(t, err)
+}
+
 func TestGoTypes(t *testing.T) {
 	t.SkipNow()
 	err := filepath.Walk("../contracts",
@@ -17,7 +27,7 @@ func TestGoTypes(t *testing.T) {
 			if err != nil {
 				return err
 			}
-			if strings.HasSuffix(path, "\\types.json") {
+			if strings.HasSuffix(path, "\\schema.json") {
 				return GenerateGoTypes(path)
 			}
 			return nil

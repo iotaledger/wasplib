@@ -7,6 +7,26 @@ use crate::client::host::get_key_id_from_bytes;
 
 use super::context::*;
 use super::keys::*;
+use super::mutable::*;
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Clone, Copy)]
+pub struct Hname(pub u32);
+
+impl Hname {
+    pub fn new(name: string) -> Hname {
+        let utility = ROOT.get_map(&KEY_UTILITY);
+        utility.get_string(&KEY_NAME).set_value(name);
+        Hname(utility.get_int(&KEY_NAME).value() as u32)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScAddress {
     address: [u8; 33],
@@ -39,7 +59,7 @@ impl ScAddress {
 }
 
 impl MapKey for ScAddress {
-    fn get_id(&self) -> i32 {
+    fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -81,7 +101,7 @@ impl ScAgent {
 }
 
 impl MapKey for ScAgent {
-    fn get_id(&self) -> i32 {
+    fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -114,7 +134,7 @@ impl ScColor {
 }
 
 impl MapKey for ScColor {
-    fn get_id(&self) -> i32 {
+    fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -146,7 +166,7 @@ impl ScHash {
 }
 
 impl MapKey for ScHash {
-    fn get_id(&self) -> i32 {
+    fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }

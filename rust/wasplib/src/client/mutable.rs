@@ -13,11 +13,11 @@ pub(crate) static ROOT: ScMutableMap = ScMutableMap::new(1);
 
 pub struct ScMutableAddress {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableAddress {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableAddress {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableAddress {
         ScMutableAddress { obj_id, key_id }
     }
 
@@ -57,7 +57,7 @@ impl ScMutableAddressArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_address(&self, index: i32) -> ScMutableAddress {
-        ScMutableAddress { obj_id: self.obj_id, key_id: index }
+        ScMutableAddress { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableAddressArray {
@@ -73,11 +73,11 @@ impl ScMutableAddressArray {
 
 pub struct ScMutableAgent {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableAgent {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableAgent {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableAgent {
         ScMutableAgent { obj_id, key_id }
     }
 
@@ -117,7 +117,7 @@ impl ScMutableAgentArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_agent(&self, index: i32) -> ScMutableAgent {
-        ScMutableAgent { obj_id: self.obj_id, key_id: index }
+        ScMutableAgent { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableAgentArray {
@@ -133,11 +133,11 @@ impl ScMutableAgentArray {
 
 pub struct ScMutableBytes {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableBytes {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableBytes {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableBytes {
         ScMutableBytes { obj_id, key_id }
     }
 
@@ -175,7 +175,7 @@ impl ScMutableBytesArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_bytes(&self, index: i32) -> ScMutableBytes {
-        ScMutableBytes { obj_id: self.obj_id, key_id: index }
+        ScMutableBytes { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableBytesArray {
@@ -191,11 +191,11 @@ impl ScMutableBytesArray {
 
 pub struct ScMutableColor {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableColor {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableColor {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableColor {
         ScMutableColor { obj_id, key_id }
     }
 
@@ -233,7 +233,7 @@ impl ScMutableColorArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_color(&self, index: i32) -> ScMutableColor {
-        ScMutableColor { obj_id: self.obj_id, key_id: index }
+        ScMutableColor { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableColorArray {
@@ -249,11 +249,11 @@ impl ScMutableColorArray {
 
 pub struct ScMutableHash {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableHash {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableHash {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableHash {
         ScMutableHash { obj_id, key_id }
     }
 
@@ -291,7 +291,7 @@ impl ScMutableHashArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_hash(&self, index: i32) -> ScMutableHash {
-        ScMutableHash { obj_id: self.obj_id, key_id: index }
+        ScMutableHash { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableHashArray {
@@ -305,13 +305,43 @@ impl ScMutableHashArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScMutableHname {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScMutableHname {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableHname {
+        ScMutableHname { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn set_value(&self, val: Hname) {
+        set_int(self.obj_id, self.key_id, val.0 as i64);
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> Hname {
+        Hname(get_int(self.obj_id, self.key_id) as u32)
+    }
+}
+
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScMutableInt {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableInt {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableInt {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableInt {
         ScMutableInt { obj_id, key_id }
     }
 
@@ -349,7 +379,7 @@ impl ScMutableIntArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_int(&self, index: i32) -> ScMutableInt {
-        ScMutableInt { obj_id: self.obj_id, key_id: index }
+        ScMutableInt { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableIntArray {
@@ -364,7 +394,7 @@ impl ScMutableIntArray {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScMutableMap {
-    obj_id: i32
+    pub(crate) obj_id: i32
 }
 
 impl ScMutableMap {
@@ -421,6 +451,10 @@ impl ScMutableMap {
         ScMutableHashArray { obj_id: arr_id }
     }
 
+    pub fn get_hname<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHname {
+        ScMutableHname { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
     pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt {
         ScMutableInt { obj_id: self.obj_id, key_id: key.get_id() }
     }
@@ -472,7 +506,7 @@ impl ScMutableMapArray {
 
     // index 0..length(), inclusive, hen length() a new one is appended
     pub fn get_map(&self, index: i32) -> ScMutableMap {
-        let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
+        let map_id = get_object_id(self.obj_id, Key32(index), TYPE_MAP);
         ScMutableMap { obj_id: map_id }
     }
 
@@ -489,11 +523,11 @@ impl ScMutableMapArray {
 
 pub struct ScMutableString {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScMutableString {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScMutableString {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableString {
         ScMutableString { obj_id, key_id }
     }
 
@@ -531,7 +565,7 @@ impl ScMutableStringArray {
 
     // index 0..length(), when length() a new one is appended
     pub fn get_string(&self, index: i32) -> ScMutableString {
-        ScMutableString { obj_id: self.obj_id, key_id: index }
+        ScMutableString { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn immutable(&self) -> ScImmutableStringArray {

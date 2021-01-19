@@ -1,9 +1,12 @@
 package types
 
 import (
+	"errors"
 	"fmt"
+	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -22,10 +25,10 @@ func GenerateGoTypes(path string) error {
 		return err
 	}
 
-	var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wtypes.json")
+	var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wschema.json")
 	contract := matchContract.ReplaceAllString(path, "$1")
 
-	file, err := os.Create(path[:len(path)-len(".json")] + ".go")
+	file, err := os.Create(path[:len(path)-len("schema.json")] + "types.go")
 	if err != nil {
 		return err
 	}
@@ -38,11 +41,12 @@ func GenerateGoTypes(path string) error {
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n")
 
 	// write structs
+	types := gen.schema.Types
 	for _, structName := range gen.keys {
 		gen.SplitComments(structName, goTypes)
 		spaces := strings.Repeat(" ", gen.maxName+gen.maxType)
 		fmt.Fprintf(file, "\ntype %s struct {\n", structName)
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, _ := range fld {
 				camel := gen.camels[name]
 				comment := gen.comments[name]
@@ -62,7 +66,7 @@ func GenerateGoTypes(path string) error {
 		funcName := "code" + structName
 		fmt.Fprintf(file, "\nfunc En%s(o *%s) []byte {\n", funcName, structName)
 		fmt.Fprintf(file, "\treturn client.NewBytesEncoder().\n")
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {
@@ -76,7 +80,7 @@ func GenerateGoTypes(path string) error {
 
 		fmt.Fprintf(file, "\nfunc De%s(bytes []byte) *%s {\n", funcName, structName)
 		fmt.Fprintf(file, "\tdecode := client.NewBytesDecoder(bytes)\n\tdata := &%s{}\n", structName)
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {
@@ -92,4 +96,92 @@ func GenerateGoTypes(path string) error {
 	//TODO write on_types function
 
 	return nil
+}
+
+func GenerateGoCoreSchema() error {
+	core, err := LoadCoreSchema()
+	if err != nil {
+		return err
+	}
+	if core == nil {
+		return errors.New("missing core schema")
+	}
+
+	file, err := os.Create("../client/corecontracts.go")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
+	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
+	fmt.Fprintf(file, "\npackage client\n")
+
+	for _,schema := range core {
+		nContract := camelcase(schema.Name)
+		hContract := coretypes.Hn(schema.Name)
+		fmt.Fprintf(file, "\nconst Core%s = Hname(0x%s)\n", nContract, hContract.String())
+		for _, nFunc := range sorted(schema.Funcs) {
+			funcName := schema.Funcs[nFunc]
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "const %s = Hname(0x%s)\n", nFunc, hFunc.String())
+		}
+		for _, nFunc := range sorted(schema.Views) {
+			funcName := schema.Views[nFunc]
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "const %s = Hname(0x%s)\n", nFunc, hFunc.String())
+		}
+	}
+	return nil
+}
+
+func GenerateRustCoreSchema() error {
+	core, err := LoadCoreSchema()
+	if err != nil {
+		return err
+	}
+	if core == nil {
+		return errors.New("missing core schema")
+	}
+
+	file, err := os.Create("../rust/wasplib/src/client/corecontracts.rs")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
+	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
+
+	for _,schema := range core {
+		nContract := snakecase(schema.Name)
+		hContract := coretypes.Hn(schema.Name)
+		fmt.Fprintf(file, "\npub const CORE_%s: Hname = Hname(0x%s);\n", nContract, hContract.String())
+		for _, nFunc := range sorted(schema.Funcs) {
+			funcName := schema.Funcs[nFunc]
+			nFunc = snakecase(nFunc)
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "pub const %s: Hname = Hname(0x%s);\n", nFunc, hFunc.String())
+		}
+		for _, nFunc := range sorted(schema.Views) {
+			funcName := schema.Views[nFunc]
+			nFunc = snakecase(nFunc)
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "pub const %s: Hname = Hname(0x%s);\n", nFunc, hFunc.String())
+		}
+	}
+	return nil
+}
+
+
+func sorted(dict map[string]string) []string {
+	keys := make([]string, 0)
+	for key := range dict {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
+
 }

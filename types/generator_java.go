@@ -50,7 +50,8 @@ func GenerateJavaTypes(path string) error {
 
 		// write struct layout
 		fmt.Fprintf(file, "\t//@formatter:off\n")
-		for _, fld := range gen.jsonTypes[structName] {
+		types := gen.schema.Types
+		for _, fld := range types[structName] {
 			for name, _ := range fld {
 				camel := gen.camels[name]
 				comment := gen.comments[name]
@@ -67,7 +68,7 @@ func GenerateJavaTypes(path string) error {
 		// write encoder for struct
 		fmt.Fprintf(file, "\n\tpublic static byte[] encode(%s o){\n", structName)
 		fmt.Fprintf(file, "\t\treturn new BytesEncoder().\n")
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {
@@ -82,7 +83,7 @@ func GenerateJavaTypes(path string) error {
 		// write decoder for struct
 		fmt.Fprintf(file, "\n\tpublic static %s decode(byte[] bytes) {\n", structName)
 		fmt.Fprintf(file, "\t\tBytesDecoder decode = new BytesDecoder(bytes);\n        %s data = new %s();\n", structName, structName)
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {

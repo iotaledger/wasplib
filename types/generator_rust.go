@@ -34,12 +34,13 @@ func GenerateRustTypes(path string) error {
 	fmt.Fprintf(file, "use wasplib::client::*;\n")
 
 	// write structs
+	types := gen.schema.Types
 	for _, structName := range gen.keys {
 		gen.SplitComments(structName, rustTypes)
 		spaces := strings.Repeat(" ", gen.maxName+gen.maxType)
 		fmt.Fprintf(file, "\npub struct %s {\n", structName)
 		fmt.Fprintf(file, "    //@formatter:off\n")
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, _ := range fld {
 				rustType := gen.types[name]
 				comment := gen.comments[name]
@@ -63,7 +64,7 @@ func GenerateRustTypes(path string) error {
 		funcName = strings.ToLower(funcName)
 		fmt.Fprintf(file, "\npub fn en%s(o: &%s) -> Vec<u8> {\n", funcName, structName)
 		fmt.Fprintf(file, "    let mut encode = BytesEncoder::new();\n")
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {
@@ -80,7 +81,7 @@ func GenerateRustTypes(path string) error {
 
 		fmt.Fprintf(file, "\npub fn de%s(bytes: &[u8]) -> %s {\n", funcName, structName)
 		fmt.Fprintf(file, "    let mut decode = BytesDecoder::new(bytes);\n    %s {\n", structName)
-		for _, fld := range gen.jsonTypes[structName] {
+		for _, fld := range types[structName] {
 			for name, typeName := range fld {
 				index := strings.Index(typeName, "//")
 				if index > 0 {

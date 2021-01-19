@@ -3,6 +3,22 @@
 
 package client
 
+import "strconv"
+
+type Hname uint32
+
+func NewHname(name string) Hname {
+	utility := Root.GetMap(KeyUtility)
+	utility.GetString(KeyName).SetValue(name)
+	return Hname(utility.GetInt(KeyName).Value())
+}
+
+func (hn Hname) String() string {
+	return strconv.FormatInt(int64(hn), 10)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScAddress struct {
 	address [33]byte
 }
@@ -31,7 +47,7 @@ func (a *ScAddress) Equals(other *ScAddress) bool {
 	return a.address == other.address
 }
 
-func (a *ScAddress) KeyId() int32 {
+func (a *ScAddress) KeyId() Key32 {
 	return GetKeyIdFromBytes(a.Bytes())
 }
 
@@ -68,7 +84,7 @@ func (a *ScAgent) Equals(other *ScAgent) bool {
 	return a.agent == other.agent
 }
 
-func (a *ScAgent) KeyId() int32 {
+func (a *ScAgent) KeyId() Key32 {
 	return GetKeyIdFromBytes(a.Bytes())
 }
 
@@ -112,7 +128,7 @@ func (c *ScColor) Equals(other *ScColor) bool {
 	return c.color == other.color
 }
 
-func (c *ScColor) KeyId() int32 {
+func (c *ScColor) KeyId() Key32 {
 	return GetKeyIdFromBytes(c.Bytes())
 }
 
@@ -143,7 +159,7 @@ func (c *ScHash) Equals(other *ScHash) bool {
 	return c.hash == other.hash
 }
 
-func (c *ScHash) KeyId() int32 {
+func (c *ScHash) KeyId() Key32 {
 	return GetKeyIdFromBytes(c.Bytes())
 }
 

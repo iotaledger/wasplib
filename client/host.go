@@ -38,50 +38,50 @@ func ConnectHost(h ScHost) {
 	host = h
 }
 
-func Exists(objId int32, keyId int32) bool {
-	return host.Exists(objId, keyId)
+func Exists(objId int32, keyId Key32) bool {
+	return host.Exists(objId, int32(keyId))
 }
 
-func GetBytes(objId int32, keyId int32) []byte {
-	return host.GetBytes(objId, keyId)
+func GetBytes(objId int32, keyId Key32) []byte {
+	return host.GetBytes(objId, int32(keyId))
 }
 
-func GetInt(objId int32, keyId int32) int64 {
-	return host.GetInt(objId, keyId)
+func GetInt(objId int32, keyId Key32) int64 {
+	return host.GetInt(objId, int32(keyId))
 }
 
-func GetKeyIdFromBytes(bytes []byte) int32 {
-	return host.GetKeyIdFromBytes(bytes)
+func GetKeyIdFromBytes(bytes []byte) Key32 {
+	return Key32(host.GetKeyIdFromBytes(bytes))
 }
 
-func GetKeyIdFromString(key string) int32 {
-	return host.GetKeyIdFromString(key)
+func GetKeyIdFromString(key string) Key32 {
+	return Key32(host.GetKeyIdFromString(key))
 }
 
 func GetLength(objId int32) int32 {
-	return int32(host.GetInt(objId, int32(KeyLength)))
+	return int32(GetInt(objId, KeyLength))
 }
 
-func GetObjectId(objId int32, keyId int32, typeId int32) int32 {
-	return host.GetObjectId(objId, keyId, typeId)
+func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
+	return host.GetObjectId(objId, int32(keyId), typeId)
 }
 
-func GetString(objId int32, keyId int32) string {
-	return host.GetString(objId, keyId)
+func GetString(objId int32, keyId Key32) string {
+	return host.GetString(objId, int32(keyId))
 }
 
-func SetBytes(objId int32, keyId int32, value []byte) {
-	host.SetBytes(objId, keyId, value)
+func SetBytes(objId int32, keyId Key32, value []byte) {
+	host.SetBytes(objId, int32(keyId), value)
 }
 
 func SetClear(objId int32) {
-	host.SetInt(objId, int32(KeyLength), 0)
+	SetInt(objId, KeyLength, 0)
 }
 
-func SetInt(objId int32, keyId int32, value int64) {
-	host.SetInt(objId, keyId, value)
+func SetInt(objId int32, keyId Key32, value int64) {
+	host.SetInt(objId, int32(keyId), value)
 }
 
-func SetString(objId int32, keyId int32, value string) {
-	host.SetString(objId, keyId, value)
+func SetString(objId int32, keyId Key32, value string) {
+	host.SetString(objId, int32(keyId), value)
 }

@@ -11,7 +11,7 @@ var Root = ScMutableMap{objId: 1}
 
 type ScMutableAddress struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableAddress) Exists() bool {
@@ -41,7 +41,7 @@ func (o ScMutableAddressArray) Clear() {
 }
 
 func (o ScMutableAddressArray) GetAddress(index int32) ScMutableAddress {
-	return ScMutableAddress{objId: o.objId, keyId: index}
+	return ScMutableAddress{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableAddressArray) Immutable() ScImmutableAddressArray {
@@ -56,7 +56,7 @@ func (o ScMutableAddressArray) Length() int32 {
 
 type ScMutableAgent struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableAgent) Exists() bool {
@@ -86,7 +86,7 @@ func (o ScMutableAgentArray) Clear() {
 }
 
 func (o ScMutableAgentArray) GetAgent(index int32) ScMutableAgent {
-	return ScMutableAgent{objId: o.objId, keyId: index}
+	return ScMutableAgent{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableAgentArray) Immutable() ScImmutableAgentArray {
@@ -101,7 +101,7 @@ func (o ScMutableAgentArray) Length() int32 {
 
 type ScMutableBytes struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableBytes) Exists() bool {
@@ -131,7 +131,7 @@ func (o ScMutableBytesArray) Clear() {
 }
 
 func (o ScMutableBytesArray) GetBytes(index int32) ScMutableBytes {
-	return ScMutableBytes{objId: o.objId, keyId: index}
+	return ScMutableBytes{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableBytesArray) Immutable() ScImmutableBytesArray {
@@ -146,7 +146,7 @@ func (o ScMutableBytesArray) Length() int32 {
 
 type ScMutableColor struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableColor) Exists() bool {
@@ -176,7 +176,7 @@ func (o ScMutableColorArray) Clear() {
 }
 
 func (o ScMutableColorArray) GetColor(index int32) ScMutableColor {
-	return ScMutableColor{objId: o.objId, keyId: index}
+	return ScMutableColor{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableColorArray) Immutable() ScImmutableColorArray {
@@ -191,7 +191,7 @@ func (o ScMutableColorArray) Length() int32 {
 
 type ScMutableHash struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableHash) Exists() bool {
@@ -221,7 +221,7 @@ func (o ScMutableHashArray) Clear() {
 }
 
 func (o ScMutableHashArray) GetHash(index int32) ScMutableHash {
-	return ScMutableHash{objId: o.objId, keyId: index}
+	return ScMutableHash{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableHashArray) Immutable() ScImmutableHashArray {
@@ -234,9 +234,32 @@ func (o ScMutableHashArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScMutableHname struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScMutableHname) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableHname) SetValue(value Hname) {
+	SetInt(o.objId, o.keyId, int64(value))
+}
+
+func (o ScMutableHname) String() string {
+	return o.Value().String()
+}
+
+func (o ScMutableHname) Value() Hname {
+	return Hname(GetInt(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScMutableInt struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableInt) Exists() bool {
@@ -266,7 +289,7 @@ func (o ScMutableIntArray) Clear() {
 }
 
 func (o ScMutableIntArray) GetInt(index int32) ScMutableInt {
-	return ScMutableInt{objId: o.objId, keyId: index}
+	return ScMutableInt{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableIntArray) Immutable() ScImmutableIntArray {
@@ -332,6 +355,10 @@ func (o ScMutableMap) GetHashArray(key MapKey) ScMutableHashArray {
 	return ScMutableHashArray{objId: arrId}
 }
 
+func (o ScMutableMap) GetHname(key MapKey) ScMutableHname {
+	return ScMutableHname{objId: o.objId, keyId: key.KeyId()}
+}
+
 func (o ScMutableMap) GetInt(key MapKey) ScMutableInt {
 	return ScMutableInt{objId: o.objId, keyId: key.KeyId()}
 }
@@ -375,7 +402,7 @@ func (o ScMutableMapArray) Clear() {
 }
 
 func (o ScMutableMapArray) GetMap(index int32) ScMutableMap {
-	mapId := GetObjectId(o.objId, index, TYPE_MAP)
+	mapId := GetObjectId(o.objId, Key32(index), TYPE_MAP)
 	return ScMutableMap{objId: mapId}
 }
 
@@ -391,7 +418,7 @@ func (o ScMutableMapArray) Length() int32 {
 
 type ScMutableString struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScMutableString) Exists() bool {
@@ -421,7 +448,7 @@ func (o ScMutableStringArray) Clear() {
 }
 
 func (o ScMutableStringArray) GetString(index int32) ScMutableString {
-	return ScMutableString{objId: o.objId, keyId: index}
+	return ScMutableString{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScMutableStringArray) Immutable() ScImmutableStringArray {

@@ -184,6 +184,18 @@ impl ScCallContext {
         ScCallBuilder::new(function)
     }
 
+    // calls a smart contract function
+    pub fn newcall(&self, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScMutableMap) -> ScImmutableMap {
+        let calls = ROOT.get_map_array(&KEY_CALLS);
+        let call = calls.get_map(calls.length());
+        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        call.get_hname(&KEY_FUNCTION).set_value(function);
+        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        call.get_int(&KEY_TRANSFERS).set_value(transfers.obj_id as i64);
+        call.get_int(&KEY_DELAY).set_value(-1);
+        call.get_map(&KEY_RESULTS).immutable()
+    }
+
     // starts deployment of a smart contract
     pub fn deploy(&self, name: &str, description: &str) -> ScDeployBuilder {
         ScDeployBuilder::new(name, description)
@@ -238,6 +250,17 @@ pub struct ScViewContext {}
 impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
+    // calls a smart contract function
+    pub fn newcall(&self, contract: Hname, function: Hname, params: ScMutableMap) -> ScImmutableMap {
+        let calls = ROOT.get_map_array(&KEY_CALLS);
+        let call = calls.get_map(calls.length());
+        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        call.get_hname(&KEY_FUNCTION).set_value(function);
+        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        call.get_int(&KEY_DELAY).set_value(-1);
+        call.get_map(&KEY_RESULTS).immutable()
+    }
+
     // access to immutable state storage
     pub fn state(&self) -> ScImmutableMap {
         ROOT.get_map(&KEY_STATE).immutable()

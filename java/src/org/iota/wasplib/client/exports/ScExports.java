@@ -21,7 +21,7 @@ public class ScExports {
 		exports = Host.root.GetStringArray(Key.Exports);
 		// tell host what our highest predefined key is
 		// this helps detect missing or extra keys
-		exports.GetString(Key.KEY_ZZZZZZZ).SetValue("Java:KEY_ZZZZZZZ");
+		exports.GetString(Key.Zzzzzzz.GetId()).SetValue("Java:KEY_ZZZZZZZ");
 	}
 
 	//export on_call_entrypoint

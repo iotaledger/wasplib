@@ -215,25 +215,25 @@ fn check_map(kvstore: ScImmutableMap) {
     check(string3.value() == "def");
 }
 
-fn check_map_rev(kvstore: ScImmutableMap) {
-    let sa1 = kvstore.get_string_array("sa1");
-    let string3 = sa1.get_string(1);
-    check(string3.value() == "def");
-    let string2 = sa1.get_string(0);
-    check(string2.value() == "bc");
-
-    let ia1 = kvstore.get_int_array("ia1");
-    let int3 = ia1.get_int(1);
-    check(int3.value() == 3);
-    let int2 = ia1.get_int(0);
-    check(int2.value() == 2);
-
-    let string1 = kvstore.get_string("string1");
-    check(string1.value() == "a");
-
-    let int1 = kvstore.get_int("int1");
-    check(int1.value() == 1);
-}
+// fn check_map_rev(kvstore: ScImmutableMap) {
+//     let sa1 = kvstore.get_string_array("sa1");
+//     let string3 = sa1.get_string(1);
+//     check(string3.value() == "def");
+//     let string2 = sa1.get_string(0);
+//     check(string2.value() == "bc");
+//
+//     let ia1 = kvstore.get_int_array("ia1");
+//     let int3 = ia1.get_int(1);
+//     check(int3.value() == 3);
+//     let int2 = ia1.get_int(0);
+//     check(int2.value() == 2);
+//
+//     let string1 = kvstore.get_string("string1");
+//     check(string1.value() == "a");
+//
+//     let int1 = kvstore.get_int("int1");
+//     check(int1.value() == 1);
+// }
 
 fn check(condition: bool) {
     if !condition {

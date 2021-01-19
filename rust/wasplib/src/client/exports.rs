@@ -33,7 +33,7 @@ impl ScExports {
         let exports = ROOT.get_string_array(&KEY_EXPORTS);
         // tell host what our highest predefined key is
         // this helps detect missing or extra keys
-        exports.get_string(KEY_ZZZZZZZ).set_value("Rust:KEY_ZZZZZZZ");
+        exports.get_string(KEY_ZZZZZZZ.0).set_value("Rust:KEY_ZZZZZZZ");
         ScExports { exports: exports }
     }
 

@@ -7,7 +7,7 @@ import "strconv"
 
 type ScImmutableAddress struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableAddress) Exists() bool {
@@ -29,7 +29,7 @@ type ScImmutableAddressArray struct {
 }
 
 func (o ScImmutableAddressArray) GetAddress(index int32) ScImmutableAddress {
-	return ScImmutableAddress{objId: o.objId, keyId: index}
+	return ScImmutableAddress{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableAddressArray) Length() int32 {
@@ -40,7 +40,7 @@ func (o ScImmutableAddressArray) Length() int32 {
 
 type ScImmutableAgent struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableAgent) Exists() bool {
@@ -62,7 +62,7 @@ type ScImmutableAgentArray struct {
 }
 
 func (o ScImmutableAgentArray) GetAgent(index int32) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: index}
+	return ScImmutableAgent{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableAgentArray) Length() int32 {
@@ -73,7 +73,7 @@ func (o ScImmutableAgentArray) Length() int32 {
 
 type ScImmutableBytes struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableBytes) Exists() bool {
@@ -95,7 +95,7 @@ type ScImmutableBytesArray struct {
 }
 
 func (o ScImmutableBytesArray) GetBytes(index int32) ScImmutableBytes {
-	return ScImmutableBytes{objId: o.objId, keyId: index}
+	return ScImmutableBytes{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableBytesArray) Length() int32 {
@@ -106,7 +106,7 @@ func (o ScImmutableBytesArray) Length() int32 {
 
 type ScImmutableColor struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableColor) Exists() bool {
@@ -128,7 +128,7 @@ type ScImmutableColorArray struct {
 }
 
 func (o ScImmutableColorArray) GetColor(index int32) ScImmutableColor {
-	return ScImmutableColor{objId: o.objId, keyId: index}
+	return ScImmutableColor{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableColorArray) Length() int32 {
@@ -139,7 +139,7 @@ func (o ScImmutableColorArray) Length() int32 {
 
 type ScImmutableHash struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableHash) Exists() bool {
@@ -161,7 +161,7 @@ type ScImmutableHashArray struct {
 }
 
 func (o ScImmutableHashArray) GetHash(index int32) ScImmutableHash {
-	return ScImmutableHash{objId: o.objId, keyId: index}
+	return ScImmutableHash{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableHashArray) Length() int32 {
@@ -170,9 +170,28 @@ func (o ScImmutableHashArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScImmutableHname struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScImmutableHname) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableHname) String() string {
+	return o.Value().String()
+}
+
+func (o ScImmutableHname) Value() Hname {
+	return Hname(GetInt(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScImmutableInt struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableInt) Exists() bool {
@@ -194,7 +213,7 @@ type ScImmutableIntArray struct {
 }
 
 func (o ScImmutableIntArray) GetInt(index int32) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: index}
+	return ScImmutableInt{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableIntArray) Length() int32 {
@@ -252,6 +271,10 @@ func (o ScImmutableMap) GetHashArray(key MapKey) ScImmutableHashArray {
 	return ScImmutableHashArray{objId: arrId}
 }
 
+func (o ScImmutableMap) GetHname(key MapKey) ScImmutableHname {
+	return ScImmutableHname{objId: o.objId, keyId: key.KeyId()}
+}
+
 func (o ScImmutableMap) GetInt(key MapKey) ScImmutableInt {
 	return ScImmutableInt{objId: o.objId, keyId: key.KeyId()}
 }
@@ -287,7 +310,7 @@ type ScImmutableMapArray struct {
 }
 
 func (o ScImmutableMapArray) GetMap(index int32) ScImmutableMap {
-	mapId := GetObjectId(o.objId, index, TYPE_MAP)
+	mapId := GetObjectId(o.objId, Key32(index), TYPE_MAP)
 	return ScImmutableMap{objId: mapId}
 }
 
@@ -299,7 +322,7 @@ func (o ScImmutableMapArray) Length() int32 {
 
 type ScImmutableString struct {
 	objId int32
-	keyId int32
+	keyId Key32
 }
 
 func (o ScImmutableString) Exists() bool {
@@ -321,7 +344,7 @@ type ScImmutableStringArray struct {
 }
 
 func (o ScImmutableStringArray) GetString(index int32) ScImmutableString {
-	return ScImmutableString{objId: o.objId, keyId: index}
+	return ScImmutableString{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableStringArray) Length() int32 {

@@ -10,11 +10,11 @@ use super::keys::*;
 
 pub struct ScImmutableAddress {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableAddress {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableAddress {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableAddress {
         ScImmutableAddress { obj_id, key_id }
     }
 
@@ -46,7 +46,7 @@ impl ScImmutableAddressArray {
 
     // index 0..length(), exclusive
     pub fn get_address(&self, index: i32) -> ScImmutableAddress {
-        ScImmutableAddress { obj_id: self.obj_id, key_id: index }
+        ScImmutableAddress { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -58,11 +58,11 @@ impl ScImmutableAddressArray {
 
 pub struct ScImmutableAgent {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableAgent {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableAgent {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableAgent {
         ScImmutableAgent { obj_id, key_id }
     }
 
@@ -94,7 +94,7 @@ impl ScImmutableAgentArray {
 
     // index 0..length(), exclusive
     pub fn get_agent(&self, index: i32) -> ScImmutableAgent {
-        ScImmutableAgent { obj_id: self.obj_id, key_id: index }
+        ScImmutableAgent { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -106,11 +106,11 @@ impl ScImmutableAgentArray {
 
 pub struct ScImmutableBytes {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableBytes {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableBytes {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableBytes {
         ScImmutableBytes { obj_id, key_id }
     }
 
@@ -140,7 +140,7 @@ impl ScImmutableBytesArray {
 
     // index 0..length(), exclusive
     pub fn get_bytes(&self, index: i32) -> ScImmutableBytes {
-        ScImmutableBytes { obj_id: self.obj_id, key_id: index }
+        ScImmutableBytes { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -152,11 +152,11 @@ impl ScImmutableBytesArray {
 
 pub struct ScImmutableColor {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableColor {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableColor {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableColor {
         ScImmutableColor { obj_id, key_id }
     }
 
@@ -186,7 +186,7 @@ impl ScImmutableColorArray {
 
     // index 0..length(), exclusive
     pub fn get_color(&self, index: i32) -> ScImmutableColor {
-        ScImmutableColor { obj_id: self.obj_id, key_id: index }
+        ScImmutableColor { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -198,11 +198,11 @@ impl ScImmutableColorArray {
 
 pub struct ScImmutableHash {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableHash {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableHash {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableHash {
         ScImmutableHash { obj_id, key_id }
     }
 
@@ -232,7 +232,7 @@ impl ScImmutableHashArray {
 
     // index 0..length(), exclusive
     pub fn get_hash(&self, index: i32) -> ScImmutableHash {
-        ScImmutableHash { obj_id: self.obj_id, key_id: index }
+        ScImmutableHash { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -242,13 +242,38 @@ impl ScImmutableHashArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScImmutableHname {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScImmutableHname {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableHname {
+        ScImmutableHname { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> Hname {
+        Hname(get_int(self.obj_id, self.key_id) as u32)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScImmutableInt {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableInt {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableInt {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableInt {
         ScImmutableInt { obj_id, key_id }
     }
 
@@ -278,7 +303,7 @@ impl ScImmutableIntArray {
 
     // index 0..length(), exclusive
     pub fn get_int(&self, index: i32) -> ScImmutableInt {
-        ScImmutableInt { obj_id: self.obj_id, key_id: index }
+        ScImmutableInt { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {
@@ -342,6 +367,10 @@ impl ScImmutableMap {
         ScImmutableHashArray { obj_id: arr_id }
     }
 
+    pub fn get_hname<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableHname {
+        ScImmutableHname { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
     pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt {
         ScImmutableInt { obj_id: self.obj_id, key_id: key.get_id() }
     }
@@ -388,7 +417,7 @@ impl ScImmutableMapArray {
 
     // index 0..length(), exclusive
     pub fn get_map(&self, index: i32) -> ScImmutableMap {
-        let map_id = get_object_id(self.obj_id, index, TYPE_MAP);
+        let map_id = get_object_id(self.obj_id, Key32(index), TYPE_MAP);
         ScImmutableMap { obj_id: map_id }
     }
 
@@ -401,11 +430,11 @@ impl ScImmutableMapArray {
 
 pub struct ScImmutableString {
     obj_id: i32,
-    key_id: i32,
+    key_id: Key32,
 }
 
 impl ScImmutableString {
-    pub(crate) fn new(obj_id: i32, key_id: i32) -> ScImmutableString {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableString {
         ScImmutableString { obj_id, key_id }
     }
 
@@ -435,7 +464,7 @@ impl ScImmutableStringArray {
 
     // index 0..length(), exclusive
     pub fn get_string(&self, index: i32) -> ScImmutableString {
-        ScImmutableString { obj_id: self.obj_id, key_id: index }
+        ScImmutableString { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     pub fn length(&self) -> i32 {

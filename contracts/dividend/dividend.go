@@ -5,15 +5,16 @@ package dividend
 
 import "github.com/iotaledger/wasplib/client"
 
-const KeyAddress = client.Key("address")
-const KeyFactor = client.Key("factor")
-const KeyMembers = client.Key("members")
-const KeyTotalFactor = client.Key("total_factor")
+const ParamAddress = client.Key("address")
+const ParamFactor = client.Key("factor")
+
+const VarMembers = client.Key("members")
+const VarTotalFactor = client.Key("total_factor")
 
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("member", member)
-	exports.AddCall("dividend", dividend)
+	exports.AddCall("divide", divide)
 }
 
 func member(sc *client.ScCallContext) {
@@ -21,11 +22,11 @@ func member(sc *client.ScCallContext) {
 		sc.Panic("Cancel spoofed request")
 	}
 	params := sc.Params()
-	address := params.GetAddress(KeyAddress)
+	address := params.GetAddress(ParamAddress)
 	if !address.Exists() {
 		sc.Panic("Missing address")
 	}
-	factor := params.GetInt(KeyFactor)
+	factor := params.GetInt(ParamFactor)
 	if !factor.Exists() {
 		sc.Panic("Missing factor")
 	}
@@ -34,9 +35,9 @@ func member(sc *client.ScCallContext) {
 		Factor:  factor.Value(),
 	}
 	state := sc.State()
-	totalFactor := state.GetInt(KeyTotalFactor)
+	totalFactor := state.GetInt(VarTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray(KeyMembers)
+	members := state.GetBytesArray(VarMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
 		m := DecodeMember(members.GetBytes(i).Value())
@@ -55,15 +56,15 @@ func member(sc *client.ScCallContext) {
 	sc.Log("Appended: " + member.Address.String())
 }
 
-func dividend(sc *client.ScCallContext) {
+func divide(sc *client.ScCallContext) {
 	amount := sc.Balances().Balance(client.IOTA)
 	if amount == 0 {
 		sc.Panic("Nothing to divide")
 	}
 	state := sc.State()
-	totalFactor := state.GetInt(KeyTotalFactor)
+	totalFactor := state.GetInt(VarTotalFactor)
 	total := totalFactor.Value()
-	members := state.GetBytesArray(KeyMembers)
+	members := state.GetBytesArray(VarMembers)
 	parts := int64(0)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {

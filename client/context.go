@@ -178,6 +178,23 @@ func (ctx ScCallContext) Call(function string) ScCallBuilder {
 	return ScCallBuilder{newScRequestBuilder(KeyCalls, function)}
 }
 
+//TODO hname
+//TODO contractid
+//TODO merge view and call functions
+//TODO parameter type checks
+
+// calls a smart contract function
+func (ctx ScCallContext) NewCall(contract Hname, function Hname, params ScMutableMap, transfers ScMutableMap) ScImmutableMap {
+	calls := Root.GetMapArray(KeyCalls)
+	call := calls.GetMap(calls.Length())
+	call.GetHname(KeyContract).SetValue(contract)
+	call.GetHname(KeyFunction).SetValue(function)
+	call.GetInt(KeyParams).SetValue(int64(params.objId))
+	call.GetInt(KeyTransfers).SetValue(int64(transfers.objId))
+	call.GetInt(KeyDelay).SetValue(-1)
+	return call.GetMap(KeyResults).Immutable()
+}
+
 // starts deployment of a smart contract
 func (ctx ScCallContext) Deploy(name string, description string) ScDeployBuilder {
 	return NewScDeployBuilder(name, description)
@@ -228,6 +245,17 @@ func (ctx ScCallContext) TransferCrossChain(chain *ScAddress, agent *ScAgent) Sc
 // smart contract interface with immutable access to state
 type ScViewContext struct {
 	ScBaseContext
+}
+
+// calls a smart contract function
+func (ctx ScViewContext) NewCall(contract Hname, function Hname, params ScMutableMap) ScImmutableMap {
+	calls := Root.GetMapArray(KeyCalls)
+	call := calls.GetMap(calls.Length())
+	call.GetHname(KeyContract).SetValue(contract)
+	call.GetHname(KeyFunction).SetValue(function)
+	call.GetInt(KeyParams).SetValue(int64(params.objId))
+	call.GetInt(KeyDelay).SetValue(-1)
+	return call.GetMap(KeyResults).Immutable()
 }
 
 // access to immutable state storage

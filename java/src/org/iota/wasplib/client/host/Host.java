@@ -78,7 +78,7 @@ public class Host {
 	}
 
 	public static int GetLength(int objId) {
-		return (int) GetInt(objId, Key.KEY_LENGTH);
+		return (int) GetInt(objId, Key.Length.GetId());
 	}
 
 	public static int GetObjectId(int objId, int keyId, int typeId) {
@@ -102,7 +102,7 @@ public class Host {
 	}
 
 	public static void SetClear(int objId) {
-		SetInt(objId, Key.KEY_LENGTH, 0);
+		SetInt(objId, Key.Length.GetId(), 0);
 	}
 
 	public static void SetInt(int objId, int keyId, long value) {

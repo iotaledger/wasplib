@@ -1,0 +1,23 @@
+{
+  "name": "dividend",
+  "types": {
+    "Member": [
+      {"address": "address"},
+      {"factor": "int"}
+    ]
+  },
+  "params": {
+    "ParamAddress": "address",
+    "ParamFactor": "factor"
+  },
+  "vars": {
+    "VarMembers": "members",
+    "VarTotalFactor": "total_factor"
+  },
+  "funcs": {
+    "FuncMember": "member",
+    "FuncDivide": "divide"
+  },
+  "views": {
+  }
+}

@@ -1,0 +1,87 @@
+[
+  {
+    "name": "accounts",
+    "params": {
+      "ParamAgentID": "a",
+      "ParamAmount": "t",
+      "ParamChainID": "i",
+      "ParamColor": "c"
+    },
+    "funcs": {
+      "FuncBalance": "balance",
+      "FuncDeposit": "deposit",
+      "FuncTotalAssets": "totalAssets"
+    },
+    "views": {
+      "ViewAccounts": "accounts",
+      "ViewAllow": "allow",
+      "ViewWithdrawToAddress": "withdrawToAddress",
+      "ViewWithdrawToChain": "withdrawToChain"
+    }
+  },
+  {
+    "name": "blob",
+    "params": {
+      "ParamBytes": "bytes",
+      "ParamField": "field",
+      "ParamHash": "hash"
+    },
+    "funcs": {
+      "FuncStoreBlob": "storeBlob"
+    },
+    "views": {
+      "ViewGetBlobField": "getBlobField",
+      "ViewGetBlobInfo": "getBlobInfo",
+      "ViewListBlobs": "listBlobs"
+    }
+  },
+  {
+    "name": "eventlog",
+    "params": {
+      "ParamContractHname": "contractHname",
+      "ParamFromTs": "fromTs",
+      "ParamMaxLastRecords": "maxLastRecords",
+      "ParamNumRecords": "numRecords",
+      "ParamRecords": "records",
+      "ParamToTs": "toTs"
+    },
+    "funcs": {
+    },
+    "views": {
+      "ViewGetLogRecords": "getLogRecords",
+      "ViewGetNumRecords": "getNumRecords"
+    }
+  },
+  {
+    "name": "root",
+    "params": {
+      "ParamChainAddress": "$$address$$",
+      "ParamChainColor": "$$color$$",
+      "ParamChainID": "$$chainid$$",
+      "ParamChainOwner": "$$owner$$",
+      "ParamData": "$$data$$",
+      "ParamDeployer": "$$deployer$$",
+      "ParamDescription": "$$description$$",
+      "ParamFeeColor": "$$feecolor$$",
+      "ParamHname": "$$hname$$",
+      "ParamName": "$$name$$",
+      "ParamOwnerFee": "$$ownerfee$$",
+      "ParamProgramHash": "$$proghash$$",
+      "ParamValidatorFee": "$$validatorfee$$"
+    },
+    "funcs": {
+      "FuncClaimChainOwnership": "claimChainOwnership",
+      "FuncDelegateChainOwnership": "delegateChainOwnership",
+      "FuncDeployContract": "deployContract",
+      "FuncGrantDeploy": "grantDeployPermission",
+      "FuncRevokeDeploy": "revokeDeployPermission",
+      "FuncSetContractFee": "setContractFee",
+      "FuncSetDefaultFee": "setDefaultFee"
+    },
+    "views": {
+      "ViewFindContract": "findContract",
+      "ViewGetChainInfo": "getChainInfo",
+      "ViewGetFeeInfo": "getFeeInfo"
+    }
+  }
+]

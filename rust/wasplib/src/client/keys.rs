@@ -3,57 +3,60 @@
 
 use super::host::get_key_id_from_string;
 
+#[derive(Clone, Copy)]
+pub struct Key32(pub i32);
+
 // @formatter:off
-pub const KEY_AGENT       : i32 =                 -1;
-pub const KEY_BALANCES    : i32 = KEY_AGENT       -1;
-pub const KEY_BASE58      : i32 = KEY_BALANCES    -1;
-pub const KEY_CALLER      : i32 = KEY_BASE58      -1;
-pub const KEY_CALLS       : i32 = KEY_CALLER      -1;
-pub const KEY_CHAIN       : i32 = KEY_CALLS       -1;
-pub const KEY_CHAIN_OWNER : i32 = KEY_CHAIN       -1;
-pub const KEY_COLOR       : i32 = KEY_CHAIN_OWNER -1;
-pub const KEY_CONTRACT    : i32 = KEY_COLOR       -1;
-pub const KEY_CREATOR     : i32 = KEY_CONTRACT    -1;
-pub const KEY_DATA        : i32 = KEY_CREATOR     -1;
-pub const KEY_DELAY       : i32 = KEY_DATA        -1;
-pub const KEY_DEPLOYS     : i32 = KEY_DELAY       -1;
-pub const KEY_DESCRIPTION : i32 = KEY_DEPLOYS      -1;
-pub const KEY_EVENT       : i32 = KEY_DESCRIPTION -1;
-pub const KEY_EXPORTS     : i32 = KEY_EVENT       -1;
-pub const KEY_FUNCTION    : i32 = KEY_EXPORTS     -1;
-pub const KEY_HASH        : i32 = KEY_FUNCTION    -1;
-pub const KEY_ID          : i32 = KEY_HASH        -1;
-pub const KEY_INCOMING    : i32 = KEY_ID          -1;
-pub const KEY_LENGTH      : i32 = KEY_INCOMING    -1;
-pub const KEY_LOG         : i32 = KEY_LENGTH      -1;
-pub const KEY_LOGS        : i32 = KEY_LOG         -1;
-pub const KEY_NAME        : i32 = KEY_LOGS        -1;
-pub const KEY_PANIC       : i32 = KEY_NAME        -1;
-pub const KEY_PARAMS      : i32 = KEY_PANIC       -1;
-pub const KEY_POSTS       : i32 = KEY_PARAMS      -1;
-pub const KEY_RANDOM      : i32 = KEY_POSTS       -1;
-pub const KEY_RESULTS     : i32 = KEY_RANDOM      -1;
-pub const KEY_STATE       : i32 = KEY_RESULTS     -1;
-pub const KEY_TIMESTAMP   : i32 = KEY_STATE       -1;
-pub const KEY_TRACE       : i32 = KEY_TIMESTAMP   -1;
-pub const KEY_TRANSFERS   : i32 = KEY_TRACE       -1;
-pub const KEY_UTILITY     : i32 = KEY_TRANSFERS   -1;
-pub const KEY_VIEWS       : i32 = KEY_UTILITY     -1;
-pub const KEY_ZZZZZZZ     : i32 = KEY_VIEWS       -1;
+pub const KEY_AGENT       : Key32 = Key32(-1);
+pub const KEY_BALANCES    : Key32 = Key32(-2);
+pub const KEY_BASE58      : Key32 = Key32(-3);
+pub const KEY_CALLER      : Key32 = Key32(-4);
+pub const KEY_CALLS       : Key32 = Key32(-5);
+pub const KEY_CHAIN       : Key32 = Key32(-6);
+pub const KEY_CHAIN_OWNER : Key32 = Key32(-7);
+pub const KEY_COLOR       : Key32 = Key32(-8);
+pub const KEY_CONTRACT    : Key32 = Key32(-9);
+pub const KEY_CREATOR     : Key32 = Key32(-10);
+pub const KEY_DATA        : Key32 = Key32(-11);
+pub const KEY_DELAY       : Key32 = Key32(-12);
+pub const KEY_DEPLOYS     : Key32 = Key32(-13);
+pub const KEY_DESCRIPTION : Key32 = Key32(-14);
+pub const KEY_EVENT       : Key32 = Key32(-15);
+pub const KEY_EXPORTS     : Key32 = Key32(-16);
+pub const KEY_FUNCTION    : Key32 = Key32(-17);
+pub const KEY_HASH        : Key32 = Key32(-18);
+pub const KEY_ID          : Key32 = Key32(-19);
+pub const KEY_INCOMING    : Key32 = Key32(-20);
+pub const KEY_LENGTH      : Key32 = Key32(-21);
+pub const KEY_LOG         : Key32 = Key32(-22);
+pub const KEY_LOGS        : Key32 = Key32(-23);
+pub const KEY_NAME        : Key32 = Key32(-24);
+pub const KEY_PANIC       : Key32 = Key32(-25);
+pub const KEY_PARAMS      : Key32 = Key32(-26);
+pub const KEY_POSTS       : Key32 = Key32(-27);
+pub const KEY_RANDOM      : Key32 = Key32(-28);
+pub const KEY_RESULTS     : Key32 = Key32(-29);
+pub const KEY_STATE       : Key32 = Key32(-30);
+pub const KEY_TIMESTAMP   : Key32 = Key32(-31);
+pub const KEY_TRACE       : Key32 = Key32(-32);
+pub const KEY_TRANSFERS   : Key32 = Key32(-33);
+pub const KEY_UTILITY     : Key32 = Key32(-34);
+pub const KEY_VIEWS       : Key32 = Key32(-35);
+pub const KEY_ZZZZZZZ     : Key32 = Key32(-36);
 // @formatter:on
 
 pub trait MapKey {
-    fn get_id(&self) -> i32;
+    fn get_id(&self) -> Key32;
 }
 
 impl MapKey for str {
-    fn get_id(&self) -> i32 {
+    fn get_id(&self) -> Key32 {
         get_key_id_from_string(self)
     }
 }
 
-impl MapKey for i32 {
-    fn get_id(&self) -> i32 {
+impl MapKey for Key32 {
+    fn get_id(&self) -> Key32 {
         *self
     }
 }

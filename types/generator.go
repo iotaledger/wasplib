@@ -2,12 +2,13 @@ package types
 
 import (
 	"errors"
+	"regexp"
 	"sort"
 	"strings"
 )
 
 type Generator struct {
-	jsonTypes JsonTypes
+	schema *Schema
 	keys      []string
 	maxCamel  int
 	maxName   int
@@ -17,25 +18,32 @@ type Generator struct {
 	comments  map[string]string
 }
 
+var camelRegExp = regexp.MustCompile("_[a-z]")
+var snakeRegExp = regexp.MustCompile("[a-z][A-Z]")
+
 func camelcase(name string) string {
-	index := strings.Index(name, "_")
-	for index > 0 {
-		c := name[index+1 : index+2]
-		name = name[:index] + strings.ToUpper(c) + name[index+2:]
-		index = strings.Index(name, "_")
-	}
+	name = camelRegExp.ReplaceAllStringFunc(name, func(sub string) string {
+		return strings.ToUpper(sub[1:])
+	})
 	return strings.ToUpper(name[:1]) + name[1:]
 }
 
+func snakecase(name string) string {
+	name = snakeRegExp.ReplaceAllStringFunc(name, func(sub string) string {
+		return sub[:1] + "_" + sub[1:]
+	})
+	return strings.ToUpper(name)
+}
+
 func (gen *Generator) LoadTypes(path string) error {
-	jsonTypes, err := LoadTypes(path)
+	schema, err := LoadSchema(path)
 	if err != nil {
 		return err
 	}
-	gen.jsonTypes = jsonTypes
+	gen.schema = schema
 
 	gen.keys = make([]string, 0)
-	for key := range jsonTypes {
+	for key := range schema.Types {
 		gen.keys = append(gen.keys, key)
 	}
 	sort.Strings(gen.keys)
@@ -49,7 +57,8 @@ func (gen *Generator) SplitComments(structName string, myTypes map[string]string
 	gen.maxCamel = 0
 	gen.maxName = 0
 	gen.maxType = 0
-	for _, fld := range gen.jsonTypes[structName] {
+	types := gen.schema.Types
+	for _, fld := range types[structName] {
 		for name, typeName := range fld {
 			comment := ""
 			index := strings.Index(typeName, "//")
