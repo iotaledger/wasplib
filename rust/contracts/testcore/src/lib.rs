@@ -7,9 +7,13 @@ const PARAM_INT_PARAM_NAME: &str = "intParamName";
 const PARAM_INT_PARAM_VALUE: &str = "intParamValue";
 // const PARAM_HNAME: &str = "hname";
 // const PARAM_CALL_OPTION: &str = "callOption";
+const PARAM_ADDRESS: &str = "address";
+const PARAM_CHAIN_OWNER: &str = "chainOwner";
+const PARAM_CONTRACT_ID: &str = "contractID";
 
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
 const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
+const MSG_PANIC_UNAUTHORIZED: &str = "============== panic due to unauthorized call";
 
 const SELF_NAME: &str = "test_sandbox";   // temporary, until hname in the call will become available
 
@@ -28,6 +32,13 @@ fn on_load() {
     exports.add_call("testCallPanicFullEP", test_call_panic_full_ep);
     exports.add_call("testCallPanicViewEPFromFull", test_call_panic_view_from_full);
     exports.add_view("testCallPanicViewEPFromView", test_call_panic_view_from_view);
+
+    exports.add_view("testChainOwnerIDView", test_chain_owner_id_view);
+    exports.add_call("testChainOwnerIDFull", test_chain_owner_id_full);
+    exports.add_view("testContractIDView", test_contract_id_view);
+    exports.add_call("testContractIDFull", test_contract_id_full);
+
+    exports.add_call("sendToAddress", send_to_address);
 
 }
 
@@ -127,4 +138,36 @@ fn test_call_panic_view_from_full(ctx: &ScCallContext){
 // FIXME no need for 'view method special'
 fn test_call_panic_view_from_view(ctx: &ScViewContext){
     ctx.view("testPanicViewEP").contract(SELF_NAME).view();
+}
+
+fn send_to_address(ctx: &ScCallContext) {
+    ctx.log("sendToAddress");
+    if !ctx.caller().equals(&ctx.contract_creator()) {
+        ctx.panic(MSG_PANIC_UNAUTHORIZED);
+    }
+    let target_addr = ctx.params().get_address(PARAM_ADDRESS);
+    if !target_addr.exists(){
+        ctx.panic("parameter 'address' not provided")
+    }
+    // let mybalances = ctx.balances();
+    // TODO now way of knowing if balances are empty
+    // how to transfer all balances
+    // ctx.transfer_to_address(&targetAddr.value()).transfer(mybalances).send();
+}
+
+fn test_chain_owner_id_view(ctx: &ScViewContext) {
+    ctx.results().get_agent(PARAM_CHAIN_OWNER).set_value(&ctx.chain_owner())
+}
+
+fn test_chain_owner_id_full(ctx: &ScCallContext) {
+    ctx.results().get_agent(PARAM_CHAIN_OWNER).set_value(&ctx.chain_owner())
+}
+
+fn test_contract_id_view(_ctx: &ScViewContext) {
+    // TODO there's no way to return contact ID
+    // ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
+}
+
+fn test_contract_id_full(_ctx: &ScCallContext) {
+
 }

@@ -36,10 +36,10 @@ fn on_load() {
 // on_init is a constructor entry point. It initializes the smart contract with the
 // initial value of the token supply and the owner of that supply
 // - input:
-//   -- PARAM_SUPPLY must be nonzero positive integer
-//   -- PARAM_CREATOR is the AgentID where initial supply is placed
+//   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
+//   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
 fn on_init(ctx: &ScCallContext) {
-    ctx.log("erc20.on_init.begin");
+    ctx.trace("erc20.on_init.begin");
     // validate parameters
     // supply
     let supply = ctx.params().get_int(PARAM_SUPPLY);
@@ -94,7 +94,7 @@ fn balance_of(ctx: &ScViewContext) {
 // Output:
 // - PARAM_AMOUNT: i64. 0 if delegation doesn't exists
 fn allowance(ctx: &ScViewContext) {
-    ctx.log("erc20.allowance");
+    ctx.trace("erc20.allowance");
     // validate parameters
     // account
     let owner = ctx.params().get_agent(PARAM_ACCOUNT);
@@ -117,7 +117,7 @@ fn allowance(ctx: &ScViewContext) {
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
 fn transfer(ctx: &ScCallContext) {
-    ctx.log("erc20.transfer");
+    ctx.trace("erc20.transfer");
 
     // validate params
     let params = ctx.params();
@@ -153,7 +153,7 @@ fn transfer(ctx: &ScCallContext) {
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
 fn approve(ctx: &ScCallContext) {
-    ctx.log("erc20.approve");
+    ctx.trace("erc20.approve");
 
     // validate parameters
     let delegation = ctx.params().get_agent(PARAM_DELEGATION);
@@ -178,7 +178,7 @@ fn approve(ctx: &ScCallContext) {
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
 fn transfer_from(ctx: &ScCallContext) {
-    ctx.log("erc20.transfer_from");
+    ctx.trace("erc20.transfer_from");
 
     // validate parameters
     let account = ctx.params().get_agent(PARAM_ACCOUNT);
