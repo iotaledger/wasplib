@@ -1,8 +1,6 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use super::hashtypes::*;
-
 pub const CORE_ACCOUNTS: Hname = Hname(0x3c4b5e02);
 pub const FUNC_BALANCE: Hname = Hname(0x84168cb4);
 pub const FUNC_DEPOSIT: Hname = Hname(0xbdc9102d);

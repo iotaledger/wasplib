@@ -1,4 +1,4 @@
-// + build feature_types
+// +build feature_types
 
 package types
 
@@ -11,11 +11,13 @@ import (
 )
 
 func TestGoCoreSchema(t *testing.T){
+	t.SkipNow()
 	err := GenerateGoCoreSchema()
 	require.NoError(t, err)
 }
 
 func TestRustCoreSchema(t *testing.T){
+	t.SkipNow()
 	err := GenerateRustCoreSchema()
 	require.NoError(t, err)
 }
