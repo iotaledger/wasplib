@@ -154,6 +154,7 @@ func GenerateRustCoreSchema() error {
 	// write file header
 	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
+	fmt.Fprintf(file, "\nuse super::hashtypes::*;\n")
 
 	for _,schema := range core {
 		nContract := snakecase(schema.Name)
