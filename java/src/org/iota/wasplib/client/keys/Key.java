@@ -27,19 +27,20 @@ public class Key implements MapKey {
 	public static final Key Length      = new Key(-21);
 	public static final Key Log         = new Key(-22);
 	public static final Key Logs        = new Key(-23);
-	public static final Key Name        = new Key(-24);
-	public static final Key Panic       = new Key(-25);
-	public static final Key Params      = new Key(-26);
-	public static final Key Posts       = new Key(-27);
-	public static final Key Random      = new Key(-28);
-	public static final Key Results     = new Key(-29);
-	public static final Key State       = new Key(-30);
-	public static final Key Timestamp   = new Key(-31);
-	public static final Key Trace       = new Key(-32);
-	public static final Key Transfers   = new Key(-33);
-	public static final Key Utility     = new Key(-34);
-	public static final Key Views       = new Key(-35);
-	public static final Key Zzzzzzz     = new Key(-36);
+	public static final Key Maps        = new Key(-24);
+	public static final Key Name        = new Key(-25);
+	public static final Key Panic       = new Key(-26);
+	public static final Key Params      = new Key(-27);
+	public static final Key Posts       = new Key(-28);
+	public static final Key Random      = new Key(-29);
+	public static final Key Results     = new Key(-30);
+	public static final Key State       = new Key(-31);
+	public static final Key Timestamp   = new Key(-32);
+	public static final Key Trace       = new Key(-33);
+	public static final Key Transfers   = new Key(-34);
+	public static final Key Utility     = new Key(-35);
+	public static final Key Views       = new Key(-36);
+	public static final Key Zzzzzzz     = new Key(-37);
 	// @formatter:on
 
 	int keyId;

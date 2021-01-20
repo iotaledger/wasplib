@@ -15,6 +15,8 @@ use super::mutable::*;
 pub struct Hname(pub u32);
 
 impl Hname {
+    pub const SELF: Hname = Hname(0);
+
     pub fn new(name: &str) -> Hname {
         let utility = ROOT.get_map(&KEY_UTILITY);
         utility.get_string(&KEY_NAME).set_value(name);

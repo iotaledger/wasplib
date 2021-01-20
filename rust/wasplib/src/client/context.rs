@@ -55,6 +55,21 @@ impl ScLog {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScTransfers {
+    transfers: ScMutableMap,
+}
+
+impl ScTransfers {
+    pub const NONE: ScTransfers = ScTransfers { transfers: ScMutableMap::NONE };
+
+    // appends the specified timestamp and data to the timestamped log
+    pub fn transfer(&self, color: &ScColor, amount: i64) {
+        self.transfers.get_int(color).set_value(amount);
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScUtility {
     utility: ScMutableMap,
 }
@@ -164,11 +179,6 @@ pub trait ScBaseContext {
     fn utility(&self) -> ScUtility {
         ScUtility { utility: ROOT.get_map(&KEY_UTILITY) }
     }
-
-    // starts a call to a smart contract view function.
-    fn view(&self, function: &str) -> ScViewBuilder {
-        ScViewBuilder::new(function)
-    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -179,19 +189,14 @@ pub struct ScCallContext {}
 impl ScBaseContext for ScCallContext {}
 
 impl ScCallContext {
-    // starts a call to a smart contract function
-    pub fn call(&self, function: &str) -> ScCallBuilder {
-        ScCallBuilder::new(function)
-    }
-
     // calls a smart contract function
-    pub fn newcall(&self, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScMutableMap) -> ScImmutableMap {
+    pub fn call(&self, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScTransfers) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
         call.get_hname(&KEY_CONTRACT).set_value(contract);
         call.get_hname(&KEY_FUNCTION).set_value(function);
         call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
-        call.get_int(&KEY_TRANSFERS).set_value(transfers.obj_id as i64);
+        call.get_int(&KEY_TRANSFERS).set_value(transfers.transfers.obj_id as i64);
         call.get_int(&KEY_DELAY).set_value(-1);
         call.get_map(&KEY_RESULTS).immutable()
     }
@@ -211,9 +216,17 @@ impl ScCallContext {
         ScBalances { balances: ROOT.get_map(&KEY_INCOMING).immutable() }
     }
 
-    // starts a (delayed) post to a smart contract function.
-    pub fn post(&self, function: &str) -> ScPostBuilder {
-        ScPostBuilder::new(function)
+    // (delayed) posts a smart contract function
+    pub fn post(&self, chain: &ScAddress, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScTransfers, delay: i64) {
+        if delay < 0 { self.panic("Invalid delay") }
+        let calls = ROOT.get_map_array(&KEY_CALLS);
+        let call = calls.get_map(calls.length());
+        call.get_address(&KEY_CHAIN).set_value(&chain);
+        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        call.get_hname(&KEY_FUNCTION).set_value(function);
+        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        call.get_int(&KEY_TRANSFERS).set_value(transfers.transfers.obj_id as i64);
+        call.get_int(&KEY_DELAY).set_value(delay);
     }
 
     // access to mutable state storage
@@ -251,7 +264,7 @@ impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
     // calls a smart contract function
-    pub fn newcall(&self, contract: Hname, function: Hname, params: ScMutableMap) -> ScImmutableMap {
+    pub fn call(&self, contract: Hname, function: Hname, params: ScMutableMap) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
         call.get_hname(&KEY_CONTRACT).set_value(contract);

@@ -53,7 +53,12 @@ fn place_bet(sc: &ScCallContext) {
         if play_period < 10 {
             play_period = DEFAULT_PLAY_PERIOD;
         }
-        sc.post("lock_bets").post(play_period);
+        sc.post(&ScAddress::NULL,
+                Hname::SELF,
+                Hname::new("lock_bets"),
+                ScMutableMap::NONE,
+                ScTransfers::NONE,
+                play_period);
     }
 }
 
@@ -74,7 +79,12 @@ fn lock_bets(sc: &ScCallContext) {
     }
     bets.clear();
 
-    sc.post("pay_winners").post(0);
+    sc.post(&ScAddress::NULL,
+            Hname::SELF,
+            Hname::new("pay_winners"),
+            ScMutableMap::NONE,
+            ScTransfers::NONE,
+            0);
 }
 
 fn pay_winners(sc: &ScCallContext) {

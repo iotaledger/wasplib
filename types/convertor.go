@@ -97,7 +97,7 @@ func replaceFieldName(m string) string {
 		m = m[:index] + strings.ToUpper(m[index+1:index+2]) + m[index+2:]
 		index = strings.Index(m, "_")
 	}
-	return strings.ToUpper(m[:2]) +  m[2:]
+	return strings.ToUpper(m[:2]) + m[2:]
 }
 
 func replaceVarName(m string) string {
@@ -188,7 +188,7 @@ func RustToJavaLine(line string, contract string) string {
 	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
 	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
-	line = matchInitializer.ReplaceAllString(line, lastInit + ".$1 = $2;")
+	line = matchInitializer.ReplaceAllString(line, lastInit+".$1 = $2;")
 	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
 	line = matchToString.ReplaceAllString(line, "+ $1")
 	line = matchIf.ReplaceAllString(line, "if ($1) {")

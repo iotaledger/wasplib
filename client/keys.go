@@ -3,7 +3,23 @@
 
 package client
 
+type MapKey interface {
+	KeyId() Key32
+}
+
+type Key string
+
+func (key Key) KeyId() Key32 {
+	return GetKeyIdFromString(string(key))
+}
+
 type Key32 int32
+
+func (key Key32) KeyId() Key32 {
+	return key
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // @formatter:off
 const (
@@ -30,10 +46,10 @@ const (
 	KeyLength      = Key32(-21)
 	KeyLog         = Key32(-22)
 	KeyLogs        = Key32(-23)
-	KeyName        = Key32(-24)
-	KeyPanic       = Key32(-25)
-	KeyParams      = Key32(-26)
-	KeyPosts       = Key32(-27)
+	KeyMaps        = Key32(-24)
+	KeyName        = Key32(-25)
+	KeyPanic       = Key32(-26)
+	KeyParams      = Key32(-27)
 	KeyRandom      = Key32(-28)
 	KeyResults     = Key32(-29)
 	KeyState       = Key32(-30)
@@ -41,23 +57,6 @@ const (
 	KeyTrace       = Key32(-32)
 	KeyTransfers   = Key32(-33)
 	KeyUtility     = Key32(-34)
-	KeyViews       = Key32(-35)
-	KeyZzzzzzz     = Key32(-36)
+	KeyZzzzzzz     = Key32(-99)
 )
 // @formatter:on
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type MapKey interface {
-	KeyId() Key32
-}
-
-type Key string
-
-func (key Key) KeyId() Key32 {
-	return GetKeyIdFromString(string(key))
-}
-
-func (key Key32) KeyId() Key32 {
-	return key
-}

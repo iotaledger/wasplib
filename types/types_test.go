@@ -10,13 +10,13 @@ import (
 	"testing"
 )
 
-func TestGoCoreSchema(t *testing.T){
+func TestGoCoreSchema(t *testing.T) {
 	t.SkipNow()
 	err := GenerateGoCoreSchema()
 	require.NoError(t, err)
 }
 
-func TestRustCoreSchema(t *testing.T){
+func TestRustCoreSchema(t *testing.T) {
 	t.SkipNow()
 	err := GenerateRustCoreSchema()
 	require.NoError(t, err)

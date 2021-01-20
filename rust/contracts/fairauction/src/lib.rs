@@ -119,10 +119,14 @@ fn start_auction(sc: &ScCallContext) {
     };
     auction_info.set_value(&encode_auction_info(auction));
 
-    let finalize_request = sc.post("finalize_auction");
-    let finalize_params = finalize_request.params();
+    let finalize_params = ScMutableMap::new();
     finalize_params.get_color(KEY_COLOR).set_value(&auction.color);
-    finalize_request.post(duration * 60);
+    sc.post(&ScAddress::NULL,
+            Hname::SELF,
+            Hname::new("finalize_auction"),
+            finalize_params,
+            ScTransfers::NONE,
+            duration * 60);
     sc.log("New auction started");
 }
 

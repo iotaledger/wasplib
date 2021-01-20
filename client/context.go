@@ -47,6 +47,21 @@ func (ctx ScLog) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScTransfers struct {
+	transfers ScMutableMap
+}
+
+func NewScTransfers() ScTransfers {
+	return ScTransfers{transfers: *NewScMutableMap()}
+}
+
+// appends the specified timestamp and data to the timestamped log
+func (ctx ScTransfers) Transfer(color *ScColor, amount int64) {
+	ctx.transfers.GetInt(color).SetValue(amount)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScUtility struct {
 	utility ScMutableMap
 }
@@ -161,21 +176,11 @@ func (ctx ScBaseContext) Utility() ScUtility {
 	return ScUtility{Root.GetMap(KeyUtility)}
 }
 
-// starts a call to a smart contract view function.
-func (ctx ScBaseContext) View(function string) ScViewBuilder {
-	return ScViewBuilder{newScRequestBuilder(KeyViews, function)}
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // smart contract interface with mutable access to state
 type ScCallContext struct {
 	ScBaseContext
-}
-
-// starts a call to a smart contract function
-func (ctx ScCallContext) Call(function string) ScCallBuilder {
-	return ScCallBuilder{newScRequestBuilder(KeyCalls, function)}
 }
 
 //TODO hname
@@ -184,13 +189,17 @@ func (ctx ScCallContext) Call(function string) ScCallBuilder {
 //TODO parameter type checks
 
 // calls a smart contract function
-func (ctx ScCallContext) NewCall(contract Hname, function Hname, params ScMutableMap, transfers ScMutableMap) ScImmutableMap {
+func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfers *ScTransfers) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
 	call.GetHname(KeyContract).SetValue(contract)
 	call.GetHname(KeyFunction).SetValue(function)
-	call.GetInt(KeyParams).SetValue(int64(params.objId))
-	call.GetInt(KeyTransfers).SetValue(int64(transfers.objId))
+	if params != nil {
+		call.GetInt(KeyParams).SetValue(int64(params.objId))
+	}
+	if transfers != nil {
+		call.GetInt(KeyTransfers).SetValue(int64(transfers.transfers.objId))
+	}
 	call.GetInt(KeyDelay).SetValue(-1)
 	return call.GetMap(KeyResults).Immutable()
 }
@@ -205,9 +214,25 @@ func (ctx ScCallContext) Incoming() ScBalances {
 	return ScBalances{Root.GetMap(KeyIncoming).Immutable()}
 }
 
-// starts a (delayed) post to a smart contract function.
-func (ctx ScCallContext) Post(function string) ScPostBuilder {
-	return ScPostBuilder{newScRequestBuilder(KeyPosts, function)}
+// (delayed) posts a smart contract function
+func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, params *ScMutableMap, transfers *ScTransfers, delay int64) {
+	if delay < 0 {
+		ctx.Panic("Invalid delay")
+	}
+	calls := Root.GetMapArray(KeyCalls)
+	call := calls.GetMap(calls.Length())
+	if chain != nil {
+		call.GetAddress(KeyChain).SetValue(chain)
+	}
+	call.GetHname(KeyContract).SetValue(contract)
+	call.GetHname(KeyFunction).SetValue(function)
+	if params != nil {
+		call.GetInt(KeyParams).SetValue(int64(params.objId))
+	}
+	if transfers != nil {
+		call.GetInt(KeyTransfers).SetValue(int64(transfers.transfers.objId))
+	}
+	call.GetInt(KeyDelay).SetValue(delay)
 }
 
 // signals an event on the node that external entities can subscribe to
@@ -248,12 +273,14 @@ type ScViewContext struct {
 }
 
 // calls a smart contract function
-func (ctx ScViewContext) NewCall(contract Hname, function Hname, params ScMutableMap) ScImmutableMap {
+func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableMap) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
 	call.GetHname(KeyContract).SetValue(contract)
 	call.GetHname(KeyFunction).SetValue(function)
-	call.GetInt(KeyParams).SetValue(int64(params.objId))
+	if params != nil {
+		call.GetInt(KeyParams).SetValue(int64(params.objId))
+	}
 	call.GetInt(KeyDelay).SetValue(-1)
 	return call.GetMap(KeyResults).Immutable()
 }

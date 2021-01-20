@@ -8,14 +8,14 @@ import (
 )
 
 type Generator struct {
-	schema *Schema
-	keys      []string
-	maxCamel  int
-	maxName   int
-	maxType   int
-	camels    map[string]string
-	types     map[string]string
-	comments  map[string]string
+	schema   *Schema
+	keys     []string
+	maxCamel int
+	maxName  int
+	maxType  int
+	camels   map[string]string
+	types    map[string]string
+	comments map[string]string
 }
 
 var camelRegExp = regexp.MustCompile("_[a-z]")

@@ -306,6 +306,11 @@ type ScMutableMap struct {
 	objId int32
 }
 
+func NewScMutableMap() *ScMutableMap {
+	maps := Root.GetMapArray(KeyMaps)
+	return &ScMutableMap{objId: maps.GetMap(maps.Length()).objId}
+}
+
 func (o ScMutableMap) Clear() {
 	SetClear(o.objId)
 }

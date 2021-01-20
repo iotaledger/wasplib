@@ -101,25 +101,24 @@ func startAuction(sc *client.ScCallContext) {
 		sc.Panic("Auction for this token color already exists")
 	}
 
-	auction := &AuctionInfo {
-		Creator: sc.Caller(),
-		Color: color,
-		Deposit: deposit,
-		Description: description,
-		Duration: duration,
-		HighestBid: -1,
+	auction := &AuctionInfo{
+		Creator:       sc.Caller(),
+		Color:         color,
+		Deposit:       deposit,
+		Description:   description,
+		Duration:      duration,
+		HighestBid:    -1,
 		HighestBidder: &client.ScAgent{},
-		MinimumBid: minimumBid,
-		NumTokens: numTokens,
-		OwnerMargin: ownerMargin,
-		WhenStarted: sc.Timestamp(),
+		MinimumBid:    minimumBid,
+		NumTokens:     numTokens,
+		OwnerMargin:   ownerMargin,
+		WhenStarted:   sc.Timestamp(),
 	}
 	auctionInfo.SetValue(EncodeAuctionInfo(auction))
 
-	finalizeRequest := sc.Post("finalize_auction")
-	finalizeParams := finalizeRequest.Params()
+	finalizeParams := client.NewScMutableMap()
 	finalizeParams.GetColor(KeyColor).SetValue(auction.Color)
-	finalizeRequest.Post(duration * 60)
+	sc.Post(nil, client.Hname(0), client.NewHname("finalize_auction"), finalizeParams, nil, duration*60)
 	sc.Log("New auction started")
 }
 
@@ -150,9 +149,9 @@ func finalizeAuction(sc *client.ScCallContext) {
 			ownerFee = 1
 		}
 		// finalizeAuction request token was probably not confirmed yet
-		transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee - 1)
+		transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee-1)
 		transfer(sc, auction.Creator, auction.Color, auction.NumTokens)
-		transfer(sc, auction.Creator, client.IOTA, auction.Deposit - ownerFee)
+		transfer(sc, auction.Creator, client.IOTA, auction.Deposit-ownerFee)
 		return
 	}
 
@@ -219,9 +218,9 @@ func placeBid(sc *client.ScCallContext) {
 		sc.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
 		bidderList.GetAgent(index).SetValue(caller)
-		bid := &BidInfo {
-			Index: int64(index),
-			Amount: bidAmount,
+		bid := &BidInfo{
+			Index:     int64(index),
+			Amount:    bidAmount,
 			Timestamp: sc.Timestamp(),
 		}
 		bidder.SetValue(EncodeBidInfo(bid))
@@ -285,7 +284,7 @@ func getInfo(sc *client.ScViewContext) {
 }
 
 func transfer(sc *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
-	if ! agent.IsAddress() {
+	if !agent.IsAddress() {
 		// not an address, deposit into account on chain
 		sc.Transfer(agent, color, amount)
 		return

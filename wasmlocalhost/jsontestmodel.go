@@ -79,8 +79,7 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData(wasmhost.KeyLogs, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyResults, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
-	t.ClearObjectData(wasmhost.KeyPosts, client.TYPE_MAP|client.TYPE_ARRAY)
-	t.ClearObjectData(wasmhost.KeyViews, client.TYPE_MAP|client.TYPE_ARRAY)
+	t.ClearObjectData(wasmhost.KeyMaps, client.TYPE_MAP|client.TYPE_ARRAY)
 	t.ClearObjectData(wasmhost.KeyTransfers, client.TYPE_MAP|client.TYPE_ARRAY)
 }
 
@@ -112,8 +111,6 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 		t.CompareMapData(wasmhost.KeyLogs, expectData.Logs) &&
 		t.CompareMapData(wasmhost.KeyResults, expectData.Results) &&
 		t.CompareArrayData(wasmhost.KeyCalls, expectData.Calls) &&
-		t.CompareArrayData(wasmhost.KeyPosts, expectData.Posts) &&
-		t.CompareArrayData(wasmhost.KeyViews, expectData.Views) &&
 		t.CompareArrayData(wasmhost.KeyTransfers, expectData.Transfers)
 }
 
@@ -526,11 +523,11 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 
 	root := t.FindObject(1)
 	scId := root.GetString(wasmhost.KeyId)
-	posts := t.FindSubObject(nil, wasmhost.KeyPosts, client.TYPE_MAP|client.TYPE_ARRAY)
+	calls := t.FindSubObject(nil, wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
 
-	expectedCalls := len(test.Expect.Posts)
-	for i := 0; i < expectedCalls && i < int(posts.GetInt(wasmhost.KeyLength)); i++ {
-		post := t.FindIndexedMap(posts, i)
+	expectedCalls := len(test.Expect.Calls)
+	for i := 0; i < expectedCalls && i < int(calls.GetInt(wasmhost.KeyLength)); i++ {
+		post := t.FindIndexedMap(calls, i)
 		delay := post.GetInt(wasmhost.KeyDelay)
 		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
 			// only process posts when they have no delay

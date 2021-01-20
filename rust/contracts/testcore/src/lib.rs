@@ -39,7 +39,6 @@ fn on_load() {
     exports.add_call("testContractIDFull", test_contract_id_full);
 
     exports.add_call("sendToAddress", send_to_address);
-
 }
 
 fn on_init(ctx: &ScCallContext) {
@@ -53,11 +52,11 @@ fn do_nothing(ctx: &ScCallContext) {
 fn set_int(ctx: &ScCallContext) {
     ctx.log("testcore.set_int.begin");
     let param_name = ctx.params().get_string(PARAM_INT_PARAM_NAME);
-    if !param_name.exists(){
+    if !param_name.exists() {
         ctx.panic("param name not found")
     }
     let param_value = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
-    if !param_value.exists(){
+    if !param_value.exists() {
         ctx.panic("param value not found")
     }
     ctx.state().get_int(&param_name.value() as &str).set_value(param_value.value());
@@ -66,11 +65,11 @@ fn set_int(ctx: &ScCallContext) {
 fn get_int(ctx: &ScViewContext) {
     ctx.log("testcore.get_int.begin");
     let param_name = ctx.params().get_string(PARAM_INT_PARAM_NAME);
-    if !param_name.exists(){
+    if !param_name.exists() {
         ctx.panic("param name not found")
     }
     let param_value = ctx.state().get_int(&param_name.value() as &str);
-    if !param_value.exists(){
+    if !param_value.exists() {
         ctx.panic("param value is not in state")
     }
     ctx.results().get_int(&param_name.value() as &str).set_value(param_value.value());
@@ -85,59 +84,56 @@ fn call_on_chain(ctx: &ScCallContext) {
     //     ctx.panic("param value not found")
     // }
     // TODO cannot get hname type
-
 }
 
 fn fibonacci(ctx: &ScViewContext) {
     let n = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
-    if !n.exists(){
+    if !n.exists() {
         ctx.panic("param value not found")
     }
     let n = n.value();
     ctx.log(&("fibonacci: ".to_string() + &n.to_string()));
-    if n == 0 || n == 1{
+    if n == 0 || n == 1 {
         ctx.log("return 1");
         ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n);
         return;
     }
     ctx.log("before call 1");
-    let view_call1 = ctx.view("fibonacci");
-    view_call1.contract(SELF_NAME);
-    view_call1.params().get_int(PARAM_INT_PARAM_VALUE).set_value(n-1);
-    view_call1.view();
-    let n1 = view_call1.results().get_int(PARAM_INT_PARAM_VALUE).value();
+    let params1 = ScMutableMap::new();
+    params1.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 1);
+    let results1 = ctx.call(Hname::SELF, Hname::new("fibonacci"), params1);
+    let n1 = results1.get_int(PARAM_INT_PARAM_VALUE).value();
     ctx.log(&("    fibonacci-1: ".to_string() + &n1.to_string()));
 
-    let view_call2 = ctx.view("fibonacci");
-    view_call2.contract(SELF_NAME);
-    view_call2.params().get_int(PARAM_INT_PARAM_VALUE).set_value(n-2);
-    view_call2.view();
-    let n2 = view_call2.results().get_int(PARAM_INT_PARAM_VALUE).value();
+    let params2 = ScMutableMap::new();
+    params2.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 2);
+    let results2 = ctx.call(Hname::SELF, Hname::new("fibonacci"), params2);
+    let n2 = results2.get_int(PARAM_INT_PARAM_VALUE).value();
     ctx.log(&("    fibonacci-2: ".to_string() + &n2.to_string()));
 
-    ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n1+n2);
+    ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n1 + n2);
 }
 
-fn test_panic_full_ep(ctx: &ScCallContext){
+fn test_panic_full_ep(ctx: &ScCallContext) {
     ctx.panic(MSG_FULL_PANIC)
 }
 
-fn test_panic_view_ep(ctx: &ScViewContext){
+fn test_panic_view_ep(ctx: &ScViewContext) {
     ctx.panic(MSG_VIEW_PANIC)
 }
 
-fn test_call_panic_full_ep(ctx: &ScCallContext){
-    ctx.call("testPanicFullEP").contract(SELF_NAME).call();  // FIXME need self.hname
+fn test_call_panic_full_ep(ctx: &ScCallContext) {
+    ctx.call(Hname::SELF, Hname::new("testPanicFullEP"), ScMutableMap::NONE, ScTransfers::NONE);
 }
 
 // FIXME no need for 'view method special'
-fn test_call_panic_view_from_full(ctx: &ScCallContext){
-    ctx.view("testPanicViewEP").contract(SELF_NAME).view();  // FIXME need self.hname
+fn test_call_panic_view_from_full(ctx: &ScCallContext) {
+    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE, ScTransfers::NONE);
 }
 
 // FIXME no need for 'view method special'
-fn test_call_panic_view_from_view(ctx: &ScViewContext){
-    ctx.view("testPanicViewEP").contract(SELF_NAME).view();
+fn test_call_panic_view_from_view(ctx: &ScViewContext) {
+    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE);
 }
 
 fn send_to_address(ctx: &ScCallContext) {
@@ -146,7 +142,7 @@ fn send_to_address(ctx: &ScCallContext) {
         ctx.panic(MSG_PANIC_UNAUTHORIZED);
     }
     let target_addr = ctx.params().get_address(PARAM_ADDRESS);
-    if !target_addr.exists(){
+    if !target_addr.exists() {
         ctx.panic("parameter 'address' not provided")
     }
     // let mybalances = ctx.balances();
@@ -168,6 +164,4 @@ fn test_contract_id_view(_ctx: &ScViewContext) {
     // ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
 }
 
-fn test_contract_id_full(_ctx: &ScCallContext) {
-
-}
+fn test_contract_id_full(_ctx: &ScCallContext) {}

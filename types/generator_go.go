@@ -118,7 +118,7 @@ func GenerateGoCoreSchema() error {
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
 	fmt.Fprintf(file, "\npackage client\n")
 
-	for _,schema := range core {
+	for _, schema := range core {
 		nContract := camelcase(schema.Name)
 		hContract := coretypes.Hn(schema.Name)
 		fmt.Fprintf(file, "\nconst Core%s = Hname(0x%s)\n", nContract, hContract.String())
@@ -156,7 +156,7 @@ func GenerateRustCoreSchema() error {
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
 	fmt.Fprintf(file, "\nuse super::hashtypes::*;\n")
 
-	for _,schema := range core {
+	for _, schema := range core {
 		nContract := snakecase(schema.Name)
 		hContract := coretypes.Hn(schema.Name)
 		fmt.Fprintf(file, "\npub const CORE_%s: Hname = Hname(0x%s);\n", nContract, hContract.String())
@@ -175,7 +175,6 @@ func GenerateRustCoreSchema() error {
 	}
 	return nil
 }
-
 
 func sorted(dict map[string]string) []string {
 	keys := make([]string, 0)

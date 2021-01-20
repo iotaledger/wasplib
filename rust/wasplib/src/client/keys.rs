@@ -1,10 +1,28 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use super::host::get_key_id_from_string;
+use super::host::*;
+
+pub trait MapKey {
+    fn get_id(&self) -> Key32;
+}
+
+impl MapKey for str {
+    fn get_id(&self) -> Key32 {
+        get_key_id_from_string(self)
+    }
+}
 
 #[derive(Clone, Copy)]
 pub struct Key32(pub i32);
+
+impl MapKey for Key32 {
+    fn get_id(&self) -> Key32 {
+        *self
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // @formatter:off
 pub const KEY_AGENT       : Key32 = Key32(-1);
@@ -30,10 +48,10 @@ pub const KEY_INCOMING    : Key32 = Key32(-20);
 pub const KEY_LENGTH      : Key32 = Key32(-21);
 pub const KEY_LOG         : Key32 = Key32(-22);
 pub const KEY_LOGS        : Key32 = Key32(-23);
-pub const KEY_NAME        : Key32 = Key32(-24);
-pub const KEY_PANIC       : Key32 = Key32(-25);
-pub const KEY_PARAMS      : Key32 = Key32(-26);
-pub const KEY_POSTS       : Key32 = Key32(-27);
+pub const KEY_MAPS        : Key32 = Key32(-24);
+pub const KEY_NAME        : Key32 = Key32(-25);
+pub const KEY_PANIC       : Key32 = Key32(-26);
+pub const KEY_PARAMS      : Key32 = Key32(-27);
 pub const KEY_RANDOM      : Key32 = Key32(-28);
 pub const KEY_RESULTS     : Key32 = Key32(-29);
 pub const KEY_STATE       : Key32 = Key32(-30);
@@ -41,22 +59,5 @@ pub const KEY_TIMESTAMP   : Key32 = Key32(-31);
 pub const KEY_TRACE       : Key32 = Key32(-32);
 pub const KEY_TRANSFERS   : Key32 = Key32(-33);
 pub const KEY_UTILITY     : Key32 = Key32(-34);
-pub const KEY_VIEWS       : Key32 = Key32(-35);
-pub const KEY_ZZZZZZZ     : Key32 = Key32(-36);
+pub const KEY_ZZZZZZZ     : Key32 = Key32(-99);
 // @formatter:on
-
-pub trait MapKey {
-    fn get_id(&self) -> Key32;
-}
-
-impl MapKey for str {
-    fn get_id(&self) -> Key32 {
-        get_key_id_from_string(self)
-    }
-}
-
-impl MapKey for Key32 {
-    fn get_id(&self) -> Key32 {
-        *self
-    }
-}

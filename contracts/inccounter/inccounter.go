@@ -49,7 +49,7 @@ func incrementCallIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.Call("increment_call_increment").Call()
+		sc.Call(client.Hname(0), client.NewHname("increment_call_increment"), nil, nil)
 	}
 }
 
@@ -58,7 +58,7 @@ func incrementCallIncrementRecurse5x(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
-		sc.Call("increment_call_increment_recurse5x").Call()
+		sc.Call(client.Hname(0), client.NewHname("increment_call_increment_recurse5x"), nil, nil)
 	}
 }
 
@@ -67,7 +67,7 @@ func incrementPostIncrement(sc *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		sc.Post("increment_post_increment").Post(0)
+		sc.Post(nil, client.Hname(0), client.NewHname("increment_post_increment"), nil, nil, 0)
 	}
 }
 
@@ -89,7 +89,7 @@ func incrementRepeatMany(sc *client.ScCallContext) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	sc.Post("increment_repeat_many").Post(0)
+	sc.Post(nil, client.Hname(0), client.NewHname("increment_repeat_many"), nil, nil, 0)
 }
 
 func incrementWhenMustIncrement(sc *client.ScCallContext) {
@@ -114,22 +114,22 @@ func incrementLocalStateInternalCall(sc *client.ScCallContext) {
 }
 
 func incrementLocalStateSandboxCall(sc *client.ScCallContext) {
-	sc.Call("increment_when_must_increment").Call()
+	sc.Call(client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil)
 	{
 		LocalStateMustIncrement = true
 	}
-	sc.Call("increment_when_must_increment").Call()
-	sc.Call("increment_when_must_increment").Call()
+	sc.Call(client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil)
+	sc.Call(client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil)
 	// counter ends up as 0
 }
 
 func incrementLocalStatePost(sc *client.ScCallContext) {
-	sc.Post("increment_when_must_increment").Post(0)
+	sc.Post(nil, client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil, 0)
 	{
 		LocalStateMustIncrement = true
 	}
-	sc.Post("increment_when_must_increment").Post(0)
-	sc.Post("increment_when_must_increment").Post(0)
+	sc.Post(nil, client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil, 0)
+	sc.Post(nil, client.Hname(0), client.NewHname("increment_when_must_increment"), nil, nil, 0)
 	// counter ends up as 0
 }
 
@@ -153,12 +153,12 @@ func test(_sc *client.ScCallContext) {
 func resultsTest(sc *client.ScCallContext) {
 	testMap(sc.Results())
 	checkMap(sc.Results().Immutable())
-	//sc.call("results_check");
+	//sc.Call( client.Hname(0), client.NewHname("results_check"), nil, nil)
 }
 
 func stateTest(sc *client.ScCallContext) {
 	testMap(sc.State())
-	sc.Call("state_check")
+	sc.Call(client.Hname(0), client.NewHname("state_check"), nil, nil)
 }
 
 func resultsCheck(sc *client.ScViewContext) {

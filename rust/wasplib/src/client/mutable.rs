@@ -9,7 +9,7 @@ use super::host::*;
 use super::immutable::*;
 use super::keys::*;
 
-pub(crate) static ROOT: ScMutableMap = ScMutableMap::new(1);
+pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
 
 pub struct ScMutableAddress {
     obj_id: i32,
@@ -398,8 +398,11 @@ pub struct ScMutableMap {
 }
 
 impl ScMutableMap {
-    pub(crate) const fn new(obj_id: i32) -> ScMutableMap {
-        ScMutableMap { obj_id }
+    pub const NONE: ScMutableMap = ScMutableMap { obj_id: 0 };
+
+    pub fn new() -> ScMutableMap {
+        let maps = ROOT.get_map_array(&KEY_MAPS);
+        maps.get_map(maps.length())
     }
 
     pub fn clear(&self) {
