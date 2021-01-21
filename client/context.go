@@ -250,19 +250,19 @@ func (ctx ScCallContext) TimestampedLog(key MapKey) ScLog {
 	return ScLog{Root.GetMap(KeyLogs).GetMapArray(key)}
 }
 
-// transfer the specified amount of the specified token color to the specified agent account
-func (ctx ScCallContext) Transfer(agent *ScAgent, color *ScColor, amount int64) {
-	NewTransfer(agent).Transfer(color, amount).Send()
+// transfer single colored token amount to the specified Tangle ledger address
+func (ctx ScCallContext) TransferToAddress(address *ScAddress, color *ScColor, amount int64)  {
+	balance := NewScTransfers()
+	balance.Transfer(color, amount)
+	ctx.TransfersToAddress(address, balance)
 }
 
-// start a transfer to the specified Tangle ledger address
-func (ctx ScCallContext) TransferToAddress(address *ScAddress) ScTransferBuilder {
-	return NewTransferToAddress(address)
-}
-
-// start a transfer to the specified cross chain agent account
-func (ctx ScCallContext) TransferCrossChain(chain *ScAddress, agent *ScAgent) ScTransferBuilder {
-	return NewTransferCrossChain(chain, agent)
+// transfer multiple colored token amounts to the specified Tangle ledger address
+func (ctx ScCallContext) TransfersToAddress(address *ScAddress, balances ScTransfers)  {
+	transfers := Root.GetMapArray(KeyTransfers)
+	transfer := transfers.GetMap(transfers.Length())
+	transfer.GetAddress(KeyAddress).SetValue(address)
+	transfer.GetInt(KeyBalances).SetValue(int64(balances.transfers.objId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

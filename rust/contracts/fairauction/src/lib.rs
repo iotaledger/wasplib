@@ -292,12 +292,12 @@ fn get_info(sc: &ScViewContext) {
 }
 
 fn transfer(sc: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {
-    if !agent.is_address() {
-        // not an address, deposit into account on chain
-        sc.transfer(agent, color, amount);
+    if agent.is_address() {
+        // send to original Tangle address
+        sc.transfer_to_address(&agent.address(), color, amount);
         return;
     }
 
-    // send to original Tangle address
-    sc.transfer_to_address(&agent.address()).transfer(color, amount).send();
+    // TODO not an address, deposit into account on chain
+    sc.transfer_to_address(&agent.address(), color, amount);
 }

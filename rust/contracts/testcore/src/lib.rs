@@ -9,13 +9,11 @@ const PARAM_INT_PARAM_VALUE: &str = "intParamValue";
 // const PARAM_CALL_OPTION: &str = "callOption";
 const PARAM_ADDRESS: &str = "address";
 const PARAM_CHAIN_OWNER: &str = "chainOwner";
-const PARAM_CONTRACT_ID: &str = "contractID";
+// const PARAM_CONTRACT_ID: &str = "contractID";
 
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
 const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
 const MSG_PANIC_UNAUTHORIZED: &str = "============== panic due to unauthorized call";
-
-const SELF_NAME: &str = "test_sandbox";   // temporary, until hname in the call will become available
 
 #[no_mangle]
 fn on_load() {
@@ -146,10 +144,14 @@ fn send_to_address(ctx: &ScCallContext) {
     if !target_addr.exists() {
         ctx.panic("parameter 'address' not provided")
     }
-    // let mybalances = ctx.balances();
-    // TODO now way of knowing if balances are empty
-    // how to transfer all balances
-    // ctx.transfer_to_address(&targetAddr.value()).transfer(mybalances).send();
+    let my_balances = ctx.balances();
+    let colors = my_balances.colors();
+    let my_tokens = ScTransfers::new();
+    for i in 0..colors.length() {
+        let color = colors.get_color(i).value();
+        my_tokens.transfer(&color, my_balances.balance(&color));
+    }
+    ctx.transfers_to_address(&target_addr.value(), &my_tokens);
 }
 
 fn test_chain_owner_id_view(ctx: &ScViewContext) {
@@ -165,8 +167,7 @@ fn test_contract_id_view(_ctx: &ScViewContext) {
     // ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
 }
 
-fn test_contract_id_full(_ctx: &ScCallContext) {
-}
+fn test_contract_id_full(_ctx: &ScCallContext) {}
 
 fn test_sandbox_call(ctx: &ScViewContext) {
     let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, ScMutableMap::NONE);

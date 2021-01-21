@@ -286,10 +286,10 @@ func getInfo(sc *client.ScViewContext) {
 func transfer(sc *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
 	if !agent.IsAddress() {
 		// not an address, deposit into account on chain
-		sc.Transfer(agent, color, amount)
+		sc.TransferToAddress(agent.Address(), color, amount)
 		return
 	}
 
 	// send to original Tangle address
-	sc.TransferToAddress(agent.Address()).Transfer(color, amount).Send()
+	sc.TransferToAddress(agent.Address(),color, amount)
 }

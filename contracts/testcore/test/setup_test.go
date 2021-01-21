@@ -17,7 +17,7 @@ import (
 
 const (
 	// run go Wasm code directly, without Wasm
-	RUN_GO             = true
+	RUN_GO             = false
 
 	// run Rust Wasm code
 	RUN_WASM           = false

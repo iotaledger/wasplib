@@ -148,10 +148,15 @@ func sendToAddress(ctx *client.ScCallContext) {
 	if !targetAddr.Exists() {
 		ctx.Panic("parameter 'address' not provided")
 	}
-	// let mybalances = ctx.balances();
-	// TODO now way of knowing if balances are empty
-	// how to transfer all balances
-	// ctx.transfer_to_address(&targetAddr.value()).transfer(mybalances).send();
+	myBalances := ctx.Balances()
+	colors := myBalances.Colors()
+	myTokens := client.NewScTransfers()
+	length := colors.Length()
+	for i:= int32(0); i < length; i++ {
+		color := colors.GetColor(i).Value()
+		myTokens.Transfer(color, myBalances.Balance(color))
+	}
+	ctx.TransfersToAddress(targetAddr.Value(), myTokens)
 }
 
 func testChainOwnerIdView(ctx *client.ScViewContext) {

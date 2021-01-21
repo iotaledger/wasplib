@@ -36,7 +36,7 @@ fn donate(sc: &ScCallContext) {
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
         if donation.amount > 0 {
-            sc.transfer(&donation.donator, &ScColor::IOTA, donation.amount);
+            sc.transfer_to_address(&donation.donator.address(), &ScColor::IOTA, donation.amount);
             donation.amount = 0;
         }
     }
@@ -68,7 +68,7 @@ fn withdraw(sc: &ScCallContext) {
         return;
     }
 
-    sc.transfer(&sc_owner, &ScColor::IOTA, withdraw_amount);
+    sc.transfer_to_address(&sc_owner.address(), &ScColor::IOTA, withdraw_amount);
 }
 
 fn view_donations(sc: &ScViewContext) {

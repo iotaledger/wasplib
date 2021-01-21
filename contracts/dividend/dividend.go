@@ -72,7 +72,7 @@ func divide(sc *client.ScCallContext) {
 		part := amount * m.Factor / total
 		if part != 0 {
 			parts += part
-			sc.Transfer(m.Address.AsAgent(), client.IOTA, part)
+			sc.TransferToAddress(m.Address, client.IOTA, part)
 		}
 	}
 	if parts != amount {

@@ -62,6 +62,10 @@ pub struct ScTransfers {
 impl ScTransfers {
     pub const NONE: ScTransfers = ScTransfers { transfers: ScMutableMap::NONE };
 
+    pub fn new() -> ScTransfers {
+        ScTransfers { transfers: ScMutableMap::new() }
+    }
+
     // appends the specified timestamp and data to the timestamped log
     pub fn transfer(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int(color).set_value(amount);
@@ -239,19 +243,19 @@ impl ScCallContext {
         ScLog { log: ROOT.get_map(&KEY_LOGS).get_map_array(key) }
     }
 
-    // transfer the specified amount of the specified token color to the specified agent account
-    pub fn transfer(&self, agent: &ScAgent, color: &ScColor, amount: i64) {
-        ScTransferBuilder::new_transfer(agent).transfer(color, amount).send();
+    // transfer single colored token amount to the specified Tangle ledger address
+    pub fn transfer_to_address(&self, address: &ScAddress, color: &ScColor, amount: i64) {
+        let balance = ScTransfers::new();
+        balance.transfer(color, amount);
+        self.transfers_to_address(address, &balance);
     }
 
-    // start a transfer to the specified Tangle ledger address
-    pub fn transfer_to_address(&self, address: &ScAddress) -> ScTransferBuilder {
-        ScTransferBuilder::new_transfer_to_address(address)
-    }
-
-    // start a transfer to the specified cross chain agent account
-    pub fn transfer_cross_chain(&self, chain: &ScAddress, agent: &ScAgent) -> ScTransferBuilder {
-        ScTransferBuilder::new_transfer_cross_chain(chain, agent)
+    // transfer multiple colored token amounts to the specified Tangle ledger address
+    pub fn transfers_to_address(&self, address: &ScAddress, balances: &ScTransfers) {
+        let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
+        let transfer = transfers.get_map(transfers.length());
+        transfer.get_address(&KEY_ADDRESS).set_value(address);
+        transfer.get_int(&KEY_BALANCES).set_value(balances.transfers.obj_id as i64);
     }
 }
 

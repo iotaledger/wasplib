@@ -73,7 +73,7 @@ fn dividend(sc: &ScCallContext) {
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;
-            sc.transfer(&m.address.as_agent(), &ScColor::IOTA, part);
+            sc.transfer_to_address(&m.address, &ScColor::IOTA, part);
         }
     }
     if parts != amount {

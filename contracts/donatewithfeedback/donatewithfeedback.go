@@ -34,7 +34,7 @@ func donate(sc *client.ScCallContext) {
 	if donation.Amount == 0 || len(donation.Feedback) == 0 {
 		donation.Error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
 		if donation.Amount > 0 {
-			sc.Transfer(donation.Donator, client.IOTA, donation.Amount)
+			sc.TransferToAddress(donation.Donator.Address(), client.IOTA, donation.Amount)
 			donation.Amount = 0
 		}
 	}
@@ -66,7 +66,7 @@ func withdraw(sc *client.ScCallContext) {
 		return
 	}
 
-	sc.Transfer(scOwner, client.IOTA, withdrawAmount)
+	sc.TransferToAddress(scOwner.Address(), client.IOTA, withdrawAmount)
 }
 
 func viewDonations(sc *client.ScViewContext) {
