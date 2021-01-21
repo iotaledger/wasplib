@@ -223,22 +223,28 @@ fn test_sandbox_call(ctx: &ScViewContext) {
 
 fn pass_types_full(ctx: &ScCallContext) {
     if !ctx.params().get_int("int64").exists(){
-        ctx.panic("!int64. exist")
+        ctx.panic("!int64.exist")
     }
     if ctx.params().get_int("int64").value() != 42{
         ctx.panic("int64 wrong")
     }
     if !ctx.params().get_int("int64-0").exists(){
-        ctx.panic("!int64-0. exist")
+        ctx.panic("!int64-0.exist")
     }
     if ctx.params().get_int("int64-0").value() != 0{
         ctx.panic("int64-0 wrong")
     }
+    if !ctx.params().get_hash("Hash").exists(){
+        ctx.panic("!Hash.exist")
+    }
+    // TODO how to hash a constant string?
+
     ctx.log("------ 1");
     if !ctx.params().get_hname("Hname").exists(){
         ctx.panic("!Hname. exist")
     }
     ctx.log("------ 2");
+    // TODO == between hnames and other types
     if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string(){
         ctx.panic("Hname wrong")
     }
