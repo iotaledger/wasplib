@@ -12,10 +12,10 @@ const ParamIntParamValue = client.Key("intParamValue")
 // const PARAM_CALL_OPTION: &str = "callOption";
 const ParamAddress = client.Key("address")
 const ParamChainOwner = client.Key("chainOwner")
-const ParamContractId = client.Key("contractId")
+const ParamContractId = client.Key("contractID")
 
-const MsgFullPanic string = "========== panic Full Entry Point ========="
-const MsgViewPanic string = "========== panic View ========="
+const MsgFullPanic string = "========== panic FULL ENTRY POINT ========="
+const MsgViewPanic string = "========== panic VIEW ========="
 const MsgPanicUnauthorized string = "============== panic due to unauthorized call"
 
 const SelfName = client.Key("test_sandbox") // temporary, until hname in the call will become available
@@ -29,16 +29,17 @@ func OnLoad() {
 	exports.AddView("getInt", getInt)
 	exports.AddView("fibonacci", fibonacci)
 
-	exports.AddCall("testPanicFullEp", testPanicFullEp)
-	exports.AddView("testPanicViewEp", testPanicViewEp)
-	exports.AddCall("testCallPanicFullEp", testCallPanicFullEp)
-	exports.AddCall("testCallPanicViewEpfromFull", testCallPanicViewFromFull)
-	exports.AddView("testCallPanicViewEpfromView", testCallPanicViewFromView)
+	exports.AddCall("testPanicFullEP", testPanicFullEp)
+	exports.AddView("testPanicViewEP", testPanicViewEp)
+	exports.AddCall("testCallPanicFullEP", testCallPanicFullEp)
+	exports.AddCall("testCallPanicViewEPFromFull", testCallPanicViewFromFull)
+	exports.AddView("testCallPanicViewEPFromView", testCallPanicViewFromView)
 
-	exports.AddView("testChainOwnerIdview", testChainOwnerIdView)
-	exports.AddCall("testChainOwnerIdfull", testChainOwnerIdFull)
-	exports.AddView("testContractIdview", testContractIdView)
-	exports.AddCall("testContractIdfull", testContractIdFull)
+	exports.AddView("testChainOwnerIDView", testChainOwnerIdView)
+	exports.AddCall("testChainOwnerIDFull", testChainOwnerIdFull)
+	exports.AddView("testContractIDView", testContractIdView)
+	exports.AddCall("testContractIDFull", testContractIdFull)
+	exports.AddView("testSandboxCall", testSandboxCall)
 
 	exports.AddCall("sendToAddress", sendToAddress)
 }
@@ -125,17 +126,17 @@ func testPanicViewEp(ctx *client.ScViewContext) {
 }
 
 func testCallPanicFullEp(ctx *client.ScCallContext) {
-	ctx.Call(0, client.NewHname("testPanicFullEp"), nil, nil)
+	ctx.Call(0, client.NewHname("testPanicFullEP"), nil, nil)
 }
 
 // FIXME no need for 'view method special'
 func testCallPanicViewFromFull(ctx *client.ScCallContext) {
-	ctx.Call(0, client.NewHname("testPanicViewEp"), nil, nil)
+	ctx.Call(0, client.NewHname("testPanicViewEP"), nil, nil)
 }
 
 // FIXME no need for 'view method special'
 func testCallPanicViewFromView(ctx *client.ScViewContext) {
-	ctx.Call(0, client.NewHname("testPanicViewEp"), nil)
+	ctx.Call(0, client.NewHname("testPanicViewEP"), nil)
 }
 
 func sendToAddress(ctx *client.ScCallContext) {
@@ -166,4 +167,12 @@ func testContractIdView(_ctx *client.ScViewContext) {
 	// ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
 }
 
-func testContractIdFull(_ctx *client.ScCallContext) {}
+func testContractIdFull(_ctx *client.ScCallContext) {
+
+}
+
+func testSandboxCall(ctx *client.ScViewContext) {
+	ret := ctx.Call(client.CoreRoot, client.ViewGetChainInfo, nil)
+	desc := ret.GetString(client.Key("d")).Value()
+	ctx.Results().GetString(client.Key("sandboxCall")).SetValue(desc)
+}

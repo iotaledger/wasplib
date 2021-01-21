@@ -37,6 +37,7 @@ fn on_load() {
     exports.add_call("testChainOwnerIDFull", test_chain_owner_id_full);
     exports.add_view("testContractIDView", test_contract_id_view);
     exports.add_call("testContractIDFull", test_contract_id_full);
+    exports.add_view("testSandboxCall", test_sandbox_call);
 
     exports.add_call("sendToAddress", send_to_address);
 }
@@ -164,4 +165,11 @@ fn test_contract_id_view(_ctx: &ScViewContext) {
     // ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
 }
 
-fn test_contract_id_full(_ctx: &ScCallContext) {}
+fn test_contract_id_full(_ctx: &ScCallContext) {
+}
+
+fn test_sandbox_call(ctx: &ScViewContext) {
+    let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, ScMutableMap::NONE);
+    let desc = ret.get_string("d").value();
+    ctx.results().get_string("sandboxCall").set_value(&desc);
+}
