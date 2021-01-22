@@ -6,6 +6,7 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
+	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -158,6 +159,7 @@ func TestSolo7(t *testing.T) {
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0) // empty on-chain
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)     // empty on-chain
 
+	// missing parameter, will panic
 	req := solo.NewCall("example1", "storeString").
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
@@ -166,4 +168,54 @@ func TestSolo7(t *testing.T) {
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-1)
+}
+
+// test withdraw_iota method
+func TestSolo8(t *testing.T) {
+	t.SkipNow()
+
+	env := solo.New(t, true, false)
+	chain := env.NewChain(nil, "ex8")
+
+	userWallet := env.NewSignatureSchemeWithFunds()
+	userAddress := userWallet.Address()
+	userAgentID := coretypes.NewAgentIDFromAddress(userWallet.Address())
+	t.Logf("userAgentID: %s", userAgentID)
+
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337)
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0) // empty on-chain
+
+	req := solo.NewCall(root.Interface.Name, root.FuncGrantDeploy, root.ParamDeployer, userAgentID)
+	_, err := chain.PostRequest(req, nil)
+	require.NoError(t, err)
+
+	err = chain.DeployWasmContract(userWallet, "example1", "../pkg/example1_bg.wasm")
+	require.NoError(t, err)
+
+	// global ID of the deployed contract
+	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn("example1"))
+	// contract id in the form of the agent ID
+	contractAgentID := coretypes.NewAgentIDFromContractID(contractID)
+
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-2)
+	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0) // empty on-chain
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 2)
+
+	req = solo.NewCall("example1", "storeString", "paramString", "Hello, world!").
+		WithTransfer(balance.ColorIOTA, 42)
+	_, err = chain.PostRequest(req, userWallet)
+	require.NoError(t, err)
+
+	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 42)
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-45)
+
+	req = solo.NewCall("example1", "withdraw_iota")
+	_, err = chain.PostRequest(req, userWallet)
+	require.NoError(t, err)
+
+	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-44+41)
+
 }
