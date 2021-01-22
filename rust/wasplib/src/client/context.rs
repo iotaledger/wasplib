@@ -211,7 +211,7 @@ impl ScCallContext {
     }
 
     // signals an event on the node that external entities can subscribe to
-    fn event(&self, text: &str) {
+    pub fn event(&self, text: &str) {
         ROOT.get_string(&KEY_EVENT).set_value(text)
     }
 
