@@ -125,7 +125,7 @@ fn start_auction(sc: &ScCallContext) {
             Hname::SELF,
             Hname::new("finalize_auction"),
             finalize_params,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             duration * 60);
     sc.log("New auction started");
 }
@@ -294,10 +294,10 @@ fn get_info(sc: &ScViewContext) {
 fn transfer(sc: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {
     if agent.is_address() {
         // send to original Tangle address
-        sc.transfer_to_address(&agent.address(), color, amount);
+        sc.transfer_to_address(&agent.address(), &ScTransfers::new(color, amount));
         return;
     }
 
     // TODO not an address, deposit into account on chain
-    sc.transfer_to_address(&agent.address(), color, amount);
+    sc.transfer_to_address(&agent.address(), &ScTransfers::new(color, amount));
 }

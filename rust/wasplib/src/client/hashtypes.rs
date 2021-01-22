@@ -23,8 +23,18 @@ impl Hname {
         Hname(utility.get_int(&KEY_NAME).value() as u32)
     }
 
+    pub fn equals(&self, other: Hname) -> bool {
+        self.0 == other.0
+    }
+
     pub fn to_string(&self) -> String {
         self.0.to_string()
+    }
+}
+
+impl MapKey for Hname {
+    fn get_id(&self) -> Key32 {
+        get_key_id_from_bytes(&self.0.to_ne_bytes())
     }
 }
 

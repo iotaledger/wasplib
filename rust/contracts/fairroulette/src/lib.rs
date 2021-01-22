@@ -57,7 +57,7 @@ fn place_bet(sc: &ScCallContext) {
                 Hname::SELF,
                 Hname::new("lock_bets"),
                 ScMutableMap::NONE,
-                ScTransfers::NONE,
+                &ScTransfers::NONE,
                 play_period);
     }
 }
@@ -83,7 +83,7 @@ fn lock_bets(sc: &ScCallContext) {
             Hname::SELF,
             Hname::new("pay_winners"),
             ScMutableMap::NONE,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             0);
 }
 
@@ -117,7 +117,7 @@ fn pay_winners(sc: &ScCallContext) {
     if winners.is_empty() {
         sc.log("Nobody wins!");
         // compact separate bet deposit UTXOs into a single one
-        sc.transfer_to_address(&sc_id.address(), &ScColor::IOTA, total_bet_amount);
+        sc.transfer_to_address(&sc_id.address(), &ScTransfers::new(&ScColor::IOTA, total_bet_amount));
         return;
     }
 
@@ -129,7 +129,7 @@ fn pay_winners(sc: &ScCallContext) {
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {
             total_payout += payout;
-            sc.transfer_to_address(&bet.better.address(), &ScColor::IOTA, payout);
+            sc.transfer_to_address(&bet.better.address(), &ScTransfers::new(&ScColor::IOTA, payout));
         }
         let text = "Pay ".to_string() + &payout.to_string() +
             " to " + &bet.better.to_string();
@@ -141,7 +141,7 @@ fn pay_winners(sc: &ScCallContext) {
         let remainder = total_bet_amount - total_payout;
         let text = "Remainder is ".to_string() + &remainder.to_string();
         sc.log(&text);
-        sc.transfer_to_address(&sc_id.address(), &ScColor::IOTA, remainder);
+        sc.transfer_to_address(&sc_id.address(), &ScTransfers::new(&ScColor::IOTA, remainder));
     }
 }
 

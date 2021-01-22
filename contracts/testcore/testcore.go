@@ -149,14 +149,7 @@ func sendToAddress(ctx *client.ScCallContext) {
 		ctx.Panic("parameter 'address' not provided")
 	}
 	myBalances := ctx.Balances()
-	colors := myBalances.Colors()
-	myTokens := client.NewScTransfers()
-	length := colors.Length()
-	for i:= int32(0); i < length; i++ {
-		color := colors.GetColor(i).Value()
-		myTokens.Transfer(color, myBalances.Balance(color))
-	}
-	ctx.TransfersToAddress(targetAddr.Value(), myTokens)
+	ctx.TransferToAddress(targetAddr.Value(), myBalances)
 }
 
 func testChainOwnerIdView(ctx *client.ScViewContext) {

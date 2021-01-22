@@ -1,7 +1,6 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-pub use builders::*;
 pub use bytes::*;
 pub use context::*;
 pub use corecontracts::*;
@@ -11,7 +10,6 @@ pub use immutable::*;
 pub use keys::*;
 pub use mutable::*;
 
-mod builders;
 mod bytes;
 mod context;
 mod corecontracts;

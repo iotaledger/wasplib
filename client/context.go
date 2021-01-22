@@ -7,6 +7,10 @@ package client
 
 import "strconv"
 
+type balances interface {
+	mapId() int32
+}
+
 // used to retrieve any information that is related to colored token balances
 type ScBalances struct {
 	balances ScImmutableMap
@@ -20,6 +24,11 @@ func (ctx ScBalances) Balance(color *ScColor) int64 {
 // retrieve a list of all token colors that have a non-zero balance
 func (ctx ScBalances) Colors() ScImmutableColorArray {
 	return ctx.balances.GetColorArray(KeyColor)
+}
+
+// implements Balances interface
+func (ctx ScBalances) mapId() int32 {
+	return ctx.balances.objId
 }
 
 // retrieve the color of newly minted tokens
@@ -51,11 +60,23 @@ type ScTransfers struct {
 	transfers ScMutableMap
 }
 
+// special constructor for simplifying single transfers
+func NewScTransfer(color *ScColor, amount int64) ScTransfers {
+	balance := NewScTransfers()
+	balance.Transfer(color, amount)
+	return balance
+}
+
 func NewScTransfers() ScTransfers {
 	return ScTransfers{transfers: *NewScMutableMap()}
 }
 
-// appends the specified timestamp and data to the timestamped log
+// implements Balances interface
+func (ctx ScTransfers) mapId() int32 {
+	return ctx.transfers.objId
+}
+
+// transfers the specified amount of tokens of the specified color
 func (ctx ScTransfers) Transfer(color *ScColor, amount int64) {
 	ctx.transfers.GetInt(color).SetValue(amount)
 }
@@ -183,30 +204,37 @@ type ScCallContext struct {
 	ScBaseContext
 }
 
-//TODO hname
 //TODO contractid
-//TODO merge view and call functions
 //TODO parameter type checks
 
 // calls a smart contract function
-func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfers *ScTransfers) ScImmutableMap {
+func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
-	call.GetHname(KeyContract).SetValue(contract)
+	if contract != 0 {
+		call.GetHname(KeyContract).SetValue(contract)
+	}
 	call.GetHname(KeyFunction).SetValue(function)
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))
 	}
-	if transfers != nil {
-		call.GetInt(KeyTransfers).SetValue(int64(transfers.transfers.objId))
+	if transfer != nil && transfer.mapId() != 0{
+		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
 	}
 	call.GetInt(KeyDelay).SetValue(-1)
 	return call.GetMap(KeyResults).Immutable()
 }
 
-// starts deployment of a smart contract
-func (ctx ScCallContext) Deploy(name string, description string) ScDeployBuilder {
-	return NewScDeployBuilder(name, description)
+// deploys a smart contract
+func (ctx ScCallContext) Deploy(programHash *ScHash, name string, description string, params *ScMutableMap) {
+	deploys := Root.GetMapArray(KeyDeploys)
+	deploy := deploys.GetMap(deploys.Length())
+	deploy.GetString(KeyName).SetValue(name)
+	deploy.GetString(KeyDescription).SetValue(description)
+	if params != nil {
+		deploy.GetInt(KeyParams).SetValue(int64(params.objId))
+	}
+	deploy.GetHash(KeyHash).SetValue(programHash)
 }
 
 // access the incoming balances for all token colors
@@ -215,7 +243,7 @@ func (ctx ScCallContext) Incoming() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, params *ScMutableMap, transfers *ScTransfers, delay int64) {
+func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, params *ScMutableMap, transfer balances, delay int64) {
 	if delay < 0 {
 		ctx.Panic("Invalid delay")
 	}
@@ -224,13 +252,15 @@ func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, 
 	if chain != nil {
 		call.GetAddress(KeyChain).SetValue(chain)
 	}
-	call.GetHname(KeyContract).SetValue(contract)
+	if contract != 0 {
+		call.GetHname(KeyContract).SetValue(contract)
+	}
 	call.GetHname(KeyFunction).SetValue(function)
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))
 	}
-	if transfers != nil {
-		call.GetInt(KeyTransfers).SetValue(int64(transfers.transfers.objId))
+	if transfer != nil && transfer.mapId() != 0{
+		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
 	}
 	call.GetInt(KeyDelay).SetValue(delay)
 }
@@ -250,19 +280,12 @@ func (ctx ScCallContext) TimestampedLog(key MapKey) ScLog {
 	return ScLog{Root.GetMap(KeyLogs).GetMapArray(key)}
 }
 
-// transfer single colored token amount to the specified Tangle ledger address
-func (ctx ScCallContext) TransferToAddress(address *ScAddress, color *ScColor, amount int64)  {
-	balance := NewScTransfers()
-	balance.Transfer(color, amount)
-	ctx.TransfersToAddress(address, balance)
-}
-
-// transfer multiple colored token amounts to the specified Tangle ledger address
-func (ctx ScCallContext) TransfersToAddress(address *ScAddress, balances ScTransfers)  {
+// transfer colored token amounts to the specified Tangle ledger address
+func (ctx ScCallContext) TransferToAddress(address *ScAddress, transfer balances) {
 	transfers := Root.GetMapArray(KeyTransfers)
-	transfer := transfers.GetMap(transfers.Length())
-	transfer.GetAddress(KeyAddress).SetValue(address)
-	transfer.GetInt(KeyBalances).SetValue(int64(balances.transfers.objId))
+	tx := transfers.GetMap(transfers.Length())
+	tx.GetAddress(KeyAddress).SetValue(address)
+	tx.GetInt(KeyBalances).SetValue(int64(transfer.mapId()))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -276,7 +299,9 @@ type ScViewContext struct {
 func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableMap) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
-	call.GetHname(KeyContract).SetValue(contract)
+	if contract != 0 {
+		call.GetHname(KeyContract).SetValue(contract)
+	}
 	call.GetHname(KeyFunction).SetValue(function)
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))

@@ -3,7 +3,10 @@
 
 package client
 
-import "strconv"
+import (
+	"encoding/binary"
+	"strconv"
+)
 
 type Hname uint32
 
@@ -11,6 +14,20 @@ func NewHname(name string) Hname {
 	utility := Root.GetMap(KeyUtility)
 	utility.GetString(KeyName).SetValue(name)
 	return Hname(utility.GetInt(KeyName).Value())
+}
+
+func (hn Hname) Bytes() []byte {
+	bytes := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bytes, uint32(hn))
+	return bytes
+}
+
+func (hn Hname) Equals(other Hname) bool {
+	return hn == other
+}
+
+func (hn Hname) KeyId() Key32 {
+	return GetKeyIdFromBytes(hn.Bytes())
 }
 
 func (hn Hname) String() string {

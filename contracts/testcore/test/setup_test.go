@@ -16,11 +16,9 @@ import (
 )
 
 const (
-	// run go Wasm code directly, without Wasm
-	RUN_GO             = false
-
-	// run Rust Wasm code
-	RUN_WASM           = false
+	RUN_GO             = false // run go Wasm code directly, without Wasm
+	DEBUG              = false
+	RUN_WASM           = true
 	WASM_FILE_TESTCORE = "../../../wasm/testcore_bg.wasm"
 	WASM_FILE_ERC20    = "../../../wasm/erc20_bg.wasm"
 	ERC20_NAME         = "erc20"
@@ -38,7 +36,7 @@ const (
 var SandboxSCName = "test_sandbox"
 
 func setupChain(t *testing.T, sigSchemeChain signaturescheme.SignatureScheme) (*solo.Solo, *solo.Chain) {
-	env := solo.New(t, false, false)
+	env := solo.New(t, DEBUG, false)
 	chain := env.NewChain(sigSchemeChain, "ch1")
 	return env, chain
 }

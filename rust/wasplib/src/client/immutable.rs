@@ -314,7 +314,7 @@ impl ScImmutableIntArray {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScImmutableMap {
-    obj_id: i32
+    pub(crate) obj_id: i32
 }
 
 impl ScImmutableMap {

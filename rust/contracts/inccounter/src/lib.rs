@@ -49,7 +49,7 @@ fn increment_call_increment(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.call(Hname::SELF, Hname::new("increment_call_increment"), ScMutableMap::NONE, ScTransfers::NONE);
+        sc.call(Hname::SELF, Hname::new("increment_call_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
     }
 }
 
@@ -58,7 +58,7 @@ fn increment_call_increment_recurse5x(sc: &ScCallContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        sc.call(Hname::SELF, Hname::new("increment_call_increment_recurse5x"), ScMutableMap::NONE, ScTransfers::NONE);
+        sc.call(Hname::SELF, Hname::new("increment_call_increment_recurse5x"), ScMutableMap::NONE, &ScTransfers::NONE);
     }
 }
 
@@ -71,7 +71,7 @@ fn increment_post_increment(sc: &ScCallContext) {
                 Hname::SELF,
                 Hname::new("increment_post_increment"),
                 ScMutableMap::NONE,
-                ScTransfers::NONE,
+                &ScTransfers::NONE,
                 0);
     }
 }
@@ -98,7 +98,7 @@ fn increment_repeat_many(sc: &ScCallContext) {
             Hname::SELF,
             Hname::new("increment_repeat_many"),
             ScMutableMap::NONE,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             0);
 }
 
@@ -124,12 +124,12 @@ fn increment_local_state_internal_call(sc: &ScCallContext) {
 }
 
 fn increment_local_state_sandbox_call(sc: &ScCallContext) {
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, ScTransfers::NONE);
+    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, ScTransfers::NONE);
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, ScTransfers::NONE);
+    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
+    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
     // counter ends up as 0
 }
 
@@ -138,7 +138,7 @@ fn increment_local_state_post(sc: &ScCallContext) {
             Hname::SELF,
             Hname::new("increment_when_must_increment"),
             ScMutableMap::NONE,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             0);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
@@ -147,13 +147,13 @@ fn increment_local_state_post(sc: &ScCallContext) {
             Hname::SELF,
             Hname::new("increment_when_must_increment"),
             ScMutableMap::NONE,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             0);
     sc.post(&ScAddress::NULL,
             Hname::SELF,
             Hname::new("increment_when_must_increment"),
             ScMutableMap::NONE,
-            ScTransfers::NONE,
+            &ScTransfers::NONE,
             0);
     // counter ends up as 0
 }
@@ -178,12 +178,12 @@ fn test(_sc: &ScCallContext) {
 fn results_test(sc: &ScCallContext) {
     test_map(sc.results());
     check_map(sc.results().immutable());
-    //sc.call(Hname::SELF, Hname::new("results_check"), ScMutableMap::NONE, ScTransfers::NONE);
+    //sc.call(Hname::SELF, Hname::new("results_check"), ScMutableMap::NONE, &ScTransfers::NONE);
 }
 
 fn state_test(sc: &ScCallContext) {
     test_map(sc.state());
-    sc.call(Hname::SELF, Hname::new("state_check"), ScMutableMap::NONE, ScTransfers::NONE);
+    sc.call(Hname::SELF, Hname::new("state_check"), ScMutableMap::NONE, &ScTransfers::NONE);
 }
 
 fn results_check(sc: &ScViewContext) {

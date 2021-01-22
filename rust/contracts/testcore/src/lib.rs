@@ -82,13 +82,13 @@ fn get_int(ctx: &ScViewContext) {
 
 fn call_on_chain(ctx: &ScCallContext) {
     let param_call_option = ctx.params().get_string(PARAM_CALL_OPTION);
-    if !param_call_option.exists(){
+    if !param_call_option.exists() {
         ctx.panic("'callOption' not specified")
     }
     let call_option = param_call_option.value();
 
     let param_value = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
-    if !param_value.exists(){
+    if !param_value.exists() {
         ctx.panic("param value not found")
     }
     let mut call_depth = param_value.value();
@@ -104,7 +104,7 @@ fn call_on_chain(ctx: &ScCallContext) {
     // TODO it seems hname is buggy
     let var_counter = ctx.state().get_int(VAR_COUNTER);
     let mut counter: i64 = 0;
-    if var_counter.exists(){
+    if var_counter.exists() {
         counter = var_counter.value();
     }
 
@@ -112,20 +112,20 @@ fn call_on_chain(ctx: &ScCallContext) {
     //  should be
 
     ctx.log(&format!("call depth = {} option = '{}' hname = {} counter = {}",
-          call_depth, call_option, &target.to_string(), counter));
+                     call_depth, call_option, &target.to_string(), counter));
 
-    var_counter.set_value(counter+1);
+    var_counter.set_value(counter + 1);
 
-    if call_depth <= 0{
+    if call_depth <= 0 {
         ctx.results().get_int(VAR_COUNTER).set_value(5);
-        return
+        return;
     }
     call_depth = call_depth - 1;
-    if call_option == CALL_OPTION_FORWARD{
+    if call_option == CALL_OPTION_FORWARD {
         let par = ScMutableMap::new();
         par.get_string(PARAM_CALL_OPTION).set_value(CALL_OPTION_FORWARD);
         par.get_int(PARAM_INT_PARAM_VALUE).set_value(call_depth);
-        ctx.call(target, Hname::new("callOnChain"), par, ScTransfers::NONE);
+        ctx.call(target, Hname::new("callOnChain"), par, &ScTransfers::NONE);
         // TODO how to pass the results to return?
     } else {
         ctx.panic("unknown call option")
@@ -168,12 +168,12 @@ fn test_panic_view_ep(ctx: &ScViewContext) {
 }
 
 fn test_call_panic_full_ep(ctx: &ScCallContext) {
-    ctx.call(Hname::SELF, Hname::new("testPanicFullEP"), ScMutableMap::NONE, ScTransfers::NONE);
+    ctx.call(Hname::SELF, Hname::new("testPanicFullEP"), ScMutableMap::NONE, &ScTransfers::NONE);
 }
 
 // FIXME no need for 'view method special'
 fn test_call_panic_view_from_full(ctx: &ScCallContext) {
-    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE, ScTransfers::NONE);
+    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE, &ScTransfers::NONE);
 }
 
 // FIXME no need for 'view method special'
@@ -191,13 +191,7 @@ fn send_to_address(ctx: &ScCallContext) {
         ctx.panic("parameter 'address' not provided")
     }
     let my_balances = ctx.balances();
-    let colors = my_balances.colors();
-    let my_tokens = ScTransfers::new();
-    for i in 0..colors.length() {
-        let color = colors.get_color(i).value();
-        my_tokens.transfer(&color, my_balances.balance(&color));
-    }
-    ctx.transfers_to_address(&target_addr.value(), &my_tokens);
+    ctx.transfer_to_address(&target_addr.value(), &my_balances);
 }
 
 fn test_chain_owner_id_view(ctx: &ScViewContext) {
@@ -222,68 +216,67 @@ fn test_sandbox_call(ctx: &ScViewContext) {
 }
 
 fn pass_types_full(ctx: &ScCallContext) {
-    if !ctx.params().get_int("int64").exists(){
+    if !ctx.params().get_int("int64").exists() {
         ctx.panic("!int64.exist")
     }
-    if ctx.params().get_int("int64").value() != 42{
+    if ctx.params().get_int("int64").value() != 42 {
         ctx.panic("int64 wrong")
     }
-    if !ctx.params().get_int("int64-0").exists(){
+    if !ctx.params().get_int("int64-0").exists() {
         ctx.panic("!int64-0.exist")
     }
-    if ctx.params().get_int("int64-0").value() != 0{
+    if ctx.params().get_int("int64-0").value() != 0 {
         ctx.panic("int64-0 wrong")
     }
-    if !ctx.params().get_hash("Hash").exists(){
+    if !ctx.params().get_hash("Hash").exists() {
         ctx.panic("!Hash.exist")
     }
     // TODO how to hash a constant string?
 
     ctx.log("------ 1");
-    if !ctx.params().get_hname("Hname").exists(){
+    if !ctx.params().get_hname("Hname").exists() {
         ctx.panic("!Hname. exist")
     }
     ctx.log("------ 2");
     // TODO == between hnames and other types
-    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string(){
+    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string() {
         ctx.panic("Hname wrong")
     }
     ctx.log("------ 3");
-    if !ctx.params().get_hname("Hname-0").exists(){
+    if !ctx.params().get_hname("Hname-0").exists() {
         ctx.panic("!Hname-0.exist")
     }
-    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string(){
+    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string() {
         ctx.panic("Hname-0 wrong")
     }
 }
 
 fn pass_types_view(ctx: &ScViewContext) {
-    if !ctx.params().get_int("int64").exists(){
+    if !ctx.params().get_int("int64").exists() {
         ctx.panic("!int64. exist")
     }
-    if ctx.params().get_int("int64").value() != 42{
+    if ctx.params().get_int("int64").value() != 42 {
         ctx.panic("int64 wrong")
     }
-    if !ctx.params().get_int("int64-0").exists(){
+    if !ctx.params().get_int("int64-0").exists() {
         ctx.panic("!int64-0. exist")
     }
-    if ctx.params().get_int("int64-0").value() != 0{
+    if ctx.params().get_int("int64-0").value() != 0 {
         ctx.panic("int64-0 wrong")
     }
     ctx.log("------ 1");
-    if !ctx.params().get_hname("Hname").exists(){
+    if !ctx.params().get_hname("Hname").exists() {
         ctx.panic("!Hname. exist")
     }
     ctx.log("------ 2");
-    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string(){
+    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string() {
         ctx.panic("Hname wrong")
     }
     ctx.log("------ 3");
-    if !ctx.params().get_hname("Hname-0").exists(){
+    if !ctx.params().get_hname("Hname-0").exists() {
         ctx.panic("!Hname-0.exist")
     }
-    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string(){
+    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string() {
         ctx.panic("Hname-0 wrong")
     }
-
 }

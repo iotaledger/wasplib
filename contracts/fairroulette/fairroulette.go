@@ -105,7 +105,7 @@ func payWinners(sc *client.ScCallContext) {
 	if len(winners) == 0 {
 		sc.Log("Nobody wins!")
 		// compact separate UTXOs into a single one
-		sc.TransferToAddress(scId.Address(), client.IOTA, totalBetAmount)
+		sc.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, totalBetAmount))
 		return
 	}
 
@@ -117,7 +117,7 @@ func payWinners(sc *client.ScCallContext) {
 		payout := totalBetAmount * bet.Amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.TransferToAddress(bet.Better.Address(), client.IOTA, payout)
+			sc.TransferToAddress(bet.Better.Address(), client.NewScTransfer(client.IOTA, payout))
 		}
 		text := "Pay " + sc.Utility().String(payout) + " to " + bet.Better.String()
 		sc.Log(text)
@@ -128,7 +128,7 @@ func payWinners(sc *client.ScCallContext) {
 		remainder := totalBetAmount - totalPayout
 		text := "Remainder is " + sc.Utility().String(remainder)
 		sc.Log(text)
-		sc.TransferToAddress(scId.Address(), client.IOTA, remainder)
+		sc.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, remainder))
 	}
 }
 

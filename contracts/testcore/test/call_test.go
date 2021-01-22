@@ -30,23 +30,26 @@ func TestGetSet(t *testing.T) {
 }
 
 func TestCallRecursive(t *testing.T) {
+	if RUN_WASM {
+		t.SkipNow()
+	}
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil)
 
 	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncCallOnChain,
-		test_sandbox_sc.ParamCallOption, "co",
-		test_sandbox_sc.ParamIntParamValue, 50,
+		test_sandbox_sc.ParamCallOption, test_sandbox_sc.CallOptionForward,
+		test_sandbox_sc.ParamIntParamValue, 31,
 		test_sandbox_sc.ParamHname, cID.Hname(),
 	)
-	_, err := chain.PostRequest(req, nil)
+	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
-	_, err = chain.PostRequest(req, nil)
+	r, exists, err := codec.DecodeInt64(ret.MustGet(test_sandbox_sc.VarCounter))
 	require.NoError(t, err)
-	_, err = chain.PostRequest(req, nil)
-	require.NoError(t, err)
+	require.True(t, exists)
+	require.EqualValues(t, r, 31)
 }
 
-const n = 3
+const n = 10
 
 func fibo(n int64) int64 {
 	if n == 0 || n == 1 {

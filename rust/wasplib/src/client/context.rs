@@ -3,13 +3,16 @@
 
 // encapsulates standard host entities into a simple interface
 
-use super::builders::*;
 use super::hashtypes::*;
 use super::immutable::*;
 use super::keys::*;
 use super::mutable::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub trait Balances {
+    fn map_id(&self) -> i32;
+}
 
 // used to retrieve any information that is related to colored token balances
 pub struct ScBalances {
@@ -30,6 +33,12 @@ impl ScBalances {
     // retrieve the color of newly minted tokens
     pub fn minted(&self) -> ScColor {
         ScColor::from_bytes(&self.balances.get_bytes(&ScColor::MINT).value())
+    }
+}
+
+impl Balances for ScBalances {
+    fn map_id(&self) -> i32 {
+        self.balances.obj_id
     }
 }
 
@@ -62,13 +71,25 @@ pub struct ScTransfers {
 impl ScTransfers {
     pub const NONE: ScTransfers = ScTransfers { transfers: ScMutableMap::NONE };
 
-    pub fn new() -> ScTransfers {
+    pub fn new(color: &ScColor, amount: i64) -> ScTransfers {
+        let balance = ScTransfers::new_transfers();
+        balance.transfer(color, amount);
+        balance
+    }
+
+    pub fn new_transfers() -> ScTransfers {
         ScTransfers { transfers: ScMutableMap::new() }
     }
 
     // appends the specified timestamp and data to the timestamped log
     pub fn transfer(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int(color).set_value(amount);
+    }
+}
+
+impl Balances for ScTransfers {
+    fn map_id(&self) -> i32 {
+        self.transfers.obj_id
     }
 }
 
@@ -194,24 +215,37 @@ impl ScBaseContext for ScCallContext {}
 
 impl ScCallContext {
     // calls a smart contract function
-    pub fn call(&self, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScTransfers) -> ScImmutableMap {
+    pub fn call<T: Balances + ?Sized>(&self, contract: Hname, function: Hname, params: ScMutableMap, transfer: &T) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
-        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        if contract.0 != 0 {
+            call.get_hname(&KEY_CONTRACT).set_value(contract);
+        }
         call.get_hname(&KEY_FUNCTION).set_value(function);
-        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
-        call.get_int(&KEY_TRANSFERS).set_value(transfers.transfers.obj_id as i64);
+        if params.obj_id != 0 {
+            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        }
+        if transfer.map_id() != 0 {
+            call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
+        }
         call.get_int(&KEY_DELAY).set_value(-1);
         call.get_map(&KEY_RESULTS).immutable()
     }
 
-    // starts deployment of a smart contract
-    pub fn deploy(&self, name: &str, description: &str) -> ScDeployBuilder {
-        ScDeployBuilder::new(name, description)
+    // deploys a smart contract
+    pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: ScMutableMap) {
+        let deploys = ROOT.get_map_array(&KEY_DEPLOYS);
+        let deploy = deploys.get_map(deploys.length());
+        deploy.get_string(&KEY_NAME).set_value(name);
+        deploy.get_string(&KEY_DESCRIPTION).set_value(description);
+        if params.obj_id != 0 {
+            deploy.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        }
+        deploy.get_hash(&KEY_HASH).set_value(program_hash);
     }
 
     // signals an event on the node that external entities can subscribe to
-    fn event(&self, text: &str) {
+    pub fn event(&self, text: &str) {
         ROOT.get_string(&KEY_EVENT).set_value(text)
     }
 
@@ -221,15 +255,21 @@ impl ScCallContext {
     }
 
     // (delayed) posts a smart contract function
-    pub fn post(&self, chain: &ScAddress, contract: Hname, function: Hname, params: ScMutableMap, transfers: ScTransfers, delay: i64) {
+    pub fn post<T: Balances + ?Sized>(&self, chain: &ScAddress, contract: Hname, function: Hname, params: ScMutableMap, transfer: &T, delay: i64) {
         if delay < 0 { self.panic("Invalid delay") }
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
         call.get_address(&KEY_CHAIN).set_value(&chain);
-        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        if contract.0 != 0 {
+            call.get_hname(&KEY_CONTRACT).set_value(contract);
+        }
         call.get_hname(&KEY_FUNCTION).set_value(function);
-        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
-        call.get_int(&KEY_TRANSFERS).set_value(transfers.transfers.obj_id as i64);
+        if params.obj_id != 0 {
+            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        }
+        if transfer.map_id() != 0 {
+            call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
+        }
         call.get_int(&KEY_DELAY).set_value(delay);
     }
 
@@ -243,19 +283,12 @@ impl ScCallContext {
         ScLog { log: ROOT.get_map(&KEY_LOGS).get_map_array(key) }
     }
 
-    // transfer single colored token amount to the specified Tangle ledger address
-    pub fn transfer_to_address(&self, address: &ScAddress, color: &ScColor, amount: i64) {
-        let balance = ScTransfers::new();
-        balance.transfer(color, amount);
-        self.transfers_to_address(address, &balance);
-    }
-
-    // transfer multiple colored token amounts to the specified Tangle ledger address
-    pub fn transfers_to_address(&self, address: &ScAddress, balances: &ScTransfers) {
+    // transfer colored token amounts to the specified Tangle ledger address
+    pub fn transfer_to_address<T: Balances + ?Sized>(&self, address: &ScAddress, transfer: &T) {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
-        let transfer = transfers.get_map(transfers.length());
-        transfer.get_address(&KEY_ADDRESS).set_value(address);
-        transfer.get_int(&KEY_BALANCES).set_value(balances.transfers.obj_id as i64);
+        let tx = transfers.get_map(transfers.length());
+        tx.get_address(&KEY_ADDRESS).set_value(address);
+        tx.get_int(&KEY_BALANCES).set_value(transfer.map_id() as i64);
     }
 }
 
@@ -271,9 +304,13 @@ impl ScViewContext {
     pub fn call(&self, contract: Hname, function: Hname, params: ScMutableMap) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
-        call.get_hname(&KEY_CONTRACT).set_value(contract);
+        if contract.0 != 0 {
+            call.get_hname(&KEY_CONTRACT).set_value(contract);
+        }
         call.get_hname(&KEY_FUNCTION).set_value(function);
-        call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        if params.obj_id != 0 {
+            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+        }
         call.get_int(&KEY_DELAY).set_value(-1);
         call.get_map(&KEY_RESULTS).immutable()
     }
