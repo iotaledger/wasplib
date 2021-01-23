@@ -185,6 +185,13 @@ pub trait ScBaseContext {
         ROOT.get_map(&KEY_PARAMS).immutable()
     }
 
+    // panics if condition is not satisfied
+    fn require(&self, cond: bool, msg: &str) {
+        if !cond {
+            self.panic(msg)
+        }
+    }
+
     // any results returned by the smart contract function call are returned here
     fn results(&self) -> ScMutableMap {
         ROOT.get_map(&KEY_RESULTS)
@@ -290,13 +297,6 @@ impl ScCallContext {
         tx.get_address(&KEY_ADDRESS).set_value(address);
         tx.get_int(&KEY_BALANCES).set_value(transfer.map_id() as i64);
     }
-
-    // panics if condition is not satisfied
-    pub fn require(&self, cond: bool, msg: &str){
-        if !cond{
-            self.panic(msg)
-        }
-    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -330,12 +330,5 @@ impl ScViewContext {
     // access to immutable named timestamped log
     pub fn timestamped_log<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableMapArray {
         ROOT.get_map(&KEY_LOGS).get_map_array(key).immutable()
-    }
-
-    // panics if condition is not satisfied
-    pub fn require(&self, cond: bool, msg: &str){
-        if !cond{
-            self.panic(msg)
-        }
     }
 }

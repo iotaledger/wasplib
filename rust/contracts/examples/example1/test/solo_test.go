@@ -172,7 +172,7 @@ func TestSolo7(t *testing.T) {
 
 // test withdraw_iota method
 func TestSolo8(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 
 	env := solo.New(t, true, false)
 	chain := env.NewChain(nil, "ex8")
@@ -189,6 +189,7 @@ func TestSolo8(t *testing.T) {
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
+	//err = govm.DeployGoContract(chain, userWallet, "example1", "example1")
 	err = chain.DeployWasmContract(userWallet, "example1", "../pkg/example1_bg.wasm")
 	require.NoError(t, err)
 
@@ -214,8 +215,9 @@ func TestSolo8(t *testing.T) {
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 
+	extraToken := int64(1)
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
-	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3)
-	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-44+41)
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3+extraToken)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-44+41-extraToken)
 
 }

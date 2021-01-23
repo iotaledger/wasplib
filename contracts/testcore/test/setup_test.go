@@ -8,9 +8,7 @@ import (
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
-	"github.com/iotaledger/wasp/packages/vm/wasmproc"
-	"github.com/iotaledger/wasplib/contracts/testcore"
-	"github.com/iotaledger/wasplib/wasmlocalhost"
+	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -18,7 +16,7 @@ import (
 const (
 	RUN_GO             = false // run go Wasm code directly, without Wasm
 	DEBUG              = false
-	RUN_WASM           = true
+	RUN_WASM           = false
 	WASM_FILE_TESTCORE = "../../../wasm/testcore_bg.wasm"
 	WASM_FILE_ERC20    = "../../../wasm/erc20_bg.wasm"
 	ERC20_NAME         = "erc20"
@@ -53,23 +51,11 @@ func setupDeployer(t *testing.T, chain *solo.Chain) signaturescheme.SignatureSch
 	return user
 }
 
-var contracts = map[string]func(){
-	"testcore": testcore.OnLoad,
-}
-
-func DeployGoContract(t *testing.T, chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string) error {
-	wasmproc.GoWasmVM = wasmlocalhost.NewGoVM(contracts)
-	hprog, err := chain.UploadWasm(sigScheme, []byte("go:"+contractName))
-	require.NoError(t, err)
-	err = chain.DeployContract(sigScheme, name, hprog)
-	return err
-}
-
 func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureScheme) (coretypes.ContractID, int64) {
 	var err error
 	var extraToken int64
 	if RUN_GO {
-		err = DeployGoContract(t, chain, user, SandboxSCName, "testcore")
+		err = govm.DeployGoContract(chain, user, SandboxSCName, "testcore")
 		extraToken = 1
 	} else if RUN_WASM {
 		err = chain.DeployWasmContract(user, SandboxSCName, WASM_FILE_TESTCORE)

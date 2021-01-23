@@ -4,9 +4,7 @@ import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/wasmproc"
-	"github.com/iotaledger/wasplib/contracts/inccounter"
-	"github.com/iotaledger/wasplib/wasmlocalhost"
+	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -18,22 +16,10 @@ const incName = "inccounter"
 const varCounter = "counter"
 const varNumRepeats = "num_repeats"
 
-var contracts = map[string]func(){
-	incName: inccounter.OnLoad,
-}
-
-func DeployGoContract(t *testing.T, chain *solo.Chain, contractName string) error {
-	wasmproc.GoWasmVM = wasmlocalhost.NewGoVM(contracts)
-	hprog, err := chain.UploadWasm(nil, []byte("go:"+contractName))
-	require.NoError(t, err)
-	err = chain.DeployContract(nil, contractName, hprog)
-	return err
-}
-
 func TestIncSoloInc(t *testing.T) {
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
-	err := DeployGoContract(t, chain, incName)
+	err := govm.DeployGoContract(chain, nil, incName, incName)
 	require.NoError(t, err)
 
 	req := solo.NewCall(incName, "increment").
@@ -50,7 +36,7 @@ func TestIncSoloInc(t *testing.T) {
 func TestIncSoloRepeatMany(t *testing.T) {
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
-	err := DeployGoContract(t, chain, incName)
+	err := govm.DeployGoContract(chain, nil, incName, incName)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "increment_repeat_many", varNumRepeats, 2).
 		WithTransfer(balance.ColorIOTA, 1)
@@ -67,7 +53,7 @@ func TestIncSoloRepeatMany(t *testing.T) {
 func TestIncSoloResultsTest(t *testing.T) {
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
-	err := DeployGoContract(t, chain, incName)
+	err := govm.DeployGoContract(chain, nil, incName, incName)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "results_test").
 		WithTransfer(balance.ColorIOTA, 1)
@@ -81,7 +67,7 @@ func TestIncSoloResultsTest(t *testing.T) {
 func TestIncSoloStateTest(t *testing.T) {
 	al := solo.New(t, false, true)
 	chain := al.NewChain(nil, "chain1")
-	err := DeployGoContract(t, chain, incName)
+	err := govm.DeployGoContract(chain, nil, incName, incName)
 	require.NoError(t, err)
 	req := solo.NewCall(incName, "state_test").
 		WithTransfer(balance.ColorIOTA, 1)

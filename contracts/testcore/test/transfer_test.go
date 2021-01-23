@@ -49,9 +49,6 @@ func TestDoNothingUser(t *testing.T) {
 }
 
 func TestWithdrawToAddress(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	env, chain := setupChain(t, nil)
 	cID, extraToken := setupTestSandboxSC(t, chain, nil)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
@@ -80,10 +77,10 @@ func TestWithdrawToAddress(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 }
 

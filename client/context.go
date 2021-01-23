@@ -177,6 +177,13 @@ func (ctx ScBaseContext) Params() ScImmutableMap {
 	return Root.GetMap(KeyParams).Immutable()
 }
 
+// panics if condition is not satisfied
+func (ctx ScBaseContext) Require(cond bool, msg string)  {
+	if !cond {
+		ctx.Panic(msg)
+	}
+}
+
 // any results returned by the smart contract function call are returned here
 func (ctx ScBaseContext) Results() ScMutableMap {
 	return Root.GetMap(KeyResults)

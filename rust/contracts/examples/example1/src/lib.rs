@@ -41,7 +41,7 @@ fn withdraw_iota(ctx: &ScCallContext) {
     ctx.require(caller.is_address(), "caller must be an address");
 
     let bal = ctx.balances().balance(&ScColor::IOTA);
-    if bal > 0{
-        ctx.transfer_to_address(&caller.address(), &ScColor::IOTA, bal)
+    if bal > 0 {
+        ctx.transfer_to_address(&caller.address(), &ScTransfers::new(&ScColor::IOTA, bal))
     }
 }

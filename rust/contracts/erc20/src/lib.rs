@@ -130,7 +130,7 @@ fn transfer(ctx: &ScCallContext) {
 
     let target_balance = balances.get_int(&target_addr);
     let result = target_balance.value() + amount;
-    ctx.require(result>0, "erc20.transfer.fail: overflow");
+    ctx.require(result > 0, "erc20.transfer.fail: overflow");
 
     source_balance.set_value(source_balance.value() - amount);
     target_balance.set_value(target_balance.value() + amount);

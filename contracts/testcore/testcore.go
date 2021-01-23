@@ -149,6 +149,12 @@ func sendToAddress(ctx *client.ScCallContext) {
 		ctx.Panic("parameter 'address' not provided")
 	}
 	myBalances := ctx.Balances()
+	//myColors := myBalances.Colors()
+	//length := myColors.Length()
+	//for i := int32(0); i < length; i++ {
+	//	color := myColors.GetColor(i)
+    //	ctx.Log("Color: " + color.String())
+	//}
 	ctx.TransferToAddress(targetAddr.Value(), myBalances)
 }
 
