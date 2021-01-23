@@ -172,11 +172,13 @@ func TestSolo7(t *testing.T) {
 
 // test withdraw_iota method
 func TestSolo8(t *testing.T) {
-	//t.SkipNow()
-
-	env := solo.New(t, true, false)
+	// create solo environment
+	env := solo.New(t, false, false)
+	// deploy new chain
 	chain := env.NewChain(nil, "ex8")
 
+	// create a user's wallet (private key) and request 1337 iotas from the faucet.
+	// It corresponds to L1 address
 	userWallet := env.NewSignatureSchemeWithFunds()
 	userAddress := userWallet.Address()
 	userAgentID := coretypes.NewAgentIDFromAddress(userWallet.Address())
@@ -185,11 +187,14 @@ func TestSolo8(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0) // empty on-chain
 
+	// the chain owner (default) send a request to the root contract to grant right toi deploy
+	// contract on the chain to the use
 	req := solo.NewCall(root.Interface.Name, root.FuncGrantDeploy, root.ParamDeployer, userAgentID)
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	//err = govm.DeployGoContract(chain, userWallet, "example1", "example1")
+	// user deploys wasm smart contract on the chain under the name "example1"
+	// the wasm binary is in the file
 	err = chain.DeployWasmContract(userWallet, "example1", "../pkg/example1_bg.wasm")
 	require.NoError(t, err)
 
@@ -198,10 +203,18 @@ func TestSolo8(t *testing.T) {
 	// contract id in the form of the agent ID
 	contractAgentID := coretypes.NewAgentIDFromContractID(contractID)
 
+	// the deployment of the smart contract required 1 requests to the root contract:
+	// - to submit binary to the on-chain "blob" registry
+	// - to deploy contract from the blob
+	// Two tokens were taken from the user account to form requests and then were
+	// deposited to the user's account on the chain
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-2)
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0) // empty on-chain
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 2)
 
+	// user send a "storeString" request to the smart contract. It attaches 42 iotas to the request
+	// It also takes 1 iota for the request token
+	// Result is 42 iotas moved to the smart contract's account
 	req = solo.NewCall("example1", "storeString", "paramString", "Hello, world!").
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
@@ -211,13 +224,14 @@ func TestSolo8(t *testing.T) {
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-45)
 
+	// user withdraws all iotas from the smart contract back
+	// Out of 42 iotas 41 iota is coming back to the user's address, 1 iotas
+	// is accrued to the user on chain
 	req = solo.NewCall("example1", "withdraw_iota")
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 
-	extraToken := int64(1)
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0)
-	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3+extraToken)
-	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-44+41-extraToken)
-
+	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 3+1)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-45+41)
 }
