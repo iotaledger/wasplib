@@ -293,7 +293,7 @@ fn get_info(sc: &ScViewContext) {
 
 fn transfer(sc: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {
     if agent.is_address() {
-        // send to original Tangle address
+        // send back to original Tangle address
         sc.transfer_to_address(&agent.address(), &ScTransfers::new(color, amount));
         return;
     }

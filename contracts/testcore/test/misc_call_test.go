@@ -46,7 +46,7 @@ func TestContractIDView(t *testing.T) {
 }
 
 func TestContractIDFull(t *testing.T) {
-	if RUN_WASM|| RUN_GO {
+	if RUN_WASM || RUN_GO {
 		t.SkipNow()
 	}
 	_, chain := setupChain(t, nil)

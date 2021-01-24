@@ -10,9 +10,6 @@ import (
 )
 
 func TestTypesFull(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil)
 
@@ -33,9 +30,6 @@ func TestTypesFull(t *testing.T) {
 }
 
 func TestTypesView(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil)
 

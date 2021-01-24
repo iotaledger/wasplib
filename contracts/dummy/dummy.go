@@ -5,7 +5,7 @@ package dummy
 
 import "github.com/iotaledger/wasplib/client"
 
-const KeyFailInitParam = client.Key("failInitParam")
+const ParamFailInitParam = client.Key("failInitParam")
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -14,7 +14,7 @@ func OnLoad() {
 
 // fails with error if failInitParam exists
 func onInit(ctx *client.ScCallContext) {
-	failParam := ctx.Params().GetInt(KeyFailInitParam)
+    failParam := ctx.Params().GetInt(ParamFailInitParam)
 	if failParam.Exists() {
 		ctx.Panic("dummy: failing on purpose")
 	}

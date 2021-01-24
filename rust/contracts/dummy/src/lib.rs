@@ -3,6 +3,8 @@
 
 use wasplib::client::*;
 
+const PARAM_FAIL_INIT_PARAM: &str = "failInitParam";
+
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
@@ -11,7 +13,7 @@ fn on_load() {
 
 // fails with error if failInitParam exists
 fn on_init(ctx: &ScCallContext) {
-    let fail_param = ctx.params().get_int("failInitParam");
+    let fail_param = ctx.params().get_int(PARAM_FAIL_INIT_PARAM);
     if fail_param.exists() {
         ctx.panic("dummy: failing on purpose");
     }

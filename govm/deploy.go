@@ -11,7 +11,6 @@ import (
 	"github.com/iotaledger/wasplib/contracts/example1"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/iotaledger/wasplib/contracts/fairroulette"
-	"github.com/iotaledger/wasplib/contracts/hellonewworld"
 	"github.com/iotaledger/wasplib/contracts/helloworld"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/contracts/testcore"
@@ -27,7 +26,6 @@ var ScForGoVM = map[string]func(){
 	"fairauction":        fairauction.OnLoad,
 	"fairroulette":       fairroulette.OnLoad,
 	"helloworld":         helloworld.OnLoad,
-	"hellonewworld":      hellonewworld.OnLoad,
 	"inccounter":         inccounter.OnLoad,
 	"testcore":           testcore.OnLoad,
 	"tokenregistry":      tokenregistry.OnLoad,

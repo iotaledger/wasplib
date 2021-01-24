@@ -118,7 +118,12 @@ func startAuction(sc *client.ScCallContext) {
 
 	finalizeParams := client.NewScMutableMap()
 	finalizeParams.GetColor(KeyColor).SetValue(auction.Color)
-	sc.Post(nil, client.Hname(0), client.NewHname("finalize_auction"), finalizeParams, nil, duration*60)
+    sc.Post(nil,
+            client.Hname(0),
+            client.NewHname("finalize_auction"),
+            finalizeParams,
+            nil,
+            duration * 60)
 	sc.Log("New auction started")
 }
 
@@ -284,12 +289,12 @@ func getInfo(sc *client.ScViewContext) {
 }
 
 func transfer(sc *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
-	if !agent.IsAddress() {
-		// not an address, deposit into account on chain
+    if agent.IsAddress() {
+        // send back to original Tangle address
 		sc.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
 		return
 	}
 
-	// send to original Tangle address
+    // TODO not an address, deposit into account on chain
 	sc.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
 }

@@ -20,11 +20,30 @@ impl Hname {
     pub fn new(name: &str) -> Hname {
         let utility = ROOT.get_map(&KEY_UTILITY);
         utility.get_string(&KEY_NAME).set_value(name);
-        Hname(utility.get_int(&KEY_NAME).value() as u32)
+        Hname::from_bytes(&utility.get_bytes(&KEY_NAME).value())
     }
 
     pub fn equals(&self, other: Hname) -> bool {
         self.0 == other.0
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> Hname {
+        if bytes.len() != 4 { panic!("Hname should be 4 bytes"); }
+        let val = bytes[3] as u32;
+        let val = (val << 8) | (bytes[2] as u32);
+        let val = (val << 8) | (bytes[1] as u32);
+        let val = (val << 8) | (bytes[0] as u32);
+        Hname(val)
+    }
+
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let val = self.0;
+        let mut bytes: Vec<u8> = Vec::new();
+        bytes.push((val >> 0) as u8);
+        bytes.push((val >> 8) as u8);
+        bytes.push((val >> 16) as u8);
+        bytes.push((val >> 24) as u8);
+        bytes
     }
 
     pub fn to_string(&self) -> String {

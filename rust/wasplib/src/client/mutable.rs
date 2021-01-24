@@ -320,7 +320,7 @@ impl ScMutableHname {
     }
 
     pub fn set_value(&self, val: Hname) {
-        set_int(self.obj_id, self.key_id, val.0 as i64);
+        set_bytes(self.obj_id, self.key_id, &val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -328,7 +328,7 @@ impl ScMutableHname {
     }
 
     pub fn value(&self) -> Hname {
-        Hname(get_int(self.obj_id, self.key_id) as u32)
+        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 

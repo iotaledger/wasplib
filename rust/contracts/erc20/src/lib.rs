@@ -55,10 +55,8 @@ fn on_init(ctx: &ScCallContext) {
     // assign the whole supply to creator
     ctx.state().get_map(STATE_VAR_BALANCES).get_int(&creator.value()).set_value(supply.value());
 
-    let t = "erc20.on_init.success. Supply: ".to_string()
-        + &supply.value().to_string()
-        + &", creator:".to_string()
-        + &creator.value().to_string();
+    let t = "erc20.on_init.success. Supply: ".to_string() + &supply.value().to_string() +
+        &", creator:".to_string() + &creator.value().to_string();
     ctx.log(&t);
 }
 

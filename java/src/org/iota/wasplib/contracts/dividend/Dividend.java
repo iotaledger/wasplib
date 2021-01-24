@@ -23,7 +23,7 @@ public class Dividend {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
 		exports.AddCall("member", Dividend::member);
-		exports.AddCall("dividend", Dividend::dividend);
+		exports.AddCall("divide", Dividend::divide);
 	}
 
 	public static void member(ScCallContext sc) {
@@ -66,7 +66,7 @@ public class Dividend {
 		sc.Log("Appended: " + member.Address);
 	}
 
-	public static void dividend(ScCallContext sc) {
+	public static void divide(ScCallContext sc) {
 		long amount = sc.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Panic("Nothing to divide");

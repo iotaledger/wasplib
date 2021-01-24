@@ -184,7 +184,7 @@ func (o ScImmutableHname) String() string {
 }
 
 func (o ScImmutableHname) Value() Hname {
-	return Hname(GetInt(o.objId, o.keyId))
+	return NewHnameFromBytes(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

@@ -178,7 +178,7 @@ func (ctx ScBaseContext) Params() ScImmutableMap {
 }
 
 // panics if condition is not satisfied
-func (ctx ScBaseContext) Require(cond bool, msg string)  {
+func (ctx ScBaseContext) Require(cond bool, msg string) {
 	if !cond {
 		ctx.Panic(msg)
 	}
@@ -225,7 +225,7 @@ func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableM
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))
 	}
-	if transfer != nil && transfer.mapId() != 0{
+	if transfer != nil && transfer.mapId() != 0 {
 		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
 	}
 	call.GetInt(KeyDelay).SetValue(-1)
@@ -266,7 +266,7 @@ func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, 
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))
 	}
-	if transfer != nil && transfer.mapId() != 0{
+	if transfer != nil && transfer.mapId() != 0 {
 		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
 	}
 	call.GetInt(KeyDelay).SetValue(delay)

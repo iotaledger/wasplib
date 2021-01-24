@@ -30,9 +30,6 @@ func TestGetSet(t *testing.T) {
 }
 
 func TestCallRecursive(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil)
 

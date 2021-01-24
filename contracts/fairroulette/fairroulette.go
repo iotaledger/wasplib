@@ -51,7 +51,12 @@ func placeBet(sc *client.ScCallContext) {
 		if playPeriod < 10 {
 			playPeriod = DefaultPlayPeriod
 		}
-		sc.Post(nil, client.Hname(0), client.NewHname("lock_bets"), nil, nil, playPeriod)
+        sc.Post(nil,
+                client.Hname(0),
+                client.NewHname("lock_bets"),
+                nil,
+                nil,
+                playPeriod)
 	}
 }
 
@@ -72,7 +77,12 @@ func lockBets(sc *client.ScCallContext) {
 	}
 	bets.Clear()
 
-	sc.Post(nil, client.Hname(0), client.NewHname("pay_winners"), nil, nil, 0)
+    sc.Post(nil,
+            client.Hname(0),
+            client.NewHname("pay_winners"),
+            nil,
+            nil,
+            0)
 }
 
 func payWinners(sc *client.ScCallContext) {
@@ -104,7 +114,7 @@ func payWinners(sc *client.ScCallContext) {
 
 	if len(winners) == 0 {
 		sc.Log("Nobody wins!")
-		// compact separate UTXOs into a single one
+        // compact separate bet deposit UTXOs into a single one
 		sc.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, totalBetAmount))
 		return
 	}
@@ -119,7 +129,8 @@ func payWinners(sc *client.ScCallContext) {
 			totalPayout += payout
 			sc.TransferToAddress(bet.Better.Address(), client.NewScTransfer(client.IOTA, payout))
 		}
-		text := "Pay " + sc.Utility().String(payout) + " to " + bet.Better.String()
+		text := "Pay " + sc.Utility().String(payout) +
+            " to " + bet.Better.String()
 		sc.Log(text)
 	}
 

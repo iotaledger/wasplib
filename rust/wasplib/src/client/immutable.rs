@@ -261,7 +261,7 @@ impl ScImmutableHname {
     }
 
     pub fn value(&self) -> Hname {
-        Hname(get_int(self.obj_id, self.key_id) as u32)
+        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 

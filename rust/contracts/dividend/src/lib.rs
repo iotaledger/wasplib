@@ -6,16 +6,17 @@ use wasplib::client::*;
 
 mod types;
 
-const KEY_ADDRESS: &str = "address";
-const KEY_FACTOR: &str = "factor";
-const KEY_MEMBERS: &str = "members";
-const KEY_TOTAL_FACTOR: &str = "total_factor";
+const PARAM_ADDRESS: &str = "address";
+const PARAM_FACTOR: &str = "factor";
+
+const VAR_MEMBERS: &str = "members";
+const VAR_TOTAL_FACTOR: &str = "total_factor";
 
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
     exports.add_call("member", member);
-    exports.add_call("dividend", dividend);
+    exports.add_call("divide", divide);
 }
 
 fn member(sc: &ScCallContext) {
@@ -23,11 +24,11 @@ fn member(sc: &ScCallContext) {
         sc.panic("Cancel spoofed request");
     }
     let params = sc.params();
-    let address = params.get_address(KEY_ADDRESS);
+    let address = params.get_address(PARAM_ADDRESS);
     if !address.exists() {
         sc.panic("Missing address");
     }
-    let factor = params.get_int(KEY_FACTOR);
+    let factor = params.get_int(PARAM_FACTOR);
     if !factor.exists() {
         sc.panic("Missing factor");
     }
@@ -36,9 +37,9 @@ fn member(sc: &ScCallContext) {
         factor: factor.value(),
     };
     let state = sc.state();
-    let total_factor = state.get_int(KEY_TOTAL_FACTOR);
+    let total_factor = state.get_int(VAR_TOTAL_FACTOR);
     let mut total = total_factor.value();
-    let members = state.get_bytes_array(KEY_MEMBERS);
+    let members = state.get_bytes_array(VAR_MEMBERS);
     let size = members.length();
     for i in 0..size {
         let m = decode_member(&members.get_bytes(i).value());
@@ -57,15 +58,15 @@ fn member(sc: &ScCallContext) {
     sc.log(&("Appended: ".to_string() + &member.address.to_string()));
 }
 
-fn dividend(sc: &ScCallContext) {
+fn divide(sc: &ScCallContext) {
     let amount = sc.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         sc.panic("Nothing to divide");
     }
     let state = sc.state();
-    let total_factor = state.get_int(KEY_TOTAL_FACTOR);
+    let total_factor = state.get_int(VAR_TOTAL_FACTOR);
     let total = total_factor.value();
-    let members = state.get_bytes_array(KEY_MEMBERS);
+    let members = state.get_bytes_array(VAR_MEMBERS);
     let mut parts = 0_i64;
     let size = members.length();
     for i in 0..size {

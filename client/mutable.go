@@ -244,7 +244,7 @@ func (o ScMutableHname) Exists() bool {
 }
 
 func (o ScMutableHname) SetValue(value Hname) {
-	SetInt(o.objId, o.keyId, int64(value))
+	SetBytes(o.objId, o.keyId, value.Bytes())
 }
 
 func (o ScMutableHname) String() string {
@@ -252,7 +252,7 @@ func (o ScMutableHname) String() string {
 }
 
 func (o ScMutableHname) Value() Hname {
-	return Hname(GetInt(o.objId, o.keyId))
+	return NewHnameFromBytes(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

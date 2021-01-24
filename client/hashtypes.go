@@ -13,7 +13,11 @@ type Hname uint32
 func NewHname(name string) Hname {
 	utility := Root.GetMap(KeyUtility)
 	utility.GetString(KeyName).SetValue(name)
-	return Hname(utility.GetInt(KeyName).Value())
+	return NewHnameFromBytes(utility.GetBytes(KeyName).Value())
+}
+
+func NewHnameFromBytes(bytes []byte) Hname {
+	return Hname(binary.LittleEndian.Uint32(bytes))
 }
 
 func (hn Hname) Bytes() []byte {

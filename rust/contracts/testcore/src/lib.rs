@@ -94,14 +94,11 @@ fn call_on_chain(ctx: &ScCallContext) {
     let mut call_depth = param_value.value();
 
     let mut target = Hname::SELF;
-    // ctx.log("--------- 1");
-    // let param_hname = ctx.params().get_hname(PARAM_HNAME);
-    // ctx.log("--------- 2");
-    // if param_hname.exists(){
-    //     target = param_hname.value();
-    // }
-    // ctx.log("--------- 3");
-    // TODO it seems hname is buggy
+    let param_hname = ctx.params().get_hname(PARAM_HNAME);
+    if param_hname.exists() {
+        target = param_hname.value();
+    }
+
     let var_counter = ctx.state().get_int(VAR_COUNTER);
     let mut counter: i64 = 0;
     if var_counter.exists() {
@@ -114,19 +111,20 @@ fn call_on_chain(ctx: &ScCallContext) {
     ctx.log(&format!("call depth = {} option = '{}' hname = {} counter = {}",
                      call_depth, call_option, &target.to_string(), counter));
 
-    var_counter.set_value(counter + 1);
 
     if call_depth <= 0 {
-        ctx.results().get_int(VAR_COUNTER).set_value(5);
+        ctx.results().get_int(VAR_COUNTER).set_value(var_counter.value());
         return;
     }
+
+    var_counter.set_value(counter + 1);
     call_depth = call_depth - 1;
     if call_option == CALL_OPTION_FORWARD {
         let par = ScMutableMap::new();
         par.get_string(PARAM_CALL_OPTION).set_value(CALL_OPTION_FORWARD);
         par.get_int(PARAM_INT_PARAM_VALUE).set_value(call_depth);
-        ctx.call(target, Hname::new("callOnChain"), par, &ScTransfers::NONE);
-        // TODO how to pass the results to return?
+        let ret = ctx.call(target, Hname::new("callOnChain"), par, &ScTransfers::NONE);
+        ctx.results().get_int(VAR_COUNTER).set_value(ret.get_int(VAR_COUNTER).value());
     } else {
         ctx.panic("unknown call option")
     }
@@ -231,52 +229,54 @@ fn pass_types_full(ctx: &ScCallContext) {
     if !ctx.params().get_hash("Hash").exists() {
         ctx.panic("!Hash.exist")
     }
-    // TODO how to hash a constant string?
-
-    ctx.log("------ 1");
-    if !ctx.params().get_hname("Hname").exists() {
-        ctx.panic("!Hname. exist")
+    let hash = ctx.utility().hash("Hash".as_bytes());
+    if !ctx.params().get_hash("Hash").value().equals(&hash) {
+        ctx.panic("Hash wrong")
     }
-    ctx.log("------ 2");
-    // TODO == between hnames and other types
-    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string() {
+    if !ctx.params().get_hname("Hname").exists() {
+        ctx.panic("!Hname.exist")
+    }
+    if !ctx.params().get_hname("Hname").value().equals(Hname::new("Hname")) {
         ctx.panic("Hname wrong")
     }
-    ctx.log("------ 3");
     if !ctx.params().get_hname("Hname-0").exists() {
         ctx.panic("!Hname-0.exist")
     }
-    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string() {
+    if !ctx.params().get_hname("Hname-0").value().equals(Hname(0)) {
         ctx.panic("Hname-0 wrong")
     }
 }
 
 fn pass_types_view(ctx: &ScViewContext) {
     if !ctx.params().get_int("int64").exists() {
-        ctx.panic("!int64. exist")
+        ctx.panic("!int64.exist")
     }
     if ctx.params().get_int("int64").value() != 42 {
         ctx.panic("int64 wrong")
     }
     if !ctx.params().get_int("int64-0").exists() {
-        ctx.panic("!int64-0. exist")
+        ctx.panic("!int64-0.exist")
     }
     if ctx.params().get_int("int64-0").value() != 0 {
         ctx.panic("int64-0 wrong")
     }
-    ctx.log("------ 1");
-    if !ctx.params().get_hname("Hname").exists() {
-        ctx.panic("!Hname. exist")
+    if !ctx.params().get_hash("Hash").exists() {
+        ctx.panic("!Hash.exist")
     }
-    ctx.log("------ 2");
-    if ctx.params().get_hname("Hname").value().to_string() != Hname::new("Hname").to_string() {
+    let hash = ctx.utility().hash("Hash".as_bytes());
+    if !ctx.params().get_hash("Hash").value().equals(&hash) {
+        ctx.panic("Hash wrong")
+    }
+    if !ctx.params().get_hname("Hname").exists() {
+        ctx.panic("!Hname.exist")
+    }
+    if !ctx.params().get_hname("Hname").value().equals(Hname::new("Hname")) {
         ctx.panic("Hname wrong")
     }
-    ctx.log("------ 3");
     if !ctx.params().get_hname("Hname-0").exists() {
         ctx.panic("!Hname-0.exist")
     }
-    if ctx.params().get_hname("Hname-0").value().to_string() != 0.to_string() {
+    if !ctx.params().get_hname("Hname-0").value().equals(Hname(0)) {
         ctx.panic("Hname-0 wrong")
     }
 }
