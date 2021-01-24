@@ -33,9 +33,6 @@ func TestChainOwnerIDFull(t *testing.T) {
 }
 
 func TestContractIDView(t *testing.T) {
-	if RUN_WASM || RUN_GO {
-		t.SkipNow()
-	}
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil)
 
@@ -46,9 +43,6 @@ func TestContractIDView(t *testing.T) {
 }
 
 func TestContractIDFull(t *testing.T) {
-	if RUN_WASM || RUN_GO {
-		t.SkipNow()
-	}
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil)
 

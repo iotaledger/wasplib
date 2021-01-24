@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	RUN_GO             = false // run go Wasm code directly, without Wasm
+	RUN_GO             = true // run go Wasm code directly, without Wasm
 	DEBUG              = false
 	RUN_WASM           = false
 	WASM_FILE_TESTCORE = "../../../wasm/testcore_bg.wasm"
@@ -76,7 +76,7 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 
 func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureScheme) coretypes.ContractID {
 	var err error
-	if !RUN_WASM || RUN_GO {
+	if !(RUN_WASM || RUN_GO) {
 		// only wasm test
 		t.SkipNow()
 	}
@@ -86,10 +86,17 @@ func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureS
 	} else {
 		userAgentID = coretypes.NewAgentIDFromAddress(user.Address())
 	}
-	err = chain.DeployWasmContract(user, ERC20_NAME, WASM_FILE_ERC20,
-		PARAM_SUPPLY, 1000000,
-		PARAM_CREATOR, userAgentID,
-	)
+	if RUN_GO {
+		err = govm.DeployGoContract(chain, user, ERC20_NAME, ERC20_NAME,
+			PARAM_SUPPLY, 1000000,
+			PARAM_CREATOR, userAgentID,
+		)
+	}else {
+		err = chain.DeployWasmContract(user, ERC20_NAME, WASM_FILE_ERC20,
+			PARAM_SUPPLY, 1000000,
+			PARAM_CREATOR, userAgentID,
+		)
+	}
 	require.NoError(t, err)
 
 	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(test_sandbox_sc.Interface.Name))

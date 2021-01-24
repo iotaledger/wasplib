@@ -17,6 +17,7 @@ const ParamHname0 = client.Key("Hname-0")
 const ParamCallOption = client.Key("callOption")
 const ParamAddress = client.Key("address")
 const ParamChainOwner = client.Key("chainOwner")
+const ParamContractId = client.Key("contractID")
 
 const VarCounter = client.Key("counter")
 
@@ -205,12 +206,18 @@ func testChainOwnerIdFull(ctx *client.ScCallContext) {
 	ctx.Results().GetAgent(ParamChainOwner).SetValue(ctx.ChainOwner())
 }
 
-func testContractIdView(_ctx *client.ScViewContext) {
-	// TODO there's no way to return contact ID
-	// ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
+func testContractIdView(ctx *client.ScViewContext) {
+	//TODO discussion about using ChainID vs ContractID because one of those seems redundant
+	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId());
+	// alternatively do not use agent but bytes instead for now:
+	// ctx.Results().GetBytes(PARAM_CONTRACT_ID).SetValue(ctx.ContractId().Bytes());
 }
 
-func testContractIdFull(_ctx *client.ScCallContext) {}
+func testContractIdFull(ctx *client.ScCallContext) {
+	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId());
+	// alternatively do not use agent but bytes instead for now:
+	// ctx.Results().GetBytes(PARAM_CONTRACT_ID).SetValue(ctx.ContractId().Bytes());
+}
 
 func testSandboxCall(ctx *client.ScViewContext) {
 	ret := ctx.Call(client.CoreRoot, client.ViewGetChainInfo, nil)

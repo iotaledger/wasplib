@@ -31,11 +31,11 @@ var ScForGoVM = map[string]func(){
 	"tokenregistry":      tokenregistry.OnLoad,
 }
 
-func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string) error {
+func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string, params ...interface{}) error {
 	wasmproc.GoWasmVM = NewGoVM(ScForGoVM)
 	hprog, err := chain.UploadWasm(sigScheme, []byte("go:"+contractName))
 	if err != nil {
 		return err
 	}
-	return chain.DeployContract(sigScheme, name, hprog)
+	return chain.DeployContract(sigScheme, name, hprog, params...)
 }

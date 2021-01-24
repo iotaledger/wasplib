@@ -9,6 +9,7 @@ const PARAM_HNAME: &str = "hname";
 const PARAM_CALL_OPTION: &str = "callOption";
 const PARAM_ADDRESS: &str = "address";
 const PARAM_CHAIN_OWNER: &str = "chainOwner";
+const PARAM_CONTRACT_ID: &str = "contractID";
 
 const VAR_COUNTER: &str = "counter";
 
@@ -200,12 +201,18 @@ fn test_chain_owner_id_full(ctx: &ScCallContext) {
     ctx.results().get_agent(PARAM_CHAIN_OWNER).set_value(&ctx.chain_owner())
 }
 
-fn test_contract_id_view(_ctx: &ScViewContext) {
-    // TODO there's no way to return contact ID
-    // ctx.results().(PARAM_CONTRACT_ID).set_value(ctx.chain_owner().value)
+fn test_contract_id_view(ctx: &ScViewContext) {
+    //TODO discussion about using ChainID vs ContractID because one of those seems redundant
+    ctx.results().get_agent(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
+    // alternatively do not use agent but bytes instead for now:
+    // ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
 }
 
-fn test_contract_id_full(_ctx: &ScCallContext) {}
+fn test_contract_id_full(ctx: &ScCallContext) {
+    ctx.results().get_agent(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
+    // alternatively do not use agent but bytes instead for now:
+    // ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
+}
 
 fn test_sandbox_call(ctx: &ScViewContext) {
     let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, ScMutableMap::NONE);
