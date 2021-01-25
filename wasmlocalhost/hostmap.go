@@ -120,6 +120,10 @@ func (m *HostMap) GetObjectId(keyId int32, typeId int32) int32 {
 	case client.TYPE_INT | client.TYPE_ARRAY:
 		o = NewHostArray(m.host, keyId, client.TYPE_INT)
 	case client.TYPE_MAP:
+		if keyId == wasmhost.KeyUtility {
+			o = NewHostUtility(m.host, keyId)
+			break
+		}
 		o = NewHostMap(m.host, keyId)
 	case client.TYPE_MAP | client.TYPE_ARRAY:
 		o = NewHostArray(m.host, keyId, client.TYPE_MAP)

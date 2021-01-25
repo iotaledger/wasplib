@@ -125,8 +125,8 @@ func callOnChain(ctx *client.ScCallContext) {
 		return
 	}
 
-    varCounter.SetValue(counter + 1)
-    callDepth = callDepth - 1
+	varCounter.SetValue(counter + 1)
+	callDepth = callDepth - 1
 	if callOption == string(CallOptionForward) {
 		par := client.NewScMutableMap()
 		par.GetString(ParamCallOption).SetValue(callOption)
@@ -213,13 +213,13 @@ func testChainOwnerIdFull(ctx *client.ScCallContext) {
 
 func testContractIdView(ctx *client.ScViewContext) {
 	//TODO discussion about using ChainID vs ContractID because one of those seems redundant
-	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId());
+	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId())
 	// alternatively do not use agent but bytes instead for now:
 	// ctx.Results().GetBytes(PARAM_CONTRACT_ID).SetValue(ctx.ContractId().Bytes());
 }
 
 func testContractIdFull(ctx *client.ScCallContext) {
-	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId());
+	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId())
 	// alternatively do not use agent but bytes instead for now:
 	// ctx.Results().GetBytes(PARAM_CONTRACT_ID).SetValue(ctx.ContractId().Bytes());
 }

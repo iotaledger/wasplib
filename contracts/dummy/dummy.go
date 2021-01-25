@@ -14,7 +14,7 @@ func OnLoad() {
 
 // fails with error if failInitParam exists
 func onInit(ctx *client.ScCallContext) {
-    failParam := ctx.Params().GetInt(ParamFailInitParam)
+	failParam := ctx.Params().GetInt(ParamFailInitParam)
 	if failParam.Exists() {
 		ctx.Panic("dummy: failing on purpose")
 	}

@@ -49,7 +49,11 @@ func (host *SimpleWasmHost) Dump(w io.Writer, typeId int32, value interface{}) {
 	case client.TYPE_INT:
 		fmt.Fprintf(w, "%d", value.(int64))
 	case client.TYPE_MAP:
-		host.FindObject(value.(int32)).(*HostMap).Dump(w)
+		obj := host.FindObject(value.(int32))
+		switch obj.(type) {
+		case *HostMap:
+			obj.(*HostMap).Dump(w)
+		}
 	case client.TYPE_STRING:
 		fmt.Fprintf(w, "\"%s\"", value.(string))
 	default:

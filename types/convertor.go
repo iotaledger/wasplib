@@ -169,8 +169,8 @@ func RustToGoLine(line string, contract string) string {
 		line = RustToGoVarNames(line)
 	} else {
 		rhs := strings.LastIndex(line, "\"")
-		left := RustToGoVarNames(line[:lhs + 1])
-		mid := line[lhs+1:rhs]
+		left := RustToGoVarNames(line[:lhs+1])
+		mid := line[lhs+1 : rhs]
 		right := RustToGoVarNames(line[rhs:])
 		line = left + mid + right
 	}

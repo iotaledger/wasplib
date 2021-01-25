@@ -296,7 +296,6 @@ func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
 	t.LoadMapData(wasmhost.KeyIncoming, jsonData.Incoming)
 	t.LoadMapData(wasmhost.KeyParams, jsonData.Params)
 	t.LoadMapData(wasmhost.KeyState, jsonData.State)
-	t.LoadMapData(wasmhost.KeyUtility, jsonData.Utility)
 	root := t.FindObject(1)
 	if jsonData.Timestamp != 0 {
 		root.SetInt(wasmhost.KeyTimestamp, jsonData.Timestamp)
