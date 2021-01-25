@@ -10,8 +10,6 @@ import (
 	"testing"
 )
 
-//TODO prevent replacements within strings
-
 func TestGoCoreSchema(t *testing.T) {
 	t.SkipNow()
 	err := GenerateGoCoreSchema()

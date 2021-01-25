@@ -67,9 +67,9 @@ var javaReplacements = []string{
 
 var matchCodec = regexp.MustCompile("(encode|decode)(\\w+)")
 var matchComment = regexp.MustCompile("^\\s*//")
-var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_]+")
-var matchConstInt = regexp.MustCompile("const (\\w+): \\w+ = ([0-9]+)")
-var matchConstStr = regexp.MustCompile("const (\\w+): &str = (\"\\w+\")")
+var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_0-9]+")
+var matchConstInt = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): \\w+ = ([0-9]+)")
+var matchConstStr = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = (\"[^\"]+\")")
 var matchExtraBraces = regexp.MustCompile("\\((\\([^)]+\\))\\)")
 var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_]+")
 var matchForLoop = regexp.MustCompile("for (\\w+) in ([0-9+])\\.\\.(\\w+)")
@@ -107,7 +107,7 @@ func replaceVarName(m string) string {
 	// "[^a-zA-Z_][a-z][a-z_]+"
 	// replace Rust lower snake case to Go camel case
 	index := strings.Index(m, "_")
-	for index > 0 {
+	for index > 0 && index < len(m)-1 {
 		m = m[:index] + strings.ToUpper(m[index+1:index+2]) + m[index+2:]
 		index = strings.Index(m, "_")
 	}
@@ -156,8 +156,8 @@ func RustToGoLine(line string, contract string) string {
 		return line
 	}
 	line = strings.Replace(line, ";", "", -1)
-	line = matchConstInt.ReplaceAllString(line, "const $1 = $2")
-	line = matchConstStr.ReplaceAllString(line, "const $1 = client.Key($2)")
+	line = matchConstInt.ReplaceAllString(line, "const $1$2 = $3")
+	line = matchConstStr.ReplaceAllString(line, "const $1$2 = client.Key($3)")
 	line = matchLet.ReplaceAllString(line, "$2 :=")
 	line = matchForLoop.ReplaceAllString(line, "for $1 := int32($2); $1 < $3; $1++")
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)

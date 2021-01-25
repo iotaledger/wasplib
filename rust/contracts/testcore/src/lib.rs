@@ -12,6 +12,14 @@ const PARAM_ADDRESS: &str = "address";
 const PARAM_CHAIN_OWNER: &str = "chainOwner";
 const PARAM_CONTRACT_ID: &str = "contractID";
 
+const PARAM_INT64: &str = "int64";
+const PARAM_INT64_ZERO: &str = "int64-0";
+const PARAM_HASH: &str = "Hash";
+const PARAM_HNAME: &str = "Hname";
+const PARAM_HNAME_ZERO: &str = "Hname-0";
+const PARAM_STRING: &str = "string";
+const PARAM_STRING_ZERO: &str = "string-0";
+
 const VAR_COUNTER: &str = "counter";
 
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
@@ -87,13 +95,13 @@ fn call_on_chain(ctx: &ScCallContext) {
     let mut target_contract = Hname::SELF; // TODO strange a bit: Hname::Self is a constant
 
     let param_hname_contract = ctx.params().get_hname(PARAM_HNAME_CONTRACT);
-    if param_hname_contract.exists(){
+    if param_hname_contract.exists() {
         target_contract = param_hname_contract.value()
     }
 
     let mut target_ep = Hname::new("callOnChain");
     let param_hname_ep = ctx.params().get_hname(PARAM_HNAME_EP);
-    if param_hname_ep.exists(){
+    if param_hname_ep.exists() {
         target_ep = param_hname_ep.value()
     }
 
@@ -126,15 +134,15 @@ fn run_recursion(ctx: &ScCallContext) {
     let param_value = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
     ctx.require(param_value.exists(), "param no found");
     let depth = param_value.value();
-    if depth <= 0{
-        return
+    if depth <= 0 {
+        return;
     }
     let par = ScMutableMap::new();
-    par.get_int(PARAM_INT_PARAM_VALUE).set_value(depth-1);
+    par.get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
     par.get_hname(PARAM_HNAME_EP).set_value(Hname::new("runRecursion"));
     ctx.call(Hname::SELF, Hname::new("callOnChain"), par, &ScTransfers::NONE);
     // TODO how would I return result of the call ???
-    ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(depth-1);
+    ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
 }
 
 fn fibonacci(ctx: &ScViewContext) {
@@ -222,41 +230,51 @@ fn test_sandbox_call(ctx: &ScViewContext) {
 }
 
 fn pass_types_full(ctx: &ScCallContext) {
-    ctx.require(ctx.params().get_int("int64").exists(), "!int64.exist");
-    ctx.require(ctx.params().get_int("int64").value()==42, "int64 wrong");
+    ctx.require(ctx.params().get_int(PARAM_INT64).exists(), "!int64.exist");
+    ctx.require(ctx.params().get_int(PARAM_INT64).value() == 42, "int64 wrong");
 
-    ctx.require(ctx.params().get_int("int64-0").exists(), "!int64-0.exist");
-    ctx.require(ctx.params().get_int("int64-0").value()==0, "int64-0 wrong");
+    ctx.require(ctx.params().get_int(PARAM_INT64_ZERO).exists(), "!int64-0.exist");
+    ctx.require(ctx.params().get_int(PARAM_INT64_ZERO).value() == 0, "int64-0 wrong");
 
-    ctx.require(ctx.params().get_hash("Hash").exists(), "!Hash.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING).exists(), "!string.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING).value() == "string", "string wrong");
+
+    ctx.require(ctx.params().get_string(PARAM_STRING_ZERO).exists(), "!string-0.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING_ZERO).value() == "", "string-0 wrong");
+
+    ctx.require(ctx.params().get_hash(PARAM_HASH).exists(), "!Hash.exist");
 
     let hash = ctx.utility().hash("Hash".as_bytes());
-    ctx.require(ctx.params().get_hash("Hash").value().equals(&hash), "Hash wrong");
+    ctx.require(ctx.params().get_hash(PARAM_HASH).value().equals(&hash), "Hash wrong");
 
-    ctx.require(ctx.params().get_hname("Hname").exists(), "!Hname.exist");
-    ctx.require(ctx.params().get_hname("Hname").value().equals(Hname::new("Hname")),
-                "Hname wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).exists(), "!Hname.exist");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(Hname::new("Hname")), "Hname wrong");
 
-    ctx.require(ctx.params().get_hname("Hname-0").exists(), "!Hname-0.exist");
-    ctx.require(ctx.params().get_hname("Hname-0").value().equals(Hname(0)), "Hname-0 wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).exists(), "!Hname-0.exist");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
 }
 
 fn pass_types_view(ctx: &ScViewContext) {
-    ctx.require(ctx.params().get_int("int64").exists(), "!int64.exist");
-    ctx.require(ctx.params().get_int("int64").value()==42, "int64 wrong");
+    ctx.require(ctx.params().get_int(PARAM_INT64).exists(), "!int64.exist");
+    ctx.require(ctx.params().get_int(PARAM_INT64).value() == 42, "int64 wrong");
 
-    ctx.require(ctx.params().get_int("int64-0").exists(), "!int64-0.exist");
-    ctx.require(ctx.params().get_int("int64-0").value()==0, "int64-0 wrong");
+    ctx.require(ctx.params().get_int(PARAM_INT64_ZERO).exists(), "!int64-0.exist");
+    ctx.require(ctx.params().get_int(PARAM_INT64_ZERO).value() == 0, "int64-0 wrong");
 
-    ctx.require(ctx.params().get_hash("Hash").exists(), "!Hash.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING).exists(), "!string.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING).value() == "string", "string wrong");
+
+    ctx.require(ctx.params().get_string(PARAM_STRING_ZERO).exists(), "!string-0.exist");
+    ctx.require(ctx.params().get_string(PARAM_STRING_ZERO).value() == "", "string-0 wrong");
+
+    ctx.require(ctx.params().get_hash(PARAM_HASH).exists(), "!Hash.exist");
 
     let hash = ctx.utility().hash("Hash".as_bytes());
-    ctx.require(ctx.params().get_hash("Hash").value().equals(&hash), "Hash wrong");
+    ctx.require(ctx.params().get_hash(PARAM_HASH).value().equals(&hash), "Hash wrong");
 
-    ctx.require(ctx.params().get_hname("Hname").exists(), "!Hname.exist");
-    ctx.require(ctx.params().get_hname("Hname").value().equals(Hname::new("Hname")),
-                "Hname wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).exists(), "!Hname.exist");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(Hname::new("Hname")), "Hname wrong");
 
-    ctx.require(ctx.params().get_hname("Hname-0").exists(), "!Hname-0.exist");
-    ctx.require(ctx.params().get_hname("Hname-0").value().equals(Hname(0)), "Hname-0 wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).exists(), "!Hname-0.exist");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
 }

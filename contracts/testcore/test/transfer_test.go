@@ -12,9 +12,10 @@ import (
 	"testing"
 )
 
-func TestDoNothing(t *testing.T) {
+func TestDoNothing(t *testing.T) { run2(t, testDoNothing) }
+func testDoNothing(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
@@ -27,9 +28,10 @@ func TestDoNothing(t *testing.T) {
 	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-42-extraToken)
 }
 
-func TestDoNothingUser(t *testing.T) {
+func TestDoNothingUser(t *testing.T) { run2(t, testDoNothingUser) }
+func testDoNothingUser(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -48,9 +50,10 @@ func TestDoNothingUser(t *testing.T) {
 	env.AssertAddressBalance(user.Address(), balance.ColorIOTA, testutil.RequestFundsAmount-1-42)
 }
 
-func TestWithdrawToAddress(t *testing.T) {
+func TestWithdrawToAddress(t *testing.T) { run2(t, testWithdrawToAddress) }
+func testWithdrawToAddress(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 	t.Logf("contract agentID: %s", cAID)
@@ -84,9 +87,10 @@ func TestWithdrawToAddress(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 }
 
-func TestDoPanicUser(t *testing.T) {
+func TestDoPanicUser(t *testing.T) { run2(t, testDoPanicUser) }
+func testDoPanicUser(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -113,9 +117,10 @@ func TestDoPanicUser(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 }
 
-func TestDoPanicUserFeeless(t *testing.T) {
+func TestDoPanicUserFeeless(t *testing.T) { run2(t, testDoPanicUserFeeless) }
+func testDoPanicUserFeeless(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -152,9 +157,10 @@ func TestDoPanicUserFeeless(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 }
 
-func TestDoPanicUserFee(t *testing.T) {
+func TestDoPanicUserFee(t *testing.T) { run2(t, testDoPanicUserFee) }
+func testDoPanicUserFee(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -194,9 +200,10 @@ func TestDoPanicUserFee(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-10)
 }
 
-func TestRequestToView(t *testing.T) {
+func TestRequestToView(t *testing.T) { run2(t, testRequestToView) }
+func testRequestToView(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	cID, extraToken := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 

@@ -14,12 +14,10 @@ import (
 	"time"
 )
 
-func TestEventlogGetLast3(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestEventlogGetLast3(t *testing.T) { run2(t, testEventlogGetLast3, true) }
+func testEventlogGetLast3(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	for i := 1; i < 6; i++ {
 		req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncEventLogGenericData,
@@ -39,12 +37,10 @@ func TestEventlogGetLast3(t *testing.T) {
 	require.EqualValues(t, 3, array.MustLen())
 }
 
-func TestEventlogGetBetweenTs(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestEventlogGetBetweenTs(t *testing.T) { run2(t, testEventlogGetBetweenTs, true) }
+func testEventlogGetBetweenTs(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	env.SetTimeStep(500 * time.Millisecond)
 	var err error
@@ -69,12 +65,10 @@ func TestEventlogGetBetweenTs(t *testing.T) {
 	require.EqualValues(t, 2, array.MustLen())
 }
 
-func TestEventLogEventData(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestEventLogEventData(t *testing.T) { run2(t, testEventLogEventData, true) }
+func testEventLogEventData(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogEventData,
@@ -97,12 +91,10 @@ func TestEventLogEventData(t *testing.T) {
 	t.Log(str)
 }
 
-func TestEventLogDifferentCalls(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestEventLogDifferentCalls(t *testing.T) { run2(t, testEventLogDifferentCalls, true) }
+func testEventLogDifferentCalls(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 	env.SetTimeStep(500 * time.Millisecond)
 
 	count := 1
@@ -144,12 +136,10 @@ func TestEventLogDifferentCalls(t *testing.T) {
 	require.EqualValues(t, 3, strings.Count(str, "[Event]"))
 }
 
-func TestChainLogGetNumRecords(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestChainLogGetNumRecords(t *testing.T) { run2(t, testChainLogGetNumRecords, true) }
+func testChainLogGetNumRecords(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(SandboxSCName,
 		test_sandbox_sc.FuncEventLogGenericData,
@@ -179,12 +169,10 @@ func TestChainLogGetNumRecords(t *testing.T) {
 	require.EqualValues(t, 1, strings.Count(str, "1337"))
 }
 
-func TestChainLogSandboxDeploy(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy, true) }
+func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogDeploy,
@@ -209,12 +197,10 @@ func TestChainLogSandboxDeploy(t *testing.T) {
 	require.EqualValues(t, 2, strings.Count(str, "[req]"))
 }
 
-func TestChainLogMultiple(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
+func TestChainLogMultiple(t *testing.T) { run2(t, testChainLogMultiple, true) }
+func testChainLogMultiple(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogEventData,

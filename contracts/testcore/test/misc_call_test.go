@@ -8,9 +8,10 @@ import (
 	"testing"
 )
 
-func TestChainOwnerIDView(t *testing.T) {
+func TestChainOwnerIDView(t *testing.T) { run2(t, testChainOwnerIDView) }
+func testChainOwnerIDView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	ret, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncChainOwnerIDView)
 	require.NoError(t, err)
@@ -20,9 +21,10 @@ func TestChainOwnerIDView(t *testing.T) {
 	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
 }
 
-func TestChainOwnerIDFull(t *testing.T) {
+func TestChainOwnerIDFull(t *testing.T) { run2(t, testChainOwnerIDFull) }
+func testChainOwnerIDFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncChainOwnerIDFull)
 	ret, err := chain.PostRequest(req, nil)
@@ -32,9 +34,10 @@ func TestChainOwnerIDFull(t *testing.T) {
 	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
 }
 
-func TestContractIDView(t *testing.T) {
+func TestContractIDView(t *testing.T) { run2(t, testContractIDView) }
+func testContractIDView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	ret, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncContractIDView)
 	require.NoError(t, err)
@@ -42,9 +45,10 @@ func TestContractIDView(t *testing.T) {
 	require.EqualValues(t, cID[:], ret.MustGet(test_sandbox_sc.VarContractID))
 }
 
-func TestContractIDFull(t *testing.T) {
+func TestContractIDFull(t *testing.T) { run2(t, testContractIDFull) }
+func testContractIDFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncContractIDFull)
 	ret, err := chain.PostRequest(req, nil)
@@ -53,9 +57,10 @@ func TestContractIDFull(t *testing.T) {
 	require.EqualValues(t, cID[:], ret.MustGet(test_sandbox_sc.VarContractID))
 }
 
-func TestSandboxCall(t *testing.T) {
+func TestSandboxCall(t *testing.T) { run2(t, testSandboxCall) }
+func testSandboxCall(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil)
+	setupTestSandboxSC(t, chain, nil, w)
 
 	ret, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncSandboxCall)
 	require.NoError(t, err)

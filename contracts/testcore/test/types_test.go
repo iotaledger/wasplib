@@ -9,12 +9,14 @@ import (
 	"testing"
 )
 
-func TestTypesFull(t *testing.T) {
+func TestTypesFull(t *testing.T) { run2(t, testTypesFull) }
+func testTypesFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncPassTypesFull,
 		"string", "string",
+		"string-0", "",
 		"int64", 42,
 		"int64-0", 0,
 		"Hash", hashing.HashStrings("Hash"),
@@ -29,12 +31,14 @@ func TestTypesFull(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestTypesView(t *testing.T) {
+func TestTypesView(t *testing.T) { run2(t, testTypesView) }
+func testTypesView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
 	_, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncPassTypesView,
 		"string", "string",
+		"string-0", "",
 		"int64", 42,
 		"int64-0", 0,
 		"Hash", hashing.HashStrings("Hash"),
