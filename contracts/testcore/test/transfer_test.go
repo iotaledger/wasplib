@@ -85,11 +85,8 @@ func TestWithdrawToAddress(t *testing.T) {
 }
 
 func TestDoPanicUser(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	env, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -97,10 +94,10 @@ func TestDoPanicUser(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
 	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	req := solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
@@ -109,19 +106,16 @@ func TestDoPanicUser(t *testing.T) {
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 }
 
 func TestDoPanicUserFeeless(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	env, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -129,10 +123,10 @@ func TestDoPanicUserFeeless(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
 	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	req := solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
@@ -141,29 +135,26 @@ func TestDoPanicUserFeeless(t *testing.T) {
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 
 	req = solo.NewCall(accounts.Interface.Name, accounts.FuncWithdrawToAddress)
 	_, err = chain.PostRequest(req, user)
 	require.NoError(t, err)
 
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 }
 
 func TestDoPanicUserFee(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	env, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -171,10 +162,10 @@ func TestDoPanicUserFee(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
 	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	req := solo.NewCall(root.Interface.Name, root.FuncSetContractFee,
@@ -184,10 +175,10 @@ func TestDoPanicUserFee(t *testing.T) {
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	req = solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
@@ -196,19 +187,16 @@ func TestDoPanicUserFee(t *testing.T) {
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5+10)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5+10+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-10)
 }
 
 func TestRequestToView(t *testing.T) {
-	if RUN_WASM {
-		t.SkipNow()
-	}
 	env, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil)
+	cID, extraToken := setupTestSandboxSC(t, chain, nil)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	user := setupDeployer(t, chain)
 
@@ -216,10 +204,10 @@ func TestRequestToView(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
 	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	// sending request to the view entry point should return an error and invoke fallback for tokens
@@ -229,9 +217,9 @@ func TestRequestToView(t *testing.T) {
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4)
+	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain.AssertAccountBalance(cAID, balance.ColorIOTA, 0)
-	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4)
+	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 }

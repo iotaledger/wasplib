@@ -45,6 +45,7 @@ fn on_load() {
     exports.add_view("passTypesView", pass_types_view);
 
     exports.add_call("sendToAddress", send_to_address);
+    exports.add_view("justView", test_just_view);
 }
 
 fn on_init(ctx: &ScCallContext) {
@@ -178,6 +179,10 @@ fn test_call_panic_view_from_full(ctx: &ScCallContext) {
 // FIXME no need for 'view method special'
 fn test_call_panic_view_from_view(ctx: &ScViewContext) {
     ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE);
+}
+
+fn test_just_view(ctx: &ScViewContext) {
+    ctx.log("calling empty view entry point")
 }
 
 fn send_to_address(ctx: &ScCallContext) {

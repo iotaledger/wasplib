@@ -52,6 +52,7 @@ func OnLoad() {
 	exports.AddView("passTypesView", passTypesView)
 
 	exports.AddCall("sendToAddress", sendToAddress)
+	exports.AddView("justView", testJustView)
 }
 
 func onInit(ctx *client.ScCallContext) {
@@ -183,6 +184,10 @@ func testCallPanicViewFromFull(ctx *client.ScCallContext) {
 // FIXME no need for 'view method special'
 func testCallPanicViewFromView(ctx *client.ScViewContext) {
 	ctx.Call(client.Hname(0), client.NewHname("testPanicViewEP"), nil)
+}
+
+func testJustView(ctx *client.ScViewContext) {
+	ctx.Log("calling empty view entry point")
 }
 
 func sendToAddress(ctx *client.ScCallContext) {
