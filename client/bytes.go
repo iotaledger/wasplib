@@ -29,12 +29,24 @@ func (d *BytesDecoder) Bytes() []byte {
 	return value
 }
 
+func (d *BytesDecoder) ChainId() *ScChainId {
+	return NewScChainId(d.Bytes())
+}
+
 func (d *BytesDecoder) Color() *ScColor {
 	return NewScColor(d.Bytes())
 }
 
+func (d *BytesDecoder) ContractId() *ScContractId {
+	return NewScContractId(d.Bytes())
+}
+
 func (d *BytesDecoder) Hash() *ScHash {
 	return NewScHash(d.Bytes())
+}
+
+func (d *BytesDecoder) Hname() Hname {
+	return NewHnameFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Int() int64 {
@@ -91,7 +103,15 @@ func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 	return e
 }
 
+func (e *BytesEncoder) ChainId(value *ScChainId) *BytesEncoder {
+	return e.Bytes(value.Bytes())
+}
+
 func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
+	return e.Bytes(value.Bytes())
+}
+
+func (e *BytesEncoder) ContractId(value *ScContractId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -100,6 +120,10 @@ func (e *BytesEncoder) Data() []byte {
 }
 
 func (e *BytesEncoder) Hash(value *ScHash) *BytesEncoder {
+	return e.Bytes(value.Bytes())
+}
+
+func (e *BytesEncoder) Hname(value Hname) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 

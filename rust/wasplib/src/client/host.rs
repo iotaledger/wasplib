@@ -14,6 +14,9 @@ pub const TYPE_HASH: i32 = 5;
 pub const TYPE_INT: i32 = 6;
 pub const TYPE_MAP: i32 = 7;
 pub const TYPE_STRING: i32 = 8;
+pub const TYPE_HNAME: i32 = 9;
+pub const TYPE_CHAIN: i32 = 10;
+pub const TYPE_CONTRACT: i32 = 11;
 
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.

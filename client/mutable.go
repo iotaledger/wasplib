@@ -144,6 +144,29 @@ func (o ScMutableBytesArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScMutableChainId struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScMutableChainId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableChainId) SetValue(value *ScChainId) {
+	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableChainId) String() string {
+	return o.Value().String()
+}
+
+func (o ScMutableChainId) Value() *ScChainId {
+	return NewScChainId(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScMutableColor struct {
 	objId int32
 	keyId Key32
@@ -185,6 +208,29 @@ func (o ScMutableColorArray) Immutable() ScImmutableColorArray {
 
 func (o ScMutableColorArray) Length() int32 {
 	return GetLength(o.objId)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableContractId struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScMutableContractId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScMutableContractId) SetValue(value *ScContractId) {
+	SetBytes(o.objId, o.keyId, value.Bytes())
+}
+
+func (o ScMutableContractId) String() string {
+	return o.Value().String()
+}
+
+func (o ScMutableContractId) Value() *ScContractId {
+	return NewScContractId(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -342,6 +388,10 @@ func (o ScMutableMap) GetBytesArray(key MapKey) ScMutableBytesArray {
 	return ScMutableBytesArray{objId: arrId}
 }
 
+func (o ScMutableMap) GetChainId(key MapKey) ScMutableChainId {
+	return ScMutableChainId{objId: o.objId, keyId: key.KeyId()}
+}
+
 func (o ScMutableMap) GetColor(key MapKey) ScMutableColor {
 	return ScMutableColor{objId: o.objId, keyId: key.KeyId()}
 }
@@ -349,6 +399,10 @@ func (o ScMutableMap) GetColor(key MapKey) ScMutableColor {
 func (o ScMutableMap) GetColorArray(key MapKey) ScMutableColorArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_COLOR|TYPE_ARRAY)
 	return ScMutableColorArray{objId: arrId}
+}
+
+func (o ScMutableMap) GetContractId(key MapKey) ScMutableContractId {
+	return ScMutableContractId{objId: o.objId, keyId: key.KeyId()}
 }
 
 func (o ScMutableMap) GetHash(key MapKey) ScMutableHash {

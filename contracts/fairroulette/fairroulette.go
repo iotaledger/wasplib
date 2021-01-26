@@ -62,7 +62,7 @@ func placeBet(sc *client.ScCallContext) {
 
 func lockBets(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.ContractId()) {
+	if !sc.From(sc.ContractId().AsAgent()) {
 		sc.Panic("Cancel spoofed request")
 	}
 
@@ -87,7 +87,7 @@ func lockBets(sc *client.ScCallContext) {
 
 func payWinners(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	scId := sc.ContractId()
+	scId := sc.ContractId().AsAgent()
 	if !sc.From(scId) {
 		sc.Panic("Cancel spoofed request")
 	}

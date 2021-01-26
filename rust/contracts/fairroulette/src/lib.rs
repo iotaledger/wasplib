@@ -64,7 +64,7 @@ fn place_bet(sc: &ScCallContext) {
 
 fn lock_bets(sc: &ScCallContext) {
     // can only be sent by SC itself
-    if !sc.from(&sc.contract_id()) {
+    if !sc.from(&sc.contract_id().as_agent()) {
         sc.panic("Cancel spoofed request");
     }
 
@@ -89,7 +89,7 @@ fn lock_bets(sc: &ScCallContext) {
 
 fn pay_winners(sc: &ScCallContext) {
     // can only be sent by SC itself
-    let sc_id = sc.contract_id();
+    let sc_id = sc.contract_id().as_agent();
     if !sc.from(&sc_id) {
         sc.panic("Cancel spoofed request");
     }

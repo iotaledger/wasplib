@@ -30,12 +30,24 @@ impl BytesDecoder<'_> {
         value
     }
 
+    pub fn chain_id(&mut self) -> ScChainId {
+        ScChainId::from_bytes(self.bytes())
+    }
+
     pub fn color(&mut self) -> ScColor {
         ScColor::from_bytes(self.bytes())
     }
 
+    pub fn contract_id(&mut self) -> ScContractId {
+        ScContractId::from_bytes(self.bytes())
+    }
+
     pub fn hash(&mut self) -> ScHash {
         ScHash::from_bytes(self.bytes())
+    }
+
+    pub fn hname(&mut self) -> Hname {
+        Hname::from_bytes(self.bytes())
     }
 
     pub fn int(&mut self) -> i64 {
@@ -96,7 +108,17 @@ impl BytesEncoder {
         self
     }
 
+    pub fn chain_id(&mut self, value: &ScChainId) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
+    }
+
     pub fn color(&mut self, value: &ScColor) -> &BytesEncoder {
+        self.bytes(value.to_bytes());
+        self
+    }
+
+    pub fn contract_id(&mut self, value: &ScContractId) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }
@@ -107,6 +129,11 @@ impl BytesEncoder {
 
     pub fn hash(&mut self, value: &ScHash) -> &BytesEncoder {
         self.bytes(value.to_bytes());
+        self
+    }
+
+    pub fn hname(&mut self, value: &Hname) -> &BytesEncoder {
+        self.bytes(&value.to_bytes());
         self
     }
 

@@ -104,6 +104,25 @@ func (o ScImmutableBytesArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScImmutableChainId struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScImmutableChainId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableChainId) String() string {
+	return o.Value().String()
+}
+
+func (o ScImmutableChainId) Value() *ScChainId {
+	return NewScChainId(GetBytes(o.objId, o.keyId))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScImmutableColor struct {
 	objId int32
 	keyId Key32
@@ -133,6 +152,25 @@ func (o ScImmutableColorArray) GetColor(index int32) ScImmutableColor {
 
 func (o ScImmutableColorArray) Length() int32 {
 	return GetLength(o.objId)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScImmutableContractId struct {
+	objId int32
+	keyId Key32
+}
+
+func (o ScImmutableContractId) Exists() bool {
+	return Exists(o.objId, o.keyId)
+}
+
+func (o ScImmutableContractId) String() string {
+	return o.Value().String()
+}
+
+func (o ScImmutableContractId) Value() *ScContractId {
+	return NewScContractId(GetBytes(o.objId, o.keyId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -253,6 +291,10 @@ func (o ScImmutableMap) GetBytesArray(key MapKey) ScImmutableBytesArray {
 	return ScImmutableBytesArray{objId: arrId}
 }
 
+func (o ScImmutableMap) GetChainId(key MapKey) ScImmutableChainId {
+	return ScImmutableChainId{objId: o.objId, keyId: key.KeyId()}
+}
+
 func (o ScImmutableMap) GetColor(key MapKey) ScImmutableColor {
 	return ScImmutableColor{objId: o.objId, keyId: key.KeyId()}
 }
@@ -260,6 +302,10 @@ func (o ScImmutableMap) GetColor(key MapKey) ScImmutableColor {
 func (o ScImmutableMap) GetColorArray(key MapKey) ScImmutableColorArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_COLOR|TYPE_ARRAY)
 	return ScImmutableColorArray{objId: arrId}
+}
+
+func (o ScImmutableMap) GetContractId(key MapKey) ScImmutableContractId {
+	return ScImmutableContractId{objId: o.objId, keyId: key.KeyId()}
 }
 
 func (o ScImmutableMap) GetHash(key MapKey) ScImmutableHash {

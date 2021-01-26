@@ -33,9 +33,10 @@ var goReplacements = []string{
 	": i64", " int64",
 	": &str", " string",
 	"0_i64", "int64(0)",
-	"+ &\"", "+ \"",
-	" unsafe ", " ",
 	"\".ToString()", "\"",
+	" &\"", " \"",
+	" + &", " + ",
+	" unsafe ", " ",
 	".Value().String()", ".String()",
 	".ToString()", ".String()",
 	" onLoad()", " OnLoad()",
@@ -53,6 +54,7 @@ var javaReplacements = []string{
 	"::Null", ".NULL",
 	"::Iota", ".IOTA",
 	"::Mint", ".MINT",
+	"String::new()", "\"\"",
 	"(&", "(",
 	", &", ", ",
 	"};", "}",
@@ -60,6 +62,8 @@ var javaReplacements = []string{
 	"+ &\"", "+ \"",
 	"\".ToString()", "\"",
 	".Value().String()", ".toString()",
+	".ToString()", ".toString()",
+	".Equals(", ".equals(",
 	"#[noMangle]", "",
 	"mod types;", "",
 	"use types::*;", "",
@@ -68,7 +72,7 @@ var javaReplacements = []string{
 var matchCodec = regexp.MustCompile("(encode|decode)(\\w+)")
 var matchComment = regexp.MustCompile("^\\s*//")
 var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_0-9]+")
-var matchConstInt = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): \\w+ = ([0-9]+)")
+var matchConstInt = regexp.MustCompile("const ([A-Z])([A-Z_0-9]+): \\w+ = ([0-9]+)")
 var matchConstStr = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = (\"[^\"]+\")")
 var matchExtraBraces = regexp.MustCompile("\\((\\([^)]+\\))\\)")
 var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_]+")
@@ -101,6 +105,12 @@ func replaceFuncCall(m string) string {
 	// "\\.[a-z][a-z_]+\\("
 	// replace Rust lower snake case to Go public camel case
 	return replaceVarName(strings.ToUpper(m[:2]) + m[2:])
+}
+
+func replaceInitializer(m string) string {
+	// "(\\w+): (.+),$"
+	// replace Rust lower case with Go upper case
+	return strings.ToUpper(m[:1]) + m[1:]
 }
 
 func replaceVarName(m string) string {
@@ -175,6 +185,8 @@ func RustToGoLine(line string, contract string) string {
 		line = left + mid + right
 	}
 
+	line = matchInitializer.ReplaceAllStringFunc(line, replaceInitializer)
+
 	for i := 0; i < len(goReplacements); i += 2 {
 		line = strings.Replace(line, goReplacements[i], goReplacements[i+1], -1)
 	}
@@ -199,24 +211,33 @@ func RustToJavaLine(line string, contract string) string {
 	if matchComment.MatchString(line) {
 		return line
 	}
-	line = matchConstStr.ReplaceAllString(line, "private static final Key $1 = new Key($2)")
-	line = matchConstInt.ReplaceAllString(line, "private static final int $1 = $2")
+	line = matchConstStr.ReplaceAllString(line, "private static final Key $1$2 = new Key($3)")
+	line = matchConstInt.ReplaceAllString(line, "private static final int $1$2 = $3")
 	line = matchLet.ReplaceAllString(line, "$2 =")
 	line = matchForLoop.ReplaceAllString(line, "for (int $1 = $2; $1 < $3; $1++)")
-	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
-	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
 	line = matchInitializer.ReplaceAllString(line, lastInit+".$1 = $2;")
-	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
 	line = matchToString.ReplaceAllString(line, "+ $1")
 	line = matchIf.ReplaceAllString(line, "if ($1) {")
 	line = matchParam.ReplaceAllString(line, "$1$3 $2")
-	line = matchCodec.ReplaceAllString(line, "$2.$1")
 	initParts := matchInitializerHeader.FindStringSubmatch(line)
 	if initParts != nil {
 		lastInit = initParts[1]
 	}
 	line = matchInitializerHeader.ReplaceAllString(line, "$2 $1 = new $2();\n         {")
+
+	lhs := strings.Index(line, "\"")
+	if lhs < 0 {
+		line = RustToJavaVarNames(line)
+	} else {
+		rhs := strings.LastIndex(line, "\"")
+		left := RustToJavaVarNames(line[:lhs+1])
+		mid := line[lhs+1 : rhs]
+		right := RustToJavaVarNames(line[rhs:])
+		line = left + mid + right
+	}
+
+	line = matchCodec.ReplaceAllString(line, "$2.$1")
 
 	for i := 0; i < len(javaReplacements); i += 2 {
 		line = strings.Replace(line, javaReplacements[i], javaReplacements[i+1], -1)
@@ -228,5 +249,12 @@ func RustToJavaLine(line string, contract string) string {
 		line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;", contract)
 	}
 
+	return line
+}
+
+func RustToJavaVarNames(line string) string {
+	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
+	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
+	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
 	return line
 }

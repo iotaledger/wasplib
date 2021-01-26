@@ -153,8 +153,8 @@ func (ctx ScBaseContext) ContractCreator() *ScAgent {
 }
 
 // retrieve the id of this contract
-func (ctx ScBaseContext) ContractId() *ScAgent {
-	return Root.GetAgent(KeyId).Value()
+func (ctx ScBaseContext) ContractId() *ScContractId {
+	return Root.GetContractId(KeyId).Value()
 }
 
 // quick check to see if the caller of the smart contract was the specified originator agent

@@ -129,7 +129,7 @@ func startAuction(sc *client.ScCallContext) {
 
 func finalizeAuction(sc *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.ContractId()) {
+	if !sc.From(sc.ContractId().AsAgent()) {
 		sc.Panic("Cancel spoofed request")
 	}
 

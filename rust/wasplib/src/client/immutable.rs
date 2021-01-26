@@ -150,6 +150,31 @@ impl ScImmutableBytesArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+pub struct ScImmutableChainId {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScImmutableChainId {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableChainId {
+        ScImmutableChainId { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> ScChainId {
+        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 pub struct ScImmutableColor {
     obj_id: i32,
     key_id: Key32,
@@ -191,6 +216,31 @@ impl ScImmutableColorArray {
 
     pub fn length(&self) -> i32 {
         get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScImmutableContractId {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScImmutableContractId {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScImmutableContractId {
+        ScImmutableContractId { obj_id, key_id }
+    }
+
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id)
+    }
+
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    pub fn value(&self) -> ScContractId {
+        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id))
     }
 }
 
@@ -349,6 +399,10 @@ impl ScImmutableMap {
         ScImmutableBytesArray { obj_id: arr_id }
     }
 
+    pub fn get_chain_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableChainId {
+        ScImmutableChainId { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
     pub fn get_color<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColor {
         ScImmutableColor { obj_id: self.obj_id, key_id: key.get_id() }
     }
@@ -356,6 +410,10 @@ impl ScImmutableMap {
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_COLOR | TYPE_ARRAY);
         ScImmutableColorArray { obj_id: arr_id }
+    }
+
+    pub fn get_contract_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableContractId {
+        ScImmutableContractId { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
     pub fn get_hash<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableHash {

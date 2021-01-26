@@ -212,15 +212,11 @@ fn test_chain_owner_id_full(ctx: &ScCallContext) {
 
 fn test_contract_id_view(ctx: &ScViewContext) {
     //TODO discussion about using ChainID vs ContractID because one of those seems redundant
-    ctx.results().get_agent(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
-    // alternatively do not use agent but bytes instead for now:
-    // ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
+    ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
 fn test_contract_id_full(ctx: &ScCallContext) {
-    ctx.results().get_agent(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
-    // alternatively do not use agent but bytes instead for now:
-    // ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
+    ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
 fn test_sandbox_call(ctx: &ScViewContext) {

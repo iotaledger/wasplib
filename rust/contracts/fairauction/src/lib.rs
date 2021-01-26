@@ -132,7 +132,7 @@ fn start_auction(sc: &ScCallContext) {
 
 fn finalize_auction(sc: &ScCallContext) {
     // can only be sent by SC itself
-    if !sc.from(&sc.contract_id()) {
+    if !sc.from(&sc.contract_id().as_agent()) {
         sc.panic("Cancel spoofed request");
     }
 

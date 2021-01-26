@@ -216,15 +216,11 @@ func testChainOwnerIdFull(ctx *client.ScCallContext) {
 
 func testContractIdView(ctx *client.ScViewContext) {
 	//TODO discussion about using ChainID vs ContractID because one of those seems redundant
-	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId())
-	// alternatively do not use agent but bytes instead for now:
-	// ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
+	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
 func testContractIdFull(ctx *client.ScCallContext) {
-	ctx.Results().GetAgent(ParamContractId).SetValue(ctx.ContractId())
-	// alternatively do not use agent but bytes instead for now:
-	// ctx.results().get_bytes(PARAM_CONTRACT_ID).set_value(ctx.contract_id().to_bytes());
+	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
 func testSandboxCall(ctx *client.ScViewContext) {

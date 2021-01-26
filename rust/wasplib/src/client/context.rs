@@ -161,8 +161,8 @@ pub trait ScBaseContext {
     }
 
     // retrieve the id of this contract
-    fn contract_id(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_ID).value()
+    fn contract_id(&self) -> ScContractId {
+        ROOT.get_contract_id(&KEY_ID).value()
     }
 
     // quick check to see if the caller of the smart contract was the specified originator agent

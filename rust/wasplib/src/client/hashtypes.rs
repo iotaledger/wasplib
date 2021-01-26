@@ -60,32 +60,32 @@ impl MapKey for Hname {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScAddress {
-    address: [u8; 33],
+    id: [u8; 33],
 }
 
 impl ScAddress {
-    pub const NULL: ScAddress = ScAddress { address: [0x00; 33] };
+    pub const NULL: ScAddress = ScAddress { id: [0x00; 33] };
 
     pub fn as_agent(&self) -> ScAgent {
-        let mut agent = ScAgent { agent: [0; 37] };
-        agent.agent[..33].copy_from_slice(&self.address[..33]);
+        let mut agent = ScAgent { id: [0; 37] };
+        agent.id[..33].copy_from_slice(&self.id[..33]);
         agent
     }
 
     pub fn equals(&self, other: &ScAddress) -> bool {
-        self.address == other.address
+        self.id == other.id
     }
 
     pub fn from_bytes(bytes: &[u8]) -> ScAddress {
-        ScAddress { address: bytes.try_into().expect("address id should be 33 bytes") }
+        ScAddress { id: bytes.try_into().expect("invalid address id length") }
     }
 
     pub fn to_bytes(&self) -> &[u8] {
-        &self.address
+        &self.id
     }
 
     pub fn to_string(&self) -> String {
-        base58_encode(&self.address)
+        base58_encode(&self.id)
     }
 }
 
@@ -98,24 +98,24 @@ impl MapKey for ScAddress {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScAgent {
-    agent: [u8; 37],
+    id: [u8; 37],
 }
 
 impl ScAgent {
-    pub const NULL: ScAgent = ScAgent { agent: [0x00; 37] };
+    pub const NULL: ScAgent = ScAgent { id: [0x00; 37] };
 
     pub fn address(&self) -> ScAddress {
-        let mut address = ScAddress { address: [0; 33] };
-        address.address[..33].copy_from_slice(&self.agent[..33]);
+        let mut address = ScAddress { id: [0; 33] };
+        address.id[..33].copy_from_slice(&self.id[..33]);
         address
     }
 
     pub fn equals(&self, other: &ScAgent) -> bool {
-        self.agent == other.agent
+        self.id == other.id
     }
 
     pub fn from_bytes(bytes: &[u8]) -> ScAgent {
-        ScAgent { agent: bytes.try_into().expect("agent id should be 37 bytes") }
+        ScAgent { id: bytes.try_into().expect("invalid agent id lengths") }
     }
 
     pub fn is_address(&self) -> bool {
@@ -123,11 +123,11 @@ impl ScAgent {
     }
 
     pub fn to_bytes(&self) -> &[u8] {
-        &self.agent
+        &self.id
     }
 
     pub fn to_string(&self) -> String {
-        base58_encode(&self.agent)
+        base58_encode(&self.id)
     }
 }
 
@@ -139,28 +139,115 @@ impl MapKey for ScAgent {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScColor {
-    color: [u8; 32],
+pub struct ScChainId {
+    id: [u8; 33],
 }
 
-impl ScColor {
-    pub const IOTA: ScColor = ScColor { color: [0x00; 32] };
-    pub const MINT: ScColor = ScColor { color: [0xff; 32] };
+impl ScChainId {
+    pub const NULL: ScChainId = ScChainId { id: [0x00; 33] };
 
-    pub fn equals(&self, other: &ScColor) -> bool {
-        self.color == other.color
+    pub fn equals(&self, other: &ScChainId) -> bool {
+        self.id == other.id
     }
 
-    pub fn from_bytes(bytes: &[u8]) -> ScColor {
-        ScColor { color: bytes.try_into().expect("color id should be 32 bytes") }
+    pub fn from_bytes(bytes: &[u8]) -> ScChainId {
+        ScChainId { id: bytes.try_into().expect("invalid chain id length") }
     }
 
     pub fn to_bytes(&self) -> &[u8] {
-        &self.color
+        &self.id
     }
 
     pub fn to_string(&self) -> String {
-        base58_encode(&self.color)
+        base58_encode(&self.id)
+    }
+}
+
+impl MapKey for ScChainId {
+    fn get_id(&self) -> Key32 {
+        get_key_id_from_bytes(self.to_bytes())
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScContractId {
+    id: [u8; 37],
+}
+
+impl ScContractId {
+    pub const NULL: ScContractId = ScContractId { id: [0x00; 37] };
+
+    pub fn new(chain_id: &ScChainId, hname: &Hname) -> ScContractId {
+        let mut contract_id = ScContractId { id: [0; 37] };
+        contract_id.id[..33].copy_from_slice(&chain_id.to_bytes());
+        contract_id.id[33..].copy_from_slice(&hname.to_bytes());
+        contract_id
+    }
+
+    pub fn as_agent(&self) -> ScAgent {
+        let mut agent = ScAgent { id: [0x00; 37] };
+        agent.id[..].copy_from_slice(&self.id[..]);
+        agent
+    }
+
+    pub fn chain_id(&self) -> ScChainId {
+        let mut chain_id = ScChainId { id: [0; 33] };
+        chain_id.id[..33].copy_from_slice(&self.id[..33]);
+        chain_id
+    }
+
+    pub fn equals(&self, other: &ScContractId) -> bool {
+        self.id == other.id
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> ScContractId {
+        ScContractId { id: bytes.try_into().expect("invalid contract id length") }
+    }
+
+    pub fn hname(&self) -> Hname {
+        Hname::from_bytes(&self.id[33..])
+    }
+
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.id
+    }
+
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.id)
+    }
+}
+
+impl MapKey for ScContractId {
+    fn get_id(&self) -> Key32 {
+        get_key_id_from_bytes(self.to_bytes())
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+pub struct ScColor {
+    id: [u8; 32],
+}
+
+impl ScColor {
+    pub const IOTA: ScColor = ScColor { id: [0x00; 32] };
+    pub const MINT: ScColor = ScColor { id: [0xff; 32] };
+
+    pub fn equals(&self, other: &ScColor) -> bool {
+        self.id == other.id
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> ScColor {
+        ScColor { id: bytes.try_into().expect("invalid color id length") }
+    }
+
+    pub fn to_bytes(&self) -> &[u8] {
+        &self.id
+    }
+
+    pub fn to_string(&self) -> String {
+        base58_encode(&self.id)
     }
 }
 
@@ -173,26 +260,26 @@ impl MapKey for ScColor {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScHash {
-    hash: [u8; 32],
+    id: [u8; 32],
 }
 
 impl ScHash {
-    pub const NULL: ScHash = ScHash { hash: [0x00; 32] };
+    pub const NULL: ScHash = ScHash { id: [0x00; 32] };
 
     pub fn equals(&self, other: &ScHash) -> bool {
-        self.hash == other.hash
+        self.id == other.id
     }
 
     pub fn from_bytes(bytes: &[u8]) -> ScHash {
-        ScHash { hash: bytes.try_into().expect("hash should be 32 bytes") }
+        ScHash { id: bytes.try_into().expect("invalid hash id length") }
     }
 
     pub fn to_bytes(&self) -> &[u8] {
-        &self.hash
+        &self.id
     }
 
     pub fn to_string(&self) -> String {
-        base58_encode(&self.hash)
+        base58_encode(&self.id)
     }
 }
 
