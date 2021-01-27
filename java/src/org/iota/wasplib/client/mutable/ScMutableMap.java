@@ -46,6 +46,10 @@ public class ScMutableMap {
 		return new ScMutableBytesArray(arrId);
 	}
 
+	public ScMutableChainId GetChainId(MapKey key) {
+		return new ScMutableChainId(objId, key.GetId());
+	}
+
 	public ScMutableColor GetColor(MapKey key) {
 		return new ScMutableColor(objId, key.GetId());
 	}
@@ -55,8 +59,16 @@ public class ScMutableMap {
 		return new ScMutableColorArray(arrId);
 	}
 
+	public ScMutableContractId GetContractId(MapKey key) {
+		return new ScMutableContractId(objId, key.GetId());
+	}
+
 	public ScMutableHash GetHash(MapKey key) {
 		return new ScMutableHash(objId, key.GetId());
+	}
+
+	public ScMutableHname GetHname(MapKey key) {
+		return new ScMutableHname(objId, key.GetId());
 	}
 
 	public ScMutableHashArray GetHashArray(MapKey key) {

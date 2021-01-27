@@ -3,9 +3,7 @@
     "name": "accounts",
     "params": {
       "ParamAgentID": "a",
-      "ParamAmount": "t",
-      "ParamChainID": "i",
-      "ParamColor": "c"
+      "ParamAmount": "t"
     },
     "funcs": {
       "FuncBalance": "balance",
@@ -48,8 +46,8 @@
     "funcs": {
     },
     "views": {
-      "ViewGetLogRecords": "getLogRecords",
-      "ViewGetNumRecords": "getNumRecords"
+      "ViewGetNumRecords": "getNumRecords",
+      "ViewGetRecords": "getRecords"
     }
   },
   {

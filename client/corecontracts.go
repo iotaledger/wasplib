@@ -19,8 +19,8 @@ const ViewGetBlobInfo = Hname(0xfde4ab46)
 const ViewListBlobs = Hname(0x62ca7990)
 
 const CoreEventlog = Hname(0x661aa7d8)
-const ViewGetLogRecords = Hname(0xc7407442)
 const ViewGetNumRecords = Hname(0x2f4b4a8c)
+const ViewGetRecords = Hname(0xd01a8085)
 
 const CoreRoot = Hname(0xcebf5908)
 const FuncClaimChainOwnership = Hname(0x03ff0fc0)

@@ -8,11 +8,15 @@ import (
 )
 
 var rustTypes = map[string]string{
-	"int":     "i64",
-	"address": "ScAddress",
-	"agent":   "ScAgent",
-	"color":   "ScColor",
-	"string":  "String",
+	"address":     "ScAddress",
+	"agent":       "ScAgent",
+	"chain_id":    "ScChainId",
+	"color":       "ScColor",
+	"contract_id": "ScContractId",
+	"hash":        "ScHash",
+	"hname":       "Hname",
+	"int":         "i64",
+	"string":      "String",
 }
 
 func GenerateRustTypes(path string) error {

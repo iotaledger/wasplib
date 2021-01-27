@@ -123,7 +123,7 @@ public class FairAuction {
 			auction.Description = description;
 			auction.Duration = duration;
 			auction.HighestBid = -1;
-			auction.HighestBidder = ScAgent.NULL;
+			auction.HighestBidder = new ScAgent(new byte[37]);
 			auction.MinimumBid = minimumBid;
 			auction.NumTokens = numTokens;
 			auction.OwnerMargin = ownerMargin;
@@ -140,7 +140,7 @@ public class FairAuction {
 
 	public static void finalizeAuction(ScCallContext sc) {
 		// can only be sent by SC itself
-		if (!sc.From(sc.ContractId())) {
+		if (!sc.From(sc.ContractId().AsAgent())) {
 			sc.Panic("Cancel spoofed request");
 		}
 

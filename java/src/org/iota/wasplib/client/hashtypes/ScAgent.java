@@ -10,19 +10,17 @@ import org.iota.wasplib.client.keys.MapKey;
 import java.util.Arrays;
 
 public class ScAgent implements MapKey {
-	public static final ScAgent NULL = new ScAgent(new byte[37]);
-
-	final byte[] agent = new byte[37];
+	final byte[] id = new byte[37];
 
 	public ScAgent(byte[] bytes) {
-		if (bytes == null || bytes.length != agent.length) {
-			throw new RuntimeException("agent id should be 37 bytes");
+		if (bytes == null || bytes.length != id.length) {
+			throw new RuntimeException("invalid agent id length");
 		}
-		System.arraycopy(bytes, 0, agent, 0, agent.length);
+		System.arraycopy(bytes, 0, id, 0, id.length);
 	}
 
 	public ScAddress Address() {
-		return new ScAddress(Arrays.copyOf(agent, 33));
+		return new ScAddress(Arrays.copyOf(id, 33));
 	}
 
 	@Override
@@ -30,17 +28,17 @@ public class ScAgent implements MapKey {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScAgent other = (ScAgent) o;
-		return Arrays.equals(agent, other.agent);
+		return Arrays.equals(id, other.id);
 	}
 
 	@Override
 	public int GetId() {
-		return Host.GetKeyIdFromBytes(agent);
+		return Host.GetKeyIdFromBytes(id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(agent);
+		return Arrays.hashCode(id);
 	}
 
 	public boolean IsAddress() {
@@ -48,10 +46,10 @@ public class ScAgent implements MapKey {
 	}
 
 	public byte[] toBytes() {
-		return agent;
+		return id;
 	}
 
 	public String toString() {
-		return ScUtility.Base58String(agent);
+		return ScUtility.Base58String(id);
 	}
 }

@@ -11,11 +11,15 @@ import (
 )
 
 var goTypes = map[string]string{
-	"int":     "int64",
-	"address": "*client.ScAddress",
-	"agent":   "*client.ScAgent",
-	"color":   "*client.ScColor",
-	"string":  "string",
+	"address":     "*client.ScAddress",
+	"agent":       "*client.ScAgent",
+	"chain_id":    "*client.ScChainId",
+	"color":       "*client.ScColor",
+	"contract_id": "*client.ScContractId",
+	"hash":        "*client.ScHash",
+	"hname":       "client.Hname",
+	"int":         "int64",
+	"string":      "string",
 }
 
 func GenerateGoTypes(path string) error {

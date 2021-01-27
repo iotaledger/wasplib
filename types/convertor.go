@@ -22,6 +22,8 @@ var goReplacements = []string{
 	"ScTransfers::new", "client.NewScTransfer",
 	"String::new()", "\"\"",
 	"(&", "(",
+	".Post(PostRequestParams", ".Post(&PostRequestParams",
+	"PostRequestParams", "client.PostRequestParams",
 	", &", ", ",
 	": &Sc", " *client.Sc",
 	": i64", " int64",
@@ -77,6 +79,7 @@ var matchInitializer = regexp.MustCompile("(\\w+): (.+),$")
 var matchInitializerHeader = regexp.MustCompile("(\\w+) :?= &?(\\w+) {")
 var matchLet = regexp.MustCompile("let (mut )?(\\w+)(: &str)? =")
 var matchParam = regexp.MustCompile("(\\(|, ?)(\\w+): &?(\\w+)")
+var matchSome = regexp.MustCompile("Some\\(([^)]+)\\)")
 var matchToString = regexp.MustCompile("\\+ &([^ ]+)\\.ToString\\(\\)")
 var matchVarName = regexp.MustCompile("[^a-zA-Z_][a-z][a-z_]+")
 
@@ -167,6 +170,7 @@ func RustToGoLine(line string, contract string) string {
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
 	line = matchToString.ReplaceAllString(line, "+ $1.String()")
 	line = matchInitializerHeader.ReplaceAllString(line, "$1 := &$2 {")
+	line = matchSome.ReplaceAllString(line, "$1")
 
 	lhs := strings.Index(line, "\"")
 	if lhs < 0 {

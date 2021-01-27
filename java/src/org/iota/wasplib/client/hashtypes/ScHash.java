@@ -10,15 +10,13 @@ import org.iota.wasplib.client.keys.MapKey;
 import java.util.Arrays;
 
 public class ScHash implements MapKey {
-	public static final ScHash NULL = new ScHash(new byte[32]);
-
-	final byte[] hash = new byte[32];
+	final byte[] id = new byte[32];
 
 	public ScHash(byte[] bytes) {
-		if (bytes == null || bytes.length != hash.length) {
-			throw new RuntimeException("hash should be 32 bytes");
+		if (bytes == null || bytes.length != id.length) {
+			throw new RuntimeException("invalid hash id length");
 		}
-		System.arraycopy(bytes, 0, hash, 0, hash.length);
+		System.arraycopy(bytes, 0, id, 0, id.length);
 	}
 
 	@Override
@@ -26,26 +24,26 @@ public class ScHash implements MapKey {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ScHash other = (ScHash) o;
-		return Arrays.equals(hash, other.hash);
+		return Arrays.equals(id, other.id);
 	}
 
 	@Override
 	public int GetId() {
-		return Host.GetKeyIdFromBytes(hash);
+		return Host.GetKeyIdFromBytes(id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(hash);
+		return Arrays.hashCode(id);
 	}
 
 	public byte[] toBytes() {
-		return hash;
+		return id;
 	}
 
 	@Override
 
 	public String toString() {
-		return ScUtility.Base58String(hash);
+		return ScUtility.Base58String(id);
 	}
 }

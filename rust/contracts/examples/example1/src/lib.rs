@@ -3,6 +3,9 @@
 
 use wasplib::client::*;
 
+const PARAM_STRING: &str = "paramString";
+const VAR_STRING: &str = "storedString";
+
 #[no_mangle]
 fn on_load() {
     // declare entry points of the smart contract
@@ -17,12 +20,12 @@ fn on_load() {
 // panics if parameter is not provided
 fn store_string(ctx: &ScCallContext) {
     // take parameter paramString
-    let par = ctx.params().get_string("paramString");
+    let par = ctx.params().get_string(PARAM_STRING);
     // require parameter exists
     ctx.require(par.exists(), "string parameter not found");
 
     // store the string in "storedString" variable
-    ctx.state().get_string("storedString").set_value(&par.value());
+    ctx.state().get_string(VAR_STRING).set_value(&par.value());
     // log the text
     let msg = "Message stored: ".to_string() + &par.value();
     ctx.log(&msg);
@@ -33,9 +36,9 @@ fn store_string(ctx: &ScCallContext) {
 // the returned value in the result is under key 'paramString'
 fn get_string(ctx: &ScViewContext) {
     // take the stored string
-    let s = ctx.state().get_string("storedString").value();
+    let s = ctx.state().get_string(VAR_STRING).value();
     // return the string value in the result dictionary
-    ctx.results().get_string("paramString").set_value(&s);
+    ctx.results().get_string(PARAM_STRING).set_value(&s);
 }
 
 // withdraw_iota sends all iotas contained in the contract's account

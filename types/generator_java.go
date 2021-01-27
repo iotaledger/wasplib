@@ -8,11 +8,15 @@ import (
 )
 
 var javaTypes = map[string]string{
-	"int":     "long",
-	"address": "ScAddress",
-	"agent":   "ScAgent",
-	"color":   "ScColor",
-	"string":  "String",
+	"address":     "ScAddress",
+	"agent":       "ScAgent",
+	"chain_id":    "ScChainId",
+	"color":       "ScColor",
+	"contract_id": "ScContractId",
+	"hash":        "ScHash",
+	"hname":       "Hname",
+	"int":         "long",
+	"string":      "String",
 }
 
 func GenerateJavaTypes(path string) error {
@@ -42,9 +46,13 @@ func GenerateJavaTypes(path string) error {
 		fmt.Fprintf(file, "package org.iota.wasplib.contracts.%s;\n\n", contract)
 		fmt.Fprintf(file, "import org.iota.wasplib.client.bytes.BytesDecoder;\n")
 		fmt.Fprintf(file, "import org.iota.wasplib.client.bytes.BytesEncoder;\n")
+		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.Hname;\n")
 		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScAddress;\n")
 		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScAgent;\n")
+		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScChainId;\n")
 		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScColor;\n")
+		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScContractId;\n")
+		fmt.Fprintf(file, "import org.iota.wasplib.client.hashtypes.ScHash;\n")
 
 		fmt.Fprintf(file, "\npublic class %s{\n", structName)
 

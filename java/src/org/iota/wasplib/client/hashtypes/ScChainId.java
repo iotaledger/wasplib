@@ -9,15 +9,12 @@ import org.iota.wasplib.client.keys.MapKey;
 
 import java.util.Arrays;
 
-public class ScColor implements MapKey {
-	public static final ScColor IOTA = new ScColor(new byte[32]);
-	public static final ScColor MINT = new ScColor(new byte[32]);
+public class ScChainId implements MapKey {
+	final byte[] id = new byte[33];
 
-	final byte[] id = new byte[32];
-
-	public ScColor(byte[] bytes) {
+	public ScChainId(byte[] bytes) {
 		if (bytes == null || bytes.length != id.length) {
-			throw new RuntimeException("invalid color id length");
+			throw new RuntimeException("invalid chain id length");
 		}
 		System.arraycopy(bytes, 0, id, 0, id.length);
 	}
@@ -26,7 +23,7 @@ public class ScColor implements MapKey {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		ScColor other = (ScColor) o;
+		ScChainId other = (ScChainId) o;
 		return Arrays.equals(id, other.id);
 	}
 
@@ -48,10 +45,5 @@ public class ScColor implements MapKey {
 
 	public String toString() {
 		return ScUtility.Base58String(id);
-	}
-
-	static {
-		Arrays.fill(IOTA.id, (byte) 0x00);
-		Arrays.fill(MINT.id, (byte) 0xff);
 	}
 }

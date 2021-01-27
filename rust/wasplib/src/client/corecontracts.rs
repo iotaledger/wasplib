@@ -19,8 +19,8 @@ pub const VIEW_GET_BLOB_INFO: Hname = Hname(0xfde4ab46);
 pub const VIEW_LIST_BLOBS: Hname = Hname(0x62ca7990);
 
 pub const CORE_EVENTLOG: Hname = Hname(0x661aa7d8);
-pub const VIEW_GET_LOG_RECORDS: Hname = Hname(0xc7407442);
 pub const VIEW_GET_NUM_RECORDS: Hname = Hname(0x2f4b4a8c);
+pub const VIEW_GET_RECORDS: Hname = Hname(0xd01a8085);
 
 pub const CORE_ROOT: Hname = Hname(0xcebf5908);
 pub const FUNC_CLAIM_CHAIN_OWNERSHIP: Hname = Hname(0x03ff0fc0);

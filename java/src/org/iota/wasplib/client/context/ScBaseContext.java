@@ -5,6 +5,7 @@ package org.iota.wasplib.client.context;
 
 import org.iota.wasplib.client.builders.ScViewBuilder;
 import org.iota.wasplib.client.hashtypes.ScAgent;
+import org.iota.wasplib.client.hashtypes.ScContractId;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
 import org.iota.wasplib.client.keys.Key;
@@ -30,8 +31,8 @@ public class ScBaseContext {
 		return Host.root.GetAgent(Key.Creator).Value();
 	}
 
-	public ScAgent ContractId() {
-		return Host.root.GetAgent(Key.Id).Value();
+	public ScContractId ContractId() {
+		return Host.root.GetContractId(Key.Id).Value();
 	}
 
 	public Boolean From(ScAgent originator) {
