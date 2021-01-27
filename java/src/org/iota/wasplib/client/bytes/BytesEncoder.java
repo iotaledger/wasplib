@@ -3,10 +3,7 @@
 
 package org.iota.wasplib.client.bytes;
 
-import org.iota.wasplib.client.hashtypes.ScAddress;
-import org.iota.wasplib.client.hashtypes.ScAgent;
-import org.iota.wasplib.client.hashtypes.ScColor;
-import org.iota.wasplib.client.hashtypes.ScHash;
+import org.iota.wasplib.client.hashtypes.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +33,15 @@ public class BytesEncoder {
 		return this;
 	}
 
+	public BytesEncoder ChainId(ScChainId value) {
+		return Bytes(value.toBytes());
+	}
+
 	public BytesEncoder Color(ScColor value) {
+		return Bytes(value.toBytes());
+	}
+
+	public BytesEncoder ContractId(ScContractId value) {
 		return Bytes(value.toBytes());
 	}
 
@@ -45,6 +50,10 @@ public class BytesEncoder {
 	}
 
 	public BytesEncoder Hash(ScHash value) {
+		return Bytes(value.toBytes());
+	}
+
+	public BytesEncoder Hname(Hname value) {
 		return Bytes(value.toBytes());
 	}
 

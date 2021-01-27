@@ -129,12 +129,12 @@ func GenerateGoCoreSchema() error {
 		for _, nFunc := range sorted(schema.Funcs) {
 			funcName := schema.Funcs[nFunc]
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const %s = Hname(0x%s)\n", nFunc, hFunc.String())
+			fmt.Fprintf(file, "const Core%s%s = Hname(0x%s)\n", nContract, nFunc, hFunc.String())
 		}
 		for _, nFunc := range sorted(schema.Views) {
 			funcName := schema.Views[nFunc]
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const %s = Hname(0x%s)\n", nFunc, hFunc.String())
+			fmt.Fprintf(file, "const Core%s%s = Hname(0x%s)\n", nContract, nFunc, hFunc.String())
 		}
 	}
 	return nil
@@ -168,13 +168,13 @@ func GenerateRustCoreSchema() error {
 			funcName := schema.Funcs[nFunc]
 			nFunc = snakecase(nFunc)
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "pub const %s: Hname = Hname(0x%s);\n", nFunc, hFunc.String())
+			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
 		}
 		for _, nFunc := range sorted(schema.Views) {
 			funcName := schema.Views[nFunc]
 			nFunc = snakecase(nFunc)
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "pub const %s: Hname = Hname(0x%s);\n", nFunc, hFunc.String())
+			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
 		}
 	}
 	return nil

@@ -222,7 +222,7 @@ func testContractIdFull(ctx *client.ScCallContext) {
 }
 
 func testSandboxCall(ctx *client.ScViewContext) {
-	ret := ctx.Call(client.CoreRoot, client.ViewGetChainInfo, nil)
+	ret := ctx.Call(client.CoreRoot, client.CoreRootViewGetChainInfo, nil)
 	desc := ret.GetString(client.Key("d")).Value()
 	ctx.Results().GetString(client.Key("sandboxCall")).SetValue(desc)
 }
