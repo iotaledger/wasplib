@@ -23,6 +23,7 @@ const ParamString = client.Key("string")
 const ParamStringZero = client.Key("string-0")
 
 const VarCounter = client.Key("counter")
+const VarContractNameDeployed = client.Key("exampleDeployTR")
 
 const MsgFullPanic string = "========== panic FULL ENTRY POINT ========="
 const MsgViewPanic string = "========== panic VIEW ========="
@@ -56,6 +57,10 @@ func OnLoad() {
 
 	exports.AddCall("sendToAddress", sendToAddress)
 	exports.AddView("justView", testJustView)
+
+    exports.AddCall("testEventLogGenericData", testEventLogGenericData)
+    exports.AddCall("testEventLogEventData", testEventLogEventData)
+    exports.AddCall("testEventLogDeploy", testEventLogDeploy)
 }
 
 func onInit(ctx *client.ScCallContext) {
@@ -275,4 +280,22 @@ func passTypesView(ctx *client.ScViewContext) {
 
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Exists(), "!Hname-0.exist")
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.Hname(0)), "Hname-0 wrong")
+}
+
+func testEventLogGenericData(ctx *client.ScCallContext) {
+    counter := ctx.Params().GetInt(VarCounter)
+    ctx.Require(counter.Exists(), "!counter.exist")
+    event := "[GenericData] Counter Number: " + counter.String()
+    ctx.Event(event)
+}
+
+func testEventLogEventData(ctx *client.ScCallContext) {
+    ctx.Event("[Event] - Testing Event...")
+}
+
+func testEventLogDeploy(ctx *client.ScCallContext) {
+    //Deploy the same contract with another name
+    programHash := ctx.Utility().Hash([]byte("test_sandbox"))
+    ctx.Deploy(programHash, string(VarContractNameDeployed),
+               "test contract deploy log", nil)
 }

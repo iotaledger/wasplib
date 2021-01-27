@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func TestEventlogGetLast3(t *testing.T) { run2(t, testEventlogGetLast3, true) }
+func TestEventlogGetLast3(t *testing.T) { run2(t, testEventlogGetLast3) }
 func testEventlogGetLast3(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -37,7 +37,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 	require.EqualValues(t, 3, array.MustLen())
 }
 
-func TestEventlogGetBetweenTs(t *testing.T) { run2(t, testEventlogGetBetweenTs, true) }
+func TestEventlogGetBetweenTs(t *testing.T) { run2(t, testEventlogGetBetweenTs) }
 func testEventlogGetBetweenTs(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -65,7 +65,7 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 	require.EqualValues(t, 2, array.MustLen())
 }
 
-func TestEventLogEventData(t *testing.T) { run2(t, testEventLogEventData, true) }
+func TestEventLogEventData(t *testing.T) { run2(t, testEventLogEventData) }
 func testEventLogEventData(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -91,7 +91,7 @@ func testEventLogEventData(t *testing.T, w bool) {
 	t.Log(str)
 }
 
-func TestEventLogDifferentCalls(t *testing.T) { run2(t, testEventLogDifferentCalls, true) }
+func TestEventLogDifferentCalls(t *testing.T) { run2(t, testEventLogDifferentCalls) }
 func testEventLogDifferentCalls(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -136,7 +136,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 	require.EqualValues(t, 3, strings.Count(str, "[Event]"))
 }
 
-func TestChainLogGetNumRecords(t *testing.T) { run2(t, testChainLogGetNumRecords, true) }
+func TestChainLogGetNumRecords(t *testing.T) { run2(t, testChainLogGetNumRecords) }
 func testChainLogGetNumRecords(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -169,7 +169,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 	require.EqualValues(t, 1, strings.Count(str, "1337"))
 }
 
-func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy, true) }
+func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy) }
 func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
@@ -197,7 +197,7 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	require.EqualValues(t, 2, strings.Count(str, "[req]"))
 }
 
-func TestChainLogMultiple(t *testing.T) { run2(t, testChainLogMultiple, true) }
+func TestChainLogMultiple(t *testing.T) { run2(t, testChainLogMultiple) }
 func testChainLogMultiple(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)

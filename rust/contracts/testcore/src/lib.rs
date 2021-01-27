@@ -21,6 +21,7 @@ const PARAM_STRING: &str = "string";
 const PARAM_STRING_ZERO: &str = "string-0";
 
 const VAR_COUNTER: &str = "counter";
+const VAR_CONTRACT_NAME_DEPLOYED: &str = "exampleDeployTR";
 
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
 const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
@@ -55,6 +56,10 @@ fn on_load() {
 
     exports.add_call("sendToAddress", send_to_address);
     exports.add_view("justView", test_just_view);
+
+    exports.add_call("testEventLogGenericData", test_event_log_generic_data);
+    exports.add_call("testEventLogEventData", test_event_log_event_data);
+    exports.add_call("testEventLogDeploy", test_event_log_deploy);
 }
 
 fn on_init(ctx: &ScCallContext) {
@@ -218,7 +223,7 @@ fn test_contract_id_full(ctx: &ScCallContext) {
 }
 
 fn test_sandbox_call(ctx: &ScViewContext) {
-    let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, None);
+    let ret = ctx.call(CORE_ROOT, CORE_ROOT_VIEW_GET_CHAIN_INFO, None);
     let desc = ret.get_string("d").value();
     ctx.results().get_string("sandboxCall").set_value(&desc);
 }
@@ -271,4 +276,22 @@ fn pass_types_view(ctx: &ScViewContext) {
 
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).exists(), "!Hname-0.exist");
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
+}
+
+fn test_event_log_generic_data(ctx: &ScCallContext) {
+    let counter = ctx.params().get_int(VAR_COUNTER);
+    ctx.require(counter.exists(), "!counter.exist");
+    let event = "[GenericData] Counter Number: ".to_string() + &counter.to_string();
+    ctx.event(&event)
+}
+
+fn test_event_log_event_data(ctx: &ScCallContext) {
+    ctx.event("[Event] - Testing Event...");
+}
+
+fn test_event_log_deploy(ctx: &ScCallContext) {
+    //Deploy the same contract with another name
+    let program_hash = ctx.utility().hash("test_sandbox".as_bytes());
+    ctx.deploy(&program_hash, VAR_CONTRACT_NAME_DEPLOYED,
+               "test contract deploy log", None)
 }
