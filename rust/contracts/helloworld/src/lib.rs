@@ -9,6 +9,6 @@ fn on_load() {
     exports.add_call("hello_world", hello_world);
 }
 
-fn hello_world(sc: &ScCallContext) {
-    sc.log("Hello, world!");
+fn hello_world(ctx: &ScCallContext) {
+    ctx.log("Hello, world!");
 }

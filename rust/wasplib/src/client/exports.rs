@@ -53,8 +53,8 @@ impl ScExports {
         }
     }
 
-    pub fn nothing(sc: &ScCallContext) {
-        sc.log("Doing nothing as requested. Oh, wait...");
+    pub fn nothing(ctx: &ScCallContext) {
+        ctx.log("Doing nothing as requested. Oh, wait...");
     }
 }
 

@@ -92,8 +92,7 @@ fn call_on_chain(ctx: &ScCallContext) {
     ctx.require(param_value.exists(), "param 'value' not found");
     let param_in = param_value.value();
 
-    let mut target_contract = Hname::SELF; // TODO strange a bit: Hname::Self is a constant
-
+    let mut target_contract = ctx.contract_id().hname();
     let param_hname_contract = ctx.params().get_hname(PARAM_HNAME_CONTRACT);
     if param_hname_contract.exists() {
         target_contract = param_hname_contract.value()
@@ -117,7 +116,7 @@ fn call_on_chain(ctx: &ScCallContext) {
 
     let par = ScMutableMap::new();
     par.get_int(PARAM_INT_PARAM_VALUE).set_value(param_in);
-    let ret = ctx.call(target_contract, target_ep, par, &ScTransfers::NONE);
+    let ret = ctx.call(target_contract, target_ep, Some(par), None);
 
     let ret_val = ret.get_int(PARAM_INT_PARAM_VALUE);
 
@@ -140,7 +139,7 @@ fn run_recursion(ctx: &ScCallContext) {
     let par = ScMutableMap::new();
     par.get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
     par.get_hname(PARAM_HNAME_EP).set_value(Hname::new("runRecursion"));
-    ctx.call(Hname::SELF, Hname::new("callOnChain"), par, &ScTransfers::NONE);
+    ctx.call(ctx.contract_id().hname(), Hname::new("callOnChain"), Some(par), None);
     // TODO how would I return result of the call ???
     ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
 }
@@ -156,12 +155,12 @@ fn fibonacci(ctx: &ScViewContext) {
     }
     let params1 = ScMutableMap::new();
     params1.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 1);
-    let results1 = ctx.call(Hname::SELF, Hname::new("fibonacci"), params1);
+    let results1 = ctx.call(ctx.contract_id().hname(), Hname::new("fibonacci"), Some(params1));
     let n1 = results1.get_int(PARAM_INT_PARAM_VALUE).value();
 
     let params2 = ScMutableMap::new();
     params2.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 2);
-    let results2 = ctx.call(Hname::SELF, Hname::new("fibonacci"), params2);
+    let results2 = ctx.call(ctx.contract_id().hname(), Hname::new("fibonacci"), Some(params2));
     let n2 = results2.get_int(PARAM_INT_PARAM_VALUE).value();
 
     ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n1 + n2);
@@ -176,15 +175,15 @@ fn test_panic_view_ep(ctx: &ScViewContext) {
 }
 
 fn test_call_panic_full_ep(ctx: &ScCallContext) {
-    ctx.call(Hname::SELF, Hname::new("testPanicFullEP"), ScMutableMap::NONE, &ScTransfers::NONE);
+    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicFullEP"), None, None);
 }
 
 fn test_call_panic_view_from_full(ctx: &ScCallContext) {
-    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE, &ScTransfers::NONE);
+    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicViewEP"), None, None);
 }
 
 fn test_call_panic_view_from_view(ctx: &ScViewContext) {
-    ctx.call(Hname::SELF, Hname::new("testPanicViewEP"), ScMutableMap::NONE);
+    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicViewEP"), None);
 }
 
 fn test_just_view(ctx: &ScViewContext) {
@@ -211,7 +210,6 @@ fn test_chain_owner_id_full(ctx: &ScCallContext) {
 }
 
 fn test_contract_id_view(ctx: &ScViewContext) {
-    //TODO discussion about using ChainID vs ContractID because one of those seems redundant
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
@@ -220,7 +218,7 @@ fn test_contract_id_full(ctx: &ScCallContext) {
 }
 
 fn test_sandbox_call(ctx: &ScViewContext) {
-    let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, ScMutableMap::NONE);
+    let ret = ctx.call(CORE_ROOT, VIEW_GET_CHAIN_INFO, None);
     let desc = ret.get_string("d").value();
     ctx.results().get_string("sandboxCall").set_value(&desc);
 }

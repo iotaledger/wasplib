@@ -27,7 +27,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 		require.NoError(t, err)
 	}
 
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamMaxLastRecords, 3,
 		eventlog.ParamContractHname, coretypes.Hn(SandboxSCName),
 	)
@@ -53,7 +53,7 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 		require.NoError(t, err)
 	}
 
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamFromTs, 0,
 		eventlog.ParamToTs, chain.State.Timestamp()-int64(1500*time.Millisecond),
 		eventlog.ParamMaxLastRecords, 2,
@@ -76,7 +76,7 @@ func testEventLogEventData(t *testing.T, w bool) {
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamFromTs, 0,
 		eventlog.ParamToTs, chain.State.Timestamp(),
 		eventlog.ParamContractHname, test_sandbox_sc.Interface.Hname(),
@@ -118,7 +118,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 		_, err := chain.PostRequest(req, nil)
 		require.NoError(t, err)
 	}
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamFromTs, 0,
 		eventlog.ParamToTs, chain.State.Timestamp(),
 		eventlog.ParamContractHname, test_sandbox_sc.Interface.Hname(),
@@ -181,7 +181,7 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	require.NoError(t, err)
 
 	//This call should return only one record which should be the type of TRDeploy
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamContractHname, root.Interface.Hname(),
 	)
 	require.NoError(t, err)
@@ -216,7 +216,7 @@ func testChainLogMultiple(t *testing.T, w bool) {
 	require.NoError(t, err)
 
 	/////Should return 4 logs records/////
-	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetLogRecords,
+	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamContractHname, test_sandbox_sc.Interface.Hname(),
 	)
 	require.NoError(t, err)

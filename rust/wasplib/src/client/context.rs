@@ -8,6 +8,14 @@ use super::immutable::*;
 use super::keys::*;
 use super::mutable::*;
 
+pub struct PostRequestParams {
+    pub contract: ScContractId,
+    pub function: Hname,
+    pub params: Option<ScMutableMap>,
+    pub transfer: Option<Box<dyn Balances>>,
+    pub delay: i64,
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub trait Balances {
@@ -69,11 +77,9 @@ pub struct ScTransfers {
 }
 
 impl ScTransfers {
-    pub const NONE: ScTransfers = ScTransfers { transfers: ScMutableMap::NONE };
-
     pub fn new(color: &ScColor, amount: i64) -> ScTransfers {
         let balance = ScTransfers::new_transfers();
-        balance.transfer(color, amount);
+        balance.add(color, amount);
         balance
     }
 
@@ -82,7 +88,7 @@ impl ScTransfers {
     }
 
     // appends the specified timestamp and data to the timestamped log
-    pub fn transfer(&self, color: &ScColor, amount: i64) {
+    pub fn add(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int(color).set_value(amount);
     }
 }
@@ -222,17 +228,15 @@ impl ScBaseContext for ScCallContext {}
 
 impl ScCallContext {
     // calls a smart contract function
-    pub fn call<T: Balances + ?Sized>(&self, contract: Hname, function: Hname, params: ScMutableMap, transfer: &T) -> ScImmutableMap {
+    pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
-        if contract.0 != 0 {
-            call.get_hname(&KEY_CONTRACT).set_value(contract);
-        }
+        call.get_hname(&KEY_CONTRACT).set_value(contract);
         call.get_hname(&KEY_FUNCTION).set_value(function);
-        if params.obj_id != 0 {
+        if let Some(params) = params {
             call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
         }
-        if transfer.map_id() != 0 {
+        if let Some(transfer) = transfer {
             call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
         }
         call.get_int(&KEY_DELAY).set_value(-1);
@@ -240,12 +244,12 @@ impl ScCallContext {
     }
 
     // deploys a smart contract
-    pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: ScMutableMap) {
+    pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: Option<ScMutableMap>) {
         let deploys = ROOT.get_map_array(&KEY_DEPLOYS);
         let deploy = deploys.get_map(deploys.length());
         deploy.get_string(&KEY_NAME).set_value(name);
         deploy.get_string(&KEY_DESCRIPTION).set_value(description);
-        if params.obj_id != 0 {
+        if let Some(params) = params {
             deploy.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
         }
         deploy.get_hash(&KEY_HASH).set_value(program_hash);
@@ -262,22 +266,20 @@ impl ScCallContext {
     }
 
     // (delayed) posts a smart contract function
-    pub fn post<T: Balances + ?Sized>(&self, chain: &ScAddress, contract: Hname, function: Hname, params: ScMutableMap, transfer: &T, delay: i64) {
-        if delay < 0 { self.panic("Invalid delay") }
+    pub fn post(&self, par: &PostRequestParams) {
+        if par.delay < 0 { self.panic("Invalid delay") }
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
-        call.get_address(&KEY_CHAIN).set_value(&chain);
-        if contract.0 != 0 {
-            call.get_hname(&KEY_CONTRACT).set_value(contract);
-        }
-        call.get_hname(&KEY_FUNCTION).set_value(function);
-        if params.obj_id != 0 {
+        call.get_chain_id(&KEY_CHAIN).set_value(&par.contract.chain_id());
+        call.get_hname(&KEY_CONTRACT).set_value(par.contract.hname());
+        call.get_hname(&KEY_FUNCTION).set_value(par.function);
+        if let Some(params) = &par.params {
             call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
         }
-        if transfer.map_id() != 0 {
+        if let Some(transfer) = &par.transfer {
             call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
         }
-        call.get_int(&KEY_DELAY).set_value(delay);
+        call.get_int(&KEY_DELAY).set_value(par.delay);
     }
 
     // access to mutable state storage
@@ -308,14 +310,12 @@ impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
     // calls a smart contract function
-    pub fn call(&self, contract: Hname, function: Hname, params: ScMutableMap) -> ScImmutableMap {
+    pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>) -> ScImmutableMap {
         let calls = ROOT.get_map_array(&KEY_CALLS);
         let call = calls.get_map(calls.length());
-        if contract.0 != 0 {
-            call.get_hname(&KEY_CONTRACT).set_value(contract);
-        }
+        call.get_hname(&KEY_CONTRACT).set_value(contract);
         call.get_hname(&KEY_FUNCTION).set_value(function);
-        if params.obj_id != 0 {
+        if let Some(params) = params {
             call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
         }
         call.get_int(&KEY_DELAY).set_value(-1);

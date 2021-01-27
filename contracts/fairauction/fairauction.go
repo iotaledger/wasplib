@@ -38,24 +38,24 @@ func OnLoad() {
 	exports.AddView("get_info", getInfo)
 }
 
-func startAuction(sc *client.ScCallContext) {
-	params := sc.Params()
+func startAuction(ctx *client.ScCallContext) {
+	params := ctx.Params()
 	colorParam := params.GetColor(KeyColor)
 	if !colorParam.Exists() {
-		sc.Panic("Missing auction token color")
+		ctx.Panic("Missing auction token color")
 	}
 	color := colorParam.Value()
 	if color.Equals(client.IOTA) || color.Equals(client.MINT) {
-		sc.Panic("Reserved auction token color")
+		ctx.Panic("Reserved auction token color")
 	}
-	numTokens := sc.Incoming().Balance(color)
+	numTokens := ctx.Incoming().Balance(color)
 	if numTokens == 0 {
-		sc.Panic("Missing auction tokens")
+		ctx.Panic("Missing auction tokens")
 	}
 
 	minimumBid := params.GetInt(KeyMinimumBid).Value()
 	if minimumBid == 0 {
-		sc.Panic("Missing minimum bid")
+		ctx.Panic("Missing minimum bid")
 	}
 
 	// duration in minutes
@@ -78,7 +78,7 @@ func startAuction(sc *client.ScCallContext) {
 		description = description[:MaxDescriptionLength] + "[...]"
 	}
 
-	state := sc.State()
+	state := ctx.State()
 	ownerMargin := state.GetInt(KeyOwnerMargin).Value()
 	if ownerMargin == 0 {
 		ownerMargin = OwnerMarginDefault
@@ -89,20 +89,20 @@ func startAuction(sc *client.ScCallContext) {
 	if margin == 0 {
 		margin = 1
 	}
-	deposit := sc.Incoming().Balance(client.IOTA)
+	deposit := ctx.Incoming().Balance(client.IOTA)
 	if deposit < margin {
-		sc.Panic("Insufficient deposit")
+		ctx.Panic("Insufficient deposit")
 	}
 
 	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(KeyInfo)
 	if auctionInfo.Exists() {
-		sc.Panic("Auction for this token color already exists")
+		ctx.Panic("Auction for this token color already exists")
 	}
 
 	auction := &AuctionInfo{
-		Creator:       sc.Caller(),
+		Creator:       ctx.Caller(),
 		Color:         color,
 		Deposit:       deposit,
 		Description:   description,
@@ -112,51 +112,52 @@ func startAuction(sc *client.ScCallContext) {
 		MinimumBid:    minimumBid,
 		NumTokens:     numTokens,
 		OwnerMargin:   ownerMargin,
-		WhenStarted:   sc.Timestamp(),
+		WhenStarted:   ctx.Timestamp(),
 	}
 	auctionInfo.SetValue(EncodeAuctionInfo(auction))
 
 	finalizeParams := client.NewScMutableMap()
 	finalizeParams.GetColor(KeyColor).SetValue(auction.Color)
-	sc.Post(nil,
-		client.Hname(0),
-		client.NewHname("finalize_auction"),
-		finalizeParams,
-		nil,
-		duration*60)
-	sc.Log("New auction started")
+    ctx.Post(&client.PostRequestParams {
+        Contract: ctx.ContractId(),
+        Function: client.NewHname("finalize_auction"),
+        Params: finalizeParams,
+        Transfer: nil,
+        Delay: duration * 60,
+    })
+	ctx.Log("New auction started")
 }
 
-func finalizeAuction(sc *client.ScCallContext) {
+func finalizeAuction(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.ContractId().AsAgent()) {
-		sc.Panic("Cancel spoofed request")
+	if !ctx.From(ctx.ContractId().AsAgent()) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
-	colorParam := sc.Params().GetColor(KeyColor)
+	colorParam := ctx.Params().GetColor(KeyColor)
 	if !colorParam.Exists() {
-		sc.Panic("Missing token color")
+		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
-	state := sc.State()
+	state := ctx.State()
 	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(KeyInfo)
 	if !auctionInfo.Exists() {
-		sc.Panic("Missing auction info")
+		ctx.Panic("Missing auction info")
 	}
 	auction := DecodeAuctionInfo(auctionInfo.Value())
 	if auction.HighestBid < 0 {
-		sc.Log("No one bid on " + color.String())
+		ctx.Log("No one bid on " + color.String())
 		ownerFee := auction.MinimumBid * auction.OwnerMargin / 1000
 		if ownerFee == 0 {
 			ownerFee = 1
 		}
 		// finalizeAuction request token was probably not confirmed yet
-		transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee-1)
-		transfer(sc, auction.Creator, auction.Color, auction.NumTokens)
-		transfer(sc, auction.Creator, client.IOTA, auction.Deposit-ownerFee)
+		transfer(ctx, ctx.ContractCreator(), client.IOTA, ownerFee-1)
+		transfer(ctx, auction.Creator, auction.Color, auction.NumTokens)
+		transfer(ctx, auction.Creator, client.IOTA, auction.Deposit-ownerFee)
 		return
 	}
 
@@ -174,104 +175,104 @@ func finalizeAuction(sc *client.ScCallContext) {
 		if !bidder.Equals(auction.HighestBidder) {
 			loser := bidders.GetBytes(bidder)
 			bid := DecodeBidInfo(loser.Value())
-			transfer(sc, bidder, client.IOTA, bid.Amount)
+			transfer(ctx, bidder, client.IOTA, bid.Amount)
 		}
 	}
 
 	// finalizeAuction request token was probably not confirmed yet
-	transfer(sc, sc.ContractCreator(), client.IOTA, ownerFee-1)
-	transfer(sc, auction.HighestBidder, auction.Color, auction.NumTokens)
-	transfer(sc, auction.Creator, client.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
+	transfer(ctx, ctx.ContractCreator(), client.IOTA, ownerFee-1)
+	transfer(ctx, auction.HighestBidder, auction.Color, auction.NumTokens)
+	transfer(ctx, auction.Creator, client.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
 
-func placeBid(sc *client.ScCallContext) {
-	bidAmount := sc.Incoming().Balance(client.IOTA)
+func placeBid(ctx *client.ScCallContext) {
+	bidAmount := ctx.Incoming().Balance(client.IOTA)
 	if bidAmount == 0 {
-		sc.Panic("Missing bid amount")
+		ctx.Panic("Missing bid amount")
 	}
 
-	colorParam := sc.Params().GetColor(KeyColor)
+	colorParam := ctx.Params().GetColor(KeyColor)
 	if !colorParam.Exists() {
-		sc.Panic("Missing token color")
+		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
-	state := sc.State()
+	state := ctx.State()
 	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(KeyInfo)
 	if !auctionInfo.Exists() {
-		sc.Panic("Missing auction info")
+		ctx.Panic("Missing auction info")
 	}
 
 	auction := DecodeAuctionInfo(auctionInfo.Value())
 	bidders := currentAuction.GetMap(KeyBidders)
 	bidderList := currentAuction.GetAgentArray(KeyBidderList)
-	caller := sc.Caller()
+	caller := ctx.Caller()
 	bidder := bidders.GetBytes(caller)
 	if bidder.Exists() {
-		sc.Log("Upped bid from: " + caller.String())
+		ctx.Log("Upped bid from: " + caller.String())
 		bid := DecodeBidInfo(bidder.Value())
 		bidAmount += bid.Amount
 		bid.Amount = bidAmount
-		bid.Timestamp = sc.Timestamp()
+		bid.Timestamp = ctx.Timestamp()
 		bidder.SetValue(EncodeBidInfo(bid))
 	} else {
 		if bidAmount < auction.MinimumBid {
-			sc.Panic("Insufficient bid amount")
+			ctx.Panic("Insufficient bid amount")
 		}
-		sc.Log("New bid from: " + caller.String())
+		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
 		bidderList.GetAgent(index).SetValue(caller)
 		bid := &BidInfo{
 			Index:     int64(index),
 			Amount:    bidAmount,
-			Timestamp: sc.Timestamp(),
+			Timestamp: ctx.Timestamp(),
 		}
 		bidder.SetValue(EncodeBidInfo(bid))
 	}
 	if bidAmount > auction.HighestBid {
-		sc.Log("New highest bidder")
+		ctx.Log("New highest bidder")
 		auction.HighestBid = bidAmount
 		auction.HighestBidder = caller
 		auctionInfo.SetValue(EncodeAuctionInfo(auction))
 	}
 }
 
-func setOwnerMargin(sc *client.ScCallContext) {
+func setOwnerMargin(ctx *client.ScCallContext) {
 	// can only be sent by SC creator
-	if !sc.From(sc.ContractCreator()) {
-		sc.Panic("Cancel spoofed request")
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
-	ownerMargin := sc.Params().GetInt(KeyOwnerMargin).Value()
+	ownerMargin := ctx.Params().GetInt(KeyOwnerMargin).Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
 	}
 	if ownerMargin > OwnerMarginMax {
 		ownerMargin = OwnerMarginMax
 	}
-	sc.State().GetInt(KeyOwnerMargin).SetValue(ownerMargin)
-	sc.Log("Updated owner margin")
+	ctx.State().GetInt(KeyOwnerMargin).SetValue(ownerMargin)
+	ctx.Log("Updated owner margin")
 }
 
-func getInfo(sc *client.ScViewContext) {
-	colorParam := sc.Params().GetColor(KeyColor)
+func getInfo(ctx *client.ScViewContext) {
+	colorParam := ctx.Params().GetColor(KeyColor)
 	if !colorParam.Exists() {
-		sc.Panic("Missing token color")
+		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
-	state := sc.State()
+	state := ctx.State()
 	auctions := state.GetMap(KeyAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(KeyInfo)
 	if !auctionInfo.Exists() {
-		sc.Panic("Missing auction info")
+		ctx.Panic("Missing auction info")
 	}
 
 	auction := DecodeAuctionInfo(auctionInfo.Value())
-	results := sc.Results()
+	results := ctx.Results()
 	results.GetColor(KeyColor).SetValue(auction.Color)
 	results.GetAgent(KeyCreator).SetValue(auction.Creator)
 	results.GetInt(KeyDeposit).SetValue(auction.Deposit)
@@ -288,13 +289,13 @@ func getInfo(sc *client.ScViewContext) {
 	results.GetInt(KeyBidders).SetValue(int64(bidderList.Length()))
 }
 
-func transfer(sc *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
+func transfer(ctx *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
 	if agent.IsAddress() {
 		// send back to original Tangle address
-		sc.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
+		ctx.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
 		return
 	}
 
 	// TODO not an address, deposit into account on chain
-	sc.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
+	ctx.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))
 }

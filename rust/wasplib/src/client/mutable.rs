@@ -456,8 +456,6 @@ pub struct ScMutableMap {
 }
 
 impl ScMutableMap {
-    pub const NONE: ScMutableMap = ScMutableMap { obj_id: 0 };
-
     pub fn new() -> ScMutableMap {
         let maps = ROOT.get_map_array(&KEY_MAPS);
         maps.get_map(maps.length())

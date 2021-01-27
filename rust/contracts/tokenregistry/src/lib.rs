@@ -21,28 +21,28 @@ fn on_load() {
     exports.add_call("transfer_ownership", transfer_ownership);
 }
 
-fn mint_supply(sc: &ScCallContext) {
-    let minted = sc.incoming().minted();
+fn mint_supply(ctx: &ScCallContext) {
+    let minted = ctx.incoming().minted();
     if minted.equals(&ScColor::MINT) {
-        sc.panic("TokenRegistry: No newly minted tokens found");
+        ctx.panic("TokenRegistry: No newly minted tokens found");
     }
-    let state = sc.state();
+    let state = ctx.state();
     let registry = state.get_map(KEY_REGISTRY).get_bytes(&minted);
     if registry.exists() {
-        sc.panic("TokenRegistry: Color already exists");
+        ctx.panic("TokenRegistry: Color already exists");
     }
-    let params = sc.params();
+    let params = ctx.params();
     let mut token = TokenInfo {
-        supply: sc.incoming().balance(&minted),
-        minted_by: sc.caller(),
-        owner: sc.caller(),
-        created: sc.timestamp(),
-        updated: sc.timestamp(),
+        supply: ctx.incoming().balance(&minted),
+        minted_by: ctx.caller(),
+        owner: ctx.caller(),
+        created: ctx.timestamp(),
+        updated: ctx.timestamp(),
         description: params.get_string(KEY_DESCRIPTION).value(),
         user_defined: params.get_string(KEY_USER_DEFINED).value(),
     };
     if token.supply <= 0 {
-        sc.panic("TokenRegistry: Insufficient supply");
+        ctx.panic("TokenRegistry: Insufficient supply");
     }
     if token.description.is_empty() {
         token.description += "no dscr";

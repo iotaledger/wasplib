@@ -25,22 +25,22 @@ fn on_load() {
     exports.add_view("view_donations", view_donations);
 }
 
-fn donate(sc: &ScCallContext) {
+fn donate(ctx: &ScCallContext) {
     let mut donation = DonationInfo {
-        amount: sc.incoming().balance(&ScColor::IOTA),
-        donator: sc.caller(),
+        amount: ctx.incoming().balance(&ScColor::IOTA),
+        donator: ctx.caller(),
         error: String::new(),
-        feedback: sc.params().get_string(KEY_FEEDBACK).value(),
-        timestamp: sc.timestamp(),
+        feedback: ctx.params().get_string(KEY_FEEDBACK).value(),
+        timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
         donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
         if donation.amount > 0 {
-            sc.transfer_to_address(&donation.donator.address(), &ScTransfers::new(&ScColor::IOTA, donation.amount));
+            ctx.transfer_to_address(&donation.donator.address(), &ScTransfers::new(&ScColor::IOTA, donation.amount));
             donation.amount = 0;
         }
     }
-    let state = sc.state();
+    let state = ctx.state();
     let log = state.get_bytes_array(KEY_LOG);
     log.get_bytes(log.length()).set_value(&encode_donation_info(&donation));
 
@@ -52,31 +52,31 @@ fn donate(sc: &ScCallContext) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-fn withdraw(sc: &ScCallContext) {
-    let sc_owner = sc.contract_creator();
-    if !sc.from(&sc_owner) {
-        sc.panic("Cancel spoofed request");
+fn withdraw(ctx: &ScCallContext) {
+    let sc_owner = ctx.contract_creator();
+    if !ctx.from(&sc_owner) {
+        ctx.panic("Cancel spoofed request");
     }
 
-    let amount = sc.balances().balance(&ScColor::IOTA);
-    let mut withdraw_amount = sc.params().get_int(KEY_WITHDRAW_AMOUNT).value();
+    let amount = ctx.balances().balance(&ScColor::IOTA);
+    let mut withdraw_amount = ctx.params().get_int(KEY_WITHDRAW_AMOUNT).value();
     if withdraw_amount == 0 || withdraw_amount > amount {
         withdraw_amount = amount;
     }
     if withdraw_amount == 0 {
-        sc.log("DonateWithFeedback: nothing to withdraw");
+        ctx.log("DonateWithFeedback: nothing to withdraw");
         return;
     }
 
-    sc.transfer_to_address(&sc_owner.address(), &ScTransfers::new(&ScColor::IOTA, withdraw_amount));
+    ctx.transfer_to_address(&sc_owner.address(), &ScTransfers::new(&ScColor::IOTA, withdraw_amount));
 }
 
-fn view_donations(sc: &ScViewContext) {
-    let state = sc.state();
+fn view_donations(ctx: &ScViewContext) {
+    let state = ctx.state();
     let largest_donation = state.get_int(KEY_MAX_DONATION);
     let total_donated = state.get_int(KEY_TOTAL_DONATION);
     let log = state.get_bytes_array(KEY_LOG);
-    let results = sc.results();
+    let results = ctx.results();
     results.get_int(KEY_MAX_DONATION).set_value(largest_donation.value());
     results.get_int(KEY_TOTAL_DONATION).set_value(total_donated.value());
     let donations = results.get_map_array(KEY_DONATIONS);

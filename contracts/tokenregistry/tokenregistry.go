@@ -17,28 +17,28 @@ func OnLoad() {
 	exports.AddCall("transfer_ownership", transferOwnership)
 }
 
-func mintSupply(sc *client.ScCallContext) {
-	minted := sc.Incoming().Minted()
+func mintSupply(ctx *client.ScCallContext) {
+	minted := ctx.Incoming().Minted()
 	if minted.Equals(client.MINT) {
-		sc.Panic("TokenRegistry: No newly minted tokens found")
+		ctx.Panic("TokenRegistry: No newly minted tokens found")
 	}
-	state := sc.State()
+	state := ctx.State()
 	registry := state.GetMap(KeyRegistry).GetBytes(minted)
 	if registry.Exists() {
-		sc.Panic("TokenRegistry: Color already exists")
+		ctx.Panic("TokenRegistry: Color already exists")
 	}
-	params := sc.Params()
+	params := ctx.Params()
 	token := &TokenInfo{
-		Supply:      sc.Incoming().Balance(minted),
-		MintedBy:    sc.Caller(),
-		Owner:       sc.Caller(),
-		Created:     sc.Timestamp(),
-		Updated:     sc.Timestamp(),
+		Supply:      ctx.Incoming().Balance(minted),
+		MintedBy:    ctx.Caller(),
+		Owner:       ctx.Caller(),
+		Created:     ctx.Timestamp(),
+		Updated:     ctx.Timestamp(),
 		Description: params.GetString(KeyDescription).Value(),
 		UserDefined: params.GetString(KeyUserDefined).Value(),
 	}
 	if token.Supply <= 0 {
-		sc.Panic("TokenRegistry: Insufficient supply")
+		ctx.Panic("TokenRegistry: Insufficient supply")
 	}
 	if len(token.Description) == 0 {
 		token.Description += "no dscr"

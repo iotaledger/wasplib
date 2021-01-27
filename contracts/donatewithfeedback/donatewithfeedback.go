@@ -23,22 +23,22 @@ func OnLoad() {
 	exports.AddView("view_donations", viewDonations)
 }
 
-func donate(sc *client.ScCallContext) {
+func donate(ctx *client.ScCallContext) {
 	donation := &DonationInfo{
-		Amount:    sc.Incoming().Balance(client.IOTA),
-		Donator:   sc.Caller(),
+		Amount:    ctx.Incoming().Balance(client.IOTA),
+		Donator:   ctx.Caller(),
 		Error:     "",
-		Feedback:  sc.Params().GetString(KeyFeedback).Value(),
-		Timestamp: sc.Timestamp(),
+		Feedback:  ctx.Params().GetString(KeyFeedback).Value(),
+		Timestamp: ctx.Timestamp(),
 	}
 	if donation.Amount == 0 || len(donation.Feedback) == 0 {
 		donation.Error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)"
 		if donation.Amount > 0 {
-			sc.TransferToAddress(donation.Donator.Address(), client.NewScTransfer(client.IOTA, donation.Amount))
+			ctx.TransferToAddress(donation.Donator.Address(), client.NewScTransfer(client.IOTA, donation.Amount))
 			donation.Amount = 0
 		}
 	}
-	state := sc.State()
+	state := ctx.State()
 	log := state.GetBytesArray(KeyLog)
 	log.GetBytes(log.Length()).SetValue(EncodeDonationInfo(donation))
 
@@ -50,31 +50,31 @@ func donate(sc *client.ScCallContext) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func withdraw(sc *client.ScCallContext) {
-	scOwner := sc.ContractCreator()
-	if !sc.From(scOwner) {
-		sc.Panic("Cancel spoofed request")
+func withdraw(ctx *client.ScCallContext) {
+	scOwner := ctx.ContractCreator()
+	if !ctx.From(scOwner) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
-	amount := sc.Balances().Balance(client.IOTA)
-	withdrawAmount := sc.Params().GetInt(KeyWithdrawAmount).Value()
+	amount := ctx.Balances().Balance(client.IOTA)
+	withdrawAmount := ctx.Params().GetInt(KeyWithdrawAmount).Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
 	}
 	if withdrawAmount == 0 {
-		sc.Log("DonateWithFeedback: nothing to withdraw")
+		ctx.Log("DonateWithFeedback: nothing to withdraw")
 		return
 	}
 
-	sc.TransferToAddress(scOwner.Address(), client.NewScTransfer(client.IOTA, withdrawAmount))
+	ctx.TransferToAddress(scOwner.Address(), client.NewScTransfer(client.IOTA, withdrawAmount))
 }
 
-func viewDonations(sc *client.ScViewContext) {
-	state := sc.State()
+func viewDonations(ctx *client.ScViewContext) {
+	state := ctx.State()
 	largestDonation := state.GetInt(KeyMaxDonation)
 	totalDonated := state.GetInt(KeyTotalDonation)
 	log := state.GetBytesArray(KeyLog)
-	results := sc.Results()
+	results := ctx.Results()
 	results.GetInt(KeyMaxDonation).SetValue(largestDonation.Value())
 	results.GetInt(KeyTotalDonation).SetValue(totalDonated.Value())
 	donations := results.GetMapArray(KeyDonations)

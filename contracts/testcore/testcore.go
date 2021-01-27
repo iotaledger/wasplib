@@ -93,8 +93,7 @@ func callOnChain(ctx *client.ScCallContext) {
 	ctx.Require(paramValue.Exists(), "param 'value' not found")
 	paramIn := paramValue.Value()
 
-	targetContract := client.Hname(0) // Todo strange a bit: client.Hname(0) is a constant
-
+	targetContract := ctx.ContractId().Hname()
 	paramHnameContract := ctx.Params().GetHname(ParamHnameContract)
 	if paramHnameContract.Exists() {
 		targetContract = paramHnameContract.Value()
@@ -144,7 +143,7 @@ func runRecursion(ctx *client.ScCallContext) {
 	par := client.NewScMutableMap()
 	par.GetInt(ParamIntParamValue).SetValue(depth - 1)
 	par.GetHname(ParamHnameEp).SetValue(client.NewHname("runRecursion"))
-	ctx.Call(client.Hname(0), client.NewHname("callOnChain"), par, nil)
+	ctx.Call(ctx.ContractId().Hname(), client.NewHname("callOnChain"), par, nil)
 	// TODO how would I return result of the call ???
 	ctx.Results().GetInt(ParamIntParamValue).SetValue(depth - 1)
 }
@@ -160,12 +159,12 @@ func fibonacci(ctx *client.ScViewContext) {
 	}
 	params1 := client.NewScMutableMap()
 	params1.GetInt(ParamIntParamValue).SetValue(n - 1)
-	results1 := ctx.Call(client.Hname(0), client.NewHname("fibonacci"), params1)
+	results1 := ctx.Call(ctx.ContractId().Hname(), client.NewHname("fibonacci"), params1)
 	n1 := results1.GetInt(ParamIntParamValue).Value()
 
 	params2 := client.NewScMutableMap()
 	params2.GetInt(ParamIntParamValue).SetValue(n - 2)
-	results2 := ctx.Call(client.Hname(0), client.NewHname("fibonacci"), params2)
+	results2 := ctx.Call(ctx.ContractId().Hname(), client.NewHname("fibonacci"), params2)
 	n2 := results2.GetInt(ParamIntParamValue).Value()
 
 	ctx.Results().GetInt(ParamIntParamValue).SetValue(n1 + n2)
@@ -180,15 +179,15 @@ func testPanicViewEp(ctx *client.ScViewContext) {
 }
 
 func testCallPanicFullEp(ctx *client.ScCallContext) {
-	ctx.Call(client.Hname(0), client.NewHname("testPanicFullEP"), nil, nil)
+	ctx.Call(ctx.ContractId().Hname(), client.NewHname("testPanicFullEP"), nil, nil)
 }
 
 func testCallPanicViewFromFull(ctx *client.ScCallContext) {
-	ctx.Call(client.Hname(0), client.NewHname("testPanicViewEP"), nil, nil)
+	ctx.Call(ctx.ContractId().Hname(), client.NewHname("testPanicViewEP"), nil, nil)
 }
 
 func testCallPanicViewFromView(ctx *client.ScViewContext) {
-	ctx.Call(client.Hname(0), client.NewHname("testPanicViewEP"), nil)
+	ctx.Call(ctx.ContractId().Hname(), client.NewHname("testPanicViewEP"), nil)
 }
 
 func testJustView(ctx *client.ScViewContext) {
@@ -215,7 +214,6 @@ func testChainOwnerIdFull(ctx *client.ScCallContext) {
 }
 
 func testContractIdView(ctx *client.ScViewContext) {
-	//TODO discussion about using ChainID vs ContractID because one of those seems redundant
 	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 

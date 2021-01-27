@@ -7,6 +7,16 @@ package client
 
 import "strconv"
 
+type PostRequestParams struct {
+	Contract *ScContractId
+	Function Hname
+	Params   *ScMutableMap
+	Transfer balances
+	Delay    int64
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type balances interface {
 	mapId() int32
 }
@@ -63,7 +73,7 @@ type ScTransfers struct {
 // special constructor for simplifying single transfers
 func NewScTransfer(color *ScColor, amount int64) ScTransfers {
 	balance := NewScTransfers()
-	balance.Transfer(color, amount)
+	balance.Add(color, amount)
 	return balance
 }
 
@@ -77,7 +87,7 @@ func (ctx ScTransfers) mapId() int32 {
 }
 
 // transfers the specified amount of tokens of the specified color
-func (ctx ScTransfers) Transfer(color *ScColor, amount int64) {
+func (ctx ScTransfers) Add(color *ScColor, amount int64) {
 	ctx.transfers.GetInt(color).SetValue(amount)
 }
 
@@ -211,21 +221,19 @@ type ScCallContext struct {
 	ScBaseContext
 }
 
-//TODO contractid
+//TODO view immutable state on Wasp
 //TODO parameter type checks
 
 // calls a smart contract function
 func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
-	if contract != 0 {
-		call.GetHname(KeyContract).SetValue(contract)
-	}
+	call.GetHname(KeyContract).SetValue(contract)
 	call.GetHname(KeyFunction).SetValue(function)
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))
 	}
-	if transfer != nil && transfer.mapId() != 0 {
+	if transfer != nil {
 		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
 	}
 	call.GetInt(KeyDelay).SetValue(-1)
@@ -250,26 +258,22 @@ func (ctx ScCallContext) Incoming() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScCallContext) Post(chain *ScAddress, contract Hname, function Hname, params *ScMutableMap, transfer balances, delay int64) {
-	if delay < 0 {
+func (ctx ScCallContext) Post(par *PostRequestParams) {
+	if par.Delay < 0 {
 		ctx.Panic("Invalid delay")
 	}
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
-	if chain != nil {
-		call.GetAddress(KeyChain).SetValue(chain)
+	call.GetChainId(KeyChain).SetValue(par.Contract.ChainId())
+	call.GetHname(KeyContract).SetValue(par.Contract.Hname())
+	call.GetHname(KeyFunction).SetValue(par.Function)
+	if par.Params != nil {
+		call.GetInt(KeyParams).SetValue(int64(par.Params.objId))
 	}
-	if contract != 0 {
-		call.GetHname(KeyContract).SetValue(contract)
+	if par.Transfer != nil {
+		call.GetInt(KeyTransfers).SetValue(int64(par.Transfer.mapId()))
 	}
-	call.GetHname(KeyFunction).SetValue(function)
-	if params != nil {
-		call.GetInt(KeyParams).SetValue(int64(params.objId))
-	}
-	if transfer != nil && transfer.mapId() != 0 {
-		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
-	}
-	call.GetInt(KeyDelay).SetValue(delay)
+	call.GetInt(KeyDelay).SetValue(par.Delay)
 }
 
 // signals an event on the node that external entities can subscribe to
@@ -306,9 +310,7 @@ type ScViewContext struct {
 func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableMap) ScImmutableMap {
 	calls := Root.GetMapArray(KeyCalls)
 	call := calls.GetMap(calls.Length())
-	if contract != 0 {
-		call.GetHname(KeyContract).SetValue(contract)
-	}
+	call.GetHname(KeyContract).SetValue(contract)
 	call.GetHname(KeyFunction).SetValue(function)
 	if params != nil {
 		call.GetInt(KeyParams).SetValue(int64(params.objId))

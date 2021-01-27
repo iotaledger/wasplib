@@ -19,24 +19,24 @@ fn on_load() {
     exports.add_call("divide", divide);
 }
 
-fn member(sc: &ScCallContext) {
-    if !sc.from(&sc.contract_creator()) {
-        sc.panic("Cancel spoofed request");
+fn member(ctx: &ScCallContext) {
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("Cancel spoofed request");
     }
-    let params = sc.params();
+    let params = ctx.params();
     let address = params.get_address(PARAM_ADDRESS);
     if !address.exists() {
-        sc.panic("Missing address");
+        ctx.panic("Missing address");
     }
     let factor = params.get_int(PARAM_FACTOR);
     if !factor.exists() {
-        sc.panic("Missing factor");
+        ctx.panic("Missing factor");
     }
     let member = Member {
         address: address.value(),
         factor: factor.value(),
     };
-    let state = sc.state();
+    let state = ctx.state();
     let total_factor = state.get_int(VAR_TOTAL_FACTOR);
     let mut total = total_factor.value();
     let members = state.get_bytes_array(VAR_MEMBERS);
@@ -48,22 +48,22 @@ fn member(sc: &ScCallContext) {
             total += member.factor;
             total_factor.set_value(total);
             members.get_bytes(i).set_value(&encode_member(&member));
-            sc.log(&("Updated: ".to_string() + &member.address.to_string()));
+            ctx.log(&("Updated: ".to_string() + &member.address.to_string()));
             return;
         }
     }
     total += member.factor;
     total_factor.set_value(total);
     members.get_bytes(size).set_value(&encode_member(&member));
-    sc.log(&("Appended: ".to_string() + &member.address.to_string()));
+    ctx.log(&("Appended: ".to_string() + &member.address.to_string()));
 }
 
-fn divide(sc: &ScCallContext) {
-    let amount = sc.balances().balance(&ScColor::IOTA);
+fn divide(ctx: &ScCallContext) {
+    let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
-        sc.panic("Nothing to divide");
+        ctx.panic("Nothing to divide");
     }
-    let state = sc.state();
+    let state = ctx.state();
     let total_factor = state.get_int(VAR_TOTAL_FACTOR);
     let total = total_factor.value();
     let members = state.get_bytes_array(VAR_MEMBERS);
@@ -74,7 +74,7 @@ fn divide(sc: &ScCallContext) {
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;
-            sc.transfer_to_address(&m.address, &ScTransfers::new(&ScColor::IOTA, part));
+            ctx.transfer_to_address(&m.address, &ScTransfers::new(&ScColor::IOTA, part));
         }
     }
     if parts != amount {
@@ -82,6 +82,6 @@ fn divide(sc: &ScCallContext) {
         // there could be some small remainder left in the contract, but
         // that will be picked up in the next round as part of the balance
         let remainder = amount - parts;
-        sc.log(&("Remainder in contract: ".to_string() + &remainder.to_string()));
+        ctx.log(&("Remainder in contract: ".to_string() + &remainder.to_string()));
     }
 }

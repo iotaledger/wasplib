@@ -4,8 +4,8 @@
 package client
 
 var (
-	calls []func(sc *ScCallContext)
-	views []func(sc *ScViewContext)
+	calls []func(ctx *ScCallContext)
+	views []func(ctx *ScViewContext)
 )
 
 //export on_call_entrypoint
@@ -31,18 +31,18 @@ func NewScExports() ScExports {
 	return ScExports{exports: exports}
 }
 
-func (ctx ScExports) AddCall(name string, f func(sc *ScCallContext)) {
+func (ctx ScExports) AddCall(name string, f func(ctx *ScCallContext)) {
 	index := int32(len(calls))
 	calls = append(calls, f)
 	ctx.exports.GetString(index).SetValue(name)
 }
 
-func (ctx ScExports) AddView(name string, f func(sc *ScViewContext)) {
+func (ctx ScExports) AddView(name string, f func(ctx *ScViewContext)) {
 	index := int32(len(views))
 	views = append(views, f)
 	ctx.exports.GetString(index | 0x8000).SetValue(name)
 }
 
-func Nothing(sc *ScCallContext) {
-	sc.Log("Doing nothing as requested. Oh, wait...")
+func Nothing(ctx *ScCallContext) {
+	ctx.Log("Doing nothing as requested. Oh, wait...")
 }

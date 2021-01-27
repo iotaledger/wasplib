@@ -15,8 +15,6 @@ use super::mutable::*;
 pub struct Hname(pub u32);
 
 impl Hname {
-    pub const SELF: Hname = Hname(0);
-
     pub fn new(name: &str) -> Hname {
         let utility = ROOT.get_map(&KEY_UTILITY);
         utility.get_string(&KEY_NAME).set_value(name);
@@ -64,8 +62,6 @@ pub struct ScAddress {
 }
 
 impl ScAddress {
-    pub const NULL: ScAddress = ScAddress { id: [0x00; 33] };
-
     pub fn as_agent(&self) -> ScAgent {
         let mut agent = ScAgent { id: [0; 37] };
         agent.id[..33].copy_from_slice(&self.id[..33]);
@@ -102,8 +98,6 @@ pub struct ScAgent {
 }
 
 impl ScAgent {
-    pub const NULL: ScAgent = ScAgent { id: [0x00; 37] };
-
     pub fn address(&self) -> ScAddress {
         let mut address = ScAddress { id: [0; 33] };
         address.id[..33].copy_from_slice(&self.id[..33]);
@@ -144,8 +138,6 @@ pub struct ScChainId {
 }
 
 impl ScChainId {
-    pub const NULL: ScChainId = ScChainId { id: [0x00; 33] };
-
     pub fn equals(&self, other: &ScChainId) -> bool {
         self.id == other.id
     }
@@ -176,8 +168,6 @@ pub struct ScContractId {
 }
 
 impl ScContractId {
-    pub const NULL: ScContractId = ScContractId { id: [0x00; 37] };
-
     pub fn new(chain_id: &ScChainId, hname: &Hname) -> ScContractId {
         let mut contract_id = ScContractId { id: [0; 37] };
         contract_id.id[..33].copy_from_slice(&chain_id.to_bytes());
@@ -264,8 +254,6 @@ pub struct ScHash {
 }
 
 impl ScHash {
-    pub const NULL: ScHash = ScHash { id: [0x00; 32] };
-
     pub fn equals(&self, other: &ScHash) -> bool {
         self.id == other.id
     }

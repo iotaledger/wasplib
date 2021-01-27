@@ -23,26 +23,26 @@ func OnLoad() {
 	exports.AddCall("nothing", client.Nothing)
 }
 
-func placeBet(sc *client.ScCallContext) {
-	amount := sc.Incoming().Balance(client.IOTA)
+func placeBet(ctx *client.ScCallContext) {
+	amount := ctx.Incoming().Balance(client.IOTA)
 	if amount == 0 {
-		sc.Panic("Empty bet...")
+		ctx.Panic("Empty bet...")
 	}
-	color := sc.Params().GetInt(KeyColor).Value()
+	color := ctx.Params().GetInt(KeyColor).Value()
 	if color == 0 {
-		sc.Panic("No color...")
+		ctx.Panic("No color...")
 	}
 	if color < 1 || color > NumColors {
-		sc.Panic("Invalid color...")
+		ctx.Panic("Invalid color...")
 	}
 
 	bet := &BetInfo{
-		Better: sc.Caller(),
+		Better: ctx.Caller(),
 		Amount: amount,
 		Color:  color,
 	}
 
-	state := sc.State()
+	state := ctx.State()
 	bets := state.GetBytesArray(KeyBets)
 	betNr := bets.Length()
 	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
@@ -51,23 +51,24 @@ func placeBet(sc *client.ScCallContext) {
 		if playPeriod < 10 {
 			playPeriod = DefaultPlayPeriod
 		}
-		sc.Post(nil,
-			client.Hname(0),
-			client.NewHname("lock_bets"),
-			nil,
-			nil,
-			playPeriod)
+        ctx.Post(&client.PostRequestParams {
+            Contract: ctx.ContractId(),
+            Function: client.NewHname("lock_bets"),
+            Params: nil,
+            Transfer: nil,
+            Delay: playPeriod,
+        })
 	}
 }
 
-func lockBets(sc *client.ScCallContext) {
+func lockBets(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !sc.From(sc.ContractId().AsAgent()) {
-		sc.Panic("Cancel spoofed request")
+	if !ctx.From(ctx.ContractId().AsAgent()) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
 	// move all current bets to the locked_bets array
-	state := sc.State()
+	state := ctx.State()
 	bets := state.GetBytesArray(KeyBets)
 	lockedBets := state.GetBytesArray(KeyLockedBets)
 	nrBets := bets.Length()
@@ -77,23 +78,24 @@ func lockBets(sc *client.ScCallContext) {
 	}
 	bets.Clear()
 
-	sc.Post(nil,
-		client.Hname(0),
-		client.NewHname("pay_winners"),
-		nil,
-		nil,
-		0)
+    ctx.Post(&client.PostRequestParams {
+        Contract: ctx.ContractId(),
+        Function: client.NewHname("pay_winners"),
+        Params: nil,
+        Transfer: nil,
+        Delay: 0,
+    })
 }
 
-func payWinners(sc *client.ScCallContext) {
+func payWinners(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	scId := sc.ContractId().AsAgent()
-	if !sc.From(scId) {
-		sc.Panic("Cancel spoofed request")
+	scId := ctx.ContractId().AsAgent()
+	if !ctx.From(scId) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
-	winningColor := sc.Utility().Random(5) + 1
-	state := sc.State()
+	winningColor := ctx.Utility().Random(5) + 1
+	state := ctx.State()
 	state.GetInt(KeyLastWinningColor).SetValue(winningColor)
 
 	// gather all winners and calculate some totals
@@ -113,9 +115,9 @@ func payWinners(sc *client.ScCallContext) {
 	lockedBets.Clear()
 
 	if len(winners) == 0 {
-		sc.Log("Nobody wins!")
+		ctx.Log("Nobody wins!")
 		// compact separate bet deposit UTXOs into a single one
-		sc.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, totalBetAmount))
+		ctx.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, totalBetAmount))
 		return
 	}
 
@@ -127,32 +129,32 @@ func payWinners(sc *client.ScCallContext) {
 		payout := totalBetAmount * bet.Amount / totalWinAmount
 		if payout != 0 {
 			totalPayout += payout
-			sc.TransferToAddress(bet.Better.Address(), client.NewScTransfer(client.IOTA, payout))
+			ctx.TransferToAddress(bet.Better.Address(), client.NewScTransfer(client.IOTA, payout))
 		}
-		text := "Pay " + sc.Utility().String(payout) +
+		text := "Pay " + ctx.Utility().String(payout) +
 			" to " + bet.Better.String()
-		sc.Log(text)
+		ctx.Log(text)
 	}
 
 	// any truncation left-overs are fair picking for the smart contract
 	if totalPayout != totalBetAmount {
 		remainder := totalBetAmount - totalPayout
-		text := "Remainder is " + sc.Utility().String(remainder)
-		sc.Log(text)
-		sc.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, remainder))
+		text := "Remainder is " + ctx.Utility().String(remainder)
+		ctx.Log(text)
+		ctx.TransferToAddress(scId.Address(), client.NewScTransfer(client.IOTA, remainder))
 	}
 }
 
-func playPeriod(sc *client.ScCallContext) {
+func playPeriod(ctx *client.ScCallContext) {
 	// can only be sent by SC creator
-	if !sc.From(sc.ContractCreator()) {
-		sc.Panic("Cancel spoofed request")
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("Cancel spoofed request")
 	}
 
-	playPeriod := sc.Params().GetInt(KeyPlayPeriod).Value()
+	playPeriod := ctx.Params().GetInt(KeyPlayPeriod).Value()
 	if playPeriod < 10 {
-		sc.Panic("Invalid play period...")
+		ctx.Panic("Invalid play period...")
 	}
 
-	sc.State().GetInt(KeyPlayPeriod).SetValue(playPeriod)
+	ctx.State().GetInt(KeyPlayPeriod).SetValue(playPeriod)
 }

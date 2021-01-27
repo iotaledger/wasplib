@@ -68,7 +68,7 @@ func TestRustTypes(t *testing.T) {
 }
 
 func TestRustToGo(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 	err := RustConvertor(RustToGoLine, "../../contracts/$1/$1.go")
 	require.NoError(t, err)
 }

@@ -10,6 +10,6 @@ func OnLoad() {
 	exports.AddCall("hello_world", helloWorld)
 }
 
-func helloWorld(sc *client.ScCallContext) {
-	sc.Log("Hello, world!")
+func helloWorld(ctx *client.ScCallContext) {
+	ctx.Log("Hello, world!")
 }

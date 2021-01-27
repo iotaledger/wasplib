@@ -17,24 +17,24 @@ func OnLoad() {
 	exports.AddCall("divide", divide)
 }
 
-func member(sc *client.ScCallContext) {
-	if !sc.From(sc.ContractCreator()) {
-		sc.Panic("Cancel spoofed request")
+func member(ctx *client.ScCallContext) {
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("Cancel spoofed request")
 	}
-	params := sc.Params()
+	params := ctx.Params()
 	address := params.GetAddress(ParamAddress)
 	if !address.Exists() {
-		sc.Panic("Missing address")
+		ctx.Panic("Missing address")
 	}
 	factor := params.GetInt(ParamFactor)
 	if !factor.Exists() {
-		sc.Panic("Missing factor")
+		ctx.Panic("Missing factor")
 	}
 	member := &Member{
 		Address: address.Value(),
 		Factor:  factor.Value(),
 	}
-	state := sc.State()
+	state := ctx.State()
 	totalFactor := state.GetInt(VarTotalFactor)
 	total := totalFactor.Value()
 	members := state.GetBytesArray(VarMembers)
@@ -46,22 +46,22 @@ func member(sc *client.ScCallContext) {
 			total += member.Factor
 			totalFactor.SetValue(total)
 			members.GetBytes(i).SetValue(EncodeMember(member))
-			sc.Log("Updated: " + member.Address.String())
+			ctx.Log("Updated: " + member.Address.String())
 			return
 		}
 	}
 	total += member.Factor
 	totalFactor.SetValue(total)
 	members.GetBytes(size).SetValue(EncodeMember(member))
-	sc.Log("Appended: " + member.Address.String())
+	ctx.Log("Appended: " + member.Address.String())
 }
 
-func divide(sc *client.ScCallContext) {
-	amount := sc.Balances().Balance(client.IOTA)
+func divide(ctx *client.ScCallContext) {
+	amount := ctx.Balances().Balance(client.IOTA)
 	if amount == 0 {
-		sc.Panic("Nothing to divide")
+		ctx.Panic("Nothing to divide")
 	}
-	state := sc.State()
+	state := ctx.State()
 	totalFactor := state.GetInt(VarTotalFactor)
 	total := totalFactor.Value()
 	members := state.GetBytesArray(VarMembers)
@@ -72,7 +72,7 @@ func divide(sc *client.ScCallContext) {
 		part := amount * m.Factor / total
 		if part != 0 {
 			parts += part
-			sc.TransferToAddress(m.Address, client.NewScTransfer(client.IOTA, part))
+			ctx.TransferToAddress(m.Address, client.NewScTransfer(client.IOTA, part))
 		}
 	}
 	if parts != amount {
@@ -80,6 +80,6 @@ func divide(sc *client.ScCallContext) {
 		// there could be some small remainder left in the contract, but
 		// that will be picked up in the next round as part of the balance
 		remainder := amount - parts
-		sc.Log("Remainder in contract: " + sc.Utility().String(remainder))
+		ctx.Log("Remainder in contract: " + ctx.Utility().String(remainder))
 	}
 }

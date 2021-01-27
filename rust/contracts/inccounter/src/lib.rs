@@ -31,62 +31,63 @@ fn on_load() {
     exports.add_view("results_check", results_check);
 }
 
-fn on_init(sc: &ScCallContext) {
-    let counter = sc.params().get_int(KEY_COUNTER).value();
+fn on_init(ctx: &ScCallContext) {
+    let counter = ctx.params().get_int(KEY_COUNTER).value();
     if counter == 0 {
         return;
     }
-    sc.state().get_int(KEY_COUNTER).set_value(counter);
+    ctx.state().get_int(KEY_COUNTER).set_value(counter);
 }
 
-fn increment(sc: &ScCallContext) {
-    let counter = sc.state().get_int(KEY_COUNTER);
+fn increment(ctx: &ScCallContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 
-fn increment_call_increment(sc: &ScCallContext) {
-    let counter = sc.state().get_int(KEY_COUNTER);
+fn increment_call_increment(ctx: &ScCallContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.call(Hname::SELF, Hname::new("increment_call_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
+        ctx.call(ctx.contract_id().hname(), Hname::new("increment_call_increment"), None, None);
     }
 }
 
-fn increment_call_increment_recurse5x(sc: &ScCallContext) {
-    let counter = sc.state().get_int(KEY_COUNTER);
+fn increment_call_increment_recurse5x(ctx: &ScCallContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        sc.call(Hname::SELF, Hname::new("increment_call_increment_recurse5x"), ScMutableMap::NONE, &ScTransfers::NONE);
+        ctx.call(ctx.contract_id().hname(), Hname::new("increment_call_increment_recurse5x"), None, None);
     }
 }
 
-fn increment_post_increment(sc: &ScCallContext) {
-    let counter = sc.state().get_int(KEY_COUNTER);
+fn increment_post_increment(ctx: &ScCallContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        sc.post(&ScAddress::NULL,
-                Hname::SELF,
-                Hname::new("increment_post_increment"),
-                ScMutableMap::NONE,
-                &ScTransfers::NONE,
-                0);
+        ctx.post(&PostRequestParams {
+            contract: ctx.contract_id(),
+            function: Hname::new("increment_post_increment"),
+            params: None,
+            transfer: None,
+            delay: 0,
+        });
     }
 }
 
-fn increment_view_counter(sc: &ScViewContext) {
-    let counter = sc.state().get_int(KEY_COUNTER).value();
-    sc.results().get_int(KEY_COUNTER).set_value(counter);
+fn increment_view_counter(ctx: &ScViewContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER).value();
+    ctx.results().get_int(KEY_COUNTER).set_value(counter);
 }
 
-fn increment_repeat_many(sc: &ScCallContext) {
-    let counter = sc.state().get_int(KEY_COUNTER);
+fn increment_repeat_many(ctx: &ScCallContext) {
+    let counter = ctx.state().get_int(KEY_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
-    let state_repeats = sc.state().get_int(KEY_NUM_REPEATS);
-    let mut repeats = sc.params().get_int(KEY_NUM_REPEATS).value();
+    let state_repeats = ctx.state().get_int(KEY_NUM_REPEATS);
+    let mut repeats = ctx.params().get_int(KEY_NUM_REPEATS).value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {
@@ -94,67 +95,60 @@ fn increment_repeat_many(sc: &ScCallContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    sc.post(&ScAddress::NULL,
-            Hname::SELF,
-            Hname::new("increment_repeat_many"),
-            ScMutableMap::NONE,
-            &ScTransfers::NONE,
-            0);
+    ctx.post(&PostRequestParams {
+        contract: ctx.contract_id(),
+        function: Hname::new("increment_repeat_many"),
+        params: None,
+        transfer: None,
+        delay: 0,
+    });
 }
 
-fn increment_when_must_increment(sc: &ScCallContext) {
-    sc.log("increment_when_must_increment called");
+fn increment_when_must_increment(ctx: &ScCallContext) {
+    ctx.log("increment_when_must_increment called");
     unsafe {
         if !LOCAL_STATE_MUST_INCREMENT {
             return;
         }
     }
-    let counter = sc.state().get_int(KEY_COUNTER);
+    let counter = ctx.state().get_int(KEY_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 
-fn increment_local_state_internal_call(sc: &ScCallContext) {
-    increment_when_must_increment(sc);
+fn increment_local_state_internal_call(ctx: &ScCallContext) {
+    increment_when_must_increment(ctx);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    increment_when_must_increment(sc);
-    increment_when_must_increment(sc);
+    increment_when_must_increment(ctx);
+    increment_when_must_increment(ctx);
     // counter ends up as 2
 }
 
-fn increment_local_state_sandbox_call(sc: &ScCallContext) {
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
+fn increment_local_state_sandbox_call(ctx: &ScCallContext) {
+    ctx.call(ctx.contract_id().hname(), Hname::new("increment_when_must_increment"), None, None);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
-    sc.call(Hname::SELF, Hname::new("increment_when_must_increment"), ScMutableMap::NONE, &ScTransfers::NONE);
+    ctx.call(ctx.contract_id().hname(), Hname::new("increment_when_must_increment"), None, None);
+    ctx.call(ctx.contract_id().hname(), Hname::new("increment_when_must_increment"), None, None);
     // counter ends up as 0
 }
 
-fn increment_local_state_post(sc: &ScCallContext) {
-    sc.post(&ScAddress::NULL,
-            Hname::SELF,
-            Hname::new("increment_when_must_increment"),
-            ScMutableMap::NONE,
-            &ScTransfers::NONE,
-            0);
+fn increment_local_state_post(ctx: &ScCallContext) {
+    let request = PostRequestParams {
+        contract: ctx.contract_id(),
+        function: Hname::new("increment_when_must_increment"),
+        params: None,
+        transfer: None,
+        delay: 0,
+    };
+    ctx.post(&request);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.post(&ScAddress::NULL,
-            Hname::SELF,
-            Hname::new("increment_when_must_increment"),
-            ScMutableMap::NONE,
-            &ScTransfers::NONE,
-            0);
-    sc.post(&ScAddress::NULL,
-            Hname::SELF,
-            Hname::new("increment_when_must_increment"),
-            ScMutableMap::NONE,
-            &ScTransfers::NONE,
-            0);
+    ctx.post(&request);
+    ctx.post(&request);
     // counter ends up as 0
 }
 
@@ -175,23 +169,23 @@ fn test(_sc: &ScCallContext) {
     set_string(1, key_id2, &s3);
 }
 
-fn results_test(sc: &ScCallContext) {
-    test_map(sc.results());
-    check_map(sc.results().immutable());
-    //sc.call(Hname::SELF, Hname::new("results_check"), ScMutableMap::NONE, &ScTransfers::NONE);
+fn results_test(ctx: &ScCallContext) {
+    test_map(ctx.results());
+    check_map(ctx.results().immutable());
+    //ctx.call(ctx.contract_id().hname(), Hname::new("results_check"), None, None);
 }
 
-fn state_test(sc: &ScCallContext) {
-    test_map(sc.state());
-    sc.call(Hname::SELF, Hname::new("state_check"), ScMutableMap::NONE, &ScTransfers::NONE);
+fn state_test(ctx: &ScCallContext) {
+    test_map(ctx.state());
+    ctx.call(ctx.contract_id().hname(), Hname::new("state_check"), None, None);
 }
 
-fn results_check(sc: &ScViewContext) {
-    check_map(sc.results().immutable());
+fn results_check(ctx: &ScViewContext) {
+    check_map(ctx.results().immutable());
 }
 
-fn state_check(sc: &ScViewContext) {
-    check_map(sc.state());
+fn state_check(ctx: &ScViewContext) {
+    check_map(ctx.state());
 }
 
 fn test_map(kvstore: ScMutableMap) {
