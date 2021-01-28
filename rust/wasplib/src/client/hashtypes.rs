@@ -21,10 +21,6 @@ impl Hname {
         Hname::from_bytes(&utility.get_bytes(&KEY_NAME).value())
     }
 
-    pub fn equals(&self, other: Hname) -> bool {
-        self.0 == other.0
-    }
-
     pub fn from_bytes(bytes: &[u8]) -> Hname {
         if bytes.len() != 4 { panic!("Hname should be 4 bytes"); }
         let val = bytes[3] as u32;
@@ -32,6 +28,10 @@ impl Hname {
         let val = (val << 8) | (bytes[1] as u32);
         let val = (val << 8) | (bytes[0] as u32);
         Hname(val)
+    }
+
+    pub fn equals(&self, other: Hname) -> bool {
+        self.0 == other.0
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
@@ -62,6 +62,10 @@ pub struct ScAddress {
 }
 
 impl ScAddress {
+    pub fn from_bytes(bytes: &[u8]) -> ScAddress {
+        ScAddress { id: bytes.try_into().expect("invalid address id length") }
+    }
+
     pub fn as_agent(&self) -> ScAgent {
         let mut agent = ScAgent { id: [0; 37] };
         agent.id[..33].copy_from_slice(&self.id[..33]);
@@ -70,10 +74,6 @@ impl ScAddress {
 
     pub fn equals(&self, other: &ScAddress) -> bool {
         self.id == other.id
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> ScAddress {
-        ScAddress { id: bytes.try_into().expect("invalid address id length") }
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -98,6 +98,10 @@ pub struct ScAgent {
 }
 
 impl ScAgent {
+    pub fn from_bytes(bytes: &[u8]) -> ScAgent {
+        ScAgent { id: bytes.try_into().expect("invalid agent id lengths") }
+    }
+
     pub fn address(&self) -> ScAddress {
         let mut address = ScAddress { id: [0; 33] };
         address.id[..33].copy_from_slice(&self.id[..33]);
@@ -106,10 +110,6 @@ impl ScAgent {
 
     pub fn equals(&self, other: &ScAgent) -> bool {
         self.id == other.id
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> ScAgent {
-        ScAgent { id: bytes.try_into().expect("invalid agent id lengths") }
     }
 
     pub fn is_address(&self) -> bool {
@@ -138,12 +138,12 @@ pub struct ScChainId {
 }
 
 impl ScChainId {
-    pub fn equals(&self, other: &ScChainId) -> bool {
-        self.id == other.id
-    }
-
     pub fn from_bytes(bytes: &[u8]) -> ScChainId {
         ScChainId { id: bytes.try_into().expect("invalid chain id length") }
+    }
+
+    pub fn equals(&self, other: &ScChainId) -> bool {
+        self.id == other.id
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -175,6 +175,10 @@ impl ScContractId {
         contract_id
     }
 
+    pub fn from_bytes(bytes: &[u8]) -> ScContractId {
+        ScContractId { id: bytes.try_into().expect("invalid contract id length") }
+    }
+
     pub fn as_agent(&self) -> ScAgent {
         let mut agent = ScAgent { id: [0x00; 37] };
         agent.id[..].copy_from_slice(&self.id[..]);
@@ -189,10 +193,6 @@ impl ScContractId {
 
     pub fn equals(&self, other: &ScContractId) -> bool {
         self.id == other.id
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> ScContractId {
-        ScContractId { id: bytes.try_into().expect("invalid contract id length") }
     }
 
     pub fn hname(&self) -> Hname {
@@ -224,12 +224,12 @@ impl ScColor {
     pub const IOTA: ScColor = ScColor { id: [0x00; 32] };
     pub const MINT: ScColor = ScColor { id: [0xff; 32] };
 
-    pub fn equals(&self, other: &ScColor) -> bool {
-        self.id == other.id
-    }
-
     pub fn from_bytes(bytes: &[u8]) -> ScColor {
         ScColor { id: bytes.try_into().expect("invalid color id length") }
+    }
+
+    pub fn equals(&self, other: &ScColor) -> bool {
+        self.id == other.id
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -254,12 +254,12 @@ pub struct ScHash {
 }
 
 impl ScHash {
-    pub fn equals(&self, other: &ScHash) -> bool {
-        self.id == other.id
-    }
-
     pub fn from_bytes(bytes: &[u8]) -> ScHash {
         ScHash { id: bytes.try_into().expect("invalid hash id length") }
+    }
+
+    pub fn equals(&self, other: &ScHash) -> bool {
+        self.id == other.id
     }
 
     pub fn to_bytes(&self) -> &[u8] {

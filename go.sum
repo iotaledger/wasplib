@@ -147,6 +147,7 @@ github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 h1:tdlZCpZ/P9DhczC
 github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2/go.mod h1:SqUrOPUnsFjfmXRMNPybcSiG0BgUW2AuFH8PAnS2iTw=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/drand/bls12-381 v0.3.2/go.mod h1:dtcLgPtYT38L3NO6mPDYH0nbpc5tjPassDqiniuAt4Y=
+github.com/drand/drand v1.1.1 h1:Nq0/nyelzUH+ucK79jOkTJLvlsaWakYvQFjQPZYhsdA=
 github.com/drand/drand v1.1.1/go.mod h1:KFcGL4SJFSOMLWoLLOL77+yLoL2d7nIXYOvUOdMlNBM=
 github.com/drand/kyber v1.0.1-0.20200110225416-8de27ed8c0e2/go.mod h1:UpXoA0Upd1N9l4TvRPHr1qAUBBERj6JQ/mnKI3BPEmw=
 github.com/drand/kyber v1.0.2/go.mod h1:x6KOpK7avKj0GJ4emhXFP5n7M7W7ChAPmnQh/OL6vRw=
@@ -377,6 +378,12 @@ github.com/iotaledger/wasp v0.0.2-0.20210127194949-3836ae8c9286 h1:ZD1lzOxG/L6Qw
 github.com/iotaledger/wasp v0.0.2-0.20210127194949-3836ae8c9286/go.mod h1:QuET6R4tyh2ylYcAqJjzovuewees10bvijY61ankxQQ=
 github.com/iotaledger/wasp v0.0.2-0.20210127223322-605678df60f2 h1:g3DGSKcLT7+/95m9H0G4tMiX0MABImYHP3r1EEWcMAY=
 github.com/iotaledger/wasp v0.0.2-0.20210127223322-605678df60f2/go.mod h1:QuET6R4tyh2ylYcAqJjzovuewees10bvijY61ankxQQ=
+github.com/iotaledger/wasp v0.0.2-0.20210128020905-1dd712af3e9d h1:TrWqznCRqjh28yA9qsBL/s+imJiAilxP0Icl5BYpR70=
+github.com/iotaledger/wasp v0.0.2-0.20210128020905-1dd712af3e9d/go.mod h1:QuET6R4tyh2ylYcAqJjzovuewees10bvijY61ankxQQ=
+github.com/iotaledger/wasp v0.0.2-0.20210128040423-6e51735b9a00 h1:n8SDnZITSdhy5DTxxeyMTHdItL20zYXET8GS6bl1rq4=
+github.com/iotaledger/wasp v0.0.2-0.20210128040423-6e51735b9a00/go.mod h1:QuET6R4tyh2ylYcAqJjzovuewees10bvijY61ankxQQ=
+github.com/iotaledger/wasp v0.0.2-0.20210128055908-3dd94377e999 h1:oW+aQ41CA2t3uk6CEv5hR1QwhZ+JeP5if0Dvq9ulufg=
+github.com/iotaledger/wasp v0.0.2-0.20210128055908-3dd94377e999/go.mod h1:39T8jGZjfmNyjHhUdydp0cX2cFfZuqfO+uP4sCixDm0=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=

@@ -15,11 +15,11 @@ type ScMutableAddress struct {
 }
 
 func (o ScMutableAddress) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_ADDRESS)
 }
 
 func (o ScMutableAddress) SetValue(value *ScAddress) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_ADDRESS, value.Bytes())
 }
 
 func (o ScMutableAddress) String() string {
@@ -27,7 +27,7 @@ func (o ScMutableAddress) String() string {
 }
 
 func (o ScMutableAddress) Value() *ScAddress {
-	return NewScAddress(GetBytes(o.objId, o.keyId))
+	return NewScAddress(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -60,11 +60,11 @@ type ScMutableAgent struct {
 }
 
 func (o ScMutableAgent) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_AGENT)
 }
 
 func (o ScMutableAgent) SetValue(value *ScAgent) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_AGENT, value.Bytes())
 }
 
 func (o ScMutableAgent) String() string {
@@ -72,7 +72,7 @@ func (o ScMutableAgent) String() string {
 }
 
 func (o ScMutableAgent) Value() *ScAgent {
-	return NewScAgent(GetBytes(o.objId, o.keyId))
+	return NewScAgent(GetBytes(o.objId, o.keyId, TYPE_AGENT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -105,11 +105,11 @@ type ScMutableBytes struct {
 }
 
 func (o ScMutableBytes) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_BYTES)
 }
 
 func (o ScMutableBytes) SetValue(value []byte) {
-	SetBytes(o.objId, o.keyId, value)
+	SetBytes(o.objId, o.keyId, TYPE_BYTES, value)
 }
 
 func (o ScMutableBytes) String() string {
@@ -117,7 +117,7 @@ func (o ScMutableBytes) String() string {
 }
 
 func (o ScMutableBytes) Value() []byte {
-	return GetBytes(o.objId, o.keyId)
+	return GetBytes(o.objId, o.keyId, TYPE_BYTES)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -150,11 +150,11 @@ type ScMutableChainId struct {
 }
 
 func (o ScMutableChainId) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_CHAIN)
 }
 
 func (o ScMutableChainId) SetValue(value *ScChainId) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_CHAIN, value.Bytes())
 }
 
 func (o ScMutableChainId) String() string {
@@ -162,7 +162,7 @@ func (o ScMutableChainId) String() string {
 }
 
 func (o ScMutableChainId) Value() *ScChainId {
-	return NewScChainId(GetBytes(o.objId, o.keyId))
+	return NewScChainId(GetBytes(o.objId, o.keyId, TYPE_CHAIN))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -173,11 +173,11 @@ type ScMutableColor struct {
 }
 
 func (o ScMutableColor) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_COLOR)
 }
 
 func (o ScMutableColor) SetValue(value *ScColor) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_COLOR, value.Bytes())
 }
 
 func (o ScMutableColor) String() string {
@@ -185,7 +185,7 @@ func (o ScMutableColor) String() string {
 }
 
 func (o ScMutableColor) Value() *ScColor {
-	return NewScColor(GetBytes(o.objId, o.keyId))
+	return NewScColor(GetBytes(o.objId, o.keyId, TYPE_COLOR))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -218,11 +218,11 @@ type ScMutableContractId struct {
 }
 
 func (o ScMutableContractId) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_CONTRACT)
 }
 
 func (o ScMutableContractId) SetValue(value *ScContractId) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_CONTRACT, value.Bytes())
 }
 
 func (o ScMutableContractId) String() string {
@@ -230,7 +230,7 @@ func (o ScMutableContractId) String() string {
 }
 
 func (o ScMutableContractId) Value() *ScContractId {
-	return NewScContractId(GetBytes(o.objId, o.keyId))
+	return NewScContractId(GetBytes(o.objId, o.keyId, TYPE_CONTRACT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -241,11 +241,11 @@ type ScMutableHash struct {
 }
 
 func (o ScMutableHash) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_HASH)
 }
 
 func (o ScMutableHash) SetValue(value *ScHash) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_HASH, value.Bytes())
 }
 
 func (o ScMutableHash) String() string {
@@ -253,7 +253,7 @@ func (o ScMutableHash) String() string {
 }
 
 func (o ScMutableHash) Value() *ScHash {
-	return NewScHash(GetBytes(o.objId, o.keyId))
+	return NewScHash(GetBytes(o.objId, o.keyId, TYPE_HASH))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -286,11 +286,11 @@ type ScMutableHname struct {
 }
 
 func (o ScMutableHname) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_HNAME)
 }
 
 func (o ScMutableHname) SetValue(value Hname) {
-	SetBytes(o.objId, o.keyId, value.Bytes())
+	SetBytes(o.objId, o.keyId, TYPE_HNAME, value.Bytes())
 }
 
 func (o ScMutableHname) String() string {
@@ -298,7 +298,7 @@ func (o ScMutableHname) String() string {
 }
 
 func (o ScMutableHname) Value() Hname {
-	return NewHnameFromBytes(GetBytes(o.objId, o.keyId))
+	return NewHnameFromBytes(GetBytes(o.objId, o.keyId, TYPE_HNAME))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -309,7 +309,7 @@ type ScMutableInt struct {
 }
 
 func (o ScMutableInt) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_INT)
 }
 
 func (o ScMutableInt) SetValue(value int64) {
@@ -481,11 +481,11 @@ type ScMutableString struct {
 }
 
 func (o ScMutableString) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_STRING)
 }
 
 func (o ScMutableString) SetValue(value string) {
-	SetString(o.objId, o.keyId, value)
+	SetBytes(o.objId, o.keyId, TYPE_STRING, []byte(value))
 }
 
 func (o ScMutableString) String() string {
@@ -493,7 +493,11 @@ func (o ScMutableString) String() string {
 }
 
 func (o ScMutableString) Value() string {
-	return GetString(o.objId, o.keyId)
+	bytes := GetBytes(o.objId, o.keyId, TYPE_STRING)
+	if bytes == nil {
+		return ""
+	}
+	return string(bytes)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

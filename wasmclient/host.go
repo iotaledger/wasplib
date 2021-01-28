@@ -9,7 +9,7 @@ import "github.com/iotaledger/wasplib/client"
 
 //go:wasm-module wasplib
 //export hostGetBytes
-func hostGetBytes(objId int32, keyId int32, value *byte, size int32) int32
+func hostGetBytes(objId int32, keyId int32, typeId int32, value *byte, size int32) int32
 
 //go:wasm-module wasplib
 //export hostGetIntRef
@@ -25,7 +25,7 @@ func hostGetObjectId(objId int32, keyId int32, typeId int32) int32
 
 //go:wasm-module wasplib
 //export hostSetBytes
-func hostSetBytes(objId int32, keyId int32, value *byte, size int32)
+func hostSetBytes(objId int32, keyId int32, typeId int32, value *byte, size int32)
 
 //go:wasm-module wasplib
 //export hostSetIntRef
@@ -40,16 +40,16 @@ func ConnectWasmHost() {
 	client.ConnectHost(WasmVmHost{})
 }
 
-func (w WasmVmHost) Exists(objId int32, keyId int32) bool {
+func (w WasmVmHost) Exists(objId int32, keyId int32, typeId int32) bool {
 	// negative length (-1) means only test for existence
 	// returned size -1 indicates keyId not found (or error)
 	// this removes the need for a separate hostExists function
-	return hostGetBytes(objId, keyId, nil, -1) >= 0
+	return hostGetBytes(objId, keyId, typeId, nil, -1) >= 0
 }
 
-func (w WasmVmHost) GetBytes(objId int32, keyId int32) []byte {
+func (w WasmVmHost) GetBytes(objId int32, keyId int32, typeId int32) []byte {
 	// first query expected length of bytes array
-	size := hostGetBytes(objId, keyId, nil, 0)
+	size := hostGetBytes(objId, keyId, typeId, nil, 0)
 	if size <= 0 {
 		return []byte(nil)
 	}
@@ -57,7 +57,7 @@ func (w WasmVmHost) GetBytes(objId int32, keyId int32) []byte {
 	// allocate a byte array in Wasm memory and
 	// copy the actual data bytes to Wasm byte array
 	bytes := make([]byte, size)
-	hostGetBytes(objId, keyId, &bytes[0], size)
+	hostGetBytes(objId, keyId, typeId, &bytes[0], size)
 	return bytes
 }
 
@@ -95,25 +95,14 @@ func (w WasmVmHost) GetObjectId(objId int32, keyId int32, typeId int32) int32 {
 	return hostGetObjectId(objId, keyId, typeId)
 }
 
-func (w WasmVmHost) GetString(objId int32, keyId int32) string {
-	// convert UTF8-encoded bytes array to string
-	// negative object id indicates to host that this is a string
-	// this removes the need for a separate hostGetString function
-	bytes := w.GetBytes(-objId, keyId)
-	if bytes == nil {
-		return ""
-	}
-	return string(bytes)
-}
-
-func (w WasmVmHost) SetBytes(objId int32, keyId int32, value []byte) {
+func (w WasmVmHost) SetBytes(objId int32, keyId int32, typeId int32, value []byte) {
 	// &bytes[0] will panic on zero length slice, so use nil instead
 	size := int32(len(value))
 	if size == 0 {
-		hostSetBytes(objId, keyId, nil, size)
+		hostSetBytes(objId, keyId, typeId, nil, size)
 		return
 	}
-	hostSetBytes(objId, keyId, &value[0], size)
+	hostSetBytes(objId, keyId, typeId, &value[0], size)
 }
 
 func (w WasmVmHost) SetInt(objId int32, keyId int32, value int64) {
@@ -121,11 +110,4 @@ func (w WasmVmHost) SetInt(objId int32, keyId int32, value int64) {
 	// which does not know int64. So instead of calling hostSetInt()
 	// we call hostSetIntRef() with a 32-bit reference to the int64
 	hostSetIntRef(objId, keyId, &value)
-}
-
-func (w WasmVmHost) SetString(objId int32, keyId int32, value string) {
-	// convert string to UTF8-encoded bytes array
-	// negative object id indicates to host that this is a string
-	// this removes the need for a separate hostSetString function
-	w.SetBytes(-objId, keyId, []byte(value))
 }

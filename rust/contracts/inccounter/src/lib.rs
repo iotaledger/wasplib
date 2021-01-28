@@ -158,15 +158,15 @@ fn test(_sc: &ScCallContext) {
     let timestamp = get_int(1, key_id);
     set_int(1, key_id, timestamp);
     let key_id2 = get_key_id_from_string("string");
-    set_string(1, key_id2, "Test");
-    let s1 = get_string(1, key_id2);
-    set_string(1, key_id2, "Bleep");
-    let s2 = get_string(1, key_id2);
-    set_string(1, key_id2, "Klunky");
-    let s3 = get_string(1, key_id2);
-    set_string(1, key_id2, &s1);
-    set_string(1, key_id2, &s2);
-    set_string(1, key_id2, &s3);
+    set_bytes(1, key_id2, TYPE_STRING, "Test".as_bytes());
+    let s1 = get_bytes(1, key_id2, TYPE_STRING);
+    set_bytes(1, key_id2, TYPE_STRING, "Bleep".as_bytes());
+    let s2 = get_bytes(1, key_id2, TYPE_STRING);
+    set_bytes(1, key_id2, TYPE_STRING, "Klunky".as_bytes());
+    let s3 = get_bytes(1, key_id2, TYPE_STRING);
+    set_bytes(1, key_id2, TYPE_STRING, &s1);
+    set_bytes(1, key_id2, TYPE_STRING, &s2);
+    set_bytes(1, key_id2, TYPE_STRING, &s3);
 }
 
 fn results_test(ctx: &ScCallContext) {

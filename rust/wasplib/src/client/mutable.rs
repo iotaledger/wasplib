@@ -22,11 +22,11 @@ impl ScMutableAddress {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_ADDRESS)
     }
 
     pub fn set_value(&self, val: &ScAddress) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_ADDRESS, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -34,7 +34,7 @@ impl ScMutableAddress {
     }
 
     pub fn value(&self) -> ScAddress {
-        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_ADDRESS))
     }
 }
 
@@ -82,11 +82,11 @@ impl ScMutableAgent {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_AGENT)
     }
 
     pub fn set_value(&self, val: &ScAgent) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_AGENT, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -94,7 +94,7 @@ impl ScMutableAgent {
     }
 
     pub fn value(&self) -> ScAgent {
-        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT))
     }
 }
 
@@ -142,11 +142,11 @@ impl ScMutableBytes {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
     }
 
     pub fn set_value(&self, val: &[u8]) {
-        set_bytes(self.obj_id, self.key_id, val);
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, val);
     }
 
     pub fn to_string(&self) -> String {
@@ -154,7 +154,7 @@ impl ScMutableBytes {
     }
 
     pub fn value(&self) -> Vec<u8> {
-        get_bytes(self.obj_id, self.key_id)
+        get_bytes(self.obj_id, self.key_id, TYPE_BYTES)
     }
 }
 
@@ -200,11 +200,11 @@ impl ScMutableChainId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_CHAIN)
     }
 
     pub fn set_value(&self, val: &ScChainId) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_CHAIN, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -212,7 +212,7 @@ impl ScMutableChainId {
     }
 
     pub fn value(&self) -> ScChainId {
-        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN))
     }
 }
 
@@ -229,11 +229,11 @@ impl ScMutableColor {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_COLOR)
     }
 
     pub fn set_value(&self, val: &ScColor) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_COLOR, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -241,7 +241,7 @@ impl ScMutableColor {
     }
 
     pub fn value(&self) -> ScColor {
-        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_COLOR))
     }
 }
 
@@ -287,11 +287,11 @@ impl ScMutableContractId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_CONTRACT)
     }
 
     pub fn set_value(&self, val: &ScContractId) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_CONTRACT, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -299,7 +299,7 @@ impl ScMutableContractId {
     }
 
     pub fn value(&self) -> ScContractId {
-        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT))
     }
 }
 
@@ -316,11 +316,11 @@ impl ScMutableHash {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_HASH)
     }
 
     pub fn set_value(&self, val: &ScHash) {
-        set_bytes(self.obj_id, self.key_id, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_HASH, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -328,7 +328,7 @@ impl ScMutableHash {
     }
 
     pub fn value(&self) -> ScHash {
-        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HASH))
     }
 }
 
@@ -374,11 +374,11 @@ impl ScMutableHname {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_HNAME)
     }
 
     pub fn set_value(&self, val: Hname) {
-        set_bytes(self.obj_id, self.key_id, &val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_HNAME, &val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -386,7 +386,7 @@ impl ScMutableHname {
     }
 
     pub fn value(&self) -> Hname {
-        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HNAME))
     }
 }
 
@@ -404,7 +404,7 @@ impl ScMutableInt {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_INT)
     }
 
     pub fn set_value(&self, val: i64) {
@@ -599,11 +599,11 @@ impl ScMutableString {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_STRING)
     }
 
     pub fn set_value(&self, val: &str) {
-        set_string(self.obj_id, self.key_id, val);
+        set_bytes(self.obj_id, self.key_id, TYPE_STRING, val.as_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -611,7 +611,8 @@ impl ScMutableString {
     }
 
     pub fn value(&self) -> String {
-        get_string(self.obj_id, self.key_id)
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_STRING);
+        unsafe { String::from_utf8_unchecked(bytes) }
     }
 }
 

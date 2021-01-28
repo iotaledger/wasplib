@@ -19,7 +19,7 @@ impl ScImmutableAddress {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_ADDRESS)
     }
 
     pub fn to_string(&self) -> String {
@@ -27,7 +27,7 @@ impl ScImmutableAddress {
     }
 
     pub fn value(&self) -> ScAddress {
-        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScAddress::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_ADDRESS))
     }
 }
 
@@ -67,7 +67,7 @@ impl ScImmutableAgent {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_AGENT)
     }
 
     pub fn to_string(&self) -> String {
@@ -75,7 +75,7 @@ impl ScImmutableAgent {
     }
 
     pub fn value(&self) -> ScAgent {
-        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT))
     }
 }
 
@@ -115,7 +115,7 @@ impl ScImmutableBytes {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
     }
 
     pub fn to_string(&self) -> String {
@@ -123,7 +123,7 @@ impl ScImmutableBytes {
     }
 
     pub fn value(&self) -> Vec<u8> {
-        get_bytes(self.obj_id, self.key_id)
+        get_bytes(self.obj_id, self.key_id, TYPE_BYTES)
     }
 }
 
@@ -161,7 +161,7 @@ impl ScImmutableChainId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_CHAIN)
     }
 
     pub fn to_string(&self) -> String {
@@ -169,7 +169,7 @@ impl ScImmutableChainId {
     }
 
     pub fn value(&self) -> ScChainId {
-        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN))
     }
 }
 
@@ -186,7 +186,7 @@ impl ScImmutableColor {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_COLOR)
     }
 
     pub fn to_string(&self) -> String {
@@ -194,7 +194,7 @@ impl ScImmutableColor {
     }
 
     pub fn value(&self) -> ScColor {
-        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScColor::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_COLOR))
     }
 }
 
@@ -232,7 +232,7 @@ impl ScImmutableContractId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_CONTRACT)
     }
 
     pub fn to_string(&self) -> String {
@@ -240,7 +240,7 @@ impl ScImmutableContractId {
     }
 
     pub fn value(&self) -> ScContractId {
-        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT))
     }
 }
 
@@ -257,7 +257,7 @@ impl ScImmutableHash {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_HASH)
     }
 
     pub fn to_string(&self) -> String {
@@ -265,7 +265,7 @@ impl ScImmutableHash {
     }
 
     pub fn value(&self) -> ScHash {
-        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        ScHash::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HASH))
     }
 }
 
@@ -303,7 +303,7 @@ impl ScImmutableHname {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_HNAME)
     }
 
     pub fn to_string(&self) -> String {
@@ -311,7 +311,7 @@ impl ScImmutableHname {
     }
 
     pub fn value(&self) -> Hname {
-        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id))
+        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HNAME))
     }
 }
 
@@ -328,7 +328,7 @@ impl ScImmutableInt {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_INT)
     }
 
     pub fn to_string(&self) -> String {
@@ -497,7 +497,7 @@ impl ScImmutableString {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id)
+        exists(self.obj_id, self.key_id, TYPE_STRING)
     }
 
     pub fn to_string(&self) -> String {
@@ -505,7 +505,8 @@ impl ScImmutableString {
     }
 
     pub fn value(&self) -> String {
-        get_string(self.obj_id, self.key_id)
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_STRING);
+        unsafe { String::from_utf8_unchecked(bytes) }
     }
 }
 

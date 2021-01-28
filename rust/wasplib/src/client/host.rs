@@ -23,33 +23,33 @@ pub const TYPE_CONTRACT: i32 = 11;
 // Any return value will be zero or empty string in that case
 #[link(wasm_import_module = "wasplib")]
 extern {
-    pub fn hostGetBytes(obj_id: i32, key_id: i32, value: *mut u8, len: i32) -> i32;
+    pub fn hostGetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *mut u8, len: i32) -> i32;
     pub fn hostGetInt(obj_id: i32, key_id: i32) -> i64;
     pub fn hostGetKeyId(key: *const u8, len: i32) -> i32;
     pub fn hostGetObjectId(obj_id: i32, key_id: i32, type_id: i32) -> i32;
-    pub fn hostSetBytes(obj_id: i32, key_id: i32, value: *const u8, len: i32);
+    pub fn hostSetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *const u8, len: i32);
     pub fn hostSetInt(obj_id: i32, key_id: i32, value: i64);
 }
 
-pub fn exists(obj_id: i32, key_id: Key32) -> bool {
+pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
     unsafe {
         // negative length (-1) means only test for existence
         // returned size -1 indicates keyId not found (or error)
         // this removes the need for a separate hostExists function
-        hostGetBytes(obj_id, key_id.0, std::ptr::null_mut(), -1) >= 0_i32
+        hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), -1) >= 0_i32
     }
 }
 
-pub fn get_bytes(obj_id: i32, key_id: Key32) -> Vec<u8> {
+pub fn get_bytes(obj_id: i32, key_id: Key32, type_id: i32) -> Vec<u8> {
     unsafe {
         // first query length of bytes array
-        let size = hostGetBytes(obj_id, key_id.0, std::ptr::null_mut(), 0);
+        let size = hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), 0);
         if size <= 0 { return vec![0_u8; 0]; }
 
         // allocate a byte array in Wasm memory and
         // copy the actual data bytes to Wasm byte array
         let mut bytes = vec![0_u8; size as usize];
-        hostGetBytes(obj_id, key_id.0, bytes.as_mut_ptr(), size);
+        hostGetBytes(obj_id, key_id.0, type_id, bytes.as_mut_ptr(), size);
         return bytes;
     }
 }
@@ -86,19 +86,9 @@ pub fn get_object_id(obj_id: i32, key_id: Key32, type_id: i32) -> i32 {
     }
 }
 
-pub fn get_string(obj_id: i32, key_id: Key32) -> String {
-    // convert UTF8-encoded bytes array to string
-    // negative object id indicates to host that this is a string
-    // this removes the need for a separate hostGetString function
+pub fn set_bytes(obj_id: i32, key_id: Key32, type_id: i32, value: &[u8]) {
     unsafe {
-        let bytes = get_bytes(-obj_id, key_id);
-        return String::from_utf8_unchecked(bytes);
-    }
-}
-
-pub fn set_bytes(obj_id: i32, key_id: Key32, value: &[u8]) {
-    unsafe {
-        hostSetBytes(obj_id, key_id.0, value.as_ptr(), value.len() as i32)
+        hostSetBytes(obj_id, key_id.0, type_id, value.as_ptr(), value.len() as i32)
     }
 }
 
@@ -110,11 +100,4 @@ pub fn set_int(obj_id: i32, key_id: Key32, value: i64) {
     unsafe {
         hostSetInt(obj_id, key_id.0, value)
     }
-}
-
-pub fn set_string(obj_id: i32, key_id: Key32, value: &str) {
-    // convert string to UTF8-encoded bytes array
-    // negative object id indicates to host that this is a string
-    // this removes the need for a separate hostSetString function
-    set_bytes(-obj_id, key_id, value.as_bytes())
 }

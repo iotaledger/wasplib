@@ -158,15 +158,15 @@ func test(_sc *client.ScCallContext) {
 	timestamp := client.GetInt(1, KeyId)
 	client.SetInt(1, KeyId, timestamp)
 	KeyId2 := client.GetKeyIdFromString("string")
-	client.SetString(1, KeyId2, "Test")
-	s1 := client.GetString(1, KeyId2)
-	client.SetString(1, KeyId2, "Bleep")
-	s2 := client.GetString(1, KeyId2)
-	client.SetString(1, KeyId2, "Klunky")
-	s3 := client.GetString(1, KeyId2)
-	client.SetString(1, KeyId2, s1)
-	client.SetString(1, KeyId2, s2)
-	client.SetString(1, KeyId2, s3)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Test"))
+	s1 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Bleep"))
+	s2 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Klunky"))
+	s3 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, s1)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, s2)
+	client.SetBytes(1, KeyId2, client.TYPE_STRING, s3)
 }
 
 func resultsTest(ctx *client.ScCallContext) {
@@ -196,6 +196,7 @@ func testMap(kvstore client.ScMutableMap) {
 	string1 := kvstore.GetString(client.Key("string1"))
 	check(string1.Value() == "")
 	string1.SetValue("a")
+	check(string1.Value() == "a")
 
 	ia1 := kvstore.GetIntArray(client.Key("ia1"))
 	int2 := ia1.GetInt(0)

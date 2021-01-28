@@ -21,16 +21,14 @@ const (
 )
 
 type ScHost interface {
-	Exists(objId int32, keyId int32) bool
-	GetBytes(objId int32, keyId int32) []byte
+	Exists(objId int32, keyId int32, typeId int32) bool
+	GetBytes(objId int32, keyId int32, typeId int32) []byte
 	GetInt(objId int32, keyId int32) int64
 	GetKeyIdFromBytes(bytes []byte) int32
 	GetKeyIdFromString(key string) int32
 	GetObjectId(objId int32, keyId int32, typeId int32) int32
-	GetString(objId int32, keyId int32) string
-	SetBytes(objId int32, keyId int32, value []byte)
+	SetBytes(objId int32, keyId int32, typeId int32, value []byte)
 	SetInt(objId int32, keyId int32, value int64)
-	SetString(objId int32, keyId int32, value string)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -41,12 +39,12 @@ func ConnectHost(h ScHost) {
 	host = h
 }
 
-func Exists(objId int32, keyId Key32) bool {
-	return host.Exists(objId, int32(keyId))
+func Exists(objId int32, keyId Key32, typeId int32) bool {
+	return host.Exists(objId, int32(keyId), typeId)
 }
 
-func GetBytes(objId int32, keyId Key32) []byte {
-	return host.GetBytes(objId, int32(keyId))
+func GetBytes(objId int32, keyId Key32, typeId int32) []byte {
+	return host.GetBytes(objId, int32(keyId), typeId)
 }
 
 func GetInt(objId int32, keyId Key32) int64 {
@@ -69,12 +67,8 @@ func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
 	return host.GetObjectId(objId, int32(keyId), typeId)
 }
 
-func GetString(objId int32, keyId Key32) string {
-	return host.GetString(objId, int32(keyId))
-}
-
-func SetBytes(objId int32, keyId Key32, value []byte) {
-	host.SetBytes(objId, int32(keyId), value)
+func SetBytes(objId int32, keyId Key32, typeId int32, value []byte) {
+	host.SetBytes(objId, int32(keyId), typeId, value)
 }
 
 func SetClear(objId int32) {
@@ -83,8 +77,4 @@ func SetClear(objId int32) {
 
 func SetInt(objId int32, keyId Key32, value int64) {
 	host.SetInt(objId, int32(keyId), value)
-}
-
-func SetString(objId int32, keyId Key32, value string) {
-	host.SetString(objId, int32(keyId), value)
 }

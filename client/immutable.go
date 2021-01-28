@@ -11,7 +11,7 @@ type ScImmutableAddress struct {
 }
 
 func (o ScImmutableAddress) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_ADDRESS)
 }
 
 func (o ScImmutableAddress) String() string {
@@ -19,7 +19,7 @@ func (o ScImmutableAddress) String() string {
 }
 
 func (o ScImmutableAddress) Value() *ScAddress {
-	return NewScAddress(GetBytes(o.objId, o.keyId))
+	return NewScAddress(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -44,7 +44,7 @@ type ScImmutableAgent struct {
 }
 
 func (o ScImmutableAgent) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_AGENT)
 }
 
 func (o ScImmutableAgent) String() string {
@@ -52,7 +52,7 @@ func (o ScImmutableAgent) String() string {
 }
 
 func (o ScImmutableAgent) Value() *ScAgent {
-	return NewScAgent(GetBytes(o.objId, o.keyId))
+	return NewScAgent(GetBytes(o.objId, o.keyId, TYPE_AGENT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -77,7 +77,7 @@ type ScImmutableBytes struct {
 }
 
 func (o ScImmutableBytes) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_BYTES)
 }
 
 func (o ScImmutableBytes) String() string {
@@ -85,7 +85,7 @@ func (o ScImmutableBytes) String() string {
 }
 
 func (o ScImmutableBytes) Value() []byte {
-	return GetBytes(o.objId, o.keyId)
+	return GetBytes(o.objId, o.keyId, TYPE_BYTES)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -110,7 +110,7 @@ type ScImmutableChainId struct {
 }
 
 func (o ScImmutableChainId) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_CHAIN)
 }
 
 func (o ScImmutableChainId) String() string {
@@ -118,7 +118,7 @@ func (o ScImmutableChainId) String() string {
 }
 
 func (o ScImmutableChainId) Value() *ScChainId {
-	return NewScChainId(GetBytes(o.objId, o.keyId))
+	return NewScChainId(GetBytes(o.objId, o.keyId, TYPE_CHAIN))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -129,7 +129,7 @@ type ScImmutableColor struct {
 }
 
 func (o ScImmutableColor) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_COLOR)
 }
 
 func (o ScImmutableColor) String() string {
@@ -137,7 +137,7 @@ func (o ScImmutableColor) String() string {
 }
 
 func (o ScImmutableColor) Value() *ScColor {
-	return NewScColor(GetBytes(o.objId, o.keyId))
+	return NewScColor(GetBytes(o.objId, o.keyId, TYPE_COLOR))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -162,7 +162,7 @@ type ScImmutableContractId struct {
 }
 
 func (o ScImmutableContractId) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_CONTRACT)
 }
 
 func (o ScImmutableContractId) String() string {
@@ -170,7 +170,7 @@ func (o ScImmutableContractId) String() string {
 }
 
 func (o ScImmutableContractId) Value() *ScContractId {
-	return NewScContractId(GetBytes(o.objId, o.keyId))
+	return NewScContractId(GetBytes(o.objId, o.keyId, TYPE_CONTRACT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -181,7 +181,7 @@ type ScImmutableHash struct {
 }
 
 func (o ScImmutableHash) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_HASH)
 }
 
 func (o ScImmutableHash) String() string {
@@ -189,7 +189,7 @@ func (o ScImmutableHash) String() string {
 }
 
 func (o ScImmutableHash) Value() *ScHash {
-	return NewScHash(GetBytes(o.objId, o.keyId))
+	return NewScHash(GetBytes(o.objId, o.keyId, TYPE_HASH))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -214,7 +214,7 @@ type ScImmutableHname struct {
 }
 
 func (o ScImmutableHname) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_HNAME)
 }
 
 func (o ScImmutableHname) String() string {
@@ -222,7 +222,7 @@ func (o ScImmutableHname) String() string {
 }
 
 func (o ScImmutableHname) Value() Hname {
-	return NewHnameFromBytes(GetBytes(o.objId, o.keyId))
+	return NewHnameFromBytes(GetBytes(o.objId, o.keyId, TYPE_HNAME))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -233,7 +233,7 @@ type ScImmutableInt struct {
 }
 
 func (o ScImmutableInt) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_INT)
 }
 
 func (o ScImmutableInt) String() string {
@@ -372,7 +372,7 @@ type ScImmutableString struct {
 }
 
 func (o ScImmutableString) Exists() bool {
-	return Exists(o.objId, o.keyId)
+	return Exists(o.objId, o.keyId, TYPE_STRING)
 }
 
 func (o ScImmutableString) String() string {
@@ -380,7 +380,11 @@ func (o ScImmutableString) String() string {
 }
 
 func (o ScImmutableString) Value() string {
-	return GetString(o.objId, o.keyId)
+	bytes := GetBytes(o.objId, o.keyId, TYPE_STRING)
+	if bytes == nil {
+		return ""
+	}
+	return string(bytes)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
