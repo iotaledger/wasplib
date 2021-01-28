@@ -69,7 +69,7 @@ func TestTransferOk1(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
-	req := solo.NewCall(erc20name, "transfer",
+	req := solo.NewCallParams(erc20name, "transfer",
 		PARAM_ACCOUNT, userAgentID,
 		PARAM_AMOUNT, amount,
 	)
@@ -87,14 +87,14 @@ func TestTransferOk2(t *testing.T) {
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 	amount := int64(42)
 
-	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCallParams(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, supply-amount)
 	checkErc20Balance(chain, userAgentID, amount)
 
-	req = solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
+	req = solo.NewCallParams(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
 	_, err = chain.PostRequest(req, user)
 	require.NoError(t, err)
 
@@ -112,7 +112,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCallParams(erc20name, "transfer", PARAM_ACCOUNT, userAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, creator)
 	require.Error(t, err)
 
@@ -130,7 +130,7 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req := solo.NewCall(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
+	req := solo.NewCallParams(erc20name, "transfer", PARAM_ACCOUNT, creatorAgentID, PARAM_AMOUNT, amount)
 	_, err := chain.PostRequest(req, user)
 	require.Error(t, err)
 
@@ -150,7 +150,7 @@ func TestApprove(t *testing.T) {
 	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCallParams(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -164,7 +164,7 @@ func TestTransferFromOk1(t *testing.T) {
 	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCallParams(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -172,7 +172,7 @@ func TestTransferFromOk1(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = solo.NewCall(erc20name, "transfer_from",
+	req = solo.NewCallParams(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 50,
@@ -190,7 +190,7 @@ func TestTransferFromOk2(t *testing.T) {
 	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCallParams(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -198,7 +198,7 @@ func TestTransferFromOk2(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = solo.NewCall(erc20name, "transfer_from",
+	req = solo.NewCallParams(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 100,
@@ -216,7 +216,7 @@ func TestTransferFromFail(t *testing.T) {
 	user := chain.Env.NewSignatureSchemeWithFunds()
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := solo.NewCall(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
+	req := solo.NewCallParams(erc20name, "approve", PARAM_DELEGATION, userAgentID, PARAM_AMOUNT, 100)
 	_, err := chain.PostRequest(req, creator)
 	require.NoError(t, err)
 
@@ -224,7 +224,7 @@ func TestTransferFromFail(t *testing.T) {
 	checkErc20Balance(chain, creatorAgentID, supply)
 	checkErc20Balance(chain, userAgentID, 0)
 
-	req = solo.NewCall(erc20name, "transfer_from",
+	req = solo.NewCallParams(erc20name, "transfer_from",
 		PARAM_ACCOUNT, creatorAgentID,
 		PARAM_RECIPIENT, userAgentID,
 		PARAM_AMOUNT, 101,

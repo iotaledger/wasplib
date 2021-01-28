@@ -43,7 +43,7 @@ func TestSolo3(t *testing.T) {
 	require.NoError(t, err)
 
 	// call contract to store string
-	req := solo.NewCall("example1", "storeString", "paramString", "Hello, world!")
+	req := solo.NewCallParams("example1", "storeString", "paramString", "Hello, world!")
 	_, err = chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
@@ -64,7 +64,7 @@ func TestSolo4(t *testing.T) {
 	require.NoError(t, err)
 
 	// call contract incorrectly
-	req := solo.NewCall("example1", "storeString")
+	req := solo.NewCallParams("example1", "storeString")
 	_, err = chain.PostRequest(req, nil)
 	require.Error(t, err)
 }
@@ -89,7 +89,7 @@ func TestSolo5(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337)
 
 	// send 42 iotas from wallet to own account on-chain, controlled by the same wallet
-	req := solo.NewCall(accounts.Name, accounts.FuncDeposit).
+	req := solo.NewCallParams(accounts.Name, accounts.FuncDeposit).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
@@ -100,7 +100,7 @@ func TestSolo5(t *testing.T) {
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 43)
 
 	// withdraw back all iotas
-	req = solo.NewCall(accounts.Name, accounts.FuncWithdrawToAddress)
+	req = solo.NewCallParams(accounts.Name, accounts.FuncWithdrawToAddress)
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 
@@ -129,7 +129,7 @@ func TestSolo6(t *testing.T) {
 	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 0) // empty on-chain
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)     // empty on-chain
 
-	req := solo.NewCall("example1", "storeString", "paramString", "Hello, world!").
+	req := solo.NewCallParams("example1", "storeString", "paramString", "Hello, world!").
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
@@ -160,7 +160,7 @@ func TestSolo7(t *testing.T) {
 	chain.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)     // empty on-chain
 
 	// missing parameter, will panic
-	req := solo.NewCall("example1", "storeString").
+	req := solo.NewCallParams("example1", "storeString").
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
 	require.Error(t, err)
@@ -189,7 +189,7 @@ func TestSolo8(t *testing.T) {
 
 	// the chain owner (default) send a request to the root contract to grant right toi deploy
 	// contract on the chain to the use
-	req := solo.NewCall(root.Interface.Name, root.FuncGrantDeploy, root.ParamDeployer, userAgentID)
+	req := solo.NewCallParams(root.Interface.Name, root.FuncGrantDeploy, root.ParamDeployer, userAgentID)
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
@@ -215,7 +215,7 @@ func TestSolo8(t *testing.T) {
 	// user send a "storeString" request to the smart contract. It attaches 42 iotas to the request
 	// It also takes 1 iota for the request token
 	// Result is 42 iotas moved to the smart contract's account
-	req = solo.NewCall("example1", "storeString", "paramString", "Hello, world!").
+	req = solo.NewCallParams("example1", "storeString", "paramString", "Hello, world!").
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
@@ -227,7 +227,7 @@ func TestSolo8(t *testing.T) {
 	// user withdraws all iotas from the smart contract back
 	// Out of 42 iotas 41 iota is coming back to the user's address, 1 iotas
 	// is accrued to the user on chain
-	req = solo.NewCall("example1", "withdraw_iota")
+	req = solo.NewCallParams("example1", "withdraw_iota")
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 

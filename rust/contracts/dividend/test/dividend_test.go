@@ -33,7 +33,7 @@ func TestAddMemberOk(t *testing.T) {
 
 	user1 := glb.NewSignatureSchemeWithFunds()
 	user1address := user1.Address()
-	req := solo.NewCall("dividend", "member",
+	req := solo.NewCallParams("dividend", "member",
 		ParamAddress, user1address,
 		ParamFactor, 100,
 	)
@@ -48,7 +48,7 @@ func TestAddMemberParamFail1(t *testing.T) {
 	err := chain.DeployWasmContract(nil, "dividend", WasmFile)
 	require.NoError(t, err)
 
-	req := solo.NewCall("dividend", "member",
+	req := solo.NewCallParams("dividend", "member",
 		ParamFactor, 100,
 	)
 	_, err = chain.PostRequest(req, nil)
@@ -64,7 +64,7 @@ func TestAddMemberParamFail2(t *testing.T) {
 
 	user1 := glb.NewSignatureSchemeWithFunds()
 	user1address := user1.Address()
-	req := solo.NewCall("dividend", "member",
+	req := solo.NewCallParams("dividend", "member",
 		ParamAddress, user1address,
 	)
 	_, err = chain.PostRequest(req, nil)
