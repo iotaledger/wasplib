@@ -26,7 +26,7 @@ func testChainOwnerIDFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncChainOwnerIDFull)
+	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncChainOwnerIDFull)
 	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
@@ -50,7 +50,7 @@ func testContractIDFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncContractIDFull)
+	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncContractIDFull)
 	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 	cID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(SandboxSCName))

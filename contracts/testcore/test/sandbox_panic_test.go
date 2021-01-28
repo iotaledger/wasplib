@@ -13,7 +13,7 @@ func testPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP)
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgFullPanic))
@@ -34,7 +34,7 @@ func testCallPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicFullEP)
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicFullEP)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgFullPanic))
@@ -45,7 +45,7 @@ func testCallPanicViewFromFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicViewEPFromFull)
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicViewEPFromFull)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgViewPanic))

@@ -15,7 +15,7 @@ func TestMainCallsFromFullEP(t *testing.T) {
 	userAddress := user.Address()
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
-	req := solo.NewCall(root.Interface.Name, root.FuncGrantDeploy,
+	req := solo.NewCallParams(root.Interface.Name, root.FuncGrantDeploy,
 		root.ParamDeployer, userAgentID,
 	)
 	_, err := chain.PostRequest(req, nil)
@@ -27,7 +27,7 @@ func TestMainCallsFromFullEP(t *testing.T) {
 	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(test_sandbox_sc.Interface.Name))
 	agentID := coretypes.NewAgentIDFromContractID(contractID)
 
-	req = solo.NewCall(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCheckContextFromFullEP,
+	req = solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCheckContextFromFullEP,
 		test_sandbox_sc.ParamChainID, chain.ChainID,
 		test_sandbox_sc.ParamAgentID, agentID,
 		test_sandbox_sc.ParamCaller, userAgentID,
@@ -46,7 +46,7 @@ func TestMainCallsFromViewEP(t *testing.T) {
 	userAddress := user.Address()
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
-	req := solo.NewCall(root.Interface.Name, root.FuncGrantDeploy,
+	req := solo.NewCallParams(root.Interface.Name, root.FuncGrantDeploy,
 		root.ParamDeployer, userAgentID,
 	)
 	_, err := chain.PostRequest(req, nil)

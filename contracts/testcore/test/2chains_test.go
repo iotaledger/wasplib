@@ -39,7 +39,7 @@ func Test2Chains(t *testing.T) {
 	chain2.AssertAccountBalance(contractAgentID1, balance.ColorIOTA, 0)
 	chain2.AssertAccountBalance(contractAgentID2, balance.ColorIOTA, 0)
 
-	req := solo.NewCall(accounts.Interface.Name, accounts.FuncDeposit,
+	req := solo.NewCallParams(accounts.Interface.Name, accounts.FuncDeposit,
 		accounts.ParamAgentID, contractAgentID2,
 	).WithTransfer(
 		balance.ColorIOTA, 42,
@@ -63,7 +63,7 @@ func Test2Chains(t *testing.T) {
 	chain2.AssertAccountBalance(accountsAgentID1, balance.ColorIOTA, 0)
 	chain2.AssertAccountBalance(accountsAgentID2, balance.ColorIOTA, 0)
 
-	req = solo.NewCall(test_sandbox_sc.Name, test_sandbox_sc.FuncWithdrawToChain,
+	req = solo.NewCallParams(test_sandbox_sc.Name, test_sandbox_sc.FuncWithdrawToChain,
 		test_sandbox_sc.ParamChainID, chain1.ChainID,
 	).WithTransfer(
 		balance.ColorIOTA, 3,

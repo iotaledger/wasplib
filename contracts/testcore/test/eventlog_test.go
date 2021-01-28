@@ -20,7 +20,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	for i := 1; i < 6; i++ {
-		req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncEventLogGenericData,
+		req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncEventLogGenericData,
 			test_sandbox_sc.VarCounter, i,
 		)
 		_, err := chain.PostRequest(req, nil)
@@ -45,7 +45,7 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 	env.SetTimeStep(500 * time.Millisecond)
 	var err error
 	for i := 1; i < 6; i++ {
-		req := solo.NewCall(SandboxSCName,
+		req := solo.NewCallParams(SandboxSCName,
 			test_sandbox_sc.FuncEventLogGenericData,
 			test_sandbox_sc.VarCounter, i,
 		)
@@ -70,7 +70,7 @@ func testEventLogEventData(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name,
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogEventData,
 	)
 	_, err := chain.PostRequest(req, nil)
@@ -100,7 +100,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 	count := 1
 	// events
 	for i := 1; i <= 3; i++ {
-		req := solo.NewCall(test_sandbox_sc.Interface.Name,
+		req := solo.NewCallParams(test_sandbox_sc.Interface.Name,
 			test_sandbox_sc.FuncEventLogEventData,
 			test_sandbox_sc.VarCounter, count,
 		)
@@ -110,7 +110,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 	}
 	// generic
 	for i := 1; i <= 2; i++ {
-		req := solo.NewCall(test_sandbox_sc.Interface.Name,
+		req := solo.NewCallParams(test_sandbox_sc.Interface.Name,
 			test_sandbox_sc.FuncEventLogGenericData,
 			test_sandbox_sc.VarCounter, count,
 		)
@@ -141,7 +141,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName,
+	req := solo.NewCallParams(SandboxSCName,
 		test_sandbox_sc.FuncEventLogGenericData,
 		test_sandbox_sc.VarCounter, 1337,
 	)
@@ -174,7 +174,7 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name,
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogDeploy,
 	)
 	_, err := chain.PostRequest(req, nil)
@@ -202,13 +202,13 @@ func testChainLogMultiple(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(test_sandbox_sc.Interface.Name,
+	req := solo.NewCallParams(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogEventData,
 	)
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	req = solo.NewCall(test_sandbox_sc.Interface.Name,
+	req = solo.NewCallParams(test_sandbox_sc.Interface.Name,
 		test_sandbox_sc.FuncEventLogGenericData,
 		test_sandbox_sc.VarCounter, 33333,
 	)

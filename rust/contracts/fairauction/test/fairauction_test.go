@@ -55,7 +55,7 @@ func setupFaTest(t *testing.T) {
 	env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-10)
 	env.AssertAddressBalance(creatorWallet.Address(), tokenColor, 10)
 
-	req := solo.NewCall(SC_NAME, "start_auction", "color", tokenColor,
+	req := solo.NewCallParams(SC_NAME, "start_auction", "color", tokenColor,
 		"minimum", 500, "description", "Cool tokens for sale!").
 		WithTransfers(map[balance.Color]int64{
 			balance.ColorIOTA: 25, // deposit, must be >=minimum*margin
@@ -129,7 +129,7 @@ func TestFaNoBids(t *testing.T) {
 func TestFaOneBidTooLow(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCall(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 100)
 	_, err := chain.PostRequest(req, creatorWallet)
 	require.Error(t, err)
@@ -148,7 +148,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 func TestFaOneBid(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCall(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 500)
 	_, err := chain.PostRequest(req, bidderWallet[0])
 	require.NoError(t, err)
@@ -184,7 +184,7 @@ func TestFaClientAccess(t *testing.T) {
 func TestFaClientFullAccess(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCall(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 500)
 	_, err := chain.PostRequest(req, bidderWallet[0])
 	require.NoError(t, err)

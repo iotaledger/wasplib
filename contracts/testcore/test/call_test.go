@@ -14,7 +14,7 @@ func testGetSet(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncSetInt,
+	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncSetInt,
 		test_sandbox_sc.ParamIntParamName, "ppp",
 		test_sandbox_sc.ParamIntParamValue, 314,
 	)
@@ -36,7 +36,7 @@ func testCallRecursive(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncCallOnChain,
+	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncCallOnChain,
 		test_sandbox_sc.ParamIntParamValue, 31,
 		test_sandbox_sc.ParamHnameContract, cID.Hname(),
 		test_sandbox_sc.ParamHnameEP, coretypes.Hn(test_sandbox_sc.FuncRunRecursion),
@@ -82,7 +82,7 @@ func testCallFibonacciIndirect(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCall(SandboxSCName, test_sandbox_sc.FuncCallOnChain,
+	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncCallOnChain,
 		test_sandbox_sc.ParamIntParamValue, n,
 		test_sandbox_sc.ParamHnameContract, cID.Hname(),
 		test_sandbox_sc.ParamHnameEP, coretypes.Hn(test_sandbox_sc.FuncGetFibonacci),
