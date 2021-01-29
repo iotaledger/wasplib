@@ -3,6 +3,8 @@
 
 package client
 
+import "encoding/binary"
+
 const (
 	// all TYPE_* values should exactly match the counterpart client.TYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20
@@ -23,12 +25,10 @@ const (
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool
 	GetBytes(objId int32, keyId int32, typeId int32) []byte
-	GetInt(objId int32, keyId int32) int64
 	GetKeyIdFromBytes(bytes []byte) int32
 	GetKeyIdFromString(key string) int32
 	GetObjectId(objId int32, keyId int32, typeId int32) int32
 	SetBytes(objId int32, keyId int32, typeId int32, value []byte)
-	SetInt(objId int32, keyId int32, value int64)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -47,10 +47,6 @@ func GetBytes(objId int32, keyId Key32, typeId int32) []byte {
 	return host.GetBytes(objId, int32(keyId), typeId)
 }
 
-func GetInt(objId int32, keyId Key32) int64 {
-	return host.GetInt(objId, int32(keyId))
-}
-
 func GetKeyIdFromBytes(bytes []byte) Key32 {
 	return Key32(host.GetKeyIdFromBytes(bytes))
 }
@@ -60,7 +56,7 @@ func GetKeyIdFromString(key string) Key32 {
 }
 
 func GetLength(objId int32) int32 {
-	return int32(GetInt(objId, KeyLength))
+	return int32(binary.LittleEndian.Uint64(GetBytes(objId, KeyLength, TYPE_INT)))
 }
 
 func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
@@ -72,9 +68,6 @@ func SetBytes(objId int32, keyId Key32, typeId int32, value []byte) {
 }
 
 func SetClear(objId int32) {
-	SetInt(objId, KeyLength, 0)
-}
-
-func SetInt(objId int32, keyId Key32, value int64) {
-	host.SetInt(objId, int32(keyId), value)
+	bytes := make([]byte, 8)
+	SetBytes(objId, KeyLength, TYPE_INT, bytes)
 }

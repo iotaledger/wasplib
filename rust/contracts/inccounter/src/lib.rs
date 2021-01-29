@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use std::convert::TryInto;
+
 use wasplib::client::*;
 use wasplib::client::host::*;
 
@@ -154,9 +156,10 @@ fn increment_local_state_post(ctx: &ScCallContext) {
 
 fn test(_sc: &ScCallContext) {
     let key_id = get_key_id_from_string("timestamp");
-    set_int(1, key_id, 123456789);
-    let timestamp = get_int(1, key_id);
-    set_int(1, key_id, timestamp);
+    set_bytes(1, key_id, TYPE_INT, &123456789_i64.to_le_bytes());
+    let bytes = get_bytes(1, key_id, TYPE_INT);
+    let timestamp = i64::from_le_bytes(bytes.try_into().unwrap());
+    set_bytes(1, key_id, TYPE_INT, &timestamp.to_le_bytes());
     let key_id2 = get_key_id_from_string("string");
     set_bytes(1, key_id2, TYPE_STRING, "Test".as_bytes());
     let s1 = get_bytes(1, key_id2, TYPE_STRING);

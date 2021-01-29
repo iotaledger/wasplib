@@ -8,6 +8,7 @@ use super::hashtypes::*;
 use super::host::*;
 use super::immutable::*;
 use super::keys::*;
+use std::convert::TryInto;
 
 pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
 
@@ -390,7 +391,6 @@ impl ScMutableHname {
     }
 }
 
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 pub struct ScMutableInt {
@@ -408,7 +408,7 @@ impl ScMutableInt {
     }
 
     pub fn set_value(&self, val: i64) {
-        set_int(self.obj_id, self.key_id, val);
+        set_bytes(self.obj_id, self.key_id, TYPE_INT, &val.to_le_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -416,7 +416,8 @@ impl ScMutableInt {
     }
 
     pub fn value(&self) -> i64 {
-        get_int(self.obj_id, self.key_id)
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT);
+        i64::from_le_bytes(bytes.try_into().expect("invalid i64 length"))
     }
 }
 

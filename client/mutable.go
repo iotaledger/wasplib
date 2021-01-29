@@ -3,7 +3,10 @@
 
 package client
 
-import "strconv"
+import (
+	"encoding/binary"
+	"strconv"
+)
 
 var Root = ScMutableMap{objId: 1}
 
@@ -313,7 +316,9 @@ func (o ScMutableInt) Exists() bool {
 }
 
 func (o ScMutableInt) SetValue(value int64) {
-	SetInt(o.objId, o.keyId, value)
+	bytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(bytes, uint64(value))
+	SetBytes(o.objId, o.keyId, TYPE_INT, bytes)
 }
 
 func (o ScMutableInt) String() string {
@@ -321,7 +326,7 @@ func (o ScMutableInt) String() string {
 }
 
 func (o ScMutableInt) Value() int64 {
-	return GetInt(o.objId, o.keyId)
+	return int64(binary.LittleEndian.Uint64(GetBytes(o.objId, o.keyId, TYPE_INT)))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

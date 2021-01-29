@@ -12,10 +12,6 @@ import "github.com/iotaledger/wasplib/client"
 func hostGetBytes(objId int32, keyId int32, typeId int32, value *byte, size int32) int32
 
 //go:wasm-module wasplib
-//export hostGetIntRef
-func hostGetIntRef(objId int32, keyId int32, value *int64)
-
-//go:wasm-module wasplib
 //export hostGetKeyId
 func hostGetKeyId(key *byte, size int32) int32
 
@@ -26,10 +22,6 @@ func hostGetObjectId(objId int32, keyId int32, typeId int32) int32
 //go:wasm-module wasplib
 //export hostSetBytes
 func hostSetBytes(objId int32, keyId int32, typeId int32, value *byte, size int32)
-
-//go:wasm-module wasplib
-//export hostSetIntRef
-func hostSetIntRef(objId int32, keyId int32, value *int64)
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -59,15 +51,6 @@ func (w WasmVmHost) GetBytes(objId int32, keyId int32, typeId int32) []byte {
 	bytes := make([]byte, size)
 	hostGetBytes(objId, keyId, typeId, &bytes[0], size)
 	return bytes
-}
-
-func (w WasmVmHost) GetInt(objId int32, keyId int32) int64 {
-	// Go's Wasm implementation is still geared towards Javascript,
-	// which does not know int64. So instead of calling hostGetInt()
-	// we call hostGetIntRef() with a 32-bit reference to an int64
-	value := int64(0)
-	hostGetIntRef(objId, keyId, &value)
-	return value
 }
 
 func (w WasmVmHost) GetKeyIdFromBytes(bytes []byte) int32 {
@@ -103,11 +86,4 @@ func (w WasmVmHost) SetBytes(objId int32, keyId int32, typeId int32, value []byt
 		return
 	}
 	hostSetBytes(objId, keyId, typeId, &value[0], size)
-}
-
-func (w WasmVmHost) SetInt(objId int32, keyId int32, value int64) {
-	// Go's Wasm implementation is still geared towards Javascript,
-	// which does not know int64. So instead of calling hostSetInt()
-	// we call hostSetIntRef() with a 32-bit reference to the int64
-	hostSetIntRef(objId, keyId, &value)
 }

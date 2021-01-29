@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use std::convert::TryInto;
+
 use crate::client::*;
 
 // all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
@@ -24,11 +26,9 @@ pub const TYPE_CONTRACT: i32 = 11;
 #[link(wasm_import_module = "wasplib")]
 extern {
     pub fn hostGetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *mut u8, len: i32) -> i32;
-    pub fn hostGetInt(obj_id: i32, key_id: i32) -> i64;
     pub fn hostGetKeyId(key: *const u8, len: i32) -> i32;
     pub fn hostGetObjectId(obj_id: i32, key_id: i32, type_id: i32) -> i32;
     pub fn hostSetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *const u8, len: i32);
-    pub fn hostSetInt(obj_id: i32, key_id: i32, value: i64);
 }
 
 pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
@@ -54,12 +54,6 @@ pub fn get_bytes(obj_id: i32, key_id: Key32, type_id: i32) -> Vec<u8> {
     }
 }
 
-pub fn get_int(obj_id: i32, key_id: Key32) -> i64 {
-    unsafe {
-        hostGetInt(obj_id, key_id.0)
-    }
-}
-
 pub fn get_key_id_from_bytes(bytes: &[u8]) -> Key32 {
     unsafe {
         let size = bytes.len() as i32;
@@ -77,7 +71,8 @@ pub fn get_key_id_from_string(key: &str) -> Key32 {
 }
 
 pub fn get_length(obj_id: i32) -> i32 {
-    get_int(obj_id, KEY_LENGTH) as i32
+    let bytes = get_bytes(obj_id, KEY_LENGTH, TYPE_INT);
+    i64::from_le_bytes(bytes.try_into().unwrap()) as i32
 }
 
 pub fn get_object_id(obj_id: i32, key_id: Key32, type_id: i32) -> i32 {
@@ -93,11 +88,5 @@ pub fn set_bytes(obj_id: i32, key_id: Key32, type_id: i32, value: &[u8]) {
 }
 
 pub fn set_clear(obj_id: i32) {
-    set_int(obj_id, KEY_LENGTH, 0)
-}
-
-pub fn set_int(obj_id: i32, key_id: Key32, value: i64) {
-    unsafe {
-        hostSetInt(obj_id, key_id.0, value)
-    }
+    set_bytes(obj_id, KEY_LENGTH, TYPE_INT, &0_i64.to_le_bytes())
 }

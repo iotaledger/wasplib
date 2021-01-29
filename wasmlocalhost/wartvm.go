@@ -37,25 +37,6 @@ func (vm *WartVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error 
 			ctx.Frame[ctx.SP].I32 = vm.HostGetBytes(objId, keyId, typeId, stringRef, size)
 			return nil
 		})
-	_ = lnk.DefineFunction("hostGetInt",
-		[]value.DataType{value.I32, value.I32},
-		[]value.DataType{value.I64},
-		func(ctx *sections.HostContext) error {
-			objId := ctx.Frame[ctx.SP].I32
-			keyId := ctx.Frame[ctx.SP+1].I32
-			ctx.Frame[ctx.SP].I64 = vm.HostGetInt(objId, keyId)
-			return nil
-		})
-	_ = lnk.DefineFunction("hostGetIntRef",
-		[]value.DataType{value.I32, value.I32, value.I32},
-		nil,
-		func(ctx *sections.HostContext) error {
-			objId := ctx.Frame[ctx.SP].I32
-			keyId := ctx.Frame[ctx.SP+1].I32
-			intRef := ctx.Frame[ctx.SP+2].I32
-			vm.HostGetIntRef(objId, keyId, intRef)
-			return nil
-		})
 	_ = lnk.DefineFunction("hostGetKeyId",
 		[]value.DataType{value.I32, value.I32},
 		[]value.DataType{value.I32},
@@ -85,26 +66,6 @@ func (vm *WartVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error 
 			stringRef := ctx.Frame[ctx.SP+3].I32
 			size := ctx.Frame[ctx.SP+4].I32
 			vm.HostSetBytes(objId, keyId, typeId, stringRef, size)
-			return nil
-		})
-	_ = lnk.DefineFunction("hostSetInt",
-		[]value.DataType{value.I32, value.I32, value.I64},
-		nil,
-		func(ctx *sections.HostContext) error {
-			objId := ctx.Frame[ctx.SP].I32
-			keyId := ctx.Frame[ctx.SP+1].I32
-			value := ctx.Frame[ctx.SP+2].I64
-			vm.HostSetInt(objId, keyId, value)
-			return nil
-		})
-	_ = lnk.DefineFunction("hostSetIntRef",
-		[]value.DataType{value.I32, value.I32, value.I32},
-		nil,
-		func(ctx *sections.HostContext) error {
-			objId := ctx.Frame[ctx.SP].I32
-			keyId := ctx.Frame[ctx.SP+1].I32
-			intRef := ctx.Frame[ctx.SP+2].I32
-			vm.HostSetIntRef(objId, keyId, intRef)
 			return nil
 		})
 	// go implementation uses this one to write panic message

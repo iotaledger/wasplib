@@ -7,6 +7,7 @@ use super::context::*;
 use super::hashtypes::*;
 use super::host::*;
 use super::keys::*;
+use std::convert::TryInto;
 
 pub struct ScImmutableAddress {
     obj_id: i32,
@@ -336,7 +337,8 @@ impl ScImmutableInt {
     }
 
     pub fn value(&self) -> i64 {
-        get_int(self.obj_id, self.key_id)
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT);
+        i64::from_le_bytes(bytes.try_into().expect("invalid i64 length"))
     }
 }
 

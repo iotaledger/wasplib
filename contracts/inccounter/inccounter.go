@@ -3,7 +3,10 @@
 
 package inccounter
 
-import "github.com/iotaledger/wasplib/client"
+import (
+	"encoding/binary"
+	"github.com/iotaledger/wasplib/client"
+)
 
 const KeyCounter = client.Key("counter")
 const KeyNumRepeats = client.Key("num_repeats")
@@ -154,9 +157,13 @@ func incrementLocalStatePost(ctx *client.ScCallContext) {
 
 func test(_sc *client.ScCallContext) {
 	KeyId := client.GetKeyIdFromString("timestamp")
-	client.SetInt(1, KeyId, 123456789)
-	timestamp := client.GetInt(1, KeyId)
-	client.SetInt(1, KeyId, timestamp)
+	intBuf := make([]byte, 8)
+	binary.LittleEndian.PutUint64(intBuf, 123456789)
+	client.SetBytes(1, KeyId, client.TYPE_INT, intBuf)
+	bytes := client.GetBytes(1, KeyId, client.TYPE_INT)
+	timestamp := int64(binary.LittleEndian.Uint64(bytes))
+	binary.LittleEndian.PutUint64(intBuf, uint64(timestamp))
+	client.SetBytes(1, KeyId, client.TYPE_INT, intBuf)
 	KeyId2 := client.GetKeyIdFromString("string")
 	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Test"))
 	s1 := client.GetBytes(1, KeyId2, client.TYPE_STRING)

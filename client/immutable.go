@@ -3,7 +3,10 @@
 
 package client
 
-import "strconv"
+import (
+	"encoding/binary"
+	"strconv"
+)
 
 type ScImmutableAddress struct {
 	objId int32
@@ -241,7 +244,7 @@ func (o ScImmutableInt) String() string {
 }
 
 func (o ScImmutableInt) Value() int64 {
-	return GetInt(o.objId, o.keyId)
+	return int64(binary.LittleEndian.Uint64(GetBytes(o.objId, o.keyId, TYPE_INT)))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

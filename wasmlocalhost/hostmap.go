@@ -175,12 +175,13 @@ func (m *HostMap) SetInt(keyId int32, value int64) {
 		return
 	}
 	if keyId == wasmhost.KeyLength {
+		zero := make([]byte, 8)
 		for fieldId, typeId := range m.types {
 			if typeId == client.TYPE_MAP || (typeId&client.TYPE_ARRAY) != 0 {
 				field, ok := m.fields[fieldId]
 				if ok {
 					// tell object to clear itself
-					m.host.SetInt(field.(int32), keyId, 0)
+					m.host.SetBytes(field.(int32), keyId, client.TYPE_INT, zero)
 				}
 				//TODO move to pool for reuse of transfers
 			}

@@ -112,8 +112,9 @@ func (a *HostArray) SetInt(keyId int32, value int64) {
 	if keyId == wasmhost.KeyLength {
 		if a.typeId == client.TYPE_MAP {
 			// tell objects to clear themselves
+			zero := make([]byte, 8)
 			for i := len(a.items) - 1; i >= 0; i-- {
-				a.host.SetInt(a.items[i].(int32), keyId, 0)
+				a.host.SetBytes(a.items[i].(int32), keyId, client.TYPE_INT, zero)
 			}
 			//TODO move to pool for reuse of transfers
 		}
