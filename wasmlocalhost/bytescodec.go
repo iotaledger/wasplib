@@ -3,6 +3,8 @@
 
 package wasmlocalhost
 
+import "encoding/binary"
+
 type BytesDecoder struct {
 	data []byte
 }
@@ -87,4 +89,16 @@ func (e *BytesEncoder) Int(value int64) *BytesEncoder {
 
 func (e *BytesEncoder) String(value string) *BytesEncoder {
 	return e.Bytes([]byte(value))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+func BytesToInt(bytes []byte) int64 {
+	return int64(binary.LittleEndian.Uint64(bytes))
+}
+
+func IntToBytes(value int64) []byte {
+	bytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(bytes, uint64(value))
+	return bytes
 }

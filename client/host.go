@@ -22,6 +22,8 @@ const (
 	TYPE_CONTRACT int32 = 11
 )
 
+var typeSizes = [...]int {0, 33, 37, 0, 32, 32, 8, 0, 0, 4, 33, 37}
+
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool
 	GetBytes(objId int32, keyId int32, typeId int32) []byte
@@ -44,7 +46,11 @@ func Exists(objId int32, keyId Key32, typeId int32) bool {
 }
 
 func GetBytes(objId int32, keyId Key32, typeId int32) []byte {
-	return host.GetBytes(objId, int32(keyId), typeId)
+	bytes := host.GetBytes(objId, int32(keyId), typeId)
+	if len(bytes) == 0 {
+		return make([]byte, typeSizes[typeId])
+	}
+	return bytes
 }
 
 func GetKeyIdFromBytes(bytes []byte) Key32 {

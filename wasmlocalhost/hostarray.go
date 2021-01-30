@@ -49,11 +49,11 @@ func (a *HostArray) Error(text string) {
 	a.host.Error(text)
 }
 
-func (a *HostArray) Exists(keyId int32) bool {
+func (a *HostArray) Exists(keyId int32, typeId int32) bool {
 	return keyId >= 0 && keyId < int32(len(a.items))
 }
 
-func (a *HostArray) GetBytes(keyId int32) []byte {
+func (a *HostArray) GetBytes(keyId int32, typeId int32) []byte {
 	value := a.GetString(keyId)
 	if value == "" {
 		return []byte(nil)
@@ -100,7 +100,7 @@ func (a *HostArray) GetTypeId(keyId int32) int32 {
 	return a.typeId
 }
 
-func (a *HostArray) SetBytes(keyId int32, value []byte) {
+func (a *HostArray) SetBytes(keyId int32, typeId int32, value []byte) {
 	a.SetString(keyId, base58.Encode(value))
 }
 

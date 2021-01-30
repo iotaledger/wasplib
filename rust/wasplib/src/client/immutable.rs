@@ -3,11 +3,12 @@
 
 // types encapsulating immutable host objects
 
+use std::convert::TryInto;
+
 use super::context::*;
 use super::hashtypes::*;
 use super::host::*;
 use super::keys::*;
-use std::convert::TryInto;
 
 pub struct ScImmutableAddress {
     obj_id: i32,

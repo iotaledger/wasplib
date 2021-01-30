@@ -3,12 +3,13 @@
 
 // types encapsulating mutable host objects
 
+use std::convert::TryInto;
+
 use super::context::*;
 use super::hashtypes::*;
 use super::host::*;
 use super::immutable::*;
 use super::keys::*;
-use std::convert::TryInto;
 
 pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
 

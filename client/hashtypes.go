@@ -11,9 +11,7 @@ import (
 type Hname uint32
 
 func NewHname(name string) Hname {
-	utility := Root.GetMap(KeyUtility)
-	utility.GetString(KeyName).SetValue(name)
-	return NewHnameFromBytes(utility.GetBytes(KeyName).Value())
+	return ScCallContext{}.Utility().Hname(name)
 }
 
 func NewHnameFromBytes(bytes []byte) Hname {

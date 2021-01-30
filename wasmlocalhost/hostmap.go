@@ -71,12 +71,12 @@ func (m *HostMap) Error(text string) {
 	m.host.Error(text)
 }
 
-func (m *HostMap) Exists(keyId int32) bool {
+func (m *HostMap) Exists(keyId int32, typeId int32) bool {
 	_, ok := m.fields[keyId]
 	return ok
 }
 
-func (m *HostMap) GetBytes(keyId int32) []byte {
+func (m *HostMap) GetBytes(keyId int32, typeId int32) []byte {
 	value := m.GetString(keyId)
 	if value == "" {
 		return []byte(nil)
@@ -165,7 +165,7 @@ func (m *HostMap) GetTypeId(keyId int32) int32 {
 	return typeId
 }
 
-func (m *HostMap) SetBytes(keyId int32, value []byte) {
+func (m *HostMap) SetBytes(keyId int32, typeId int32, value []byte) {
 	m.SetString(keyId, base58.Encode(value))
 }
 
@@ -231,11 +231,11 @@ func (m *HostMap) CopyDataTo(other wasmhost.HostObject) {
 	for k, v := range m.fields {
 		switch m.types[k] {
 		case client.TYPE_BYTES:
-			other.SetBytes(k, v.([]byte))
+			other.SetBytes(k, client.TYPE_BYTES, v.([]byte))
 		case client.TYPE_INT:
-			other.SetInt(k, v.(int64))
+			other.SetBytes(k, client.TYPE_INT, IntToBytes(v.(int64)))
 		case client.TYPE_STRING:
-			other.SetString(k, v.(string))
+			other.SetBytes(k, client.TYPE_STRING, []byte(v.(string)))
 		default:
 			//TODO what about recursion?
 			panic("Implement types")

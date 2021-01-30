@@ -326,7 +326,9 @@ func (o ScMutableInt) String() string {
 }
 
 func (o ScMutableInt) Value() int64 {
-	return int64(binary.LittleEndian.Uint64(GetBytes(o.objId, o.keyId, TYPE_INT)))
+	bytes := GetBytes(o.objId, o.keyId, TYPE_INT)
+	if bytes == nil { return 0 }
+	return int64(binary.LittleEndian.Uint64(bytes))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

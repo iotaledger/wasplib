@@ -1,7 +1,13 @@
 {
   "BetInfo": [
-    {"amount": "int"},
-    {"better": "agent"},
-    {"color": "int"}
+    {
+      "amount": "int"
+    },
+    {
+      "better": "agent"
+    },
+    {
+      "color": "int"
+    }
   ]
 }

@@ -4,7 +4,6 @@
 package wasmlocalhost
 
 import (
-	"encoding/binary"
 	"fmt"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/hashing"
@@ -34,23 +33,15 @@ func NewHostUtility(host *SimpleWasmHost, keyId int32) *HostUtility {
 	return o
 }
 
-func (o *HostUtility) Exists(keyId int32) bool {
-	switch keyId {
-	case wasmhost.KeyBase58:
-	case wasmhost.KeyHash:
-	case wasmhost.KeyName:
-	case wasmhost.KeyRandom:
-	default:
-		return false
-	}
-	return true
+func (o *HostUtility) Exists(keyId int32, typeId int32) bool {
+	return o.GetTypeId(keyId) > 0
 }
 
-func (o *HostUtility) GetBytes(keyId int32) []byte {
+func (o *HostUtility) GetBytes(keyId int32, typeId int32) []byte {
 	switch keyId {
 	case wasmhost.KeyName:
 		return codec.EncodeHname(o.hname)
-	case wasmhost.KeyBase58:
+	case wasmhost.KeyBase58Bytes:
 		return o.base58Decoded
 	case wasmhost.KeyHash:
 		return o.hash
@@ -70,7 +61,7 @@ func (o *HostUtility) GetInt(keyId int32) int64 {
 			i = 0
 		}
 		o.nextRandom = i + 8
-		return int64(binary.LittleEndian.Uint64(o.random[i : i+8]))
+		return BytesToInt(o.random[i : i+8])
 	}
 	o.invalidKey(keyId)
 	return 0
@@ -78,7 +69,7 @@ func (o *HostUtility) GetInt(keyId int32) int64 {
 
 func (o *HostUtility) GetString(keyId int32) string {
 	switch keyId {
-	case wasmhost.KeyBase58:
+	case wasmhost.KeyBase58String:
 		return o.base58Encoded
 	}
 	o.invalidKey(keyId)
@@ -87,10 +78,16 @@ func (o *HostUtility) GetString(keyId int32) string {
 
 func (o *HostUtility) GetTypeId(keyId int32) int32 {
 	switch keyId {
-	case wasmhost.KeyBase58:
+	case wasmhost.KeyBase58Bytes:
 		return wasmhost.OBJTYPE_BYTES
+	case wasmhost.KeyBase58String:
+		return wasmhost.OBJTYPE_STRING
 	case wasmhost.KeyHash:
-		return wasmhost.OBJTYPE_BYTES //TODO OBJTYPE_HASH
+		return wasmhost.OBJTYPE_HASH
+	case wasmhost.KeyHname:
+		return wasmhost.OBJTYPE_HNAME
+	case wasmhost.KeyName:
+		return wasmhost.OBJTYPE_STRING
 	case wasmhost.KeyRandom:
 		return wasmhost.OBJTYPE_INT
 	}
@@ -101,9 +98,9 @@ func (o *HostUtility) invalidKey(keyId int32) {
 	panic(fmt.Sprintf("Invalid key: %d", keyId))
 }
 
-func (o *HostUtility) SetBytes(keyId int32, value []byte) {
+func (o *HostUtility) SetBytes(keyId int32, typeId int32, value []byte) {
 	switch keyId {
-	case wasmhost.KeyBase58:
+	case wasmhost.KeyBase58Bytes:
 		o.base58Encoded = base58.Encode(value)
 	case wasmhost.KeyHash:
 		h := hashing.HashData(value)
@@ -117,7 +114,7 @@ func (o *HostUtility) SetString(keyId int32, value string) {
 	switch keyId {
 	case wasmhost.KeyName:
 		o.hname = coretypes.Hn(value)
-	case wasmhost.KeyBase58:
+	case wasmhost.KeyBase58String:
 		o.base58Decoded, _ = base58.Decode(value)
 	default:
 		o.invalidKey(keyId)

@@ -20,8 +20,8 @@ func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
 	return &HostTransfer{HostMap: *NewHostMap(host, keyId)}
 }
 
-func (m *HostTransfer) SetBytes(keyId int32, value []byte) {
-	m.HostMap.SetBytes(keyId, value)
+func (m *HostTransfer) SetBytes(keyId int32, typeId int32, value []byte) {
+	m.HostMap.SetBytes(keyId, typeId, value)
 	if keyId == wasmhost.KeyAgent {
 		m.agent = value
 		return
@@ -43,15 +43,15 @@ func (m *HostTransfer) SetInt(keyId int32, value int64) {
 	}
 
 	balances := m.host.FindSubObject(nil, wasmhost.KeyBalances, client.TYPE_MAP)
-	colorAmount := balances.GetInt(keyId)
+	colorAmount := BytesToInt(balances.GetBytes(keyId, client.TYPE_INT))
 	if colorAmount < value {
 		m.Error("Insufficient funds")
 		return
 	}
 	// check if compacting, in which case no balance change happens
 	root := m.host.FindObject(1)
-	scId := root.GetBytes(wasmhost.KeyId)
+	scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
 	if !bytes.Equal(m.agent, scId) {
-		balances.SetInt(keyId, colorAmount-value)
+		balances.SetBytes(keyId, client.TYPE_INT, IntToBytes(colorAmount-value))
 	}
 }

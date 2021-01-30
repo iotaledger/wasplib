@@ -99,18 +99,14 @@ type ScUtility struct {
 
 // decodes the specified base58-encoded string value to its original bytes
 func (ctx ScUtility) Base58Decode(value string) []byte {
-	decode := ctx.utility.GetString(KeyBase58)
-	encode := ctx.utility.GetBytes(KeyBase58)
-	decode.SetValue(value)
-	return encode.Value()
+	ctx.utility.GetString(KeyBase58String).SetValue(value)
+	return ctx.utility.GetBytes(KeyBase58Bytes).Value()
 }
 
 // encodes the specified bytes to a base-58-encoded string
 func (ctx ScUtility) Base58Encode(value []byte) string {
-	decode := ctx.utility.GetString(KeyBase58)
-	encode := ctx.utility.GetBytes(KeyBase58)
-	encode.SetValue(value)
-	return decode.Value()
+	ctx.utility.GetBytes(KeyBase58Bytes).SetValue(value)
+	return ctx.utility.GetString(KeyBase58String).Value()
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
@@ -118,6 +114,12 @@ func (ctx ScUtility) Hash(value []byte) *ScHash {
 	hash := ctx.utility.GetBytes(KeyHash)
 	hash.SetValue(value)
 	return NewScHash(hash.Value())
+}
+
+// hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
+func (ctx ScUtility) Hname(value string) Hname {
+	ctx.utility.GetString(KeyName).SetValue(value)
+	return ctx.utility.GetHname(KeyHname).Value()
 }
 
 // generates a random value from 0 to max (exclusive max) using a deterministic RNG

@@ -20,6 +20,8 @@ pub const TYPE_HNAME: i32 = 9;
 pub const TYPE_CHAIN: i32 = 10;
 pub const TYPE_CONTRACT: i32 = 11;
 
+const TYPE_SIZES: &[usize] = &[0, 33, 37, 0, 32, 32, 8, 0, 0, 4, 33, 37];
+
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.
 // Any return value will be zero or empty string in that case
@@ -36,7 +38,7 @@ pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
         // negative length (-1) means only test for existence
         // returned size -1 indicates keyId not found (or error)
         // this removes the need for a separate hostExists function
-        hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), -1) >= 0_i32
+        hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), -1) >= 0
     }
 }
 
@@ -44,7 +46,7 @@ pub fn get_bytes(obj_id: i32, key_id: Key32, type_id: i32) -> Vec<u8> {
     unsafe {
         // first query length of bytes array
         let size = hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), 0);
-        if size <= 0 { return vec![0_u8; 0]; }
+        if size <= 0 { return vec![0_u8; TYPE_SIZES[type_id as usize]]; }
 
         // allocate a byte array in Wasm memory and
         // copy the actual data bytes to Wasm byte array

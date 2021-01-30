@@ -26,14 +26,14 @@ func (m *HostCall) call() {
 	host := m.host
 
 	root := host.FindObject(1)
-	savedCaller := root.GetString(wasmhost.KeyCaller)
-	scId := root.GetString(wasmhost.KeyId)
-	root.SetString(wasmhost.KeyCaller, scId)
+	savedCaller := root.GetBytes(wasmhost.KeyCaller, client.TYPE_AGENT)
+	scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
+	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, scId)
 
 	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, client.TYPE_MAP)
 	savedParams := NewHostMap(m.host, 0)
 	requestParams.(*HostMap).CopyDataTo(savedParams)
-	requestParams.SetInt(wasmhost.KeyLength, 0)
+	requestParams.SetBytes(wasmhost.KeyLength, client.TYPE_INT, IntToBytes(0))
 	params := host.FindSubObject(m, wasmhost.KeyParams, client.TYPE_MAP)
 	params.(*HostMap).CopyDataTo(requestParams)
 
@@ -44,15 +44,15 @@ func (m *HostCall) call() {
 		m.Error(err.Error())
 	}
 
-	requestParams.SetInt(wasmhost.KeyLength, 0)
+	requestParams.SetBytes(wasmhost.KeyLength, client.TYPE_INT, IntToBytes(0))
 	savedParams.CopyDataTo(requestParams)
-	root.SetString(wasmhost.KeyCaller, savedCaller)
+	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, savedCaller)
 }
 
-func (m *HostCall) SetBytes(keyId int32, value []byte) {
+func (m *HostCall) SetBytes(keyId int32, typeId int32, value []byte) {
 	key := m.host.GetKeyStringFromId(keyId)
 	m.host.TraceAll("Call.SetBytes %s = %s", key, base58.Encode(value))
-	m.HostMap.SetBytes(keyId, value)
+	m.HostMap.SetBytes(keyId, typeId, value)
 	if key == "chain" {
 		m.chain = value
 		return

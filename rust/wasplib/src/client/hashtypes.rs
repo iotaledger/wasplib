@@ -7,7 +7,6 @@ use crate::client::host::get_key_id_from_bytes;
 
 use super::context::*;
 use super::keys::*;
-use super::mutable::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
@@ -16,9 +15,7 @@ pub struct Hname(pub u32);
 
 impl Hname {
     pub fn new(name: &str) -> Hname {
-        let utility = ROOT.get_map(&KEY_UTILITY);
-        utility.get_string(&KEY_NAME).set_value(name);
-        Hname::from_bytes(&utility.get_bytes(&KEY_NAME).value())
+        ScCallContext {}.utility().hname(name)
     }
 
     pub fn from_bytes(bytes: &[u8]) -> Hname {

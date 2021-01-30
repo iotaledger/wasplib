@@ -108,28 +108,26 @@ pub struct ScUtility {
 impl ScUtility {
     // decodes the specified base58-encoded string value to its original bytes
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
-        //TODO atomic set/get
-        let decode = self.utility.get_string(&KEY_BASE58);
-        let encode = self.utility.get_bytes(&KEY_BASE58);
-        decode.set_value(value);
-        encode.value()
+        self.utility.get_string(&KEY_BASE58_STRING).set_value(value);
+        self.utility.get_bytes(&KEY_BASE58_BYTES).value()
     }
 
     // encodes the specified bytes to a base-58-encoded string
     pub fn base58_encode(&self, value: &[u8]) -> String {
-        //TODO atomic set/get
-        let decode = self.utility.get_string(&KEY_BASE58);
-        let encode = self.utility.get_bytes(&KEY_BASE58);
-        encode.set_value(value);
-        decode.value()
+        self.utility.get_bytes(&KEY_BASE58_BYTES).set_value(value);
+        self.utility.get_string(&KEY_BASE58_STRING).value()
     }
 
     // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
     pub fn hash(&self, value: &[u8]) -> ScHash {
-        //TODO atomic set/get
         let hash = self.utility.get_bytes(&KEY_HASH);
         hash.set_value(value);
         ScHash::from_bytes(&hash.value())
+    }
+
+    pub fn hname(&self, value: &str) -> Hname {
+        self.utility.get_string(&KEY_NAME).set_value(value);
+        Hname::from_bytes(&self.utility.get_bytes(&KEY_HNAME).value())
     }
 
     // generates a random value from 0 to max (exclusive max) using a deterministic RNG
