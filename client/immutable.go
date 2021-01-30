@@ -245,7 +245,6 @@ func (o ScImmutableInt) String() string {
 
 func (o ScImmutableInt) Value() int64 {
 	bytes := GetBytes(o.objId, o.keyId, TYPE_INT)
-	if bytes == nil { return 0 }
 	return int64(binary.LittleEndian.Uint64(bytes))
 }
 

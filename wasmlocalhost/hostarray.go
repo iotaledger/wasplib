@@ -32,10 +32,10 @@ func (a *HostArray) Dump(w io.Writer) {
 			fmt.Fprintf(w, ",\n")
 		}
 		multiple = true
-		if a.keyId == wasmhost.KeyCalls {
-			a.host.FindObject(item.(int32)).(*HostCall).Dump(w)
-			continue
-		}
+		//if a.keyId == wasmhost.KeyCalls {
+		//	a.host.FindObject(item.(int32)).(*HostCall).Dump(w)
+		//	continue
+		//}
 		if a.keyId == wasmhost.KeyTransfers {
 			a.host.FindObject(item.(int32)).(*HostTransfer).Dump(w)
 			continue
@@ -157,8 +157,8 @@ func (a *HostArray) valid(keyId int32, typeId int32) bool {
 		case client.TYPE_MAP:
 			var o VmObject
 			switch a.keyId {
-			case wasmhost.KeyCalls:
-				o = NewHostCall(a.host, keyId)
+			//case wasmhost.KeyCalls:
+			//	o = NewHostCall(a.host, keyId)
 			case wasmhost.KeyTransfers:
 				o = NewHostTransfer(a.host, keyId)
 			default:

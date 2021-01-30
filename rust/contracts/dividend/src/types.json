@@ -1,10 +1,6 @@
 {
   "Member": [
-    {
-      "address": "address"
-    },
-    {
-      "factor": "int"
-    }
+    {"address": "address"},
+    {"factor": "int"}
   ]
 }

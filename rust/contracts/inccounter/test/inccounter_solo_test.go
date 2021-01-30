@@ -5,19 +5,17 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-const incFile = "../pkg/inccounter_bg.wasm"
-
 const incName = "inccounter"
-const incDescription = "IncCounter, a PoC smart contract"
-
-var incHname = coretypes.Hn(incName)
-
 const varCounter = "counter"
 const varNumRepeats = "num_repeats"
+
+var incFile = wasmhost.WasmPath("inccounter_bg.wasm")
+var incHname = coretypes.Hn(incName)
 
 func TestIncSoloInc(t *testing.T) {
 	al := solo.New(t, false, true)

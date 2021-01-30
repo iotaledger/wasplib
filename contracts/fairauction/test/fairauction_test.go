@@ -18,8 +18,9 @@ import (
 	"time"
 )
 
-const SC_NAME = "fairauction"
-const WASM_FILE = "../pkg/fairauction_bg.wasm"
+const ScName = "fairauction"
+
+var WasmFile = wasmhost.WasmPath("fairauction_bg.wasm")
 
 var bidderId [4]coretypes.AgentID
 var bidderWallet [4]signaturescheme.SignatureScheme
@@ -35,10 +36,10 @@ func setupFaTest(t *testing.T) {
 	wasmhost.HostTracing = false
 	env = solo.New(t, false, false)
 	chain = env.NewChain(nil, "ch1")
-	contractID = coretypes.NewContractID(chain.ChainID, coretypes.Hn(SC_NAME))
+	contractID = coretypes.NewContractID(chain.ChainID, coretypes.Hn(ScName))
 	contractAgentID = coretypes.NewAgentIDFromContractID(contractID)
 
-	err := chain.DeployWasmContract(nil, SC_NAME, WASM_FILE)
+	err := chain.DeployWasmContract(nil, ScName, WasmFile)
 	require.NoError(t, err)
 
 	creatorWallet = env.NewSignatureSchemeWithFunds()
@@ -55,7 +56,7 @@ func setupFaTest(t *testing.T) {
 	env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-10)
 	env.AssertAddressBalance(creatorWallet.Address(), tokenColor, 10)
 
-	req := solo.NewCallParams(SC_NAME, "start_auction", "color", tokenColor,
+	req := solo.NewCallParams(ScName, "start_auction", "color", tokenColor,
 		"minimum", 500, "description", "Cool tokens for sale!").
 		WithTransfers(map[balance.Color]int64{
 			balance.ColorIOTA: 25, // deposit, must be >=minimum*margin
@@ -106,7 +107,7 @@ func TestFaStartAuction(t *testing.T) {
 func TestFaAuctionInfo(t *testing.T) {
 	setupFaTest(t)
 
-	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
 	require.NoError(t, err)
 
 	requireAgent(t, res, "creator", creatorId)
@@ -120,7 +121,7 @@ func TestFaNoBids(t *testing.T) {
 	env.AdvanceClockBy(61 * time.Minute)
 	chain.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
 	require.NoError(t, err)
 
 	requireInt64(t, res, "bidders", 0)
@@ -129,7 +130,7 @@ func TestFaNoBids(t *testing.T) {
 func TestFaOneBidTooLow(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 100)
 	_, err := chain.PostRequest(req, creatorWallet)
 	require.Error(t, err)
@@ -138,7 +139,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 	env.AdvanceClockBy(61 * time.Minute)
 	chain.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
 	require.NoError(t, err)
 
 	requireInt64(t, res, "highest_bid", -1)
@@ -148,7 +149,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 func TestFaOneBid(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 500)
 	_, err := chain.PostRequest(req, bidderWallet[0])
 	require.NoError(t, err)
@@ -157,7 +158,7 @@ func TestFaOneBid(t *testing.T) {
 	env.AdvanceClockBy(61 * time.Minute)
 	chain.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
 	require.NoError(t, err)
 
 	requireInt64(t, res, "bidders", 1)
@@ -172,7 +173,7 @@ func TestFaClientAccess(t *testing.T) {
 	env.AdvanceClockBy(61 * time.Minute)
 	chain.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(SC_NAME, "get_info", "color", tokenColor)
+	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
 	require.NoError(t, err)
 
 	requireInt64(t, res, "bidders", 0)
@@ -184,7 +185,7 @@ func TestFaClientAccess(t *testing.T) {
 func TestFaClientFullAccess(t *testing.T) {
 	setupFaTest(t)
 
-	req := solo.NewCallParams(SC_NAME, "place_bid", "color", tokenColor).
+	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
 		WithTransfer(balance.ColorIOTA, 500)
 	_, err := chain.PostRequest(req, bidderWallet[0])
 	require.NoError(t, err)
@@ -193,7 +194,7 @@ func TestFaClientFullAccess(t *testing.T) {
 	env.AdvanceClockBy(61 * time.Minute)
 	chain.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(SC_NAME, "copy_all_state")
+	res, err := chain.CallView(ScName, "copy_all_state")
 	require.NoError(t, err)
 
 	state := getClientMap(t, wasmhost.KeyResults, res)

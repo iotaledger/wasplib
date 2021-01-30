@@ -12,7 +12,6 @@ import (
 	"github.com/mr-tron/base58"
 	"os"
 	"sort"
-	"strings"
 )
 
 type JsonDataModel struct {
@@ -78,7 +77,6 @@ func (t *JsonTests) ClearData() {
 	t.ClearObjectData(wasmhost.KeyState, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyLogs, client.TYPE_MAP)
 	t.ClearObjectData(wasmhost.KeyResults, client.TYPE_MAP)
-	t.ClearObjectData(wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
 	t.ClearObjectData(wasmhost.KeyMaps, client.TYPE_MAP|client.TYPE_ARRAY)
 	t.ClearObjectData(wasmhost.KeyTransfers, client.TYPE_MAP|client.TYPE_ARRAY)
 }
@@ -111,7 +109,6 @@ func (t *JsonTests) CompareData(jsonTest *JsonTest) bool {
 		t.CompareMapData(wasmhost.KeyState, expectData.State) &&
 		t.CompareMapData(wasmhost.KeyLogs, expectData.Logs) &&
 		t.CompareMapData(wasmhost.KeyResults, expectData.Results) &&
-		t.CompareArrayData(wasmhost.KeyCalls, expectData.Calls) &&
 		t.CompareArrayData(wasmhost.KeyTransfers, expectData.Transfers)
 }
 
@@ -525,45 +522,45 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 		}
 	}
 
-	root := t.FindObject(1)
-	scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
-	calls := t.FindSubObject(nil, wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
-
-	expectedCalls := len(test.Expect.Calls)
-	for i := 0; i < expectedCalls && i < int(BytesToInt(calls.GetBytes(wasmhost.KeyLength, client.TYPE_INT))); i++ {
-		post := t.FindIndexedMap(calls, i)
-		delay := BytesToInt(post.GetBytes(wasmhost.KeyDelay, client.TYPE_INT))
-		if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
-			// only process posts when they have no delay
-			// unless overridden by the nodelay flag
-			// those are the only ones that will be incorporated in the final state
-			continue
-		}
-
-		contract := post.GetBytes(wasmhost.KeyContract,  client.TYPE_CONTRACT)
-		if string(contract) != string(scId) {
-			// only process posts when they are for the current contract
-			// those are the only ones that will be incorporated in the final state
-			continue
-		}
-
-		root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, scId)
-		//TODO increment timestamp and pass post.transfers as incoming
-		//TODO how do we pass incoming when we call instead of post?
-		params.SetBytes(wasmhost.KeyLength, client.TYPE_INT, zero)
-		postParams := t.FindSubObject(post, wasmhost.KeyParams, client.TYPE_MAP)
-		//TODO how to iterate
-		postParams.(*HostMap).CopyDataTo(params)
-		function := string(post.GetBytes(wasmhost.KeyFunction, client.TYPE_STRING))
-		fmt.Printf("    Run function: %s\n", function)
-		err := t.host.RunScFunction(function)
-		if err != nil {
-			fmt.Printf("FAIL: Request function %s: %v\n", function, err)
-			// dump even when failing so that we can examine why it failed
-			t.Dump(test)
-			return false
-		}
-	}
+	//root := t.FindObject(1)
+	//scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
+	//calls := t.FindSubObject(nil, wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
+	//
+	//expectedCalls := len(test.Expect.Calls)
+	//for i := 0; i < expectedCalls && i < int(BytesToInt(calls.GetBytes(wasmhost.KeyLength, client.TYPE_INT))); i++ {
+	//	post := t.FindIndexedMap(calls, i)
+	//	delay := BytesToInt(post.GetBytes(wasmhost.KeyDelay, client.TYPE_INT))
+	//	if delay != 0 && !strings.Contains(test.Flags, "nodelay") {
+	//		// only process posts when they have no delay
+	//		// unless overridden by the nodelay flag
+	//		// those are the only ones that will be incorporated in the final state
+	//		continue
+	//	}
+	//
+	//	contract := post.GetBytes(wasmhost.KeyContract,  client.TYPE_CONTRACT)
+	//	if string(contract) != string(scId) {
+	//		// only process posts when they are for the current contract
+	//		// those are the only ones that will be incorporated in the final state
+	//		continue
+	//	}
+	//
+	//	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, scId)
+	//	//TODO increment timestamp and pass post.transfers as incoming
+	//	//TODO how do we pass incoming when we call instead of post?
+	//	params.SetBytes(wasmhost.KeyLength, client.TYPE_INT, zero)
+	//	postParams := t.FindSubObject(post, wasmhost.KeyParams, client.TYPE_MAP)
+	//	//TODO how to iterate
+	//	postParams.(*HostMap).CopyDataTo(params)
+	//	function := string(post.GetBytes(wasmhost.KeyFunction, client.TYPE_STRING))
+	//	fmt.Printf("    Run function: %s\n", function)
+	//	err := t.host.RunScFunction(function)
+	//	if err != nil {
+	//		fmt.Printf("FAIL: Request function %s: %v\n", function, err)
+	//		// dump even when failing so that we can examine why it failed
+	//		t.Dump(test)
+	//		return false
+	//	}
+	//}
 
 	t.Dump(test)
 

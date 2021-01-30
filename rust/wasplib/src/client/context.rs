@@ -3,6 +3,7 @@
 
 // encapsulates standard host entities into a simple interface
 
+use super::bytes::*;
 use super::hashtypes::*;
 use super::immutable::*;
 use super::keys::*;
@@ -227,30 +228,35 @@ impl ScBaseContext for ScCallContext {}
 impl ScCallContext {
     // calls a smart contract function
     pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
-        let calls = ROOT.get_map_array(&KEY_CALLS);
-        let call = calls.get_map(calls.length());
-        call.get_hname(&KEY_CONTRACT).set_value(contract);
-        call.get_hname(&KEY_FUNCTION).set_value(function);
+        let mut encode = BytesEncoder::new();
+        encode.hname(&contract);
+        encode.hname(&function);
         if let Some(params) = params {
-            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+            encode.int(params.obj_id as i64);
+        } else {
+            encode.int(0);
         }
         if let Some(transfer) = transfer {
-            call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
+            encode.int(transfer.map_id() as i64);
+        } else {
+            encode.int(0);
         }
-        call.get_int(&KEY_DELAY).set_value(-1);
-        call.get_map(&KEY_RESULTS).immutable()
+        ROOT.get_bytes(&KEY_CALL).set_value(&encode.data());
+        ROOT.get_map(&KEY_RETURN).immutable()
     }
 
     // deploys a smart contract
     pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: Option<ScMutableMap>) {
-        let deploys = ROOT.get_map_array(&KEY_DEPLOYS);
-        let deploy = deploys.get_map(deploys.length());
-        deploy.get_string(&KEY_NAME).set_value(name);
-        deploy.get_string(&KEY_DESCRIPTION).set_value(description);
+        let mut encode = BytesEncoder::new();
+        encode.hash(program_hash);
+        encode.string(name);
+        encode.string(description);
         if let Some(params) = params {
-            deploy.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+            encode.int(params.obj_id as i64);
+        } else {
+            encode.int(0);
         }
-        deploy.get_hash(&KEY_HASH).set_value(program_hash);
+        ROOT.get_bytes(&KEY_DEPLOY).set_value(&encode.data());
     }
 
     // signals an event on the node that external entities can subscribe to
@@ -265,19 +271,21 @@ impl ScCallContext {
 
     // (delayed) posts a smart contract function
     pub fn post(&self, par: &PostRequestParams) {
-        if par.delay < 0 { self.panic("Invalid delay") }
-        let calls = ROOT.get_map_array(&KEY_CALLS);
-        let call = calls.get_map(calls.length());
-        call.get_chain_id(&KEY_CHAIN).set_value(&par.contract.chain_id());
-        call.get_hname(&KEY_CONTRACT).set_value(par.contract.hname());
-        call.get_hname(&KEY_FUNCTION).set_value(par.function);
+        let mut encode = BytesEncoder::new();
+        encode.contract_id(&par.contract);
+        encode.hname(&par.function);
         if let Some(params) = &par.params {
-            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+            encode.int(params.obj_id as i64);
+        } else {
+            encode.int(0);
         }
         if let Some(transfer) = &par.transfer {
-            call.get_int(&KEY_TRANSFERS).set_value(transfer.map_id() as i64);
+            encode.int(transfer.map_id() as i64);
+        } else {
+            encode.int(0);
         }
-        call.get_int(&KEY_DELAY).set_value(par.delay);
+        encode.int(par.delay);
+        ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
     }
 
     // access to mutable state storage
@@ -309,15 +317,17 @@ impl ScBaseContext for ScViewContext {}
 impl ScViewContext {
     // calls a smart contract function
     pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>) -> ScImmutableMap {
-        let calls = ROOT.get_map_array(&KEY_CALLS);
-        let call = calls.get_map(calls.length());
-        call.get_hname(&KEY_CONTRACT).set_value(contract);
-        call.get_hname(&KEY_FUNCTION).set_value(function);
+        let mut encode = BytesEncoder::new();
+        encode.hname(&contract);
+        encode.hname(&function);
         if let Some(params) = params {
-            call.get_int(&KEY_PARAMS).set_value(params.obj_id as i64);
+            encode.int(params.obj_id as i64);
+        } else {
+            encode.int(0);
         }
-        call.get_int(&KEY_DELAY).set_value(-1);
-        call.get_map(&KEY_RESULTS).immutable()
+        encode.int(0);
+        ROOT.get_bytes(&KEY_CALL).set_value(&encode.data());
+        ROOT.get_map(&KEY_RETURN).immutable()
     }
 
     // access to immutable state storage

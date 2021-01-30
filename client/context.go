@@ -5,7 +5,9 @@
 
 package client
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type PostRequestParams struct {
 	Contract *ScContractId
@@ -228,30 +230,35 @@ type ScCallContext struct {
 
 // calls a smart contract function
 func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
-	calls := Root.GetMapArray(KeyCalls)
-	call := calls.GetMap(calls.Length())
-	call.GetHname(KeyContract).SetValue(contract)
-	call.GetHname(KeyFunction).SetValue(function)
+	encode := NewBytesEncoder()
+	encode.Hname(contract)
+	encode.Hname(function)
 	if params != nil {
-		call.GetInt(KeyParams).SetValue(int64(params.objId))
+		encode.Int(int64(params.objId))
+	} else {
+		encode.Int(0)
 	}
 	if transfer != nil {
-		call.GetInt(KeyTransfers).SetValue(int64(transfer.mapId()))
+		encode.Int(int64(transfer.mapId()))
+	} else {
+		encode.Int(0)
 	}
-	call.GetInt(KeyDelay).SetValue(-1)
-	return call.GetMap(KeyResults).Immutable()
+    Root.GetBytes(KeyCall).SetValue(encode.Data())
+	return Root.GetMap(KeyReturn).Immutable()
 }
 
 // deploys a smart contract
 func (ctx ScCallContext) Deploy(programHash *ScHash, name string, description string, params *ScMutableMap) {
-	deploys := Root.GetMapArray(KeyDeploys)
-	deploy := deploys.GetMap(deploys.Length())
-	deploy.GetString(KeyName).SetValue(name)
-	deploy.GetString(KeyDescription).SetValue(description)
+	encode := NewBytesEncoder()
+	encode.Hash(programHash)
+	encode.String(name)
+	encode.String(description)
 	if params != nil {
-		deploy.GetInt(KeyParams).SetValue(int64(params.objId))
+		encode.Int(int64(params.objId))
+	} else {
+		encode.Int(0)
 	}
-	deploy.GetHash(KeyHash).SetValue(programHash)
+	Root.GetBytes(KeyDeploy).SetValue(encode.Data())
 }
 
 // access the incoming balances for all token colors
@@ -261,21 +268,21 @@ func (ctx ScCallContext) Incoming() ScBalances {
 
 // (delayed) posts a smart contract function
 func (ctx ScCallContext) Post(par *PostRequestParams) {
-	if par.Delay < 0 {
-		ctx.Panic("Invalid delay")
-	}
-	calls := Root.GetMapArray(KeyCalls)
-	call := calls.GetMap(calls.Length())
-	call.GetChainId(KeyChain).SetValue(par.Contract.ChainId())
-	call.GetHname(KeyContract).SetValue(par.Contract.Hname())
-	call.GetHname(KeyFunction).SetValue(par.Function)
+	encode := NewBytesEncoder()
+	encode.ContractId(par.Contract)
+	encode.Hname(par.Function)
 	if par.Params != nil {
-		call.GetInt(KeyParams).SetValue(int64(par.Params.objId))
+		encode.Int(int64(par.Params.objId))
+	} else {
+		encode.Int(0)
 	}
 	if par.Transfer != nil {
-		call.GetInt(KeyTransfers).SetValue(int64(par.Transfer.mapId()))
+		encode.Int(int64(par.Transfer.mapId()))
+	} else {
+		encode.Int(0)
 	}
-	call.GetInt(KeyDelay).SetValue(par.Delay)
+	encode.Int(par.Delay)
+	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 
 // signals an event on the node that external entities can subscribe to
@@ -310,15 +317,17 @@ type ScViewContext struct {
 
 // calls a smart contract function
 func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableMap) ScImmutableMap {
-	calls := Root.GetMapArray(KeyCalls)
-	call := calls.GetMap(calls.Length())
-	call.GetHname(KeyContract).SetValue(contract)
-	call.GetHname(KeyFunction).SetValue(function)
+	encode := NewBytesEncoder()
+	encode.Hname(contract)
+	encode.Hname(function)
 	if params != nil {
-		call.GetInt(KeyParams).SetValue(int64(params.objId))
+		encode.Int(int64(params.objId))
+	} else {
+		encode.Int(0)
 	}
-	call.GetInt(KeyDelay).SetValue(-1)
-	return call.GetMap(KeyResults).Immutable()
+	encode.Int(0)
+	Root.GetBytes(KeyCall).SetValue(encode.Data())
+	return Root.GetMap(KeyReturn).Immutable()
 }
 
 // access to immutable state storage
