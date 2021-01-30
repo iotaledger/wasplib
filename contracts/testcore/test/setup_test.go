@@ -8,6 +8,7 @@ import (
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"strings"
@@ -24,8 +25,6 @@ const (
 	WASM_RUNNER_GO_DIRECT = 2
 
 	DEBUG              = false
-	WASM_FILE_TESTCORE = "../../../wasm/testcore_bg.wasm"
-	WASM_FILE_ERC20    = "../../../wasm/erc20_bg.wasm"
 	ERC20_NAME         = "erc20"
 	ERC20_SUPPLY       = 100000
 
@@ -38,6 +37,8 @@ const (
 	PARAM_RECIPIENT  = "r"
 )
 
+var WasmFileTestcore = wasmhost.WasmPath("testcore_bg.wasm")
+var WasmFileErc20 = wasmhost.WasmPath("erc20_bg.wasm")
 var SandboxSCName = "test_sandbox"
 
 func setupChain(t *testing.T, sigSchemeChain signaturescheme.SignatureScheme) (*solo.Solo, *solo.Chain) {
@@ -74,7 +75,7 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 		if WASM_RUNNER == WASM_RUNNER_GO_DIRECT {
 			err = govm.DeployGoContract(chain, user, SandboxSCName, "testcore")
 		} else {
-			wasmFile := WASM_FILE_TESTCORE
+			wasmFile := WasmFileTestcore
 			if WASM_RUNNER == WASM_RUNNER_GO {
 				wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
 			}
@@ -98,7 +99,7 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureScheme, runWasm bool) coretypes.ContractID {
 	var err error
 	if !runWasm {
-		t.Logf("skipped %s. Only for Wasm tests, always loads %s", t.Name(), WASM_FILE_ERC20)
+		t.Logf("skipped %s. Only for Wasm tests, always loads %s", t.Name(), WasmFileErc20)
 		return coretypes.ContractID{}
 	}
 	var userAgentID coretypes.AgentID
@@ -113,7 +114,7 @@ func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureS
 			PARAM_CREATOR, userAgentID,
 		)
 	} else {
-		wasmFile := WASM_FILE_ERC20
+		wasmFile := WasmFileErc20
 		if WASM_RUNNER == WASM_RUNNER_GO {
 			wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
 		}
