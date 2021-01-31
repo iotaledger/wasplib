@@ -12,7 +12,7 @@ fn on_load() {
     let exports = ScExports::new();
     exports.add_call("storeString", store_string);
     exports.add_view("getString", get_string);
-    exports.add_call("withdraw_iota", withdraw_iota);
+    exports.add_call("withdrawIota", withdraw_iota);
 }
 
 // storeString entry point stores a string provided as parameters
