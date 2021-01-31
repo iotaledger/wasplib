@@ -13,10 +13,10 @@ const (
 )
 
 func TestDeployErc20(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 
-	creator := glb.NewSignatureSchemeWithFunds()
+	creator := env.NewSignatureSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
@@ -40,8 +40,8 @@ func TestDeployErc20(t *testing.T) {
 }
 
 func TestDeployErc20Fail1(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, erc20name, erc20file)
 	require.Error(t, err)
 	_, rec := chain.GetInfo()
@@ -49,8 +49,8 @@ func TestDeployErc20Fail1(t *testing.T) {
 }
 
 func TestDeployErc20Fail2(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, 1000000,
 	)
@@ -60,9 +60,9 @@ func TestDeployErc20Fail2(t *testing.T) {
 }
 
 func TestDeployErc20Fail3(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
-	creator := glb.NewSignatureSchemeWithFunds()
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
+	creator := env.NewSignatureSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_CREATOR, creatorAgentID,
@@ -73,9 +73,9 @@ func TestDeployErc20Fail3(t *testing.T) {
 }
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
-	creator := glb.NewSignatureSchemeWithFunds()
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
+	creator := env.NewSignatureSchemeWithFunds()
 	creatorAgentID := coretypes.NewAgentIDFromAddress(creator.Address())
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_CREATOR, creatorAgentID,

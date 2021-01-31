@@ -8,23 +8,23 @@ import (
 )
 
 func TestSuccess(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployContract(nil, test_sandbox_sc.Name, test_sandbox_sc.Interface.ProgramHash)
 	require.NoError(t, err)
 }
 
 func TestFail(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployContract(nil, test_sandbox_sc.Name, test_sandbox_sc.Interface.ProgramHash,
 		test_sandbox_sc.ParamFail, 1)
 	require.Error(t, err)
 }
 
 func TestFailRepeat(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployContract(nil, test_sandbox_sc.Name, test_sandbox_sc.Interface.ProgramHash,
 		test_sandbox_sc.ParamFail, 1)
 	require.Error(t, err)

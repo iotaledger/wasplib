@@ -5,6 +5,7 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -31,7 +32,7 @@ func testGetSet(t *testing.T, w bool) {
 	require.EqualValues(t, 314, retInt)
 }
 
-func TestCallRecursive(t *testing.T) { run2(t, testCallRecursive) }
+func TestCallRecursive(t *testing.T) { run2(t, testCallRecursive, govm.WasmRunner == govm.WasmRunnerGo) }
 func testCallRecursive(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)

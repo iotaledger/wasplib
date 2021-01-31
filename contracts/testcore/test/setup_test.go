@@ -11,22 +11,13 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
-	"strings"
 	"testing"
 )
 
 const (
-	WASM_RUNNER = 0
-	// 0: run default Rust Wasm code
-	// 1: run Go Wasm code instead of Rust Wasm code
-	// 2: run Go code directly, without using Wasm
-	WASM_RUNNER_RUST      = 0
-	WASM_RUNNER_GO        = 1
-	WASM_RUNNER_GO_DIRECT = 2
-
-	DEBUG              = false
-	ERC20_NAME         = "erc20"
-	ERC20_SUPPLY       = 100000
+	DEBUG        = false
+	ERC20_NAME   = "erc20"
+	ERC20_SUPPLY = 100000
 
 	// ERC20 constants
 	PARAM_SUPPLY     = "s"
@@ -39,6 +30,7 @@ const (
 
 var WasmFileTestcore = wasmhost.WasmPath("testcore_bg.wasm")
 var WasmFileErc20 = wasmhost.WasmPath("erc20_bg.wasm")
+
 var SandboxSCName = "test_sandbox"
 
 func setupChain(t *testing.T, sigSchemeChain signaturescheme.SignatureScheme) (*solo.Solo, *solo.Chain) {
@@ -72,15 +64,7 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 	var err error
 	var extraToken int64
 	if runWasm {
-		if WASM_RUNNER == WASM_RUNNER_GO_DIRECT {
-			err = govm.DeployGoContract(chain, user, SandboxSCName, "testcore")
-		} else {
-			wasmFile := WasmFileTestcore
-			if WASM_RUNNER == WASM_RUNNER_GO {
-				wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
-			}
-			err = chain.DeployWasmContract(user, SandboxSCName, wasmFile)
-		}
+		err = govm.DeployGoContract(chain, user, SandboxSCName, "testcore")
 		extraToken = 1
 	} else {
 		err = chain.DeployContract(user, SandboxSCName, test_sandbox_sc.Interface.ProgramHash)
@@ -108,21 +92,10 @@ func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureS
 	} else {
 		userAgentID = coretypes.NewAgentIDFromAddress(user.Address())
 	}
-	if WASM_RUNNER == WASM_RUNNER_GO_DIRECT {
-		err = govm.DeployGoContract(chain, user, ERC20_NAME, ERC20_NAME,
-			PARAM_SUPPLY, 1000000,
-			PARAM_CREATOR, userAgentID,
-		)
-	} else {
-		wasmFile := WasmFileErc20
-		if WASM_RUNNER == WASM_RUNNER_GO {
-			wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
-		}
-		err = chain.DeployWasmContract(user, ERC20_NAME, wasmFile,
-			PARAM_SUPPLY, 1000000,
-			PARAM_CREATOR, userAgentID,
-		)
-	}
+	err = govm.DeployGoContract(chain, user, ERC20_NAME, ERC20_NAME,
+		PARAM_SUPPLY, 1000000,
+		PARAM_CREATOR, userAgentID,
+	)
 	require.NoError(t, err)
 
 	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(test_sandbox_sc.Interface.Name))

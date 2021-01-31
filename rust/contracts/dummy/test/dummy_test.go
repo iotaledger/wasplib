@@ -12,8 +12,8 @@ const (
 )
 
 func TestSuccess(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	defer chain.WaitForEmptyBacklog()
 
 	err := chain.DeployWasmContract(nil, contractName, fileName)
@@ -23,8 +23,8 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestFail(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, contractName, fileName,
 		"failInitParam", 1,
 	)
@@ -34,8 +34,8 @@ func TestFail(t *testing.T) {
 }
 
 func TestFailRepeat(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
 	err := chain.DeployWasmContract(nil, contractName, fileName,
 		"failInitParam", 1,
 	)

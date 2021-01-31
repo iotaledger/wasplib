@@ -7,12 +7,10 @@ import (
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/dict"
-	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
-	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/client"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
+	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
@@ -24,46 +22,43 @@ var WasmFile = wasmhost.WasmPath("fairauction_bg.wasm")
 
 var bidderId [4]coretypes.AgentID
 var bidderWallet [4]signaturescheme.SignatureScheme
-var chain *solo.Chain
 var contractAgentID coretypes.AgentID
 var contractID coretypes.ContractID
 var creatorId coretypes.AgentID
 var creatorWallet signaturescheme.SignatureScheme
-var env *solo.Solo
 var tokenColor balance.Color
 
-func setupFaTest(t *testing.T) {
-	wasmhost.HostTracing = false
-	env = solo.New(t, false, false)
-	chain = env.NewChain(nil, "ch1")
-	contractID = coretypes.NewContractID(chain.ChainID, coretypes.Hn(ScName))
+func setupFaTest(t *testing.T) *govm.TestEnv {
+	te := govm.NewTestEnv(t, ScName)
+
+	contractID = coretypes.NewContractID(te.Chain.ChainID, coretypes.Hn(ScName))
 	contractAgentID = coretypes.NewAgentIDFromContractID(contractID)
 
-	err := chain.DeployWasmContract(nil, ScName, WasmFile)
-	require.NoError(t, err)
-
-	creatorWallet = env.NewSignatureSchemeWithFunds()
+	creatorWallet = te.Env.NewSignatureSchemeWithFunds()
 	creatorId = coretypes.NewAgentIDFromAddress(creatorWallet.Address())
 
 	// set up 4 potential bidders
 	for i := 0; i < 4; i++ {
-		bidderWallet[i] = env.NewSignatureSchemeWithFunds()
+		bidderWallet[i] = te.Env.NewSignatureSchemeWithFunds()
 		bidderId[i] = coretypes.NewAgentIDFromAddress(bidderWallet[i].Address())
 	}
 
-	tokenColor, err = env.MintTokens(creatorWallet, 10)
+	var err error
+	tokenColor, err = te.Env.MintTokens(creatorWallet, 10)
 	require.NoError(t, err)
-	env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-10)
-	env.AssertAddressBalance(creatorWallet.Address(), tokenColor, 10)
 
-	req := solo.NewCallParams(ScName, "start_auction", "color", tokenColor,
-		"minimum", 500, "description", "Cool tokens for sale!").
+	te.Env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-10)
+	te.Env.AssertAddressBalance(creatorWallet.Address(), tokenColor, 10)
+
+	te.NewCallParams("start_auction",
+		"color", tokenColor,
+		"minimum", 500,
+		"description", "Cool tokens for sale!").
 		WithTransfers(map[balance.Color]int64{
 			balance.ColorIOTA: 25, // deposit, must be >=minimum*margin
 			tokenColor:        10,
-		})
-	_, err = chain.PostRequest(req, creatorWallet)
-	require.NoError(t, err)
+		}).Post(0, creatorWallet)
+	return te
 }
 
 func requireAgent(t *testing.T, res dict.Dict, key kv.Key, expected coretypes.AgentID) {
@@ -88,116 +83,98 @@ func requireString(t *testing.T, res dict.Dict, key kv.Key, expected string) {
 }
 
 func TestFaStartAuction(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
 	// note 1 iota should be stuck in the delayed finalize_auction
-	chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 25-1)
-	chain.AssertAccountBalance(contractAgentID, tokenColor, 10)
+	te.Chain.AssertAccountBalance(contractAgentID, balance.ColorIOTA, 25-1)
+	te.Chain.AssertAccountBalance(contractAgentID, tokenColor, 10)
 
 	// creator sent 25 deposit + 10 tokenColor + used 1 for request
-	env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-35-1)
+	te.Env.AssertAddressBalance(creatorWallet.Address(), balance.ColorIOTA, 1337-35-1)
 
 	//TODO: seems silly to force creator to withdraw this 1 iota from chain account?
 	// also look at how to send this back/retrieve it when creator was SC on other chain
 
 	// 1 used for request was sent back to account on chain
-	chain.AssertAccountBalance(creatorId, balance.ColorIOTA, 1)
+	te.Chain.AssertAccountBalance(creatorId, balance.ColorIOTA, 1)
 }
 
 func TestFaAuctionInfo(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
-	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
-	require.NoError(t, err)
-
+	res := te.CallView("get_info", "color", tokenColor)
 	requireAgent(t, res, "creator", creatorId)
 	requireInt64(t, res, "bidders", 0)
 }
 
 func TestFaNoBids(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
 	// wait for finalize_auction
-	env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	te.Env.AdvanceClockBy(61 * time.Minute)
+	te.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
-	require.NoError(t, err)
-
+	res := te.CallView( "get_info", "color", tokenColor)
 	requireInt64(t, res, "bidders", 0)
 }
 
 func TestFaOneBidTooLow(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
-	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
-		WithTransfer(balance.ColorIOTA, 100)
-	_, err := chain.PostRequest(req, creatorWallet)
-	require.Error(t, err)
+	te.NewCallParams( "place_bid", "color", tokenColor).
+		PostFail(100, creatorWallet)
 
 	// wait for finalize_auction
-	env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	te.Env.AdvanceClockBy(61 * time.Minute)
+	te.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
-	require.NoError(t, err)
-
+	res := te.CallView( "get_info", "color", tokenColor)
 	requireInt64(t, res, "highest_bid", -1)
 	requireInt64(t, res, "bidders", 0)
 }
 
 func TestFaOneBid(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
-	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
-		WithTransfer(balance.ColorIOTA, 500)
-	_, err := chain.PostRequest(req, bidderWallet[0])
-	require.NoError(t, err)
+	te.NewCallParams( "place_bid", "color", tokenColor).
+		Post(500, bidderWallet[0])
 
 	// wait for finalize_auction
-	env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	te.Env.AdvanceClockBy(61 * time.Minute)
+	te.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
-	require.NoError(t, err)
-
+	res := te.CallView( "get_info", "color", tokenColor)
 	requireInt64(t, res, "bidders", 1)
 	requireInt64(t, res, "highest_bid", 500)
 	requireAgent(t, res, "highest_bidder", bidderId[0])
 }
 
 func TestFaClientAccess(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
 	// wait for finalize_auction
-	env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	te.Env.AdvanceClockBy(61 * time.Minute)
+	te.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(ScName, "get_info", "color", tokenColor)
-	require.NoError(t, err)
-
+	res := te.CallView( "get_info", "color", tokenColor)
 	requireInt64(t, res, "bidders", 0)
 
-	results := getClientMap(t, wasmhost.KeyResults, res)
+	results := govm.GetClientMap(t, wasmhost.KeyResults, res)
 	require.EqualValues(t, 0, results.GetInt(fairauction.KeyBidders).Value())
 }
 
 func TestFaClientFullAccess(t *testing.T) {
-	setupFaTest(t)
+	te := setupFaTest(t)
 
-	req := solo.NewCallParams(ScName, "place_bid", "color", tokenColor).
-		WithTransfer(balance.ColorIOTA, 500)
-	_, err := chain.PostRequest(req, bidderWallet[0])
-	require.NoError(t, err)
+	te.NewCallParams( "place_bid", "color", tokenColor).
+		Post(500, bidderWallet[0])
 
 	// wait for finalize_auction
-	env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	te.Env.AdvanceClockBy(61 * time.Minute)
+	te.WaitForEmptyBacklog()
 
-	res, err := chain.CallView(ScName, "copy_all_state")
-	require.NoError(t, err)
-
-	state := getClientMap(t, wasmhost.KeyResults, res)
+	res := te.CallView( "copy_all_state")
+	state := govm.GetClientMap(t, wasmhost.KeyResults, res)
 	auctions := state.GetMap(fairauction.KeyAuctions)
 	color := client.NewScColor(tokenColor[:])
 	currentAuction := auctions.GetMap(color)
@@ -206,16 +183,4 @@ func TestFaClientFullAccess(t *testing.T) {
 	auction := fairauction.DecodeAuctionInfo(currentInfo.Value())
 	require.EqualValues(t, 500, auction.HighestBid)
 	require.EqualValues(t, bidderId[0][:], auction.HighestBidder.Bytes())
-}
-
-func getClientMap(t *testing.T, keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
-	logger := testutil.NewLogger(t, "04:05.000")
-	host := &wasmhost.KvStoreHost{}
-	null := wasmproc.NewNullObject(host)
-	root := wasmproc.NewScDictFromKvStore(host, kvStore)
-	host.Init(null, root, logger)
-	root.InitObj(1, keyId, root)
-	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
-	client.ConnectHost(host)
-	return client.Root.Immutable()
 }

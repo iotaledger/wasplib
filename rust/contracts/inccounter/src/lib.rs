@@ -1,10 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-use std::convert::TryInto;
-
 use wasplib::client::*;
-use wasplib::client::host::*;
 
 const KEY_COUNTER: &str = "counter";
 const KEY_NUM_REPEATS: &str = "num_repeats";
@@ -26,7 +23,6 @@ fn on_load() {
     exports.add_call("increment_local_state_sandbox_call", increment_local_state_sandbox_call);
     exports.add_call("increment_local_state_post", increment_local_state_post);
     exports.add_call("nothing", ScExports::nothing);
-    exports.add_call("test", test);
     exports.add_call("state_test", state_test);
     exports.add_view("state_check", state_check);
     exports.add_call("results_test", results_test);
@@ -118,6 +114,9 @@ fn increment_when_must_increment(ctx: &ScCallContext) {
 }
 
 fn increment_local_state_internal_call(ctx: &ScCallContext) {
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = false;
+    }
     increment_when_must_increment(ctx);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
@@ -128,6 +127,9 @@ fn increment_local_state_internal_call(ctx: &ScCallContext) {
 }
 
 fn increment_local_state_sandbox_call(ctx: &ScCallContext) {
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = false;
+    }
     ctx.call(ctx.contract_id().hname(), Hname::new("increment_when_must_increment"), None, None);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
@@ -138,6 +140,9 @@ fn increment_local_state_sandbox_call(ctx: &ScCallContext) {
 }
 
 fn increment_local_state_post(ctx: &ScCallContext) {
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = false;
+    }
     let request = PostRequestParams {
         contract: ctx.contract_id(),
         function: Hname::new("increment_when_must_increment"),
@@ -152,24 +157,6 @@ fn increment_local_state_post(ctx: &ScCallContext) {
     ctx.post(&request);
     ctx.post(&request);
     // counter ends up as 0
-}
-
-fn test(_sc: &ScCallContext) {
-    let key_id = get_key_id_from_string("timestamp");
-    set_bytes(1, key_id, TYPE_INT, &123456789_i64.to_le_bytes());
-    let bytes = get_bytes(1, key_id, TYPE_INT);
-    let timestamp = i64::from_le_bytes(bytes.try_into().unwrap());
-    set_bytes(1, key_id, TYPE_INT, &timestamp.to_le_bytes());
-    let key_id2 = get_key_id_from_string("string");
-    set_bytes(1, key_id2, TYPE_STRING, "Test".as_bytes());
-    let s1 = get_bytes(1, key_id2, TYPE_STRING);
-    set_bytes(1, key_id2, TYPE_STRING, "Bleep".as_bytes());
-    let s2 = get_bytes(1, key_id2, TYPE_STRING);
-    set_bytes(1, key_id2, TYPE_STRING, "Klunky".as_bytes());
-    let s3 = get_bytes(1, key_id2, TYPE_STRING);
-    set_bytes(1, key_id2, TYPE_STRING, &s1);
-    set_bytes(1, key_id2, TYPE_STRING, &s2);
-    set_bytes(1, key_id2, TYPE_STRING, &s3);
 }
 
 fn results_test(ctx: &ScCallContext) {
@@ -236,26 +223,6 @@ fn check_map(kvstore: ScImmutableMap) {
     let string3 = sa1.get_string(1);
     check(string3.value() == "def");
 }
-
-// fn check_map_rev(kvstore: ScImmutableMap) {
-//     let sa1 = kvstore.get_string_array("sa1");
-//     let string3 = sa1.get_string(1);
-//     check(string3.value() == "def");
-//     let string2 = sa1.get_string(0);
-//     check(string2.value() == "bc");
-//
-//     let ia1 = kvstore.get_int_array("ia1");
-//     let int3 = ia1.get_int(1);
-//     check(int3.value() == 3);
-//     let int2 = ia1.get_int(0);
-//     check(int2.value() == 2);
-//
-//     let string1 = kvstore.get_string("string1");
-//     check(string1.value() == "a");
-//
-//     let int1 = kvstore.get_int("int1");
-//     check(int1.value() == 1);
-// }
 
 fn check(condition: bool) {
     if !condition {

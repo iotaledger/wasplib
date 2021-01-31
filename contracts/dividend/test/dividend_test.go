@@ -1,74 +1,47 @@
 package test
 
 import (
-	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 const (
-	ParamAddress = "address"
-	ParamFactor  = "factor"
-	ScName = "dividend"
+	scName       = "dividend"
+
+	paramAddress = "address"
+	paramFactor  = "factor"
 )
 
 var WasmFile = wasmhost.WasmPath("dividend_bg.wasm")
 
 func TestDeploy(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ch1")
-
-	err := chain.DeployWasmContract(nil, ScName, WasmFile)
-	require.NoError(t, err)
-
-	_, err = chain.FindContract(ScName)
+	te := govm.NewTestEnv(t, scName)
+	_, err := te.Chain.FindContract(scName)
 	require.NoError(t, err)
 }
 
 func TestAddMemberOk(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ch1")
-
-	err := chain.DeployWasmContract(nil, ScName, WasmFile)
-	require.NoError(t, err)
-
-	user1 := glb.NewSignatureSchemeWithFunds()
-	user1address := user1.Address()
-	req := solo.NewCallParams(ScName, "member",
-		ParamAddress, user1address,
-		ParamFactor, 100,
-	)
-	_, err = chain.PostRequest(req, nil)
-	require.NoError(t, err)
+	te := govm.NewTestEnv(t, scName)
+	user1 := te.Env.NewSignatureSchemeWithFunds()
+	_ = te.NewCallParams("member",
+		paramAddress, user1.Address(),
+		paramFactor, 100,
+	).Post(0)
 }
 
-func TestAddMemberParamFail1(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ch1")
-
-	err := chain.DeployWasmContract(nil, ScName, WasmFile)
-	require.NoError(t, err)
-
-	req := solo.NewCallParams(ScName, "member",
-		ParamFactor, 100,
-	)
-	_, err = chain.PostRequest(req, nil)
-	require.Error(t, err)
+func TestAddMemberFailMissingAddress(t *testing.T) {
+	te := govm.NewTestEnv(t, scName)
+	_ = te.NewCallParams("member",
+		paramFactor, 100,
+	).PostFail(0)
 }
 
-func TestAddMemberParamFail2(t *testing.T) {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "ch1")
-
-	err := chain.DeployWasmContract(nil, ScName, WasmFile)
-	require.NoError(t, err)
-
-	user1 := glb.NewSignatureSchemeWithFunds()
-	user1address := user1.Address()
-	req := solo.NewCallParams(ScName, "member",
-		ParamAddress, user1address,
-	)
-	_, err = chain.PostRequest(req, nil)
-	require.Error(t, err)
+func TestAddMemberFailMissingFactor(t *testing.T) {
+	te := govm.NewTestEnv(t, scName)
+	user1 := te.Env.NewSignatureSchemeWithFunds()
+	_ = te.NewCallParams("member",
+		paramAddress, user1.Address(),
+	).PostFail(0)
 }

@@ -17,9 +17,9 @@ var (
 )
 
 func deployErc20(t *testing.T) *solo.Chain {
-	glb := solo.New(t, false, false)
-	chain := glb.NewChain(nil, "chain1")
-	creator = glb.NewSignatureSchemeWithFunds()
+	env := solo.New(t, false, false)
+	chain := env.NewChain(nil, "chain1")
+	creator = env.NewSignatureSchemeWithFunds()
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := chain.DeployWasmContract(nil, erc20name, erc20file,
 		PARAM_SUPPLY, supply,

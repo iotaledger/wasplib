@@ -4,7 +4,6 @@
 package inccounter
 
 import (
-	"encoding/binary"
 	"github.com/iotaledger/wasplib/client"
 )
 
@@ -27,7 +26,6 @@ func OnLoad() {
 	exports.AddCall("increment_local_state_sandbox_call", incrementLocalStateSandboxCall)
 	exports.AddCall("increment_local_state_post", incrementLocalStatePost)
 	exports.AddCall("nothing", client.Nothing)
-	exports.AddCall("test", test)
 	exports.AddCall("state_test", stateTest)
 	exports.AddView("state_check", stateCheck)
 	exports.AddCall("results_test", resultsTest)
@@ -70,13 +68,13 @@ func incrementPostIncrement(ctx *client.ScCallContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-        ctx.Post(&client.PostRequestParams {
-            Contract: ctx.ContractId(),
-            Function: client.NewHname("increment_post_increment"),
-            Params: nil,
-            Transfer: nil,
-            Delay: 0,
-        })
+		ctx.Post(&client.PostRequestParams{
+			Contract: ctx.ContractId(),
+			Function: client.NewHname("increment_post_increment"),
+			Params:   nil,
+			Transfer: nil,
+			Delay:    0,
+		})
 	}
 }
 
@@ -98,13 +96,13 @@ func incrementRepeatMany(ctx *client.ScCallContext) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-    ctx.Post(&client.PostRequestParams {
-        Contract: ctx.ContractId(),
-        Function: client.NewHname("increment_repeat_many"),
-        Params: nil,
-        Transfer: nil,
-        Delay: 0,
-    })
+	ctx.Post(&client.PostRequestParams{
+		Contract: ctx.ContractId(),
+		Function: client.NewHname("increment_repeat_many"),
+		Params:   nil,
+		Transfer: nil,
+		Delay:    0,
+	})
 }
 
 func incrementWhenMustIncrement(ctx *client.ScCallContext) {
@@ -119,61 +117,37 @@ func incrementWhenMustIncrement(ctx *client.ScCallContext) {
 }
 
 func incrementLocalStateInternalCall(ctx *client.ScCallContext) {
+	LocalStateMustIncrement = false
 	incrementWhenMustIncrement(ctx)
-	{
-		LocalStateMustIncrement = true
-	}
+	LocalStateMustIncrement = true
 	incrementWhenMustIncrement(ctx)
 	incrementWhenMustIncrement(ctx)
 	// counter ends up as 2
 }
 
 func incrementLocalStateSandboxCall(ctx *client.ScCallContext) {
+	LocalStateMustIncrement = false
 	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
-	{
-		LocalStateMustIncrement = true
-	}
+	LocalStateMustIncrement = true
 	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
 	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
-	// counter ends up as 0
+	// counter ends up as 0 (non-existent)
 }
 
 func incrementLocalStatePost(ctx *client.ScCallContext) {
-    request := &client.PostRequestParams {
-        Contract: ctx.ContractId(),
-        Function: client.NewHname("increment_when_must_increment"),
-        Params: nil,
-        Transfer: nil,
-        Delay: 0,
-    }
-    ctx.Post(request)
-	{
-		LocalStateMustIncrement = true
+	LocalStateMustIncrement = false
+	request := &client.PostRequestParams{
+		Contract: ctx.ContractId(),
+		Function: client.NewHname("increment_when_must_increment"),
+		Params:   nil,
+		Transfer: nil,
+		Delay:    0,
 	}
-    ctx.Post(request)
-    ctx.Post(request)
-	// counter ends up as 0
-}
-
-func test(_sc *client.ScCallContext) {
-	KeyId := client.GetKeyIdFromString("timestamp")
-	intBuf := make([]byte, 8)
-	binary.LittleEndian.PutUint64(intBuf, 123456789)
-	client.SetBytes(1, KeyId, client.TYPE_INT, intBuf)
-	bytes := client.GetBytes(1, KeyId, client.TYPE_INT)
-	timestamp := int64(binary.LittleEndian.Uint64(bytes))
-	binary.LittleEndian.PutUint64(intBuf, uint64(timestamp))
-	client.SetBytes(1, KeyId, client.TYPE_INT, intBuf)
-	KeyId2 := client.GetKeyIdFromString("string")
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Test"))
-	s1 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Bleep"))
-	s2 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, []byte("Klunky"))
-	s3 := client.GetBytes(1, KeyId2, client.TYPE_STRING)
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, s1)
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, s2)
-	client.SetBytes(1, KeyId2, client.TYPE_STRING, s3)
+	ctx.Post(request)
+	LocalStateMustIncrement = true
+	ctx.Post(request)
+	ctx.Post(request)
+	// counter ends up as 0 (non-existent)
 }
 
 func resultsTest(ctx *client.ScCallContext) {
@@ -240,26 +214,6 @@ func checkMap(kvstore client.ScImmutableMap) {
 	check(string2.Value() == "bc")
 	string3 := sa1.GetString(1)
 	check(string3.Value() == "def")
-}
-
-func checkMapRev(kvstore client.ScImmutableMap) {
-	sa1 := kvstore.GetStringArray(client.Key("sa1"))
-	string3 := sa1.GetString(1)
-	check(string3.Value() == "def")
-	string2 := sa1.GetString(0)
-	check(string2.Value() == "bc")
-
-	ia1 := kvstore.GetIntArray(client.Key("ia1"))
-	int3 := ia1.GetInt(1)
-	check(int3.Value() == 3)
-	int2 := ia1.GetInt(0)
-	check(int2.Value() == 2)
-
-	string1 := kvstore.GetString(client.Key("string1"))
-	check(string1.Value() == "a")
-
-	int1 := kvstore.GetInt(client.Key("int1"))
-	check(int1.Value() == 1)
 }
 
 func check(condition bool) {
