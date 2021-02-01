@@ -3,6 +3,7 @@ package govm
 import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
+	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/dict"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -53,36 +54,49 @@ var ScForGoVM = map[string]func(){
 }
 
 type TestEnv struct {
-	Chain  *solo.Chain
-	Env    *solo.Solo
-	ScName string
-	req    *solo.CallParams
-	T      *testing.T
+	Chain           *solo.Chain
+	ContractAccount coretypes.AgentID
+	ContractId      coretypes.ContractID
+	CreatorAgentId  coretypes.AgentID
+	CreatorWallet   signaturescheme.SignatureScheme
+	Env             *solo.Solo
+	host            client.ScHost
+	ScName          string
+	req             *solo.CallParams
+	T               *testing.T
+	wallets         []signaturescheme.SignatureScheme
 }
 
 func NewTestEnv(t *testing.T, scName string) *TestEnv {
 	wasmhost.HostTracing = TraceHost
 	te := &TestEnv{T: t, ScName: scName}
 	te.Env = solo.New(t, Debug, StackTrace)
-	te.Chain = te.Env.NewChain(nil, "chain1")
-	err := DeployGoContract(te.Chain, nil, scName, scName)
+	te.CreatorWallet = te.Env.NewSignatureSchemeWithFunds()
+	te.CreatorAgentId = coretypes.NewAgentIDFromAddress(te.CreatorWallet.Address())
+	te.Chain = te.Env.NewChain(te.CreatorWallet, "chain1")
+	err := DeployGoContract(te.Chain, te.CreatorWallet, scName, scName)
 	require.NoError(te.T, err)
+	te.ContractId = coretypes.NewContractID(te.Chain.ChainID, coretypes.Hn(scName))
+	te.ContractAccount = coretypes.NewAgentIDFromContractID(te.ContractId)
 	return te
 }
 
 func (te *TestEnv) CallView(funcName string, params ...interface{}) dict.Dict {
-	ret, err := te.Chain.CallView(te.ScName, funcName, params...)
+	if te.host != nil {
+		client.ConnectHost(te.host)
+	}
+	ret, err := te.Chain.CallView(te.ScName, funcName, filterKeys(params...)...)
 	require.NoError(te.T, err)
 	return ret
 }
 
 func (te *TestEnv) NewCallParams(funcName string, params ...interface{}) *TestEnv {
-	te.req = solo.NewCallParams(te.ScName, funcName, params...)
+	te.req = solo.NewCallParams(te.ScName, funcName, filterKeys(params...)...)
 	return te
 }
 
 func (te *TestEnv) WithTransfer(color balance.Color, amount int64) *TestEnv {
-	te.req.WithTransfers(map[balance.Color]int64{color: amount})
+	te.req.WithTransfer(color, amount)
 	return te
 }
 
@@ -92,6 +106,9 @@ func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
 }
 
 func (te *TestEnv) post(iotas int64, scheme []signaturescheme.SignatureScheme) (dict.Dict, error) {
+	if te.host != nil {
+		client.ConnectHost(te.host)
+	}
 	if iotas != 0 {
 		te.WithTransfer(balance.ColorIOTA, iotas)
 	}
@@ -117,7 +134,7 @@ func (te *TestEnv) PostFail(iotas int64, scheme ...signaturescheme.SignatureSche
 
 func (te *TestEnv) State() client.ScImmutableMap {
 	ret := te.CallView("copy_all_state")
-	return GetClientMap(te.T, wasmhost.KeyResults, ret)
+	return te.GetClientMap(wasmhost.KeyState, ret)
 }
 
 func (te *TestEnv) WaitForEmptyBacklog() {
@@ -131,7 +148,7 @@ func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureSche
 		if err != nil {
 			return err
 		}
-		return chain.DeployContract(sigScheme, name, hprog, params...)
+		return chain.DeployContract(sigScheme, name, hprog, filterKeys(params...)...)
 	}
 
 	wasmFile := contractName + "_bg.wasm"
@@ -139,17 +156,45 @@ func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureSche
 		wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
 	}
 	wasmFile = wasmhost.WasmPath(wasmFile)
-	return chain.DeployWasmContract(sigScheme, name, wasmFile, params...)
+	return chain.DeployWasmContract(sigScheme, name, wasmFile, filterKeys(params...)...)
 }
 
-func GetClientMap(t *testing.T, keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
-	logger := testutil.NewLogger(t, "04:05.000")
+func (te *TestEnv) GetClientMap(keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
+	logger := testutil.NewLogger(te.T, "04:05.000")
 	host := &wasmhost.KvStoreHost{}
 	null := wasmproc.NewNullObject(host)
 	root := wasmproc.NewScDictFromKvStore(host, kvStore)
 	host.Init(null, root, logger)
 	root.InitObj(1, keyId, root)
 	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
-	client.ConnectHost(host)
+	oldHost := client.ConnectHost(host)
+	if te.host == nil {
+		te.host = oldHost
+	}
 	return client.Root.Immutable()
+}
+
+// filters client.Key parameters and replaces them with their proper string equivalent
+func filterKeys(params ...interface{}) []interface{} {
+	for i, param := range params {
+		switch param.(type) {
+		case client.Key:
+			params[i] = string(param.(client.Key))
+		}
+	}
+	return params
+}
+
+// returns the agent id of a wallet with preloaded funds for the agent with specified index
+func (te *TestEnv) Agent(index int) coretypes.AgentID {
+	return coretypes.NewAgentIDFromAddress(te.Wallet(index).Address())
+}
+
+// returns a wallet with preloaded funds for the agent with specified index
+func (te *TestEnv) Wallet(index int) signaturescheme.SignatureScheme {
+	require.True(te.T, index <= len(te.wallets), "invalid wallet index")
+	if index == len(te.wallets) {
+		te.wallets = append(te.wallets, te.Env.NewSignatureSchemeWithFunds())
+	}
+	return te.wallets[index]
 }

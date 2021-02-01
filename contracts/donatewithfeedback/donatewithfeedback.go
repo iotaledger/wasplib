@@ -5,16 +5,18 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/client"
 
-const KeyAmount = client.Key("amount")
-const KeyDonations = client.Key("donations")
-const KeyDonator = client.Key("donator")
-const KeyError = client.Key("error")
-const KeyFeedback = client.Key("feedback")
-const KeyLog = client.Key("log")
-const KeyMaxDonation = client.Key("max_donation")
-const KeyTimestamp = client.Key("timestamp")
-const KeyTotalDonation = client.Key("total_donation")
-const KeyWithdrawAmount = client.Key("withdraw")
+const ParamFeedback = client.Key("feedback")
+const ParamWithdrawAmount = client.Key("withdraw")
+
+const VarAmount = client.Key("amount")
+const VarDonations = client.Key("donations")
+const VarDonator = client.Key("donator")
+const VarError = client.Key("error")
+const VarFeedback = client.Key("feedback")
+const VarLog = client.Key("log")
+const VarMaxDonation = client.Key("max_donation")
+const VarTimestamp = client.Key("timestamp")
+const VarTotalDonation = client.Key("total_donation")
 
 func OnLoad() {
 	exports := client.NewScExports()
@@ -28,7 +30,7 @@ func donate(ctx *client.ScCallContext) {
 		Amount:    ctx.Incoming().Balance(client.IOTA),
 		Donator:   ctx.Caller(),
 		Error:     "",
-		Feedback:  ctx.Params().GetString(KeyFeedback).Value(),
+		Feedback:  ctx.Params().GetString(ParamFeedback).Value(),
 		Timestamp: ctx.Timestamp(),
 	}
 	if donation.Amount == 0 || len(donation.Feedback) == 0 {
@@ -39,11 +41,11 @@ func donate(ctx *client.ScCallContext) {
 		}
 	}
 	state := ctx.State()
-	log := state.GetBytesArray(KeyLog)
+	log := state.GetBytesArray(VarLog)
 	log.GetBytes(log.Length()).SetValue(EncodeDonationInfo(donation))
 
-	largestDonation := state.GetInt(KeyMaxDonation)
-	totalDonated := state.GetInt(KeyTotalDonation)
+	largestDonation := state.GetInt(VarMaxDonation)
+	totalDonated := state.GetInt(VarTotalDonation)
 	if donation.Amount > largestDonation.Value() {
 		largestDonation.SetValue(donation.Amount)
 	}
@@ -57,7 +59,7 @@ func withdraw(ctx *client.ScCallContext) {
 	}
 
 	amount := ctx.Balances().Balance(client.IOTA)
-	withdrawAmount := ctx.Params().GetInt(KeyWithdrawAmount).Value()
+	withdrawAmount := ctx.Params().GetInt(ParamWithdrawAmount).Value()
 	if withdrawAmount == 0 || withdrawAmount > amount {
 		withdrawAmount = amount
 	}
@@ -71,21 +73,21 @@ func withdraw(ctx *client.ScCallContext) {
 
 func viewDonations(ctx *client.ScViewContext) {
 	state := ctx.State()
-	largestDonation := state.GetInt(KeyMaxDonation)
-	totalDonated := state.GetInt(KeyTotalDonation)
-	log := state.GetBytesArray(KeyLog)
+	largestDonation := state.GetInt(VarMaxDonation)
+	totalDonated := state.GetInt(VarTotalDonation)
+	log := state.GetBytesArray(VarLog)
 	results := ctx.Results()
-	results.GetInt(KeyMaxDonation).SetValue(largestDonation.Value())
-	results.GetInt(KeyTotalDonation).SetValue(totalDonated.Value())
-	donations := results.GetMapArray(KeyDonations)
+	results.GetInt(VarMaxDonation).SetValue(largestDonation.Value())
+	results.GetInt(VarTotalDonation).SetValue(totalDonated.Value())
+	donations := results.GetMapArray(VarDonations)
 	size := log.Length()
 	for i := int32(0); i < size; i++ {
 		di := DecodeDonationInfo(log.GetBytes(i).Value())
 		donation := donations.GetMap(i)
-		donation.GetInt(KeyAmount).SetValue(di.Amount)
-		donation.GetString(KeyDonator).SetValue(di.Donator.String())
-		donation.GetString(KeyError).SetValue(di.Error)
-		donation.GetString(KeyFeedback).SetValue(di.Feedback)
-		donation.GetInt(KeyTimestamp).SetValue(di.Timestamp)
+		donation.GetInt(VarAmount).SetValue(di.Amount)
+		donation.GetString(VarDonator).SetValue(di.Donator.String())
+		donation.GetString(VarError).SetValue(di.Error)
+		donation.GetString(VarFeedback).SetValue(di.Feedback)
+		donation.GetInt(VarTimestamp).SetValue(di.Timestamp)
 	}
 }

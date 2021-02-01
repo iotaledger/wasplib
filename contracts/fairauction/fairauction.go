@@ -5,21 +5,27 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/client"
 
-const KeyAuctions = client.Key("auctions")
-const KeyBidders = client.Key("bidders")
-const KeyBidderList = client.Key("bidder_list")
-const KeyColor = client.Key("color")
-const KeyCreator = client.Key("creator")
-const KeyDeposit = client.Key("deposit")
-const KeyDescription = client.Key("description")
-const KeyDuration = client.Key("duration")
-const KeyHighestBid = client.Key("highest_bid")
-const KeyHighestBidder = client.Key("highest_bidder")
-const KeyInfo = client.Key("info")
-const KeyMinimumBid = client.Key("minimum")
-const KeyNumTokens = client.Key("num_tokens")
-const KeyOwnerMargin = client.Key("owner_margin")
-const KeyWhenStarted = client.Key("when_started")
+const ParamColor = client.Key("color")
+const ParamDescription = client.Key("description")
+const ParamDuration = client.Key("duration")
+const ParamMinimumBid = client.Key("minimum")
+const ParamOwnerMargin = client.Key("owner_margin")
+
+const VarAuctions = client.Key("auctions")
+const VarBidderList = client.Key("bidder_list")
+const VarBidders = client.Key("bidders")
+const VarColor = client.Key("color")
+const VarCreator = client.Key("creator")
+const VarDeposit = client.Key("deposit")
+const VarDescription = client.Key("description")
+const VarDuration = client.Key("duration")
+const VarHighestBid = client.Key("highest_bid")
+const VarHighestBidder = client.Key("highest_bidder")
+const VarInfo = client.Key("info")
+const VarMinimumBid = client.Key("minimum")
+const VarNumTokens = client.Key("num_tokens")
+const VarOwnerMargin = client.Key("owner_margin")
+const VarWhenStarted = client.Key("when_started")
 
 const DurationDefault = 60
 const DurationMin = 1
@@ -40,7 +46,7 @@ func OnLoad() {
 
 func startAuction(ctx *client.ScCallContext) {
 	params := ctx.Params()
-	colorParam := params.GetColor(KeyColor)
+	colorParam := params.GetColor(ParamColor)
 	if !colorParam.Exists() {
 		ctx.Panic("Missing auction token color")
 	}
@@ -53,13 +59,13 @@ func startAuction(ctx *client.ScCallContext) {
 		ctx.Panic("Missing auction tokens")
 	}
 
-	minimumBid := params.GetInt(KeyMinimumBid).Value()
+	minimumBid := params.GetInt(ParamMinimumBid).Value()
 	if minimumBid == 0 {
 		ctx.Panic("Missing minimum bid")
 	}
 
 	// duration in minutes
-	duration := params.GetInt(KeyDuration).Value()
+	duration := params.GetInt(ParamDuration).Value()
 	if duration == 0 {
 		duration = DurationDefault
 	}
@@ -70,7 +76,7 @@ func startAuction(ctx *client.ScCallContext) {
 		duration = DurationMax
 	}
 
-	description := params.GetString(KeyDescription).Value()
+	description := params.GetString(ParamDescription).Value()
 	if description == "" {
 		description = "N/A"
 	}
@@ -79,7 +85,7 @@ func startAuction(ctx *client.ScCallContext) {
 	}
 
 	state := ctx.State()
-	ownerMargin := state.GetInt(KeyOwnerMargin).Value()
+	ownerMargin := state.GetInt(VarOwnerMargin).Value()
 	if ownerMargin == 0 {
 		ownerMargin = OwnerMarginDefault
 	}
@@ -94,9 +100,9 @@ func startAuction(ctx *client.ScCallContext) {
 		ctx.Panic("Insufficient deposit")
 	}
 
-	auctions := state.GetMap(KeyAuctions)
+	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(KeyInfo)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
 	if auctionInfo.Exists() {
 		ctx.Panic("Auction for this token color already exists")
 	}
@@ -117,14 +123,14 @@ func startAuction(ctx *client.ScCallContext) {
 	auctionInfo.SetValue(EncodeAuctionInfo(auction))
 
 	finalizeParams := client.NewScMutableMap()
-	finalizeParams.GetColor(KeyColor).SetValue(auction.Color)
-    ctx.Post(&client.PostRequestParams {
-        Contract: ctx.ContractId(),
-        Function: client.NewHname("finalize_auction"),
-        Params: finalizeParams,
-        Transfer: nil,
-        Delay: duration * 60,
-    })
+	finalizeParams.GetColor(VarColor).SetValue(auction.Color)
+	ctx.Post(&client.PostRequestParams{
+		Contract: ctx.ContractId(),
+		Function: client.NewHname("finalize_auction"),
+		Params:   finalizeParams,
+		Transfer: nil,
+		Delay:    duration * 60,
+	})
 	ctx.Log("New auction started")
 }
 
@@ -134,16 +140,16 @@ func finalizeAuction(ctx *client.ScCallContext) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	colorParam := ctx.Params().GetColor(KeyColor)
+	colorParam := ctx.Params().GetColor(ParamColor)
 	if !colorParam.Exists() {
 		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
 	state := ctx.State()
-	auctions := state.GetMap(KeyAuctions)
+	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(KeyInfo)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
 	if !auctionInfo.Exists() {
 		ctx.Panic("Missing auction info")
 	}
@@ -167,8 +173,8 @@ func finalizeAuction(ctx *client.ScCallContext) {
 	}
 
 	// return staked bids to losers
-	bidders := currentAuction.GetMap(KeyBidders)
-	bidderList := currentAuction.GetAgentArray(KeyBidderList)
+	bidders := currentAuction.GetMap(VarBidders)
+	bidderList := currentAuction.GetAgentArray(VarBidderList)
 	size := bidderList.Length()
 	for i := int32(0); i < size; i++ {
 		bidder := bidderList.GetAgent(i).Value()
@@ -191,23 +197,23 @@ func placeBid(ctx *client.ScCallContext) {
 		ctx.Panic("Missing bid amount")
 	}
 
-	colorParam := ctx.Params().GetColor(KeyColor)
+	colorParam := ctx.Params().GetColor(ParamColor)
 	if !colorParam.Exists() {
 		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
 	state := ctx.State()
-	auctions := state.GetMap(KeyAuctions)
+	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(KeyInfo)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
 	if !auctionInfo.Exists() {
 		ctx.Panic("Missing auction info")
 	}
 
 	auction := DecodeAuctionInfo(auctionInfo.Value())
-	bidders := currentAuction.GetMap(KeyBidders)
-	bidderList := currentAuction.GetAgentArray(KeyBidderList)
+	bidders := currentAuction.GetMap(VarBidders)
+	bidderList := currentAuction.GetAgentArray(VarBidderList)
 	caller := ctx.Caller()
 	bidder := bidders.GetBytes(caller)
 	if bidder.Exists() {
@@ -245,48 +251,48 @@ func setOwnerMargin(ctx *client.ScCallContext) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	ownerMargin := ctx.Params().GetInt(KeyOwnerMargin).Value()
+	ownerMargin := ctx.Params().GetInt(ParamOwnerMargin).Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
 	}
 	if ownerMargin > OwnerMarginMax {
 		ownerMargin = OwnerMarginMax
 	}
-	ctx.State().GetInt(KeyOwnerMargin).SetValue(ownerMargin)
+	ctx.State().GetInt(VarOwnerMargin).SetValue(ownerMargin)
 	ctx.Log("Updated owner margin")
 }
 
 func getInfo(ctx *client.ScViewContext) {
-	colorParam := ctx.Params().GetColor(KeyColor)
+	colorParam := ctx.Params().GetColor(ParamColor)
 	if !colorParam.Exists() {
 		ctx.Panic("Missing token color")
 	}
 	color := colorParam.Value()
 
 	state := ctx.State()
-	auctions := state.GetMap(KeyAuctions)
+	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(KeyInfo)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
 	if !auctionInfo.Exists() {
 		ctx.Panic("Missing auction info")
 	}
 
 	auction := DecodeAuctionInfo(auctionInfo.Value())
 	results := ctx.Results()
-	results.GetColor(KeyColor).SetValue(auction.Color)
-	results.GetAgent(KeyCreator).SetValue(auction.Creator)
-	results.GetInt(KeyDeposit).SetValue(auction.Deposit)
-	results.GetString(KeyDescription).SetValue(auction.Description)
-	results.GetInt(KeyDuration).SetValue(auction.Duration)
-	results.GetInt(KeyHighestBid).SetValue(auction.HighestBid)
-	results.GetAgent(KeyHighestBidder).SetValue(auction.HighestBidder)
-	results.GetInt(KeyMinimumBid).SetValue(auction.MinimumBid)
-	results.GetInt(KeyNumTokens).SetValue(auction.NumTokens)
-	results.GetInt(KeyOwnerMargin).SetValue(auction.OwnerMargin)
-	results.GetInt(KeyWhenStarted).SetValue(auction.WhenStarted)
+	results.GetColor(VarColor).SetValue(auction.Color)
+	results.GetAgent(VarCreator).SetValue(auction.Creator)
+	results.GetInt(VarDeposit).SetValue(auction.Deposit)
+	results.GetString(VarDescription).SetValue(auction.Description)
+	results.GetInt(VarDuration).SetValue(auction.Duration)
+	results.GetInt(VarHighestBid).SetValue(auction.HighestBid)
+	results.GetAgent(VarHighestBidder).SetValue(auction.HighestBidder)
+	results.GetInt(VarMinimumBid).SetValue(auction.MinimumBid)
+	results.GetInt(VarNumTokens).SetValue(auction.NumTokens)
+	results.GetInt(VarOwnerMargin).SetValue(auction.OwnerMargin)
+	results.GetInt(VarWhenStarted).SetValue(auction.WhenStarted)
 
-	bidderList := currentAuction.GetAgentArray(KeyBidderList)
-	results.GetInt(KeyBidders).SetValue(int64(bidderList.Length()))
+	bidderList := currentAuction.GetAgentArray(VarBidderList)
+	results.GetInt(VarBidders).SetValue(int64(bidderList.Length()))
 }
 
 func transfer(ctx *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {

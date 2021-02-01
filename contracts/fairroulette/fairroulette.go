@@ -51,13 +51,13 @@ func placeBet(ctx *client.ScCallContext) {
 		if playPeriod < 10 {
 			playPeriod = DefaultPlayPeriod
 		}
-        ctx.Post(&client.PostRequestParams {
-            Contract: ctx.ContractId(),
-            Function: client.NewHname("lock_bets"),
-            Params: nil,
-            Transfer: nil,
-            Delay: playPeriod,
-        })
+		ctx.Post(&client.PostRequestParams{
+			Contract: ctx.ContractId(),
+			Function: client.NewHname("lock_bets"),
+			Params:   nil,
+			Transfer: nil,
+			Delay:    playPeriod,
+		})
 	}
 }
 
@@ -78,13 +78,13 @@ func lockBets(ctx *client.ScCallContext) {
 	}
 	bets.Clear()
 
-    ctx.Post(&client.PostRequestParams {
-        Contract: ctx.ContractId(),
-        Function: client.NewHname("pay_winners"),
-        Params: nil,
-        Transfer: nil,
-        Delay: 0,
-    })
+	ctx.Post(&client.PostRequestParams{
+		Contract: ctx.ContractId(),
+		Function: client.NewHname("pay_winners"),
+		Params:   nil,
+		Transfer: nil,
+		Delay:    0,
+	})
 }
 
 func payWinners(ctx *client.ScCallContext) {

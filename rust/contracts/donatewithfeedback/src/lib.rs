@@ -6,16 +6,18 @@ use wasplib::client::*;
 
 mod types;
 
-const KEY_AMOUNT: &str = "amount";
-const KEY_DONATIONS: &str = "donations";
-const KEY_DONATOR: &str = "donator";
-const KEY_ERROR: &str = "error";
-const KEY_FEEDBACK: &str = "feedback";
-const KEY_LOG: &str = "log";
-const KEY_MAX_DONATION: &str = "max_donation";
-const KEY_TIMESTAMP: &str = "timestamp";
-const KEY_TOTAL_DONATION: &str = "total_donation";
-const KEY_WITHDRAW_AMOUNT: &str = "withdraw";
+const PARAM_FEEDBACK: &str = "feedback";
+const PARAM_WITHDRAW_AMOUNT: &str = "withdraw";
+
+const VAR_AMOUNT: &str = "amount";
+const VAR_DONATIONS: &str = "donations";
+const VAR_DONATOR: &str = "donator";
+const VAR_ERROR: &str = "error";
+const VAR_FEEDBACK: &str = "feedback";
+const VAR_LOG: &str = "log";
+const VAR_MAX_DONATION: &str = "max_donation";
+const VAR_TIMESTAMP: &str = "timestamp";
+const VAR_TOTAL_DONATION: &str = "total_donation";
 
 #[no_mangle]
 fn on_load() {
@@ -30,7 +32,7 @@ fn donate(ctx: &ScCallContext) {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
         error: String::new(),
-        feedback: ctx.params().get_string(KEY_FEEDBACK).value(),
+        feedback: ctx.params().get_string(PARAM_FEEDBACK).value(),
         timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
@@ -41,11 +43,11 @@ fn donate(ctx: &ScCallContext) {
         }
     }
     let state = ctx.state();
-    let log = state.get_bytes_array(KEY_LOG);
+    let log = state.get_bytes_array(VAR_LOG);
     log.get_bytes(log.length()).set_value(&encode_donation_info(&donation));
 
-    let largest_donation = state.get_int(KEY_MAX_DONATION);
-    let total_donated = state.get_int(KEY_TOTAL_DONATION);
+    let largest_donation = state.get_int(VAR_MAX_DONATION);
+    let total_donated = state.get_int(VAR_TOTAL_DONATION);
     if donation.amount > largest_donation.value() {
         largest_donation.set_value(donation.amount);
     }
@@ -59,7 +61,7 @@ fn withdraw(ctx: &ScCallContext) {
     }
 
     let amount = ctx.balances().balance(&ScColor::IOTA);
-    let mut withdraw_amount = ctx.params().get_int(KEY_WITHDRAW_AMOUNT).value();
+    let mut withdraw_amount = ctx.params().get_int(PARAM_WITHDRAW_AMOUNT).value();
     if withdraw_amount == 0 || withdraw_amount > amount {
         withdraw_amount = amount;
     }
@@ -73,21 +75,21 @@ fn withdraw(ctx: &ScCallContext) {
 
 fn view_donations(ctx: &ScViewContext) {
     let state = ctx.state();
-    let largest_donation = state.get_int(KEY_MAX_DONATION);
-    let total_donated = state.get_int(KEY_TOTAL_DONATION);
-    let log = state.get_bytes_array(KEY_LOG);
+    let largest_donation = state.get_int(VAR_MAX_DONATION);
+    let total_donated = state.get_int(VAR_TOTAL_DONATION);
+    let log = state.get_bytes_array(VAR_LOG);
     let results = ctx.results();
-    results.get_int(KEY_MAX_DONATION).set_value(largest_donation.value());
-    results.get_int(KEY_TOTAL_DONATION).set_value(total_donated.value());
-    let donations = results.get_map_array(KEY_DONATIONS);
+    results.get_int(VAR_MAX_DONATION).set_value(largest_donation.value());
+    results.get_int(VAR_TOTAL_DONATION).set_value(total_donated.value());
+    let donations = results.get_map_array(VAR_DONATIONS);
     let size = log.length();
     for i in 0..size {
         let di = decode_donation_info(&log.get_bytes(i).value());
         let donation = donations.get_map(i);
-        donation.get_int(KEY_AMOUNT).set_value(di.amount);
-        donation.get_string(KEY_DONATOR).set_value(&di.donator.to_string());
-        donation.get_string(KEY_ERROR).set_value(&di.error);
-        donation.get_string(KEY_FEEDBACK).set_value(&di.feedback);
-        donation.get_int(KEY_TIMESTAMP).set_value(di.timestamp);
+        donation.get_int(VAR_AMOUNT).set_value(di.amount);
+        donation.get_string(VAR_DONATOR).set_value(&di.donator.to_string());
+        donation.get_string(VAR_ERROR).set_value(&di.error);
+        donation.get_string(VAR_FEEDBACK).set_value(&di.feedback);
+        donation.get_int(VAR_TIMESTAMP).set_value(di.timestamp);
     }
 }

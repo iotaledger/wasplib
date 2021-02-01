@@ -15,20 +15,20 @@ const varNumRepeats = "num_repeats"
 
 func TestIncrementDeploy(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
-	checkCounter(te, nil)
+	checkStateCounter(te, nil)
 }
 
 func TestIncrementOnce(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment").Post(0)
-	checkCounter(te, 1)
+	checkStateCounter(te, 1)
 }
 
 func TestIncrementTwice(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment").Post(0)
 	_ = te.NewCallParams("increment").Post(0)
-	checkCounter(te, 2)
+	checkStateCounter(te, 2)
 }
 
 func TestIncrementRepeatThrice(t *testing.T) {
@@ -37,19 +37,19 @@ func TestIncrementRepeatThrice(t *testing.T) {
 		varNumRepeats, 3).
 		Post(1) // !!! posts to self
 	te.WaitForEmptyBacklog()
-	checkCounter(te, 4)
+	checkStateCounter(te, 4)
 }
 
 func TestIncrementCallIncrement(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment_call_increment").Post(0)
-	checkCounter(te, 2)
+	checkStateCounter(te, 2)
 }
 
 func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment_call_increment_recurse5x").Post(0)
-	checkCounter(te, 6)
+	checkStateCounter(te, 6)
 }
 
 func TestIncrementPostIncrement(t *testing.T) {
@@ -57,13 +57,13 @@ func TestIncrementPostIncrement(t *testing.T) {
 	_ = te.NewCallParams("increment_post_increment").
 		Post(1) // !!! posts to self
 	te.WaitForEmptyBacklog()
-	checkCounter(te, 2)
+	checkStateCounter(te, 2)
 }
 
 func TestIncrementLocalStateInternalCall(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment_local_state_internal_call").Post(0)
-	checkCounter(te, 2)
+	checkStateCounter(te, 2)
 }
 
 func TestIncrementLocalStateSandboxCall(t *testing.T) {
@@ -71,11 +71,11 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	_ = te.NewCallParams("increment_local_state_sandbox_call").Post(0)
 	if govm.WasmRunner == govm.WasmRunnerGoDirect {
 		// global var in direct go execution has effect
-		checkCounter(te, 2)
+		checkStateCounter(te, 2)
 		return
 	}
 	// global var in wasm execution has no effect
-	checkCounter(te, nil)
+	checkStateCounter(te, nil)
 }
 
 func TestIncrementLocalStatePost(t *testing.T) {
@@ -85,19 +85,20 @@ func TestIncrementLocalStatePost(t *testing.T) {
 	te.WaitForEmptyBacklog()
 	if govm.WasmRunner == govm.WasmRunnerGoDirect {
 		// global var in direct go execution has effect
-		checkCounter(te, 1)
+		checkStateCounter(te, 1)
 		return
 	}
 	// global var in wasm execution has no effect
-	checkCounter(te, nil)
+	checkStateCounter(te, nil)
 }
 
 func TestIncrementViewCounter(t *testing.T) {
 	te := govm.NewTestEnv(t, incName)
 	_ = te.NewCallParams("increment").Post(0)
-	//TODO FIXME checkCounter(te, 1)
+	checkStateCounter(te, 1)
+
 	ret := te.CallView("increment_view_counter")
-	results := govm.GetClientMap(t, wasmhost.KeyResults, ret)
+	results := te.GetClientMap(wasmhost.KeyResults, ret)
 	counter := results.GetInt(inccounter.KeyCounter)
 	require.True(te.T, counter.Exists())
 	require.EqualValues(t, 1, counter.Value())
@@ -117,7 +118,7 @@ func TestIncStateTest(t *testing.T) {
 	require.EqualValues(t, 0, len(ret))
 }
 
-func checkCounter(te *govm.TestEnv, expected interface{}) {
+func checkStateCounter(te *govm.TestEnv, expected interface{}) {
 	state := te.State()
 	counter := state.GetInt(inccounter.KeyCounter)
 	if expected == nil {

@@ -58,9 +58,9 @@ func OnLoad() {
 	exports.AddCall("sendToAddress", sendToAddress)
 	exports.AddView("justView", testJustView)
 
-    exports.AddCall("testEventLogGenericData", testEventLogGenericData)
-    exports.AddCall("testEventLogEventData", testEventLogEventData)
-    exports.AddCall("testEventLogDeploy", testEventLogDeploy)
+	exports.AddCall("testEventLogGenericData", testEventLogGenericData)
+	exports.AddCall("testEventLogEventData", testEventLogEventData)
+	exports.AddCall("testEventLogDeploy", testEventLogDeploy)
 }
 
 func onInit(ctx *client.ScCallContext) {
@@ -283,19 +283,19 @@ func passTypesView(ctx *client.ScViewContext) {
 }
 
 func testEventLogGenericData(ctx *client.ScCallContext) {
-    counter := ctx.Params().GetInt(VarCounter)
-    ctx.Require(counter.Exists(), "!counter.exist")
-    event := "[GenericData] Counter Number: " + counter.String()
-    ctx.Event(event)
+	counter := ctx.Params().GetInt(VarCounter)
+	ctx.Require(counter.Exists(), "!counter.exist")
+	event := "[GenericData] Counter Number: " + counter.String()
+	ctx.Event(event)
 }
 
 func testEventLogEventData(ctx *client.ScCallContext) {
-    ctx.Event("[Event] - Testing Event...")
+	ctx.Event("[Event] - Testing Event...")
 }
 
 func testEventLogDeploy(ctx *client.ScCallContext) {
-    //Deploy the same contract with another name
-    programHash := ctx.Utility().Hash([]byte("test_sandbox"))
-    ctx.Deploy(programHash, string(VarContractNameDeployed),
-               "test contract deploy log", nil)
+	//Deploy the same contract with another name
+	programHash := ctx.Utility().Hash([]byte("test_sandbox"))
+	ctx.Deploy(programHash, string(VarContractNameDeployed),
+		"test contract deploy log", nil)
 }

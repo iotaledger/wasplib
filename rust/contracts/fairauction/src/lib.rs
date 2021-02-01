@@ -6,21 +6,27 @@ use wasplib::client::*;
 
 mod types;
 
-const KEY_AUCTIONS: &str = "auctions";
-const KEY_BIDDERS: &str = "bidders";
-const KEY_BIDDER_LIST: &str = "bidder_list";
-const KEY_COLOR: &str = "color";
-const KEY_CREATOR: &str = "creator";
-const KEY_DEPOSIT: &str = "deposit";
-const KEY_DESCRIPTION: &str = "description";
-const KEY_DURATION: &str = "duration";
-const KEY_HIGHEST_BID: &str = "highest_bid";
-const KEY_HIGHEST_BIDDER: &str = "highest_bidder";
-const KEY_INFO: &str = "info";
-const KEY_MINIMUM_BID: &str = "minimum";
-const KEY_NUM_TOKENS: &str = "num_tokens";
-const KEY_OWNER_MARGIN: &str = "owner_margin";
-const KEY_WHEN_STARTED: &str = "when_started";
+const PARAM_COLOR: &str = "color";
+const PARAM_DESCRIPTION: &str = "description";
+const PARAM_DURATION: &str = "duration";
+const PARAM_MINIMUM_BID: &str = "minimum";
+const PARAM_OWNER_MARGIN: &str = "owner_margin";
+
+const VAR_AUCTIONS: &str = "auctions";
+const VAR_BIDDERS: &str = "bidders";
+const VAR_BIDDER_LIST: &str = "bidder_list";
+const VAR_COLOR: &str = "color";
+const VAR_CREATOR: &str = "creator";
+const VAR_DEPOSIT: &str = "deposit";
+const VAR_DESCRIPTION: &str = "description";
+const VAR_DURATION: &str = "duration";
+const VAR_HIGHEST_BID: &str = "highest_bid";
+const VAR_HIGHEST_BIDDER: &str = "highest_bidder";
+const VAR_INFO: &str = "info";
+const VAR_MINIMUM_BID: &str = "minimum";
+const VAR_NUM_TOKENS: &str = "num_tokens";
+const VAR_OWNER_MARGIN: &str = "owner_margin";
+const VAR_WHEN_STARTED: &str = "when_started";
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
@@ -42,7 +48,7 @@ fn on_load() {
 
 fn start_auction(ctx: &ScCallContext) {
     let params = ctx.params();
-    let color_param = params.get_color(KEY_COLOR);
+    let color_param = params.get_color(PARAM_COLOR);
     if !color_param.exists() {
         ctx.panic("Missing auction token color");
     }
@@ -55,13 +61,13 @@ fn start_auction(ctx: &ScCallContext) {
         ctx.panic("Missing auction tokens");
     }
 
-    let minimum_bid = params.get_int(KEY_MINIMUM_BID).value();
+    let minimum_bid = params.get_int(PARAM_MINIMUM_BID).value();
     if minimum_bid == 0 {
         ctx.panic("Missing minimum bid");
     }
 
     // duration in minutes
-    let mut duration = params.get_int(KEY_DURATION).value();
+    let mut duration = params.get_int(PARAM_DURATION).value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -72,7 +78,7 @@ fn start_auction(ctx: &ScCallContext) {
         duration = DURATION_MAX;
     }
 
-    let mut description = params.get_string(KEY_DESCRIPTION).value();
+    let mut description = params.get_string(PARAM_DESCRIPTION).value();
     if description == "" {
         description = "N/A".to_string()
     }
@@ -82,7 +88,7 @@ fn start_auction(ctx: &ScCallContext) {
     }
 
     let state = ctx.state();
-    let mut owner_margin = state.get_int(KEY_OWNER_MARGIN).value();
+    let mut owner_margin = state.get_int(VAR_OWNER_MARGIN).value();
     if owner_margin == 0 {
         owner_margin = OWNER_MARGIN_DEFAULT;
     }
@@ -97,9 +103,9 @@ fn start_auction(ctx: &ScCallContext) {
         ctx.panic("Insufficient deposit");
     }
 
-    let auctions = state.get_map(KEY_AUCTIONS);
+    let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(KEY_INFO);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
     if auction_info.exists() {
         ctx.panic("Auction for this token color already exists");
     }
@@ -120,7 +126,7 @@ fn start_auction(ctx: &ScCallContext) {
     auction_info.set_value(&encode_auction_info(auction));
 
     let finalize_params = ScMutableMap::new();
-    finalize_params.get_color(KEY_COLOR).set_value(&auction.color);
+    finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
     ctx.post(&PostRequestParams {
         contract: ctx.contract_id(),
         function: Hname::new("finalize_auction"),
@@ -137,16 +143,16 @@ fn finalize_auction(ctx: &ScCallContext) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let color_param = ctx.params().get_color(KEY_COLOR);
+    let color_param = ctx.params().get_color(PARAM_COLOR);
     if !color_param.exists() {
         ctx.panic("Missing token color");
     }
     let color = color_param.value();
 
     let state = ctx.state();
-    let auctions = state.get_map(KEY_AUCTIONS);
+    let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(KEY_INFO);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
     if !auction_info.exists() {
         ctx.panic("Missing auction info");
     }
@@ -170,8 +176,8 @@ fn finalize_auction(ctx: &ScCallContext) {
     }
 
     // return staked bids to losers
-    let bidders = current_auction.get_map(KEY_BIDDERS);
-    let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
+    let bidders = current_auction.get_map(VAR_BIDDERS);
+    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
     let size = bidder_list.length();
     for i in 0..size {
         let bidder = bidder_list.get_agent(i).value();
@@ -194,23 +200,23 @@ fn place_bid(ctx: &ScCallContext) {
         ctx.panic("Missing bid amount");
     }
 
-    let color_param = ctx.params().get_color(KEY_COLOR);
+    let color_param = ctx.params().get_color(PARAM_COLOR);
     if !color_param.exists() {
         ctx.panic("Missing token color");
     }
     let color = color_param.value();
 
     let state = ctx.state();
-    let auctions = state.get_map(KEY_AUCTIONS);
+    let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(KEY_INFO);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
     if !auction_info.exists() {
         ctx.panic("Missing auction info");
     }
 
     let mut auction = decode_auction_info(&auction_info.value());
-    let bidders = current_auction.get_map(KEY_BIDDERS);
-    let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
+    let bidders = current_auction.get_map(VAR_BIDDERS);
+    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
     let caller = ctx.caller();
     let bidder = bidders.get_bytes(&caller);
     if bidder.exists() {
@@ -248,48 +254,48 @@ fn set_owner_margin(ctx: &ScCallContext) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let mut owner_margin = ctx.params().get_int(KEY_OWNER_MARGIN).value();
+    let mut owner_margin = ctx.params().get_int(PARAM_OWNER_MARGIN).value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
     }
     if owner_margin > OWNER_MARGIN_MAX {
         owner_margin = OWNER_MARGIN_MAX;
     }
-    ctx.state().get_int(KEY_OWNER_MARGIN).set_value(owner_margin);
+    ctx.state().get_int(VAR_OWNER_MARGIN).set_value(owner_margin);
     ctx.log("Updated owner margin");
 }
 
 fn get_info(ctx: &ScViewContext) {
-    let color_param = ctx.params().get_color(KEY_COLOR);
+    let color_param = ctx.params().get_color(PARAM_COLOR);
     if !color_param.exists() {
         ctx.panic("Missing token color");
     }
     let color = color_param.value();
 
     let state = ctx.state();
-    let auctions = state.get_map(KEY_AUCTIONS);
+    let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(KEY_INFO);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
     if !auction_info.exists() {
         ctx.panic("Missing auction info");
     }
 
     let auction = decode_auction_info(&auction_info.value());
     let results = ctx.results();
-    results.get_color(KEY_COLOR).set_value(&auction.color);
-    results.get_agent(KEY_CREATOR).set_value(&auction.creator);
-    results.get_int(KEY_DEPOSIT).set_value(auction.deposit);
-    results.get_string(KEY_DESCRIPTION).set_value(&auction.description);
-    results.get_int(KEY_DURATION).set_value(auction.duration);
-    results.get_int(KEY_HIGHEST_BID).set_value(auction.highest_bid);
-    results.get_agent(KEY_HIGHEST_BIDDER).set_value(&auction.highest_bidder);
-    results.get_int(KEY_MINIMUM_BID).set_value(auction.minimum_bid);
-    results.get_int(KEY_NUM_TOKENS).set_value(auction.num_tokens);
-    results.get_int(KEY_OWNER_MARGIN).set_value(auction.owner_margin);
-    results.get_int(KEY_WHEN_STARTED).set_value(auction.when_started);
+    results.get_color(VAR_COLOR).set_value(&auction.color);
+    results.get_agent(VAR_CREATOR).set_value(&auction.creator);
+    results.get_int(VAR_DEPOSIT).set_value(auction.deposit);
+    results.get_string(VAR_DESCRIPTION).set_value(&auction.description);
+    results.get_int(VAR_DURATION).set_value(auction.duration);
+    results.get_int(VAR_HIGHEST_BID).set_value(auction.highest_bid);
+    results.get_agent(VAR_HIGHEST_BIDDER).set_value(&auction.highest_bidder);
+    results.get_int(VAR_MINIMUM_BID).set_value(auction.minimum_bid);
+    results.get_int(VAR_NUM_TOKENS).set_value(auction.num_tokens);
+    results.get_int(VAR_OWNER_MARGIN).set_value(auction.owner_margin);
+    results.get_int(VAR_WHEN_STARTED).set_value(auction.when_started);
 
-    let bidder_list = current_auction.get_agent_array(KEY_BIDDER_LIST);
-    results.get_int(KEY_BIDDERS).set_value(bidder_list.length() as i64);
+    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
+    results.get_int(VAR_BIDDERS).set_value(bidder_list.length() as i64);
 }
 
 fn transfer(ctx: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {

@@ -22,7 +22,7 @@ const (
 	TYPE_CONTRACT int32 = 11
 )
 
-var typeSizes = [...]int {0, 33, 37, 0, 32, 32, 8, 0, 0, 4, 33, 37}
+var typeSizes = [...]int{0, 33, 37, 0, 32, 32, 8, 0, 0, 4, 33, 37}
 
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool
@@ -37,8 +37,10 @@ type ScHost interface {
 
 var host ScHost
 
-func ConnectHost(h ScHost) {
+func ConnectHost(h ScHost) ScHost {
+	oldHost := host
 	host = h
+	return oldHost
 }
 
 func Exists(objId int32, keyId Key32, typeId int32) bool {

@@ -243,7 +243,7 @@ func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableM
 	} else {
 		encode.Int(0)
 	}
-    Root.GetBytes(KeyCall).SetValue(encode.Data())
+	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
 }
 
