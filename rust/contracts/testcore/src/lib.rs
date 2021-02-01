@@ -290,45 +290,45 @@ fn check_ctx_from_full(ctx: &ScCallContext) {
     let par = ctx.params();
 
     let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
-    ctx.require(chain_id.exists() && chain_id.value().to_bytes() == ctx.contract_id().chain_id().to_bytes(), "fail: chainID");
+    ctx.require(chain_id.exists() && chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
 
     let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
-    ctx.require(chain_owner_id.exists() && chain_owner_id.value().to_bytes() == ctx.chain_owner().to_bytes(), "fail: chainOwnerID");
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner(), "fail: chainOwnerID");
 
     let caller = par.get_agent(PARAM_CALLER);
-    ctx.require(caller.exists() && caller.value().to_bytes() == ctx.caller().to_bytes(), "fail: caller");
+    ctx.require(caller.exists() && caller.value() == ctx.caller(), "fail: caller");
 
     let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
-    ctx.require(contract_id.exists() && contract_id.value().to_bytes() == ctx.contract_id().to_bytes(), "fail: contractID");
+    ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
     let agent_id = par.get_agent(PARAM_AGENT_ID);
     let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
-    ctx.require(agent_id.exists() && agent_id.value().to_bytes() == as_agent_id.to_bytes(), "fail: agentID");
+    ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
     let creator = par.get_agent(PARAM_CREATOR);
-    ctx.require(creator.exists() && creator.value().to_bytes() == ctx.contract_creator().to_bytes(), "fail: contractCreator");
+    ctx.require(creator.exists() && creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
 fn check_ctx_from_view(ctx: &ScViewContext) {
     let par = ctx.params();
 
     let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
-    ctx.require(chain_id.exists() && chain_id.value().to_bytes() == ctx.contract_id().chain_id().to_bytes(), "fail: chainID");
+    ctx.require(chain_id.exists() && chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
 
     let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
-    ctx.require(chain_owner_id.exists() && chain_owner_id.value().to_bytes() == ctx.chain_owner().to_bytes(), "fail: chainOwnerID");
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner(), "fail: chainOwnerID");
 
     // FIXME ctx.caller() should not exists in view
 
     let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
-    ctx.require(contract_id.exists() && contract_id.value().to_bytes() == ctx.contract_id().to_bytes(), "fail: contractID");
+    ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
     let agent_id = par.get_agent(PARAM_AGENT_ID);
     let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
-    ctx.require(agent_id.exists() && agent_id.value().to_bytes() == as_agent_id.to_bytes(), "fail: agentID");
+    ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
     let creator = par.get_agent(PARAM_CREATOR);
-    ctx.require(creator.exists() && creator.value().to_bytes() == ctx.contract_creator().to_bytes(), "fail: contractCreator");
+    ctx.require(creator.exists() && creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
 fn test_event_log_generic_data(ctx: &ScCallContext) {

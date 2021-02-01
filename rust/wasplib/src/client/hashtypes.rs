@@ -90,6 +90,7 @@ impl MapKey for ScAddress {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+#[derive(PartialEq, Clone)]
 pub struct ScAgent {
     id: [u8; 37],
 }
@@ -130,6 +131,7 @@ impl MapKey for ScAgent {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+#[derive(PartialEq, Clone)]
 pub struct ScChainId {
     id: [u8; 33],
 }
@@ -160,6 +162,7 @@ impl MapKey for ScChainId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+#[derive(PartialEq, Clone)]
 pub struct ScContractId {
     id: [u8; 37],
 }
@@ -213,6 +216,7 @@ impl MapKey for ScContractId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+#[derive(PartialEq, Clone)]
 pub struct ScColor {
     id: [u8; 32],
 }
@@ -246,6 +250,7 @@ impl MapKey for ScColor {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+#[derive(PartialEq, Clone)]
 pub struct ScHash {
     id: [u8; 32],
 }
