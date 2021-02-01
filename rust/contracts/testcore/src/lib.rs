@@ -318,8 +318,6 @@ fn check_ctx_from_view(ctx: &ScViewContext) {
     let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
     ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner(), "fail: chainOwnerID");
 
-    // FIXME ctx.caller() should not exists in view
-
     let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
     ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 

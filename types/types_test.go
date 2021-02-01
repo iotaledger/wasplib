@@ -1,4 +1,4 @@
-// + build feature_types
+// +build feature_types
 
 package types
 

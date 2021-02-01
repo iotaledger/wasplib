@@ -294,45 +294,43 @@ func checkCtxFromFull(ctx *client.ScCallContext) {
     par := ctx.Params()
 
     chainId := par.GetChainId(ParamChainId)
-    ctx.Require(chainId.Exists() && chainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
+    ctx.Require(chainId.Exists() && chainId.Value().Equals(ctx.ContractId().ChainId()), "fail: chainID")
 
     chainOwnerId := par.GetAgent(ParamChainOwnerId)
-    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value() == ctx.ChainOwner(), "fail: chainOwnerID")
+    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value().Equals(ctx.ChainOwner()), "fail: chainOwnerID")
 
     caller := par.GetAgent(ParamCaller)
-    ctx.Require(caller.Exists() && caller.Value() == ctx.Caller(), "fail: caller")
+    ctx.Require(caller.Exists() && caller.Value().Equals(ctx.Caller()), "fail: caller")
 
     contractId := par.GetContractId(ParamContractId)
-    ctx.Require(contractId.Exists() && contractId.Value() == ctx.ContractId(), "fail: contractID")
+    ctx.Require(contractId.Exists() && contractId.Value().Equals(ctx.ContractId()), "fail: contractID")
 
     agentId := par.GetAgent(ParamAgentId)
     asAgentId := ctx.ContractId().AsAgent()
-    ctx.Require(agentId.Exists() && agentId.Value() == asAgentId, "fail: agentID")
+    ctx.Require(agentId.Exists() && agentId.Value().Equals(asAgentId), "fail: agentID")
 
     creator := par.GetAgent(ParamCreator)
-    ctx.Require(creator.Exists() && creator.Value() == ctx.ContractCreator(), "fail: contractCreator")
+    ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
 }
 
 func checkCtxFromView(ctx *client.ScViewContext) {
-    par := ctx.Params()
+	par := ctx.Params()
 
-    chainId := par.GetChainId(ParamChainId)
-    ctx.Require(chainId.Exists() && chainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
+	chainId := par.GetChainId(ParamChainId)
+	ctx.Require(chainId.Exists() && chainId.Value().Equals(ctx.ContractId().ChainId()), "fail: chainID")
 
-    chainOwnerId := par.GetAgent(ParamChainOwnerId)
-    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value() == ctx.ChainOwner(), "fail: chainOwnerID")
+	chainOwnerId := par.GetAgent(ParamChainOwnerId)
+	ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value().Equals(ctx.ChainOwner()), "fail: chainOwnerID")
 
-    // FIXME ctx.caller() should not exists in view
+	contractId := par.GetContractId(ParamContractId)
+	ctx.Require(contractId.Exists() && contractId.Value().Equals(ctx.ContractId()), "fail: contractID")
 
-    contractId := par.GetContractId(ParamContractId)
-    ctx.Require(contractId.Exists() && contractId.Value() == ctx.ContractId(), "fail: contractID")
+	agentId := par.GetAgent(ParamAgentId)
+	asAgentId := ctx.ContractId().AsAgent()
+	ctx.Require(agentId.Exists() && agentId.Value().Equals(asAgentId), "fail: agentID")
 
-    agentId := par.GetAgent(ParamAgentId)
-    asAgentId := ctx.ContractId().AsAgent()
-    ctx.Require(agentId.Exists() && agentId.Value() == asAgentId, "fail: agentID")
-
-    creator := par.GetAgent(ParamCreator)
-    ctx.Require(creator.Exists() && creator.Value() == ctx.ContractCreator(), "fail: contractCreator")
+	creator := par.GetAgent(ParamCreator)
+	ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
 }
 
 func testEventLogGenericData(ctx *client.ScCallContext) {
