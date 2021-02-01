@@ -152,9 +152,6 @@ pub trait ScBaseContext {
         ScBalances { balances: ROOT.get_map(&KEY_BALANCES).immutable() }
     }
 
-    // retrieve the agent id of the caller of the smart contract
-    fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
-
     // retrieve the agent id of the owner of the chain this contract lives on
     fn chain_owner(&self) -> ScAgent {
         ROOT.get_agent(&KEY_CHAIN_OWNER).value()
@@ -168,11 +165,6 @@ pub trait ScBaseContext {
     // retrieve the id of this contract
     fn contract_id(&self) -> ScContractId {
         ROOT.get_contract_id(&KEY_ID).value()
-    }
-
-    // quick check to see if the caller of the smart contract was the specified originator agent
-    fn from(&self, originator: &ScAgent) -> bool {
-        self.caller().equals(originator)
     }
 
     // logs informational text message
@@ -245,6 +237,9 @@ impl ScCallContext {
         ROOT.get_map(&KEY_RETURN).immutable()
     }
 
+    // retrieve the agent id of the caller of the smart contract
+    pub fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
+
     // deploys a smart contract
     pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: Option<ScMutableMap>) {
         let mut encode = BytesEncoder::new();
@@ -262,6 +257,11 @@ impl ScCallContext {
     // signals an event on the node that external entities can subscribe to
     pub fn event(&self, text: &str) {
         ROOT.get_string(&KEY_EVENT).set_value(text)
+    }
+
+    // quick check to see if the caller of the smart contract was the specified originator agent
+    pub fn from(&self, originator: &ScAgent) -> bool {
+        self.caller().equals(originator)
     }
 
     // access the incoming balances for all token colors

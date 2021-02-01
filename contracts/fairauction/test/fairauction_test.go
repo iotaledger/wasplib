@@ -163,7 +163,7 @@ func TestFaClientFullAccess(t *testing.T) {
 
 	state := te.State()
 	auctions := state.GetMap(fairauction.VarAuctions)
-	color := client.NewScColor(tokenColor[:])
+	color := client.NewScColorFromBytes(tokenColor[:])
 	currentAuction := auctions.GetMap(color)
 	currentInfo := currentAuction.GetBytes(fairauction.VarInfo)
 	require.True(t, currentInfo.Exists())

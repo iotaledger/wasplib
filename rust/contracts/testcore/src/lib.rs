@@ -302,7 +302,7 @@ fn check_ctx_from_full(ctx: &ScCallContext) {
     ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
     let agent_id = par.get_agent(PARAM_AGENT_ID);
-    let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
+    let as_agent_id = ctx.contract_id().as_agent();
     ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
     let creator = par.get_agent(PARAM_CREATOR);
@@ -324,7 +324,7 @@ fn check_ctx_from_view(ctx: &ScViewContext) {
     ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
     let agent_id = par.get_agent(PARAM_AGENT_ID);
-    let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
+    let as_agent_id = ctx.contract_id().as_agent();
     ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
     let creator = par.get_agent(PARAM_CREATOR);
@@ -354,10 +354,10 @@ fn withdraw_to_chain(ctx: &ScCallContext) {
     let target_chain = ctx.params().get_chain_id(PARAM_CHAIN_ID);
     ctx.require(target_chain.exists(), "chainID not provided");
 
-    let target_contract_id = ScContractId::new(&target_chain.value(), &Hname::new("accounts"));
+    let target_contract_id = ScContractId::new(&target_chain.value(), &CORE_ACCOUNTS);
     ctx.post(&PostRequestParams {
         contract: target_contract_id,
-        function: Hname::new("withdrawToChain"),
+        function: CORE_ACCOUNTS_VIEW_WITHDRAW_TO_CHAIN,
         params: None,
         transfer: Some(Box::new(ScTransfers::new(&ScColor::IOTA, 2))),
         delay: 0,

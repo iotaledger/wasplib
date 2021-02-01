@@ -11,8 +11,12 @@ const ParamHnameContract = client.Key("hnameContract")
 const ParamHnameEp = client.Key("hnameEP")
 
 const ParamAddress = client.Key("address")
-const ParamChainOwner = client.Key("chainOwner")
+const ParamChainOwnerId = client.Key("chainOwnerID")
 const ParamContractId = client.Key("contractID")
+const ParamChainId = client.Key("chainid")
+const ParamCaller = client.Key("caller")
+const ParamAgentId = client.Key("agentID")
+const ParamCreator = client.Key("contractCreator")
 
 const ParamInt64 = client.Key("int64")
 const ParamInt64Zero = client.Key("int64-0")
@@ -54,6 +58,8 @@ func OnLoad() {
 
 	exports.AddCall("passTypesFull", passTypesFull)
 	exports.AddView("passTypesView", passTypesView)
+    exports.AddCall("checkContextFromFullEP", checkCtxFromFull)
+    exports.AddView("checkContextFromViewEP", checkCtxFromView)
 
 	exports.AddCall("sendToAddress", sendToAddress)
 	exports.AddView("justView", testJustView)
@@ -61,6 +67,8 @@ func OnLoad() {
 	exports.AddCall("testEventLogGenericData", testEventLogGenericData)
 	exports.AddCall("testEventLogEventData", testEventLogEventData)
 	exports.AddCall("testEventLogDeploy", testEventLogDeploy)
+
+    exports.AddCall("withdrawToChain", withdrawToChain)
 }
 
 func onInit(ctx *client.ScCallContext) {
@@ -211,11 +219,11 @@ func sendToAddress(ctx *client.ScCallContext) {
 }
 
 func testChainOwnerIdView(ctx *client.ScViewContext) {
-	ctx.Results().GetAgent(ParamChainOwner).SetValue(ctx.ChainOwner())
+    ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
 }
 
 func testChainOwnerIdFull(ctx *client.ScCallContext) {
-	ctx.Results().GetAgent(ParamChainOwner).SetValue(ctx.ChainOwner())
+    ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
 }
 
 func testContractIdView(ctx *client.ScViewContext) {
@@ -279,7 +287,52 @@ func passTypesView(ctx *client.ScViewContext) {
 	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(client.NewHname("Hname")), "Hname wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Exists(), "!Hname-0.exist")
-	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.Hname(0)), "Hname-0 wrong")
+    ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.Hname(0)), "Hname-0 wrong")
+}
+
+func checkCtxFromFull(ctx *client.ScCallContext) {
+    par := ctx.Params()
+
+    chainId := par.GetChainId(ParamChainId)
+    ctx.Require(chainId.Exists() && chainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
+
+    chainOwnerId := par.GetAgent(ParamChainOwnerId)
+    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value() == ctx.ChainOwner(), "fail: chainOwnerID")
+
+    caller := par.GetAgent(ParamCaller)
+    ctx.Require(caller.Exists() && caller.Value() == ctx.Caller(), "fail: caller")
+
+    contractId := par.GetContractId(ParamContractId)
+    ctx.Require(contractId.Exists() && contractId.Value() == ctx.ContractId(), "fail: contractID")
+
+    agentId := par.GetAgent(ParamAgentId)
+    asAgentId := ctx.ContractId().AsAgent()
+    ctx.Require(agentId.Exists() && agentId.Value() == asAgentId, "fail: agentID")
+
+    creator := par.GetAgent(ParamCreator)
+    ctx.Require(creator.Exists() && creator.Value() == ctx.ContractCreator(), "fail: contractCreator")
+}
+
+func checkCtxFromView(ctx *client.ScViewContext) {
+    par := ctx.Params()
+
+    chainId := par.GetChainId(ParamChainId)
+    ctx.Require(chainId.Exists() && chainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
+
+    chainOwnerId := par.GetAgent(ParamChainOwnerId)
+    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value() == ctx.ChainOwner(), "fail: chainOwnerID")
+
+    // FIXME ctx.caller() should not exists in view
+
+    contractId := par.GetContractId(ParamContractId)
+    ctx.Require(contractId.Exists() && contractId.Value() == ctx.ContractId(), "fail: contractID")
+
+    agentId := par.GetAgent(ParamAgentId)
+    asAgentId := ctx.ContractId().AsAgent()
+    ctx.Require(agentId.Exists() && agentId.Value() == asAgentId, "fail: agentID")
+
+    creator := par.GetAgent(ParamCreator)
+    ctx.Require(creator.Exists() && creator.Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
 func testEventLogGenericData(ctx *client.ScCallContext) {
@@ -299,3 +352,21 @@ func testEventLogDeploy(ctx *client.ScCallContext) {
 	ctx.Deploy(programHash, string(VarContractNameDeployed),
 		"test contract deploy log", nil)
 }
+
+func withdrawToChain(ctx *client.ScCallContext) {
+    //Deploy the same contract with another name
+    targetChain := ctx.Params().GetChainId(ParamChainId)
+    ctx.Require(targetChain.Exists(), "chainID not provided")
+
+    targetContractId := client.NewScContractId(targetChain.Value(), client.CoreAccounts)
+    ctx.Post(&client.PostRequestParams {
+        Contract: targetContractId,
+        Function: client.CoreAccountsViewWithdrawToChain,
+        Params: nil,
+        Transfer: client.NewScTransfer(client.IOTA, 2),
+        Delay: 0,
+    })
+    ctx.Log("====  success ====")
+    // TODO how to check if post was successful
+}
+

@@ -45,7 +45,7 @@ func (ctx ScBalances) mapId() int32 {
 
 // retrieve the color of newly minted tokens
 func (ctx ScBalances) Minted() *ScColor {
-	return NewScColor(ctx.balances.GetBytes(MINT).Value())
+	return NewScColorFromBytes(ctx.balances.GetBytes(MINT).Value())
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -115,7 +115,7 @@ func (ctx ScUtility) Base58Encode(value []byte) string {
 func (ctx ScUtility) Hash(value []byte) *ScHash {
 	hash := ctx.utility.GetBytes(KeyHash)
 	hash.SetValue(value)
-	return NewScHash(hash.Value())
+	return NewScHashFromBytes(hash.Value())
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
@@ -151,11 +151,6 @@ func (ctx ScBaseContext) Balances() ScBalances {
 	return ScBalances{Root.GetMap(KeyBalances).Immutable()}
 }
 
-// retrieve the agent id of the caller of the smart contract
-func (ctx ScBaseContext) Caller() *ScAgent {
-	return Root.GetAgent(KeyCaller).Value()
-}
-
 // retrieve the agent id of the owner of the chain this contract lives on
 func (ctx ScBaseContext) ChainOwner() *ScAgent {
 	return Root.GetAgent(KeyChainOwner).Value()
@@ -169,11 +164,6 @@ func (ctx ScBaseContext) ContractCreator() *ScAgent {
 // retrieve the id of this contract
 func (ctx ScBaseContext) ContractId() *ScContractId {
 	return Root.GetContractId(KeyId).Value()
-}
-
-// quick check to see if the caller of the smart contract was the specified originator agent
-func (ctx ScBaseContext) From(originator *ScAgent) bool {
-	return ctx.Caller().Equals(originator)
 }
 
 // logs informational text message
@@ -247,6 +237,11 @@ func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableM
 	return Root.GetMap(KeyReturn).Immutable()
 }
 
+// retrieve the agent id of the caller of the smart contract
+func (ctx ScCallContext) Caller() *ScAgent {
+	return Root.GetAgent(KeyCaller).Value()
+}
+
 // deploys a smart contract
 func (ctx ScCallContext) Deploy(programHash *ScHash, name string, description string, params *ScMutableMap) {
 	encode := NewBytesEncoder()
@@ -259,6 +254,16 @@ func (ctx ScCallContext) Deploy(programHash *ScHash, name string, description st
 		encode.Int(0)
 	}
 	Root.GetBytes(KeyDeploy).SetValue(encode.Data())
+}
+
+// signals an event on the node that external entities can subscribe to
+func (ctx ScBaseContext) Event(text string) {
+	Root.GetString(KeyEvent).SetValue(text)
+}
+
+// quick check to see if the caller of the smart contract was the specified originator agent
+func (ctx ScCallContext) From(originator *ScAgent) bool {
+	return ctx.Caller().Equals(originator)
 }
 
 // access the incoming balances for all token colors
@@ -283,11 +288,6 @@ func (ctx ScCallContext) Post(par *PostRequestParams) {
 	}
 	encode.Int(par.Delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
-}
-
-// signals an event on the node that external entities can subscribe to
-func (ctx ScBaseContext) Event(text string) {
-	Root.GetString(KeyEvent).SetValue(text)
 }
 
 // access to mutable state storage

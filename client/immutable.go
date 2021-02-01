@@ -22,7 +22,7 @@ func (o ScImmutableAddress) String() string {
 }
 
 func (o ScImmutableAddress) Value() *ScAddress {
-	return NewScAddress(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
+	return NewScAddressFromBytes(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -55,7 +55,7 @@ func (o ScImmutableAgent) String() string {
 }
 
 func (o ScImmutableAgent) Value() *ScAgent {
-	return NewScAgent(GetBytes(o.objId, o.keyId, TYPE_AGENT))
+	return NewScAgentFromBytes(GetBytes(o.objId, o.keyId, TYPE_AGENT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -121,7 +121,7 @@ func (o ScImmutableChainId) String() string {
 }
 
 func (o ScImmutableChainId) Value() *ScChainId {
-	return NewScChainId(GetBytes(o.objId, o.keyId, TYPE_CHAIN))
+	return NewScChainIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CHAIN))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -140,7 +140,7 @@ func (o ScImmutableColor) String() string {
 }
 
 func (o ScImmutableColor) Value() *ScColor {
-	return NewScColor(GetBytes(o.objId, o.keyId, TYPE_COLOR))
+	return NewScColorFromBytes(GetBytes(o.objId, o.keyId, TYPE_COLOR))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -173,7 +173,7 @@ func (o ScImmutableContractId) String() string {
 }
 
 func (o ScImmutableContractId) Value() *ScContractId {
-	return NewScContractId(GetBytes(o.objId, o.keyId, TYPE_CONTRACT))
+	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -192,7 +192,7 @@ func (o ScImmutableHash) String() string {
 }
 
 func (o ScImmutableHash) Value() *ScHash {
-	return NewScHash(GetBytes(o.objId, o.keyId, TYPE_HASH))
+	return NewScHashFromBytes(GetBytes(o.objId, o.keyId, TYPE_HASH))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

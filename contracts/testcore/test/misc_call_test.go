@@ -16,7 +16,7 @@ func testChainOwnerIDView(t *testing.T, w bool) {
 	ret, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncChainOwnerIDView)
 	require.NoError(t, err)
 
-	c := ret.MustGet(test_sandbox_sc.VarChainOwner)
+	c := ret.MustGet(test_sandbox_sc.ParamChainOwnerID)
 
 	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
 }
@@ -30,7 +30,7 @@ func testChainOwnerIDFull(t *testing.T, w bool) {
 	ret, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	c := ret.MustGet(test_sandbox_sc.VarChainOwner)
+	c := ret.MustGet(test_sandbox_sc.ParamChainOwnerID)
 	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
 }
 

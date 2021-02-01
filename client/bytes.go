@@ -12,11 +12,11 @@ func NewBytesDecoder(data []byte) *BytesDecoder {
 }
 
 func (d *BytesDecoder) Address() *ScAddress {
-	return NewScAddress(d.Bytes())
+	return NewScAddressFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Agent() *ScAgent {
-	return NewScAgent(d.Bytes())
+	return NewScAgentFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Bytes() []byte {
@@ -30,19 +30,19 @@ func (d *BytesDecoder) Bytes() []byte {
 }
 
 func (d *BytesDecoder) ChainId() *ScChainId {
-	return NewScChainId(d.Bytes())
+	return NewScChainIdFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Color() *ScColor {
-	return NewScColor(d.Bytes())
+	return NewScColorFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) ContractId() *ScContractId {
-	return NewScContractId(d.Bytes())
+	return NewScContractIdFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Hash() *ScHash {
-	return NewScHash(d.Bytes())
+	return NewScHashFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Hname() Hname {

@@ -42,7 +42,7 @@ type ScAddress struct {
 	id [33]byte
 }
 
-func NewScAddress(bytes []byte) *ScAddress {
+func NewScAddressFromBytes(bytes []byte) *ScAddress {
 	o := &ScAddress{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid address id length")
@@ -80,7 +80,7 @@ type ScAgent struct {
 	id [37]byte
 }
 
-func NewScAgent(bytes []byte) *ScAgent {
+func NewScAgentFromBytes(bytes []byte) *ScAgent {
 	o := &ScAgent{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid agent id length")
@@ -121,7 +121,7 @@ type ScChainId struct {
 	id [33]byte
 }
 
-func NewScChainId(bytes []byte) *ScChainId {
+func NewScChainIdFromBytes(bytes []byte) *ScChainId {
 	o := &ScChainId{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid chain id length")
@@ -161,7 +161,7 @@ func init() {
 	}
 }
 
-func NewScColor(bytes []byte) *ScColor {
+func NewScColorFromBytes(bytes []byte) *ScColor {
 	o := &ScColor{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid color id length")
@@ -192,7 +192,14 @@ type ScContractId struct {
 	id [37]byte
 }
 
-func NewScContractId(bytes []byte) *ScContractId {
+func NewScContractId(chainId *ScChainId, hContract Hname) *ScContractId {
+	o := &ScContractId{}
+	copy(o.id[:], chainId.Bytes())
+	copy(o.id[33:], hContract.Bytes())
+	return o
+}
+
+func NewScContractIdFromBytes(bytes []byte) *ScContractId {
 	o := &ScContractId{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid contract id length")
@@ -239,7 +246,7 @@ type ScHash struct {
 	id [32]byte
 }
 
-func NewScHash(bytes []byte) *ScHash {
+func NewScHashFromBytes(bytes []byte) *ScHash {
 	o := &ScHash{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid hash id length")
