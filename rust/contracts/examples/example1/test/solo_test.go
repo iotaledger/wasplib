@@ -170,7 +170,7 @@ func TestSolo7(t *testing.T) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-1)
 }
 
-// test withdraw_iota method
+// test withdrawIota method
 func TestSolo8(t *testing.T) {
 	// create solo environment
 	env := solo.New(t, false, false)
@@ -227,7 +227,7 @@ func TestSolo8(t *testing.T) {
 	// user withdraws all iotas from the smart contract back
 	// Out of 42 iotas 41 iota is coming back to the user's address, 1 iotas
 	// is accrued to the user on chain
-	req = solo.NewCallParams("example1", "withdraw_iota")
+	req = solo.NewCallParams("example1", "withdrawIota")
 	_, err = chain.PostRequest(req, userWallet)
 	require.NoError(t, err)
 
