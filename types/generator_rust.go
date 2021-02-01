@@ -1,7 +1,9 @@
 package types
 
 import (
+	"errors"
 	"fmt"
+	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
 	"regexp"
 	"strings"
@@ -19,14 +21,61 @@ var rustTypes = map[string]string{
 	"string":      "String",
 }
 
-func GenerateRustTypes(path string) error {
-	gen := &Generator{}
-	err := gen.LoadTypes(path)
+func GenerateRustSchema(path string, contract string, gen *Generator) error {
+	file, err := os.Create(path + "schema.rs")
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
-	file, err := os.Create(path[:len(path)-len(".json")] + ".rs")
+	// write file header
+	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
+	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n\n")
+	fmt.Fprintf(file, "use wasplib::client::*;\n\n")
+
+	fmt.Fprintf(file, "const SC_NAME: &str = \"%s\";\n", gen.schema.Name)
+	hName := coretypes.Hn(gen.schema.Name)
+	fmt.Fprintf(file, "const SC_HNAME: Hname = Hname(0x%s);\n", hName.String())
+
+	fmt.Fprintln(file)
+	for _, name := range sorted(gen.schema.Params) {
+		value := gen.schema.Params[name]
+		fmt.Fprintf(file, "const PARAM_%s: &str = \"%s\";\n", snakecase(name), value)
+	}
+
+	fmt.Fprintln(file)
+	for _, name := range sorted(gen.schema.Vars) {
+		value := gen.schema.Vars[name]
+		fmt.Fprintf(file, "const VAR_%s: &str = \"%s\";\n", snakecase(name), value)
+	}
+
+	fmt.Fprintln(file)
+	for _, name := range sorted(gen.schema.Funcs) {
+		value := gen.schema.Funcs[name]
+		fmt.Fprintf(file, "const FUNC_%s: &str = \"%s\";\n", snakecase(name), value)
+	}
+	for _, name := range sorted(gen.schema.Views) {
+		value := gen.schema.Views[name]
+		fmt.Fprintf(file, "const VIEW_%s: &str = \"%s\";\n", snakecase(name), value)
+	}
+
+	fmt.Fprintln(file)
+	for _, name := range sorted(gen.schema.Funcs) {
+		value := gen.schema.Funcs[name]
+		hName = coretypes.Hn(value)
+		fmt.Fprintf(file, "const HFUNC_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+	}
+	for _, name := range sorted(gen.schema.Views) {
+		value := gen.schema.Views[name]
+		hName = coretypes.Hn(value)
+		fmt.Fprintf(file, "const HVIEW_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+	}
+
+	return nil
+}
+
+func GenerateRustTypes(path string, contract string, gen * Generator) error {
+	file, err := os.Create(path + "types.rs")
 	if err != nil {
 		return err
 	}
@@ -99,5 +148,45 @@ func GenerateRustTypes(path string) error {
 
 	//TODO write on_types function
 
+	return nil
+}
+
+func GenerateRustCoreSchema() error {
+	core, err := LoadCoreSchema()
+	if err != nil {
+		return err
+	}
+	if core == nil {
+		return errors.New("missing core schema")
+	}
+
+	file, err := os.Create("../rust/wasplib/src/client/corecontracts.rs")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
+	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
+	fmt.Fprintf(file, "\nuse super::hashtypes::*;\n")
+
+	for _, schema := range core {
+		nContract := snakecase(schema.Name)
+		hContract := coretypes.Hn(schema.Name)
+		fmt.Fprintf(file, "\npub const CORE_%s: Hname = Hname(0x%s);\n", nContract, hContract.String())
+		for _, nFunc := range sorted(schema.Funcs) {
+			funcName := schema.Funcs[nFunc]
+			nFunc = snakecase(nFunc)
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
+		}
+		for _, nFunc := range sorted(schema.Views) {
+			funcName := schema.Views[nFunc]
+			nFunc = snakecase(nFunc)
+			hFunc := coretypes.Hn(funcName)
+			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
+		}
+	}
 	return nil
 }

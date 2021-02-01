@@ -7,16 +7,16 @@
     ]
   },
   "params": {
-    "ParamAddress": "address",
-    "ParamFactor": "factor"
+    "Address": "address",
+    "Factor": "factor"
   },
   "vars": {
-    "VarMembers": "members",
-    "VarTotalFactor": "total_factor"
+    "Members": "members",
+    "TotalFactor": "total_factor"
   },
   "funcs": {
-    "FuncMember": "member",
-    "FuncDivide": "divide"
+    "Member": "member",
+    "Divide": "divide"
   },
   "views": {
   }

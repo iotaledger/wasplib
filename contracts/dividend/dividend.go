@@ -5,12 +5,6 @@ package dividend
 
 import "github.com/iotaledger/wasplib/client"
 
-const ParamAddress = client.Key("address")
-const ParamFactor = client.Key("factor")
-
-const VarMembers = client.Key("members")
-const VarTotalFactor = client.Key("total_factor")
-
 func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("member", member)

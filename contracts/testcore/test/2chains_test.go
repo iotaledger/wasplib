@@ -10,23 +10,18 @@ import (
 	"testing"
 )
 
-func Test2Chains(t *testing.T) {
+func Test2Chains(t *testing.T) { run2(t, test2Chains) }
+func test2Chains(t *testing.T, w bool) {
 	env := solo.New(t, false, false)
 	chain1 := env.NewChain(nil, "ch1")
 	chain2 := env.NewChain(nil, "ch2")
 	chain1.CheckAccountLedger()
 	chain2.CheckAccountLedger()
 
-	err := chain1.DeployContract(nil, test_sandbox_sc.Interface.Name, test_sandbox_sc.Interface.ProgramHash)
-	require.NoError(t, err)
-	chain1.CheckChain()
-	contractID1 := coretypes.NewContractID(chain1.ChainID, test_sandbox_sc.Interface.Hname())
-	contractAgentID1 := coretypes.NewAgentIDFromContractID(contractID1)
+	contractID1, _ := setupTestSandboxSC(t, chain1, nil, w)
+	contractID2, _ := setupTestSandboxSC(t, chain2, nil, w)
 
-	err = chain2.DeployContract(nil, test_sandbox_sc.Interface.Name, test_sandbox_sc.Interface.ProgramHash)
-	require.NoError(t, err)
-	chain2.CheckChain()
-	contractID2 := coretypes.NewContractID(chain2.ChainID, test_sandbox_sc.Interface.Hname())
+	contractAgentID1 := coretypes.NewAgentIDFromContractID(contractID1)
 	contractAgentID2 := coretypes.NewAgentIDFromContractID(contractID2)
 
 	userWallet := env.NewSignatureSchemeWithFunds()
@@ -44,7 +39,7 @@ func Test2Chains(t *testing.T) {
 	).WithTransfer(
 		balance.ColorIOTA, 42,
 	)
-	_, err = chain1.PostRequest(req, userWallet)
+	_, err := chain1.PostRequest(req, userWallet)
 	require.NoError(t, err)
 
 	accountsAgentID1 := coretypes.NewAgentIDFromContractID(accounts.Interface.ContractID(chain1.ChainID))

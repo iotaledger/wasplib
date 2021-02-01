@@ -35,6 +35,15 @@ func snakecase(name string) string {
 	return strings.ToUpper(name)
 }
 
+func sorted(dict map[string]string) []string {
+	keys := make([]string, 0)
+	for key := range dict {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
 func (gen *Generator) LoadTypes(path string) error {
 	schema, err := LoadSchema(path)
 	if err != nil {
@@ -85,5 +94,27 @@ func (gen *Generator) SplitComments(structName string, myTypes map[string]string
 			}
 		}
 	}
+	return nil
+}
+
+func GenerateSchema(path string) error {
+	gen := &Generator{}
+	err := gen.LoadTypes(path)
+	if err != nil {
+		return err
+	}
+
+	var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wschema.json")
+	contract := matchContract.ReplaceAllString(path, "$1")
+
+	path = path[:len(path)-len("schema.json")]
+	err = GenerateGoTypes(path, contract, gen)
+	if err != nil { return err }
+	err = GenerateGoSchema(path, contract, gen)
+	if err != nil { return err }
+	err = GenerateRustTypes(path, contract, gen)
+	if err != nil { return err }
+	err = GenerateRustSchema(path, contract, gen)
+	if err != nil { return err }
 	return nil
 }

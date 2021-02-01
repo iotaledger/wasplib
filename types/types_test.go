@@ -1,4 +1,4 @@
-// +build feature_types
+// + build feature_types
 
 package types
 
@@ -9,6 +9,20 @@ import (
 	"strings"
 	"testing"
 )
+
+func TestSchema(t *testing.T) {
+	err := filepath.Walk("../contracts",
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if strings.HasSuffix(path, "\\schema.json") {
+				return GenerateSchema(path)
+			}
+			return nil
+		})
+	require.NoError(t, err)
+}
 
 func TestGoCoreSchema(t *testing.T) {
 	t.SkipNow()
@@ -22,18 +36,9 @@ func TestRustCoreSchema(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestGoTypes(t *testing.T) {
+func TestRustToGo(t *testing.T) {
 	t.SkipNow()
-	err := filepath.Walk("../contracts",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.HasSuffix(path, "\\schema.json") {
-				return GenerateGoTypes(path)
-			}
-			return nil
-		})
+	err := RustConvertor(RustToGoLine, "../../contracts/$1/$1.go")
 	require.NoError(t, err)
 }
 
@@ -49,27 +54,6 @@ func TestJavaTypes(t *testing.T) {
 			}
 			return nil
 		})
-	require.NoError(t, err)
-}
-
-func TestRustTypes(t *testing.T) {
-	t.SkipNow()
-	err := filepath.Walk("../rust/contracts",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.HasSuffix(path, "\\types.json") {
-				return GenerateRustTypes(path)
-			}
-			return nil
-		})
-	require.NoError(t, err)
-}
-
-func TestRustToGo(t *testing.T) {
-	t.SkipNow()
-	err := RustConvertor(RustToGoLine, "../../contracts/$1/$1.go")
 	require.NoError(t, err)
 }
 
