@@ -9,8 +9,12 @@ const PARAM_HNAME_CONTRACT: &str = "hnameContract";
 const PARAM_HNAME_EP: &str = "hnameEP";
 
 const PARAM_ADDRESS: &str = "address";
-const PARAM_CHAIN_OWNER: &str = "chainOwner";
+const PARAM_CHAIN_OWNER_ID: &str = "chainOwnerID";
 const PARAM_CONTRACT_ID: &str = "contractID";
+const PARAM_CHAIN_ID: &str = "chainid";
+const PARAM_CALLER: &str = "caller";
+const PARAM_AGENT_ID: &str = "agentID";
+const PARAM_CREATOR: &str = "contractCreator";
 
 const PARAM_INT64: &str = "int64";
 const PARAM_INT64_ZERO: &str = "int64-0";
@@ -53,6 +57,8 @@ fn on_load() {
 
     exports.add_call("passTypesFull", pass_types_full);
     exports.add_view("passTypesView", pass_types_view);
+    exports.add_call("checkContextFromFullEP", check_ctx_from_full);
+    exports.add_view("checkContextFromViewEP", check_ctx_from_view);
 
     exports.add_call("sendToAddress", send_to_address);
     exports.add_view("justView", test_just_view);
@@ -60,6 +66,8 @@ fn on_load() {
     exports.add_call("testEventLogGenericData", test_event_log_generic_data);
     exports.add_call("testEventLogEventData", test_event_log_event_data);
     exports.add_call("testEventLogDeploy", test_event_log_deploy);
+
+    exports.add_call("withdrawToChain", withdraw_to_chain);
 }
 
 fn on_init(ctx: &ScCallContext) {
@@ -207,11 +215,11 @@ fn send_to_address(ctx: &ScCallContext) {
 }
 
 fn test_chain_owner_id_view(ctx: &ScViewContext) {
-    ctx.results().get_agent(PARAM_CHAIN_OWNER).set_value(&ctx.chain_owner())
+    ctx.results().get_agent(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner())
 }
 
 fn test_chain_owner_id_full(ctx: &ScCallContext) {
-    ctx.results().get_agent(PARAM_CHAIN_OWNER).set_value(&ctx.chain_owner())
+    ctx.results().get_agent(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner())
 }
 
 fn test_contract_id_view(ctx: &ScViewContext) {
@@ -278,6 +286,51 @@ fn pass_types_view(ctx: &ScViewContext) {
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
 }
 
+fn check_ctx_from_full(ctx: &ScCallContext) {
+    let par = ctx.params();
+
+    let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
+    ctx.require(chain_id.exists() && chain_id.value().to_bytes() == ctx.contract_id().chain_id().to_bytes(), "fail: chainID");
+
+    let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value().to_bytes() == ctx.chain_owner().to_bytes(), "fail: chainOwnerID");
+
+    let caller = par.get_agent(PARAM_CALLER);
+    ctx.require(caller.exists() && caller.value().to_bytes() == ctx.caller().to_bytes(), "fail: caller");
+
+    let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
+    ctx.require(contract_id.exists() && contract_id.value().to_bytes() == ctx.contract_id().to_bytes(), "fail: contractID");
+
+    let agent_id = par.get_agent(PARAM_AGENT_ID);
+    let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
+    ctx.require(agent_id.exists() && agent_id.value().to_bytes() == as_agent_id.to_bytes(), "fail: agentID");
+
+    let creator = par.get_agent(PARAM_CREATOR);
+    ctx.require(creator.exists() && creator.value().to_bytes() == ctx.contract_creator().to_bytes(), "fail: contractCreator");
+}
+
+fn check_ctx_from_view(ctx: &ScViewContext) {
+    let par = ctx.params();
+
+    let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
+    ctx.require(chain_id.exists() && chain_id.value().to_bytes() == ctx.contract_id().chain_id().to_bytes(), "fail: chainID");
+
+    let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value().to_bytes() == ctx.chain_owner().to_bytes(), "fail: chainOwnerID");
+
+    // FIXME ctx.caller() should not exists in view
+
+    let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
+    ctx.require(contract_id.exists() && contract_id.value().to_bytes() == ctx.contract_id().to_bytes(), "fail: contractID");
+
+    let agent_id = par.get_agent(PARAM_AGENT_ID);
+    let as_agent_id = ScAgent::from_bytes(ctx.contract_id().to_bytes());
+    ctx.require(agent_id.exists() && agent_id.value().to_bytes() == as_agent_id.to_bytes(), "fail: agentID");
+
+    let creator = par.get_agent(PARAM_CREATOR);
+    ctx.require(creator.exists() && creator.value().to_bytes() == ctx.contract_creator().to_bytes(), "fail: contractCreator");
+}
+
 fn test_event_log_generic_data(ctx: &ScCallContext) {
     let counter = ctx.params().get_int(VAR_COUNTER);
     ctx.require(counter.exists(), "!counter.exist");
@@ -295,3 +348,21 @@ fn test_event_log_deploy(ctx: &ScCallContext) {
     ctx.deploy(&program_hash, VAR_CONTRACT_NAME_DEPLOYED,
                "test contract deploy log", None)
 }
+
+fn withdraw_to_chain(ctx: &ScCallContext) {
+    //Deploy the same contract with another name
+    let target_chain = ctx.params().get_chain_id(PARAM_CHAIN_ID);
+    ctx.require(target_chain.exists(), "chainID not provided");
+
+    let target_contract_id = ScContractId::new(&target_chain.value(), &Hname::new("accounts"));
+    ctx.post(&PostRequestParams {
+        contract: target_contract_id,
+        function: Hname::new("withdrawToChain"),
+        params: None,
+        transfer: Some(Box::new(ScTransfers::new(&ScColor::IOTA, 2))),
+        delay: 0,
+    });
+    ctx.log("====  success ====");
+    // TODO how to check if post was successful
+}
+

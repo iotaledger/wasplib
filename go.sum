@@ -412,6 +412,8 @@ github.com/iotaledger/wasp v0.0.2-0.20210131110059-0d7f84820d69 h1:hDt4RienRG5KJ
 github.com/iotaledger/wasp v0.0.2-0.20210131110059-0d7f84820d69/go.mod h1:39T8jGZjfmNyjHhUdydp0cX2cFfZuqfO+uP4sCixDm0=
 github.com/iotaledger/wasp v0.0.2-0.20210131194339-402a4f537ef6 h1:gzcGPpnMmy3K+k8OMR3IzVeby5YXUijNb8VZ/TctukQ=
 github.com/iotaledger/wasp v0.0.2-0.20210131194339-402a4f537ef6/go.mod h1:39T8jGZjfmNyjHhUdydp0cX2cFfZuqfO+uP4sCixDm0=
+github.com/iotaledger/wasp v0.0.2-0.20210201114755-1fbe2e1632a3 h1:QdbDgig6T6mAnNfXQkJMJQqeZO79r5OMPHzPA2zBND8=
+github.com/iotaledger/wasp v0.0.2-0.20210201114755-1fbe2e1632a3/go.mod h1:39T8jGZjfmNyjHhUdydp0cX2cFfZuqfO+uP4sCixDm0=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
