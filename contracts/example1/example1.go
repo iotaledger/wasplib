@@ -13,7 +13,7 @@ func OnLoad() {
 	exports := client.NewScExports()
 	exports.AddCall("storeString", storeString)
 	exports.AddView("getString", getString)
-	exports.AddCall("withdraw_iota", withdrawIota)
+	exports.AddCall("withdrawIota", withdrawIota)
 }
 
 // storeString entry point stores a string provided as parameters
