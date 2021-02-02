@@ -2,5 +2,5 @@
 */.idea/
 */out/
 */pkg/
-*/target/
+**/target/
 wasm/
