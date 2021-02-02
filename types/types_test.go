@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestSchema(t *testing.T) {
+func TestGenerateSchemas(t *testing.T) {
 	t.SkipNow()
 	err := filepath.Walk("../contracts",
 		func(path string, info os.FileInfo, err error) error {
@@ -25,15 +25,11 @@ func TestSchema(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestGoCoreSchema(t *testing.T) {
+func TestGenerateCoreContractsSchema(t *testing.T) {
 	t.SkipNow()
-	err := GenerateGoCoreSchema()
+	err := GenerateGoCoreContractsSchema()
 	require.NoError(t, err)
-}
-
-func TestRustCoreSchema(t *testing.T) {
-	t.SkipNow()
-	err := GenerateRustCoreSchema()
+	err = GenerateRustCoreContractsSchema()
 	require.NoError(t, err)
 }
 

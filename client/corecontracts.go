@@ -8,7 +8,6 @@ const CoreAccountsFuncBalance = Hname(0x84168cb4)
 const CoreAccountsFuncDeposit = Hname(0xbdc9102d)
 const CoreAccountsFuncTotalAssets = Hname(0xfab0f8d2)
 const CoreAccountsViewAccounts = Hname(0x3c4b5e02)
-const CoreAccountsViewAllow = Hname(0xfebef3ae)
 const CoreAccountsViewWithdrawToAddress = Hname(0x26608cb5)
 const CoreAccountsViewWithdrawToChain = Hname(0x437bc026)
 

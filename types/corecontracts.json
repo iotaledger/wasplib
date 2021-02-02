@@ -2,8 +2,7 @@
   {
     "name": "accounts",
     "params": {
-      "ParamAgentID": "a",
-      "ParamAmount": "t"
+      "ParamAgentID": "a"
     },
     "funcs": {
       "FuncBalance": "balance",
@@ -12,7 +11,6 @@
     },
     "views": {
       "ViewAccounts": "accounts",
-      "ViewAllow": "allow",
       "ViewWithdrawToAddress": "withdrawToAddress",
       "ViewWithdrawToChain": "withdrawToChain"
     }

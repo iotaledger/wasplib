@@ -33,7 +33,7 @@ func LoadSchema(path string) (*Schema, error) {
 }
 
 func LoadCoreSchema() ([]*Schema, error) {
-	file, err := os.Open("core.json")
+	file, err := os.Open("corecontracts.json")
 	if err != nil {
 		return nil, err
 	}

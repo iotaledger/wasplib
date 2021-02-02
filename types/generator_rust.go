@@ -172,7 +172,7 @@ func GenerateRustTypes(path string, contract string, gen *Generator) error {
 	return nil
 }
 
-func GenerateRustCoreSchema() error {
+func GenerateRustCoreContractsSchema() error {
 	core, err := LoadCoreSchema()
 	if err != nil {
 		return err

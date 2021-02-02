@@ -159,7 +159,7 @@ func GenerateGoTypes(path string, contract string, gen *Generator) error {
 	return nil
 }
 
-func GenerateGoCoreSchema() error {
+func GenerateGoCoreContractsSchema() error {
 	core, err := LoadCoreSchema()
 	if err != nil {
 		return err

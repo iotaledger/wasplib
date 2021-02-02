@@ -8,7 +8,6 @@ pub const CORE_ACCOUNTS_FUNC_BALANCE: Hname = Hname(0x84168cb4);
 pub const CORE_ACCOUNTS_FUNC_DEPOSIT: Hname = Hname(0xbdc9102d);
 pub const CORE_ACCOUNTS_FUNC_TOTAL_ASSETS: Hname = Hname(0xfab0f8d2);
 pub const CORE_ACCOUNTS_VIEW_ACCOUNTS: Hname = Hname(0x3c4b5e02);
-pub const CORE_ACCOUNTS_VIEW_ALLOW: Hname = Hname(0xfebef3ae);
 pub const CORE_ACCOUNTS_VIEW_WITHDRAW_TO_ADDRESS: Hname = Hname(0x26608cb5);
 pub const CORE_ACCOUNTS_VIEW_WITHDRAW_TO_CHAIN: Hname = Hname(0x437bc026);
 
