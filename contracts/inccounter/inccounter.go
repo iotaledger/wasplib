@@ -7,70 +7,47 @@ import (
 	"github.com/iotaledger/wasplib/client"
 )
 
-const KeyCounter = client.Key("counter")
-const KeyNumRepeats = client.Key("num_repeats")
-
 var LocalStateMustIncrement = false
 
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("init", onInit)
-	exports.AddCall("increment", increment)
-	exports.AddCall("increment_call_increment", incrementCallIncrement)
-	exports.AddCall("increment_call_increment_recurse5x", incrementCallIncrementRecurse5x)
-	exports.AddCall("increment_post_increment", incrementPostIncrement)
-	exports.AddView("increment_view_counter", incrementViewCounter)
-	exports.AddCall("increment_repeat_many", incrementRepeatMany)
-	exports.AddCall("increment_when_must_increment", incrementWhenMustIncrement)
-	exports.AddCall("increment_local_state_internal_call", incrementLocalStateInternalCall)
-	exports.AddCall("increment_local_state_sandbox_call", incrementLocalStateSandboxCall)
-	exports.AddCall("increment_local_state_post", incrementLocalStatePost)
-	exports.AddCall("nothing", client.Nothing)
-	exports.AddCall("state_test", stateTest)
-	exports.AddView("state_check", stateCheck)
-	exports.AddCall("results_test", resultsTest)
-	exports.AddView("results_check", resultsCheck)
-}
-
-func onInit(ctx *client.ScCallContext) {
-	counter := ctx.Params().GetInt(KeyCounter).Value()
+func funcInit(ctx *client.ScCallContext) {
+	counter := ctx.Params().GetInt(ParamCounter).Value()
 	if counter == 0 {
 		return
 	}
-	ctx.State().GetInt(KeyCounter).SetValue(counter)
+	ctx.State().GetInt(VarCounter).SetValue(counter)
 }
 
-func increment(ctx *client.ScCallContext) {
-	counter := ctx.State().GetInt(KeyCounter)
+func funcIncrement(ctx *client.ScCallContext) {
+	counter := ctx.State().GetInt(VarCounter)
 	counter.SetValue(counter.Value() + 1)
 }
 
-func incrementCallIncrement(ctx *client.ScCallContext) {
-	counter := ctx.State().GetInt(KeyCounter)
+func funcCallIncrement(ctx *client.ScCallContext) {
+	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_call_increment"), nil, nil)
+		ctx.CallSelf(HFuncCallIncrement, nil, nil)
 	}
 }
 
-func incrementCallIncrementRecurse5x(ctx *client.ScCallContext) {
-	counter := ctx.State().GetInt(KeyCounter)
+func funcCallIncrementRecurse5x(ctx *client.ScCallContext) {
+	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
-		ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_call_increment_recurse5x"), nil, nil)
+		ctx.CallSelf(HFuncCallIncrementRecurse5x, nil, nil)
 	}
 }
 
-func incrementPostIncrement(ctx *client.ScCallContext) {
-	counter := ctx.State().GetInt(KeyCounter)
+func funcPostIncrement(ctx *client.ScCallContext) {
+	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
 		ctx.Post(&client.PostRequestParams{
 			Contract: ctx.ContractId(),
-			Function: client.NewHname("increment_post_increment"),
+			Function: HFuncPostIncrement,
 			Params:   nil,
 			Transfer: nil,
 			Delay:    0,
@@ -78,17 +55,17 @@ func incrementPostIncrement(ctx *client.ScCallContext) {
 	}
 }
 
-func incrementViewCounter(ctx *client.ScViewContext) {
-	counter := ctx.State().GetInt(KeyCounter).Value()
-	ctx.Results().GetInt(KeyCounter).SetValue(counter)
+func viewGetCounter(ctx *client.ScViewContext) {
+	counter := ctx.State().GetInt(VarCounter).Value()
+	ctx.Results().GetInt(VarCounter).SetValue(counter)
 }
 
-func incrementRepeatMany(ctx *client.ScCallContext) {
-	counter := ctx.State().GetInt(KeyCounter)
+func funcRepeatMany(ctx *client.ScCallContext) {
+	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
-	stateRepeats := ctx.State().GetInt(KeyNumRepeats)
-	repeats := ctx.Params().GetInt(KeyNumRepeats).Value()
+	stateRepeats := ctx.State().GetInt(VarNumRepeats)
+	repeats := ctx.Params().GetInt(ParamNumRepeats).Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -98,47 +75,47 @@ func incrementRepeatMany(ctx *client.ScCallContext) {
 	stateRepeats.SetValue(repeats - 1)
 	ctx.Post(&client.PostRequestParams{
 		Contract: ctx.ContractId(),
-		Function: client.NewHname("increment_repeat_many"),
+		Function: HFuncRepeatMany,
 		Params:   nil,
 		Transfer: nil,
 		Delay:    0,
 	})
 }
 
-func incrementWhenMustIncrement(ctx *client.ScCallContext) {
-	ctx.Log("increment_when_must_increment called")
+func funcWhenMustIncrement(ctx *client.ScCallContext) {
+	ctx.Log("when_must_increment called")
 	{
 		if !LocalStateMustIncrement {
 			return
 		}
 	}
-	counter := ctx.State().GetInt(KeyCounter)
+	counter := ctx.State().GetInt(VarCounter)
 	counter.SetValue(counter.Value() + 1)
 }
 
-func incrementLocalStateInternalCall(ctx *client.ScCallContext) {
+func funcLocalStateInternalCall(ctx *client.ScCallContext) {
 	LocalStateMustIncrement = false
-	incrementWhenMustIncrement(ctx)
+	funcWhenMustIncrement(ctx)
 	LocalStateMustIncrement = true
-	incrementWhenMustIncrement(ctx)
-	incrementWhenMustIncrement(ctx)
+	funcWhenMustIncrement(ctx)
+	funcWhenMustIncrement(ctx)
 	// counter ends up as 2
 }
 
-func incrementLocalStateSandboxCall(ctx *client.ScCallContext) {
+func funcLocalStateSandboxCall(ctx *client.ScCallContext) {
 	LocalStateMustIncrement = false
-	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
 	LocalStateMustIncrement = true
-	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
-	ctx.Call(ctx.ContractId().Hname(), client.NewHname("increment_when_must_increment"), nil, nil)
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
 	// counter ends up as 0 (non-existent)
 }
 
-func incrementLocalStatePost(ctx *client.ScCallContext) {
+func funcLocalStatePost(ctx *client.ScCallContext) {
 	LocalStateMustIncrement = false
 	request := &client.PostRequestParams{
 		Contract: ctx.ContractId(),
-		Function: client.NewHname("increment_when_must_increment"),
+		Function: HFuncWhenMustIncrement,
 		Params:   nil,
 		Transfer: nil,
 		Delay:    0,
@@ -150,36 +127,36 @@ func incrementLocalStatePost(ctx *client.ScCallContext) {
 	// counter ends up as 0 (non-existent)
 }
 
-func resultsTest(ctx *client.ScCallContext) {
+func funcResultsTest(ctx *client.ScCallContext) {
 	testMap(ctx.Results())
 	checkMap(ctx.Results().Immutable())
-	//ctx.Call(ctx.ContractId().Hname(), client.NewHname("results_check"), nil, nil)
+	//ctx.CallSelf(HFuncResultsCheck, nil, nil)
 }
 
-func stateTest(ctx *client.ScCallContext) {
+func funcStateTest(ctx *client.ScCallContext) {
 	testMap(ctx.State())
-	ctx.Call(ctx.ContractId().Hname(), client.NewHname("state_check"), nil, nil)
+	ctx.CallSelf(HViewStateCheck, nil, nil)
 }
 
-func resultsCheck(ctx *client.ScViewContext) {
+func viewResultsCheck(ctx *client.ScViewContext) {
 	checkMap(ctx.Results().Immutable())
 }
 
-func stateCheck(ctx *client.ScViewContext) {
+func viewStateCheck(ctx *client.ScViewContext) {
 	checkMap(ctx.State())
 }
 
 func testMap(kvstore client.ScMutableMap) {
-	int1 := kvstore.GetInt(client.Key("int1"))
+	int1 := kvstore.GetInt(VarInt1)
 	check(int1.Value() == 0)
 	int1.SetValue(1)
 
-	string1 := kvstore.GetString(client.Key("string1"))
+	string1 := kvstore.GetString(VarString1)
 	check(string1.Value() == "")
 	string1.SetValue("a")
 	check(string1.Value() == "a")
 
-	ia1 := kvstore.GetIntArray(client.Key("ia1"))
+	ia1 := kvstore.GetIntArray(VarIntArray1)
 	int2 := ia1.GetInt(0)
 	check(int2.Value() == 0)
 	int2.SetValue(2)
@@ -187,7 +164,7 @@ func testMap(kvstore client.ScMutableMap) {
 	check(int3.Value() == 0)
 	int3.SetValue(3)
 
-	sa1 := kvstore.GetStringArray(client.Key("sa1"))
+	sa1 := kvstore.GetStringArray(VarStringArray1)
 	string2 := sa1.GetString(0)
 	check(string2.Value() == "")
 	string2.SetValue("bc")
@@ -197,19 +174,19 @@ func testMap(kvstore client.ScMutableMap) {
 }
 
 func checkMap(kvstore client.ScImmutableMap) {
-	int1 := kvstore.GetInt(client.Key("int1"))
+	int1 := kvstore.GetInt(VarInt1)
 	check(int1.Value() == 1)
 
-	string1 := kvstore.GetString(client.Key("string1"))
+	string1 := kvstore.GetString(VarString1)
 	check(string1.Value() == "a")
 
-	ia1 := kvstore.GetIntArray(client.Key("ia1"))
+	ia1 := kvstore.GetIntArray(VarIntArray1)
 	int2 := ia1.GetInt(0)
 	check(int2.Value() == 2)
 	int3 := ia1.GetInt(1)
 	check(int3.Value() == 3)
 
-	sa1 := kvstore.GetStringArray(client.Key("sa1"))
+	sa1 := kvstore.GetStringArray(VarStringArray1)
 	string2 := sa1.GetString(0)
 	check(string2.Value() == "bc")
 	string3 := sa1.GetString(1)

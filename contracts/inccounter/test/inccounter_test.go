@@ -8,67 +8,62 @@ import (
 	"testing"
 )
 
-const incName = "inccounter"
-
-const varCounter = "counter"
-const varNumRepeats = "num_repeats"
-
 func TestIncrementDeploy(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
+	te := govm.NewTestEnv(t, inccounter.ScName)
 	checkStateCounter(te, nil)
 }
 
 func TestIncrementOnce(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncIncrement).Post(0)
 	checkStateCounter(te, 1)
 }
 
 func TestIncrementTwice(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment").Post(0)
-	_ = te.NewCallParams("increment").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncIncrement).Post(0)
+	_ = te.NewCallParams(inccounter.FuncIncrement).Post(0)
 	checkStateCounter(te, 2)
 }
 
 func TestIncrementRepeatThrice(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_repeat_many",
-		varNumRepeats, 3).
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncRepeatMany,
+		inccounter.ParamNumRepeats, 3).
 		Post(1) // !!! posts to self
 	te.WaitForEmptyBacklog()
 	checkStateCounter(te, 4)
 }
 
 func TestIncrementCallIncrement(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_call_increment").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncCallIncrement).Post(0)
 	checkStateCounter(te, 2)
 }
 
 func TestIncrementCallIncrementRecurse5x(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_call_increment_recurse5x").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncCallIncrementRecurse5x).Post(0)
 	checkStateCounter(te, 6)
 }
 
 func TestIncrementPostIncrement(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_post_increment").
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncPostIncrement).
 		Post(1) // !!! posts to self
 	te.WaitForEmptyBacklog()
 	checkStateCounter(te, 2)
 }
 
 func TestIncrementLocalStateInternalCall(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_local_state_internal_call").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncLocalStateInternalCall).Post(0)
 	checkStateCounter(te, 2)
 }
 
 func TestIncrementLocalStateSandboxCall(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_local_state_sandbox_call").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncLocalStateSandboxCall).Post(0)
 	if govm.WasmRunner == govm.WasmRunnerGoDirect {
 		// global var in direct go execution has effect
 		checkStateCounter(te, 2)
@@ -79,8 +74,8 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 }
 
 func TestIncrementLocalStatePost(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment_local_state_post").
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncLocalStatePost).
 		Post(1)
 	te.WaitForEmptyBacklog()
 	if govm.WasmRunner == govm.WasmRunnerGoDirect {
@@ -93,34 +88,34 @@ func TestIncrementLocalStatePost(t *testing.T) {
 }
 
 func TestIncrementViewCounter(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	_ = te.NewCallParams("increment").Post(0)
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	_ = te.NewCallParams(inccounter.FuncIncrement).Post(0)
 	checkStateCounter(te, 1)
 
-	ret := te.CallView("increment_view_counter")
+	ret := te.CallView(inccounter.ViewGetCounter)
 	results := te.GetClientMap(wasmhost.KeyResults, ret)
-	counter := results.GetInt(inccounter.KeyCounter)
+	counter := results.GetInt(inccounter.VarCounter)
 	require.True(te.T, counter.Exists())
 	require.EqualValues(t, 1, counter.Value())
 }
 
 func TestIncResultsTest(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	ret := te.NewCallParams("results_test").Post(0)
-	//ret = te.CallView( "results_check")
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	ret := te.NewCallParams(inccounter.FuncResultsTest).Post(0)
+	//ret = te.CallView( inccounter.ViewResultsCheck)
 	require.EqualValues(t, 8, len(ret))
 }
 
 func TestIncStateTest(t *testing.T) {
-	te := govm.NewTestEnv(t, incName)
-	ret := te.NewCallParams("state_test").Post(0)
-	ret = te.CallView("state_check")
+	te := govm.NewTestEnv(t, inccounter.ScName)
+	ret := te.NewCallParams(inccounter.FuncStateTest).Post(0)
+	ret = te.CallView(inccounter.ViewStateCheck)
 	require.EqualValues(t, 0, len(ret))
 }
 
 func checkStateCounter(te *govm.TestEnv, expected interface{}) {
 	state := te.State()
-	counter := state.GetInt(inccounter.KeyCounter)
+	counter := state.GetInt(inccounter.VarCounter)
 	if expected == nil {
 		require.False(te.T, counter.Exists())
 		return

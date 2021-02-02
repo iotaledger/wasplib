@@ -242,6 +242,11 @@ func (ctx ScCallContext) Caller() *ScAgent {
 	return Root.GetAgent(KeyCaller).Value()
 }
 
+// calls a smart contract function on the current contract
+func (ctx ScCallContext) CallSelf(function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
+	return ctx.Call(ctx.ContractId().Hname(), function, params, transfer)
+}
+
 // deploys a smart contract
 func (ctx ScCallContext) Deploy(programHash *ScHash, name string, description string, params *ScMutableMap) {
 	encode := NewBytesEncoder()
@@ -328,6 +333,11 @@ func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableM
 	encode.Int(0)
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
+}
+
+// calls a smart contract function on the current contract
+func (ctx ScViewContext) CallSelf(function Hname, params *ScMutableMap) ScImmutableMap {
+	return ctx.Call(ctx.ContractId().Hname(), function, params)
 }
 
 // access to immutable state storage

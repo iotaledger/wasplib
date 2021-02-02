@@ -1,33 +1,14 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use schema::*;
 use types::*;
 use wasplib::client::*;
 
+mod schema;
 mod types;
 
-const PARAM_FEEDBACK: &str = "feedback";
-const PARAM_WITHDRAW_AMOUNT: &str = "withdraw";
-
-const VAR_AMOUNT: &str = "amount";
-const VAR_DONATIONS: &str = "donations";
-const VAR_DONATOR: &str = "donator";
-const VAR_ERROR: &str = "error";
-const VAR_FEEDBACK: &str = "feedback";
-const VAR_LOG: &str = "log";
-const VAR_MAX_DONATION: &str = "max_donation";
-const VAR_TIMESTAMP: &str = "timestamp";
-const VAR_TOTAL_DONATION: &str = "total_donation";
-
-#[no_mangle]
-fn on_load() {
-    let exports = ScExports::new();
-    exports.add_call("donate", donate);
-    exports.add_call("withdraw", withdraw);
-    exports.add_view("view_donations", view_donations);
-}
-
-fn donate(ctx: &ScCallContext) {
+fn func_donate(ctx: &ScCallContext) {
     let mut donation = DonationInfo {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
@@ -54,7 +35,7 @@ fn donate(ctx: &ScCallContext) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-fn withdraw(ctx: &ScCallContext) {
+fn func_withdraw(ctx: &ScCallContext) {
     let sc_owner = ctx.contract_creator();
     if !ctx.from(&sc_owner) {
         ctx.panic("Cancel spoofed request");

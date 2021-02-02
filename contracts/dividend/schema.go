@@ -19,3 +19,9 @@ const FuncMember = "member"
 
 const HFuncDivide = client.Hname(0xc7878107)
 const HFuncMember = client.Hname(0xc07da2cb)
+
+func OnLoad() {
+	exports := client.NewScExports()
+	exports.AddCall(FuncDivide, funcDivide)
+	exports.AddCall(FuncMember, funcMember)
+}

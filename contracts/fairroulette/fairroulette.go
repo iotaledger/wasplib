@@ -5,30 +5,15 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/client"
 
-const KeyBets = client.Key("bets")
-const KeyColor = client.Key("color")
-const KeyLastWinningColor = client.Key("last_winning_color")
-const KeyLockedBets = client.Key("locked_bets")
-const KeyPlayPeriod = client.Key("play_period")
-
 const NumColors = 5
 const DefaultPlayPeriod = 120
 
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("place_bet", placeBet)
-	exports.AddCall("lock_bets", lockBets)
-	exports.AddCall("pay_winners", payWinners)
-	exports.AddCall("play_period", playPeriod)
-	exports.AddCall("nothing", client.Nothing)
-}
-
-func placeBet(ctx *client.ScCallContext) {
+func funcPlaceBet(ctx *client.ScCallContext) {
 	amount := ctx.Incoming().Balance(client.IOTA)
 	if amount == 0 {
 		ctx.Panic("Empty bet...")
 	}
-	color := ctx.Params().GetInt(KeyColor).Value()
+	color := ctx.Params().GetInt(ParamColor).Value()
 	if color == 0 {
 		ctx.Panic("No color...")
 	}
@@ -43,17 +28,17 @@ func placeBet(ctx *client.ScCallContext) {
 	}
 
 	state := ctx.State()
-	bets := state.GetBytesArray(KeyBets)
+	bets := state.GetBytesArray(VarBets)
 	betNr := bets.Length()
 	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
 	if betNr == 0 {
-		playPeriod := state.GetInt(KeyPlayPeriod).Value()
+		playPeriod := state.GetInt(VarPlayPeriod).Value()
 		if playPeriod < 10 {
 			playPeriod = DefaultPlayPeriod
 		}
 		ctx.Post(&client.PostRequestParams{
 			Contract: ctx.ContractId(),
-			Function: client.NewHname("lock_bets"),
+			Function: HFuncLockBets,
 			Params:   nil,
 			Transfer: nil,
 			Delay:    playPeriod,
@@ -61,7 +46,7 @@ func placeBet(ctx *client.ScCallContext) {
 	}
 }
 
-func lockBets(ctx *client.ScCallContext) {
+func funcLockBets(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
 	if !ctx.From(ctx.ContractId().AsAgent()) {
 		ctx.Panic("Cancel spoofed request")
@@ -69,8 +54,8 @@ func lockBets(ctx *client.ScCallContext) {
 
 	// move all current bets to the locked_bets array
 	state := ctx.State()
-	bets := state.GetBytesArray(KeyBets)
-	lockedBets := state.GetBytesArray(KeyLockedBets)
+	bets := state.GetBytesArray(VarBets)
+	lockedBets := state.GetBytesArray(VarLockedBets)
 	nrBets := bets.Length()
 	for i := int32(0); i < nrBets; i++ {
 		bytes := bets.GetBytes(i).Value()
@@ -80,14 +65,14 @@ func lockBets(ctx *client.ScCallContext) {
 
 	ctx.Post(&client.PostRequestParams{
 		Contract: ctx.ContractId(),
-		Function: client.NewHname("pay_winners"),
+		Function: HFuncPayWinners,
 		Params:   nil,
 		Transfer: nil,
 		Delay:    0,
 	})
 }
 
-func payWinners(ctx *client.ScCallContext) {
+func funcPayWinners(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
 	scId := ctx.ContractId().AsAgent()
 	if !ctx.From(scId) {
@@ -96,12 +81,12 @@ func payWinners(ctx *client.ScCallContext) {
 
 	winningColor := ctx.Utility().Random(5) + 1
 	state := ctx.State()
-	state.GetInt(KeyLastWinningColor).SetValue(winningColor)
+	state.GetInt(VarLastWinningColor).SetValue(winningColor)
 
 	// gather all winners and calculate some totals
 	totalBetAmount := int64(0)
 	totalWinAmount := int64(0)
-	lockedBets := state.GetBytesArray(KeyLockedBets)
+	lockedBets := state.GetBytesArray(VarLockedBets)
 	winners := make([]*BetInfo, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
@@ -145,16 +130,16 @@ func payWinners(ctx *client.ScCallContext) {
 	}
 }
 
-func playPeriod(ctx *client.ScCallContext) {
+func funcPlayPeriod(ctx *client.ScCallContext) {
 	// can only be sent by SC creator
 	if !ctx.From(ctx.ContractCreator()) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	playPeriod := ctx.Params().GetInt(KeyPlayPeriod).Value()
+	playPeriod := ctx.Params().GetInt(ParamPlayPeriod).Value()
 	if playPeriod < 10 {
 		ctx.Panic("Invalid play period...")
 	}
 
-	ctx.State().GetInt(KeyPlayPeriod).SetValue(playPeriod)
+	ctx.State().GetInt(VarPlayPeriod).SetValue(playPeriod)
 }

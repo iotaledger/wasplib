@@ -1,0 +1,36 @@
+{
+  "name": "inccounter",
+  "types": {
+  },
+  "params": {
+    "Counter": "counter",
+    "NumRepeats": "num_repeats"
+  },
+  "vars": {
+    "Counter": "counter",
+    "NumRepeats": "num_repeats",
+    "Int1": "i1",
+    "String1": "s1",
+    "IntArray1": "ia1",
+    "StringArray1": "sa1"
+  },
+  "funcs": {
+    "Init": "init",
+    "Increment": "increment",
+    "CallIncrement": "call_increment",
+    "CallIncrementRecurse5x": "call_increment_recurse5x",
+    "PostIncrement": "post_increment",
+    "RepeatMany": "repeat_many",
+    "WhenMustIncrement": "when_must_increment",
+    "LocalStateInternalCall": "local_state_internal_call",
+    "LocalStateSandboxCall": "local_state_sandbox_call",
+    "LocalStatePost": "local_state_post",
+    "StateTest": "state_test",
+    "ResultsTest": "results_test"
+  },
+  "views": {
+    "ResultsCheck": "results_check",
+    "StateCheck": "state_check",
+    "GetCounter": "get_counter"
+  }
+}

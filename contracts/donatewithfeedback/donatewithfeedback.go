@@ -5,27 +5,7 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/client"
 
-const ParamFeedback = client.Key("feedback")
-const ParamWithdrawAmount = client.Key("withdraw")
-
-const VarAmount = client.Key("amount")
-const VarDonations = client.Key("donations")
-const VarDonator = client.Key("donator")
-const VarError = client.Key("error")
-const VarFeedback = client.Key("feedback")
-const VarLog = client.Key("log")
-const VarMaxDonation = client.Key("max_donation")
-const VarTimestamp = client.Key("timestamp")
-const VarTotalDonation = client.Key("total_donation")
-
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("donate", donate)
-	exports.AddCall("withdraw", withdraw)
-	exports.AddView("view_donations", viewDonations)
-}
-
-func donate(ctx *client.ScCallContext) {
+func funcDonate(ctx *client.ScCallContext) {
 	donation := &DonationInfo{
 		Amount:    ctx.Incoming().Balance(client.IOTA),
 		Donator:   ctx.Caller(),
@@ -52,7 +32,7 @@ func donate(ctx *client.ScCallContext) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func withdraw(ctx *client.ScCallContext) {
+func funcWithdraw(ctx *client.ScCallContext) {
 	scOwner := ctx.ContractCreator()
 	if !ctx.From(scOwner) {
 		ctx.Panic("Cancel spoofed request")

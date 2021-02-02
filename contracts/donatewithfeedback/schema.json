@@ -1,0 +1,34 @@
+{
+  "name": "donatewithfeedback",
+  "types": {
+    "DonationInfo": [
+      {"amount": "int"},
+      {"donator": "agent"},
+      {"error": "string"},
+      {"feedback": "string"},
+      {"timestamp": "int"}
+    ]
+  },
+  "params": {
+    "Feedback": "feedback",
+    "WithdrawAmount": "withdraw"
+  },
+  "vars": {
+    "Amount": "amount",
+    "Donations": "donations",
+    "Donator": "donator",
+    "Error": "error",
+    "Feedback": "feedback",
+    "Log": "log",
+    "MaxDonation": "max_donation",
+    "Timestamp": "timestamp",
+    "TotalDonation": "total_donation"
+  },
+  "funcs": {
+    "Donate": "donate",
+    "Withdraw": "withdraw"
+  },
+  "views": {
+    "Donations": "view_donations"
+  }
+}

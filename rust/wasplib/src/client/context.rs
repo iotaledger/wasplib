@@ -240,6 +240,11 @@ impl ScCallContext {
     // retrieve the agent id of the caller of the smart contract
     pub fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
 
+    // calls a smart contract function on the current contract
+    pub fn call_self(&self, function: Hname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
+        self.call(self.contract_id().hname(), function, params, transfer)
+    }
+
     // deploys a smart contract
     pub fn deploy(&self, program_hash: &ScHash, name: &str, description: &str, params: Option<ScMutableMap>) {
         let mut encode = BytesEncoder::new();
@@ -328,6 +333,11 @@ impl ScViewContext {
         encode.int(0);
         ROOT.get_bytes(&KEY_CALL).set_value(&encode.data());
         ROOT.get_map(&KEY_RETURN).immutable()
+    }
+
+    // calls a smart contract function on the current contract
+    pub fn call_self(&self, function: Hname, params: Option<ScMutableMap>) -> ScImmutableMap {
+        self.call(self.contract_id().hname(), function, params)
     }
 
     // access to immutable state storage

@@ -5,13 +5,7 @@ package dividend
 
 import "github.com/iotaledger/wasplib/client"
 
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("member", member)
-	exports.AddCall("divide", divide)
-}
-
-func member(ctx *client.ScCallContext) {
+func funcMember(ctx *client.ScCallContext) {
 	if !ctx.From(ctx.ContractCreator()) {
 		ctx.Panic("Cancel spoofed request")
 	}
@@ -50,7 +44,7 @@ func member(ctx *client.ScCallContext) {
 	ctx.Log("Appended: " + member.Address.String())
 }
 
-func divide(ctx *client.ScCallContext) {
+func funcDivide(ctx *client.ScCallContext) {
 	amount := ctx.Balances().Balance(client.IOTA)
 	if amount == 0 {
 		ctx.Panic("Nothing to divide")

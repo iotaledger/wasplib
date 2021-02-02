@@ -1,25 +1,14 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use schema::*;
 use types::*;
 use wasplib::client::*;
 
+mod schema;
 mod types;
 
-const PARAM_ADDRESS: &str = "address";
-const PARAM_FACTOR: &str = "factor";
-
-const VAR_MEMBERS: &str = "members";
-const VAR_TOTAL_FACTOR: &str = "total_factor";
-
-#[no_mangle]
-fn on_load() {
-    let exports = ScExports::new();
-    exports.add_call("member", member);
-    exports.add_call("divide", divide);
-}
-
-fn member(ctx: &ScCallContext) {
+fn func_member(ctx: &ScCallContext) {
     if !ctx.from(&ctx.contract_creator()) {
         ctx.panic("Cancel spoofed request");
     }
@@ -58,7 +47,7 @@ fn member(ctx: &ScCallContext) {
     ctx.log(&("Appended: ".to_string() + &member.address.to_string()));
 }
 
-fn divide(ctx: &ScCallContext) {
+fn func_divide(ctx: &ScCallContext) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");

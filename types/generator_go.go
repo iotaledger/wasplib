@@ -71,10 +71,25 @@ func GenerateGoSchema(path string, contract string, gen *Generator) error {
 		fmt.Fprintf(file, "const HView%s = client.Hname(0x%s)\n", name, hName.String())
 	}
 
+	fmt.Fprintf(file, "\nfunc OnLoad() {\n")
+	fmt.Fprintf(file, "    exports := client.NewScExports()\n")
+	for _, name := range sorted(gen.schema.Funcs) {
+		fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
+	}
+	for _, name := range sorted(gen.schema.Views) {
+		fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
+	}
+	fmt.Fprintf(file, "}\n")
+
 	return nil
 }
 
 func GenerateGoTypes(path string, contract string, gen *Generator) error {
+	types := gen.schema.Types
+	if len(types) == 0 {
+		return nil
+	}
+
 	file, err := os.Create(path + "types.go")
 	if err != nil {
 		return err
@@ -88,7 +103,6 @@ func GenerateGoTypes(path string, contract string, gen *Generator) error {
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n")
 
 	// write structs
-	types := gen.schema.Types
 	for _, structName := range gen.keys {
 		gen.SplitComments(structName, goTypes)
 		spaces := strings.Repeat(" ", gen.maxName+gen.maxType)

@@ -1,32 +1,12 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use schema::*;
 use types::*;
 use wasplib::client::*;
 
+mod schema;
 mod types;
-
-const PARAM_COLOR: &str = "color";
-const PARAM_DESCRIPTION: &str = "description";
-const PARAM_DURATION: &str = "duration";
-const PARAM_MINIMUM_BID: &str = "minimum";
-const PARAM_OWNER_MARGIN: &str = "owner_margin";
-
-const VAR_AUCTIONS: &str = "auctions";
-const VAR_BIDDERS: &str = "bidders";
-const VAR_BIDDER_LIST: &str = "bidder_list";
-const VAR_COLOR: &str = "color";
-const VAR_CREATOR: &str = "creator";
-const VAR_DEPOSIT: &str = "deposit";
-const VAR_DESCRIPTION: &str = "description";
-const VAR_DURATION: &str = "duration";
-const VAR_HIGHEST_BID: &str = "highest_bid";
-const VAR_HIGHEST_BIDDER: &str = "highest_bidder";
-const VAR_INFO: &str = "info";
-const VAR_MINIMUM_BID: &str = "minimum";
-const VAR_NUM_TOKENS: &str = "num_tokens";
-const VAR_OWNER_MARGIN: &str = "owner_margin";
-const VAR_WHEN_STARTED: &str = "when_started";
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
@@ -36,17 +16,7 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-#[no_mangle]
-fn on_load() {
-    let exports = ScExports::new();
-    exports.add_call("start_auction", start_auction);
-    exports.add_call("finalize_auction", finalize_auction);
-    exports.add_call("place_bid", place_bid);
-    exports.add_call("set_owner_margin", set_owner_margin);
-    exports.add_view("get_info", get_info);
-}
-
-fn start_auction(ctx: &ScCallContext) {
+fn func_start_auction(ctx: &ScCallContext) {
     let params = ctx.params();
     let color_param = params.get_color(PARAM_COLOR);
     if !color_param.exists() {
@@ -137,7 +107,7 @@ fn start_auction(ctx: &ScCallContext) {
     ctx.log("New auction started");
 }
 
-fn finalize_auction(ctx: &ScCallContext) {
+fn func_finalize_auction(ctx: &ScCallContext) {
     // can only be sent by SC itself
     if !ctx.from(&ctx.contract_id().as_agent()) {
         ctx.panic("Cancel spoofed request");
@@ -194,7 +164,7 @@ fn finalize_auction(ctx: &ScCallContext) {
     transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-fn place_bid(ctx: &ScCallContext) {
+fn func_place_bid(ctx: &ScCallContext) {
     let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
     if bid_amount == 0 {
         ctx.panic("Missing bid amount");
@@ -248,7 +218,7 @@ fn place_bid(ctx: &ScCallContext) {
     }
 }
 
-fn set_owner_margin(ctx: &ScCallContext) {
+fn func_set_owner_margin(ctx: &ScCallContext) {
     // can only be sent by SC creator
     if !ctx.from(&ctx.contract_creator()) {
         ctx.panic("Cancel spoofed request");
@@ -265,7 +235,7 @@ fn set_owner_margin(ctx: &ScCallContext) {
     ctx.log("Updated owner margin");
 }
 
-fn get_info(ctx: &ScViewContext) {
+fn view_get_info(ctx: &ScViewContext) {
     let color_param = ctx.params().get_color(PARAM_COLOR);
     if !color_param.exists() {
         ctx.panic("Missing token color");

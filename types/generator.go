@@ -109,12 +109,22 @@ func GenerateSchema(path string) error {
 
 	path = path[:len(path)-len("schema.json")]
 	err = GenerateGoTypes(path, contract, gen)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 	err = GenerateGoSchema(path, contract, gen)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
+
+	path = "../rust/contracts/" + contract + "/src/"
 	err = GenerateRustTypes(path, contract, gen)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 	err = GenerateRustSchema(path, contract, gen)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 	return nil
 }

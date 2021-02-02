@@ -1,0 +1,28 @@
+{
+  "name": "fairroulette",
+  "types": {
+    "BetInfo": [
+      {"amount": "int"},
+      {"better": "agent"},
+      {"color": "int"}
+    ]
+  },
+  "params": {
+    "Color": "color",
+    "PlayPeriod": "play_period"
+  },
+  "vars": {
+    "Bets": "bets",
+    "LastWinningColor": "last_winning_color",
+    "LockedBets": "locked_bets",
+    "PlayPeriod": "play_period"
+  },
+  "funcs": {
+    "PlaceBet": "place_bet",
+    "LockBets": "lock_bets",
+    "PayWinners": "pay_winners",
+    "PlayPeriod": "play_period"
+  },
+  "views": {
+  }
+}

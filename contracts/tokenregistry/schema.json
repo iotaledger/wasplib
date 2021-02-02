@@ -1,0 +1,29 @@
+{
+  "name": "tokenregistry",
+  "types": {
+    "TokenInfo": [
+      {"created": "int"},
+      {"description": "string"},
+      {"minted_by": "agent"},
+      {"owner": "agent"},
+      {"supply": "int"},
+      {"updated": "int"},
+      {"user_defined": "string"}
+    ]
+  },
+  "params": {
+    "Description": "description",
+    "UserDefined": "user_defined"
+  },
+  "vars": {
+    "ColorList": "color_list",
+    "Registry": "registry"
+  },
+  "funcs": {
+    "MintSupply": "mint_supply",
+    "UpdateMetadata": "update_metadata",
+    "TransferOwnership": "transfer_ownership"
+  },
+  "views": {
+  }
+}

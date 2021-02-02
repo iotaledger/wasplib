@@ -58,8 +58,8 @@ func OnLoad() {
 
 	exports.AddCall("passTypesFull", passTypesFull)
 	exports.AddView("passTypesView", passTypesView)
-    exports.AddCall("checkContextFromFullEP", checkCtxFromFull)
-    exports.AddView("checkContextFromViewEP", checkCtxFromView)
+	exports.AddCall("checkContextFromFullEP", checkCtxFromFull)
+	exports.AddView("checkContextFromViewEP", checkCtxFromView)
 
 	exports.AddCall("sendToAddress", sendToAddress)
 	exports.AddView("justView", testJustView)
@@ -68,7 +68,7 @@ func OnLoad() {
 	exports.AddCall("testEventLogEventData", testEventLogEventData)
 	exports.AddCall("testEventLogDeploy", testEventLogDeploy)
 
-    exports.AddCall("withdrawToChain", withdrawToChain)
+	exports.AddCall("withdrawToChain", withdrawToChain)
 }
 
 func onInit(ctx *client.ScCallContext) {
@@ -219,11 +219,11 @@ func sendToAddress(ctx *client.ScCallContext) {
 }
 
 func testChainOwnerIdView(ctx *client.ScViewContext) {
-    ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
+	ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
 }
 
 func testChainOwnerIdFull(ctx *client.ScCallContext) {
-    ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
+	ctx.Results().GetAgent(ParamChainOwnerId).SetValue(ctx.ChainOwner())
 }
 
 func testContractIdView(ctx *client.ScViewContext) {
@@ -287,30 +287,30 @@ func passTypesView(ctx *client.ScViewContext) {
 	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(client.NewHname("Hname")), "Hname wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Exists(), "!Hname-0.exist")
-    ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.Hname(0)), "Hname-0 wrong")
+	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.Hname(0)), "Hname-0 wrong")
 }
 
 func checkCtxFromFull(ctx *client.ScCallContext) {
-    par := ctx.Params()
+	par := ctx.Params()
 
-    chainId := par.GetChainId(ParamChainId)
-    ctx.Require(chainId.Exists() && chainId.Value().Equals(ctx.ContractId().ChainId()), "fail: chainID")
+	chainId := par.GetChainId(ParamChainId)
+	ctx.Require(chainId.Exists() && chainId.Value().Equals(ctx.ContractId().ChainId()), "fail: chainID")
 
-    chainOwnerId := par.GetAgent(ParamChainOwnerId)
-    ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value().Equals(ctx.ChainOwner()), "fail: chainOwnerID")
+	chainOwnerId := par.GetAgent(ParamChainOwnerId)
+	ctx.Require(chainOwnerId.Exists() && chainOwnerId.Value().Equals(ctx.ChainOwner()), "fail: chainOwnerID")
 
-    caller := par.GetAgent(ParamCaller)
-    ctx.Require(caller.Exists() && caller.Value().Equals(ctx.Caller()), "fail: caller")
+	caller := par.GetAgent(ParamCaller)
+	ctx.Require(caller.Exists() && caller.Value().Equals(ctx.Caller()), "fail: caller")
 
-    contractId := par.GetContractId(ParamContractId)
-    ctx.Require(contractId.Exists() && contractId.Value().Equals(ctx.ContractId()), "fail: contractID")
+	contractId := par.GetContractId(ParamContractId)
+	ctx.Require(contractId.Exists() && contractId.Value().Equals(ctx.ContractId()), "fail: contractID")
 
-    agentId := par.GetAgent(ParamAgentId)
-    asAgentId := ctx.ContractId().AsAgent()
-    ctx.Require(agentId.Exists() && agentId.Value().Equals(asAgentId), "fail: agentID")
+	agentId := par.GetAgent(ParamAgentId)
+	asAgentId := ctx.ContractId().AsAgent()
+	ctx.Require(agentId.Exists() && agentId.Value().Equals(asAgentId), "fail: agentID")
 
-    creator := par.GetAgent(ParamCreator)
-    ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
+	creator := par.GetAgent(ParamCreator)
+	ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
 }
 
 func checkCtxFromView(ctx *client.ScViewContext) {
@@ -352,19 +352,18 @@ func testEventLogDeploy(ctx *client.ScCallContext) {
 }
 
 func withdrawToChain(ctx *client.ScCallContext) {
-    //Deploy the same contract with another name
-    targetChain := ctx.Params().GetChainId(ParamChainId)
-    ctx.Require(targetChain.Exists(), "chainID not provided")
+	//Deploy the same contract with another name
+	targetChain := ctx.Params().GetChainId(ParamChainId)
+	ctx.Require(targetChain.Exists(), "chainID not provided")
 
-    targetContractId := client.NewScContractId(targetChain.Value(), client.CoreAccounts)
-    ctx.Post(&client.PostRequestParams {
-        Contract: targetContractId,
-        Function: client.CoreAccountsViewWithdrawToChain,
-        Params: nil,
-        Transfer: client.NewScTransfer(client.IOTA, 2),
-        Delay: 0,
-    })
-    ctx.Log("====  success ====")
-    // TODO how to check if post was successful
+	targetContractId := client.NewScContractId(targetChain.Value(), client.CoreAccounts)
+	ctx.Post(&client.PostRequestParams{
+		Contract: targetContractId,
+		Function: client.CoreAccountsViewWithdrawToChain,
+		Params:   nil,
+		Transfer: client.NewScTransfer(client.IOTA, 2),
+		Delay:    0,
+	})
+	ctx.Log("====  success ====")
+	// TODO how to check if post was successful
 }
-

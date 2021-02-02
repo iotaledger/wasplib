@@ -1,9 +1,0 @@
-{
-  "DonationInfo": [
-    {"amount": "int"},
-    {"donator": "agent"},
-    {"error": "string"},
-    {"feedback": "string"},
-    {"timestamp": "int"}
-  ]
-}

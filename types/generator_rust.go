@@ -31,50 +31,72 @@ func GenerateRustSchema(path string, contract string, gen *Generator) error {
 	// write file header
 	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n\n")
-	fmt.Fprintf(file, "use wasplib::client::*;\n\n")
+	fmt.Fprintf(file, "#![allow(dead_code)]\n\n")
+	fmt.Fprintf(file, "use wasplib::client::*;\n")
+	fmt.Fprintf(file, "use super::*;\n\n")
 
-	fmt.Fprintf(file, "const SC_NAME: &str = \"%s\";\n", gen.schema.Name)
+	fmt.Fprintf(file, "pub const SC_NAME: &str = \"%s\";\n", gen.schema.Name)
 	hName := coretypes.Hn(gen.schema.Name)
-	fmt.Fprintf(file, "const SC_HNAME: Hname = Hname(0x%s);\n", hName.String())
+	fmt.Fprintf(file, "pub const SC_HNAME: Hname = Hname(0x%s);\n", hName.String())
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Params) {
 		value := gen.schema.Params[name]
-		fmt.Fprintf(file, "const PARAM_%s: &str = \"%s\";\n", snakecase(name), value)
+		fmt.Fprintf(file, "pub const PARAM_%s: &str = \"%s\";\n", snakecase(name), value)
 	}
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Vars) {
 		value := gen.schema.Vars[name]
-		fmt.Fprintf(file, "const VAR_%s: &str = \"%s\";\n", snakecase(name), value)
+		fmt.Fprintf(file, "pub const VAR_%s: &str = \"%s\";\n", snakecase(name), value)
 	}
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Funcs) {
 		value := gen.schema.Funcs[name]
-		fmt.Fprintf(file, "const FUNC_%s: &str = \"%s\";\n", snakecase(name), value)
+		fmt.Fprintf(file, "pub const FUNC_%s: &str = \"%s\";\n", snakecase(name), value)
 	}
 	for _, name := range sorted(gen.schema.Views) {
 		value := gen.schema.Views[name]
-		fmt.Fprintf(file, "const VIEW_%s: &str = \"%s\";\n", snakecase(name), value)
+		fmt.Fprintf(file, "pub const VIEW_%s: &str = \"%s\";\n", snakecase(name), value)
 	}
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Funcs) {
 		value := gen.schema.Funcs[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HFUNC_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+		fmt.Fprintf(file, "pub const HFUNC_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
 	}
 	for _, name := range sorted(gen.schema.Views) {
 		value := gen.schema.Views[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HVIEW_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+		fmt.Fprintf(file, "pub const HVIEW_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
 	}
+
+	fmt.Fprintf(file, "\n#[no_mangle]\n")
+	fmt.Fprintf(file, "fn on_load() {\n")
+	fmt.Fprintf(file, "    let exports = ScExports::new();\n")
+	for _, name := range sorted(gen.schema.Funcs) {
+		name = snakecase(name)
+		funcName := strings.ToLower(name)
+		fmt.Fprintf(file, "    exports.add_call(FUNC_%s, func_%s);\n", name, funcName)
+	}
+	for _, name := range sorted(gen.schema.Views) {
+		name = snakecase(name)
+		funcName := strings.ToLower(name)
+		fmt.Fprintf(file, "    exports.add_view(VIEW_%s, view_%s);\n", name, funcName)
+	}
+	fmt.Fprintf(file, "}\n")
 
 	return nil
 }
 
-func GenerateRustTypes(path string, contract string, gen * Generator) error {
+func GenerateRustTypes(path string, contract string, gen *Generator) error {
+	types := gen.schema.Types
+	if len(types) == 0 {
+		return nil
+	}
+
 	file, err := os.Create(path + "types.rs")
 	if err != nil {
 		return err
@@ -87,7 +109,6 @@ func GenerateRustTypes(path string, contract string, gen * Generator) error {
 	fmt.Fprintf(file, "use wasplib::client::*;\n")
 
 	// write structs
-	types := gen.schema.Types
 	for _, structName := range gen.keys {
 		gen.SplitComments(structName, rustTypes)
 		spaces := strings.Repeat(" ", gen.maxName+gen.maxType)

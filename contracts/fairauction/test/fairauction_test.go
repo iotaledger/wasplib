@@ -16,8 +16,6 @@ import (
 	"time"
 )
 
-const scName = "fairauction"
-
 var auctioneerId coretypes.AgentID
 var auctioneerWallet signaturescheme.SignatureScheme
 var contractAgentId coretypes.AgentID
@@ -25,9 +23,9 @@ var contractId coretypes.ContractID
 var tokenColor balance.Color
 
 func setupFaTest(t *testing.T) *govm.TestEnv {
-	te := govm.NewTestEnv(t, scName)
+	te := govm.NewTestEnv(t, fairauction.ScName)
 
-	contractId = coretypes.NewContractID(te.Chain.ChainID, coretypes.Hn(scName))
+	contractId = coretypes.NewContractID(te.Chain.ChainID, coretypes.Hn(fairauction.ScName))
 	contractAgentId = coretypes.NewAgentIDFromContractID(contractId)
 
 	auctioneerWallet = te.Wallet(0)
@@ -38,7 +36,7 @@ func setupFaTest(t *testing.T) *govm.TestEnv {
 	te.Env.AssertAddressBalance(auctioneerWallet.Address(), balance.ColorIOTA, 1337-10)
 	te.Env.AssertAddressBalance(auctioneerWallet.Address(), tokenColor, 10)
 
-	te.NewCallParams("start_auction",
+	te.NewCallParams(fairauction.FuncStartAuction,
 		fairauction.ParamColor, tokenColor,
 		fairauction.ParamMinimumBid, 500,
 		fairauction.ParamDescription, "Cool tokens for sale!").
@@ -49,22 +47,22 @@ func setupFaTest(t *testing.T) *govm.TestEnv {
 	return te
 }
 
-func requireAgent(t *testing.T, res dict.Dict, key kv.Key, expected coretypes.AgentID) {
-	actual, exists, err := codec.DecodeAgentID(res.MustGet(key))
+func requireAgent(t *testing.T, res dict.Dict, key client.Key, expected coretypes.AgentID) {
+	actual, exists, err := codec.DecodeAgentID(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)
 	require.EqualValues(t, expected, actual)
 }
 
-func requireInt64(t *testing.T, res dict.Dict, key kv.Key, expected int64) {
-	actual, exists, err := codec.DecodeInt64(res.MustGet(key))
+func requireInt64(t *testing.T, res dict.Dict, key client.Key, expected int64) {
+	actual, exists, err := codec.DecodeInt64(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)
 	require.EqualValues(t, expected, actual)
 }
 
-func requireString(t *testing.T, res dict.Dict, key kv.Key, expected string) {
-	actual, exists, err := codec.DecodeString(res.MustGet(key))
+func requireString(t *testing.T, res dict.Dict, key client.Key, expected string) {
+	actual, exists, err := codec.DecodeString(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)
 	require.EqualValues(t, expected, actual)
@@ -90,9 +88,9 @@ func TestFaStartAuction(t *testing.T) {
 func TestFaAuctionInfo(t *testing.T) {
 	te := setupFaTest(t)
 
-	res := te.CallView("get_info", fairauction.ParamColor, tokenColor)
-	requireAgent(t, res, "creator", auctioneerId)
-	requireInt64(t, res, "bidders", 0)
+	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
+	requireAgent(t, res, fairauction.VarCreator, auctioneerId)
+	requireInt64(t, res, fairauction.VarBidders, 0)
 }
 
 func TestFaNoBids(t *testing.T) {
@@ -102,39 +100,39 @@ func TestFaNoBids(t *testing.T) {
 	te.Env.AdvanceClockBy(61 * time.Minute)
 	te.WaitForEmptyBacklog()
 
-	res := te.CallView("get_info", fairauction.ParamColor, tokenColor)
-	requireInt64(t, res, "bidders", 0)
+	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
+	requireInt64(t, res, fairauction.VarBidders, 0)
 }
 
 func TestFaOneBidTooLow(t *testing.T) {
 	te := setupFaTest(t)
 
-	te.NewCallParams("place_bid", fairauction.ParamColor, tokenColor).
+	te.NewCallParams(fairauction.FuncPlaceBid, fairauction.ParamColor, tokenColor).
 		PostFail(100, auctioneerWallet)
 
 	// wait for finalize_auction
 	te.Env.AdvanceClockBy(61 * time.Minute)
 	te.WaitForEmptyBacklog()
 
-	res := te.CallView("get_info", fairauction.ParamColor, tokenColor)
-	requireInt64(t, res, "highest_bid", -1)
-	requireInt64(t, res, "bidders", 0)
+	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
+	requireInt64(t, res, fairauction.VarHighestBid, -1)
+	requireInt64(t, res, fairauction.VarBidders, 0)
 }
 
 func TestFaOneBid(t *testing.T) {
 	te := setupFaTest(t)
 
-	te.NewCallParams("place_bid", fairauction.ParamColor, tokenColor).
+	te.NewCallParams(fairauction.FuncPlaceBid, fairauction.ParamColor, tokenColor).
 		Post(500, te.Wallet(1))
 
 	// wait for finalize_auction
 	te.Env.AdvanceClockBy(61 * time.Minute)
 	te.WaitForEmptyBacklog()
 
-	res := te.CallView("get_info", fairauction.ParamColor, tokenColor)
-	requireInt64(t, res, "bidders", 1)
-	requireInt64(t, res, "highest_bid", 500)
-	requireAgent(t, res, "highest_bidder", te.Agent(1))
+	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
+	requireInt64(t, res, fairauction.VarBidders, 1)
+	requireInt64(t, res, fairauction.VarHighestBid, 500)
+	requireAgent(t, res, fairauction.VarHighestBidder, te.Agent(1))
 }
 
 func TestFaClientAccess(t *testing.T) {
@@ -144,8 +142,8 @@ func TestFaClientAccess(t *testing.T) {
 	te.Env.AdvanceClockBy(61 * time.Minute)
 	te.WaitForEmptyBacklog()
 
-	res := te.CallView("get_info", fairauction.ParamColor, tokenColor)
-	requireInt64(t, res, "bidders", 0)
+	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
+	requireInt64(t, res, fairauction.VarBidders, 0)
 
 	results := te.GetClientMap(wasmhost.KeyResults, res)
 	require.EqualValues(t, 0, results.GetInt(fairauction.VarBidders).Value())
@@ -154,7 +152,7 @@ func TestFaClientAccess(t *testing.T) {
 func TestFaClientFullAccess(t *testing.T) {
 	te := setupFaTest(t)
 
-	te.NewCallParams("place_bid", fairauction.ParamColor, tokenColor).
+	te.NewCallParams(fairauction.FuncPlaceBid, fairauction.ParamColor, tokenColor).
 		Post(500, te.Wallet(1))
 
 	// wait for finalize_auction

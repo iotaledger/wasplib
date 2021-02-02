@@ -1,36 +1,22 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use schema::*;
 use types::*;
 use wasplib::client::*;
 
+mod schema;
 mod types;
-
-const KEY_BETS: &str = "bets";
-const KEY_COLOR: &str = "color";
-const KEY_LAST_WINNING_COLOR: &str = "last_winning_color";
-const KEY_LOCKED_BETS: &str = "locked_bets";
-const KEY_PLAY_PERIOD: &str = "play_period";
 
 const NUM_COLORS: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-#[no_mangle]
-fn on_load() {
-    let exports = ScExports::new();
-    exports.add_call("place_bet", place_bet);
-    exports.add_call("lock_bets", lock_bets);
-    exports.add_call("pay_winners", pay_winners);
-    exports.add_call("play_period", play_period);
-    exports.add_call("nothing", ScExports::nothing);
-}
-
-fn place_bet(ctx: &ScCallContext) {
+fn func_place_bet(ctx: &ScCallContext) {
     let amount = ctx.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Empty bet...");
     }
-    let color = ctx.params().get_int(KEY_COLOR).value();
+    let color = ctx.params().get_int(PARAM_COLOR).value();
     if color == 0 {
         ctx.panic("No color...");
     }
@@ -45,11 +31,11 @@ fn place_bet(ctx: &ScCallContext) {
     };
 
     let state = ctx.state();
-    let bets = state.get_bytes_array(KEY_BETS);
+    let bets = state.get_bytes_array(VAR_BETS);
     let bet_nr = bets.length();
     bets.get_bytes(bet_nr).set_value(&encode_bet_info(&bet));
     if bet_nr == 0 {
-        let mut play_period = state.get_int(KEY_PLAY_PERIOD).value();
+        let mut play_period = state.get_int(VAR_PLAY_PERIOD).value();
         if play_period < 10 {
             play_period = DEFAULT_PLAY_PERIOD;
         }
@@ -63,7 +49,7 @@ fn place_bet(ctx: &ScCallContext) {
     }
 }
 
-fn lock_bets(ctx: &ScCallContext) {
+fn func_lock_bets(ctx: &ScCallContext) {
     // can only be sent by SC itself
     if !ctx.from(&ctx.contract_id().as_agent()) {
         ctx.panic("Cancel spoofed request");
@@ -71,8 +57,8 @@ fn lock_bets(ctx: &ScCallContext) {
 
     // move all current bets to the locked_bets array
     let state = ctx.state();
-    let bets = state.get_bytes_array(KEY_BETS);
-    let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
+    let bets = state.get_bytes_array(VAR_BETS);
+    let locked_bets = state.get_bytes_array(VAR_LOCKED_BETS);
     let nr_bets = bets.length();
     for i in 0..nr_bets {
         let bytes = bets.get_bytes(i).value();
@@ -89,7 +75,7 @@ fn lock_bets(ctx: &ScCallContext) {
     });
 }
 
-fn pay_winners(ctx: &ScCallContext) {
+fn func_pay_winners(ctx: &ScCallContext) {
     // can only be sent by SC itself
     let sc_id = ctx.contract_id().as_agent();
     if !ctx.from(&sc_id) {
@@ -98,12 +84,12 @@ fn pay_winners(ctx: &ScCallContext) {
 
     let winning_color = ctx.utility().random(5) + 1;
     let state = ctx.state();
-    state.get_int(KEY_LAST_WINNING_COLOR).set_value(winning_color);
+    state.get_int(VAR_LAST_WINNING_COLOR).set_value(winning_color);
 
     // gather all winners and calculate some totals
     let mut total_bet_amount = 0_i64;
     let mut total_win_amount = 0_i64;
-    let locked_bets = state.get_bytes_array(KEY_LOCKED_BETS);
+    let locked_bets = state.get_bytes_array(VAR_LOCKED_BETS);
     let mut winners: Vec<BetInfo> = Vec::new();
     let nr_bets = locked_bets.length();
     for i in 0..nr_bets {
@@ -147,16 +133,16 @@ fn pay_winners(ctx: &ScCallContext) {
     }
 }
 
-fn play_period(ctx: &ScCallContext) {
+fn func_play_period(ctx: &ScCallContext) {
     // can only be sent by SC creator
     if !ctx.from(&ctx.contract_creator()) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let play_period = ctx.params().get_int(KEY_PLAY_PERIOD).value();
+    let play_period = ctx.params().get_int(PARAM_PLAY_PERIOD).value();
     if play_period < 10 {
         ctx.panic("Invalid play period...");
     }
 
-    ctx.state().get_int(KEY_PLAY_PERIOD).set_value(play_period);
+    ctx.state().get_int(VAR_PLAY_PERIOD).set_value(play_period);
 }

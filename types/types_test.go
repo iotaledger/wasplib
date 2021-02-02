@@ -43,21 +43,6 @@ func TestRustToGo(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestJavaTypes(t *testing.T) {
-	t.SkipNow()
-	err := filepath.Walk("../contracts",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.HasSuffix(path, "\\types.json") {
-				return GenerateJavaTypes(path)
-			}
-			return nil
-		})
-	require.NoError(t, err)
-}
-
 func TestRustToJava(t *testing.T) {
 	t.SkipNow()
 	err := RustConvertor(RustToJavaLine, "../../contracts/$1/$1.java")

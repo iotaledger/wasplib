@@ -5,28 +5,6 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/client"
 
-const ParamColor = client.Key("color")
-const ParamDescription = client.Key("description")
-const ParamDuration = client.Key("duration")
-const ParamMinimumBid = client.Key("minimum")
-const ParamOwnerMargin = client.Key("owner_margin")
-
-const VarAuctions = client.Key("auctions")
-const VarBidderList = client.Key("bidder_list")
-const VarBidders = client.Key("bidders")
-const VarColor = client.Key("color")
-const VarCreator = client.Key("creator")
-const VarDeposit = client.Key("deposit")
-const VarDescription = client.Key("description")
-const VarDuration = client.Key("duration")
-const VarHighestBid = client.Key("highest_bid")
-const VarHighestBidder = client.Key("highest_bidder")
-const VarInfo = client.Key("info")
-const VarMinimumBid = client.Key("minimum")
-const VarNumTokens = client.Key("num_tokens")
-const VarOwnerMargin = client.Key("owner_margin")
-const VarWhenStarted = client.Key("when_started")
-
 const DurationDefault = 60
 const DurationMin = 1
 const DurationMax = 120
@@ -35,16 +13,7 @@ const OwnerMarginDefault = 50
 const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("start_auction", startAuction)
-	exports.AddCall("finalize_auction", finalizeAuction)
-	exports.AddCall("place_bid", placeBid)
-	exports.AddCall("set_owner_margin", setOwnerMargin)
-	exports.AddView("get_info", getInfo)
-}
-
-func startAuction(ctx *client.ScCallContext) {
+func funcStartAuction(ctx *client.ScCallContext) {
 	params := ctx.Params()
 	colorParam := params.GetColor(ParamColor)
 	if !colorParam.Exists() {
@@ -126,7 +95,7 @@ func startAuction(ctx *client.ScCallContext) {
 	finalizeParams.GetColor(VarColor).SetValue(auction.Color)
 	ctx.Post(&client.PostRequestParams{
 		Contract: ctx.ContractId(),
-		Function: client.NewHname("finalize_auction"),
+		Function: HFuncFinalizeAuction,
 		Params:   finalizeParams,
 		Transfer: nil,
 		Delay:    duration * 60,
@@ -134,7 +103,7 @@ func startAuction(ctx *client.ScCallContext) {
 	ctx.Log("New auction started")
 }
 
-func finalizeAuction(ctx *client.ScCallContext) {
+func funcFinalizeAuction(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
 	if !ctx.From(ctx.ContractId().AsAgent()) {
 		ctx.Panic("Cancel spoofed request")
@@ -191,7 +160,7 @@ func finalizeAuction(ctx *client.ScCallContext) {
 	transfer(ctx, auction.Creator, client.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
 
-func placeBid(ctx *client.ScCallContext) {
+func funcPlaceBid(ctx *client.ScCallContext) {
 	bidAmount := ctx.Incoming().Balance(client.IOTA)
 	if bidAmount == 0 {
 		ctx.Panic("Missing bid amount")
@@ -245,7 +214,7 @@ func placeBid(ctx *client.ScCallContext) {
 	}
 }
 
-func setOwnerMargin(ctx *client.ScCallContext) {
+func funcSetOwnerMargin(ctx *client.ScCallContext) {
 	// can only be sent by SC creator
 	if !ctx.From(ctx.ContractCreator()) {
 		ctx.Panic("Cancel spoofed request")
@@ -262,7 +231,7 @@ func setOwnerMargin(ctx *client.ScCallContext) {
 	ctx.Log("Updated owner margin")
 }
 
-func getInfo(ctx *client.ScViewContext) {
+func viewGetInfo(ctx *client.ScViewContext) {
 	colorParam := ctx.Params().GetColor(ParamColor)
 	if !colorParam.Exists() {
 		ctx.Panic("Missing token color")

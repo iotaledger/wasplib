@@ -9,16 +9,14 @@ import (
 	"testing"
 )
 
-const scName = "donatewithfeedback"
-
 func setupDwfTest(t *testing.T) *govm.TestEnv {
-	te := govm.NewTestEnv(t, scName)
+	te := govm.NewTestEnv(t, donatewithfeedback.ScName)
 	return te
 }
 
 func TestDwfDeploy(t *testing.T) {
 	te := setupDwfTest(t)
-	ret := te.CallView("view_donations")
+	ret := te.CallView(donatewithfeedback.ViewDonations)
 	results := te.GetClientMap(wasmhost.KeyResults, ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 0, max.Value())
@@ -28,10 +26,10 @@ func TestDwfDeploy(t *testing.T) {
 
 func TestDonateOnce(t *testing.T) {
 	te := setupDwfTest(t)
-	te.NewCallParams("donate",
+	te.NewCallParams(donatewithfeedback.FuncDonate,
 		donatewithfeedback.ParamFeedback, "Nice work!").
 		Post(42, te.Wallet(0))
-	ret := te.CallView("view_donations")
+	ret := te.CallView(donatewithfeedback.ViewDonations)
 	results := te.GetClientMap(wasmhost.KeyResults, ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 42, max.Value())
@@ -48,13 +46,13 @@ func TestDonateOnce(t *testing.T) {
 
 func TestDonateTwice(t *testing.T) {
 	te := setupDwfTest(t)
-	te.NewCallParams("donate",
+	te.NewCallParams(donatewithfeedback.FuncDonate,
 		donatewithfeedback.ParamFeedback, "Nice work!").
 		Post(42, te.Wallet(0))
-	te.NewCallParams("donate",
+	te.NewCallParams(donatewithfeedback.FuncDonate,
 		donatewithfeedback.ParamFeedback, "Exactly what I needed!").
 		Post(69, te.Wallet(1))
-	ret := te.CallView("view_donations")
+	ret := te.CallView(donatewithfeedback.ViewDonations)
 	results := te.GetClientMap(wasmhost.KeyResults, ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 69, max.Value())
