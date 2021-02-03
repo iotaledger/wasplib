@@ -6,8 +6,8 @@ package dividend
 import "github.com/iotaledger/wasplib/client"
 
 type Member struct {
-	Address *client.ScAddress
-	Factor  int64
+	Address *client.ScAddress // address of dividend recipient
+	Factor  int64             // relative division factor
 }
 
 func EncodeMember(o *Member) []byte {

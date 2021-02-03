@@ -5,7 +5,7 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/client"
 
-const NumColors = 5
+const MaxNumber = 5
 const DefaultPlayPeriod = 120
 
 func funcPlaceBet(ctx *client.ScCallContext) {
@@ -13,18 +13,18 @@ func funcPlaceBet(ctx *client.ScCallContext) {
 	if amount == 0 {
 		ctx.Panic("Empty bet...")
 	}
-	color := ctx.Params().GetInt(ParamColor).Value()
-	if color == 0 {
-		ctx.Panic("No color...")
+	number := ctx.Params().GetInt(ParamNumber).Value()
+	if number == 0 {
+		ctx.Panic("No number...")
 	}
-	if color < 1 || color > NumColors {
-		ctx.Panic("Invalid color...")
+	if number < 1 || number > MaxNumber {
+		ctx.Panic("Invalid number...")
 	}
 
 	bet := &BetInfo{
 		Better: ctx.Caller(),
 		Amount: amount,
-		Color:  color,
+		Number: number,
 	}
 
 	state := ctx.State()
@@ -79,9 +79,9 @@ func funcPayWinners(ctx *client.ScCallContext) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	winningColor := ctx.Utility().Random(5) + 1
+	winningNumber := ctx.Utility().Random(5) + 1
 	state := ctx.State()
-	state.GetInt(VarLastWinningColor).SetValue(winningColor)
+	state.GetInt(VarLastWinningNumber).SetValue(winningNumber)
 
 	// gather all winners and calculate some totals
 	totalBetAmount := int64(0)
@@ -92,7 +92,7 @@ func funcPayWinners(ctx *client.ScCallContext) {
 	for i := int32(0); i < nrBets; i++ {
 		bet := DecodeBetInfo(lockedBets.GetBytes(i).Value())
 		totalBetAmount += bet.Amount
-		if bet.Color == winningColor {
+		if bet.Number == winningNumber {
 			totalWinAmount += bet.Amount
 			winners = append(winners, bet)
 		}

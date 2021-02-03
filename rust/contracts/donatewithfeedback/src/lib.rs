@@ -41,17 +41,17 @@ fn func_withdraw(ctx: &ScCallContext) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let amount = ctx.balances().balance(&ScColor::IOTA);
-    let mut withdraw_amount = ctx.params().get_int(PARAM_WITHDRAW_AMOUNT).value();
-    if withdraw_amount == 0 || withdraw_amount > amount {
-        withdraw_amount = amount;
+    let balance = ctx.balances().balance(&ScColor::IOTA);
+    let mut amount = ctx.params().get_int(PARAM_AMOUNT).value();
+    if amount == 0 || amount > balance {
+        amount = balance;
     }
-    if withdraw_amount == 0 {
+    if amount == 0 {
         ctx.log("DonateWithFeedback: nothing to withdraw");
         return;
     }
 
-    ctx.transfer_to_address(&sc_owner.address(), &ScTransfers::new(&ScColor::IOTA, withdraw_amount));
+    ctx.transfer_to_address(&sc_owner.address(), &ScTransfers::new(&ScColor::IOTA, amount));
 }
 
 fn view_donations(ctx: &ScViewContext) {

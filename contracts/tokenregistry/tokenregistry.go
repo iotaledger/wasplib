@@ -36,10 +36,14 @@ func funcMintSupply(ctx *client.ScCallContext) {
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 
+func funcTransferOwnership(_sc *client.ScCallContext) {
+	//TODO
+}
+
 func funcUpdateMetadata(_sc *client.ScCallContext) {
 	//TODO
 }
 
-func funcTransferOwnership(_sc *client.ScCallContext) {
+func viewGetInfo(_sc *client.ScViewContext) {
 	//TODO
 }

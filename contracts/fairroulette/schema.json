@@ -1,27 +1,32 @@
 {
   "name": "fairroulette",
   "types": {
-    "BetInfo": [
-      {"amount": "int"},
-      {"better": "agent"},
-      {"color": "int"}
-    ]
-  },
-  "params": {
-    "Color": "color",
-    "PlayPeriod": "play_period"
+    "BetInfo": {
+      "amount": "Int",
+      "better": "Agent",
+      "number": "Int"
+    }
   },
   "vars": {
-    "Bets": "bets",
-    "LastWinningColor": "last_winning_color",
-    "LockedBets": "locked_bets",
-    "PlayPeriod": "play_period"
+    "bets": "[]BetInfo]",
+    "lastWinningNumber": "Int",
+    "lockedBets": "[]BetInfo]",
+    "playPeriod": "Int"
   },
   "funcs": {
-    "PlaceBet": "place_bet",
-    "LockBets": "lock_bets",
-    "PayWinners": "pay_winners",
-    "PlayPeriod": "play_period"
+    "placeBet": {
+      "number": "Int // the number a better bets on"
+    },
+    "lockBets": {
+      "#owner": "contract // only SC itself can invoke this function"
+    },
+    "payWinners": {
+      "#owner": "contract // only SC itself can invoke this function"
+    },
+    "playPeriod": {
+      "#owner": "creator // only SC creator can update the play period",
+      "playPeriod": "Int // number of minutes in one playing round"
+    }
   },
   "views": {
   }

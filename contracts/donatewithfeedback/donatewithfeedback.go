@@ -38,17 +38,17 @@ func funcWithdraw(ctx *client.ScCallContext) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	amount := ctx.Balances().Balance(client.IOTA)
-	withdrawAmount := ctx.Params().GetInt(ParamWithdrawAmount).Value()
-	if withdrawAmount == 0 || withdrawAmount > amount {
-		withdrawAmount = amount
+	balance := ctx.Balances().Balance(client.IOTA)
+	amount := ctx.Params().GetInt(ParamAmount).Value()
+	if amount == 0 || amount > balance {
+		amount = balance
 	}
-	if withdrawAmount == 0 {
+	if amount == 0 {
 		ctx.Log("DonateWithFeedback: nothing to withdraw")
 		return
 	}
 
-	ctx.TransferToAddress(scOwner.Address(), client.NewScTransfer(client.IOTA, withdrawAmount))
+	ctx.TransferToAddress(scOwner.Address(), client.NewScTransfer(client.IOTA, amount))
 }
 
 func viewDonations(ctx *client.ScViewContext) {

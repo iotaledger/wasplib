@@ -11,36 +11,36 @@ const ScHname = client.ScHname(0x1b5c43b1)
 const ParamColor = client.Key("color")
 const ParamDescription = client.Key("description")
 const ParamDuration = client.Key("duration")
-const ParamMinimumBid = client.Key("minimum")
-const ParamOwnerMargin = client.Key("owner_margin")
+const ParamMinimumBid = client.Key("minimumBid")
+const ParamOwnerMargin = client.Key("ownerMargin")
 
 const VarAuctions = client.Key("auctions")
-const VarBidderList = client.Key("bidder_list")
+const VarBidderList = client.Key("bidderList")
 const VarBidders = client.Key("bidders")
 const VarColor = client.Key("color")
 const VarCreator = client.Key("creator")
 const VarDeposit = client.Key("deposit")
 const VarDescription = client.Key("description")
 const VarDuration = client.Key("duration")
-const VarHighestBid = client.Key("highest_bid")
-const VarHighestBidder = client.Key("highest_bidder")
+const VarHighestBid = client.Key("highestBid")
+const VarHighestBidder = client.Key("highestBidder")
 const VarInfo = client.Key("info")
-const VarMinimumBid = client.Key("minimum")
-const VarNumTokens = client.Key("num_tokens")
-const VarOwnerMargin = client.Key("owner_margin")
-const VarWhenStarted = client.Key("when_started")
+const VarMinimumBid = client.Key("minimumBid")
+const VarNumTokens = client.Key("numTokens")
+const VarOwnerMargin = client.Key("ownerMargin")
+const VarWhenStarted = client.Key("whenStarted")
 
-const FuncFinalizeAuction = "finalize_auction"
-const FuncPlaceBid = "place_bid"
-const FuncSetOwnerMargin = "set_owner_margin"
-const FuncStartAuction = "start_auction"
-const ViewGetInfo = "get_info"
+const FuncFinalizeAuction = "finalizeAuction"
+const FuncPlaceBid = "placeBid"
+const FuncSetOwnerMargin = "setOwnerMargin"
+const FuncStartAuction = "startAuction"
+const ViewGetInfo = "getInfo"
 
-const HFuncFinalizeAuction = client.ScHname(0xb427dd28)
-const HFuncPlaceBid = client.ScHname(0xf2cc1c44)
-const HFuncSetOwnerMargin = client.ScHname(0x65402dca)
-const HFuncStartAuction = client.ScHname(0x7ee53d08)
-const HViewGetInfo = client.ScHname(0x2b9d8867)
+const HFuncFinalizeAuction = client.ScHname(0x8d534ddc)
+const HFuncPlaceBid = client.ScHname(0x9bd72fa9)
+const HFuncSetOwnerMargin = client.ScHname(0x1774461a)
+const HFuncStartAuction = client.ScHname(0xd5b7bacb)
+const HViewGetInfo = client.ScHname(0xcfedba5f)
 
 func OnLoad() {
     exports := client.NewScExports()

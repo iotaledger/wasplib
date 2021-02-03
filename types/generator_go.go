@@ -8,21 +8,21 @@ import (
 	"strings"
 )
 
-var goTypes = map[string]string{
-	"address":     "*client.ScAddress",
-	"agent":       "*client.ScAgentId",
-	"chain_id":    "*client.ScChainId",
-	"color":       "*client.ScColor",
-	"contract_id": "*client.ScContractId",
-	"hash":        "*client.ScHash",
-	"hname":       "client.ScHname",
-	"int":         "int64",
-	"string":      "string",
+var goTypes = StringMap{
+	"Address":     "*client.ScAddress",
+	"Agent":       "*client.ScAgentId",
+	"Chain_id":    "*client.ScChainId",
+	"Color":       "*client.ScColor",
+	"Contract_id": "*client.ScContractId",
+	"Hash":        "*client.ScHash",
+	"Hname":       "client.ScHname",
+	"Int":         "int64",
+	"String":      "string",
 }
 
 //TODO check for clashing Hnames
 
-func GenerateGoSchema(path string, contract string, gen *Generator) error {
+func GenerateGoSchema(path string, contract string, schema *Schema) error {
 	file, err := os.Create(path + "schema.go")
 	if err != nil {
 		return err
@@ -35,50 +35,54 @@ func GenerateGoSchema(path string, contract string, gen *Generator) error {
 	fmt.Fprintf(file, "\npackage %s\n\n", contract)
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n\n")
 
-	fmt.Fprintf(file, "const ScName = \"%s\"\n", gen.schema.Name)
-	hName := coretypes.Hn(gen.schema.Name)
+	fmt.Fprintf(file, "const ScName = \"%s\"\n", schema.Name)
+	hName := coretypes.Hn(schema.Name)
 	fmt.Fprintf(file, "const ScHname = client.ScHname(0x%s)\n", hName.String())
 
 	fmt.Fprintln(file)
-	for _, name := range sorted(gen.schema.Params) {
-		value := gen.schema.Params[name]
-		fmt.Fprintf(file, "const Param%s = client.Key(\"%s\")\n", name, value)
+	params := make(StringMap)
+	for _, funcDef := range schema.Funcs {
+		for fldName := range funcDef {
+			if !strings.HasPrefix(fldName, "#") {
+				params[fldName] = fldName
+			}
+		}
+	}
+	for _, name := range sortedKeys(params) {
+		fmt.Fprintf(file, "const Param%s = client.Key(\"%s\")\n", capitalize(name), name)
 	}
 
 	fmt.Fprintln(file)
-	for _, name := range sorted(gen.schema.Vars) {
-		value := gen.schema.Vars[name]
-		fmt.Fprintf(file, "const Var%s = client.Key(\"%s\")\n", name, value)
+	for _, name := range sortedKeys(schema.Vars) {
+		fmt.Fprintf(file, "const Var%s = client.Key(\"%s\")\n", capitalize(name), name)
 	}
 
 	fmt.Fprintln(file)
-	for _, name := range sorted(gen.schema.Funcs) {
-		value := gen.schema.Funcs[name]
-		fmt.Fprintf(file, "const Func%s = \"%s\"\n", name, value)
+	for _, name := range sortedMaps(schema.Funcs) {
+		fmt.Fprintf(file, "const Func%s = \"%s\"\n", capitalize(name), name)
 	}
-	for _, name := range sorted(gen.schema.Views) {
-		value := gen.schema.Views[name]
-		fmt.Fprintf(file, "const View%s = \"%s\"\n", name, value)
+	for _, name := range sortedMaps(schema.Views) {
+		fmt.Fprintf(file, "const View%s = \"%s\"\n", capitalize(name), name)
 	}
 
 	fmt.Fprintln(file)
-	for _, name := range sorted(gen.schema.Funcs) {
-		value := gen.schema.Funcs[name]
-		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HFunc%s = client.ScHname(0x%s)\n", name, hName.String())
+	for _, name := range sortedMaps(schema.Funcs) {
+		hName = coretypes.Hn(name)
+		fmt.Fprintf(file, "const HFunc%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
 	}
-	for _, name := range sorted(gen.schema.Views) {
-		value := gen.schema.Views[name]
-		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", name, hName.String())
+	for _, name := range sortedMaps(schema.Views) {
+		hName = coretypes.Hn(name)
+		fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
 	}
 
 	fmt.Fprintf(file, "\nfunc OnLoad() {\n")
 	fmt.Fprintf(file, "    exports := client.NewScExports()\n")
-	for _, name := range sorted(gen.schema.Funcs) {
+	for _, name := range sortedMaps(schema.Funcs) {
+		name = capitalize(name)
 		fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
 	}
-	for _, name := range sorted(gen.schema.Views) {
+	for _, name := range sortedMaps(schema.Views) {
+		name = capitalize(name)
 		fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
 	}
 	fmt.Fprintf(file, "}\n")
@@ -86,8 +90,7 @@ func GenerateGoSchema(path string, contract string, gen *Generator) error {
 	return nil
 }
 
-func GenerateGoTypes(path string, contract string, gen *Generator) error {
-	types := gen.schema.Types
+func GenerateGoTypes(path string, contract string, types StringMapMap) error {
 	if len(types) == 0 {
 		return nil
 	}
@@ -105,68 +108,63 @@ func GenerateGoTypes(path string, contract string, gen *Generator) error {
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n")
 
 	// write structs
-	for _, structName := range gen.keys {
-		gen.SplitComments(structName, goTypes)
-		spaces := strings.Repeat(" ", gen.maxName+gen.maxType)
-		fmt.Fprintf(file, "\ntype %s struct {\n", structName)
-		for _, fld := range types[structName] {
-			for name, _ := range fld {
-				camel := gen.camels[name]
-				comment := gen.comments[name]
-				goType := gen.types[name]
-				if comment != "" {
-					comment = spaces[:gen.maxType-len(goType)] + comment
-				}
-				goType = spaces[:gen.maxCamel-len(camel)] + goType
-				fmt.Fprintf(file, "\t%s %s%s\n", camel, goType, comment)
+	sortedTypes := sortedMaps(types)
+	for _, typeName := range sortedTypes {
+		fmt.Fprintf(file, "\ntype %s struct {\n", typeName)
+		fldDef := types[typeName]
+		nameLen := 0
+		typeLen := 0
+		for _, fldName := range sortedKeys(fldDef) {
+			fldType, _ := splitComment(fldDef[fldName])
+			goType, ok := goTypes[fldType]
+			if !ok {
+				return fmt.Errorf("invalid type name: %s", fldType)
 			}
+			if nameLen < len(fldName) {
+				nameLen = len(fldName)
+			}
+			if typeLen < len(goType) {
+				typeLen = len(goType)
+			}
+		}
+		for _, fldName := range sortedKeys(fldDef) {
+			fldType, comment := splitComment(fldDef[fldName])
+			goType := pad(goTypes[fldType], typeLen)
+			fldName = pad(capitalize(fldName), nameLen)
+			fmt.Fprintf(file, "\t%s %s%s\n", fldName, goType, comment)
 		}
 		fmt.Fprintf(file, "}\n")
 	}
 
-	//  write encoder and decoder for structs
-	for _, structName := range gen.keys {
-		funcName := "code" + structName
-		fmt.Fprintf(file, "\nfunc En%s(o *%s) []byte {\n", funcName, structName)
+	// write encoder and decoder for structs
+	for _, typeName := range sortedTypes {
+		fmt.Fprintf(file, "\nfunc Encode%s(o *%s) []byte {\n", typeName, typeName)
 		fmt.Fprintf(file, "\treturn client.NewBytesEncoder().\n")
-		for _, fld := range types[structName] {
-			for name, typeName := range fld {
-				index := strings.Index(typeName, "//")
-				if index > 0 {
-					typeName = strings.TrimSpace(typeName[:index])
-				}
-				typeName = strings.ToUpper(typeName[:1]) + typeName[1:]
-				fmt.Fprintf(file, "\t\t%s(o.%s).\n", typeName, camelcase(name))
-			}
+		fldDef := types[typeName]
+		for _, fldName := range sortedKeys(fldDef) {
+			fldType, _ := splitComment(fldDef[fldName])
+			fmt.Fprintf(file, "\t\t%s(o.%s).\n", fldType, capitalize(fldName))
 		}
 		fmt.Fprintf(file, "\t\tData()\n}\n")
 
-		fmt.Fprintf(file, "\nfunc De%s(bytes []byte) *%s {\n", funcName, structName)
-		fmt.Fprintf(file, "\tdecode := client.NewBytesDecoder(bytes)\n\tdata := &%s{}\n", structName)
-		for _, fld := range types[structName] {
-			for name, typeName := range fld {
-				index := strings.Index(typeName, "//")
-				if index > 0 {
-					typeName = strings.TrimSpace(typeName[:index])
-				}
-				typeName = strings.ToUpper(typeName[:1]) + typeName[1:]
-				fmt.Fprintf(file, "\tdata.%s = decode.%s()\n", camelcase(name), typeName)
-			}
+		fmt.Fprintf(file, "\nfunc Decode%s(bytes []byte) *%s {\n", typeName, typeName)
+		fmt.Fprintf(file, "\tdecode := client.NewBytesDecoder(bytes)\n\tdata := &%s{}\n", typeName)
+		for _, fldName := range sortedKeys(fldDef) {
+			fldType, _ := splitComment(fldDef[fldName])
+			fmt.Fprintf(file, "\tdata.%s = decode.%s()\n", capitalize(fldName), fldType)
 		}
 		fmt.Fprintf(file, "\treturn data\n}\n")
 	}
-
-	//TODO write on_types function
 
 	return nil
 }
 
 func GenerateGoCoreContractsSchema() error {
-	core, err := LoadCoreSchema()
+	coreSchemas, err := LoadCoreSchemas()
 	if err != nil {
 		return err
 	}
-	if core == nil {
+	if coreSchemas == nil {
 		return errors.New("missing core schema")
 	}
 
@@ -181,19 +179,19 @@ func GenerateGoCoreContractsSchema() error {
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
 	fmt.Fprintf(file, "\npackage client\n")
 
-	for _, schema := range core {
-		nContract := camelcase(schema.Name)
-		hContract := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\nconst Core%s = ScHname(0x%s)\n", nContract, hContract.String())
-		for _, nFunc := range sorted(schema.Funcs) {
-			funcName := schema.Funcs[nFunc]
-			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const Core%s%s = ScHname(0x%s)\n", nContract, nFunc, hFunc.String())
+	for _, schema := range coreSchemas {
+		scName := capitalize(schema.Name)
+		scHname := coretypes.Hn(schema.Name)
+		fmt.Fprintf(file, "\nconst Core%s = ScHname(0x%s)\n", scName, scHname.String())
+		for _, funcName := range sortedMaps(schema.Funcs) {
+			funcHname := coretypes.Hn(funcName)
+			funcName = capitalize(funcName)
+			fmt.Fprintf(file, "const Core%sFunc%s = ScHname(0x%s)\n", scName, funcName, funcHname.String())
 		}
-		for _, nFunc := range sorted(schema.Views) {
-			funcName := schema.Views[nFunc]
-			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const Core%s%s = ScHname(0x%s)\n", nContract, nFunc, hFunc.String())
+		for _, funcName := range sortedMaps(schema.Views) {
+			funcHname := coretypes.Hn(funcName)
+			funcName = capitalize(funcName)
+			fmt.Fprintf(file, "const Core%sView%s = ScHname(0x%s)\n", scName, funcName, funcHname.String())
 		}
 	}
 	return nil

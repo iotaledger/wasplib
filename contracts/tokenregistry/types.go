@@ -6,13 +6,13 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/client"
 
 type TokenInfo struct {
-	Created     int64
-	Description string
-	MintedBy    *client.ScAgentId
-	Owner       *client.ScAgentId
-	Supply      int64
-	Updated     int64
-	UserDefined string
+	Created     int64             // creation timestamp
+	Description string            // description what minted token represents
+	MintedBy    *client.ScAgentId // original minter
+	Owner       *client.ScAgentId // current owner
+	Supply      int64             // amount of tokens originally minted
+	Updated     int64             // last update timestamp
+	UserDefined string            // any user defined text
 }
 
 func EncodeTokenInfo(o *TokenInfo) []byte {

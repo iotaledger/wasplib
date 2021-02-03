@@ -5,13 +5,13 @@ use wasplib::client::*;
 
 pub struct TokenInfo {
     //@formatter:off
-    pub created:      i64,
-    pub description:  String,
-    pub minted_by:    ScAgentId,
-    pub owner:        ScAgentId,
-    pub supply:       i64,
-    pub updated:      i64,
-    pub user_defined: String,
+    pub created:      i64,       // creation timestamp
+    pub description:  String,    // description what minted token represents
+    pub minted_by:    ScAgentId, // original minter
+    pub owner:        ScAgentId, // current owner
+    pub supply:       i64,       // amount of tokens originally minted
+    pub updated:      i64,       // last update timestamp
+    pub user_defined: String,    // any user defined text
     //@formatter:on
 }
 

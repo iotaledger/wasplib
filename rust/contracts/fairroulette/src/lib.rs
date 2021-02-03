@@ -8,7 +8,7 @@ use wasplib::client::*;
 mod schema;
 mod types;
 
-const NUM_COLORS: i64 = 5;
+const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
 fn func_place_bet(ctx: &ScCallContext) {
@@ -16,18 +16,18 @@ fn func_place_bet(ctx: &ScCallContext) {
     if amount == 0 {
         ctx.panic("Empty bet...");
     }
-    let color = ctx.params().get_int(PARAM_COLOR).value();
-    if color == 0 {
-        ctx.panic("No color...");
+    let number = ctx.params().get_int(PARAM_NUMBER).value();
+    if number == 0 {
+        ctx.panic("No number...");
     }
-    if color < 1 || color > NUM_COLORS {
-        ctx.panic("Invalid color...");
+    if number < 1 || number > MAX_NUMBER {
+        ctx.panic("Invalid number...");
     }
 
     let bet = BetInfo {
         better: ctx.caller(),
         amount: amount,
-        color: color,
+        number: number,
     };
 
     let state = ctx.state();
@@ -41,7 +41,7 @@ fn func_place_bet(ctx: &ScCallContext) {
         }
         ctx.post(&PostRequestParams {
             contract_id: ctx.contract_id(),
-            function: ScHname::new("lock_bets"),
+            function: HFUNC_LOCK_BETS,
             params: None,
             transfer: None,
             delay: play_period,
@@ -68,7 +68,7 @@ fn func_lock_bets(ctx: &ScCallContext) {
 
     ctx.post(&PostRequestParams {
         contract_id: ctx.contract_id(),
-        function: ScHname::new("pay_winners"),
+        function: HFUNC_PAY_WINNERS,
         params: None,
         transfer: None,
         delay: 0,
@@ -82,9 +82,9 @@ fn func_pay_winners(ctx: &ScCallContext) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let winning_color = ctx.utility().random(5) + 1;
+    let winning_number = ctx.utility().random(5) + 1;
     let state = ctx.state();
-    state.get_int(VAR_LAST_WINNING_COLOR).set_value(winning_color);
+    state.get_int(VAR_LAST_WINNING_NUMBER).set_value(winning_number);
 
     // gather all winners and calculate some totals
     let mut total_bet_amount = 0_i64;
@@ -95,7 +95,7 @@ fn func_pay_winners(ctx: &ScCallContext) {
     for i in 0..nr_bets {
         let bet = decode_bet_info(&locked_bets.get_bytes(i).value());
         total_bet_amount += bet.amount;
-        if bet.color == winning_color {
+        if bet.number == winning_number {
             total_win_amount += bet.amount;
             winners.push(bet);
         }

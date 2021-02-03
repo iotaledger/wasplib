@@ -6,11 +6,11 @@ package donatewithfeedback
 import "github.com/iotaledger/wasplib/client"
 
 type DonationInfo struct {
-	Amount    int64
+	Amount    int64            
 	Donator   *client.ScAgentId
-	Error     string
-	Feedback  string
-	Timestamp int64
+	Error     string           
+	Feedback  string           
+	Timestamp int64            
 }
 
 func EncodeDonationInfo(o *DonationInfo) []byte {

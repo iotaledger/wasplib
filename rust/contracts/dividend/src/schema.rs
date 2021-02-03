@@ -13,7 +13,7 @@ pub const PARAM_ADDRESS: &str = "address";
 pub const PARAM_FACTOR: &str = "factor";
 
 pub const VAR_MEMBERS: &str = "members";
-pub const VAR_TOTAL_FACTOR: &str = "total_factor";
+pub const VAR_TOTAL_FACTOR: &str = "totalFactor";
 
 pub const FUNC_DIVIDE: &str = "divide";
 pub const FUNC_MEMBER: &str = "member";

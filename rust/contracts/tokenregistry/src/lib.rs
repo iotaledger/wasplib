@@ -41,10 +41,14 @@ fn func_mint_supply(ctx: &ScCallContext) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
+fn func_transfer_ownership(_sc: &ScCallContext) {
+    //TODO
+}
+
 fn func_update_metadata(_sc: &ScCallContext) {
     //TODO
 }
 
-fn func_transfer_ownership(_sc: &ScCallContext) {
+fn view_get_info(_sc: &ScViewContext) {
     //TODO
 }

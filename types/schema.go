@@ -6,16 +6,15 @@ import (
 	"os"
 )
 
-type JsonType map[string]string
-type JsonTypes map[string][]JsonType
+type StringMap map[string]string
+type StringMapMap map[string]StringMap
 
 type Schema struct {
-	Funcs  map[string]string `json:"funcs"`
-	Name   string            `json:"name"`
-	Params map[string]string `json:"params"`
-	Types  JsonTypes         `json:"types"`
-	Vars   map[string]string `json:"vars"`
-	Views  map[string]string `json:"views"`
+	Funcs StringMapMap `json:"funcs"`
+	Name  string       `json:"name"`
+	Types StringMapMap `json:"types"`
+	Vars  StringMap    `json:"vars"`
+	Views StringMapMap `json:"views"`
 }
 
 func LoadSchema(path string) (*Schema, error) {
@@ -32,7 +31,7 @@ func LoadSchema(path string) (*Schema, error) {
 	return schema, nil
 }
 
-func LoadCoreSchema() ([]*Schema, error) {
+func LoadCoreSchemas() ([]*Schema, error) {
 	file, err := os.Open("corecontracts.json")
 	if err != nil {
 		return nil, err

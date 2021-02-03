@@ -1,41 +1,57 @@
 package types
 
 import (
-	"errors"
+	"fmt"
 	"regexp"
 	"sort"
 	"strings"
 )
 
 type Generator struct {
-	schema   *Schema
-	keys     []string
-	maxCamel int
-	maxName  int
-	maxType  int
-	camels   map[string]string
-	types    map[string]string
-	comments map[string]string
+	schema *Schema
 }
 
 var camelRegExp = regexp.MustCompile("_[a-z]")
-var snakeRegExp = regexp.MustCompile("[a-z][A-Z]")
+var snakeRegExp = regexp.MustCompile("[a-z0-9][A-Z]")
 
-func camelcase(name string) string {
-	name = camelRegExp.ReplaceAllStringFunc(name, func(sub string) string {
+// convert lowercase snake case to camel case
+func camel(name string) string {
+	return camelRegExp.ReplaceAllStringFunc(name, func(sub string) string {
 		return strings.ToUpper(sub[1:])
 	})
-	return strings.ToUpper(name[:1]) + name[1:]
 }
 
-func snakecase(name string) string {
-	name = snakeRegExp.ReplaceAllStringFunc(name, func(sub string) string {
-		return sub[:1] + "_" + sub[1:]
+// capitalize first letter
+func capitalize(name string) string {
+	return upper(name[:1]) + name[1:]
+}
+
+// convert to lower case
+func lower(name string) string {
+	return strings.ToLower(name)
+}
+
+// pad to specified size with spaces
+func pad(name string, size int) string {
+	for i := len(name); i < size; i++ {
+		name += " "
+	}
+	return name
+}
+
+// convert camel case to lower case snake case
+func snake(name string) string {
+	return snakeRegExp.ReplaceAllStringFunc(name, func(sub string) string {
+		return sub[:1] + "_" + lower(sub[1:])
 	})
+}
+
+// convert to upper case
+func upper(name string) string {
 	return strings.ToUpper(name)
 }
 
-func sorted(dict map[string]string) []string {
+func sortedKeys(dict StringMap) []string {
 	keys := make([]string, 0)
 	for key := range dict {
 		keys = append(keys, key)
@@ -44,62 +60,29 @@ func sorted(dict map[string]string) []string {
 	return keys
 }
 
-func (gen *Generator) LoadTypes(path string) error {
-	schema, err := LoadSchema(path)
-	if err != nil {
-		return err
+func sortedMaps(dict StringMapMap) []string {
+	keys := make([]string, 0)
+	for key := range dict {
+		keys = append(keys, key)
 	}
-	gen.schema = schema
-
-	gen.keys = make([]string, 0)
-	for key := range schema.Types {
-		gen.keys = append(gen.keys, key)
-	}
-	sort.Strings(gen.keys)
-	return nil
+	sort.Strings(keys)
+	return keys
 }
 
-func (gen *Generator) SplitComments(structName string, myTypes map[string]string) error {
-	gen.camels = make(map[string]string)
-	gen.types = make(map[string]string)
-	gen.comments = make(map[string]string)
-	gen.maxCamel = 0
-	gen.maxName = 0
-	gen.maxType = 0
-	types := gen.schema.Types
-	for _, fld := range types[structName] {
-		for name, typeName := range fld {
-			comment := ""
-			index := strings.Index(typeName, "//")
-			if index > 0 {
-				comment = " // " + strings.TrimSpace(typeName[index+2:])
-				typeName = strings.TrimSpace(typeName[:index])
-			}
-			myType, ok := myTypes[typeName]
-			if !ok {
-				return errors.New("Invalid type: " + typeName)
-			}
-			camel := camelcase(name)
-			gen.camels[name] = camel
-			gen.types[name] = myType
-			gen.comments[name] = comment
-			if len(camel) > gen.maxCamel {
-				gen.maxCamel = len(camel)
-			}
-			if len(name) > gen.maxName {
-				gen.maxName = len(name)
-			}
-			if len(myType) > gen.maxType {
-				gen.maxType = len(myType)
-			}
-		}
+func splitComment(typeDef string) (string, string) {
+	typeDef = strings.TrimSpace(typeDef)
+	comment := ""
+	index := strings.Index(typeDef, "//")
+	if index > 0 {
+		comment = " " + strings.TrimSpace(typeDef[index:])
+		typeDef = strings.TrimSpace(typeDef[:index])
 	}
-	return nil
+	return typeDef, comment
 }
 
 func GenerateSchema(path string) error {
-	gen := &Generator{}
-	err := gen.LoadTypes(path)
+	fmt.Println(path)
+	schema, err := LoadSchema(path)
 	if err != nil {
 		return err
 	}
@@ -108,21 +91,21 @@ func GenerateSchema(path string) error {
 	contract := matchContract.ReplaceAllString(path, "$1")
 
 	path = path[:len(path)-len("schema.json")]
-	err = GenerateGoTypes(path, contract, gen)
+	err = GenerateGoTypes(path, contract, schema.Types)
 	if err != nil {
 		return err
 	}
-	err = GenerateGoSchema(path, contract, gen)
+	err = GenerateGoSchema(path, contract, schema)
 	if err != nil {
 		return err
 	}
 
 	path = "../rust/contracts/" + contract + "/src/"
-	err = GenerateRustTypes(path, contract, gen)
+	err = GenerateRustTypes(path, contract, schema.Types)
 	if err != nil {
 		return err
 	}
-	err = GenerateRustSchema(path, contract, gen)
+	err = GenerateRustSchema(path, contract, schema)
 	if err != nil {
 		return err
 	}

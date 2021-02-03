@@ -5,9 +5,9 @@ use wasplib::client::*;
 
 pub struct BetInfo {
     //@formatter:off
-    pub amount: i64,
+    pub amount: i64,      
     pub better: ScAgentId,
-    pub color:  i64,
+    pub number: i64,      
     //@formatter:on
 }
 
@@ -15,7 +15,7 @@ pub fn encode_bet_info(o: &BetInfo) -> Vec<u8> {
     let mut encode = BytesEncoder::new();
     encode.int(o.amount);
     encode.agent(&o.better);
-    encode.int(o.color);
+    encode.int(o.number);
     return encode.data();
 }
 
@@ -24,6 +24,6 @@ pub fn decode_bet_info(bytes: &[u8]) -> BetInfo {
     BetInfo {
         amount: decode.int(),
         better: decode.agent(),
-        color: decode.int(),
+        number: decode.int(),
     }
 }

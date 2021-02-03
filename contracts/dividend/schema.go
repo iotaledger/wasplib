@@ -12,7 +12,7 @@ const ParamAddress = client.Key("address")
 const ParamFactor = client.Key("factor")
 
 const VarMembers = client.Key("members")
-const VarTotalFactor = client.Key("total_factor")
+const VarTotalFactor = client.Key("totalFactor")
 
 const FuncDivide = "divide"
 const FuncMember = "member"

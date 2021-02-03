@@ -1,56 +1,64 @@
 {
   "name": "fairauction",
   "types": {
-    "AuctionInfo": [
-      {"color": "color // color of tokens for sale"},
-      {"creator": "agent // issuer of start_auction transaction"},
-      {"deposit": "int // deposit by auction owner to cover the SC fees"},
-      {"description": "string // auction description"},
-      {"duration": "int // auction duration in minutes"},
-      {"highest_bid": "int // the current highest bid amount"},
-      {"highest_bidder": "agent // the current highest bidder"},
-      {"minimum_bid": "int // minimum bid amount"},
-      {"num_tokens": "int // number of tokens for sale"},
-      {"owner_margin": "int // auction owner's margin in promilles"},
-      {"when_started": "int // timestamp when auction started"}
-    ],
-    "BidInfo": [
-      {"amount": "int // cumulative amount of bids from same bidder"},
-      {"index": "int // index of bidder in bidder list"},
-      {"timestamp": "int // timestamp of most recent bid"}
-    ]
-  },
-  "params": {
-    "Color": "color",
-    "Description": "description",
-    "Duration": "duration",
-    "MinimumBid": "minimum",
-    "OwnerMargin": "owner_margin"
+    "AuctionInfo": {
+      "color": "Color // color of tokens for sale",
+      "creator": "Agent // issuer of start_auction transaction",
+      "deposit": "Int // deposit by auction owner to cover the SC fees",
+      "description": "String // auction description",
+      "duration": "Int // auction duration in minutes",
+      "highestBid": "Int // the current highest bid amount",
+      "highestBidder": "Agent // the current highest bidder",
+      "minimumBid": "Int // minimum bid amount",
+      "numTokens": "Int // number of tokens for sale",
+      "ownerMargin": "Int // auction owner's margin in promilles",
+      "whenStarted": "Int // timestamp when auction started"
+    },
+    "BidInfo": {
+      "amount": "Int // cumulative amount of bids from same bidder",
+      "index": "Int // index of bidder in bidder list",
+      "timestamp": "Int // timestamp of most recent bid"
+    }
   },
   "vars": {
-    "Auctions": "auctions",
-    "BidderList": "bidder_list",
-    "Bidders": "bidders",
-    "Color": "color",
-    "Creator": "creator",
-    "Deposit": "deposit",
-    "Description": "description",
-    "Duration": "duration",
-    "HighestBid": "highest_bid",
-    "HighestBidder": "highest_bidder",
-    "Info": "info",
-    "MinimumBid": "minimum",
-    "NumTokens": "num_tokens",
-    "OwnerMargin": "owner_margin",
-    "WhenStarted": "when_started"
+    "auctions": "[]AuctionInfo",
+    "bidderList": "[]BidderInfo",
+    "bidders": "bidders",
+    "color": "Color",
+    "creator": "Agent",
+    "deposit": "Int",
+    "description": "String",
+    "duration": "Int",
+    "highestBid": "Int",
+    "highestBidder": "Agent",
+    "info": "info",
+    "minimumBid": "Int",
+    "numTokens": "Int",
+    "ownerMargin": "Int",
+    "whenStarted": "Int"
   },
   "funcs": {
-    "StartAuction": "start_auction",
-    "FinalizeAuction": "finalize_auction",
-    "PlaceBid": "place_bid",
-    "SetOwnerMargin": "set_owner_margin"
+    "startAuction": {
+      "color": "Color // color of the tokens being auctioned",
+      "description": "?String // description of the tokens being auctioned",
+      "duration": "?Int // duration of auction in minutes",
+      "minimumBid": "Int // minimum required amount for any bid"
+    },
+    "finalizeAuction": {
+      "#owner": "contract // only SC itself can invoke this function",
+      "color": "Color // color identifies the auction"
+    },
+    "placeBid": {
+      "color": "Color // color identifies the auction"
+    },
+    "setOwnerMargin": {
+      "#owner": "creator // only SC creator can set owner margin",
+      "ownerMargin": "Int // new SC owner margin in promilles"
+    }
   },
   "views": {
-    "GetInfo": "get_info"
+    "getInfo": {
+      "color": "Color // color identifies the auction"
+    }
   }
 }

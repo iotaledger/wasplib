@@ -5,8 +5,8 @@ use wasplib::client::*;
 
 pub struct Member {
     //@formatter:off
-    pub address: ScAddress,
-    pub factor:  i64,
+    pub address: ScAddress, // address of dividend recipient
+    pub factor:  i64,       // relative division factor
     //@formatter:on
 }
 

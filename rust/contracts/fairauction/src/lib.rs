@@ -99,7 +99,7 @@ fn func_start_auction(ctx: &ScCallContext) {
     finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
     ctx.post(&PostRequestParams {
         contract_id: ctx.contract_id(),
-        function: ScHname::new("finalize_auction"),
+        function: HFUNC_FINALIZE_AUCTION,
         params: Some(finalize_params),
         transfer: None,
         delay: duration * 60,

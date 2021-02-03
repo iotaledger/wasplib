@@ -1,22 +1,22 @@
 {
   "name": "dividend",
   "types": {
-    "Member": [
-      {"address": "address"},
-      {"factor": "int"}
-    ]
-  },
-  "params": {
-    "Address": "address",
-    "Factor": "factor"
+    "Member": {
+      "address": "Address // address of dividend recipient",
+      "factor": "Int // relative division factor"
+    }
   },
   "vars": {
-    "Members": "members",
-    "TotalFactor": "total_factor"
+    "members": "[]Member // all the recipients of this dividend",
+    "totalFactor": "Int // sum of all recipient factors"
   },
   "funcs": {
-    "Member": "member",
-    "Divide": "divide"
+    "member": {
+      "address": "Address // address of dividend recipient",
+      "factor": "Int // relative division factor"
+    },
+    "divide": {
+    }
   },
   "views": {
   }

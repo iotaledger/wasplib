@@ -2,82 +2,104 @@
   {
     "name": "accounts",
     "params": {
-      "ParamAgentID": "a"
+      "agentID": "a"
     },
     "funcs": {
-      "FuncBalance": "balance",
-      "FuncDeposit": "deposit",
-      "FuncTotalAssets": "totalAssets"
+      "balance": {
+      },
+      "deposit": {
+      },
+      "totalAssets": {
+      }
     },
     "views": {
-      "ViewAccounts": "accounts",
-      "ViewWithdrawToAddress": "withdrawToAddress",
-      "ViewWithdrawToChain": "withdrawToChain"
+      "accounts": {
+      },
+      "withdrawToAddress": {
+      },
+      "withdrawToChain": {
+      }
     }
   },
   {
     "name": "blob",
     "params": {
-      "ParamBytes": "bytes",
-      "ParamField": "field",
-      "ParamHash": "hash"
+      "bytes": "bytes",
+      "field": "field",
+      "hash": "hash"
     },
     "funcs": {
-      "FuncStoreBlob": "storeBlob"
+      "storeBlob": {
+      }
     },
     "views": {
-      "ViewGetBlobField": "getBlobField",
-      "ViewGetBlobInfo": "getBlobInfo",
-      "ViewListBlobs": "listBlobs"
+      "getBlobField": {
+      },
+      "getBlobInfo": {
+      },
+      "listBlobs": {
+      }
     }
   },
   {
     "name": "eventlog",
     "params": {
-      "ParamContractHname": "contractHname",
-      "ParamFromTs": "fromTs",
-      "ParamMaxLastRecords": "maxLastRecords",
-      "ParamNumRecords": "numRecords",
-      "ParamRecords": "records",
-      "ParamToTs": "toTs"
+      "contractHname": "contractHname",
+      "fromTs": "fromTs",
+      "maxLastRecords": "maxLastRecords",
+      "numRecords": "numRecords",
+      "records": "records",
+      "toTs": "toTs"
     },
     "funcs": {
     },
     "views": {
-      "ViewGetNumRecords": "getNumRecords",
-      "ViewGetRecords": "getRecords"
+      "getNumRecords": {
+      },
+      "getRecords": {
+      }
     }
   },
   {
     "name": "root",
     "params": {
-      "ParamChainAddress": "$$address$$",
-      "ParamChainColor": "$$color$$",
-      "ParamChainID": "$$chainid$$",
-      "ParamChainOwner": "$$owner$$",
-      "ParamData": "$$data$$",
-      "ParamDeployer": "$$deployer$$",
-      "ParamDescription": "$$description$$",
-      "ParamFeeColor": "$$feecolor$$",
-      "ParamHname": "$$hname$$",
-      "ParamName": "$$name$$",
-      "ParamOwnerFee": "$$ownerfee$$",
-      "ParamProgramHash": "$$proghash$$",
-      "ParamValidatorFee": "$$validatorfee$$"
+      "chainAddress": "$$address$$",
+      "chainColor": "$$color$$",
+      "chainID": "$$chainid$$",
+      "chainOwner": "$$owner$$",
+      "data": "$$data$$",
+      "deployer": "$$deployer$$",
+      "description": "$$description$$",
+      "feeColor": "$$feecolor$$",
+      "hname": "$$hname$$",
+      "name": "$$name$$",
+      "ownerFee": "$$ownerfee$$",
+      "programHash": "$$proghash$$",
+      "validatorFee": "$$validatorfee$$"
     },
     "funcs": {
-      "FuncClaimChainOwnership": "claimChainOwnership",
-      "FuncDelegateChainOwnership": "delegateChainOwnership",
-      "FuncDeployContract": "deployContract",
-      "FuncGrantDeploy": "grantDeployPermission",
-      "FuncRevokeDeploy": "revokeDeployPermission",
-      "FuncSetContractFee": "setContractFee",
-      "FuncSetDefaultFee": "setDefaultFee"
+      "claimChainOwnership": {
+      },
+      "delegateChainOwnership": {
+      },
+      "deployContract": {
+      },
+      "grantDeployPermission": {
+      },
+      "revokeDeployPermission": {
+      },
+      "setContractFee": {
+      },
+      "setDefaultFee": {
+      }
     },
     "views": {
-      "ViewFindContract": "findContract",
-      "ViewGetChainInfo": "getChainInfo",
-      "ViewGetFeeInfo": "getFeeInfo"
+      "findContract": {
+      },
+      "getChainInfo": {
+      },
+      "getFeeInfo": {
+      }
     }
   }
 ]

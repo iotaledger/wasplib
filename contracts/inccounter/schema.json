@@ -2,35 +2,48 @@
   "name": "inccounter",
   "types": {
   },
-  "params": {
-    "Counter": "counter",
-    "NumRepeats": "num_repeats"
-  },
-  "vars": {
-    "Counter": "counter",
-    "NumRepeats": "num_repeats",
-    "Int1": "i1",
-    "String1": "s1",
-    "IntArray1": "ia1",
-    "StringArray1": "sa1"
+ "vars": {
+    "counter": "Int",
+    "numRepeats": "Int",
+    "int1": "Int",
+    "string1": "String",
+    "intArray1": "[]Int",
+    "stringArray1": "[]String"
   },
   "funcs": {
-    "Init": "init",
-    "Increment": "increment",
-    "CallIncrement": "call_increment",
-    "CallIncrementRecurse5x": "call_increment_recurse5x",
-    "PostIncrement": "post_increment",
-    "RepeatMany": "repeat_many",
-    "WhenMustIncrement": "when_must_increment",
-    "LocalStateInternalCall": "local_state_internal_call",
-    "LocalStateSandboxCall": "local_state_sandbox_call",
-    "LocalStatePost": "local_state_post",
-    "StateTest": "state_test",
-    "ResultsTest": "results_test"
+    "init": {
+      "counter": "?Int // value to initialize state counter with"
+    },
+    "increment": {
+    },
+    "callIncrement": {
+    },
+    "callIncrementRecurse5x": {
+    },
+    "postIncrement": {
+    },
+    "repeatMany": {
+      "numRepeats": "?Int // number of times to recursively call myself"
+    },
+    "whenMustIncrement": {
+    },
+    "localStateInternalCall": {
+    },
+    "localStateSandboxCall": {
+    },
+    "localStatePost": {
+    },
+    "stateTest": {
+    },
+    "resultsTest": {
+    }
   },
   "views": {
-    "ResultsCheck": "results_check",
-    "StateCheck": "state_check",
-    "GetCounter": "get_counter"
+    "resultsCheck": {
+    },
+    "stateCheck": {
+    },
+    "getCounter": {
+    }
   }
 }
