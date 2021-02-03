@@ -40,8 +40,8 @@ fn func_place_bet(ctx: &ScCallContext) {
             play_period = DEFAULT_PLAY_PERIOD;
         }
         ctx.post(&PostRequestParams {
-            contract: ctx.contract_id(),
-            function: Hname::new("lock_bets"),
+            contract_id: ctx.contract_id(),
+            function: ScHname::new("lock_bets"),
             params: None,
             transfer: None,
             delay: play_period,
@@ -51,7 +51,7 @@ fn func_place_bet(ctx: &ScCallContext) {
 
 fn func_lock_bets(ctx: &ScCallContext) {
     // can only be sent by SC itself
-    if !ctx.from(&ctx.contract_id().as_agent()) {
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
         ctx.panic("Cancel spoofed request");
     }
 
@@ -67,8 +67,8 @@ fn func_lock_bets(ctx: &ScCallContext) {
     bets.clear();
 
     ctx.post(&PostRequestParams {
-        contract: ctx.contract_id(),
-        function: Hname::new("pay_winners"),
+        contract_id: ctx.contract_id(),
+        function: ScHname::new("pay_winners"),
         params: None,
         transfer: None,
         delay: 0,
@@ -77,7 +77,7 @@ fn func_lock_bets(ctx: &ScCallContext) {
 
 fn func_pay_winners(ctx: &ScCallContext) {
     // can only be sent by SC itself
-    let sc_id = ctx.contract_id().as_agent();
+    let sc_id = ctx.contract_id().as_agent_id();
     if !ctx.from(&sc_id) {
         ctx.panic("Cancel spoofed request");
     }

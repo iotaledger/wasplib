@@ -4,11 +4,10 @@
 #![allow(dead_code)]
 
 use wasplib::client::*;
-
 use super::*;
 
 pub const SC_NAME: &str = "fairauction";
-pub const SC_HNAME: Hname = Hname(0x1b5c43b1);
+pub const SC_HNAME: ScHname = ScHname(0x1b5c43b1);
 
 pub const PARAM_COLOR: &str = "color";
 pub const PARAM_DESCRIPTION: &str = "description";
@@ -38,11 +37,11 @@ pub const FUNC_SET_OWNER_MARGIN: &str = "set_owner_margin";
 pub const FUNC_START_AUCTION: &str = "start_auction";
 pub const VIEW_GET_INFO: &str = "get_info";
 
-pub const HFUNC_FINALIZE_AUCTION: Hname = Hname(0xb427dd28);
-pub const HFUNC_PLACE_BID: Hname = Hname(0xf2cc1c44);
-pub const HFUNC_SET_OWNER_MARGIN: Hname = Hname(0x65402dca);
-pub const HFUNC_START_AUCTION: Hname = Hname(0x7ee53d08);
-pub const HVIEW_GET_INFO: Hname = Hname(0x2b9d8867);
+pub const HFUNC_FINALIZE_AUCTION: ScHname = ScHname(0xb427dd28);
+pub const HFUNC_PLACE_BID: ScHname = ScHname(0xf2cc1c44);
+pub const HFUNC_SET_OWNER_MARGIN: ScHname = ScHname(0x65402dca);
+pub const HFUNC_START_AUCTION: ScHname = ScHname(0x7ee53d08);
+pub const HVIEW_GET_INFO: ScHname = ScHname(0x2b9d8867);
 
 #[no_mangle]
 fn on_load() {

@@ -10,8 +10,8 @@ use super::keys::*;
 use super::mutable::*;
 
 pub struct PostRequestParams {
-    pub contract: ScContractId,
-    pub function: Hname,
+    pub contract_id: ScContractId,
+    pub function: ScHname,
     pub params: Option<ScMutableMap>,
     pub transfer: Option<Box<dyn Balances>>,
     pub delay: i64,
@@ -120,21 +120,37 @@ impl ScUtility {
     }
 
     // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-    pub fn hash(&self, value: &[u8]) -> ScHash {
-        let hash = self.utility.get_bytes(&KEY_HASH);
+    pub fn hash_blake2b(&self, value: &[u8]) -> ScHash {
+        let hash = self.utility.get_bytes(&KEY_HASH_BLAKE2B);
         hash.set_value(value);
         ScHash::from_bytes(&hash.value())
     }
 
-    pub fn hname(&self, value: &str) -> Hname {
+    // hashes the specified value bytes using sha3 hashing and returns the resulting 32-byte hash
+    pub fn hash_sha3(&self, value: &[u8]) -> ScHash {
+        let hash = self.utility.get_bytes(&KEY_HASH_SHA3);
+        hash.set_value(value);
+        ScHash::from_bytes(&hash.value())
+    }
+
+    pub fn hname(&self, value: &str) -> ScHname {
         self.utility.get_string(&KEY_NAME).set_value(value);
-        Hname::from_bytes(&self.utility.get_bytes(&KEY_HNAME).value())
+        ScHname::from_bytes(&self.utility.get_bytes(&KEY_HNAME).value())
     }
 
     // generates a random value from 0 to max (exclusive max) using a deterministic RNG
     pub fn random(&self, max: i64) -> i64 {
         let rnd = self.utility.get_int(&KEY_RANDOM).value();
         (rnd as u64 % max as u64) as i64
+    }
+
+    pub fn valid_ed25519_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
+        let mut encode = BytesEncoder::new();
+        encode.bytes(data);
+        encode.bytes(pub_key);
+        encode.bytes(signature);
+        self.utility.get_bytes(&KEY_VALID_ED25519).set_value(&encode.data());
+        self.utility.get_int(&KEY_VALID).value() != 0
     }
 }
 
@@ -153,18 +169,18 @@ pub trait ScBaseContext {
     }
 
     // retrieve the agent id of the owner of the chain this contract lives on
-    fn chain_owner(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_CHAIN_OWNER).value()
+    fn chain_owner_id(&self) -> ScAgentId {
+        ROOT.get_agent_id(&KEY_CHAIN_OWNER_ID).value()
     }
 
     // retrieve the agent id of the creator of this contract
-    fn contract_creator(&self) -> ScAgent {
-        ROOT.get_agent(&KEY_CREATOR).value()
+    fn contract_creator(&self) -> ScAgentId {
+        ROOT.get_agent_id(&KEY_CONTRACT_CREATOR).value()
     }
 
     // retrieve the id of this contract
     fn contract_id(&self) -> ScContractId {
-        ROOT.get_contract_id(&KEY_ID).value()
+        ROOT.get_contract_id(&KEY_CONTRACT_ID).value()
     }
 
     // logs informational text message
@@ -219,10 +235,10 @@ impl ScBaseContext for ScCallContext {}
 
 impl ScCallContext {
     // calls a smart contract function
-    pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
+    pub fn call(&self, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
         let mut encode = BytesEncoder::new();
-        encode.hname(&contract);
-        encode.hname(&function);
+        encode.hname(&hcontract);
+        encode.hname(&hfunction);
         if let Some(params) = params {
             encode.int(params.obj_id as i64);
         } else {
@@ -238,11 +254,11 @@ impl ScCallContext {
     }
 
     // retrieve the agent id of the caller of the smart contract
-    pub fn caller(&self) -> ScAgent { ROOT.get_agent(&KEY_CALLER).value() }
+    pub fn caller(&self) -> ScAgentId { ROOT.get_agent_id(&KEY_CALLER).value() }
 
     // calls a smart contract function on the current contract
-    pub fn call_self(&self, function: Hname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
-        self.call(self.contract_id().hname(), function, params, transfer)
+    pub fn call_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
+        self.call(self.contract_id().hname(), hfunction, params, transfer)
     }
 
     // deploys a smart contract
@@ -265,7 +281,7 @@ impl ScCallContext {
     }
 
     // quick check to see if the caller of the smart contract was the specified originator agent
-    pub fn from(&self, originator: &ScAgent) -> bool {
+    pub fn from(&self, originator: &ScAgentId) -> bool {
         self.caller().equals(originator)
     }
 
@@ -277,7 +293,7 @@ impl ScCallContext {
     // (delayed) posts a smart contract function
     pub fn post(&self, par: &PostRequestParams) {
         let mut encode = BytesEncoder::new();
-        encode.contract_id(&par.contract);
+        encode.contract_id(&par.contract_id);
         encode.hname(&par.function);
         if let Some(params) = &par.params {
             encode.int(params.obj_id as i64);
@@ -321,7 +337,7 @@ impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
     // calls a smart contract function
-    pub fn call(&self, contract: Hname, function: Hname, params: Option<ScMutableMap>) -> ScImmutableMap {
+    pub fn call(&self, contract: ScHname, function: ScHname, params: Option<ScMutableMap>) -> ScImmutableMap {
         let mut encode = BytesEncoder::new();
         encode.hname(&contract);
         encode.hname(&function);
@@ -336,7 +352,7 @@ impl ScViewContext {
     }
 
     // calls a smart contract function on the current contract
-    pub fn call_self(&self, function: Hname, params: Option<ScMutableMap>) -> ScImmutableMap {
+    pub fn call_self(&self, function: ScHname, params: Option<ScMutableMap>) -> ScImmutableMap {
         self.call(self.contract_id().hname(), function, params)
     }
 

@@ -15,8 +15,8 @@ func (d *BytesDecoder) Address() *ScAddress {
 	return NewScAddressFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) Agent() *ScAgent {
-	return NewScAgentFromBytes(d.Bytes())
+func (d *BytesDecoder) Agent() *ScAgentId {
+	return NewScAgentIdFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Bytes() []byte {
@@ -45,8 +45,8 @@ func (d *BytesDecoder) Hash() *ScHash {
 	return NewScHashFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) Hname() Hname {
-	return NewHnameFromBytes(d.Bytes())
+func (d *BytesDecoder) Hname() ScHname {
+	return NewScHnameFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Int() int64 {
@@ -93,7 +93,7 @@ func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) Agent(value *ScAgent) *BytesEncoder {
+func (e *BytesEncoder) Agent(value *ScAgentId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -123,7 +123,7 @@ func (e *BytesEncoder) Hash(value *ScHash) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) Hname(value Hname) *BytesEncoder {
+func (e *BytesEncoder) Hname(value ScHname) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 

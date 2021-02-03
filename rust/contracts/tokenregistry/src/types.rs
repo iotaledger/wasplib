@@ -7,8 +7,8 @@ pub struct TokenInfo {
     //@formatter:off
     pub created:      i64,
     pub description:  String,
-    pub minted_by:    ScAgent,
-    pub owner:        ScAgent,
+    pub minted_by:    ScAgentId,
+    pub owner:        ScAgentId,
     pub supply:       i64,
     pub updated:      i64,
     pub user_defined: String,

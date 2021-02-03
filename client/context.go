@@ -10,11 +10,11 @@ import (
 )
 
 type PostRequestParams struct {
-	Contract *ScContractId
-	Function Hname
-	Params   *ScMutableMap
-	Transfer balances
-	Delay    int64
+	ContractId *ScContractId
+	Function   ScHname
+	Params     *ScMutableMap
+	Transfer   balances
+	Delay      int64
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -112,14 +112,21 @@ func (ctx ScUtility) Base58Encode(value []byte) string {
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-func (ctx ScUtility) Hash(value []byte) *ScHash {
-	hash := ctx.utility.GetBytes(KeyHash)
+func (ctx ScUtility) HashBlake2b(value []byte) *ScHash {
+	hash := ctx.utility.GetBytes(KeyHashBlake2b)
+	hash.SetValue(value)
+	return NewScHashFromBytes(hash.Value())
+}
+
+// hashes the specified value bytes using sha3 hashing and returns the resulting 32-byte hash
+func (ctx ScUtility) HashSha3(value []byte) *ScHash {
+	hash := ctx.utility.GetBytes(KeyHashSha3)
 	hash.SetValue(value)
 	return NewScHashFromBytes(hash.Value())
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-func (ctx ScUtility) Hname(value string) Hname {
+func (ctx ScUtility) Hname(value string) ScHname {
 	ctx.utility.GetString(KeyName).SetValue(value)
 	return ctx.utility.GetHname(KeyHname).Value()
 }
@@ -133,6 +140,13 @@ func (ctx ScUtility) Random(max int64) int64 {
 // converts an integer to its string representation
 func (ctx ScUtility) String(value int64) string {
 	return strconv.FormatInt(value, 10)
+}
+
+// hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
+func (ctx ScUtility) ValidED25519Signature(data []byte, pubKey []byte, signature []byte) bool {
+	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
+	ctx.utility.GetBytes(KeyValidEd25519).SetValue(bytes)
+	return ctx.utility.GetInt(KeyValid).Value() != 0
 }
 
 // wrapper for simplified use by hashtypes
@@ -152,18 +166,18 @@ func (ctx ScBaseContext) Balances() ScBalances {
 }
 
 // retrieve the agent id of the owner of the chain this contract lives on
-func (ctx ScBaseContext) ChainOwner() *ScAgent {
-	return Root.GetAgent(KeyChainOwner).Value()
+func (ctx ScBaseContext) ChainOwnerId() *ScAgentId {
+	return Root.GetAgentId(KeyChainOwnerId).Value()
 }
 
 // retrieve the agent id of the creator of this contract
-func (ctx ScBaseContext) ContractCreator() *ScAgent {
-	return Root.GetAgent(KeyCreator).Value()
+func (ctx ScBaseContext) ContractCreator() *ScAgentId {
+	return Root.GetAgentId(KeyContractCreator).Value()
 }
 
 // retrieve the id of this contract
 func (ctx ScBaseContext) ContractId() *ScContractId {
-	return Root.GetContractId(KeyId).Value()
+	return Root.GetContractId(KeyContractId).Value()
 }
 
 // logs informational text message
@@ -215,14 +229,13 @@ type ScCallContext struct {
 	ScBaseContext
 }
 
-//TODO view immutable state on Wasp
 //TODO parameter type checks
 
 // calls a smart contract function
-func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
+func (ctx ScCallContext) Call(hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer balances) ScImmutableMap {
 	encode := NewBytesEncoder()
-	encode.Hname(contract)
-	encode.Hname(function)
+	encode.Hname(hContract)
+	encode.Hname(hFunction)
 	if params != nil {
 		encode.Int(int64(params.objId))
 	} else {
@@ -238,13 +251,13 @@ func (ctx ScCallContext) Call(contract Hname, function Hname, params *ScMutableM
 }
 
 // retrieve the agent id of the caller of the smart contract
-func (ctx ScCallContext) Caller() *ScAgent {
-	return Root.GetAgent(KeyCaller).Value()
+func (ctx ScCallContext) Caller() *ScAgentId {
+	return Root.GetAgentId(KeyCaller).Value()
 }
 
 // calls a smart contract function on the current contract
-func (ctx ScCallContext) CallSelf(function Hname, params *ScMutableMap, transfer balances) ScImmutableMap {
-	return ctx.Call(ctx.ContractId().Hname(), function, params, transfer)
+func (ctx ScCallContext) CallSelf(hFunction ScHname, params *ScMutableMap, transfer balances) ScImmutableMap {
+	return ctx.Call(ctx.ContractId().Hname(), hFunction, params, transfer)
 }
 
 // deploys a smart contract
@@ -267,7 +280,7 @@ func (ctx ScBaseContext) Event(text string) {
 }
 
 // quick check to see if the caller of the smart contract was the specified originator agent
-func (ctx ScCallContext) From(originator *ScAgent) bool {
+func (ctx ScCallContext) From(originator *ScAgentId) bool {
 	return ctx.Caller().Equals(originator)
 }
 
@@ -279,7 +292,7 @@ func (ctx ScCallContext) Incoming() ScBalances {
 // (delayed) posts a smart contract function
 func (ctx ScCallContext) Post(par *PostRequestParams) {
 	encode := NewBytesEncoder()
-	encode.ContractId(par.Contract)
+	encode.ContractId(par.ContractId)
 	encode.Hname(par.Function)
 	if par.Params != nil {
 		encode.Int(int64(par.Params.objId))
@@ -321,7 +334,7 @@ type ScViewContext struct {
 }
 
 // calls a smart contract function
-func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableMap) ScImmutableMap {
+func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMutableMap) ScImmutableMap {
 	encode := NewBytesEncoder()
 	encode.Hname(contract)
 	encode.Hname(function)
@@ -336,7 +349,7 @@ func (ctx ScViewContext) Call(contract Hname, function Hname, params *ScMutableM
 }
 
 // calls a smart contract function on the current contract
-func (ctx ScViewContext) CallSelf(function Hname, params *ScMutableMap) ScImmutableMap {
+func (ctx ScViewContext) CallSelf(function ScHname, params *ScMutableMap) ScImmutableMap {
 	return ctx.Call(ctx.ContractId().Hname(), function, params)
 }
 

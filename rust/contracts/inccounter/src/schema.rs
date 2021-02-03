@@ -4,11 +4,10 @@
 #![allow(dead_code)]
 
 use wasplib::client::*;
-
 use super::*;
 
 pub const SC_NAME: &str = "inccounter";
-pub const SC_HNAME: Hname = Hname(0xaf2438e9);
+pub const SC_HNAME: ScHname = ScHname(0xaf2438e9);
 
 pub const PARAM_COUNTER: &str = "counter";
 pub const PARAM_NUM_REPEATS: &str = "num_repeats";
@@ -36,21 +35,21 @@ pub const VIEW_GET_COUNTER: &str = "get_counter";
 pub const VIEW_RESULTS_CHECK: &str = "results_check";
 pub const VIEW_STATE_CHECK: &str = "state_check";
 
-pub const HFUNC_CALL_INCREMENT: Hname = Hname(0x96b915f2);
-pub const HFUNC_CALL_INCREMENT_RECURSE5X: Hname = Hname(0x30319639);
-pub const HFUNC_INCREMENT: Hname = Hname(0xd351bd12);
-pub const HFUNC_INIT: Hname = Hname(0x1f44d644);
-pub const HFUNC_LOCAL_STATE_INTERNAL_CALL: Hname = Hname(0xc4e9cbef);
-pub const HFUNC_LOCAL_STATE_POST: Hname = Hname(0x90051958);
-pub const HFUNC_LOCAL_STATE_SANDBOX_CALL: Hname = Hname(0x07431bc8);
-pub const HFUNC_POST_INCREMENT: Hname = Hname(0xb775b58a);
-pub const HFUNC_REPEAT_MANY: Hname = Hname(0x020e669e);
-pub const HFUNC_RESULTS_TEST: Hname = Hname(0xf73a0ee0);
-pub const HFUNC_STATE_TEST: Hname = Hname(0x5691431b);
-pub const HFUNC_WHEN_MUST_INCREMENT: Hname = Hname(0x28a49492);
-pub const HVIEW_GET_COUNTER: Hname = Hname(0xb8e70081);
-pub const HVIEW_RESULTS_CHECK: Hname = Hname(0xfaf7081b);
-pub const HVIEW_STATE_CHECK: Hname = Hname(0xc760249d);
+pub const HFUNC_CALL_INCREMENT: ScHname = ScHname(0x96b915f2);
+pub const HFUNC_CALL_INCREMENT_RECURSE5X: ScHname = ScHname(0x30319639);
+pub const HFUNC_INCREMENT: ScHname = ScHname(0xd351bd12);
+pub const HFUNC_INIT: ScHname = ScHname(0x1f44d644);
+pub const HFUNC_LOCAL_STATE_INTERNAL_CALL: ScHname = ScHname(0xc4e9cbef);
+pub const HFUNC_LOCAL_STATE_POST: ScHname = ScHname(0x90051958);
+pub const HFUNC_LOCAL_STATE_SANDBOX_CALL: ScHname = ScHname(0x07431bc8);
+pub const HFUNC_POST_INCREMENT: ScHname = ScHname(0xb775b58a);
+pub const HFUNC_REPEAT_MANY: ScHname = ScHname(0x020e669e);
+pub const HFUNC_RESULTS_TEST: ScHname = ScHname(0xf73a0ee0);
+pub const HFUNC_STATE_TEST: ScHname = ScHname(0x5691431b);
+pub const HFUNC_WHEN_MUST_INCREMENT: ScHname = ScHname(0x28a49492);
+pub const HVIEW_GET_COUNTER: ScHname = ScHname(0xb8e70081);
+pub const HVIEW_RESULTS_CHECK: ScHname = ScHname(0xfaf7081b);
+pub const HVIEW_STATE_CHECK: ScHname = ScHname(0xc760249d);
 
 #[no_mangle]
 fn on_load() {

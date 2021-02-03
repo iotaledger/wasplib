@@ -6,17 +6,17 @@ package fairauction
 import "github.com/iotaledger/wasplib/client"
 
 type AuctionInfo struct {
-	Color         *client.ScColor // color of tokens for sale
-	Creator       *client.ScAgent // issuer of start_auction transaction
-	Deposit       int64           // deposit by auction owner to cover the SC fees
-	Description   string          // auction description
-	Duration      int64           // auction duration in minutes
-	HighestBid    int64           // the current highest bid amount
-	HighestBidder *client.ScAgent // the current highest bidder
-	MinimumBid    int64           // minimum bid amount
-	NumTokens     int64           // number of tokens for sale
-	OwnerMargin   int64           // auction owner's margin in promilles
-	WhenStarted   int64           // timestamp when auction started
+	Color         *client.ScColor   // color of tokens for sale
+	Creator       *client.ScAgentId // issuer of start_auction transaction
+	Deposit       int64             // deposit by auction owner to cover the SC fees
+	Description   string            // auction description
+	Duration      int64             // auction duration in minutes
+	HighestBid    int64             // the current highest bid amount
+	HighestBidder *client.ScAgentId // the current highest bidder
+	MinimumBid    int64             // minimum bid amount
+	NumTokens     int64             // number of tokens for sale
+	OwnerMargin   int64             // auction owner's margin in promilles
+	WhenStarted   int64             // timestamp when auction started
 }
 
 type BidInfo struct {

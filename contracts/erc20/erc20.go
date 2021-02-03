@@ -49,7 +49,7 @@ func onInit(ctx *client.ScCallContext) {
 	// creator (owner)
 	// we cannot use 'caller' here because on_init is always called from the 'root'
 	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
-	creator := ctx.Params().GetAgent(ParamCreator)
+	creator := ctx.Params().GetAgentId(ParamCreator)
 	ctx.Require(creator.Exists(), "erc20.on_init.fail: wrong 'creator' parameter")
 
 	ctx.State().GetInt(StateVarSupply).SetValue(supply.Value())
@@ -74,7 +74,7 @@ func totalSupply(ctx *client.ScViewContext) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 func balanceOf(ctx *client.ScViewContext) {
-	account := ctx.Params().GetAgent(ParamAccount)
+	account := ctx.Params().GetAgentId(ParamAccount)
 	ctx.Require(account.Exists(), ("wrong or non existing parameter: " + account.String()))
 
 	balances := ctx.State().GetMap(StateVarBalances)
@@ -93,10 +93,10 @@ func allowance(ctx *client.ScViewContext) {
 	ctx.Trace("erc20.allowance")
 	// validate parameters
 	// account
-	owner := ctx.Params().GetAgent(ParamAccount)
+	owner := ctx.Params().GetAgentId(ParamAccount)
 	ctx.Require(owner.Exists(), "erc20.allowance.fail: wrong 'account' parameter")
 	// delegation
-	delegation := ctx.Params().GetAgent(ParamDelegation)
+	delegation := ctx.Params().GetAgentId(ParamDelegation)
 	ctx.Require(delegation.Exists(), "erc20.allowance.fail: wrong 'delegation' parameter")
 
 	// all allowances of the address 'owner' are stored in the map of the same name
@@ -115,7 +115,7 @@ func transfer(ctx *client.ScCallContext) {
 	// validate params
 	params := ctx.Params()
 	// account
-	targetAddrParam := params.GetAgent(ParamAccount)
+	targetAddrParam := params.GetAgentId(ParamAccount)
 	ctx.Require(targetAddrParam.Exists(), "erc20.transfer.fail: wrong 'account' parameter")
 
 	targetAddr := targetAddrParam.Value()
@@ -145,7 +145,7 @@ func approve(ctx *client.ScCallContext) {
 	ctx.Trace("erc20.approve")
 
 	// validate parameters
-	delegationParam := ctx.Params().GetAgent(ParamDelegation)
+	delegationParam := ctx.Params().GetAgentId(ParamDelegation)
 	ctx.Require(delegationParam.Exists(), "erc20.approve.fail: wrong 'delegation' parameter")
 
 	delegation := delegationParam.Value()
@@ -168,11 +168,11 @@ func transferFrom(ctx *client.ScCallContext) {
 	ctx.Trace("erc20.transfer_from")
 
 	// validate parameters
-	accountParam := ctx.Params().GetAgent(ParamAccount)
+	accountParam := ctx.Params().GetAgentId(ParamAccount)
 	ctx.Require(accountParam.Exists(), "erc20.transfer_from.fail: wrong 'account' parameter")
 
 	account := accountParam.Value()
-	recipientParam := ctx.Params().GetAgent(ParamRecipient)
+	recipientParam := ctx.Params().GetAgentId(ParamRecipient)
 	ctx.Require(recipientParam.Exists(), "erc20.transfer_from.fail: wrong 'recipient' parameter")
 
 	recipient := recipientParam.Value()

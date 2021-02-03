@@ -22,14 +22,6 @@ func NewHostTransfer(host *SimpleWasmHost, keyId int32) *HostTransfer {
 
 func (m *HostTransfer) SetBytes(keyId int32, typeId int32, value []byte) {
 	m.HostMap.SetBytes(keyId, typeId, value)
-	if keyId == wasmhost.KeyAgent {
-		m.agent = value
-		return
-	}
-	if keyId == wasmhost.KeyChain {
-		m.chain = value
-		return
-	}
 }
 
 func (m *HostTransfer) SetInt(keyId int32, value int64) {
@@ -50,7 +42,7 @@ func (m *HostTransfer) SetInt(keyId int32, value int64) {
 	}
 	// check if compacting, in which case no balance change happens
 	root := m.host.FindObject(1)
-	scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
+	scId := root.GetBytes(wasmhost.KeyContractId, client.TYPE_CONTRACT_ID)
 	if !bytes.Equal(m.agent, scId) {
 		balances.SetBytes(keyId, client.TYPE_INT, IntToBytes(colorAmount-value))
 	}

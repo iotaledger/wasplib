@@ -7,7 +7,7 @@ import "github.com/iotaledger/wasplib/client"
 
 type DonationInfo struct {
 	Amount    int64
-	Donator   *client.ScAgent
+	Donator   *client.ScAgentId
 	Error     string
 	Feedback  string
 	Timestamp int64

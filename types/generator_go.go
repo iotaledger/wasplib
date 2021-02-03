@@ -10,15 +10,17 @@ import (
 
 var goTypes = map[string]string{
 	"address":     "*client.ScAddress",
-	"agent":       "*client.ScAgent",
+	"agent":       "*client.ScAgentId",
 	"chain_id":    "*client.ScChainId",
 	"color":       "*client.ScColor",
 	"contract_id": "*client.ScContractId",
 	"hash":        "*client.ScHash",
-	"hname":       "client.Hname",
+	"hname":       "client.ScHname",
 	"int":         "int64",
 	"string":      "string",
 }
+
+//TODO check for clashing Hnames
 
 func GenerateGoSchema(path string, contract string, gen *Generator) error {
 	file, err := os.Create(path + "schema.go")
@@ -35,7 +37,7 @@ func GenerateGoSchema(path string, contract string, gen *Generator) error {
 
 	fmt.Fprintf(file, "const ScName = \"%s\"\n", gen.schema.Name)
 	hName := coretypes.Hn(gen.schema.Name)
-	fmt.Fprintf(file, "const ScHname = client.Hname(0x%s)\n", hName.String())
+	fmt.Fprintf(file, "const ScHname = client.ScHname(0x%s)\n", hName.String())
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Params) {
@@ -63,12 +65,12 @@ func GenerateGoSchema(path string, contract string, gen *Generator) error {
 	for _, name := range sorted(gen.schema.Funcs) {
 		value := gen.schema.Funcs[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HFunc%s = client.Hname(0x%s)\n", name, hName.String())
+		fmt.Fprintf(file, "const HFunc%s = client.ScHname(0x%s)\n", name, hName.String())
 	}
 	for _, name := range sorted(gen.schema.Views) {
 		value := gen.schema.Views[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "const HView%s = client.Hname(0x%s)\n", name, hName.String())
+		fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", name, hName.String())
 	}
 
 	fmt.Fprintf(file, "\nfunc OnLoad() {\n")
@@ -182,16 +184,16 @@ func GenerateGoCoreContractsSchema() error {
 	for _, schema := range core {
 		nContract := camelcase(schema.Name)
 		hContract := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\nconst Core%s = Hname(0x%s)\n", nContract, hContract.String())
+		fmt.Fprintf(file, "\nconst Core%s = ScHname(0x%s)\n", nContract, hContract.String())
 		for _, nFunc := range sorted(schema.Funcs) {
 			funcName := schema.Funcs[nFunc]
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const Core%s%s = Hname(0x%s)\n", nContract, nFunc, hFunc.String())
+			fmt.Fprintf(file, "const Core%s%s = ScHname(0x%s)\n", nContract, nFunc, hFunc.String())
 		}
 		for _, nFunc := range sorted(schema.Views) {
 			funcName := schema.Views[nFunc]
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "const Core%s%s = Hname(0x%s)\n", nContract, nFunc, hFunc.String())
+			fmt.Fprintf(file, "const Core%s%s = ScHname(0x%s)\n", nContract, nFunc, hFunc.String())
 		}
 	}
 	return nil

@@ -83,7 +83,7 @@ func funcStartAuction(ctx *client.ScCallContext) {
 		Description:   description,
 		Duration:      duration,
 		HighestBid:    -1,
-		HighestBidder: &client.ScAgent{},
+		HighestBidder: &client.ScAgentId{},
 		MinimumBid:    minimumBid,
 		NumTokens:     numTokens,
 		OwnerMargin:   ownerMargin,
@@ -94,18 +94,18 @@ func funcStartAuction(ctx *client.ScCallContext) {
 	finalizeParams := client.NewScMutableMap()
 	finalizeParams.GetColor(VarColor).SetValue(auction.Color)
 	ctx.Post(&client.PostRequestParams{
-		Contract: ctx.ContractId(),
-		Function: HFuncFinalizeAuction,
-		Params:   finalizeParams,
-		Transfer: nil,
-		Delay:    duration * 60,
+		ContractId: ctx.ContractId(),
+		Function:   HFuncFinalizeAuction,
+		Params:     finalizeParams,
+		Transfer:   nil,
+		Delay:      duration * 60,
 	})
 	ctx.Log("New auction started")
 }
 
 func funcFinalizeAuction(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !ctx.From(ctx.ContractId().AsAgent()) {
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
@@ -143,10 +143,10 @@ func funcFinalizeAuction(ctx *client.ScCallContext) {
 
 	// return staked bids to losers
 	bidders := currentAuction.GetMap(VarBidders)
-	bidderList := currentAuction.GetAgentArray(VarBidderList)
+	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
 	size := bidderList.Length()
 	for i := int32(0); i < size; i++ {
-		bidder := bidderList.GetAgent(i).Value()
+		bidder := bidderList.GetAgentId(i).Value()
 		if !bidder.Equals(auction.HighestBidder) {
 			loser := bidders.GetBytes(bidder)
 			bid := DecodeBidInfo(loser.Value())
@@ -182,7 +182,7 @@ func funcPlaceBid(ctx *client.ScCallContext) {
 
 	auction := DecodeAuctionInfo(auctionInfo.Value())
 	bidders := currentAuction.GetMap(VarBidders)
-	bidderList := currentAuction.GetAgentArray(VarBidderList)
+	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
 	caller := ctx.Caller()
 	bidder := bidders.GetBytes(caller)
 	if bidder.Exists() {
@@ -198,7 +198,7 @@ func funcPlaceBid(ctx *client.ScCallContext) {
 		}
 		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
-		bidderList.GetAgent(index).SetValue(caller)
+		bidderList.GetAgentId(index).SetValue(caller)
 		bid := &BidInfo{
 			Index:     int64(index),
 			Amount:    bidAmount,
@@ -249,22 +249,22 @@ func viewGetInfo(ctx *client.ScViewContext) {
 	auction := DecodeAuctionInfo(auctionInfo.Value())
 	results := ctx.Results()
 	results.GetColor(VarColor).SetValue(auction.Color)
-	results.GetAgent(VarCreator).SetValue(auction.Creator)
+	results.GetAgentId(VarCreator).SetValue(auction.Creator)
 	results.GetInt(VarDeposit).SetValue(auction.Deposit)
 	results.GetString(VarDescription).SetValue(auction.Description)
 	results.GetInt(VarDuration).SetValue(auction.Duration)
 	results.GetInt(VarHighestBid).SetValue(auction.HighestBid)
-	results.GetAgent(VarHighestBidder).SetValue(auction.HighestBidder)
+	results.GetAgentId(VarHighestBidder).SetValue(auction.HighestBidder)
 	results.GetInt(VarMinimumBid).SetValue(auction.MinimumBid)
 	results.GetInt(VarNumTokens).SetValue(auction.NumTokens)
 	results.GetInt(VarOwnerMargin).SetValue(auction.OwnerMargin)
 	results.GetInt(VarWhenStarted).SetValue(auction.WhenStarted)
 
-	bidderList := currentAuction.GetAgentArray(VarBidderList)
+	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
 	results.GetInt(VarBidders).SetValue(int64(bidderList.Length()))
 }
 
-func transfer(ctx *client.ScCallContext, agent *client.ScAgent, color *client.ScColor, amount int64) {
+func transfer(ctx *client.ScCallContext, agent *client.ScAgentId, color *client.ScColor, amount int64) {
 	if agent.IsAddress() {
 		// send back to original Tangle address
 		ctx.TransferToAddress(agent.Address(), client.NewScTransfer(color, amount))

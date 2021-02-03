@@ -47,7 +47,7 @@ fn on_init(ctx: &ScCallContext) {
     // creator (owner)
     // we cannot use 'caller' here because on_init is always called from the 'root'
     // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
-    let creator = ctx.params().get_agent(PARAM_CREATOR);
+    let creator = ctx.params().get_agent_id(PARAM_CREATOR);
     ctx.require(creator.exists(), "erc20.on_init.fail: wrong 'creator' parameter");
 
     ctx.state().get_int(STATE_VAR_SUPPLY).set_value(supply.value());
@@ -72,7 +72,7 @@ fn total_supply(ctx: &ScViewContext) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 fn balance_of(ctx: &ScViewContext) {
-    let account = ctx.params().get_agent(PARAM_ACCOUNT);
+    let account = ctx.params().get_agent_id(PARAM_ACCOUNT);
     ctx.require(account.exists(), &("wrong or non existing parameter: ".to_string() + &account.value().to_string()));
 
     let balances = ctx.state().get_map(STATE_VAR_BALANCES);
@@ -91,10 +91,10 @@ fn allowance(ctx: &ScViewContext) {
     ctx.trace("erc20.allowance");
     // validate parameters
     // account
-    let owner = ctx.params().get_agent(PARAM_ACCOUNT);
+    let owner = ctx.params().get_agent_id(PARAM_ACCOUNT);
     ctx.require(owner.exists(), "erc20.allowance.fail: wrong 'account' parameter");
     // delegation
-    let delegation = ctx.params().get_agent(PARAM_DELEGATION);
+    let delegation = ctx.params().get_agent_id(PARAM_DELEGATION);
     ctx.require(delegation.exists(), "erc20.allowance.fail: wrong 'delegation' parameter");
 
     // all allowances of the address 'owner' are stored in the map of the same name
@@ -113,7 +113,7 @@ fn transfer(ctx: &ScCallContext) {
     // validate params
     let params = ctx.params();
     // account
-    let target_addr = params.get_agent(PARAM_ACCOUNT);
+    let target_addr = params.get_agent_id(PARAM_ACCOUNT);
     ctx.require(target_addr.exists(), "erc20.transfer.fail: wrong 'account' parameter");
 
     let target_addr = target_addr.value();
@@ -143,7 +143,7 @@ fn approve(ctx: &ScCallContext) {
     ctx.trace("erc20.approve");
 
     // validate parameters
-    let delegation = ctx.params().get_agent(PARAM_DELEGATION);
+    let delegation = ctx.params().get_agent_id(PARAM_DELEGATION);
     ctx.require(delegation.exists(), "erc20.approve.fail: wrong 'delegation' parameter");
 
     let delegation = delegation.value();
@@ -166,11 +166,11 @@ fn transfer_from(ctx: &ScCallContext) {
     ctx.trace("erc20.transfer_from");
 
     // validate parameters
-    let account = ctx.params().get_agent(PARAM_ACCOUNT);
+    let account = ctx.params().get_agent_id(PARAM_ACCOUNT);
     ctx.require(account.exists(), "erc20.transfer_from.fail: wrong 'account' parameter");
 
     let account = account.value();
-    let recipient = ctx.params().get_agent(PARAM_RECIPIENT);
+    let recipient = ctx.params().get_agent_id(PARAM_RECIPIENT);
     ctx.require(recipient.exists(), "erc20.transfer_from.fail: wrong 'recipient' parameter");
 
     let recipient = recipient.value();

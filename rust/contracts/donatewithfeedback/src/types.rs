@@ -6,7 +6,7 @@ use wasplib::client::*;
 pub struct DonationInfo {
     //@formatter:off
     pub amount:    i64,
-    pub donator:   ScAgent,
+    pub donator:   ScAgentId,
     pub error:     String,
     pub feedback:  String,
     pub timestamp: i64,

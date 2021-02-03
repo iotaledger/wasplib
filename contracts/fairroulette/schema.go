@@ -6,7 +6,7 @@ package fairroulette
 import "github.com/iotaledger/wasplib/client"
 
 const ScName = "fairroulette"
-const ScHname = client.Hname(0xdf79d138)
+const ScHname = client.ScHname(0xdf79d138)
 
 const ParamColor = client.Key("color")
 const ParamPlayPeriod = client.Key("play_period")
@@ -21,15 +21,15 @@ const FuncPayWinners = "pay_winners"
 const FuncPlaceBet = "place_bet"
 const FuncPlayPeriod = "play_period"
 
-const HFuncLockBets = client.Hname(0x853da2a7)
-const HFuncPayWinners = client.Hname(0x3df139de)
-const HFuncPlaceBet = client.Hname(0x575b51d2)
-const HFuncPlayPeriod = client.Hname(0xf534dac1)
+const HFuncLockBets = client.ScHname(0x853da2a7)
+const HFuncPayWinners = client.ScHname(0x3df139de)
+const HFuncPlaceBet = client.ScHname(0x575b51d2)
+const HFuncPlayPeriod = client.ScHname(0xf534dac1)
 
 func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall(FuncLockBets, funcLockBets)
-	exports.AddCall(FuncPayWinners, funcPayWinners)
-	exports.AddCall(FuncPlaceBet, funcPlaceBet)
-	exports.AddCall(FuncPlayPeriod, funcPlayPeriod)
+    exports := client.NewScExports()
+    exports.AddCall(FuncLockBets, funcLockBets)
+    exports.AddCall(FuncPayWinners, funcPayWinners)
+    exports.AddCall(FuncPlaceBet, funcPlaceBet)
+    exports.AddCall(FuncPlayPeriod, funcPlayPeriod)
 }

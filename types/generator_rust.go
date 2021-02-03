@@ -11,12 +11,12 @@ import (
 
 var rustTypes = map[string]string{
 	"address":     "ScAddress",
-	"agent":       "ScAgent",
+	"agent":       "ScAgentId",
 	"chain_id":    "ScChainId",
 	"color":       "ScColor",
 	"contract_id": "ScContractId",
 	"hash":        "ScHash",
-	"hname":       "Hname",
+	"hname":       "ScHname",
 	"int":         "i64",
 	"string":      "String",
 }
@@ -37,7 +37,7 @@ func GenerateRustSchema(path string, contract string, gen *Generator) error {
 
 	fmt.Fprintf(file, "pub const SC_NAME: &str = \"%s\";\n", gen.schema.Name)
 	hName := coretypes.Hn(gen.schema.Name)
-	fmt.Fprintf(file, "pub const SC_HNAME: Hname = Hname(0x%s);\n", hName.String())
+	fmt.Fprintf(file, "pub const SC_HNAME: ScHname = ScHname(0x%s);\n", hName.String())
 
 	fmt.Fprintln(file)
 	for _, name := range sorted(gen.schema.Params) {
@@ -65,12 +65,12 @@ func GenerateRustSchema(path string, contract string, gen *Generator) error {
 	for _, name := range sorted(gen.schema.Funcs) {
 		value := gen.schema.Funcs[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "pub const HFUNC_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+		fmt.Fprintf(file, "pub const HFUNC_%s: ScHname = ScHname(0x%s);\n", snakecase(name), hName.String())
 	}
 	for _, name := range sorted(gen.schema.Views) {
 		value := gen.schema.Views[name]
 		hName = coretypes.Hn(value)
-		fmt.Fprintf(file, "pub const HVIEW_%s: Hname = Hname(0x%s);\n", snakecase(name), hName.String())
+		fmt.Fprintf(file, "pub const HVIEW_%s: ScHname = ScHname(0x%s);\n", snakecase(name), hName.String())
 	}
 
 	fmt.Fprintf(file, "\n#[no_mangle]\n")
@@ -195,18 +195,18 @@ func GenerateRustCoreContractsSchema() error {
 	for _, schema := range core {
 		nContract := snakecase(schema.Name)
 		hContract := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\npub const CORE_%s: Hname = Hname(0x%s);\n", nContract, hContract.String())
+		fmt.Fprintf(file, "\npub const CORE_%s: ScHname = ScHname(0x%s);\n", nContract, hContract.String())
 		for _, nFunc := range sorted(schema.Funcs) {
 			funcName := schema.Funcs[nFunc]
 			nFunc = snakecase(nFunc)
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
+			fmt.Fprintf(file, "pub const CORE_%s_%s: ScHname = ScHname(0x%s);\n", nContract, nFunc, hFunc.String())
 		}
 		for _, nFunc := range sorted(schema.Views) {
 			funcName := schema.Views[nFunc]
 			nFunc = snakecase(nFunc)
 			hFunc := coretypes.Hn(funcName)
-			fmt.Fprintf(file, "pub const CORE_%s_%s: Hname = Hname(0x%s);\n", nContract, nFunc, hFunc.String())
+			fmt.Fprintf(file, "pub const CORE_%s_%s: ScHname = ScHname(0x%s);\n", nContract, nFunc, hFunc.String())
 		}
 	}
 	return nil

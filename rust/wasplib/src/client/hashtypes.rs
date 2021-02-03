@@ -10,50 +10,6 @@ use super::keys::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-#[derive(Clone, Copy)]
-pub struct Hname(pub u32);
-
-impl Hname {
-    pub fn new(name: &str) -> Hname {
-        ScCallContext {}.utility().hname(name)
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> Hname {
-        if bytes.len() != 4 { panic!("Hname should be 4 bytes"); }
-        let val = bytes[3] as u32;
-        let val = (val << 8) | (bytes[2] as u32);
-        let val = (val << 8) | (bytes[1] as u32);
-        let val = (val << 8) | (bytes[0] as u32);
-        Hname(val)
-    }
-
-    pub fn equals(&self, other: Hname) -> bool {
-        self.0 == other.0
-    }
-
-    pub fn to_bytes(&self) -> Vec<u8> {
-        let val = self.0;
-        let mut bytes: Vec<u8> = Vec::new();
-        bytes.push((val >> 0) as u8);
-        bytes.push((val >> 8) as u8);
-        bytes.push((val >> 16) as u8);
-        bytes.push((val >> 24) as u8);
-        bytes
-    }
-
-    pub fn to_string(&self) -> String {
-        self.0.to_string()
-    }
-}
-
-impl MapKey for Hname {
-    fn get_id(&self) -> Key32 {
-        get_key_id_from_bytes(&self.0.to_ne_bytes())
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 pub struct ScAddress {
     id: [u8; 33],
 }
@@ -63,10 +19,10 @@ impl ScAddress {
         ScAddress { id: bytes.try_into().expect("invalid address id length") }
     }
 
-    pub fn as_agent(&self) -> ScAgent {
-        let mut agent = ScAgent { id: [0; 37] };
-        agent.id[..33].copy_from_slice(&self.id[..33]);
-        agent
+    pub fn as_agent_id(&self) -> ScAgentId {
+        let mut a = ScAgentId { id: [0; 37] };
+        a.id[..33].copy_from_slice(&self.id[..33]);
+        a
     }
 
     pub fn equals(&self, other: &ScAddress) -> bool {
@@ -91,27 +47,27 @@ impl MapKey for ScAddress {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(PartialEq, Clone)]
-pub struct ScAgent {
+pub struct ScAgentId {
     id: [u8; 37],
 }
 
-impl ScAgent {
-    pub fn from_bytes(bytes: &[u8]) -> ScAgent {
-        ScAgent { id: bytes.try_into().expect("invalid agent id lengths") }
+impl ScAgentId {
+    pub fn from_bytes(bytes: &[u8]) -> ScAgentId {
+        ScAgentId { id: bytes.try_into().expect("invalid agent id lengths") }
     }
 
     pub fn address(&self) -> ScAddress {
-        let mut address = ScAddress { id: [0; 33] };
-        address.id[..33].copy_from_slice(&self.id[..33]);
-        address
+        let mut a = ScAddress { id: [0; 33] };
+        a.id[..33].copy_from_slice(&self.id[..33]);
+        a
     }
 
-    pub fn equals(&self, other: &ScAgent) -> bool {
+    pub fn equals(&self, other: &ScAgentId) -> bool {
         self.id == other.id
     }
 
     pub fn is_address(&self) -> bool {
-        self.address().as_agent().equals(self)
+        self.address().as_agent_id().equals(self)
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -123,7 +79,7 @@ impl ScAgent {
     }
 }
 
-impl MapKey for ScAgent {
+impl MapKey for ScAgentId {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
@@ -168,35 +124,35 @@ pub struct ScContractId {
 }
 
 impl ScContractId {
-    pub fn new(chain_id: &ScChainId, hname: &Hname) -> ScContractId {
-        let mut contract_id = ScContractId { id: [0; 37] };
-        contract_id.id[..33].copy_from_slice(&chain_id.to_bytes());
-        contract_id.id[33..].copy_from_slice(&hname.to_bytes());
-        contract_id
+    pub fn new(chain_id: &ScChainId, hname: &ScHname) -> ScContractId {
+        let mut c = ScContractId { id: [0; 37] };
+        c.id[..33].copy_from_slice(&chain_id.to_bytes());
+        c.id[33..].copy_from_slice(&hname.to_bytes());
+        c
     }
 
     pub fn from_bytes(bytes: &[u8]) -> ScContractId {
         ScContractId { id: bytes.try_into().expect("invalid contract id length") }
     }
 
-    pub fn as_agent(&self) -> ScAgent {
-        let mut agent = ScAgent { id: [0x00; 37] };
-        agent.id[..].copy_from_slice(&self.id[..]);
-        agent
+    pub fn as_agent_id(&self) -> ScAgentId {
+        let mut a = ScAgentId { id: [0x00; 37] };
+        a.id[..].copy_from_slice(&self.id[..]);
+        a
     }
 
     pub fn chain_id(&self) -> ScChainId {
-        let mut chain_id = ScChainId { id: [0; 33] };
-        chain_id.id[..33].copy_from_slice(&self.id[..33]);
-        chain_id
+        let mut c = ScChainId { id: [0; 33] };
+        c.id[..33].copy_from_slice(&self.id[..33]);
+        c
     }
 
     pub fn equals(&self, other: &ScContractId) -> bool {
         self.id == other.id
     }
 
-    pub fn hname(&self) -> Hname {
-        Hname::from_bytes(&self.id[33..])
+    pub fn hname(&self) -> ScHname {
+        ScHname::from_bytes(&self.id[33..])
     }
 
     pub fn to_bytes(&self) -> &[u8] {
@@ -276,5 +232,49 @@ impl ScHash {
 impl MapKey for ScHash {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Clone, Copy)]
+pub struct ScHname(pub u32);
+
+impl ScHname {
+    pub fn new(name: &str) -> ScHname {
+        ScCallContext {}.utility().hname(name)
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> ScHname {
+        if bytes.len() != 4 { panic!("Hname should be 4 bytes"); }
+        let val = bytes[3] as u32;
+        let val = (val << 8) | (bytes[2] as u32);
+        let val = (val << 8) | (bytes[1] as u32);
+        let val = (val << 8) | (bytes[0] as u32);
+        ScHname(val)
+    }
+
+    pub fn equals(&self, other: ScHname) -> bool {
+        self.0 == other.0
+    }
+
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let val = self.0;
+        let mut bytes: Vec<u8> = Vec::new();
+        bytes.push((val >> 0) as u8);
+        bytes.push((val >> 8) as u8);
+        bytes.push((val >> 16) as u8);
+        bytes.push((val >> 24) as u8);
+        bytes
+    }
+
+    pub fn to_string(&self) -> String {
+        self.0.to_string()
+    }
+}
+
+impl MapKey for ScHname {
+    fn get_id(&self) -> Key32 {
+        get_key_id_from_bytes(&self.0.to_ne_bytes())
     }
 }

@@ -6,23 +6,23 @@ package client
 import "encoding/binary"
 
 const (
-	// all TYPE_* values should exactly match the counterpart client.TYPE_* values on the host!
+	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20
 
-	TYPE_ADDRESS  int32 = 1
-	TYPE_AGENT    int32 = 2
-	TYPE_BYTES    int32 = 3
-	TYPE_COLOR    int32 = 4
-	TYPE_HASH     int32 = 5
-	TYPE_INT      int32 = 6
-	TYPE_MAP      int32 = 7
-	TYPE_STRING   int32 = 8
-	TYPE_HNAME    int32 = 9
-	TYPE_CHAIN    int32 = 10
-	TYPE_CONTRACT int32 = 11
+	TYPE_ADDRESS     int32 = 1
+	TYPE_AGENT_ID    int32 = 2
+	TYPE_BYTES       int32 = 3
+	TYPE_CHAIN_ID    int32 = 4
+	TYPE_COLOR       int32 = 5
+	TYPE_CONTRACT_ID int32 = 6
+	TYPE_HASH        int32 = 7
+	TYPE_HNAME       int32 = 8
+	TYPE_INT         int32 = 9
+	TYPE_MAP         int32 = 10
+	TYPE_STRING      int32 = 11
 )
 
-var typeSizes = [...]int{0, 33, 37, 0, 32, 32, 8, 0, 0, 4, 33, 37}
+var typeSizes = [...]int{0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 0}
 
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool

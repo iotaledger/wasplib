@@ -8,34 +8,6 @@ import (
 	"strconv"
 )
 
-type Hname uint32
-
-func NewHname(name string) Hname {
-	return ScCallContext{}.Utility().Hname(name)
-}
-
-func NewHnameFromBytes(bytes []byte) Hname {
-	return Hname(binary.LittleEndian.Uint32(bytes))
-}
-
-func (hn Hname) Bytes() []byte {
-	bytes := make([]byte, 4)
-	binary.LittleEndian.PutUint32(bytes, uint32(hn))
-	return bytes
-}
-
-func (hn Hname) Equals(other Hname) bool {
-	return hn == other
-}
-
-func (hn Hname) KeyId() Key32 {
-	return GetKeyIdFromBytes(hn.Bytes())
-}
-
-func (hn Hname) String() string {
-	return strconv.FormatInt(int64(hn), 10)
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScAddress struct {
@@ -51,8 +23,8 @@ func NewScAddressFromBytes(bytes []byte) *ScAddress {
 	return o
 }
 
-func (o *ScAddress) AsAgent() *ScAgent {
-	a := &ScAgent{}
+func (o *ScAddress) AsAgentId() *ScAgentId {
+	a := &ScAgentId{}
 	// agent is address padded with zeroes
 	copy(a.id[:], o.id[:])
 	return a
@@ -76,12 +48,12 @@ func (o *ScAddress) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScAgent struct {
+type ScAgentId struct {
 	id [37]byte
 }
 
-func NewScAgentFromBytes(bytes []byte) *ScAgent {
-	o := &ScAgent{}
+func NewScAgentIdFromBytes(bytes []byte) *ScAgentId {
+	o := &ScAgentId{}
 	if len(bytes) != len(o.id) {
 		logPanic("invalid agent id length")
 	}
@@ -89,29 +61,29 @@ func NewScAgentFromBytes(bytes []byte) *ScAgent {
 	return o
 }
 
-func (o *ScAgent) Address() *ScAddress {
+func (o *ScAgentId) Address() *ScAddress {
 	a := &ScAddress{}
 	copy(a.id[:], o.id[:])
 	return a
 }
 
-func (o *ScAgent) Bytes() []byte {
+func (o *ScAgentId) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o *ScAgent) Equals(other *ScAgent) bool {
+func (o *ScAgentId) Equals(other *ScAgentId) bool {
 	return o.id == other.id
 }
 
-func (o *ScAgent) KeyId() Key32 {
+func (o *ScAgentId) KeyId() Key32 {
 	return GetKeyIdFromBytes(o.Bytes())
 }
 
-func (o *ScAgent) IsAddress() bool {
-	return o.Address().AsAgent().Equals(o)
+func (o *ScAgentId) IsAddress() bool {
+	return o.Address().AsAgentId().Equals(o)
 }
 
-func (o *ScAgent) String() string {
+func (o *ScAgentId) String() string {
 	return base58Encode(o.id[:])
 }
 
@@ -192,7 +164,7 @@ type ScContractId struct {
 	id [37]byte
 }
 
-func NewScContractId(chainId *ScChainId, hContract Hname) *ScContractId {
+func NewScContractId(chainId *ScChainId, hContract ScHname) *ScContractId {
 	o := &ScContractId{}
 	copy(o.id[:], chainId.Bytes())
 	copy(o.id[33:], hContract.Bytes())
@@ -208,8 +180,8 @@ func NewScContractIdFromBytes(bytes []byte) *ScContractId {
 	return o
 }
 
-func (o *ScContractId) AsAgent() *ScAgent {
-	a := &ScAgent{}
+func (o *ScContractId) AsAgentId() *ScAgentId {
+	a := &ScAgentId{}
 	copy(a.id[:], o.id[:])
 	return a
 }
@@ -228,8 +200,8 @@ func (o *ScContractId) Equals(other *ScContractId) bool {
 	return o.id == other.id
 }
 
-func (o *ScContractId) Hname() Hname {
-	return NewHnameFromBytes(o.id[33:])
+func (o *ScContractId) Hname() ScHname {
+	return NewScHnameFromBytes(o.id[33:])
 }
 
 func (o *ScContractId) KeyId() Key32 {
@@ -269,6 +241,36 @@ func (o *ScHash) KeyId() Key32 {
 
 func (o *ScHash) String() string {
 	return base58Encode(o.id[:])
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScHname uint32
+
+func NewScHname(name string) ScHname {
+	return ScCallContext{}.Utility().Hname(name)
+}
+
+func NewScHnameFromBytes(bytes []byte) ScHname {
+	return ScHname(binary.LittleEndian.Uint32(bytes))
+}
+
+func (hn ScHname) Bytes() []byte {
+	bytes := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bytes, uint32(hn))
+	return bytes
+}
+
+func (hn ScHname) Equals(other ScHname) bool {
+	return hn == other
+}
+
+func (hn ScHname) KeyId() Key32 {
+	return GetKeyIdFromBytes(hn.Bytes())
+}
+
+func (hn ScHname) String() string {
+	return strconv.FormatInt(int64(hn), 10)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

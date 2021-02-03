@@ -16,8 +16,8 @@ impl BytesDecoder<'_> {
         ScAddress::from_bytes(self.bytes())
     }
 
-    pub fn agent(&mut self) -> ScAgent {
-        ScAgent::from_bytes(self.bytes())
+    pub fn agent(&mut self) -> ScAgentId {
+        ScAgentId::from_bytes(self.bytes())
     }
 
     pub fn bytes(&mut self) -> &[u8] {
@@ -46,8 +46,8 @@ impl BytesDecoder<'_> {
         ScHash::from_bytes(self.bytes())
     }
 
-    pub fn hname(&mut self) -> Hname {
-        Hname::from_bytes(self.bytes())
+    pub fn hname(&mut self) -> ScHname {
+        ScHname::from_bytes(self.bytes())
     }
 
     pub fn int(&mut self) -> i64 {
@@ -97,7 +97,7 @@ impl BytesEncoder {
         self
     }
 
-    pub fn agent(&mut self, value: &ScAgent) -> &BytesEncoder {
+    pub fn agent(&mut self, value: &ScAgentId) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }
@@ -132,7 +132,7 @@ impl BytesEncoder {
         self
     }
 
-    pub fn hname(&mut self, value: &Hname) -> &BytesEncoder {
+    pub fn hname(&mut self, value: &ScHname) -> &BytesEncoder {
         self.bytes(&value.to_bytes());
         self
     }

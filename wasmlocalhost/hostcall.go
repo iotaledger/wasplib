@@ -26,9 +26,9 @@ func (m *HostCall) call() {
 	host := m.host
 
 	root := host.FindObject(1)
-	savedCaller := root.GetBytes(wasmhost.KeyCaller, client.TYPE_AGENT)
-	scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
-	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, scId)
+	savedCaller := root.GetBytes(wasmhost.KeyCaller, client.TYPE_AGENT_ID)
+	scId := root.GetBytes(wasmhost.KeyContractId, client.TYPE_CONTRACT_ID)
+	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT_ID, scId)
 
 	requestParams := host.FindSubObject(nil, wasmhost.KeyParams, client.TYPE_MAP)
 	savedParams := NewHostMap(m.host, 0)
@@ -46,7 +46,7 @@ func (m *HostCall) call() {
 
 	requestParams.SetBytes(wasmhost.KeyLength, client.TYPE_INT, IntToBytes(0))
 	savedParams.CopyDataTo(requestParams)
-	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, savedCaller)
+	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT_ID, savedCaller)
 }
 
 func (m *HostCall) SetBytes(keyId int32, typeId int32, value []byte) {

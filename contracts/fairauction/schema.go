@@ -6,7 +6,7 @@ package fairauction
 import "github.com/iotaledger/wasplib/client"
 
 const ScName = "fairauction"
-const ScHname = client.Hname(0x1b5c43b1)
+const ScHname = client.ScHname(0x1b5c43b1)
 
 const ParamColor = client.Key("color")
 const ParamDescription = client.Key("description")
@@ -36,17 +36,17 @@ const FuncSetOwnerMargin = "set_owner_margin"
 const FuncStartAuction = "start_auction"
 const ViewGetInfo = "get_info"
 
-const HFuncFinalizeAuction = client.Hname(0xb427dd28)
-const HFuncPlaceBid = client.Hname(0xf2cc1c44)
-const HFuncSetOwnerMargin = client.Hname(0x65402dca)
-const HFuncStartAuction = client.Hname(0x7ee53d08)
-const HViewGetInfo = client.Hname(0x2b9d8867)
+const HFuncFinalizeAuction = client.ScHname(0xb427dd28)
+const HFuncPlaceBid = client.ScHname(0xf2cc1c44)
+const HFuncSetOwnerMargin = client.ScHname(0x65402dca)
+const HFuncStartAuction = client.ScHname(0x7ee53d08)
+const HViewGetInfo = client.ScHname(0x2b9d8867)
 
 func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall(FuncFinalizeAuction, funcFinalizeAuction)
-	exports.AddCall(FuncPlaceBid, funcPlaceBid)
-	exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMargin)
-	exports.AddCall(FuncStartAuction, funcStartAuction)
-	exports.AddView(ViewGetInfo, viewGetInfo)
+    exports := client.NewScExports()
+    exports.AddCall(FuncFinalizeAuction, funcFinalizeAuction)
+    exports.AddCall(FuncPlaceBid, funcPlaceBid)
+    exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMargin)
+    exports.AddCall(FuncStartAuction, funcStartAuction)
+    exports.AddView(ViewGetInfo, viewGetInfo)
 }

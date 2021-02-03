@@ -55,8 +55,6 @@ impl ScMutableAddressArray {
         set_clear(self.obj_id);
     }
 
-    //TODO exists on arrays?
-
     // index 0..length(), when length() a new one is appended
     pub fn get_address(&self, index: i32) -> ScMutableAddress {
         ScMutableAddress { obj_id: self.obj_id, key_id: Key32(index) }
@@ -73,57 +71,55 @@ impl ScMutableAddressArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScMutableAgent {
+pub struct ScMutableAgentId {
     obj_id: i32,
     key_id: Key32,
 }
 
-impl ScMutableAgent {
-    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableAgent {
-        ScMutableAgent { obj_id, key_id }
+impl ScMutableAgentId {
+    pub(crate) fn new(obj_id: i32, key_id: Key32) -> ScMutableAgentId {
+        ScMutableAgentId { obj_id, key_id }
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_AGENT)
+        exists(self.obj_id, self.key_id, TYPE_AGENT_ID)
     }
 
-    pub fn set_value(&self, val: &ScAgent) {
-        set_bytes(self.obj_id, self.key_id, TYPE_AGENT, val.to_bytes());
+    pub fn set_value(&self, val: &ScAgentId) {
+        set_bytes(self.obj_id, self.key_id, TYPE_AGENT_ID, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
         self.value().to_string()
     }
 
-    pub fn value(&self) -> ScAgent {
-        ScAgent::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT))
+    pub fn value(&self) -> ScAgentId {
+        ScAgentId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT_ID))
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-pub struct ScMutableAgentArray {
+pub struct ScMutableAgentIdArray {
     obj_id: i32
 }
 
-impl ScMutableAgentArray {
-    pub(crate) fn new(obj_id: i32) -> ScMutableAgentArray {
-        ScMutableAgentArray { obj_id }
+impl ScMutableAgentIdArray {
+    pub(crate) fn new(obj_id: i32) -> ScMutableAgentIdArray {
+        ScMutableAgentIdArray { obj_id }
     }
 
     pub fn clear(&self) {
         set_clear(self.obj_id);
     }
 
-    //TODO exists on arrays?
-
     // index 0..length(), when length() a new one is appended
-    pub fn get_agent(&self, index: i32) -> ScMutableAgent {
-        ScMutableAgent { obj_id: self.obj_id, key_id: Key32(index) }
+    pub fn get_agent_id(&self, index: i32) -> ScMutableAgentId {
+        ScMutableAgentId { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
-    pub fn immutable(&self) -> ScImmutableAgentArray {
-        ScImmutableAgentArray::new(self.obj_id)
+    pub fn immutable(&self) -> ScImmutableAgentIdArray {
+        ScImmutableAgentIdArray::new(self.obj_id)
     }
 
     pub fn length(&self) -> i32 {
@@ -202,11 +198,11 @@ impl ScMutableChainId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_CHAIN)
+        exists(self.obj_id, self.key_id, TYPE_CHAIN_ID)
     }
 
     pub fn set_value(&self, val: &ScChainId) {
-        set_bytes(self.obj_id, self.key_id, TYPE_CHAIN, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_CHAIN_ID, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -214,7 +210,7 @@ impl ScMutableChainId {
     }
 
     pub fn value(&self) -> ScChainId {
-        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN))
+        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN_ID))
     }
 }
 
@@ -289,11 +285,11 @@ impl ScMutableContractId {
     }
 
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_CONTRACT)
+        exists(self.obj_id, self.key_id, TYPE_CONTRACT_ID)
     }
 
     pub fn set_value(&self, val: &ScContractId) {
-        set_bytes(self.obj_id, self.key_id, TYPE_CONTRACT, val.to_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_CONTRACT_ID, val.to_bytes());
     }
 
     pub fn to_string(&self) -> String {
@@ -301,7 +297,7 @@ impl ScMutableContractId {
     }
 
     pub fn value(&self) -> ScContractId {
-        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT))
+        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT_ID))
     }
 }
 
@@ -379,7 +375,7 @@ impl ScMutableHname {
         exists(self.obj_id, self.key_id, TYPE_HNAME)
     }
 
-    pub fn set_value(&self, val: Hname) {
+    pub fn set_value(&self, val: ScHname) {
         set_bytes(self.obj_id, self.key_id, TYPE_HNAME, &val.to_bytes());
     }
 
@@ -387,8 +383,8 @@ impl ScMutableHname {
         self.value().to_string()
     }
 
-    pub fn value(&self) -> Hname {
-        Hname::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HNAME))
+    pub fn value(&self) -> ScHname {
+        ScHname::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HNAME))
     }
 }
 
@@ -476,13 +472,13 @@ impl ScMutableMap {
         ScMutableAddressArray { obj_id: arr_id }
     }
 
-    pub fn get_agent<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgent {
-        ScMutableAgent { obj_id: self.obj_id, key_id: key.get_id() }
+    pub fn get_agent_id<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgentId {
+        ScMutableAgentId { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    pub fn get_agent_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgentArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_AGENT | TYPE_ARRAY);
-        ScMutableAgentArray { obj_id: arr_id }
+    pub fn get_agent_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableAgentIdArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_AGENT_ID | TYPE_ARRAY);
+        ScMutableAgentIdArray { obj_id: arr_id }
     }
 
     pub fn get_bytes<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableBytes {

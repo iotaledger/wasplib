@@ -8,8 +8,8 @@ import "github.com/iotaledger/wasplib/client"
 type TokenInfo struct {
 	Created     int64
 	Description string
-	MintedBy    *client.ScAgent
-	Owner       *client.ScAgent
+	MintedBy    *client.ScAgentId
+	Owner       *client.ScAgentId
 	Supply      int64
 	Updated     int64
 	UserDefined string

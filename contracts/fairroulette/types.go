@@ -7,7 +7,7 @@ import "github.com/iotaledger/wasplib/client"
 
 type BetInfo struct {
 	Amount int64
-	Better *client.ScAgent
+	Better *client.ScAgentId
 	Color  int64
 }
 

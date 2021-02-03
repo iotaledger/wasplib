@@ -6,7 +6,7 @@ package donatewithfeedback
 import "github.com/iotaledger/wasplib/client"
 
 const ScName = "donatewithfeedback"
-const ScHname = client.Hname(0x696d7f66)
+const ScHname = client.ScHname(0x696d7f66)
 
 const ParamFeedback = client.Key("feedback")
 const ParamWithdrawAmount = client.Key("withdraw")
@@ -25,13 +25,13 @@ const FuncDonate = "donate"
 const FuncWithdraw = "withdraw"
 const ViewDonations = "view_donations"
 
-const HFuncDonate = client.Hname(0xdc9b133a)
-const HFuncWithdraw = client.Hname(0x9dcc0f41)
-const HViewDonations = client.Hname(0xc3cc7cb0)
+const HFuncDonate = client.ScHname(0xdc9b133a)
+const HFuncWithdraw = client.ScHname(0x9dcc0f41)
+const HViewDonations = client.ScHname(0xc3cc7cb0)
 
 func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall(FuncDonate, funcDonate)
-	exports.AddCall(FuncWithdraw, funcWithdraw)
-	exports.AddView(ViewDonations, viewDonations)
+    exports := client.NewScExports()
+    exports.AddCall(FuncDonate, funcDonate)
+    exports.AddCall(FuncWithdraw, funcWithdraw)
+    exports.AddView(ViewDonations, viewDonations)
 }

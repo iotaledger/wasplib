@@ -6,7 +6,7 @@ use wasplib::client::*;
 pub struct BetInfo {
     //@formatter:off
     pub amount: i64,
-    pub better: ScAgent,
+    pub better: ScAgentId,
     pub color:  i64,
     //@formatter:on
 }

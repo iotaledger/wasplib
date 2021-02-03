@@ -43,7 +43,7 @@ func (o *HostUtility) GetBytes(keyId int32, typeId int32) []byte {
 		return codec.EncodeHname(o.hname)
 	case wasmhost.KeyBase58Bytes:
 		return o.base58Decoded
-	case wasmhost.KeyHash:
+	case wasmhost.KeyHashBlake2b:
 		return o.hash
 	}
 	o.invalidKey(keyId)
@@ -82,7 +82,7 @@ func (o *HostUtility) GetTypeId(keyId int32) int32 {
 		return wasmhost.OBJTYPE_BYTES
 	case wasmhost.KeyBase58String:
 		return wasmhost.OBJTYPE_STRING
-	case wasmhost.KeyHash:
+	case wasmhost.KeyHashBlake2b:
 		return wasmhost.OBJTYPE_HASH
 	case wasmhost.KeyHname:
 		return wasmhost.OBJTYPE_HNAME
@@ -102,7 +102,7 @@ func (o *HostUtility) SetBytes(keyId int32, typeId int32, value []byte) {
 	switch keyId {
 	case wasmhost.KeyBase58Bytes:
 		o.base58Encoded = base58.Encode(value)
-	case wasmhost.KeyHash:
+	case wasmhost.KeyHashBlake2b:
 		h := hashing.HashData(value)
 		o.hash = h[:]
 	default:

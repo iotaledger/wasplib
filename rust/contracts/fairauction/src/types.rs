@@ -5,17 +5,17 @@ use wasplib::client::*;
 
 pub struct AuctionInfo {
     //@formatter:off
-    pub color:          ScColor, // color of tokens for sale
-    pub creator:        ScAgent, // issuer of start_auction transaction
-    pub deposit:        i64,     // deposit by auction owner to cover the SC fees
-    pub description:    String,  // auction description
-    pub duration:       i64,     // auction duration in minutes
-    pub highest_bid:    i64,     // the current highest bid amount
-    pub highest_bidder: ScAgent, // the current highest bidder
-    pub minimum_bid:    i64,     // minimum bid amount
-    pub num_tokens:     i64,     // number of tokens for sale
-    pub owner_margin:   i64,     // auction owner's margin in promilles
-    pub when_started:   i64,     // timestamp when auction started
+    pub color:          ScColor,   // color of tokens for sale
+    pub creator:        ScAgentId, // issuer of start_auction transaction
+    pub deposit:        i64,       // deposit by auction owner to cover the SC fees
+    pub description:    String,    // auction description
+    pub duration:       i64,       // auction duration in minutes
+    pub highest_bid:    i64,       // the current highest bid amount
+    pub highest_bidder: ScAgentId, // the current highest bidder
+    pub minimum_bid:    i64,       // minimum bid amount
+    pub num_tokens:     i64,       // number of tokens for sale
+    pub owner_margin:   i64,       // auction owner's margin in promilles
+    pub when_started:   i64,       // timestamp when auction started
     //@formatter:on
 }
 

@@ -37,18 +37,18 @@ func funcPlaceBet(ctx *client.ScCallContext) {
 			playPeriod = DefaultPlayPeriod
 		}
 		ctx.Post(&client.PostRequestParams{
-			Contract: ctx.ContractId(),
-			Function: HFuncLockBets,
-			Params:   nil,
-			Transfer: nil,
-			Delay:    playPeriod,
+			ContractId: ctx.ContractId(),
+			Function:   HFuncLockBets,
+			Params:     nil,
+			Transfer:   nil,
+			Delay:      playPeriod,
 		})
 	}
 }
 
 func funcLockBets(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	if !ctx.From(ctx.ContractId().AsAgent()) {
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
@@ -64,17 +64,17 @@ func funcLockBets(ctx *client.ScCallContext) {
 	bets.Clear()
 
 	ctx.Post(&client.PostRequestParams{
-		Contract: ctx.ContractId(),
-		Function: HFuncPayWinners,
-		Params:   nil,
-		Transfer: nil,
-		Delay:    0,
+		ContractId: ctx.ContractId(),
+		Function:   HFuncPayWinners,
+		Params:     nil,
+		Transfer:   nil,
+		Delay:      0,
 	})
 }
 
 func funcPayWinners(ctx *client.ScCallContext) {
 	// can only be sent by SC itself
-	scId := ctx.ContractId().AsAgent()
+	scId := ctx.ContractId().AsAgentId()
 	if !ctx.From(scId) {
 		ctx.Panic("Cancel spoofed request")
 	}

@@ -139,11 +139,11 @@ func (t *JsonTests) CompareSubArrayData(mapObject VmObject, keyId int32, array [
 	switch ty := elem.(type) {
 	case string:
 		if typeId != client.TYPE_ADDRESS &&
-			typeId != client.TYPE_AGENT &&
+			typeId != client.TYPE_AGENT_ID &&
 			typeId != client.TYPE_BYTES &&
-			typeId != client.TYPE_CHAIN &&
+			typeId != client.TYPE_CHAIN_ID &&
 			typeId != client.TYPE_COLOR &&
-			typeId != client.TYPE_CONTRACT &&
+			typeId != client.TYPE_CONTRACT_ID &&
 			typeId != client.TYPE_STRING {
 			return arrayObject.Fail("not a bytes or string array")
 		}
@@ -302,16 +302,16 @@ func (t *JsonTests) LoadData(jsonData *JsonDataModel) {
 		root.SetBytes(wasmhost.KeyTimestamp, client.TYPE_INT, IntToBytes(jsonData.Timestamp))
 	}
 	if jsonData.Caller != "" {
-		root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, []byte(process(jsonData.Caller)))
+		root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT_ID, []byte(process(jsonData.Caller)))
 	}
-	if jsonData.Chain != "" {
-		root.SetBytes(wasmhost.KeyChain, client.TYPE_CHAIN, []byte(process(jsonData.Chain)))
-	}
+	//if jsonData.Chain != "" {
+	//	root.SetBytes(wasmhost.KeyChain, client.TYPE_CHAIN_ID, []byte(process(jsonData.Chain)))
+	//}
 	if jsonData.Creator != "" {
-		root.SetBytes(wasmhost.KeyCreator, client.TYPE_AGENT, []byte(process(jsonData.Creator)))
+		root.SetBytes(wasmhost.KeyContractCreator, client.TYPE_AGENT_ID, []byte(process(jsonData.Creator)))
 	}
 	if jsonData.Id != "" {
-		root.SetBytes(wasmhost.KeyId, client.TYPE_CONTRACT, []byte(process(jsonData.Id)))
+		root.SetBytes(wasmhost.KeyContractId, client.TYPE_CONTRACT_ID, []byte(process(jsonData.Id)))
 	}
 }
 
@@ -523,7 +523,7 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	}
 
 	//root := t.FindObject(1)
-	//scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT)
+	//scId := root.GetBytes(wasmhost.KeyId, client.TYPE_CONTRACT_ID)
 	//calls := t.FindSubObject(nil, wasmhost.KeyCalls, client.TYPE_MAP|client.TYPE_ARRAY)
 	//
 	//expectedCalls := len(test.Expect.Calls)
@@ -537,14 +537,14 @@ func (t *JsonTests) RunTest(host *SimpleWasmHost, test *JsonTest) bool {
 	//		continue
 	//	}
 	//
-	//	contract := post.GetBytes(wasmhost.KeyContract,  client.TYPE_CONTRACT)
+	//	contract := post.GetBytes(wasmhost.KeyContract,  client.TYPE_CONTRACT_ID)
 	//	if string(contract) != string(scId) {
 	//		// only process posts when they are for the current contract
 	//		// those are the only ones that will be incorporated in the final state
 	//		continue
 	//	}
 	//
-	//	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT, scId)
+	//	root.SetBytes(wasmhost.KeyCaller, client.TYPE_AGENT_ID, scId)
 	//	//TODO increment timestamp and pass post.transfers as incoming
 	//	//TODO how do we pass incoming when we call instead of post?
 	//	params.SetBytes(wasmhost.KeyLength, client.TYPE_INT, zero)

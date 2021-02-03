@@ -4,11 +4,10 @@
 #![allow(dead_code)]
 
 use wasplib::client::*;
-
 use super::*;
 
 pub const SC_NAME: &str = "donatewithfeedback";
-pub const SC_HNAME: Hname = Hname(0x696d7f66);
+pub const SC_HNAME: ScHname = ScHname(0x696d7f66);
 
 pub const PARAM_FEEDBACK: &str = "feedback";
 pub const PARAM_WITHDRAW_AMOUNT: &str = "withdraw";
@@ -27,9 +26,9 @@ pub const FUNC_DONATE: &str = "donate";
 pub const FUNC_WITHDRAW: &str = "withdraw";
 pub const VIEW_DONATIONS: &str = "view_donations";
 
-pub const HFUNC_DONATE: Hname = Hname(0xdc9b133a);
-pub const HFUNC_WITHDRAW: Hname = Hname(0x9dcc0f41);
-pub const HVIEW_DONATIONS: Hname = Hname(0xc3cc7cb0);
+pub const HFUNC_DONATE: ScHname = ScHname(0xdc9b133a);
+pub const HFUNC_WITHDRAW: ScHname = ScHname(0x9dcc0f41);
+pub const HVIEW_DONATIONS: ScHname = ScHname(0xc3cc7cb0);
 
 #[no_mangle]
 fn on_load() {

@@ -41,21 +41,21 @@ func (o ScImmutableAddressArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScImmutableAgent struct {
+type ScImmutableAgentId struct {
 	objId int32
 	keyId Key32
 }
 
-func (o ScImmutableAgent) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_AGENT)
+func (o ScImmutableAgentId) Exists() bool {
+	return Exists(o.objId, o.keyId, TYPE_AGENT_ID)
 }
 
-func (o ScImmutableAgent) String() string {
+func (o ScImmutableAgentId) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableAgent) Value() *ScAgent {
-	return NewScAgentFromBytes(GetBytes(o.objId, o.keyId, TYPE_AGENT))
+func (o ScImmutableAgentId) Value() *ScAgentId {
+	return NewScAgentIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_AGENT_ID))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -64,8 +64,8 @@ type ScImmutableAgentArray struct {
 	objId int32
 }
 
-func (o ScImmutableAgentArray) GetAgent(index int32) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: Key32(index)}
+func (o ScImmutableAgentArray) GetAgentId(index int32) ScImmutableAgentId {
+	return ScImmutableAgentId{objId: o.objId, keyId: Key32(index)}
 }
 
 func (o ScImmutableAgentArray) Length() int32 {
@@ -113,7 +113,7 @@ type ScImmutableChainId struct {
 }
 
 func (o ScImmutableChainId) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_CHAIN)
+	return Exists(o.objId, o.keyId, TYPE_CHAIN_ID)
 }
 
 func (o ScImmutableChainId) String() string {
@@ -121,7 +121,7 @@ func (o ScImmutableChainId) String() string {
 }
 
 func (o ScImmutableChainId) Value() *ScChainId {
-	return NewScChainIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CHAIN))
+	return NewScChainIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CHAIN_ID))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -165,7 +165,7 @@ type ScImmutableContractId struct {
 }
 
 func (o ScImmutableContractId) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_CONTRACT)
+	return Exists(o.objId, o.keyId, TYPE_CONTRACT_ID)
 }
 
 func (o ScImmutableContractId) String() string {
@@ -173,7 +173,7 @@ func (o ScImmutableContractId) String() string {
 }
 
 func (o ScImmutableContractId) Value() *ScContractId {
-	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT))
+	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -224,8 +224,8 @@ func (o ScImmutableHname) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableHname) Value() Hname {
-	return NewHnameFromBytes(GetBytes(o.objId, o.keyId, TYPE_HNAME))
+func (o ScImmutableHname) Value() ScHname {
+	return NewScHnameFromBytes(GetBytes(o.objId, o.keyId, TYPE_HNAME))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -277,12 +277,12 @@ func (o ScImmutableMap) GetAddressArray(key MapKey) ScImmutableAddressArray {
 	return ScImmutableAddressArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetAgent(key MapKey) ScImmutableAgent {
-	return ScImmutableAgent{objId: o.objId, keyId: key.KeyId()}
+func (o ScImmutableMap) GetAgentId(key MapKey) ScImmutableAgentId {
+	return ScImmutableAgentId{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetAgentArray(key MapKey) ScImmutableAgentArray {
-	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_AGENT|TYPE_ARRAY)
+func (o ScImmutableMap) GetAgentIdArray(key MapKey) ScImmutableAgentArray {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_AGENT_ID|TYPE_ARRAY)
 	return ScImmutableAgentArray{objId: arrId}
 }
 

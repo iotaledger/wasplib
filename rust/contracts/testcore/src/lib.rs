@@ -111,7 +111,7 @@ fn call_on_chain(ctx: &ScCallContext) {
         target_contract = param_hname_contract.value()
     }
 
-    let mut target_ep = Hname::new("callOnChain");
+    let mut target_ep = ScHname::new("callOnChain");
     let param_hname_ep = ctx.params().get_hname(PARAM_HNAME_EP);
     if param_hname_ep.exists() {
         target_ep = param_hname_ep.value()
@@ -151,8 +151,8 @@ fn run_recursion(ctx: &ScCallContext) {
     }
     let par = ScMutableMap::new();
     par.get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
-    par.get_hname(PARAM_HNAME_EP).set_value(Hname::new("runRecursion"));
-    ctx.call(ctx.contract_id().hname(), Hname::new("callOnChain"), Some(par), None);
+    par.get_hname(PARAM_HNAME_EP).set_value(ScHname::new("runRecursion"));
+    ctx.call(ctx.contract_id().hname(), ScHname::new("callOnChain"), Some(par), None);
     // TODO how would I return result of the call ???
     ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(depth - 1);
 }
@@ -168,12 +168,12 @@ fn fibonacci(ctx: &ScViewContext) {
     }
     let params1 = ScMutableMap::new();
     params1.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 1);
-    let results1 = ctx.call(ctx.contract_id().hname(), Hname::new("fibonacci"), Some(params1));
+    let results1 = ctx.call(ctx.contract_id().hname(), ScHname::new("fibonacci"), Some(params1));
     let n1 = results1.get_int(PARAM_INT_PARAM_VALUE).value();
 
     let params2 = ScMutableMap::new();
     params2.get_int(PARAM_INT_PARAM_VALUE).set_value(n - 2);
-    let results2 = ctx.call(ctx.contract_id().hname(), Hname::new("fibonacci"), Some(params2));
+    let results2 = ctx.call(ctx.contract_id().hname(), ScHname::new("fibonacci"), Some(params2));
     let n2 = results2.get_int(PARAM_INT_PARAM_VALUE).value();
 
     ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n1 + n2);
@@ -188,15 +188,15 @@ fn test_panic_view_ep(ctx: &ScViewContext) {
 }
 
 fn test_call_panic_full_ep(ctx: &ScCallContext) {
-    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicFullEP"), None, None);
+    ctx.call(ctx.contract_id().hname(), ScHname::new("testPanicFullEP"), None, None);
 }
 
 fn test_call_panic_view_from_full(ctx: &ScCallContext) {
-    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicViewEP"), None, None);
+    ctx.call(ctx.contract_id().hname(), ScHname::new("testPanicViewEP"), None, None);
 }
 
 fn test_call_panic_view_from_view(ctx: &ScViewContext) {
-    ctx.call(ctx.contract_id().hname(), Hname::new("testPanicViewEP"), None);
+    ctx.call(ctx.contract_id().hname(), ScHname::new("testPanicViewEP"), None);
 }
 
 fn test_just_view(ctx: &ScViewContext) {
@@ -215,11 +215,11 @@ fn send_to_address(ctx: &ScCallContext) {
 }
 
 fn test_chain_owner_id_view(ctx: &ScViewContext) {
-    ctx.results().get_agent(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner())
+    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
 fn test_chain_owner_id_full(ctx: &ScCallContext) {
-    ctx.results().get_agent(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner())
+    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
 fn test_contract_id_view(ctx: &ScViewContext) {
@@ -251,14 +251,14 @@ fn pass_types_full(ctx: &ScCallContext) {
 
     ctx.require(ctx.params().get_hash(PARAM_HASH).exists(), "!Hash.exist");
 
-    let hash = ctx.utility().hash("Hash".as_bytes());
+    let hash = ctx.utility().hash_blake2b("Hash".as_bytes());
     ctx.require(ctx.params().get_hash(PARAM_HASH).value().equals(&hash), "Hash wrong");
 
     ctx.require(ctx.params().get_hname(PARAM_HNAME).exists(), "!Hname.exist");
-    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(Hname::new("Hname")), "Hname wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(ScHname::new("Hname")), "Hname wrong");
 
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).exists(), "!Hname-0.exist");
-    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(ScHname(0)), "Hname-0 wrong");
 }
 
 fn pass_types_view(ctx: &ScViewContext) {
@@ -276,14 +276,14 @@ fn pass_types_view(ctx: &ScViewContext) {
 
     ctx.require(ctx.params().get_hash(PARAM_HASH).exists(), "!Hash.exist");
 
-    let hash = ctx.utility().hash("Hash".as_bytes());
+    let hash = ctx.utility().hash_blake2b("Hash".as_bytes());
     ctx.require(ctx.params().get_hash(PARAM_HASH).value().equals(&hash), "Hash wrong");
 
     ctx.require(ctx.params().get_hname(PARAM_HNAME).exists(), "!Hname.exist");
-    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(Hname::new("Hname")), "Hname wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME).value().equals(ScHname::new("Hname")), "Hname wrong");
 
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).exists(), "!Hname-0.exist");
-    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(Hname(0)), "Hname-0 wrong");
+    ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(ScHname(0)), "Hname-0 wrong");
 }
 
 fn check_ctx_from_full(ctx: &ScCallContext) {
@@ -292,20 +292,20 @@ fn check_ctx_from_full(ctx: &ScCallContext) {
     let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
     ctx.require(chain_id.exists() && chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
 
-    let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
-    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner(), "fail: chainOwnerID");
+    let chain_owner_id = par.get_agent_id(PARAM_CHAIN_OWNER_ID);
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
 
-    let caller = par.get_agent(PARAM_CALLER);
+    let caller = par.get_agent_id(PARAM_CALLER);
     ctx.require(caller.exists() && caller.value() == ctx.caller(), "fail: caller");
 
     let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
     ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
-    let agent_id = par.get_agent(PARAM_AGENT_ID);
-    let as_agent_id = ctx.contract_id().as_agent();
+    let agent_id = par.get_agent_id(PARAM_AGENT_ID);
+    let as_agent_id = ctx.contract_id().as_agent_id();
     ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
-    let creator = par.get_agent(PARAM_CREATOR);
+    let creator = par.get_agent_id(PARAM_CREATOR);
     ctx.require(creator.exists() && creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
@@ -315,17 +315,17 @@ fn check_ctx_from_view(ctx: &ScViewContext) {
     let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
     ctx.require(chain_id.exists() && chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
 
-    let chain_owner_id = par.get_agent(PARAM_CHAIN_OWNER_ID);
-    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner(), "fail: chainOwnerID");
+    let chain_owner_id = par.get_agent_id(PARAM_CHAIN_OWNER_ID);
+    ctx.require(chain_owner_id.exists() && chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
 
     let contract_id = par.get_contract_id(PARAM_CONTRACT_ID);
     ctx.require(contract_id.exists() && contract_id.value() == ctx.contract_id(), "fail: contractID");
 
-    let agent_id = par.get_agent(PARAM_AGENT_ID);
-    let as_agent_id = ctx.contract_id().as_agent();
+    let agent_id = par.get_agent_id(PARAM_AGENT_ID);
+    let as_agent_id = ctx.contract_id().as_agent_id();
     ctx.require(agent_id.exists() && agent_id.value() == as_agent_id, "fail: agentID");
 
-    let creator = par.get_agent(PARAM_CREATOR);
+    let creator = par.get_agent_id(PARAM_CREATOR);
     ctx.require(creator.exists() && creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
@@ -342,7 +342,7 @@ fn test_event_log_event_data(ctx: &ScCallContext) {
 
 fn test_event_log_deploy(ctx: &ScCallContext) {
     //Deploy the same contract with another name
-    let program_hash = ctx.utility().hash("test_sandbox".as_bytes());
+    let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
     ctx.deploy(&program_hash, VAR_CONTRACT_NAME_DEPLOYED,
                "test contract deploy log", None)
 }
@@ -354,7 +354,7 @@ fn withdraw_to_chain(ctx: &ScCallContext) {
 
     let target_contract_id = ScContractId::new(&target_chain.value(), &CORE_ACCOUNTS);
     ctx.post(&PostRequestParams {
-        contract: target_contract_id,
+        contract_id: target_contract_id,
         function: CORE_ACCOUNTS_VIEW_WITHDRAW_TO_CHAIN,
         params: None,
         transfer: Some(Box::new(ScTransfers::new(&ScColor::IOTA, 2))),

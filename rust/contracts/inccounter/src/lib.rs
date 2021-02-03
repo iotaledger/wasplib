@@ -45,7 +45,7 @@ fn func_post_increment(ctx: &ScCallContext) {
     counter.set_value(value + 1);
     if value == 0 {
         ctx.post(&PostRequestParams {
-            contract: ctx.contract_id(),
+            contract_id: ctx.contract_id(),
             function: HFUNC_POST_INCREMENT,
             params: None,
             transfer: None,
@@ -73,7 +73,7 @@ fn func_repeat_many(ctx: &ScCallContext) {
     }
     state_repeats.set_value(repeats - 1);
     ctx.post(&PostRequestParams {
-        contract: ctx.contract_id(),
+        contract_id: ctx.contract_id(),
         function: HFUNC_REPEAT_MANY,
         params: None,
         transfer: None,
@@ -123,7 +123,7 @@ fn func_local_state_post(ctx: &ScCallContext) {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
     let request = PostRequestParams {
-        contract: ctx.contract_id(),
+        contract_id: ctx.contract_id(),
         function: HFUNC_WHEN_MUST_INCREMENT,
         params: None,
         transfer: None,

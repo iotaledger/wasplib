@@ -46,11 +46,11 @@ func funcPostIncrement(ctx *client.ScCallContext) {
 	counter.SetValue(value + 1)
 	if value == 0 {
 		ctx.Post(&client.PostRequestParams{
-			Contract: ctx.ContractId(),
-			Function: HFuncPostIncrement,
-			Params:   nil,
-			Transfer: nil,
-			Delay:    0,
+			ContractId: ctx.ContractId(),
+			Function:   HFuncPostIncrement,
+			Params:     nil,
+			Transfer:   nil,
+			Delay:      0,
 		})
 	}
 }
@@ -74,11 +74,11 @@ func funcRepeatMany(ctx *client.ScCallContext) {
 	}
 	stateRepeats.SetValue(repeats - 1)
 	ctx.Post(&client.PostRequestParams{
-		Contract: ctx.ContractId(),
-		Function: HFuncRepeatMany,
-		Params:   nil,
-		Transfer: nil,
-		Delay:    0,
+		ContractId: ctx.ContractId(),
+		Function:   HFuncRepeatMany,
+		Params:     nil,
+		Transfer:   nil,
+		Delay:      0,
 	})
 }
 
@@ -114,11 +114,11 @@ func funcLocalStateSandboxCall(ctx *client.ScCallContext) {
 func funcLocalStatePost(ctx *client.ScCallContext) {
 	LocalStateMustIncrement = false
 	request := &client.PostRequestParams{
-		Contract: ctx.ContractId(),
-		Function: HFuncWhenMustIncrement,
-		Params:   nil,
-		Transfer: nil,
-		Delay:    0,
+		ContractId: ctx.ContractId(),
+		Function:   HFuncWhenMustIncrement,
+		Params:     nil,
+		Transfer:   nil,
+		Delay:      0,
 	}
 	ctx.Post(request)
 	LocalStateMustIncrement = true

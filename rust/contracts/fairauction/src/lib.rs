@@ -87,7 +87,7 @@ fn func_start_auction(ctx: &ScCallContext) {
         description: description,
         duration: duration,
         highest_bid: -1,
-        highest_bidder: ScAgent::from_bytes(&[0; 37]),
+        highest_bidder: ScAgentId::from_bytes(&[0; 37]),
         minimum_bid: minimum_bid,
         num_tokens: num_tokens,
         owner_margin: owner_margin,
@@ -98,8 +98,8 @@ fn func_start_auction(ctx: &ScCallContext) {
     let finalize_params = ScMutableMap::new();
     finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
     ctx.post(&PostRequestParams {
-        contract: ctx.contract_id(),
-        function: Hname::new("finalize_auction"),
+        contract_id: ctx.contract_id(),
+        function: ScHname::new("finalize_auction"),
         params: Some(finalize_params),
         transfer: None,
         delay: duration * 60,
@@ -109,7 +109,7 @@ fn func_start_auction(ctx: &ScCallContext) {
 
 fn func_finalize_auction(ctx: &ScCallContext) {
     // can only be sent by SC itself
-    if !ctx.from(&ctx.contract_id().as_agent()) {
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
         ctx.panic("Cancel spoofed request");
     }
 
@@ -147,10 +147,10 @@ fn func_finalize_auction(ctx: &ScCallContext) {
 
     // return staked bids to losers
     let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
+    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
     let size = bidder_list.length();
     for i in 0..size {
-        let bidder = bidder_list.get_agent(i).value();
+        let bidder = bidder_list.get_agent_id(i).value();
         if !bidder.equals(&auction.highest_bidder) {
             let loser = bidders.get_bytes(&bidder);
             let bid = decode_bid_info(&loser.value());
@@ -186,7 +186,7 @@ fn func_place_bid(ctx: &ScCallContext) {
 
     let mut auction = decode_auction_info(&auction_info.value());
     let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
+    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
     let caller = ctx.caller();
     let bidder = bidders.get_bytes(&caller);
     if bidder.exists() {
@@ -202,7 +202,7 @@ fn func_place_bid(ctx: &ScCallContext) {
         }
         ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
         let index = bidder_list.length();
-        bidder_list.get_agent(index).set_value(&caller);
+        bidder_list.get_agent_id(index).set_value(&caller);
         let bid = BidInfo {
             index: index as i64,
             amount: bid_amount,
@@ -253,22 +253,22 @@ fn view_get_info(ctx: &ScViewContext) {
     let auction = decode_auction_info(&auction_info.value());
     let results = ctx.results();
     results.get_color(VAR_COLOR).set_value(&auction.color);
-    results.get_agent(VAR_CREATOR).set_value(&auction.creator);
+    results.get_agent_id(VAR_CREATOR).set_value(&auction.creator);
     results.get_int(VAR_DEPOSIT).set_value(auction.deposit);
     results.get_string(VAR_DESCRIPTION).set_value(&auction.description);
     results.get_int(VAR_DURATION).set_value(auction.duration);
     results.get_int(VAR_HIGHEST_BID).set_value(auction.highest_bid);
-    results.get_agent(VAR_HIGHEST_BIDDER).set_value(&auction.highest_bidder);
+    results.get_agent_id(VAR_HIGHEST_BIDDER).set_value(&auction.highest_bidder);
     results.get_int(VAR_MINIMUM_BID).set_value(auction.minimum_bid);
     results.get_int(VAR_NUM_TOKENS).set_value(auction.num_tokens);
     results.get_int(VAR_OWNER_MARGIN).set_value(auction.owner_margin);
     results.get_int(VAR_WHEN_STARTED).set_value(auction.when_started);
 
-    let bidder_list = current_auction.get_agent_array(VAR_BIDDER_LIST);
+    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
     results.get_int(VAR_BIDDERS).set_value(bidder_list.length() as i64);
 }
 
-fn transfer(ctx: &ScCallContext, agent: &ScAgent, color: &ScColor, amount: i64) {
+fn transfer(ctx: &ScCallContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
     if agent.is_address() {
         // send back to original Tangle address
         ctx.transfer_to_address(&agent.address(), &ScTransfers::new(color, amount));
