@@ -2,6 +2,6 @@
 */.idea/
 */out/
 */pkg/
-*/target/
+**/target/
 dump/
 wasm/
