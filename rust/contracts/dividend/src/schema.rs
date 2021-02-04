@@ -4,6 +4,7 @@
 #![allow(dead_code)]
 
 use wasplib::client::*;
+
 use super::*;
 
 pub const SC_NAME: &str = "dividend";

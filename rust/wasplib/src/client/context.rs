@@ -107,6 +107,23 @@ pub struct ScUtility {
 }
 
 impl ScUtility {
+    pub fn aggregate_bls_signatures(&self, pub_keys_bin: &[&[u8]], sigs_bin: &[&[u8]]) -> (Vec<u8>, Vec<u8>) {
+        let mut encode = BytesEncoder::new();
+        encode.int(pub_keys_bin.len() as i64);
+        for pub_key in pub_keys_bin {
+            encode.bytes(pub_key);
+        }
+        encode.int(sigs_bin.len() as i64);
+        for sig in sigs_bin {
+            encode.bytes(sig);
+        }
+        let aggregator = self.utility.get_bytes(&KEY_AGGREGATE_BLS);
+        aggregator.set_value(&encode.data());
+        let aggregated = aggregator.value();
+        let mut decode = BytesDecoder::new(&aggregated);
+        return (decode.bytes().to_vec(), decode.bytes().to_vec());
+    }
+
     // decodes the specified base58-encoded string value to its original bytes
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
         self.utility.get_string(&KEY_BASE58_STRING).set_value(value);
@@ -142,6 +159,15 @@ impl ScUtility {
     pub fn random(&self, max: i64) -> i64 {
         let rnd = self.utility.get_int(&KEY_RANDOM).value();
         (rnd as u64 % max as u64) as i64
+    }
+
+    pub fn valid_bls_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
+        let mut encode = BytesEncoder::new();
+        encode.bytes(data);
+        encode.bytes(pub_key);
+        encode.bytes(signature);
+        self.utility.get_bytes(&KEY_VALID_BLS).set_value(&encode.data());
+        self.utility.get_int(&KEY_VALID).value() != 0
     }
 
     pub fn valid_ed25519_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {

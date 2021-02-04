@@ -99,6 +99,22 @@ type ScUtility struct {
 	utility ScMutableMap
 }
 
+func (ctx ScUtility) AggregateBLSSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
+	encode :=  NewBytesEncoder()
+	encode.Int(int64(len(pubKeys)))
+	for _,pubKey := range pubKeys {
+		encode.Bytes(pubKey)
+	}
+	encode.Int(int64(len(sigs)))
+	for _, sig := range sigs {
+		encode.Bytes(sig)
+	}
+	aggregator := ctx.utility.GetBytes(KeyAggregateBls)
+	aggregator.SetValue(encode.Data())
+	decode := NewBytesDecoder(aggregator.Value())
+	return decode.Bytes(), decode.Bytes()
+}
+
 // decodes the specified base58-encoded string value to its original bytes
 func (ctx ScUtility) Base58Decode(value string) []byte {
 	ctx.utility.GetString(KeyBase58String).SetValue(value)
@@ -142,7 +158,12 @@ func (ctx ScUtility) String(value int64) string {
 	return strconv.FormatInt(value, 10)
 }
 
-// hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
+func (ctx ScUtility) ValidBlsSignature(data []byte, pubKey []byte, signature []byte) bool {
+	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
+	ctx.utility.GetBytes(KeyValidBls).SetValue(bytes)
+	return ctx.utility.GetInt(KeyValid).Value() != 0
+}
+
 func (ctx ScUtility) ValidED25519Signature(data []byte, pubKey []byte, signature []byte) bool {
 	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
 	ctx.utility.GetBytes(KeyValidEd25519).SetValue(bytes)
