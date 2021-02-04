@@ -355,7 +355,7 @@ fn withdraw_to_chain(ctx: &ScCallContext) {
     let target_contract_id = ScContractId::new(&target_chain.value(), &CORE_ACCOUNTS);
     ctx.post(&PostRequestParams {
         contract_id: target_contract_id,
-        function: CORE_ACCOUNTS_VIEW_WITHDRAW_TO_CHAIN,
+        function: CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN,
         params: None,
         transfer: Some(Box::new(ScTransfers::new(&ScColor::IOTA, 2))),
         delay: 0,

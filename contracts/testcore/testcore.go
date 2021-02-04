@@ -359,7 +359,7 @@ func withdrawToChain(ctx *client.ScCallContext) {
 	targetContractId := client.NewScContractId(targetChain.Value(), client.CoreAccounts)
 	ctx.Post(&client.PostRequestParams{
 		ContractId: targetContractId,
-		Function:   client.CoreAccountsViewWithdrawToChain,
+		Function:   client.CoreAccountsFuncWithdrawToChain,
 		Params:     nil,
 		Transfer:   client.NewScTransfer(client.IOTA, 2),
 		Delay:      0,

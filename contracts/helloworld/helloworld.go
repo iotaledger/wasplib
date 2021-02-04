@@ -5,11 +5,11 @@ package helloworld
 
 import "github.com/iotaledger/wasplib/client"
 
-func OnLoad() {
-	exports := client.NewScExports()
-	exports.AddCall("hello_world", helloWorld)
+func funcHelloWorld(ctx *client.ScCallContext) {
+	ctx.Log("Hello, world!")
 }
 
-func helloWorld(ctx *client.ScCallContext) {
-	ctx.Log("Hello, world!")
+func viewGetHelloWorld(ctx *client.ScViewContext) {
+	ctx.Log("Get Hello world!")
+	ctx.Results().GetString(VarHelloWorld).SetValue("Hello, world!")
 }

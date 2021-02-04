@@ -93,7 +93,7 @@ func TestIncrementViewCounter(t *testing.T) {
 	checkStateCounter(te, 1)
 
 	ret := te.CallView(inccounter.ViewGetCounter)
-	results := te.GetClientMap(wasmhost.KeyResults, ret)
+	results := te.Results(ret)
 	counter := results.GetInt(inccounter.VarCounter)
 	require.True(te.T, counter.Exists())
 	require.EqualValues(t, 1, counter.Value())

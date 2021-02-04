@@ -4,12 +4,12 @@
 package client
 
 const CoreAccounts = ScHname(0x3c4b5e02)
-const CoreAccountsFuncBalance = ScHname(0x84168cb4)
 const CoreAccountsFuncDeposit = ScHname(0xbdc9102d)
-const CoreAccountsFuncTotalAssets = ScHname(0xfab0f8d2)
+const CoreAccountsFuncWithdrawToAddress = ScHname(0x26608cb5)
+const CoreAccountsFuncWithdrawToChain = ScHname(0x437bc026)
 const CoreAccountsViewAccounts = ScHname(0x3c4b5e02)
-const CoreAccountsViewWithdrawToAddress = ScHname(0x26608cb5)
-const CoreAccountsViewWithdrawToChain = ScHname(0x437bc026)
+const CoreAccountsViewBalance = ScHname(0x84168cb4)
+const CoreAccountsViewTotalAssets = ScHname(0xfab0f8d2)
 
 const CoreBlob = ScHname(0xfd91bc63)
 const CoreBlobFuncStoreBlob = ScHname(0xddd4c281)

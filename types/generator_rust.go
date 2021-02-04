@@ -31,14 +31,13 @@ func GenerateRustSchema(path string, contract string, schema *Schema) error {
 	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
 	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n\n")
 	fmt.Fprintf(file, "#![allow(dead_code)]\n\n")
-	fmt.Fprintf(file, "use wasplib::client::*;\n")
+	fmt.Fprintf(file, "use wasplib::client::*;\n\n")
 	fmt.Fprintf(file, "use super::*;\n\n")
 
 	fmt.Fprintf(file, "pub const SC_NAME: &str = \"%s\";\n", schema.Name)
 	hName := coretypes.Hn(schema.Name)
 	fmt.Fprintf(file, "pub const SC_HNAME: ScHname = ScHname(0x%s);\n", hName.String())
 
-	fmt.Fprintln(file)
 	params := make(StringMap)
 	for _, funcDef := range schema.Funcs {
 		for fldName := range funcDef {
@@ -47,46 +46,52 @@ func GenerateRustSchema(path string, contract string, schema *Schema) error {
 			}
 		}
 	}
-	for _, name := range sortedKeys(params) {
-		fmt.Fprintf(file, "pub const PARAM_%s: &str = \"%s\";\n", upper(snake(name)), name)
+	if len(params) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedKeys(params) {
+			fmt.Fprintf(file, "pub const PARAM_%s: &str = \"%s\";\n", upper(snake(name)), name)
+		}
 	}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedKeys(schema.Vars) {
-		fmt.Fprintf(file, "pub const VAR_%s: &str = \"%s\";\n", upper(snake(name)), name)
+	if len(schema.Vars) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedKeys(schema.Vars) {
+			fmt.Fprintf(file, "pub const VAR_%s: &str = \"%s\";\n", upper(snake(name)), name)
+		}
 	}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedMaps(schema.Funcs) {
-		fmt.Fprintf(file, "pub const FUNC_%s: &str = \"%s\";\n", upper(snake(name)), name)
-	}
-	for _, name := range sortedMaps(schema.Views) {
-		fmt.Fprintf(file, "pub const VIEW_%s: &str = \"%s\";\n", upper(snake(name)), name)
-	}
+	if len(schema.Funcs)+len(schema.Views) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedMaps(schema.Funcs) {
+			fmt.Fprintf(file, "pub const FUNC_%s: &str = \"%s\";\n", upper(snake(name)), name)
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			fmt.Fprintf(file, "pub const VIEW_%s: &str = \"%s\";\n", upper(snake(name)), name)
+		}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedMaps(schema.Funcs) {
-		hName = coretypes.Hn(name)
-		fmt.Fprintf(file, "pub const HFUNC_%s: ScHname = ScHname(0x%s);\n", upper(snake(name)), hName.String())
-	}
-	for _, name := range sortedMaps(schema.Views) {
-		hName = coretypes.Hn(name)
-		fmt.Fprintf(file, "pub const HVIEW_%s: ScHname = ScHname(0x%s);\n", upper(snake(name)), hName.String())
-	}
+		fmt.Fprintln(file)
+		for _, name := range sortedMaps(schema.Funcs) {
+			hName = coretypes.Hn(name)
+			fmt.Fprintf(file, "pub const HFUNC_%s: ScHname = ScHname(0x%s);\n", upper(snake(name)), hName.String())
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			hName = coretypes.Hn(name)
+			fmt.Fprintf(file, "pub const HVIEW_%s: ScHname = ScHname(0x%s);\n", upper(snake(name)), hName.String())
+		}
 
-	fmt.Fprintf(file, "\n#[no_mangle]\n")
-	fmt.Fprintf(file, "fn on_load() {\n")
-	fmt.Fprintf(file, "    let exports = ScExports::new();\n")
-	for _, name := range sortedMaps(schema.Funcs) {
-		name = snake(name)
-		fmt.Fprintf(file, "    exports.add_call(FUNC_%s, func_%s);\n", upper(name), name)
+		fmt.Fprintf(file, "\n#[no_mangle]\n")
+		fmt.Fprintf(file, "fn on_load() {\n")
+		fmt.Fprintf(file, "    let exports = ScExports::new();\n")
+		for _, name := range sortedMaps(schema.Funcs) {
+			name = snake(name)
+			fmt.Fprintf(file, "    exports.add_call(FUNC_%s, func_%s);\n", upper(name), name)
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			name = snake(name)
+			fmt.Fprintf(file, "    exports.add_view(VIEW_%s, view_%s);\n", upper(name), name)
+		}
+		fmt.Fprintf(file, "}\n")
 	}
-	for _, name := range sortedMaps(schema.Views) {
-		name = snake(name)
-		fmt.Fprintf(file, "    exports.add_view(VIEW_%s, view_%s);\n", upper(name), name)
-	}
-	fmt.Fprintf(file, "}\n")
-
 	return nil
 }
 

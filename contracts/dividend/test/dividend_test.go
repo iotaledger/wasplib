@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDeploy(t *testing.T) {
+func TestDeployDividend(t *testing.T) {
 	te := govm.NewTestEnv(t, dividend.ScName)
 	_, err := te.Chain.FindContract(dividend.ScName)
 	require.NoError(t, err)

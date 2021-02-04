@@ -1,41 +1,40 @@
 [
   {
     "name": "accounts",
-    "params": {
-      "agentID": "a"
-    },
+    "description": "Chain account ledger contract",
     "funcs": {
-      "balance": {
-      },
       "deposit": {
-      },
-      "totalAssets": {
-      }
-    },
-    "views": {
-      "accounts": {
+        "agentID=a": "Agent"
       },
       "withdrawToAddress": {
       },
       "withdrawToChain": {
       }
+    },
+    "views": {
+      "accounts": {
+      },
+      "balance": {
+        "agentID=a": "Agent"
+      },
+      "totalAssets": {
+      }
     }
   },
   {
     "name": "blob",
-    "params": {
-      "bytes": "bytes",
-      "field": "field",
-      "hash": "hash"
-    },
+    "description": "Blob Contract",
     "funcs": {
       "storeBlob": {
       }
     },
     "views": {
       "getBlobField": {
+        "hash": "Hash",
+        "field": "String"
       },
       "getBlobInfo": {
+        "hash": "Hash"
       },
       "listBlobs": {
       }
@@ -43,62 +42,63 @@
   },
   {
     "name": "eventlog",
-    "params": {
-      "contractHname": "contractHname",
-      "fromTs": "fromTs",
-      "maxLastRecords": "maxLastRecords",
-      "numRecords": "numRecords",
-      "records": "records",
-      "toTs": "toTs"
+    "description": "Event log Contract",
+    "vars": {
+      "numRecords": "Int",
+      "records": "[]Bytes"
     },
     "funcs": {
     },
     "views": {
       "getNumRecords": {
+        "contractHname": "Hname"
       },
       "getRecords": {
+        "contractHname": "Hname",
+        "maxLastRecords": "?Int",
+        "fromTs": "?Int",
+        "toTs": "?Int"
       }
     }
   },
   {
     "name": "root",
-    "params": {
-      "chainAddress": "$$address$$",
-      "chainColor": "$$color$$",
-      "chainID": "$$chainid$$",
-      "chainOwner": "$$owner$$",
-      "data": "$$data$$",
-      "deployer": "$$deployer$$",
-      "description": "$$description$$",
-      "feeColor": "$$feecolor$$",
-      "hname": "$$hname$$",
-      "name": "$$name$$",
-      "ownerFee": "$$ownerfee$$",
-      "programHash": "$$proghash$$",
-      "validatorFee": "$$validatorfee$$"
-    },
+    "description": "Root Contract",
     "funcs": {
       "claimChainOwnership": {
       },
       "delegateChainOwnership": {
+        "chainOwner=$$owner$$": "Agent"
       },
       "deployContract": {
+        "programHash=$$proghash$$": "Hash",
+        "name=$$name$$": "String",
+        "description=$$description$$": "?String"
       },
       "grantDeployPermission": {
+        "deployer=$$deployer$$": "Agent"
       },
       "revokeDeployPermission": {
+        "deployer=$$deployer$$": "Agent"
       },
       "setContractFee": {
+        "hname$$hname$$": "Hname",
+        "ownerFee=$$ownerfee$$": "?Int",
+        "validatorFee=$$validatorfee$$": "?Int"
       },
       "setDefaultFee": {
+        "ownerFee=$$ownerfee$$": "?Int",
+        "validatorFee=$$validatorfee$$": "?Int"
       }
     },
     "views": {
       "findContract": {
+        "hname$$hname$$": "Hname"
       },
       "getChainInfo": {
       },
       "getFeeInfo": {
+        "hname$$hname$$": "Hname"
       }
     }
   }

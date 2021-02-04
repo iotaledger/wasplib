@@ -37,7 +37,7 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-var WasmRunner = 0
+var WasmRunner = 2
 
 var ScForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,
@@ -81,6 +81,12 @@ func NewTestEnv(t *testing.T, scName string) *TestEnv {
 	return te
 }
 
+// returns the agent id of a wallet with preloaded funds for the agent with specified index
+func (te *TestEnv) Agent(index int) coretypes.AgentID {
+	return coretypes.NewAgentIDFromAddress(te.Wallet(index).Address())
+}
+
+// calls view on current contract
 func (te *TestEnv) CallView(funcName string, params ...interface{}) dict.Dict {
 	if te.host != nil {
 		client.ConnectHost(te.host)
@@ -90,18 +96,9 @@ func (te *TestEnv) CallView(funcName string, params ...interface{}) dict.Dict {
 	return ret
 }
 
+// sets up request for func or view on current contract
 func (te *TestEnv) NewCallParams(funcName string, params ...interface{}) *TestEnv {
 	te.req = solo.NewCallParams(te.ScName, funcName, filterKeys(params...)...)
-	return te
-}
-
-func (te *TestEnv) WithTransfer(color balance.Color, amount int64) *TestEnv {
-	te.req.WithTransfer(color, amount)
-	return te
-}
-
-func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
-	te.req.WithTransfers(transfer)
 	return te
 }
 
@@ -120,27 +117,74 @@ func (te *TestEnv) post(iotas int64, scheme []signaturescheme.SignatureScheme) (
 	return ret, err
 }
 
+// posts the func or view request, expecting to succeed
 func (te *TestEnv) Post(iotas int64, scheme ...signaturescheme.SignatureScheme) dict.Dict {
 	ret, err := te.post(iotas, scheme)
 	require.NoError(te.T, err)
 	return ret
 }
 
+// posts the func or view request, expecting to fail
 func (te *TestEnv) PostFail(iotas int64, scheme ...signaturescheme.SignatureScheme) error {
 	_, err := te.post(iotas, scheme)
 	require.Error(te.T, err)
 	return err
 }
 
-func (te *TestEnv) State() client.ScImmutableMap {
-	ret := te.CallView("copy_all_state")
-	return te.GetClientMap(wasmhost.KeyState, ret)
+// convert call result to wasplib ScImmutableMap
+func (te *TestEnv) Results(dict kv.KVStore) client.ScImmutableMap {
+	return te.ScImmutableMap(wasmhost.KeyResults, dict)
 }
 
+// convert K/V store to wasplib ScImmutableMap
+func (te *TestEnv) ScImmutableMap(keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
+	logger := testutil.NewLogger(te.T, "04:05.000")
+	host := &wasmhost.KvStoreHost{}
+	null := wasmproc.NewNullObject(host)
+	root := wasmproc.NewScDictFromKvStore(host, kvStore)
+	host.Init(null, root, logger)
+	root.InitObj(1, keyId, root)
+	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
+	oldHost := client.ConnectHost(host)
+	if te.host == nil {
+		te.host = oldHost
+	}
+	return client.Root.Immutable()
+}
+
+// retrieve entire state of contract as ScImmutableMap
+func (te *TestEnv) State() client.ScImmutableMap {
+	ret := te.CallView("copy_all_state")
+	return te.ScImmutableMap(wasmhost.KeyState, ret)
+}
+
+// process all requests until request backlog is empty
 func (te *TestEnv) WaitForEmptyBacklog() {
 	te.Chain.WaitForEmptyBacklog()
 }
 
+// returns a wallet with preloaded funds for the agent with specified index
+func (te *TestEnv) Wallet(index int) signaturescheme.SignatureScheme {
+	require.True(te.T, index <= len(te.wallets), "invalid wallet index")
+	if index == len(te.wallets) {
+		te.wallets = append(te.wallets, te.Env.NewSignatureSchemeWithFunds())
+	}
+	return te.wallets[index]
+}
+
+// add a single transfer to request
+func (te *TestEnv) WithTransfer(color balance.Color, amount int64) *TestEnv {
+	te.req.WithTransfer(color, amount)
+	return te
+}
+
+// add multiple transfers to request
+func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
+	te.req.WithTransfers(transfer)
+	return te
+}
+
+// deploy the specified contract on the chain
 func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string, params ...interface{}) error {
 	if WasmRunner == WasmRunnerGoDirect {
 		wasmproc.GoWasmVM = NewGoVM(ScForGoVM)
@@ -159,21 +203,6 @@ func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureSche
 	return chain.DeployWasmContract(sigScheme, name, wasmFile, filterKeys(params...)...)
 }
 
-func (te *TestEnv) GetClientMap(keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
-	logger := testutil.NewLogger(te.T, "04:05.000")
-	host := &wasmhost.KvStoreHost{}
-	null := wasmproc.NewNullObject(host)
-	root := wasmproc.NewScDictFromKvStore(host, kvStore)
-	host.Init(null, root, logger)
-	root.InitObj(1, keyId, root)
-	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
-	oldHost := client.ConnectHost(host)
-	if te.host == nil {
-		te.host = oldHost
-	}
-	return client.Root.Immutable()
-}
-
 // filters client.Key parameters and replaces them with their proper string equivalent
 func filterKeys(params ...interface{}) []interface{} {
 	for i, param := range params {
@@ -183,18 +212,4 @@ func filterKeys(params ...interface{}) []interface{} {
 		}
 	}
 	return params
-}
-
-// returns the agent id of a wallet with preloaded funds for the agent with specified index
-func (te *TestEnv) Agent(index int) coretypes.AgentID {
-	return coretypes.NewAgentIDFromAddress(te.Wallet(index).Address())
-}
-
-// returns a wallet with preloaded funds for the agent with specified index
-func (te *TestEnv) Wallet(index int) signaturescheme.SignatureScheme {
-	require.True(te.T, index <= len(te.wallets), "invalid wallet index")
-	if index == len(te.wallets) {
-		te.wallets = append(te.wallets, te.Env.NewSignatureSchemeWithFunds())
-	}
-	return te.wallets[index]
 }

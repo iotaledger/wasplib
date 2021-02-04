@@ -17,7 +17,7 @@ func setupDwfTest(t *testing.T) *govm.TestEnv {
 func TestDwfDeploy(t *testing.T) {
 	te := setupDwfTest(t)
 	ret := te.CallView(donatewithfeedback.ViewDonations)
-	results := te.GetClientMap(wasmhost.KeyResults, ret)
+	results := te.Results(ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 0, max.Value())
 	tot := results.GetInt(donatewithfeedback.VarTotalDonation)
@@ -30,7 +30,7 @@ func TestDonateOnce(t *testing.T) {
 		donatewithfeedback.ParamFeedback, "Nice work!").
 		Post(42, te.Wallet(0))
 	ret := te.CallView(donatewithfeedback.ViewDonations)
-	results := te.GetClientMap(wasmhost.KeyResults, ret)
+	results := te.Results(ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 42, max.Value())
 	tot := results.GetInt(donatewithfeedback.VarTotalDonation)
@@ -53,7 +53,7 @@ func TestDonateTwice(t *testing.T) {
 		donatewithfeedback.ParamFeedback, "Exactly what I needed!").
 		Post(69, te.Wallet(1))
 	ret := te.CallView(donatewithfeedback.ViewDonations)
-	results := te.GetClientMap(wasmhost.KeyResults, ret)
+	results := te.Results(ret)
 	max := results.GetInt(donatewithfeedback.VarMaxDonation)
 	require.EqualValues(t, 69, max.Value())
 	tot := results.GetInt(donatewithfeedback.VarTotalDonation)

@@ -36,10 +36,12 @@ func GenerateGoSchema(path string, contract string, schema *Schema) error {
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n\n")
 
 	fmt.Fprintf(file, "const ScName = \"%s\"\n", schema.Name)
+	if schema.Description != "" {
+		fmt.Fprintf(file, "const ScDescription = \"%s\"\n", schema.Description)
+	}
 	hName := coretypes.Hn(schema.Name)
 	fmt.Fprintf(file, "const ScHname = client.ScHname(0x%s)\n", hName.String())
 
-	fmt.Fprintln(file)
 	params := make(StringMap)
 	for _, funcDef := range schema.Funcs {
 		for fldName := range funcDef {
@@ -48,44 +50,51 @@ func GenerateGoSchema(path string, contract string, schema *Schema) error {
 			}
 		}
 	}
-	for _, name := range sortedKeys(params) {
-		fmt.Fprintf(file, "const Param%s = client.Key(\"%s\")\n", capitalize(name), name)
+	if len(params) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedKeys(params) {
+			fmt.Fprintf(file, "const Param%s = client.Key(\"%s\")\n", capitalize(name), name)
+		}
 	}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedKeys(schema.Vars) {
-		fmt.Fprintf(file, "const Var%s = client.Key(\"%s\")\n", capitalize(name), name)
+	if len(schema.Vars) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedKeys(schema.Vars) {
+			fmt.Fprintf(file, "const Var%s = client.Key(\"%s\")\n", capitalize(name), name)
+		}
 	}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedMaps(schema.Funcs) {
-		fmt.Fprintf(file, "const Func%s = \"%s\"\n", capitalize(name), name)
-	}
-	for _, name := range sortedMaps(schema.Views) {
-		fmt.Fprintf(file, "const View%s = \"%s\"\n", capitalize(name), name)
-	}
+	if len(schema.Funcs)+len(schema.Views) != 0 {
+		fmt.Fprintln(file)
+		for _, name := range sortedMaps(schema.Funcs) {
+			fmt.Fprintf(file, "const Func%s = \"%s\"\n", capitalize(name), name)
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			fmt.Fprintf(file, "const View%s = \"%s\"\n", capitalize(name), name)
+		}
 
-	fmt.Fprintln(file)
-	for _, name := range sortedMaps(schema.Funcs) {
-		hName = coretypes.Hn(name)
-		fmt.Fprintf(file, "const HFunc%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
-	}
-	for _, name := range sortedMaps(schema.Views) {
-		hName = coretypes.Hn(name)
-		fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
-	}
+		fmt.Fprintln(file)
+		for _, name := range sortedMaps(schema.Funcs) {
+			hName = coretypes.Hn(name)
+			fmt.Fprintf(file, "const HFunc%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			hName = coretypes.Hn(name)
+			fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", capitalize(name), hName.String())
+		}
 
-	fmt.Fprintf(file, "\nfunc OnLoad() {\n")
-	fmt.Fprintf(file, "    exports := client.NewScExports()\n")
-	for _, name := range sortedMaps(schema.Funcs) {
-		name = capitalize(name)
-		fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
+		fmt.Fprintf(file, "\nfunc OnLoad() {\n")
+		fmt.Fprintf(file, "    exports := client.NewScExports()\n")
+		for _, name := range sortedMaps(schema.Funcs) {
+			name = capitalize(name)
+			fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
+		}
+		for _, name := range sortedMaps(schema.Views) {
+			name = capitalize(name)
+			fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
+		}
+		fmt.Fprintf(file, "}\n")
 	}
-	for _, name := range sortedMaps(schema.Views) {
-		name = capitalize(name)
-		fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
-	}
-	fmt.Fprintf(file, "}\n")
 
 	return nil
 }

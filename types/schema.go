@@ -10,11 +10,12 @@ type StringMap map[string]string
 type StringMapMap map[string]StringMap
 
 type Schema struct {
-	Funcs StringMapMap `json:"funcs"`
-	Name  string       `json:"name"`
-	Types StringMapMap `json:"types"`
-	Vars  StringMap    `json:"vars"`
-	Views StringMapMap `json:"views"`
+	Description string       `json:"description"`
+	Funcs       StringMapMap `json:"funcs"`
+	Name        string       `json:"name"`
+	Types       StringMapMap `json:"types"`
+	Vars        StringMap    `json:"vars"`
+	Views       StringMapMap `json:"views"`
 }
 
 func LoadSchema(path string) (*Schema, error) {

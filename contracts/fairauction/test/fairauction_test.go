@@ -145,7 +145,7 @@ func TestFaClientAccess(t *testing.T) {
 	res := te.CallView(fairauction.ViewGetInfo, fairauction.ParamColor, tokenColor)
 	requireInt64(t, res, fairauction.VarBidders, 0)
 
-	results := te.GetClientMap(wasmhost.KeyResults, res)
+	results := te.Results(res)
 	require.EqualValues(t, 0, results.GetInt(fairauction.VarBidders).Value())
 }
 

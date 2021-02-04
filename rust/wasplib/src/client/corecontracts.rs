@@ -4,12 +4,12 @@
 use super::hashtypes::*;
 
 pub const CORE_ACCOUNTS: ScHname = ScHname(0x3c4b5e02);
-pub const CORE_ACCOUNTS_FUNC_BALANCE: ScHname = ScHname(0x84168cb4);
 pub const CORE_ACCOUNTS_FUNC_DEPOSIT: ScHname = ScHname(0xbdc9102d);
-pub const CORE_ACCOUNTS_FUNC_TOTAL_ASSETS: ScHname = ScHname(0xfab0f8d2);
+pub const CORE_ACCOUNTS_FUNC_WITHDRAW_TO_ADDRESS: ScHname = ScHname(0x26608cb5);
+pub const CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN: ScHname = ScHname(0x437bc026);
 pub const CORE_ACCOUNTS_VIEW_ACCOUNTS: ScHname = ScHname(0x3c4b5e02);
-pub const CORE_ACCOUNTS_VIEW_WITHDRAW_TO_ADDRESS: ScHname = ScHname(0x26608cb5);
-pub const CORE_ACCOUNTS_VIEW_WITHDRAW_TO_CHAIN: ScHname = ScHname(0x437bc026);
+pub const CORE_ACCOUNTS_VIEW_BALANCE: ScHname = ScHname(0x84168cb4);
+pub const CORE_ACCOUNTS_VIEW_TOTAL_ASSETS: ScHname = ScHname(0xfab0f8d2);
 
 pub const CORE_BLOB: ScHname = ScHname(0xfd91bc63);
 pub const CORE_BLOB_FUNC_STORE_BLOB: ScHname = ScHname(0xddd4c281);
