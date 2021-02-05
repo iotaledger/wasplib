@@ -4,4 +4,4 @@
 */pkg/
 **/target/
 dump/
-wasm/
+*.wasm

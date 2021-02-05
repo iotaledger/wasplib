@@ -6,8 +6,8 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/contracts/dividend"
-	"github.com/iotaledger/wasplib/wasmclient"
+	"github.com/iotaledger/wasplib/rust/contracts/dividend/test/dividend"
+	"github.com/iotaledger/wasplib/client/wasm"
 )
 
 func main() {

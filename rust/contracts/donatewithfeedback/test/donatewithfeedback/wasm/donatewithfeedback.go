@@ -6,8 +6,8 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
-	"github.com/iotaledger/wasplib/wasmclient"
+	"github.com/iotaledger/wasplib/rust/contracts/donatewithfeedback/test/donatewithfeedback"
+	"github.com/iotaledger/wasplib/client/wasm"
 )
 
 func main() {

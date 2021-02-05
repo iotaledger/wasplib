@@ -3,15 +3,15 @@ members = [
     "wasplib",
     "contracts/dividend",
     "contracts/donatewithfeedback",
-    "contracts/erc20",
     "contracts/dummy",
+    "contracts/erc20",
+    "contracts/examples/example1",
     "contracts/fairauction",
     "contracts/fairroulette",
     "contracts/helloworld",
-    "contracts/examples/example1",
     "contracts/inccounter",
-    "contracts/tokenregistry",
     "contracts/testcore",
+    "contracts/tokenregistry",
 ]
 
 [profile.release]

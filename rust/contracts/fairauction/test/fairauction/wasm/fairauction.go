@@ -6,15 +6,15 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/contracts/tokenregistry"
-	"github.com/iotaledger/wasplib/wasmclient"
+	"github.com/iotaledger/wasplib/rust/contracts/fairauction/test/fairauction"
+	"github.com/iotaledger/wasplib/client/wasm"
 )
 
 func main() {
 }
 
 //export on_load
-func tokenregistryOnLoad() {
+func fairauctionOnLoad() {
 	wasmclient.ConnectWasmHost()
-	tokenregistry.OnLoad()
+	fairauction.OnLoad()
 }

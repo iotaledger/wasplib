@@ -7,7 +7,7 @@ package main
 
 import (
 	"github.com/iotaledger/wasplib/contracts/dummy"
-	"github.com/iotaledger/wasplib/wasmclient"
+	"github.com/iotaledger/wasplib/client/wasm"
 )
 
 func main() {

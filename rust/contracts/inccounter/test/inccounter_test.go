@@ -1,8 +1,8 @@
 package wasptest
 
 import (
-	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/govm"
+	"github.com/iotaledger/wasplib/rust/contracts/inccounter/test/inccounter"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

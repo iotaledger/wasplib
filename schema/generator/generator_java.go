@@ -1,15 +1,15 @@
 package generator
 
 var javaTypes = StringMap{
-	"address":     "ScAddress",
-	"agent":       "ScAgent",
-	"chain_id":    "ScChainId",
-	"color":       "ScColor",
-	"contract_id": "ScContractId",
-	"hash":        "ScHash",
-	"hname":       "Hname",
-	"int":         "long",
-	"string":      "String",
+	"Address":    "ScAddress",
+	"AgentId":    "ScAgentId",
+	"ChainId":    "ScChainId",
+	"Color":      "ScColor",
+	"ContractId": "ScContractId",
+	"Hash":       "ScHash",
+	"Hname":      "Hname",
+	"Int":        "long",
+	"String":     "String",
 }
 
 //func GenerateJavaTypes(path string) error {

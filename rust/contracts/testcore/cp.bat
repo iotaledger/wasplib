@@ -1,1 +1,1 @@
-copy pkg\testcore_bg.wasm ..\..\..\..\wasp\packages\vm\core\testcore\sandbox_tests\testcore_bg.wasm
+copy pkg\testcore_bg.wasm ..\..\..\..\wasp\wasm\testcore_bg.wasm

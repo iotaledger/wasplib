@@ -6,15 +6,15 @@
 package main
 
 import (
-	"github.com/iotaledger/wasplib/contracts/inccounter"
-	"github.com/iotaledger/wasplib/wasmclient"
+	"github.com/iotaledger/wasplib/rust/contracts/fairroulette/test/fairroulette"
+	"github.com/iotaledger/wasplib/client/wasm"
 )
 
 func main() {
 }
 
 //export on_load
-func inccounterOnLoad() {
+func fairrouletteOnLoad() {
 	wasmclient.ConnectWasmHost()
-	inccounter.OnLoad()
+	fairroulette.OnLoad()
 }

@@ -1,1 +1,1 @@
-copy pkg\erc20_bg.wasm ..\..\..\..\wasp\packages\vm\core\testcore\sandbox_tests\erc20_bg.wasm
+copy pkg\erc20_bg.wasm ..\..\..\..\wasp\wasm\erc20_bg.wasm

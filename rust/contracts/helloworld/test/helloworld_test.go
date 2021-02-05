@@ -1,8 +1,8 @@
 package test
 
 import (
-	"github.com/iotaledger/wasplib/contracts/helloworld"
 	"github.com/iotaledger/wasplib/govm"
+	"github.com/iotaledger/wasplib/rust/contracts/helloworld/test/helloworld"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

@@ -2,8 +2,8 @@ package test
 
 import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
-	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
 	"github.com/iotaledger/wasplib/govm"
+	"github.com/iotaledger/wasplib/rust/contracts/donatewithfeedback/test/donatewithfeedback"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

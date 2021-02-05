@@ -1,8 +1,8 @@
 package test
 
 import (
-	"github.com/iotaledger/wasplib/contracts/dividend"
 	"github.com/iotaledger/wasplib/govm"
+	"github.com/iotaledger/wasplib/rust/contracts/dividend/test/dividend"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
