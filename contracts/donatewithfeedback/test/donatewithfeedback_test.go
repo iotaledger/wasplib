@@ -2,7 +2,6 @@ package test
 
 import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
-	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
 	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"

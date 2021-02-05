@@ -4,7 +4,7 @@
     "description": "Chain account ledger contract",
     "funcs": {
       "deposit": {
-        "agentID=a": "Agent"
+        "agentID=a": "AgentId"
       },
       "withdrawToAddress": {
       },
@@ -15,7 +15,7 @@
       "accounts": {
       },
       "balance": {
-        "agentID=a": "Agent"
+        "agentID=a": "AgentId"
       },
       "totalAssets": {
       }
@@ -68,7 +68,7 @@
       "claimChainOwnership": {
       },
       "delegateChainOwnership": {
-        "chainOwner=$$owner$$": "Agent"
+        "chainOwner=$$owner$$": "AgentId"
       },
       "deployContract": {
         "programHash=$$proghash$$": "Hash",
@@ -76,13 +76,13 @@
         "description=$$description$$": "?String"
       },
       "grantDeployPermission": {
-        "deployer=$$deployer$$": "Agent"
+        "deployer=$$deployer$$": "AgentId"
       },
       "revokeDeployPermission": {
-        "deployer=$$deployer$$": "Agent"
+        "deployer=$$deployer$$": "AgentId"
       },
       "setContractFee": {
-        "hname$$hname$$": "Hname",
+        "hname=$$hname$$": "Hname",
         "ownerFee=$$ownerfee$$": "?Int",
         "validatorFee=$$validatorfee$$": "?Int"
       },
@@ -93,12 +93,12 @@
     },
     "views": {
       "findContract": {
-        "hname$$hname$$": "Hname"
+        "hname=$$hname$$": "Hname"
       },
       "getChainInfo": {
       },
       "getFeeInfo": {
-        "hname$$hname$$": "Hname"
+        "hname=$$hname$$": "Hname"
       }
     }
   }

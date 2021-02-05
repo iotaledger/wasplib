@@ -1,7 +1,6 @@
 package wasptest
 
 import (
-	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/govm"
 	"github.com/stretchr/testify/require"

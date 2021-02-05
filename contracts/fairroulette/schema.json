@@ -8,9 +8,9 @@
     }
   },
   "vars": {
-    "bets": "[]BetInfo]",
+    "bets": "[]BetInfo",
     "lastWinningNumber": "Int",
-    "lockedBets": "[]BetInfo]",
+    "lockedBets": "[]BetInfo",
     "playPeriod": "Int"
   },
   "funcs": {

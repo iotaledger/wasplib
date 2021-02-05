@@ -7,7 +7,6 @@ import (
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/dict"
-	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/client"
 	"github.com/iotaledger/wasplib/contracts/fairauction"
 	"github.com/iotaledger/wasplib/govm"

@@ -1,14 +1,13 @@
-package types
+package generator
 
 import (
-	"fmt"
 	"regexp"
 	"sort"
 	"strings"
 )
 
 type Generator struct {
-	schema *Schema
+	schema *JsonSchema
 }
 
 var camelRegExp = regexp.MustCompile("_[a-z]")
@@ -51,6 +50,15 @@ func upper(name string) string {
 	return strings.ToUpper(name)
 }
 
+func sortedFields(dict FieldMap) []string {
+	keys := make([]string, 0)
+	for key := range dict {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
 func sortedKeys(dict StringMap) []string {
 	keys := make([]string, 0)
 	for key := range dict {
@@ -67,47 +75,4 @@ func sortedMaps(dict StringMapMap) []string {
 	}
 	sort.Strings(keys)
 	return keys
-}
-
-func splitComment(typeDef string) (string, string) {
-	typeDef = strings.TrimSpace(typeDef)
-	comment := ""
-	index := strings.Index(typeDef, "//")
-	if index > 0 {
-		comment = " " + strings.TrimSpace(typeDef[index:])
-		typeDef = strings.TrimSpace(typeDef[:index])
-	}
-	return typeDef, comment
-}
-
-func GenerateSchema(path string) error {
-	fmt.Println(path)
-	schema, err := LoadSchema(path)
-	if err != nil {
-		return err
-	}
-
-	var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wschema.json")
-	contract := matchContract.ReplaceAllString(path, "$1")
-
-	path = path[:len(path)-len("schema.json")]
-	err = GenerateGoTypes(path, contract, schema.Types)
-	if err != nil {
-		return err
-	}
-	err = GenerateGoSchema(path, contract, schema)
-	if err != nil {
-		return err
-	}
-
-	path = "../rust/contracts/" + contract + "/src/"
-	err = GenerateRustTypes(path, contract, schema.Types)
-	if err != nil {
-		return err
-	}
-	err = GenerateRustSchema(path, contract, schema)
-	if err != nil {
-		return err
-	}
-	return nil
 }

@@ -1,4 +1,4 @@
-package types
+package generator
 
 var javaTypes = StringMap{
 	"address":     "ScAddress",
