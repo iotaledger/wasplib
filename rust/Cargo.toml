@@ -1,17 +1,10 @@
 [workspace]
 members = [
     "wasplib",
-    "contracts/dividend",
-    "contracts/donatewithfeedback",
     "contracts/dummy",
     "contracts/erc20",
     "contracts/examples/example1",
-    "contracts/fairauction",
-    "contracts/fairroulette",
-    "contracts/helloworld",
-    "contracts/inccounter",
     "contracts/testcore",
-    "contracts/tokenregistry",
 ]
 
 [profile.release]

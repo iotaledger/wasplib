@@ -23,26 +23,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dividend"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "donatewithfeedback"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
 name = "dummy"
 version = "0.1.0"
 dependencies = [
@@ -64,46 +44,6 @@ dependencies = [
 
 [[package]]
 name = "example1"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "fairauction"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "fairroulette"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "helloworld"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "inccounter"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
@@ -185,16 +125,6 @@ dependencies = [
 
 [[package]]
 name = "testcore"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen-test",
- "wasplib",
- "wee_alloc",
-]
-
-[[package]]
-name = "tokenregistry"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",

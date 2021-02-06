@@ -8,7 +8,7 @@
     "Color": "32-byte token color: hash of request that minted the color, all zero for plain iota, all one for mint command",
     "DonationInfo": [
       {"seq": "Int"},
-      {"donator": "Agent"},
+      {"donator": "AgentId"},
       {"amount": "Int"},
       {"feedback": "String"},
       {"error": "String"}
@@ -20,12 +20,12 @@
       {"description": "String"},
       {"when_started": "Int"},
       {"duration": "Int"},
-      {"auction_owner": "Agent"},
+      {"auction_owner": "AgentId"},
       {"deposit": "Int"},
       {"owner_margin": "Int"}
     ],
     "BidInfo": [
-      {"bidder": "Agent"},
+      {"bidder": "AgentId"},
       {"amount": "Int"},
       {"when": "Int"}
     ]

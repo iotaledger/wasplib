@@ -6,24 +6,24 @@
 
 package erc20
 
-import "github.com/iotaledger/wasplib/client"
+import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 // state variable
-const StateVarSupply = client.Key("s")
+const StateVarSupply = wasmlib.Key("s")
 
 // supply constant
-const StateVarBalances = client.Key("b") // name of the map of balances
+const StateVarBalances = wasmlib.Key("b") // name of the map of balances
 
 // params and return variables, used in calls
-const ParamSupply = client.Key("s")
-const ParamCreator = client.Key("c")
-const ParamAccount = client.Key("ac")
-const ParamDelegation = client.Key("d")
-const ParamAmount = client.Key("am")
-const ParamRecipient = client.Key("r")
+const ParamSupply = wasmlib.Key("s")
+const ParamCreator = wasmlib.Key("c")
+const ParamAccount = wasmlib.Key("ac")
+const ParamDelegation = wasmlib.Key("d")
+const ParamAmount = wasmlib.Key("am")
+const ParamRecipient = wasmlib.Key("r")
 
 func OnLoad() {
-	exports := client.NewScExports()
+	exports := wasmlib.NewScExports()
 	exports.AddCall("init", onInit)
 	exports.AddView("total_supply", totalSupply)
 	exports.AddView("balance_of", balanceOf)
@@ -40,7 +40,7 @@ func OnLoad() {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-func onInit(ctx *client.ScCallContext) {
+func onInit(ctx *wasmlib.ScCallContext) {
 	ctx.Trace("erc20.on_init.begin")
 	// validate parameters
 	// supply
@@ -65,7 +65,7 @@ func onInit(ctx *client.ScCallContext) {
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
-func totalSupply(ctx *client.ScViewContext) {
+func totalSupply(ctx *wasmlib.ScViewContext) {
 	supply := ctx.State().GetInt(StateVarSupply).Value()
 	ctx.Results().GetInt(ParamSupply).SetValue(supply)
 }
@@ -73,7 +73,7 @@ func totalSupply(ctx *client.ScViewContext) {
 // the view returns balance of the token held in the account
 // Input:
 // - PARAM_ACCOUNT: agentID
-func balanceOf(ctx *client.ScViewContext) {
+func balanceOf(ctx *wasmlib.ScViewContext) {
 	account := ctx.Params().GetAgentId(ParamAccount)
 	ctx.Require(account.Exists(), ("wrong or non existing parameter: " + account.String()))
 
@@ -89,7 +89,7 @@ func balanceOf(ctx *client.ScViewContext) {
 // - PARAM_DELEGATION: agentID
 // Output:
 // - PARAM_AMOUNT: i64. 0 if delegation doesn't exists
-func allowance(ctx *client.ScViewContext) {
+func allowance(ctx *wasmlib.ScViewContext) {
 	ctx.Trace("erc20.allowance")
 	// validate parameters
 	// account
@@ -109,7 +109,7 @@ func allowance(ctx *client.ScViewContext) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-func transfer(ctx *client.ScCallContext) {
+func transfer(ctx *wasmlib.ScCallContext) {
 	ctx.Trace("erc20.transfer")
 
 	// validate params
@@ -141,7 +141,7 @@ func transfer(ctx *client.ScCallContext) {
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-func approve(ctx *client.ScCallContext) {
+func approve(ctx *wasmlib.ScCallContext) {
 	ctx.Trace("erc20.approve")
 
 	// validate parameters
@@ -164,7 +164,7 @@ func approve(ctx *client.ScCallContext) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-func transferFrom(ctx *client.ScCallContext) {
+func transferFrom(ctx *wasmlib.ScCallContext) {
 	ctx.Trace("erc20.transfer_from")
 
 	// validate parameters

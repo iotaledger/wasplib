@@ -3,38 +3,38 @@
 
 package testcore
 
-import "github.com/iotaledger/wasplib/client"
+import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-const ParamIntParamName = client.Key("intParamName")
-const ParamIntParamValue = client.Key("intParamValue")
-const ParamHnameContract = client.Key("hnameContract")
-const ParamHnameEp = client.Key("hnameEP")
+const ParamIntParamName = wasmlib.Key("intParamName")
+const ParamIntParamValue = wasmlib.Key("intParamValue")
+const ParamHnameContract = wasmlib.Key("hnameContract")
+const ParamHnameEp = wasmlib.Key("hnameEP")
 
-const ParamAddress = client.Key("address")
-const ParamChainOwnerId = client.Key("chainOwnerID")
-const ParamContractId = client.Key("contractID")
-const ParamChainId = client.Key("chainid")
-const ParamCaller = client.Key("caller")
-const ParamAgentId = client.Key("agentID")
-const ParamCreator = client.Key("contractCreator")
+const ParamAddress = wasmlib.Key("address")
+const ParamChainOwnerId = wasmlib.Key("chainOwnerID")
+const ParamContractId = wasmlib.Key("contractID")
+const ParamChainId = wasmlib.Key("chainid")
+const ParamCaller = wasmlib.Key("caller")
+const ParamAgentId = wasmlib.Key("agentID")
+const ParamCreator = wasmlib.Key("contractCreator")
 
-const ParamInt64 = client.Key("int64")
-const ParamInt64Zero = client.Key("int64-0")
-const ParamHash = client.Key("Hash")
-const ParamHname = client.Key("Hname")
-const ParamHnameZero = client.Key("Hname-0")
-const ParamString = client.Key("string")
-const ParamStringZero = client.Key("string-0")
+const ParamInt64 = wasmlib.Key("int64")
+const ParamInt64Zero = wasmlib.Key("int64-0")
+const ParamHash = wasmlib.Key("Hash")
+const ParamHname = wasmlib.Key("Hname")
+const ParamHnameZero = wasmlib.Key("Hname-0")
+const ParamString = wasmlib.Key("string")
+const ParamStringZero = wasmlib.Key("string-0")
 
-const VarCounter = client.Key("counter")
-const VarContractNameDeployed = client.Key("exampleDeployTR")
+const VarCounter = wasmlib.Key("counter")
+const VarContractNameDeployed = wasmlib.Key("exampleDeployTR")
 
 const MsgFullPanic string = "========== panic FULL ENTRY POINT ========="
 const MsgViewPanic string = "========== panic VIEW ========="
 const MsgPanicUnauthorized string = "============== panic due to unauthorized call"
 
 func OnLoad() {
-	exports := client.NewScExports()
+	exports := wasmlib.NewScExports()
 	exports.AddCall("init", onInit)
 	exports.AddCall("doNothing", doNothing)
 	exports.AddCall("callOnChain", callOnChain)
@@ -71,15 +71,15 @@ func OnLoad() {
 	exports.AddCall("withdrawToChain", withdrawToChain)
 }
 
-func onInit(ctx *client.ScCallContext) {
+func onInit(ctx *wasmlib.ScCallContext) {
 	ctx.Log("testcore.on_init.wasm.begin")
 }
 
-func doNothing(ctx *client.ScCallContext) {
+func doNothing(ctx *wasmlib.ScCallContext) {
 	ctx.Log("testcore.do_nothing.begin")
 }
 
-func setInt(ctx *client.ScCallContext) {
+func setInt(ctx *wasmlib.ScCallContext) {
 	ctx.Log("testcore.set_int.begin")
 	paramName := ctx.Params().GetString(ParamIntParamName)
 	ctx.Require(paramName.Exists(), "param 'name' not found")
@@ -87,21 +87,21 @@ func setInt(ctx *client.ScCallContext) {
 	paramValue := ctx.Params().GetInt(ParamIntParamValue)
 	ctx.Require(paramValue.Exists(), "param 'value' not found")
 
-	ctx.State().GetInt(client.Key(paramName.Value())).SetValue(paramValue.Value())
+	ctx.State().GetInt(wasmlib.Key(paramName.Value())).SetValue(paramValue.Value())
 }
 
-func getInt(ctx *client.ScViewContext) {
+func getInt(ctx *wasmlib.ScViewContext) {
 	ctx.Log("testcore.get_int.begin")
 	paramName := ctx.Params().GetString(ParamIntParamName)
 	ctx.Require(paramName.Exists(), "param 'name' not found")
 
-	paramValue := ctx.State().GetInt(client.Key(paramName.Value()))
+	paramValue := ctx.State().GetInt(wasmlib.Key(paramName.Value()))
 	ctx.Require(paramValue.Exists(), "param 'value' not found")
 
-	ctx.Results().GetInt(client.Key(paramName.Value())).SetValue(paramValue.Value())
+	ctx.Results().GetInt(wasmlib.Key(paramName.Value())).SetValue(paramValue.Value())
 }
 
-func callOnChain(ctx *client.ScCallContext) {
+func callOnChain(ctx *wasmlib.ScCallContext) {
 	paramValue := ctx.Params().GetInt(ParamIntParamValue)
 	ctx.Require(paramValue.Exists(), "param 'value' not found")
 	paramIn := paramValue.Value()
@@ -112,7 +112,7 @@ func callOnChain(ctx *client.ScCallContext) {
 		targetContract = paramHnameContract.Value()
 	}
 
-	targetEp := client.NewScHname("callOnChain")
+	targetEp := wasmlib.NewScHname("callOnChain")
 	paramHnameEp := ctx.Params().GetHname(ParamHnameEp)
 	if paramHnameEp.Exists() {
 		targetEp = paramHnameEp.Value()
@@ -131,7 +131,7 @@ func callOnChain(ctx *client.ScCallContext) {
 		" counter = " + ctx.Utility().String(counter)
 	ctx.Log(msg)
 
-	par := client.NewScMutableMap()
+	par := wasmlib.NewScMutableMap()
 	par.GetInt(ParamIntParamValue).SetValue(paramIn)
 	ret := ctx.Call(targetContract, targetEp, par, nil)
 
@@ -140,28 +140,28 @@ func callOnChain(ctx *client.ScCallContext) {
 	ctx.Results().GetInt(ParamIntParamValue).SetValue(retVal.Value())
 }
 
-func getCounter(ctx *client.ScViewContext) {
+func getCounter(ctx *wasmlib.ScViewContext) {
 	ctx.Log("testcore.get_counter.begin")
 	counter := ctx.State().GetInt(VarCounter)
 	ctx.Results().GetInt(VarCounter).SetValue(counter.Value())
 }
 
-func runRecursion(ctx *client.ScCallContext) {
+func runRecursion(ctx *wasmlib.ScCallContext) {
 	paramValue := ctx.Params().GetInt(ParamIntParamValue)
 	ctx.Require(paramValue.Exists(), "param no found")
 	depth := paramValue.Value()
 	if depth <= 0 {
 		return
 	}
-	par := client.NewScMutableMap()
+	par := wasmlib.NewScMutableMap()
 	par.GetInt(ParamIntParamValue).SetValue(depth - 1)
-	par.GetHname(ParamHnameEp).SetValue(client.NewScHname("runRecursion"))
-	ctx.Call(ctx.ContractId().Hname(), client.NewScHname("callOnChain"), par, nil)
+	par.GetHname(ParamHnameEp).SetValue(wasmlib.NewScHname("runRecursion"))
+	ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("callOnChain"), par, nil)
 	// TODO how would I return result of the call ???
 	ctx.Results().GetInt(ParamIntParamValue).SetValue(depth - 1)
 }
 
-func fibonacci(ctx *client.ScViewContext) {
+func fibonacci(ctx *wasmlib.ScViewContext) {
 	nParam := ctx.Params().GetInt(ParamIntParamValue)
 	ctx.Require(nParam.Exists(), "param 'value' not found")
 
@@ -170,44 +170,44 @@ func fibonacci(ctx *client.ScViewContext) {
 		ctx.Results().GetInt(ParamIntParamValue).SetValue(n)
 		return
 	}
-	params1 := client.NewScMutableMap()
+	params1 := wasmlib.NewScMutableMap()
 	params1.GetInt(ParamIntParamValue).SetValue(n - 1)
-	results1 := ctx.Call(ctx.ContractId().Hname(), client.NewScHname("fibonacci"), params1)
+	results1 := ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("fibonacci"), params1)
 	n1 := results1.GetInt(ParamIntParamValue).Value()
 
-	params2 := client.NewScMutableMap()
+	params2 := wasmlib.NewScMutableMap()
 	params2.GetInt(ParamIntParamValue).SetValue(n - 2)
-	results2 := ctx.Call(ctx.ContractId().Hname(), client.NewScHname("fibonacci"), params2)
+	results2 := ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("fibonacci"), params2)
 	n2 := results2.GetInt(ParamIntParamValue).Value()
 
 	ctx.Results().GetInt(ParamIntParamValue).SetValue(n1 + n2)
 }
 
-func testPanicFullEp(ctx *client.ScCallContext) {
+func testPanicFullEp(ctx *wasmlib.ScCallContext) {
 	ctx.Panic(MsgFullPanic)
 }
 
-func testPanicViewEp(ctx *client.ScViewContext) {
+func testPanicViewEp(ctx *wasmlib.ScViewContext) {
 	ctx.Panic(MsgViewPanic)
 }
 
-func testCallPanicFullEp(ctx *client.ScCallContext) {
-	ctx.Call(ctx.ContractId().Hname(), client.NewScHname("testPanicFullEP"), nil, nil)
+func testCallPanicFullEp(ctx *wasmlib.ScCallContext) {
+	ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("testPanicFullEP"), nil, nil)
 }
 
-func testCallPanicViewFromFull(ctx *client.ScCallContext) {
-	ctx.Call(ctx.ContractId().Hname(), client.NewScHname("testPanicViewEP"), nil, nil)
+func testCallPanicViewFromFull(ctx *wasmlib.ScCallContext) {
+	ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("testPanicViewEP"), nil, nil)
 }
 
-func testCallPanicViewFromView(ctx *client.ScViewContext) {
-	ctx.Call(ctx.ContractId().Hname(), client.NewScHname("testPanicViewEP"), nil)
+func testCallPanicViewFromView(ctx *wasmlib.ScViewContext) {
+	ctx.Call(ctx.ContractId().Hname(), wasmlib.NewScHname("testPanicViewEP"), nil)
 }
 
-func testJustView(ctx *client.ScViewContext) {
+func testJustView(ctx *wasmlib.ScViewContext) {
 	ctx.Log("calling empty view entry point")
 }
 
-func sendToAddress(ctx *client.ScCallContext) {
+func sendToAddress(ctx *wasmlib.ScCallContext) {
 	ctx.Log("sendToAddress")
 	ctx.Require(ctx.Caller().Equals(ctx.ContractCreator()), MsgPanicUnauthorized)
 
@@ -218,29 +218,29 @@ func sendToAddress(ctx *client.ScCallContext) {
 	ctx.TransferToAddress(targetAddr.Value(), myBalances)
 }
 
-func testChainOwnerIdView(ctx *client.ScViewContext) {
+func testChainOwnerIdView(ctx *wasmlib.ScViewContext) {
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
 }
 
-func testChainOwnerIdFull(ctx *client.ScCallContext) {
+func testChainOwnerIdFull(ctx *wasmlib.ScCallContext) {
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
 }
 
-func testContractIdView(ctx *client.ScViewContext) {
+func testContractIdView(ctx *wasmlib.ScViewContext) {
 	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
-func testContractIdFull(ctx *client.ScCallContext) {
+func testContractIdFull(ctx *wasmlib.ScCallContext) {
 	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
-func testSandboxCall(ctx *client.ScViewContext) {
-	ret := ctx.Call(client.CoreRoot, client.CoreRootViewGetChainInfo, nil)
-	desc := ret.GetString(client.Key("d")).Value()
-	ctx.Results().GetString(client.Key("sandboxCall")).SetValue(desc)
+func testSandboxCall(ctx *wasmlib.ScViewContext) {
+	ret := ctx.Call(wasmlib.CoreRoot, wasmlib.CoreRootViewGetChainInfo, nil)
+	desc := ret.GetString(wasmlib.Key("d")).Value()
+	ctx.Results().GetString(wasmlib.Key("sandboxCall")).SetValue(desc)
 }
 
-func passTypesFull(ctx *client.ScCallContext) {
+func passTypesFull(ctx *wasmlib.ScCallContext) {
 	ctx.Require(ctx.Params().GetInt(ParamInt64).Exists(), "!int64.exist")
 	ctx.Require(ctx.Params().GetInt(ParamInt64).Value() == 42, "int64 wrong")
 
@@ -259,13 +259,13 @@ func passTypesFull(ctx *client.ScCallContext) {
 	ctx.Require(ctx.Params().GetHash(ParamHash).Value().Equals(hash), "Hash wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHname).Exists(), "!Hname.exist")
-	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(client.NewScHname("Hname")), "Hname wrong")
+	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(wasmlib.NewScHname("Hname")), "Hname wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Exists(), "!Hname-0.exist")
-	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.ScHname(0)), "Hname-0 wrong")
+	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(wasmlib.ScHname(0)), "Hname-0 wrong")
 }
 
-func passTypesView(ctx *client.ScViewContext) {
+func passTypesView(ctx *wasmlib.ScViewContext) {
 	ctx.Require(ctx.Params().GetInt(ParamInt64).Exists(), "!int64.exist")
 	ctx.Require(ctx.Params().GetInt(ParamInt64).Value() == 42, "int64 wrong")
 
@@ -284,13 +284,13 @@ func passTypesView(ctx *client.ScViewContext) {
 	ctx.Require(ctx.Params().GetHash(ParamHash).Value().Equals(hash), "Hash wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHname).Exists(), "!Hname.exist")
-	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(client.NewScHname("Hname")), "Hname wrong")
+	ctx.Require(ctx.Params().GetHname(ParamHname).Value().Equals(wasmlib.NewScHname("Hname")), "Hname wrong")
 
 	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Exists(), "!Hname-0.exist")
-	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(client.ScHname(0)), "Hname-0 wrong")
+	ctx.Require(ctx.Params().GetHname(ParamHnameZero).Value().Equals(wasmlib.ScHname(0)), "Hname-0 wrong")
 }
 
-func checkCtxFromFull(ctx *client.ScCallContext) {
+func checkCtxFromFull(ctx *wasmlib.ScCallContext) {
 	par := ctx.Params()
 
 	chainId := par.GetChainId(ParamChainId)
@@ -313,7 +313,7 @@ func checkCtxFromFull(ctx *client.ScCallContext) {
 	ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
 }
 
-func checkCtxFromView(ctx *client.ScViewContext) {
+func checkCtxFromView(ctx *wasmlib.ScViewContext) {
 	par := ctx.Params()
 
 	chainId := par.GetChainId(ParamChainId)
@@ -333,35 +333,35 @@ func checkCtxFromView(ctx *client.ScViewContext) {
 	ctx.Require(creator.Exists() && creator.Value().Equals(ctx.ContractCreator()), "fail: contractCreator")
 }
 
-func testEventLogGenericData(ctx *client.ScCallContext) {
+func testEventLogGenericData(ctx *wasmlib.ScCallContext) {
 	counter := ctx.Params().GetInt(VarCounter)
 	ctx.Require(counter.Exists(), "!counter.exist")
 	event := "[GenericData] Counter Number: " + counter.String()
 	ctx.Event(event)
 }
 
-func testEventLogEventData(ctx *client.ScCallContext) {
+func testEventLogEventData(ctx *wasmlib.ScCallContext) {
 	ctx.Event("[Event] - Testing Event...")
 }
 
-func testEventLogDeploy(ctx *client.ScCallContext) {
+func testEventLogDeploy(ctx *wasmlib.ScCallContext) {
 	//Deploy the same contract with another name
 	programHash := ctx.Utility().HashBlake2b([]byte("test_sandbox"))
 	ctx.Deploy(programHash, string(VarContractNameDeployed),
 		"test contract deploy log", nil)
 }
 
-func withdrawToChain(ctx *client.ScCallContext) {
+func withdrawToChain(ctx *wasmlib.ScCallContext) {
 	//Deploy the same contract with another name
 	targetChain := ctx.Params().GetChainId(ParamChainId)
 	ctx.Require(targetChain.Exists(), "chainID not provided")
 
-	targetContractId := client.NewScContractId(targetChain.Value(), client.CoreAccounts)
-	ctx.Post(&client.PostRequestParams{
+	targetContractId := wasmlib.NewScContractId(targetChain.Value(), wasmlib.CoreAccounts)
+	ctx.Post(&wasmlib.PostRequestParams{
 		ContractId: targetContractId,
-		Function:   client.CoreAccountsFuncWithdrawToChain,
+		Function:   wasmlib.CoreAccountsFuncWithdrawToChain,
 		Params:     nil,
-		Transfer:   client.NewScTransfer(client.IOTA, 2),
+		Transfer:   wasmlib.NewScTransfer(wasmlib.IOTA, 2),
 		Delay:      0,
 	})
 	ctx.Log("====  success ====")

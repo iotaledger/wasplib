@@ -208,7 +208,7 @@ func (s *Schema) GenerateGoWasmMain() error {
 	fmt.Fprintf(file, "// +build wasm\n\n")
 	fmt.Fprintf(file, "package main\n\n")
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client/wasm\"\n")
-	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/rust/contracts/" + s.Name +"/test/" + s.Name +"\"\n\n")
+	fmt.Fprintf(file, "import \"github.com/iotaledger/eric/" + s.Name +"/test/" + s.Name +"\"\n\n")
 
 	fmt.Fprintf(file, "func main() {\n")
 	fmt.Fprintf(file, "}\n\n")

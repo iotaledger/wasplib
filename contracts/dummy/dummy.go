@@ -3,17 +3,17 @@
 
 package dummy
 
-import "github.com/iotaledger/wasplib/client"
+import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-const ParamFailInitParam = client.Key("failInitParam")
+const ParamFailInitParam = wasmlib.Key("failInitParam")
 
 func OnLoad() {
-	exports := client.NewScExports()
+	exports := wasmlib.NewScExports()
 	exports.AddCall("init", onInit)
 }
 
 // fails with error if failInitParam exists
-func onInit(ctx *client.ScCallContext) {
+func onInit(ctx *wasmlib.ScCallContext) {
 	failParam := ctx.Params().GetInt(ParamFailInitParam)
 	if failParam.Exists() {
 		ctx.Panic("dummy: failing on purpose")

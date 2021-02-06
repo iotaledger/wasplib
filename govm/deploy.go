@@ -9,19 +9,12 @@ import (
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
+	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
-	"github.com/iotaledger/wasplib/client"
 	"github.com/iotaledger/wasplib/contracts/dummy"
 	"github.com/iotaledger/wasplib/contracts/erc20"
 	"github.com/iotaledger/wasplib/contracts/example1"
 	"github.com/iotaledger/wasplib/contracts/testcore"
-	"github.com/iotaledger/wasplib/rust/contracts/dividend/test/dividend"
-	"github.com/iotaledger/wasplib/rust/contracts/donatewithfeedback/test/donatewithfeedback"
-	"github.com/iotaledger/wasplib/rust/contracts/fairauction/test/fairauction"
-	"github.com/iotaledger/wasplib/rust/contracts/fairroulette/test/fairroulette"
-	"github.com/iotaledger/wasplib/rust/contracts/helloworld/test/helloworld"
-	"github.com/iotaledger/wasplib/rust/contracts/inccounter/test/inccounter"
-	"github.com/iotaledger/wasplib/rust/contracts/tokenregistry/test/tokenregistry"
 	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
@@ -37,20 +30,20 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-var WasmRunner = 0
+var WasmRunner = 2
 
 var ScForGoVM = map[string]func(){
-	"dividend":           dividend.OnLoad,
-	"donatewithfeedback": donatewithfeedback.OnLoad,
+	//"dividend":           dividend.OnLoad,
+	//"donatewithfeedback": donatewithfeedback.OnLoad,
 	"dummy":              dummy.OnLoad,
 	"erc20":              erc20.OnLoad,
 	"example1":           example1.OnLoad,
-	"fairauction":        fairauction.OnLoad,
-	"fairroulette":       fairroulette.OnLoad,
-	"helloworld":         helloworld.OnLoad,
-	"inccounter":         inccounter.OnLoad,
+	//"fairauction":        fairauction.OnLoad,
+	//"fairroulette":       fairroulette.OnLoad,
+	//"helloworld":         helloworld.OnLoad,
+	//"inccounter":         inccounter.OnLoad,
 	"testcore":           testcore.OnLoad,
-	"tokenregistry":      tokenregistry.OnLoad,
+	//"tokenregistry":      tokenregistry.OnLoad,
 }
 
 type TestEnv struct {
@@ -60,7 +53,7 @@ type TestEnv struct {
 	CreatorAgentId  coretypes.AgentID
 	CreatorWallet   signaturescheme.SignatureScheme
 	Env             *solo.Solo
-	host            client.ScHost
+	host            wasmlib.ScHost
 	ScName          string
 	req             *solo.CallParams
 	T               *testing.T
@@ -89,7 +82,7 @@ func (te *TestEnv) Agent(index int) coretypes.AgentID {
 // calls view on current contract
 func (te *TestEnv) CallView(funcName string, params ...interface{}) dict.Dict {
 	if te.host != nil {
-		client.ConnectHost(te.host)
+		wasmlib.ConnectHost(te.host)
 	}
 	ret, err := te.Chain.CallView(te.ScName, funcName, filterKeys(params...)...)
 	require.NoError(te.T, err)
@@ -104,7 +97,7 @@ func (te *TestEnv) NewCallParams(funcName string, params ...interface{}) *TestEn
 
 func (te *TestEnv) post(iotas int64, scheme []signaturescheme.SignatureScheme) (dict.Dict, error) {
 	if te.host != nil {
-		client.ConnectHost(te.host)
+		wasmlib.ConnectHost(te.host)
 	}
 	if iotas != 0 {
 		te.WithTransfer(balance.ColorIOTA, iotas)
@@ -132,12 +125,12 @@ func (te *TestEnv) PostFail(iotas int64, scheme ...signaturescheme.SignatureSche
 }
 
 // convert call result to wasplib ScImmutableMap
-func (te *TestEnv) Results(dict kv.KVStore) client.ScImmutableMap {
+func (te *TestEnv) Results(dict kv.KVStore) wasmlib.ScImmutableMap {
 	return te.ScImmutableMap(wasmhost.KeyResults, dict)
 }
 
 // convert K/V store to wasplib ScImmutableMap
-func (te *TestEnv) ScImmutableMap(keyId int32, kvStore kv.KVStore) client.ScImmutableMap {
+func (te *TestEnv) ScImmutableMap(keyId int32, kvStore kv.KVStore) wasmlib.ScImmutableMap {
 	logger := testutil.NewLogger(te.T, "04:05.000")
 	host := &wasmhost.KvStoreHost{}
 	null := wasmproc.NewNullObject(host)
@@ -145,15 +138,15 @@ func (te *TestEnv) ScImmutableMap(keyId int32, kvStore kv.KVStore) client.ScImmu
 	host.Init(null, root, logger)
 	root.InitObj(1, keyId, root)
 	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
-	oldHost := client.ConnectHost(host)
+	oldHost := wasmlib.ConnectHost(host)
 	if te.host == nil {
 		te.host = oldHost
 	}
-	return client.Root.Immutable()
+	return wasmlib.Root.Immutable()
 }
 
 // retrieve entire state of contract as ScImmutableMap
-func (te *TestEnv) State() client.ScImmutableMap {
+func (te *TestEnv) State() wasmlib.ScImmutableMap {
 	ret := te.CallView("copy_all_state")
 	return te.ScImmutableMap(wasmhost.KeyState, ret)
 }
@@ -187,7 +180,7 @@ func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
 // deploy the specified contract on the chain
 func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string, params ...interface{}) error {
 	if WasmRunner == WasmRunnerGoDirect {
-		wasmproc.GoWasmVM = NewGoVM(ScForGoVM)
+		wasmproc.GoWasmVM = wasmhost.NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(sigScheme, []byte("go:"+contractName))
 		if err != nil {
 			return err
@@ -203,12 +196,12 @@ func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureSche
 	return chain.DeployWasmContract(sigScheme, name, wasmFile, filterKeys(params...)...)
 }
 
-// filters client.Key parameters and replaces them with their proper string equivalent
+// filters wasmlib.Key parameters and replaces them with their proper string equivalent
 func filterKeys(params ...interface{}) []interface{} {
 	for i, param := range params {
 		switch param.(type) {
-		case client.Key:
-			params[i] = string(param.(client.Key))
+		case wasmlib.Key:
+			params[i] = string(param.(wasmlib.Key))
 		}
 	}
 	return params

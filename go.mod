@@ -5,11 +5,9 @@ go 1.15
 require (
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/iotaledger/goshimmer v0.3.5-0.20210120151702-8d7ddd265c3c
-	github.com/iotaledger/hive.go v0.0.0-20210107100912-23832b944f60
-	github.com/iotaledger/wasp v0.0.2-0.20210204004950-0c711abb2a0f
+	github.com/iotaledger/wasp v0.0.2-0.20210206040743-e027b888ee51
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
-	github.com/mr-tron/base58 v1.2.0
 	github.com/oasisprotocol/ed25519 v0.0.0-20201103162138-a1dadbe24dd5 // indirect
 	github.com/stretchr/testify v1.6.1
 	go.uber.org/multierr v1.6.0 // indirect

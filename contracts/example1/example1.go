@@ -3,14 +3,14 @@
 
 package example1
 
-import "github.com/iotaledger/wasplib/client"
+import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-const ParamString = client.Key("paramString")
-const VarString = client.Key("storedString")
+const ParamString = wasmlib.Key("paramString")
+const VarString = wasmlib.Key("storedString")
 
 func OnLoad() {
 	// declare entry points of the smart contract
-	exports := client.NewScExports()
+	exports := wasmlib.NewScExports()
 	exports.AddCall("storeString", storeString)
 	exports.AddView("getString", getString)
 	exports.AddCall("withdrawIota", withdrawIota)
@@ -19,7 +19,7 @@ func OnLoad() {
 // storeString entry point stores a string provided as parameters
 // in the state as a value of the key 'storedString'
 // panics if parameter is not provided
-func storeString(ctx *client.ScCallContext) {
+func storeString(ctx *wasmlib.ScCallContext) {
 	// take parameter paramString
 	par := ctx.Params().GetString(ParamString)
 	// require parameter exists
@@ -35,7 +35,7 @@ func storeString(ctx *client.ScCallContext) {
 // getString view returns the string value of the key 'storedString'
 // The call return result as a key/value dictionary.
 // the returned value in the result is under key 'paramString'
-func getString(ctx *client.ScViewContext) {
+func getString(ctx *wasmlib.ScViewContext) {
 	// take the stored string
 	s := ctx.State().GetString(VarString).Value()
 	// return the string value in the result dictionary
@@ -47,15 +47,15 @@ func getString(ctx *client.ScViewContext) {
 // Panics of the caller is not an address
 // Panics if the address is not the creator of the contract is the caller
 // The caller will be address only if request is sent from the wallet on the L1, not a smart contract
-func withdrawIota(ctx *client.ScCallContext) {
+func withdrawIota(ctx *wasmlib.ScCallContext) {
 	creator := ctx.ContractCreator()
 	caller := ctx.Caller()
 
 	ctx.Require(creator.Equals(caller), "not authorised")
 	ctx.Require(caller.IsAddress(), "caller must be an address")
 
-	bal := ctx.Balances().Balance(client.IOTA)
+	bal := ctx.Balances().Balance(wasmlib.IOTA)
 	if bal > 0 {
-		ctx.TransferToAddress(caller.Address(), client.NewScTransfer(client.IOTA, bal))
+		ctx.TransferToAddress(caller.Address(), wasmlib.NewScTransfer(wasmlib.IOTA, bal))
 	}
 }

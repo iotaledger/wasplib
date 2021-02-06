@@ -2,7 +2,7 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasplib/client"
+	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"regexp"
 	"strings"
 )
@@ -12,16 +12,16 @@ var fldAliasRegexp = regexp.MustCompile("^[a-zA-Z0-9_$#@*%\\-]+$")
 var fldTypeRegexp = regexp.MustCompile("^[A-Z][a-zA-Z0-9]+$")
 
 var FieldTypes = map[string]int32{
-	"Address":    client.TYPE_ADDRESS,
-	"AgentId":    client.TYPE_AGENT_ID,
-	"Bytes":      client.TYPE_BYTES,
-	"ChainId":    client.TYPE_CHAIN_ID,
-	"Color":      client.TYPE_COLOR,
-	"ContractId": client.TYPE_CONTRACT_ID,
-	"Hash":       client.TYPE_HASH,
-	"Hname":      client.TYPE_HNAME,
-	"Int":        client.TYPE_INT,
-	"String":     client.TYPE_STRING,
+	"Address":    wasmlib.TYPE_ADDRESS,
+	"AgentId":    wasmlib.TYPE_AGENT_ID,
+	"Bytes":      wasmlib.TYPE_BYTES,
+	"ChainId":    wasmlib.TYPE_CHAIN_ID,
+	"Color":      wasmlib.TYPE_COLOR,
+	"ContractId": wasmlib.TYPE_CONTRACT_ID,
+	"Hash":       wasmlib.TYPE_HASH,
+	"Hname":      wasmlib.TYPE_HNAME,
+	"Int":        wasmlib.TYPE_INT,
+	"String":     wasmlib.TYPE_STRING,
 }
 
 type Field struct {
