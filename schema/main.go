@@ -2,36 +2,39 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"github.com/iotaledger/wasplib/schema/generator"
 	"os"
 )
 
-var core = flag.Bool("core", false, "generate core contract schemas")
-
 func main() {
-	flag.Parse()
-	if *core {
-		err := generateCoreContractsSchema()
+	file, err := os.Open("schema.json")
+	if err == nil {
+		defer file.Close()
+		err = generateSchema(file)
 		if err != nil {
 			fmt.Println(err)
 		}
 		return
 	}
 
-	err := generateSchema()
-	if err != nil {
-		fmt.Println(err)
+	// tool is also used to (re-)generate the core contract
+	// definitions inside the go and rust sections of wasplib
+	file, err = os.Open("corecontracts.json")
+	if err == nil {
+		defer file.Close()
+		err = generateCoreContractsSchema(file)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
 	}
+
+    fmt.Println("no schema file found")
 }
 
-func generateCoreContractsSchema() error {
-	coreSchemas, err := loadCoreSchemas()
-	if err != nil {
-		return err
-	}
-	err = generator.GenerateGoCoreContractsSchema(coreSchemas)
+func generateCoreContractsSchema(file *os.File) error {
+	coreSchemas, err := loadCoreSchemas(file)
 	if err != nil {
 		return err
 	}
@@ -39,43 +42,29 @@ func generateCoreContractsSchema() error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func generateSchema() error {
-	schema, err := loadSchema()
-	if err != nil {
-		return err
-	}
-	err = schema.GenerateGoSchema()
-	if err != nil {
-		return err
-	}
-	err = schema.GenerateRustSchema()
-	if err != nil {
-		return err
-	}
-	err = schema.GenerateGoTypes()
-	if err != nil {
-		return err
-	}
-	err = schema.GenerateRustTypes()
+	err = generator.GenerateGoCoreContractsSchema(coreSchemas)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func loadSchema() (*generator.Schema, error) {
+func generateSchema(file *os.File) error {
+	schema, err := loadSchema(file)
+	if err != nil {
+		return err
+	}
+	err = schema.GenerateRust( )
+	if err != nil {
+		return err
+	}
+	return schema.GenerateGo()
+}
+
+func loadSchema(file *os.File) (*generator.Schema, error) {
 	fmt.Println("loading schema.json")
-	file, err := os.Open("schema.json")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
 	jsonSchema := &generator.JsonSchema{}
-	err = json.NewDecoder(file).Decode(jsonSchema)
+	err := json.NewDecoder(file).Decode(jsonSchema)
 	if err != nil {
 		return nil, err
 	}
@@ -88,16 +77,10 @@ func loadSchema() (*generator.Schema, error) {
 	return schema, nil
 }
 
-func loadCoreSchemas() ([]*generator.Schema, error) {
+func loadCoreSchemas(file *os.File) ([]*generator.Schema, error) {
 	fmt.Println("loading corecontracts.json")
-	file, err := os.Open("corecontracts.json")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
 	coreJsonSchemas := make([]*generator.JsonSchema, 0)
-	err = json.NewDecoder(file).Decode(&coreJsonSchemas)
+	err := json.NewDecoder(file).Decode(&coreJsonSchemas)
 	if err != nil {
 		return nil, err
 	}

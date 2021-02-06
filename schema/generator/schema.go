@@ -54,36 +54,40 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 	}
 	s.Description = strings.TrimSpace(jsonSchema.Description)
 
-	for _, typeName := range sortedMaps(jsonSchema.Types) {
-		fieldMap := jsonSchema.Types[typeName]
-		typeDef := &TypeDef{}
-		typeDef.Name = typeName
-		fieldNames := make(StringMap)
-		fieldAliases := make(StringMap)
-		for _, fldName := range sortedKeys(fieldMap) {
-			fldType := fieldMap[fldName]
-			field, err := s.CompileField(fldName, fldType)
-			if err != nil {
-				return err
-			}
-			if field.Optional {
-				return fmt.Errorf("type field cannot be optional")
-			}
-			if _, ok := fieldNames[field.Name]; ok {
-				return fmt.Errorf("duplicate field name")
-			}
-			fieldNames[field.Name] = field.Name
-			if _, ok := fieldAliases[field.Alias]; ok {
-				return fmt.Errorf("duplicate field alias")
-			}
-			fieldAliases[field.Alias] = field.Alias
-			typeDef.Fields = append(typeDef.Fields, field)
-		}
-		s.Types = append(s.Types, typeDef)
+	err := s.compileTypes(jsonSchema)
+	if err != nil {
+		return err
 	}
+	err = s.compileFuncs(jsonSchema, false)
+	if err != nil {
+		return err
+	}
+	err = s.compileFuncs(jsonSchema, true)
+	if err != nil {
+		return err
+	}
+	return s.compileVars(jsonSchema)
+}
 
-	for _, funcName := range sortedMaps(jsonSchema.Funcs) {
-		paramMap := jsonSchema.Funcs[funcName]
+func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
+	field := &Field{}
+	err := field.Compile(s, fldName, fldType)
+	if err != nil {
+		return nil, err
+	}
+	return field, nil
+}
+
+func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
+	jsonFuncs := jsonSchema.Funcs
+	if views {
+		jsonFuncs = jsonSchema.Views
+	}
+	for _, funcName := range sortedMaps(jsonFuncs) {
+		if views && jsonSchema.Funcs[funcName] != nil {
+			return fmt.Errorf("duplicate func/view name")
+		}
+		paramMap := jsonFuncs[funcName]
 		funcDef := &FuncDef{}
 		funcDef.Name = funcName
 		funcDef.Annotations = make(StringMap)
@@ -120,53 +124,47 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 			}
 			funcDef.Params = append(funcDef.Params, param)
 		}
-		s.Funcs = append(s.Funcs, funcDef)
-	}
-
-	for _, viewName := range sortedMaps(jsonSchema.Views) {
-		if _, ok := jsonSchema.Funcs[viewName]; ok {
-			return fmt.Errorf("duplicate func/view name")
+		if views {
+			s.Views = append(s.Views, funcDef)
+		} else {
+			s.Funcs = append(s.Funcs, funcDef)
 		}
-		paramMap := jsonSchema.Views[viewName]
-		viewDef := &FuncDef{}
-		viewDef.Name = viewName
-		viewDef.Annotations = make(StringMap)
+	}
+	return nil
+}
+
+func (s *Schema) compileTypes(jsonSchema *JsonSchema) error {
+	for _, typeName := range sortedMaps(jsonSchema.Types) {
+		fieldMap := jsonSchema.Types[typeName]
+		typeDef := &TypeDef{}
+		typeDef.Name = typeName
 		fieldNames := make(StringMap)
 		fieldAliases := make(StringMap)
-		for _, fldName := range sortedKeys(paramMap) {
-			fldType := paramMap[fldName]
-			if strings.HasPrefix(fldName, "#") {
-				viewDef.Annotations[fldName] = fldType
-				continue
-			}
-			param, err := s.CompileField(fldName, fldType)
+		for _, fldName := range sortedKeys(fieldMap) {
+			fldType := fieldMap[fldName]
+			field, err := s.CompileField(fldName, fldType)
 			if err != nil {
 				return err
 			}
-			if _, ok := fieldNames[param.Name]; ok {
-				return fmt.Errorf("duplicate param name")
+			if field.Optional {
+				return fmt.Errorf("type field cannot be optional")
 			}
-			fieldNames[param.Name] = param.Name
-			if _, ok := fieldAliases[param.Alias]; ok {
-				return fmt.Errorf("duplicate param alias")
+			if _, ok := fieldNames[field.Name]; ok {
+				return fmt.Errorf("duplicate field name")
 			}
-			fieldAliases[param.Alias] = param.Alias
-			existing, ok := s.Params[param.Name]
-			if !ok {
-				s.Params[param.Name] = param
-				existing = param
+			fieldNames[field.Name] = field.Name
+			if _, ok := fieldAliases[field.Alias]; ok {
+				return fmt.Errorf("duplicate field alias")
 			}
-			if existing.Alias != param.Alias {
-				return fmt.Errorf("redefined param alias")
-			}
-			if existing.Type != param.Type {
-				return fmt.Errorf("redefined param type")
-			}
-			viewDef.Params = append(viewDef.Params, param)
+			fieldAliases[field.Alias] = field.Alias
+			typeDef.Fields = append(typeDef.Fields, field)
 		}
-		s.Views = append(s.Views, viewDef)
+		s.Types = append(s.Types, typeDef)
 	}
+	return nil
+}
 
+func (s *Schema) compileVars(jsonSchema *JsonSchema) error {
 	varNames := make(StringMap)
 	varAliases := make(StringMap)
 	for _, varName := range sortedKeys(jsonSchema.Vars) {
@@ -185,15 +183,5 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 		varAliases[varDef.Alias] = varDef.Alias
 		s.Vars = append(s.Vars, varDef)
 	}
-
 	return nil
-}
-
-func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
-	field := &Field{}
-	err := field.Compile(s, fldName, fldType)
-	if err != nil {
-		return nil, err
-	}
-	return field, nil
 }

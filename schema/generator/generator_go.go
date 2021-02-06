@@ -20,6 +20,59 @@ var goTypes = StringMap{
 
 //TODO check for clashing Hnames
 
+func (s *Schema) GenerateGo() error {
+	err := os.MkdirAll("test/" + s.Name + "/wasm", 0755)
+	if err != nil { return err }
+	err = os.Chdir("test/" + s.Name)
+	if err != nil {
+		return err
+	}
+	defer os.Chdir("../..")
+
+	err = s.GenerateGoWasmMain()
+	if err != nil {
+		return err
+	}
+	err = s.GenerateGoOnLoad()
+	if err != nil {
+		return err
+	}
+	err = s.GenerateGoSchema()
+	if err != nil {
+		return err
+	}
+	return s.GenerateGoTypes()
+}
+
+func (s *Schema) GenerateGoOnLoad() error {
+	file, err := os.Create("onload.go")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintln(file, copyright())
+	fmt.Fprintf(file, "package %s\n\n", s.Name)
+	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n\n")
+
+	fmt.Fprintf(file, "\nfunc OnLoad() {\n")
+	fmt.Fprintf(file, "    exports := client.NewScExports()\n")
+	for _, funcDef := range s.Funcs {
+		name := capitalize(funcDef.Name)
+		fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
+	}
+	for _, viewDef := range s.Views {
+		name := capitalize(viewDef.Name)
+		fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
+	}
+	fmt.Fprintf(file, "}\n")
+
+	//TODO generate parameter checks
+
+	return nil
+}
+
 func (s *Schema) GenerateGoSchema() error {
 	file, err := os.Create("schema.go")
 	if err != nil {
@@ -28,9 +81,8 @@ func (s *Schema) GenerateGoSchema() error {
 	defer file.Close()
 
 	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
-	fmt.Fprintf(file, "\npackage %s\n\n", s.Name)
+	fmt.Fprintln(file, copyright())
+	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n\n")
 
 	fmt.Fprintf(file, "const ScName = \"%s\"\n", s.Name)
@@ -79,18 +131,6 @@ func (s *Schema) GenerateGoSchema() error {
 			hName = coretypes.Hn(viewDef.Name)
 			fmt.Fprintf(file, "const HView%s = client.ScHname(0x%s)\n", name, hName.String())
 		}
-
-		fmt.Fprintf(file, "\nfunc OnLoad() {\n")
-		fmt.Fprintf(file, "    exports := client.NewScExports()\n")
-		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.Name)
-			fmt.Fprintf(file, "    exports.AddCall(Func%s, func%s)\n", name, name)
-		}
-		for _, viewDef := range s.Views {
-			name := capitalize(viewDef.Name)
-			fmt.Fprintf(file, "    exports.AddView(View%s, view%s)\n", name, name)
-		}
-		fmt.Fprintf(file, "}\n")
 	}
 
 	return nil
@@ -108,9 +148,8 @@ func (s *Schema) GenerateGoTypes() error {
 	defer file.Close()
 
 	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
-	fmt.Fprintf(file, "\npackage %s\n\n", s.Name)
+	fmt.Fprintln(file, copyright())
+	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client\"\n")
 
 	// write structs
@@ -127,7 +166,7 @@ func (s *Schema) GenerateGoTypes() error {
 				typeLen = len(goType)
 			}
 		}
-			for _, field := range typeDef.Fields {
+		for _, field := range typeDef.Fields {
 			fldName := pad(capitalize(field.Name), nameLen)
 			fldType := pad(goTypes[field.Type], typeLen)
 			fmt.Fprintf(file, "\t%s %s%s\n", fldName, fldType, field.Comment)
@@ -157,41 +196,28 @@ func (s *Schema) GenerateGoTypes() error {
 	return nil
 }
 
-func GenerateGoCoreContractsSchema(coreSchemas []*Schema) error {
-	file, err := os.Create("../client/corecontracts.go")
+func (s *Schema) GenerateGoWasmMain() error {
+	file, err := os.Create("wasm/" + s.Name + ".go")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
 	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
-	fmt.Fprintf(file, "\npackage client\n")
+	fmt.Fprintln(file, copyright())
+	fmt.Fprintf(file, "// +build wasm\n\n")
+	fmt.Fprintf(file, "package main\n\n")
+	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/client/wasm\"\n")
+	fmt.Fprintf(file, "import \"github.com/iotaledger/wasplib/rust/contracts/" + s.Name +"/test/" + s.Name +"\"\n\n")
 
-	for _, schema := range coreSchemas {
-		scName := capitalize(schema.Name)
-		scHname := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\nconst Core%s = ScHname(0x%s)\n", scName, scHname.String())
-		for _, funcDef := range schema.Funcs {
-			funcHname := coretypes.Hn(funcDef.Name)
-			funcName := capitalize(funcDef.Name)
-			fmt.Fprintf(file, "const Core%sFunc%s = ScHname(0x%s)\n", scName, funcName, funcHname.String())
-		}
-		for _, viewDef := range schema.Views {
-			viewHname := coretypes.Hn(viewDef.Name)
-			viewName := capitalize(viewDef.Name)
-			fmt.Fprintf(file, "const Core%sView%s = ScHname(0x%s)\n", scName, viewName, viewHname.String())
-		}
+	fmt.Fprintf(file, "func main() {\n")
+	fmt.Fprintf(file, "}\n\n")
 
-		if len(schema.Params) != 0 {
-			fmt.Fprintln(file)
-			for _, name := range sortedFields(schema.Params) {
-				param := schema.Params[name]
-				name = capitalize(param.Name)
-				fmt.Fprintf(file, "const Core%sParam%s = Key(\"%s\")\n", scName, name, param.Alias)
-			}
-		}
-	}
+	fmt.Fprintf(file, "//export on_load\n")
+	fmt.Fprintf(file, "func %sOnLoad() {\n", s.Name)
+	fmt.Fprintf(file, "\twasmclient.ConnectWasmHost()\n")
+	fmt.Fprintf(file, "\t%s.OnLoad()\n", s.Name)
+	fmt.Fprintf(file, "}\n")
+
 	return nil
 }

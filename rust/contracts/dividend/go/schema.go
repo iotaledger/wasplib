@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package dividend
+package _go
 
 import "github.com/iotaledger/wasplib/client"
 
@@ -19,9 +19,3 @@ const FuncMember = "member"
 
 const HFuncDivide = client.ScHname(0xc7878107)
 const HFuncMember = client.ScHname(0xc07da2cb)
-
-func OnLoad() {
-    exports := client.NewScExports()
-    exports.AddCall(FuncDivide, funcDivide)
-    exports.AddCall(FuncMember, funcMember)
-}

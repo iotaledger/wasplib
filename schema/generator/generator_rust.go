@@ -18,19 +18,74 @@ var rustTypes = StringMap{
 	"String":     "String",
 }
 
-func (s *Schema) GenerateRustSchema() error {
-	file, err := os.Create("../../rust/contracts/" + s.Name + "/src/schema.rs")
+func (s *Schema) GenerateRust() error {
+	err := os.MkdirAll("src", 0755)
+	if err != nil { return err }
+	err = os.Chdir("src")
+	if err != nil {
+		return err
+	}
+	defer os.Chdir("..")
+
+	err = s.GenerateRustLib()
+	if err != nil {
+		return  err
+	}
+	err = s.GenerateRustSchema()
+	if err != nil {
+		return  err
+	}
+	return s.GenerateRustTypes()
+}
+
+func (s *Schema) GenerateRustLib() error {
+	file, err := os.Create("lib.rs")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
 	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n\n")
+	fmt.Fprintln(file, copyright())
+	fmt.Fprintf(file, "use %s::*;\n", s.Name)
+	fmt.Fprintf(file, "use schema::*;\n")
+	fmt.Fprintf(file, "use wasplib::client::*;\n\n")
+
+	fmt.Fprintf(file, "mod %s;\n", s.Name)
+	fmt.Fprintf(file, "mod schema;\n")
+	if len(s.Types) != 0 {
+		fmt.Fprintf(file, "mod types;\n")
+	}
+
+	fmt.Fprintf(file, "\n#[no_mangle]\n")
+	fmt.Fprintf(file, "fn on_load() {\n")
+	fmt.Fprintf(file, "    let exports = ScExports::new();\n")
+	for _, funcDef := range s.Funcs {
+		name := snake(funcDef.Name)
+		fmt.Fprintf(file, "    exports.add_call(FUNC_%s, func_%s);\n", upper(name), name)
+	}
+	for _, viewDef := range s.Views {
+		name := snake(viewDef.Name)
+		fmt.Fprintf(file, "    exports.add_view(VIEW_%s, view_%s);\n", upper(name), name)
+	}
+	fmt.Fprintf(file, "}\n")
+
+	//TODO generate parameter checks
+
+	return nil
+}
+
+func (s *Schema) GenerateRustSchema() error {
+	file, err := os.Create("schema.rs")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintln(file, copyright())
 	fmt.Fprintf(file, "#![allow(dead_code)]\n\n")
 	fmt.Fprintf(file, "use wasplib::client::*;\n\n")
-	fmt.Fprintf(file, "use super::*;\n\n")
 
 	fmt.Fprintf(file, "pub const SC_NAME: &str = \"%s\";\n", s.Name)
 	if s.Description != "" {
@@ -78,19 +133,6 @@ func (s *Schema) GenerateRustSchema() error {
 			hName = coretypes.Hn(viewDef.Name)
 			fmt.Fprintf(file, "pub const HVIEW_%s: ScHname = ScHname(0x%s);\n", name, hName.String())
 		}
-
-		fmt.Fprintf(file, "\n#[no_mangle]\n")
-		fmt.Fprintf(file, "fn on_load() {\n")
-		fmt.Fprintf(file, "    let exports = ScExports::new();\n")
-		for _, funcDef := range s.Funcs {
-			name := upper(snake(funcDef.Name))
-			fmt.Fprintf(file, "    exports.add_call(FUNC_%s, func_%s);\n", name, lower(name))
-		}
-		for _, viewDef := range s.Views {
-			name := upper(snake(viewDef.Name))
-			fmt.Fprintf(file, "    exports.add_view(VIEW_%s, view_%s);\n", name, lower(name))
-		}
-		fmt.Fprintf(file, "}\n")
 	}
 	return nil
 }
@@ -100,21 +142,20 @@ func (s *Schema) GenerateRustTypes() error {
 		return nil
 	}
 
-	file, err := os.Create("../../rust/contracts/" + s.Name + "/src/types.rs")
+	file, err := os.Create("types.rs")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
 	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n\n")
+	fmt.Fprintln(file, copyright())
 	fmt.Fprintf(file, "use wasplib::client::*;\n")
 
 	// write structs
 	for _, typeDef := range s.Types {
-		fmt.Fprintf(file, "\npub struct %s {\n", typeDef.Name)
-		fmt.Fprintf(file, "    //@formatter:off\n")
+		fmt.Fprintf(file, "\n//@formatter:off\n")
+		fmt.Fprintf(file, "pub struct %s {\n", typeDef.Name)
 		nameLen := 0
 		typeLen := 0
 		for _, field := range typeDef.Fields {
@@ -128,8 +169,8 @@ func (s *Schema) GenerateRustTypes() error {
 			rfldType := pad(rustTypes[field.Type] + ",", typeLen+1)
 			fmt.Fprintf(file, "    pub %s %s%s\n", fldName, rfldType, field.Comment)
 		}
-		fmt.Fprintf(file, "    //@formatter:on\n")
 		fmt.Fprintf(file, "}\n")
+		fmt.Fprintf(file, "//@formatter:on\n")
 	}
 
 	// write encoder and decoder for structs
@@ -156,44 +197,5 @@ func (s *Schema) GenerateRustTypes() error {
 		fmt.Fprintf(file, "    }\n}\n")
 	}
 
-	return nil
-}
-
-func GenerateRustCoreContractsSchema(coreSchemas []*Schema) error {
-	file, err := os.Create("../rust/wasplib/src/client/corecontracts.rs")
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// write file header
-	fmt.Fprintf(file, "// Copyright 2020 IOTA Stiftung\n")
-	fmt.Fprintf(file, "// SPDX-License-Identifier: Apache-2.0\n")
-	fmt.Fprintf(file, "\nuse super::hashtypes::*;\n")
-
-	for _, schema := range coreSchemas {
-		scName := upper(snake(schema.Name))
-		scHname := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\npub const CORE_%s: ScHname = ScHname(0x%s);\n", scName, scHname.String())
-		for _, funcDef := range schema.Funcs {
-			funcHname := coretypes.Hn(funcDef.Name)
-			funcName := upper(snake(funcDef.Name))
-			fmt.Fprintf(file, "pub const CORE_%s_FUNC_%s: ScHname = ScHname(0x%s);\n", scName, funcName, funcHname.String())
-		}
-		for _, viewDef := range schema.Views {
-			viewHname := coretypes.Hn(viewDef.Name)
-			viewName := upper(snake(viewDef.Name))
-			fmt.Fprintf(file, "pub const CORE_%s_VIEW_%s: ScHname = ScHname(0x%s);\n", scName, viewName, viewHname.String())
-		}
-
-		if len(schema.Params) != 0 {
-			fmt.Fprintln(file)
-			for _, name := range sortedFields(schema.Params) {
-				param := schema.Params[name]
-				name = upper(snake(name))
-				fmt.Fprintf(file, "pub const CORE_%s_PARAM_%s: &str = \"%s\";\n", scName, name, param.Alias)
-			}
-		}
-	}
 	return nil
 }

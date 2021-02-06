@@ -25,6 +25,11 @@ func capitalize(name string) string {
 	return upper(name[:1]) + name[1:]
 }
 
+func copyright() string {
+	return "// Copyright 2020 IOTA Stiftung\n" +
+		"// SPDX-License-Identifier: Apache-2.0\n"
+}
+
 // convert to lower case
 func lower(name string) string {
 	return strings.ToLower(name)
