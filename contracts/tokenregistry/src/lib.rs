@@ -5,8 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use schema::*;
 use tokenregistry::*;
+use schema::*;
 use wasmlib::*;
 
 mod tokenregistry;
