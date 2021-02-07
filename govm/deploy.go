@@ -1,3 +1,6 @@
+// Copyright 2020 IOTA Stiftung
+// SPDX-License-Identifier: Apache-2.0
+
 package govm
 
 import (
@@ -11,10 +14,17 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
+	"github.com/iotaledger/wasplib/contracts/dividend"
+	"github.com/iotaledger/wasplib/contracts/donatewithfeedback"
 	"github.com/iotaledger/wasplib/contracts/dummy"
 	"github.com/iotaledger/wasplib/contracts/erc20"
 	"github.com/iotaledger/wasplib/contracts/example1"
+	"github.com/iotaledger/wasplib/contracts/fairauction"
+	"github.com/iotaledger/wasplib/contracts/fairroulette"
+	"github.com/iotaledger/wasplib/contracts/helloworld"
+	"github.com/iotaledger/wasplib/contracts/inccounter"
 	"github.com/iotaledger/wasplib/contracts/testcore"
+	"github.com/iotaledger/wasplib/contracts/tokenregistry"
 	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
@@ -30,20 +40,20 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-var WasmRunner = 2
+var WasmRunner = 0
 
 var ScForGoVM = map[string]func(){
-	//"dividend":           dividend.OnLoad,
-	//"donatewithfeedback": donatewithfeedback.OnLoad,
+	"dividend":           dividend.OnLoad,
+	"donatewithfeedback": donatewithfeedback.OnLoad,
 	"dummy":              dummy.OnLoad,
 	"erc20":              erc20.OnLoad,
 	"example1":           example1.OnLoad,
-	//"fairauction":        fairauction.OnLoad,
-	//"fairroulette":       fairroulette.OnLoad,
-	//"helloworld":         helloworld.OnLoad,
-	//"inccounter":         inccounter.OnLoad,
+	"fairauction":        fairauction.OnLoad,
+	"fairroulette":       fairroulette.OnLoad,
+	"helloworld":         helloworld.OnLoad,
+	"inccounter":         inccounter.OnLoad,
 	"testcore":           testcore.OnLoad,
-	//"tokenregistry":      tokenregistry.OnLoad,
+	"tokenregistry":      tokenregistry.OnLoad,
 }
 
 type TestEnv struct {

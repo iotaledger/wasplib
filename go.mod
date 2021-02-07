@@ -3,16 +3,7 @@ module github.com/iotaledger/wasplib
 go 1.15
 
 require (
-	github.com/golang/snappy v0.0.2 // indirect
 	github.com/iotaledger/goshimmer v0.3.5-0.20210120151702-8d7ddd265c3c
-	github.com/iotaledger/wasp v0.0.2-0.20210206040743-e027b888ee51
-	github.com/kr/pretty v0.2.1 // indirect
-	github.com/mitchellh/mapstructure v1.4.0 // indirect
-	github.com/oasisprotocol/ed25519 v0.0.0-20201103162138-a1dadbe24dd5 // indirect
+	github.com/iotaledger/wasp v0.0.2-0.20210206201444-b63f0bee855b
 	github.com/stretchr/testify v1.6.1
-	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect
-	golang.org/x/mod v0.3.1-0.20200828183125-ce943fd02449 // indirect
-	golang.org/x/sys v0.0.0-20201207223542-d4d67f95c62d // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

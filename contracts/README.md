@@ -1,4 +1,4 @@
-## Go Smart Contracts
+## Smart Contracts
 
 Sample smart contracts:
 
@@ -41,7 +41,7 @@ Sample smart contracts:
 
   Mints and registers colored tokens in a token registry.
 
-### How to create your own smart contracts
+### How to create your own Go smart contracts
 
 Building a Go smart contract is very simple when using the GoLand IntelliJ based development environment. Open the _
 wasplib_ folder in your Goland, which then provides you with the Go workspace.
@@ -55,4 +55,20 @@ in the _wasplib_ root as the _Script Path_, enter the name of the new contract a
 wasplib_ root as the _Working Directory_, and the new folder as the _working directory_. You can now run this
 configuration to compile the smart contract directly to Wasm. Once compilation is successful you will find the resulting
 Wasm file in the _wasplib/wasm_ folder.
+
+### How to create your own Rust smart contracts
+
+Building a Rust smart contract is very simple when using the Rust plugin in any IntelliJ based development environment.
+Open the _rust_ sub folder in your IntelliJ, which then provides you with the Rust workspace.
+
+The easiest way to create a new contract is to copy the _helloworld_ folder in the _contracts_
+sub folder to a properly named new folder within the _contracts_ sub folder. Next, change the fields in the first
+section of the new folder's _cargo.toml_ file to match your preferences. Make sure the package name equals the folder
+name. Finally, add the new folder to the workspace in the _cargo.toml_ in the _rust_ sub folder.
+
+To build the new smart contract select _Run->Edit Configurations_. Add a new configuration based on the _wasmpack_
+template, type the _name_ of the new configuration, type the _command_
+`build`, and select the new folder as the _working directory_. You can now run this configuration to compile the smart
+contract directly to Wasm. Once compilation is successful you will find the resulting Wasm file in the _pkg_ sub folder
+of the new folder.
 

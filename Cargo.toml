@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    "contracts/dividend",
+    "contracts/donatewithfeedback",
+    "contracts/dummy",
+    "contracts/erc20",
+    "contracts/example1",
+    "contracts/fairauction",
+    "contracts/fairroulette",
+    "contracts/helloworld",
+    "contracts/inccounter",
+    "contracts/testcore",
+    "contracts/tokenregistry",
+]
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"

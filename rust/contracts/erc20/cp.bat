@@ -1,1 +1,0 @@
-copy pkg\erc20_bg.wasm ..\..\..\..\wasp\wasm\erc20_bg.wasm

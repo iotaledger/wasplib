@@ -1,0 +1,17 @@
+{
+  "name": "helloworld",
+  "description": "The ubiquitous hello world demo",
+  "types": {
+  },
+  "vars": {
+    "helloWorld": "String"
+  },
+  "funcs": {
+    "helloWorld": {
+    }
+  },
+  "views": {
+    "getHelloWorld": {
+    }
+  }
+}

@@ -1,1 +1,0 @@
-copy pkg\testcore_bg.wasm ..\..\..\..\wasp\wasm\testcore_bg.wasm
