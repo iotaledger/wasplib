@@ -8,45 +8,7 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 const MaxNumber = 5
 const DefaultPlayPeriod = 120
 
-func funcPlaceBet(ctx *wasmlib.ScCallContext) {
-	amount := ctx.Incoming().Balance(wasmlib.IOTA)
-	if amount == 0 {
-		ctx.Panic("Empty bet...")
-	}
-	number := ctx.Params().GetInt(ParamNumber).Value()
-	if number == 0 {
-		ctx.Panic("No number...")
-	}
-	if number < 1 || number > MaxNumber {
-		ctx.Panic("Invalid number...")
-	}
-
-	bet := &BetInfo{
-		Better: ctx.Caller(),
-		Amount: amount,
-		Number: number,
-	}
-
-	state := ctx.State()
-	bets := state.GetBytesArray(VarBets)
-	betNr := bets.Length()
-	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
-	if betNr == 0 {
-		playPeriod := state.GetInt(VarPlayPeriod).Value()
-		if playPeriod < 10 {
-			playPeriod = DefaultPlayPeriod
-		}
-		ctx.Post(&wasmlib.PostRequestParams{
-			ContractId: ctx.ContractId(),
-			Function:   HFuncLockBets,
-			Params:     nil,
-			Transfer:   nil,
-			Delay:      playPeriod,
-		})
-	}
-}
-
-func funcLockBets(ctx *wasmlib.ScCallContext) {
+func funcLockBets(ctx *wasmlib.ScCallContext, params *FuncLockBetsParams) {
 	// can only be sent by SC itself
 	if !ctx.From(ctx.ContractId().AsAgentId()) {
 		ctx.Panic("Cancel spoofed request")
@@ -72,7 +34,7 @@ func funcLockBets(ctx *wasmlib.ScCallContext) {
 	})
 }
 
-func funcPayWinners(ctx *wasmlib.ScCallContext) {
+func funcPayWinners(ctx *wasmlib.ScCallContext, params *FuncPayWinnersParams) {
 	// can only be sent by SC itself
 	scId := ctx.ContractId().AsAgentId()
 	if !ctx.From(scId) {
@@ -130,13 +92,48 @@ func funcPayWinners(ctx *wasmlib.ScCallContext) {
 	}
 }
 
-func funcPlayPeriod(ctx *wasmlib.ScCallContext) {
+func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
+	amount := ctx.Incoming().Balance(wasmlib.IOTA)
+	if amount == 0 {
+		ctx.Panic("Empty bet...")
+	}
+	number := params.Number.Value()
+	if number < 1 || number > MaxNumber {
+		ctx.Panic("Invalid number...")
+	}
+
+	bet := &BetInfo{
+		Better: ctx.Caller(),
+		Amount: amount,
+		Number: number,
+	}
+
+	state := ctx.State()
+	bets := state.GetBytesArray(VarBets)
+	betNr := bets.Length()
+	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
+	if betNr == 0 {
+		playPeriod := state.GetInt(VarPlayPeriod).Value()
+		if playPeriod < 10 {
+			playPeriod = DefaultPlayPeriod
+		}
+		ctx.Post(&wasmlib.PostRequestParams{
+			ContractId: ctx.ContractId(),
+			Function:   HFuncLockBets,
+			Params:     nil,
+			Transfer:   nil,
+			Delay:      playPeriod,
+		})
+	}
+}
+
+func funcPlayPeriod(ctx *wasmlib.ScCallContext, params *FuncPlayPeriodParams) {
 	// can only be sent by SC creator
 	if !ctx.From(ctx.ContractCreator()) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
-	playPeriod := ctx.Params().GetInt(ParamPlayPeriod).Value()
+	playPeriod := params.PlayPeriod.Value()
 	if playPeriod < 10 {
 		ctx.Panic("Invalid play period...")
 	}

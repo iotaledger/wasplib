@@ -3,7 +3,7 @@
 
 use wasmlib::*;
 
-use crate::schema::*;
+use crate::*;
 use crate::types::*;
 
 const DURATION_DEFAULT: i64 = 60;
@@ -14,13 +14,128 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_start_auction(ctx: &ScCallContext) {
-    let params = ctx.params();
-    let color_param = params.get_color(PARAM_COLOR);
-    if !color_param.exists() {
-        ctx.panic("Missing auction token color");
+pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionParams) {
+    // can only be sent by SC itself
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
+        ctx.panic("Cancel spoofed request");
     }
-    let color = color_param.value();
+
+    let color = params.color.value();
+
+    let state = ctx.state();
+    let auctions = state.get_map(VAR_AUCTIONS);
+    let current_auction = auctions.get_map(&color);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
+    if !auction_info.exists() {
+        ctx.panic("Missing auction info");
+    }
+    let auction = decode_auction_info(&auction_info.value());
+    if auction.highest_bid < 0 {
+        ctx.log(&("No one bid on ".to_string() + &color.to_string()));
+        let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
+        if owner_fee == 0 {
+            owner_fee = 1
+        }
+        // finalizeAuction request token was probably not confirmed yet
+        transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+        transfer(ctx, &auction.creator, &auction.color, auction.num_tokens);
+        transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
+        return;
+    }
+
+    let mut owner_fee = auction.highest_bid * auction.owner_margin / 1000;
+    if owner_fee == 0 {
+        owner_fee = 1;
+    }
+
+    // return staked bids to losers
+    let bidders = current_auction.get_map(VAR_BIDDERS);
+    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
+    let size = bidder_list.length();
+    for i in 0..size {
+        let bidder = bidder_list.get_agent_id(i).value();
+        if !bidder.equals(&auction.highest_bidder) {
+            let loser = bidders.get_bytes(&bidder);
+            let bid = decode_bid_info(&loser.value());
+            transfer(ctx, &bidder, &ScColor::IOTA, bid.amount);
+        }
+    }
+
+    // finalizeAuction request token was probably not confirmed yet
+    transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+    transfer(ctx, &auction.highest_bidder, &auction.color, auction.num_tokens);
+    transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
+}
+
+pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
+    let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
+    if bid_amount == 0 {
+        ctx.panic("Missing bid amount");
+    }
+
+    let color = params.color.value();
+
+    let state = ctx.state();
+    let auctions = state.get_map(VAR_AUCTIONS);
+    let current_auction = auctions.get_map(&color);
+    let auction_info = current_auction.get_bytes(VAR_INFO);
+    if !auction_info.exists() {
+        ctx.panic("Missing auction info");
+    }
+
+    let mut auction = decode_auction_info(&auction_info.value());
+    let bidders = current_auction.get_map(VAR_BIDDERS);
+    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
+    let caller = ctx.caller();
+    let bidder = bidders.get_bytes(&caller);
+    if bidder.exists() {
+        ctx.log(&("Upped bid from: ".to_string() + &caller.to_string()));
+        let mut bid = decode_bid_info(&bidder.value());
+        bid_amount += bid.amount;
+        bid.amount = bid_amount;
+        bid.timestamp = ctx.timestamp();
+        bidder.set_value(&encode_bid_info(&bid));
+    } else {
+        if bid_amount < auction.minimum_bid {
+            ctx.panic("Insufficient bid amount");
+        }
+        ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
+        let index = bidder_list.length();
+        bidder_list.get_agent_id(index).set_value(&caller);
+        let bid = BidInfo {
+            index: index as i64,
+            amount: bid_amount,
+            timestamp: ctx.timestamp(),
+        };
+        bidder.set_value(&encode_bid_info(&bid));
+    }
+    if bid_amount > auction.highest_bid {
+        ctx.log("New highest bidder");
+        auction.highest_bid = bid_amount;
+        auction.highest_bidder = caller;
+        auction_info.set_value(&encode_auction_info(&auction));
+    }
+}
+
+pub fn func_set_owner_margin(ctx: &ScCallContext, params: &FuncSetOwnerMarginParams) {
+    // can only be sent by SC creator
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("Cancel spoofed request");
+    }
+
+    let mut owner_margin = params.owner_margin.value();
+    if owner_margin < OWNER_MARGIN_MIN {
+        owner_margin = OWNER_MARGIN_MIN;
+    }
+    if owner_margin > OWNER_MARGIN_MAX {
+        owner_margin = OWNER_MARGIN_MAX;
+    }
+    ctx.state().get_int(VAR_OWNER_MARGIN).set_value(owner_margin);
+    ctx.log("Updated owner margin");
+}
+
+pub fn func_start_auction(ctx: &ScCallContext, params: &FuncStartAuctionParams) {
+    let color = params.color.value();
     if color.equals(&ScColor::IOTA) || color.equals(&ScColor::MINT) {
         ctx.panic("Reserved auction token color");
     }
@@ -29,13 +144,10 @@ pub fn func_start_auction(ctx: &ScCallContext) {
         ctx.panic("Missing auction tokens");
     }
 
-    let minimum_bid = params.get_int(PARAM_MINIMUM_BID).value();
-    if minimum_bid == 0 {
-        ctx.panic("Missing minimum bid");
-    }
+    let minimum_bid = params.minimum_bid.value();
 
     // duration in minutes
-    let mut duration = params.get_int(PARAM_DURATION).value();
+    let mut duration = params.duration.value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -46,7 +158,7 @@ pub fn func_start_auction(ctx: &ScCallContext) {
         duration = DURATION_MAX;
     }
 
-    let mut description = params.get_string(PARAM_DESCRIPTION).value();
+    let mut description = params.description.value();
     if description == "" {
         description = "N/A".to_string()
     }
@@ -105,141 +217,8 @@ pub fn func_start_auction(ctx: &ScCallContext) {
     ctx.log("New auction started");
 }
 
-pub fn func_finalize_auction(ctx: &ScCallContext) {
-    // can only be sent by SC itself
-    if !ctx.from(&ctx.contract_id().as_agent_id()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
-    let color_param = ctx.params().get_color(PARAM_COLOR);
-    if !color_param.exists() {
-        ctx.panic("Missing token color");
-    }
-    let color = color_param.value();
-
-    let state = ctx.state();
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    if !auction_info.exists() {
-        ctx.panic("Missing auction info");
-    }
-    let auction = decode_auction_info(&auction_info.value());
-    if auction.highest_bid < 0 {
-        ctx.log(&("No one bid on ".to_string() + &color.to_string()));
-        let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
-        if owner_fee == 0 {
-            owner_fee = 1
-        }
-        // finalizeAuction request token was probably not confirmed yet
-        transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
-        transfer(ctx, &auction.creator, &auction.color, auction.num_tokens);
-        transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
-        return;
-    }
-
-    let mut owner_fee = auction.highest_bid * auction.owner_margin / 1000;
-    if owner_fee == 0 {
-        owner_fee = 1;
-    }
-
-    // return staked bids to losers
-    let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
-    let size = bidder_list.length();
-    for i in 0..size {
-        let bidder = bidder_list.get_agent_id(i).value();
-        if !bidder.equals(&auction.highest_bidder) {
-            let loser = bidders.get_bytes(&bidder);
-            let bid = decode_bid_info(&loser.value());
-            transfer(ctx, &bidder, &ScColor::IOTA, bid.amount);
-        }
-    }
-
-    // finalizeAuction request token was probably not confirmed yet
-    transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
-    transfer(ctx, &auction.highest_bidder, &auction.color, auction.num_tokens);
-    transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
-}
-
-pub fn func_place_bid(ctx: &ScCallContext) {
-    let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
-    if bid_amount == 0 {
-        ctx.panic("Missing bid amount");
-    }
-
-    let color_param = ctx.params().get_color(PARAM_COLOR);
-    if !color_param.exists() {
-        ctx.panic("Missing token color");
-    }
-    let color = color_param.value();
-
-    let state = ctx.state();
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    if !auction_info.exists() {
-        ctx.panic("Missing auction info");
-    }
-
-    let mut auction = decode_auction_info(&auction_info.value());
-    let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
-    let caller = ctx.caller();
-    let bidder = bidders.get_bytes(&caller);
-    if bidder.exists() {
-        ctx.log(&("Upped bid from: ".to_string() + &caller.to_string()));
-        let mut bid = decode_bid_info(&bidder.value());
-        bid_amount += bid.amount;
-        bid.amount = bid_amount;
-        bid.timestamp = ctx.timestamp();
-        bidder.set_value(&encode_bid_info(&bid));
-    } else {
-        if bid_amount < auction.minimum_bid {
-            ctx.panic("Insufficient bid amount");
-        }
-        ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
-        let index = bidder_list.length();
-        bidder_list.get_agent_id(index).set_value(&caller);
-        let bid = BidInfo {
-            index: index as i64,
-            amount: bid_amount,
-            timestamp: ctx.timestamp(),
-        };
-        bidder.set_value(&encode_bid_info(&bid));
-    }
-    if bid_amount > auction.highest_bid {
-        ctx.log("New highest bidder");
-        auction.highest_bid = bid_amount;
-        auction.highest_bidder = caller;
-        auction_info.set_value(&encode_auction_info(&auction));
-    }
-}
-
-pub fn func_set_owner_margin(ctx: &ScCallContext) {
-    // can only be sent by SC creator
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
-    let mut owner_margin = ctx.params().get_int(PARAM_OWNER_MARGIN).value();
-    if owner_margin < OWNER_MARGIN_MIN {
-        owner_margin = OWNER_MARGIN_MIN;
-    }
-    if owner_margin > OWNER_MARGIN_MAX {
-        owner_margin = OWNER_MARGIN_MAX;
-    }
-    ctx.state().get_int(VAR_OWNER_MARGIN).set_value(owner_margin);
-    ctx.log("Updated owner margin");
-}
-
-pub fn view_get_info(ctx: &ScViewContext) {
-    let color_param = ctx.params().get_color(PARAM_COLOR);
-    if !color_param.exists() {
-        ctx.panic("Missing token color");
-    }
-    let color = color_param.value();
-
+pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
+    let color = params.color.value();
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);

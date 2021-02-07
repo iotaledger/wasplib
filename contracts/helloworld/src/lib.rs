@@ -15,6 +15,20 @@ mod schema;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_HELLO_WORLD, func_hello_world);
-    exports.add_view(VIEW_GET_HELLO_WORLD, view_get_hello_world);
+    exports.add_call(FUNC_HELLO_WORLD, func_hello_world_thunk);
+    exports.add_view(VIEW_GET_HELLO_WORLD, view_get_hello_world_thunk);
+}
+
+pub struct FuncHelloWorldParams {}
+
+fn func_hello_world_thunk(ctx: &ScCallContext) {
+    let params = FuncHelloWorldParams {};
+    func_hello_world(ctx, &params);
+}
+
+pub struct ViewGetHelloWorldParams {}
+
+fn view_get_hello_world_thunk(ctx: &ScViewContext) {
+    let params = ViewGetHelloWorldParams {};
+    view_get_hello_world(ctx, &params);
 }

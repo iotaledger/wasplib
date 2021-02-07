@@ -7,12 +7,12 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 )
 
-func funcDonate(ctx *wasmlib.ScCallContext) {
+func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
 	donation := &DonationInfo{
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
 		Error:     "",
-		Feedback:  ctx.Params().GetString(ParamFeedback).Value(),
+		Feedback:  params.Feedback.Value(),
 		Timestamp: ctx.Timestamp(),
 	}
 	if donation.Amount == 0 || len(donation.Feedback) == 0 {
@@ -34,14 +34,14 @@ func funcDonate(ctx *wasmlib.ScCallContext) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func funcWithdraw(ctx *wasmlib.ScCallContext) {
+func funcWithdraw(ctx *wasmlib.ScCallContext, params *FuncWithdrawParams) {
 	scOwner := ctx.ContractCreator()
 	if !ctx.From(scOwner) {
 		ctx.Panic("Cancel spoofed request")
 	}
 
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
-	amount := ctx.Params().GetInt(ParamAmount).Value()
+	amount := params.Amount.Value()
 	if amount == 0 || amount > balance {
 		amount = balance
 	}
@@ -53,7 +53,7 @@ func funcWithdraw(ctx *wasmlib.ScCallContext) {
 	ctx.TransferToAddress(scOwner.Address(), wasmlib.NewScTransfer(wasmlib.IOTA, amount))
 }
 
-func viewDonations(ctx *wasmlib.ScViewContext) {
+func viewDonations(ctx *wasmlib.ScViewContext, params *ViewDonationsParams) {
 	state := ctx.State()
 	largestDonation := state.GetInt(VarMaxDonation)
 	totalDonated := state.GetInt(VarTotalDonation)

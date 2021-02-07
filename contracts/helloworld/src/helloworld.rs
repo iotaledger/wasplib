@@ -3,13 +3,13 @@
 
 use wasmlib::*;
 
-use crate::schema::*;
+use crate::*;
 
-pub fn func_hello_world(ctx: &ScCallContext) {
+pub fn func_hello_world(ctx: &ScCallContext, params: &FuncHelloWorldParams) {
     ctx.log("Hello, world!");
 }
 
-pub fn view_get_hello_world(ctx: &ScViewContext) {
+pub fn view_get_hello_world(ctx: &ScViewContext, params: &ViewGetHelloWorldParams) {
     ctx.log("Get Hello world!");
     ctx.results().get_string(VAR_HELLO_WORLD).set_value("Hello, world!");
 }

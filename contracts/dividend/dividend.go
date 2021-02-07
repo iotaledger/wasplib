@@ -7,46 +7,7 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 )
 
-func funcMember(ctx *wasmlib.ScCallContext) {
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-	params := ctx.Params()
-	address := params.GetAddress(ParamAddress)
-	if !address.Exists() {
-		ctx.Panic("Missing address")
-	}
-	factor := params.GetInt(ParamFactor)
-	if !factor.Exists() {
-		ctx.Panic("Missing factor")
-	}
-	member := &Member{
-		Address: address.Value(),
-		Factor:  factor.Value(),
-	}
-	state := ctx.State()
-	totalFactor := state.GetInt(VarTotalFactor)
-	total := totalFactor.Value()
-	members := state.GetBytesArray(VarMembers)
-	size := members.Length()
-	for i := int32(0); i < size; i++ {
-		m := DecodeMember(members.GetBytes(i).Value())
-		if m.Address.Equals(member.Address) {
-			total -= m.Factor
-			total += member.Factor
-			totalFactor.SetValue(total)
-			members.GetBytes(i).SetValue(EncodeMember(member))
-			ctx.Log("Updated: " + member.Address.String())
-			return
-		}
-	}
-	total += member.Factor
-	totalFactor.SetValue(total)
-	members.GetBytes(size).SetValue(EncodeMember(member))
-	ctx.Log("Appended: " + member.Address.String())
-}
-
-func funcDivide(ctx *wasmlib.ScCallContext) {
+func funcDivide(ctx *wasmlib.ScCallContext, params *FuncDivideParams) {
 	amount := ctx.Balances().Balance(wasmlib.IOTA)
 	if amount == 0 {
 		ctx.Panic("Nothing to divide")
@@ -72,4 +33,34 @@ func funcDivide(ctx *wasmlib.ScCallContext) {
 		remainder := amount - parts
 		ctx.Log("Remainder in contract: " + ctx.Utility().String(remainder))
 	}
+}
+
+func funcMember(ctx *wasmlib.ScCallContext, params *FuncMemberParams) {
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("Cancel spoofed request")
+	}
+	member := &Member{
+		Address: params.Address.Value(),
+		Factor:  params.Factor.Value(),
+	}
+	state := ctx.State()
+	totalFactor := state.GetInt(VarTotalFactor)
+	total := totalFactor.Value()
+	members := state.GetBytesArray(VarMembers)
+	size := members.Length()
+	for i := int32(0); i < size; i++ {
+		m := DecodeMember(members.GetBytes(i).Value())
+		if m.Address.Equals(member.Address) {
+			total -= m.Factor
+			total += member.Factor
+			totalFactor.SetValue(total)
+			members.GetBytes(i).SetValue(EncodeMember(member))
+			ctx.Log("Updated: " + member.Address.String())
+			return
+		}
+	}
+	total += member.Factor
+	totalFactor.SetValue(total)
+	members.GetBytes(size).SetValue(EncodeMember(member))
+	ctx.Log("Appended: " + member.Address.String())
 }

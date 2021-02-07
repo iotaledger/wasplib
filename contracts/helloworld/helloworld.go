@@ -5,11 +5,11 @@ package helloworld
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-func funcHelloWorld(ctx *wasmlib.ScCallContext) {
+func funcHelloWorld(ctx *wasmlib.ScCallContext, params *FuncHelloWorldParams) {
 	ctx.Log("Hello, world!")
 }
 
-func viewGetHelloWorld(ctx *wasmlib.ScViewContext) {
+func viewGetHelloWorld(ctx *wasmlib.ScViewContext, params *ViewGetHelloWorldParams) {
 	ctx.Log("Get Hello world!")
 	ctx.Results().GetString(VarHelloWorld).SetValue("Hello, world!")
 }

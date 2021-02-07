@@ -1,0 +1,37 @@
+{
+  "name": "aaa",
+  "description": "Generator test contract",
+  "types": {
+    "DonationInfo": {
+      "amount": "Int",
+      "donator": "AgentId",
+      "error": "String",
+      "feedback": "String",
+      "timestamp": "Int"
+    }
+  },
+  "vars": {
+    "amount": "Int",
+    "donations": "[]String",
+    "donator": "AgentId",
+    "error": "String",
+    "feedback": "String",
+    "log": "[]DonationInfo",
+    "maxDonation": "Int",
+    "timestamp": "Int",
+    "totalDonation": "Int"
+  },
+  "funcs": {
+    "donate": {
+      "feedback": "?String // feedback for the person you donate to"
+    },
+    "withdraw": {
+      "#owner": "creator // only SC creator can withdraw donated funds",
+      "amount": "?Int // amount to withdraw"
+    }
+  },
+  "views": {
+    "donations": {
+    }
+  }
+}

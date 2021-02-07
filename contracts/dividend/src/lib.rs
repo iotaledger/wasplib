@@ -16,6 +16,29 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_DIVIDE, func_divide);
-    exports.add_call(FUNC_MEMBER, func_member);
+    exports.add_call(FUNC_DIVIDE, func_divide_thunk);
+    exports.add_call(FUNC_MEMBER, func_member_thunk);
+}
+
+pub struct FuncDivideParams {}
+
+fn func_divide_thunk(ctx: &ScCallContext) {
+    let params = FuncDivideParams {};
+    func_divide(ctx, &params);
+}
+
+pub struct FuncMemberParams {
+    pub address: ScImmutableAddress,
+    pub factor: ScImmutableInt,
+}
+
+fn func_member_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncMemberParams {
+        address: p.get_address(PARAM_ADDRESS),
+        factor: p.get_int(PARAM_FACTOR),
+    };
+    ctx.require(params.address.exists(), "missing mandatory address");
+    ctx.require(params.factor.exists(), "missing mandatory factor");
+    func_member(ctx, &params);
 }

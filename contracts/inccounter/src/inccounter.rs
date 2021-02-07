@@ -3,24 +3,11 @@
 
 use wasmlib::*;
 
-use crate::schema::*;
+use crate::*;
 
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
 
-pub fn func_init(ctx: &ScCallContext) {
-    let counter = ctx.params().get_int(PARAM_COUNTER).value();
-    if counter == 0 {
-        return;
-    }
-    ctx.state().get_int(VAR_COUNTER).set_value(counter);
-}
-
-pub fn func_increment(ctx: &ScCallContext) {
-    let counter = ctx.state().get_int(VAR_COUNTER);
-    counter.set_value(counter.value() + 1);
-}
-
-pub fn func_call_increment(ctx: &ScCallContext) {
+pub fn func_call_increment(ctx: &ScCallContext, params: &FuncCallIncrementParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -29,7 +16,7 @@ pub fn func_call_increment(ctx: &ScCallContext) {
     }
 }
 
-pub fn func_call_increment_recurse5x(ctx: &ScCallContext) {
+pub fn func_call_increment_recurse5x(ctx: &ScCallContext, params: &FuncCallIncrementRecurse5xParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -38,60 +25,20 @@ pub fn func_call_increment_recurse5x(ctx: &ScCallContext) {
     }
 }
 
-pub fn func_post_increment(ctx: &ScCallContext) {
-    let counter = ctx.state().get_int(VAR_COUNTER);
-    let value = counter.value();
-    counter.set_value(value + 1);
-    if value == 0 {
-        ctx.post(&PostRequestParams {
-            contract_id: ctx.contract_id(),
-            function: HFUNC_POST_INCREMENT,
-            params: None,
-            transfer: None,
-            delay: 0,
-        });
-    }
-}
-
-pub fn view_get_counter(ctx: &ScViewContext) {
-    let counter = ctx.state().get_int(VAR_COUNTER).value();
-    ctx.results().get_int(VAR_COUNTER).set_value(counter);
-}
-
-pub fn func_repeat_many(ctx: &ScCallContext) {
-    let counter = ctx.state().get_int(VAR_COUNTER);
-    let value = counter.value();
-    counter.set_value(value + 1);
-    let state_repeats = ctx.state().get_int(VAR_NUM_REPEATS);
-    let mut repeats = ctx.params().get_int(PARAM_NUM_REPEATS).value();
-    if repeats == 0 {
-        repeats = state_repeats.value();
-        if repeats == 0 {
-            return;
-        }
-    }
-    state_repeats.set_value(repeats - 1);
-    ctx.post(&PostRequestParams {
-        contract_id: ctx.contract_id(),
-        function: HFUNC_REPEAT_MANY,
-        params: None,
-        transfer: None,
-        delay: 0,
-    });
-}
-
-pub fn func_when_must_increment(ctx: &ScCallContext) {
-    ctx.log("when_must_increment called");
-    unsafe {
-        if !LOCAL_STATE_MUST_INCREMENT {
-            return;
-        }
-    }
+pub fn func_increment(ctx: &ScCallContext, params: &FuncIncrementParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 
-pub fn func_local_state_internal_call(ctx: &ScCallContext) {
+pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
+    let counter = params.counter.value();
+    if counter == 0 {
+        return;
+    }
+    ctx.state().get_int(VAR_COUNTER).set_value(counter);
+}
+
+pub fn func_local_state_internal_call(ctx: &ScCallContext, params: &FuncLocalStateInternalCallParams) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -104,20 +51,7 @@ pub fn func_local_state_internal_call(ctx: &ScCallContext) {
     // counter ends up as 2
 }
 
-pub fn func_local_state_sandbox_call(ctx: &ScCallContext) {
-    unsafe {
-        LOCAL_STATE_MUST_INCREMENT = false;
-    }
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
-    unsafe {
-        LOCAL_STATE_MUST_INCREMENT = true;
-    }
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
-    // counter ends up as 0
-}
-
-pub fn func_local_state_post(ctx: &ScCallContext) {
+pub fn func_local_state_post(ctx: &ScCallContext, params: &FuncLocalStatePostParams) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -137,22 +71,88 @@ pub fn func_local_state_post(ctx: &ScCallContext) {
     // counter ends up as 0
 }
 
-pub fn func_results_test(ctx: &ScCallContext) {
+pub fn func_local_state_sandbox_call(ctx: &ScCallContext, params: &FuncLocalStateSandboxCallParams) {
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = false;
+    }
+    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
+    unsafe {
+        LOCAL_STATE_MUST_INCREMENT = true;
+    }
+    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
+    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
+    // counter ends up as 0
+}
+
+pub fn func_post_increment(ctx: &ScCallContext, params: &FuncPostIncrementParams) {
+    let counter = ctx.state().get_int(VAR_COUNTER);
+    let value = counter.value();
+    counter.set_value(value + 1);
+    if value == 0 {
+        ctx.post(&PostRequestParams {
+            contract_id: ctx.contract_id(),
+            function: HFUNC_POST_INCREMENT,
+            params: None,
+            transfer: None,
+            delay: 0,
+        });
+    }
+}
+
+pub fn func_repeat_many(ctx: &ScCallContext, params: &FuncRepeatManyParams) {
+    let counter = ctx.state().get_int(VAR_COUNTER);
+    let value = counter.value();
+    counter.set_value(value + 1);
+    let state_repeats = ctx.state().get_int(VAR_NUM_REPEATS);
+    let mut repeats = params.num_repeats.value();
+    if repeats == 0 {
+        repeats = state_repeats.value();
+        if repeats == 0 {
+            return;
+        }
+    }
+    state_repeats.set_value(repeats - 1);
+    ctx.post(&PostRequestParams {
+        contract_id: ctx.contract_id(),
+        function: HFUNC_REPEAT_MANY,
+        params: None,
+        transfer: None,
+        delay: 0,
+    });
+}
+
+pub fn func_results_test(ctx: &ScCallContext, params: &FuncResultsTestParams) {
     test_map(ctx.results());
     check_map(ctx.results().immutable());
     //ctx.call_self(HFUNC_RESULTS_CHECK, None, None);
 }
 
-pub fn func_state_test(ctx: &ScCallContext) {
+pub fn func_state_test(ctx: &ScCallContext, params: &FuncStateTestParams) {
     test_map(ctx.state());
     ctx.call_self(HVIEW_STATE_CHECK, None, None);
 }
 
-pub fn view_results_check(ctx: &ScViewContext) {
+pub fn func_when_must_increment(ctx: &ScCallContext, params: &FuncWhenMustIncrementParams) {
+    ctx.log("when_must_increment called");
+    unsafe {
+        if !LOCAL_STATE_MUST_INCREMENT {
+            return;
+        }
+    }
+    let counter = ctx.state().get_int(VAR_COUNTER);
+    counter.set_value(counter.value() + 1);
+}
+
+pub fn view_get_counter(ctx: &ScViewContext, params: &ViewGetCounterParams) {
+    let counter = ctx.state().get_int(VAR_COUNTER).value();
+    ctx.results().get_int(VAR_COUNTER).set_value(counter);
+}
+
+pub fn view_results_check(ctx: &ScViewContext, params: &ViewResultsCheckParams) {
     check_map(ctx.results().immutable());
 }
 
-pub fn view_state_check(ctx: &ScViewContext) {
+pub fn view_state_check(ctx: &ScViewContext, params: &ViewStateCheckParams) {
     check_map(ctx.state());
 }
 

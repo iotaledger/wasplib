@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "contracts/aaa",
     "contracts/dividend",
     "contracts/donatewithfeedback",
     "contracts/dummy",

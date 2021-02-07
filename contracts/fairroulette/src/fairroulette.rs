@@ -3,51 +3,13 @@
 
 use wasmlib::*;
 
-use crate::schema::*;
+use crate::*;
 use crate::types::*;
 
 const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-pub fn func_place_bet(ctx: &ScCallContext) {
-    let amount = ctx.incoming().balance(&ScColor::IOTA);
-    if amount == 0 {
-        ctx.panic("Empty bet...");
-    }
-    let number = ctx.params().get_int(PARAM_NUMBER).value();
-    if number == 0 {
-        ctx.panic("No number...");
-    }
-    if number < 1 || number > MAX_NUMBER {
-        ctx.panic("Invalid number...");
-    }
-
-    let bet = BetInfo {
-        better: ctx.caller(),
-        amount: amount,
-        number: number,
-    };
-
-    let state = ctx.state();
-    let bets = state.get_bytes_array(VAR_BETS);
-    let bet_nr = bets.length();
-    bets.get_bytes(bet_nr).set_value(&encode_bet_info(&bet));
-    if bet_nr == 0 {
-        let mut play_period = state.get_int(VAR_PLAY_PERIOD).value();
-        if play_period < 10 {
-            play_period = DEFAULT_PLAY_PERIOD;
-        }
-        ctx.post(&PostRequestParams {
-            contract_id: ctx.contract_id(),
-            function: HFUNC_LOCK_BETS,
-            params: None,
-            transfer: None,
-            delay: play_period,
-        });
-    }
-}
-
-pub fn func_lock_bets(ctx: &ScCallContext) {
+pub fn func_lock_bets(ctx: &ScCallContext, params: &FuncLockBetsParams) {
     // can only be sent by SC itself
     if !ctx.from(&ctx.contract_id().as_agent_id()) {
         ctx.panic("Cancel spoofed request");
@@ -73,7 +35,7 @@ pub fn func_lock_bets(ctx: &ScCallContext) {
     });
 }
 
-pub fn func_pay_winners(ctx: &ScCallContext) {
+pub fn func_pay_winners(ctx: &ScCallContext, params: &FuncPayWinnersParams) {
     // can only be sent by SC itself
     let sc_id = ctx.contract_id().as_agent_id();
     if !ctx.from(&sc_id) {
@@ -131,13 +93,48 @@ pub fn func_pay_winners(ctx: &ScCallContext) {
     }
 }
 
-pub fn func_play_period(ctx: &ScCallContext) {
+pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
+    let amount = ctx.incoming().balance(&ScColor::IOTA);
+    if amount == 0 {
+        ctx.panic("Empty bet...");
+    }
+    let number = params.number.value();
+    if number < 1 || number > MAX_NUMBER {
+        ctx.panic("Invalid number...");
+    }
+
+    let bet = BetInfo {
+        better: ctx.caller(),
+        amount: amount,
+        number: number,
+    };
+
+    let state = ctx.state();
+    let bets = state.get_bytes_array(VAR_BETS);
+    let bet_nr = bets.length();
+    bets.get_bytes(bet_nr).set_value(&encode_bet_info(&bet));
+    if bet_nr == 0 {
+        let mut play_period = state.get_int(VAR_PLAY_PERIOD).value();
+        if play_period < 10 {
+            play_period = DEFAULT_PLAY_PERIOD;
+        }
+        ctx.post(&PostRequestParams {
+            contract_id: ctx.contract_id(),
+            function: HFUNC_LOCK_BETS,
+            params: None,
+            transfer: None,
+            delay: play_period,
+        });
+    }
+}
+
+pub fn func_play_period(ctx: &ScCallContext, params: &FuncPlayPeriodParams) {
     // can only be sent by SC creator
     if !ctx.from(&ctx.contract_creator()) {
         ctx.panic("Cancel spoofed request");
     }
 
-    let play_period = ctx.params().get_int(PARAM_PLAY_PERIOD).value();
+    let play_period = params.play_period.value();
     if play_period < 10 {
         ctx.panic("Invalid play period...");
     }

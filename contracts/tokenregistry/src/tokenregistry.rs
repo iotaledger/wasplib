@@ -5,10 +5,10 @@
 
 use wasmlib::*;
 
-use crate::schema::*;
+use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScCallContext) {
+pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
     let minted = ctx.incoming().minted();
     if minted.equals(&ScColor::MINT) {
         ctx.panic("TokenRegistry: No newly minted tokens found");
@@ -18,15 +18,14 @@ pub fn func_mint_supply(ctx: &ScCallContext) {
     if registry.exists() {
         ctx.panic("TokenRegistry: Color already exists");
     }
-    let params = ctx.params();
     let mut token = TokenInfo {
         supply: ctx.incoming().balance(&minted),
         minted_by: ctx.caller(),
         owner: ctx.caller(),
         created: ctx.timestamp(),
         updated: ctx.timestamp(),
-        description: params.get_string(PARAM_DESCRIPTION).value(),
-        user_defined: params.get_string(PARAM_USER_DEFINED).value(),
+        description: params.description.value(),
+        user_defined: params.user_defined.value(),
     };
     if token.supply <= 0 {
         ctx.panic("TokenRegistry: Insufficient supply");
@@ -39,14 +38,14 @@ pub fn func_mint_supply(ctx: &ScCallContext) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-pub fn func_transfer_ownership(_sc: &ScCallContext) {
+pub fn func_transfer_ownership(_sc: &ScCallContext, params: &FuncTransferOwnershipParams) {
     //TODO
 }
 
-pub fn func_update_metadata(_sc: &ScCallContext) {
+pub fn func_update_metadata(_sc: &ScCallContext, params: &FuncUpdateMetadataParams) {
     //TODO
 }
 
-pub fn view_get_info(_sc: &ScViewContext) {
+pub fn view_get_info(_sc: &ScViewContext, params: &ViewGetInfoParams) {
     //TODO
 }

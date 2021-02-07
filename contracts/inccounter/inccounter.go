@@ -7,20 +7,7 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 var LocalStateMustIncrement = false
 
-func funcInit(ctx *wasmlib.ScCallContext) {
-	counter := ctx.Params().GetInt(ParamCounter).Value()
-	if counter == 0 {
-		return
-	}
-	ctx.State().GetInt(VarCounter).SetValue(counter)
-}
-
-func funcIncrement(ctx *wasmlib.ScCallContext) {
-	counter := ctx.State().GetInt(VarCounter)
-	counter.SetValue(counter.Value() + 1)
-}
-
-func funcCallIncrement(ctx *wasmlib.ScCallContext) {
+func funcCallIncrement(ctx *wasmlib.ScCallContext, params *FuncCallIncrementParams) {
 	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -29,7 +16,7 @@ func funcCallIncrement(ctx *wasmlib.ScCallContext) {
 	}
 }
 
-func funcCallIncrementRecurse5x(ctx *wasmlib.ScCallContext) {
+func funcCallIncrementRecurse5x(ctx *wasmlib.ScCallContext, params *FuncCallIncrementRecurse5xParams) {
 	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -38,7 +25,56 @@ func funcCallIncrementRecurse5x(ctx *wasmlib.ScCallContext) {
 	}
 }
 
-func funcPostIncrement(ctx *wasmlib.ScCallContext) {
+func funcIncrement(ctx *wasmlib.ScCallContext, params *FuncIncrementParams) {
+	counter := ctx.State().GetInt(VarCounter)
+	counter.SetValue(counter.Value() + 1)
+}
+
+func funcInit(ctx *wasmlib.ScCallContext, params *FuncInitParams) {
+	counter := params.Counter.Value()
+	if counter == 0 {
+		return
+	}
+	ctx.State().GetInt(VarCounter).SetValue(counter)
+}
+
+func funcLocalStateInternalCall(ctx *wasmlib.ScCallContext, params *FuncLocalStateInternalCallParams) {
+	LocalStateMustIncrement = false
+	par := &FuncWhenMustIncrementParams{
+	}
+	funcWhenMustIncrement(ctx, par)
+	LocalStateMustIncrement = true
+	funcWhenMustIncrement(ctx, par)
+	funcWhenMustIncrement(ctx, par)
+	// counter ends up as 2
+}
+
+func funcLocalStatePost(ctx *wasmlib.ScCallContext, params *FuncLocalStatePostParams) {
+	LocalStateMustIncrement = false
+	request := &wasmlib.PostRequestParams{
+		ContractId: ctx.ContractId(),
+		Function:   HFuncWhenMustIncrement,
+		Params:     nil,
+		Transfer:   nil,
+		Delay:      0,
+	}
+	ctx.Post(request)
+	LocalStateMustIncrement = true
+	ctx.Post(request)
+	ctx.Post(request)
+	// counter ends up as 0 (non-existent)
+}
+
+func funcLocalStateSandboxCall(ctx *wasmlib.ScCallContext, params *FuncLocalStateSandboxCallParams) {
+	LocalStateMustIncrement = false
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	LocalStateMustIncrement = true
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	// counter ends up as 0 (non-existent)
+}
+
+func funcPostIncrement(ctx *wasmlib.ScCallContext, params *FuncPostIncrementParams) {
 	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -53,17 +89,12 @@ func funcPostIncrement(ctx *wasmlib.ScCallContext) {
 	}
 }
 
-func viewGetCounter(ctx *wasmlib.ScViewContext) {
-	counter := ctx.State().GetInt(VarCounter).Value()
-	ctx.Results().GetInt(VarCounter).SetValue(counter)
-}
-
-func funcRepeatMany(ctx *wasmlib.ScCallContext) {
+func funcRepeatMany(ctx *wasmlib.ScCallContext, params *FuncRepeatManyParams) {
 	counter := ctx.State().GetInt(VarCounter)
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	stateRepeats := ctx.State().GetInt(VarNumRepeats)
-	repeats := ctx.Params().GetInt(ParamNumRepeats).Value()
+	repeats := params.NumRepeats.Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -80,7 +111,18 @@ func funcRepeatMany(ctx *wasmlib.ScCallContext) {
 	})
 }
 
-func funcWhenMustIncrement(ctx *wasmlib.ScCallContext) {
+func funcResultsTest(ctx *wasmlib.ScCallContext, params *FuncResultsTestParams) {
+	testMap(ctx.Results())
+	checkMap(ctx.Results().Immutable())
+	//ctx.CallSelf(HFuncResultsCheck, nil, nil)
+}
+
+func funcStateTest(ctx *wasmlib.ScCallContext, params *FuncStateTestParams) {
+	testMap(ctx.State())
+	ctx.CallSelf(HViewStateCheck, nil, nil)
+}
+
+func funcWhenMustIncrement(ctx *wasmlib.ScCallContext, params *FuncWhenMustIncrementParams) {
 	ctx.Log("when_must_increment called")
 	{
 		if !LocalStateMustIncrement {
@@ -91,56 +133,16 @@ func funcWhenMustIncrement(ctx *wasmlib.ScCallContext) {
 	counter.SetValue(counter.Value() + 1)
 }
 
-func funcLocalStateInternalCall(ctx *wasmlib.ScCallContext) {
-	LocalStateMustIncrement = false
-	funcWhenMustIncrement(ctx)
-	LocalStateMustIncrement = true
-	funcWhenMustIncrement(ctx)
-	funcWhenMustIncrement(ctx)
-	// counter ends up as 2
+func viewGetCounter(ctx *wasmlib.ScViewContext, params *ViewGetCounterParams) {
+	counter := ctx.State().GetInt(VarCounter).Value()
+	ctx.Results().GetInt(VarCounter).SetValue(counter)
 }
 
-func funcLocalStateSandboxCall(ctx *wasmlib.ScCallContext) {
-	LocalStateMustIncrement = false
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	LocalStateMustIncrement = true
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	// counter ends up as 0 (non-existent)
-}
-
-func funcLocalStatePost(ctx *wasmlib.ScCallContext) {
-	LocalStateMustIncrement = false
-	request := &wasmlib.PostRequestParams{
-		ContractId: ctx.ContractId(),
-		Function:   HFuncWhenMustIncrement,
-		Params:     nil,
-		Transfer:   nil,
-		Delay:      0,
-	}
-	ctx.Post(request)
-	LocalStateMustIncrement = true
-	ctx.Post(request)
-	ctx.Post(request)
-	// counter ends up as 0 (non-existent)
-}
-
-func funcResultsTest(ctx *wasmlib.ScCallContext) {
-	testMap(ctx.Results())
-	checkMap(ctx.Results().Immutable())
-	//ctx.CallSelf(HFuncResultsCheck, nil, nil)
-}
-
-func funcStateTest(ctx *wasmlib.ScCallContext) {
-	testMap(ctx.State())
-	ctx.CallSelf(HViewStateCheck, nil, nil)
-}
-
-func viewResultsCheck(ctx *wasmlib.ScViewContext) {
+func viewResultsCheck(ctx *wasmlib.ScViewContext, params *ViewResultsCheckParams) {
 	checkMap(ctx.Results().Immutable())
 }
 
-func viewStateCheck(ctx *wasmlib.ScViewContext) {
+func viewStateCheck(ctx *wasmlib.ScViewContext, params *ViewStateCheckParams) {
 	checkMap(ctx.State())
 }
 

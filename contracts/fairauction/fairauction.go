@@ -13,13 +13,128 @@ const OwnerMarginDefault = 50
 const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
-func funcStartAuction(ctx *wasmlib.ScCallContext) {
-	params := ctx.Params()
-	colorParam := params.GetColor(ParamColor)
-	if !colorParam.Exists() {
-		ctx.Panic("Missing auction token color")
+func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuctionParams) {
+	// can only be sent by SC itself
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
+		ctx.Panic("Cancel spoofed request")
 	}
-	color := colorParam.Value()
+
+	color := params.Color.Value()
+
+	state := ctx.State()
+	auctions := state.GetMap(VarAuctions)
+	currentAuction := auctions.GetMap(color)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
+	if !auctionInfo.Exists() {
+		ctx.Panic("Missing auction info")
+	}
+	auction := DecodeAuctionInfo(auctionInfo.Value())
+	if auction.HighestBid < 0 {
+		ctx.Log("No one bid on " + color.String())
+		ownerFee := auction.MinimumBid * auction.OwnerMargin / 1000
+		if ownerFee == 0 {
+			ownerFee = 1
+		}
+		// finalizeAuction request token was probably not confirmed yet
+		transfer(ctx, ctx.ContractCreator(), wasmlib.IOTA, ownerFee-1)
+		transfer(ctx, auction.Creator, auction.Color, auction.NumTokens)
+		transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit-ownerFee)
+		return
+	}
+
+	ownerFee := auction.HighestBid * auction.OwnerMargin / 1000
+	if ownerFee == 0 {
+		ownerFee = 1
+	}
+
+	// return staked bids to losers
+	bidders := currentAuction.GetMap(VarBidders)
+	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
+	size := bidderList.Length()
+	for i := int32(0); i < size; i++ {
+		bidder := bidderList.GetAgentId(i).Value()
+		if !bidder.Equals(auction.HighestBidder) {
+			loser := bidders.GetBytes(bidder)
+			bid := DecodeBidInfo(loser.Value())
+			transfer(ctx, bidder, wasmlib.IOTA, bid.Amount)
+		}
+	}
+
+	// finalizeAuction request token was probably not confirmed yet
+	transfer(ctx, ctx.ContractCreator(), wasmlib.IOTA, ownerFee-1)
+	transfer(ctx, auction.HighestBidder, auction.Color, auction.NumTokens)
+	transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
+}
+
+func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
+	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
+	if bidAmount == 0 {
+		ctx.Panic("Missing bid amount")
+	}
+
+	color := params.Color.Value()
+
+	state := ctx.State()
+	auctions := state.GetMap(VarAuctions)
+	currentAuction := auctions.GetMap(color)
+	auctionInfo := currentAuction.GetBytes(VarInfo)
+	if !auctionInfo.Exists() {
+		ctx.Panic("Missing auction info")
+	}
+
+	auction := DecodeAuctionInfo(auctionInfo.Value())
+	bidders := currentAuction.GetMap(VarBidders)
+	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
+	caller := ctx.Caller()
+	bidder := bidders.GetBytes(caller)
+	if bidder.Exists() {
+		ctx.Log("Upped bid from: " + caller.String())
+		bid := DecodeBidInfo(bidder.Value())
+		bidAmount += bid.Amount
+		bid.Amount = bidAmount
+		bid.Timestamp = ctx.Timestamp()
+		bidder.SetValue(EncodeBidInfo(bid))
+	} else {
+		if bidAmount < auction.MinimumBid {
+			ctx.Panic("Insufficient bid amount")
+		}
+		ctx.Log("New bid from: " + caller.String())
+		index := bidderList.Length()
+		bidderList.GetAgentId(index).SetValue(caller)
+		bid := &BidInfo{
+			Index:     int64(index),
+			Amount:    bidAmount,
+			Timestamp: ctx.Timestamp(),
+		}
+		bidder.SetValue(EncodeBidInfo(bid))
+	}
+	if bidAmount > auction.HighestBid {
+		ctx.Log("New highest bidder")
+		auction.HighestBid = bidAmount
+		auction.HighestBidder = caller
+		auctionInfo.SetValue(EncodeAuctionInfo(auction))
+	}
+}
+
+func funcSetOwnerMargin(ctx *wasmlib.ScCallContext, params *FuncSetOwnerMarginParams) {
+	// can only be sent by SC creator
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("Cancel spoofed request")
+	}
+
+	ownerMargin := params.OwnerMargin.Value()
+	if ownerMargin < OwnerMarginMin {
+		ownerMargin = OwnerMarginMin
+	}
+	if ownerMargin > OwnerMarginMax {
+		ownerMargin = OwnerMarginMax
+	}
+	ctx.State().GetInt(VarOwnerMargin).SetValue(ownerMargin)
+	ctx.Log("Updated owner margin")
+}
+
+func funcStartAuction(ctx *wasmlib.ScCallContext, params *FuncStartAuctionParams) {
+	color := params.Color.Value()
 	if color.Equals(wasmlib.IOTA) || color.Equals(wasmlib.MINT) {
 		ctx.Panic("Reserved auction token color")
 	}
@@ -28,13 +143,10 @@ func funcStartAuction(ctx *wasmlib.ScCallContext) {
 		ctx.Panic("Missing auction tokens")
 	}
 
-	minimumBid := params.GetInt(ParamMinimumBid).Value()
-	if minimumBid == 0 {
-		ctx.Panic("Missing minimum bid")
-	}
+	minimumBid := params.MinimumBid.Value()
 
 	// duration in minutes
-	duration := params.GetInt(ParamDuration).Value()
+	duration := params.Duration.Value()
 	if duration == 0 {
 		duration = DurationDefault
 	}
@@ -45,7 +157,7 @@ func funcStartAuction(ctx *wasmlib.ScCallContext) {
 		duration = DurationMax
 	}
 
-	description := params.GetString(ParamDescription).Value()
+	description := params.Description.Value()
 	if description == "" {
 		description = "N/A"
 	}
@@ -103,141 +215,8 @@ func funcStartAuction(ctx *wasmlib.ScCallContext) {
 	ctx.Log("New auction started")
 }
 
-func funcFinalizeAuction(ctx *wasmlib.ScCallContext) {
-	// can only be sent by SC itself
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
-	colorParam := ctx.Params().GetColor(ParamColor)
-	if !colorParam.Exists() {
-		ctx.Panic("Missing token color")
-	}
-	color := colorParam.Value()
-
-	state := ctx.State()
-	auctions := state.GetMap(VarAuctions)
-	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(VarInfo)
-	if !auctionInfo.Exists() {
-		ctx.Panic("Missing auction info")
-	}
-	auction := DecodeAuctionInfo(auctionInfo.Value())
-	if auction.HighestBid < 0 {
-		ctx.Log("No one bid on " + color.String())
-		ownerFee := auction.MinimumBid * auction.OwnerMargin / 1000
-		if ownerFee == 0 {
-			ownerFee = 1
-		}
-		// finalizeAuction request token was probably not confirmed yet
-		transfer(ctx, ctx.ContractCreator(), wasmlib.IOTA, ownerFee-1)
-		transfer(ctx, auction.Creator, auction.Color, auction.NumTokens)
-		transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit-ownerFee)
-		return
-	}
-
-	ownerFee := auction.HighestBid * auction.OwnerMargin / 1000
-	if ownerFee == 0 {
-		ownerFee = 1
-	}
-
-	// return staked bids to losers
-	bidders := currentAuction.GetMap(VarBidders)
-	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
-	size := bidderList.Length()
-	for i := int32(0); i < size; i++ {
-		bidder := bidderList.GetAgentId(i).Value()
-		if !bidder.Equals(auction.HighestBidder) {
-			loser := bidders.GetBytes(bidder)
-			bid := DecodeBidInfo(loser.Value())
-			transfer(ctx, bidder, wasmlib.IOTA, bid.Amount)
-		}
-	}
-
-	// finalizeAuction request token was probably not confirmed yet
-	transfer(ctx, ctx.ContractCreator(), wasmlib.IOTA, ownerFee-1)
-	transfer(ctx, auction.HighestBidder, auction.Color, auction.NumTokens)
-	transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
-}
-
-func funcPlaceBid(ctx *wasmlib.ScCallContext) {
-	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
-	if bidAmount == 0 {
-		ctx.Panic("Missing bid amount")
-	}
-
-	colorParam := ctx.Params().GetColor(ParamColor)
-	if !colorParam.Exists() {
-		ctx.Panic("Missing token color")
-	}
-	color := colorParam.Value()
-
-	state := ctx.State()
-	auctions := state.GetMap(VarAuctions)
-	currentAuction := auctions.GetMap(color)
-	auctionInfo := currentAuction.GetBytes(VarInfo)
-	if !auctionInfo.Exists() {
-		ctx.Panic("Missing auction info")
-	}
-
-	auction := DecodeAuctionInfo(auctionInfo.Value())
-	bidders := currentAuction.GetMap(VarBidders)
-	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
-	caller := ctx.Caller()
-	bidder := bidders.GetBytes(caller)
-	if bidder.Exists() {
-		ctx.Log("Upped bid from: " + caller.String())
-		bid := DecodeBidInfo(bidder.Value())
-		bidAmount += bid.Amount
-		bid.Amount = bidAmount
-		bid.Timestamp = ctx.Timestamp()
-		bidder.SetValue(EncodeBidInfo(bid))
-	} else {
-		if bidAmount < auction.MinimumBid {
-			ctx.Panic("Insufficient bid amount")
-		}
-		ctx.Log("New bid from: " + caller.String())
-		index := bidderList.Length()
-		bidderList.GetAgentId(index).SetValue(caller)
-		bid := &BidInfo{
-			Index:     int64(index),
-			Amount:    bidAmount,
-			Timestamp: ctx.Timestamp(),
-		}
-		bidder.SetValue(EncodeBidInfo(bid))
-	}
-	if bidAmount > auction.HighestBid {
-		ctx.Log("New highest bidder")
-		auction.HighestBid = bidAmount
-		auction.HighestBidder = caller
-		auctionInfo.SetValue(EncodeAuctionInfo(auction))
-	}
-}
-
-func funcSetOwnerMargin(ctx *wasmlib.ScCallContext) {
-	// can only be sent by SC creator
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
-	ownerMargin := ctx.Params().GetInt(ParamOwnerMargin).Value()
-	if ownerMargin < OwnerMarginMin {
-		ownerMargin = OwnerMarginMin
-	}
-	if ownerMargin > OwnerMarginMax {
-		ownerMargin = OwnerMarginMax
-	}
-	ctx.State().GetInt(VarOwnerMargin).SetValue(ownerMargin)
-	ctx.Log("Updated owner margin")
-}
-
-func viewGetInfo(ctx *wasmlib.ScViewContext) {
-	colorParam := ctx.Params().GetColor(ParamColor)
-	if !colorParam.Exists() {
-		ctx.Panic("Missing token color")
-	}
-	color := colorParam.Value()
-
+func viewGetInfo(ctx *wasmlib.ScViewContext, params *ViewGetInfoParams) {
+	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)

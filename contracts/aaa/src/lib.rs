@@ -5,11 +5,11 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use donatewithfeedback::*;
+use aaa::*;
 use schema::*;
 use wasmlib::*;
 
-mod donatewithfeedback;
+mod aaa;
 mod schema;
 mod types;
 

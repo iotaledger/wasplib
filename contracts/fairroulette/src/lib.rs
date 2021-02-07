@@ -16,8 +16,48 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_LOCK_BETS, func_lock_bets);
-    exports.add_call(FUNC_PAY_WINNERS, func_pay_winners);
-    exports.add_call(FUNC_PLACE_BET, func_place_bet);
-    exports.add_call(FUNC_PLAY_PERIOD, func_play_period);
+    exports.add_call(FUNC_LOCK_BETS, func_lock_bets_thunk);
+    exports.add_call(FUNC_PAY_WINNERS, func_pay_winners_thunk);
+    exports.add_call(FUNC_PLACE_BET, func_place_bet_thunk);
+    exports.add_call(FUNC_PLAY_PERIOD, func_play_period_thunk);
+}
+
+pub struct FuncLockBetsParams {}
+
+fn func_lock_bets_thunk(ctx: &ScCallContext) {
+    let params = FuncLockBetsParams {};
+    func_lock_bets(ctx, &params);
+}
+
+pub struct FuncPayWinnersParams {}
+
+fn func_pay_winners_thunk(ctx: &ScCallContext) {
+    let params = FuncPayWinnersParams {};
+    func_pay_winners(ctx, &params);
+}
+
+pub struct FuncPlaceBetParams {
+    pub number: ScImmutableInt,
+}
+
+fn func_place_bet_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncPlaceBetParams {
+        number: p.get_int(PARAM_NUMBER),
+    };
+    ctx.require(params.number.exists(), "missing mandatory number");
+    func_place_bet(ctx, &params);
+}
+
+pub struct FuncPlayPeriodParams {
+    pub play_period: ScImmutableInt,
+}
+
+fn func_play_period_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncPlayPeriodParams {
+        play_period: p.get_int(PARAM_PLAY_PERIOD),
+    };
+    ctx.require(params.play_period.exists(), "missing mandatory playPeriod");
+    func_play_period(ctx, &params);
 }

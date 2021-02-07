@@ -11,8 +11,52 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncLockBets, funcLockBets)
-	exports.AddCall(FuncPayWinners, funcPayWinners)
-	exports.AddCall(FuncPlaceBet, funcPlaceBet)
-	exports.AddCall(FuncPlayPeriod, funcPlayPeriod)
+	exports.AddCall(FuncLockBets, funcLockBetsThunk)
+	exports.AddCall(FuncPayWinners, funcPayWinnersThunk)
+	exports.AddCall(FuncPlaceBet, funcPlaceBetThunk)
+	exports.AddCall(FuncPlayPeriod, funcPlayPeriodThunk)
+}
+
+type FuncLockBetsParams struct {
+}
+
+func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
+	params := &FuncLockBetsParams{
+	}
+	funcLockBets(ctx, params)
+}
+
+type FuncPayWinnersParams struct {
+}
+
+func funcPayWinnersThunk(ctx *wasmlib.ScCallContext) {
+	params := &FuncPayWinnersParams{
+	}
+	funcPayWinners(ctx, params)
+}
+
+type FuncPlaceBetParams struct {
+	Number wasmlib.ScImmutableInt
+}
+
+func funcPlaceBetThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncPlaceBetParams{
+		Number: p.GetInt(ParamNumber),
+	}
+	ctx.Require(params.Number.Exists(), "missing mandatory number")
+	funcPlaceBet(ctx, params)
+}
+
+type FuncPlayPeriodParams struct {
+	PlayPeriod wasmlib.ScImmutableInt
+}
+
+func funcPlayPeriodThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncPlayPeriodParams{
+		PlayPeriod: p.GetInt(ParamPlayPeriod),
+	}
+	ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod")
+	funcPlayPeriod(ctx, params)
 }

@@ -11,8 +11,63 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncMintSupply, funcMintSupply)
-	exports.AddCall(FuncTransferOwnership, funcTransferOwnership)
-	exports.AddCall(FuncUpdateMetadata, funcUpdateMetadata)
-	exports.AddView(ViewGetInfo, viewGetInfo)
+	exports.AddCall(FuncMintSupply, funcMintSupplyThunk)
+	exports.AddCall(FuncTransferOwnership, funcTransferOwnershipThunk)
+	exports.AddCall(FuncUpdateMetadata, funcUpdateMetadataThunk)
+	exports.AddView(ViewGetInfo, viewGetInfoThunk)
+}
+
+type FuncMintSupplyParams struct {
+	Description wasmlib.ScImmutableString
+	UserDefined wasmlib.ScImmutableString
+}
+
+func funcMintSupplyThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncMintSupplyParams{
+		Description: p.GetString(ParamDescription),
+		UserDefined: p.GetString(ParamUserDefined),
+	}
+	ctx.Require(params.Description.Exists(), "missing mandatory description")
+	ctx.Require(params.UserDefined.Exists(), "missing mandatory userDefined")
+	funcMintSupply(ctx, params)
+}
+
+type FuncTransferOwnershipParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncTransferOwnershipParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	funcTransferOwnership(ctx, params)
+}
+
+type FuncUpdateMetadataParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncUpdateMetadataParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	funcUpdateMetadata(ctx, params)
+}
+
+type ViewGetInfoParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
+	p := ctx.Params()
+	params := &ViewGetInfoParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	viewGetInfo(ctx, params)
 }

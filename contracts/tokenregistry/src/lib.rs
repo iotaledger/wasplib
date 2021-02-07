@@ -5,8 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use tokenregistry::*;
 use schema::*;
+use tokenregistry::*;
 use wasmlib::*;
 
 mod tokenregistry;
@@ -16,8 +16,63 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_MINT_SUPPLY, func_mint_supply);
-    exports.add_call(FUNC_TRANSFER_OWNERSHIP, func_transfer_ownership);
-    exports.add_call(FUNC_UPDATE_METADATA, func_update_metadata);
-    exports.add_view(VIEW_GET_INFO, view_get_info);
+    exports.add_call(FUNC_MINT_SUPPLY, func_mint_supply_thunk);
+    exports.add_call(FUNC_TRANSFER_OWNERSHIP, func_transfer_ownership_thunk);
+    exports.add_call(FUNC_UPDATE_METADATA, func_update_metadata_thunk);
+    exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
+}
+
+pub struct FuncMintSupplyParams {
+    pub description: ScImmutableString,
+    pub user_defined: ScImmutableString,
+}
+
+fn func_mint_supply_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncMintSupplyParams {
+        description: p.get_string(PARAM_DESCRIPTION),
+        user_defined: p.get_string(PARAM_USER_DEFINED),
+    };
+    ctx.require(params.description.exists(), "missing mandatory description");
+    ctx.require(params.user_defined.exists(), "missing mandatory userDefined");
+    func_mint_supply(ctx, &params);
+}
+
+pub struct FuncTransferOwnershipParams {
+    pub color: ScImmutableColor,
+}
+
+fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncTransferOwnershipParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    func_transfer_ownership(ctx, &params);
+}
+
+pub struct FuncUpdateMetadataParams {
+    pub color: ScImmutableColor,
+}
+
+fn func_update_metadata_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncUpdateMetadataParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    func_update_metadata(ctx, &params);
+}
+
+pub struct ViewGetInfoParams {
+    pub color: ScImmutableColor,
+}
+
+fn view_get_info_thunk(ctx: &ScViewContext) {
+    let p = ctx.params();
+    let params = ViewGetInfoParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    view_get_info(ctx, &params);
 }

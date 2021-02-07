@@ -11,9 +11,83 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncFinalizeAuction, funcFinalizeAuction)
-	exports.AddCall(FuncPlaceBid, funcPlaceBid)
-	exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMargin)
-	exports.AddCall(FuncStartAuction, funcStartAuction)
-	exports.AddView(ViewGetInfo, viewGetInfo)
+	exports.AddCall(FuncFinalizeAuction, funcFinalizeAuctionThunk)
+	exports.AddCall(FuncPlaceBid, funcPlaceBidThunk)
+	exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMarginThunk)
+	exports.AddCall(FuncStartAuction, funcStartAuctionThunk)
+	exports.AddView(ViewGetInfo, viewGetInfoThunk)
+}
+
+type FuncFinalizeAuctionParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncFinalizeAuctionParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	funcFinalizeAuction(ctx, params)
+}
+
+type FuncPlaceBidParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func funcPlaceBidThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncPlaceBidParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	funcPlaceBid(ctx, params)
+}
+
+type FuncSetOwnerMarginParams struct {
+	OwnerMargin wasmlib.ScImmutableInt
+}
+
+func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncSetOwnerMarginParams{
+		OwnerMargin: p.GetInt(ParamOwnerMargin),
+	}
+	ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin")
+	funcSetOwnerMargin(ctx, params)
+}
+
+type FuncStartAuctionParams struct {
+	Color       wasmlib.ScImmutableColor
+	Description wasmlib.ScImmutableString
+	Duration    wasmlib.ScImmutableInt
+	MinimumBid  wasmlib.ScImmutableInt
+}
+
+func funcStartAuctionThunk(ctx *wasmlib.ScCallContext) {
+	p := ctx.Params()
+	params := &FuncStartAuctionParams{
+		Color:       p.GetColor(ParamColor),
+		Description: p.GetString(ParamDescription),
+		Duration:    p.GetInt(ParamDuration),
+		MinimumBid:  p.GetInt(ParamMinimumBid),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	ctx.Require(params.Description.Exists(), "missing mandatory description")
+	ctx.Require(params.Duration.Exists(), "missing mandatory duration")
+	ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid")
+	funcStartAuction(ctx, params)
+}
+
+type ViewGetInfoParams struct {
+	Color wasmlib.ScImmutableColor
+}
+
+func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
+	p := ctx.Params()
+	params := &ViewGetInfoParams{
+		Color: p.GetColor(ParamColor),
+	}
+	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	viewGetInfo(ctx, params)
 }

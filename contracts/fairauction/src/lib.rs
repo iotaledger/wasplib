@@ -16,9 +16,83 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_FINALIZE_AUCTION, func_finalize_auction);
-    exports.add_call(FUNC_PLACE_BID, func_place_bid);
-    exports.add_call(FUNC_SET_OWNER_MARGIN, func_set_owner_margin);
-    exports.add_call(FUNC_START_AUCTION, func_start_auction);
-    exports.add_view(VIEW_GET_INFO, view_get_info);
+    exports.add_call(FUNC_FINALIZE_AUCTION, func_finalize_auction_thunk);
+    exports.add_call(FUNC_PLACE_BID, func_place_bid_thunk);
+    exports.add_call(FUNC_SET_OWNER_MARGIN, func_set_owner_margin_thunk);
+    exports.add_call(FUNC_START_AUCTION, func_start_auction_thunk);
+    exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
+}
+
+pub struct FuncFinalizeAuctionParams {
+    pub color: ScImmutableColor,
+}
+
+fn func_finalize_auction_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncFinalizeAuctionParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    func_finalize_auction(ctx, &params);
+}
+
+pub struct FuncPlaceBidParams {
+    pub color: ScImmutableColor,
+}
+
+fn func_place_bid_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncPlaceBidParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    func_place_bid(ctx, &params);
+}
+
+pub struct FuncSetOwnerMarginParams {
+    pub owner_margin: ScImmutableInt,
+}
+
+fn func_set_owner_margin_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncSetOwnerMarginParams {
+        owner_margin: p.get_int(PARAM_OWNER_MARGIN),
+    };
+    ctx.require(params.owner_margin.exists(), "missing mandatory ownerMargin");
+    func_set_owner_margin(ctx, &params);
+}
+
+pub struct FuncStartAuctionParams {
+    pub color: ScImmutableColor,
+    pub description: ScImmutableString,
+    pub duration: ScImmutableInt,
+    pub minimum_bid: ScImmutableInt,
+}
+
+fn func_start_auction_thunk(ctx: &ScCallContext) {
+    let p = ctx.params();
+    let params = FuncStartAuctionParams {
+        color: p.get_color(PARAM_COLOR),
+        description: p.get_string(PARAM_DESCRIPTION),
+        duration: p.get_int(PARAM_DURATION),
+        minimum_bid: p.get_int(PARAM_MINIMUM_BID),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    ctx.require(params.description.exists(), "missing mandatory description");
+    ctx.require(params.duration.exists(), "missing mandatory duration");
+    ctx.require(params.minimum_bid.exists(), "missing mandatory minimumBid");
+    func_start_auction(ctx, &params);
+}
+
+pub struct ViewGetInfoParams {
+    pub color: ScImmutableColor,
+}
+
+fn view_get_info_thunk(ctx: &ScViewContext) {
+    let p = ctx.params();
+    let params = ViewGetInfoParams {
+        color: p.get_color(PARAM_COLOR),
+    };
+    ctx.require(params.color.exists(), "missing mandatory color");
+    view_get_info(ctx, &params);
 }
