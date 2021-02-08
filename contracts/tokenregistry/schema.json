@@ -1,7 +1,7 @@
 {
   "name": "tokenregistry",
   "types": {
-    "TokenInfo": {
+    "Token": {
       "created": "Int // creation timestamp",
       "description": "String // description what minted token represents",
       "mintedBy": "AgentId // original minter",
@@ -13,7 +13,7 @@
   },
   "vars": {
     "colorList": "[]Color",
-    "registry": "[]TokenInfo"
+    "registry": "[]Token"
   },
   "funcs": {
     "mintSupply": {

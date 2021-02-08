@@ -14,17 +14,17 @@ type Member struct {
 	Factor  int64              // relative division factor
 }
 
-func EncodeMember(o *Member) []byte {
-	return wasmlib.NewBytesEncoder().
-		Address(o.Address).
-		Int(o.Factor).
-		Data()
-}
-
-func DecodeMember(bytes []byte) *Member {
+func NewMemberFromBytes(bytes []byte) *Member {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Member{}
 	data.Address = decode.Address()
 	data.Factor = decode.Int()
 	return data
+}
+
+func (o *Member) Bytes() []byte {
+	return wasmlib.NewBytesEncoder().
+		Address(o.Address).
+		Int(o.Factor).
+		Data()
 }

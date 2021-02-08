@@ -18,7 +18,7 @@ pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
     if registry.exists() {
         ctx.panic("TokenRegistry: Color already exists");
     }
-    let mut token = TokenInfo {
+    let mut token = Token {
         supply: ctx.incoming().balance(&minted),
         minted_by: ctx.caller(),
         owner: ctx.caller(),
@@ -33,7 +33,7 @@ pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
     if token.description.is_empty() {
         token.description += "no dscr";
     }
-    registry.set_value(&encode_token_info(&token));
+    registry.set_value(&token.to_bytes());
     let colors = state.get_color_array(VAR_COLOR_LIST);
     colors.get_color(colors.length()).set_value(&minted);
 }

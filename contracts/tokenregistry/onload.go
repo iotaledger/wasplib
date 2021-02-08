@@ -10,72 +10,72 @@ package tokenregistry
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncMintSupply, funcMintSupplyThunk)
-	exports.AddCall(FuncTransferOwnership, funcTransferOwnershipThunk)
-	exports.AddCall(FuncUpdateMetadata, funcUpdateMetadataThunk)
-	exports.AddView(ViewGetInfo, viewGetInfoThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncMintSupply, funcMintSupplyThunk)
+    exports.AddCall(FuncTransferOwnership, funcTransferOwnershipThunk)
+    exports.AddCall(FuncUpdateMetadata, funcUpdateMetadataThunk)
+    exports.AddView(ViewGetInfo, viewGetInfoThunk)
 }
 
 type FuncMintSupplyParams struct {
-	Description wasmlib.ScImmutableString // description what minted token represents
-	UserDefined wasmlib.ScImmutableString // any user defined text
+    Description wasmlib.ScImmutableString // description what minted token represents
+    UserDefined wasmlib.ScImmutableString // any user defined text
 }
 
 func funcMintSupplyThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncMintSupplyParams{
-		Description: p.GetString(ParamDescription),
-		UserDefined: p.GetString(ParamUserDefined),
-	}
-	funcMintSupply(ctx, params)
+    p := ctx.Params()
+    params := &FuncMintSupplyParams {
+        Description: p.GetString(ParamDescription),
+        UserDefined: p.GetString(ParamUserDefined),
+    }
+    funcMintSupply(ctx, params)
 }
 
 type FuncTransferOwnershipParams struct {
-	Color wasmlib.ScImmutableColor // color of token to transfer ownership of
+    Color wasmlib.ScImmutableColor // color of token to transfer ownership of
 }
 
 func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
-	//TODO the one who can transfer token ownership
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    //TODO the one who can transfer token ownership
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncTransferOwnershipParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	funcTransferOwnership(ctx, params)
+    p := ctx.Params()
+    params := &FuncTransferOwnershipParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    funcTransferOwnership(ctx, params)
 }
 
 type FuncUpdateMetadataParams struct {
-	Color wasmlib.ScImmutableColor // color of token to update metadata for
+    Color wasmlib.ScImmutableColor // color of token to update metadata for
 }
 
 func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
-	//TODO the one who can change the token info
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    //TODO the one who can change the token info
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncUpdateMetadataParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	funcUpdateMetadata(ctx, params)
+    p := ctx.Params()
+    params := &FuncUpdateMetadataParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    funcUpdateMetadata(ctx, params)
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor // color of token to view registry info of
+    Color wasmlib.ScImmutableColor // color of token to view registry info of
 }
 
 func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
-	p := ctx.Params()
-	params := &ViewGetInfoParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	viewGetInfo(ctx, params)
+    p := ctx.Params()
+    params := &ViewGetInfoParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    viewGetInfo(ctx, params)
 }

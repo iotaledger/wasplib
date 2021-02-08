@@ -8,7 +8,7 @@ import (
 )
 
 func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
-	donation := &DonationInfo{
+	donation := &Donation{
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
 		Error:     "",
@@ -24,7 +24,7 @@ func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
 	}
 	state := ctx.State()
 	log := state.GetBytesArray(VarLog)
-	log.GetBytes(log.Length()).SetValue(EncodeDonationInfo(donation))
+	log.GetBytes(log.Length()).SetValue(donation.Bytes())
 
 	largestDonation := state.GetInt(VarMaxDonation)
 	totalDonated := state.GetInt(VarTotalDonation)
@@ -60,7 +60,7 @@ func viewDonations(ctx *wasmlib.ScViewContext, params *ViewDonationsParams) {
 	donations := results.GetMapArray(VarDonations)
 	size := log.Length()
 	for i := int32(0); i < size; i++ {
-		di := DecodeDonationInfo(log.GetBytes(i).Value())
+		di := NewDonationFromBytes(log.GetBytes(i).Value())
 		donation := donations.GetMap(i)
 		donation.GetInt(VarAmount).SetValue(di.Amount)
 		donation.GetString(VarDonator).SetValue(di.Donator.String())

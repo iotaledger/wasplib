@@ -32,41 +32,36 @@ fn on_load() {
     exports.add_view(VIEW_STATE_CHECK, view_state_check_thunk);
 }
 
-//@formatter:off
 pub struct FuncCallIncrementParams {
 }
-//@formatter:on
 
 fn func_call_increment_thunk(ctx: &ScCallContext) {
-    let params = FuncCallIncrementParams {};
+    let params = FuncCallIncrementParams {
+    };
     func_call_increment(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncCallIncrementRecurse5xParams {
 }
-//@formatter:on
 
 fn func_call_increment_recurse5x_thunk(ctx: &ScCallContext) {
-    let params = FuncCallIncrementRecurse5xParams {};
+    let params = FuncCallIncrementRecurse5xParams {
+    };
     func_call_increment_recurse5x(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncIncrementParams {
 }
-//@formatter:on
 
 fn func_increment_thunk(ctx: &ScCallContext) {
-    let params = FuncIncrementParams {};
+    let params = FuncIncrementParams {
+    };
     func_increment(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncInitParams {
     pub counter: ScImmutableInt, // value to initialize state counter with
 }
-//@formatter:on
 
 fn func_init_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -76,51 +71,45 @@ fn func_init_thunk(ctx: &ScCallContext) {
     func_init(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncLocalStateInternalCallParams {
 }
-//@formatter:on
 
 fn func_local_state_internal_call_thunk(ctx: &ScCallContext) {
-    let params = FuncLocalStateInternalCallParams {};
+    let params = FuncLocalStateInternalCallParams {
+    };
     func_local_state_internal_call(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncLocalStatePostParams {
 }
-//@formatter:on
 
 fn func_local_state_post_thunk(ctx: &ScCallContext) {
-    let params = FuncLocalStatePostParams {};
+    let params = FuncLocalStatePostParams {
+    };
     func_local_state_post(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncLocalStateSandboxCallParams {
 }
-//@formatter:on
 
 fn func_local_state_sandbox_call_thunk(ctx: &ScCallContext) {
-    let params = FuncLocalStateSandboxCallParams {};
+    let params = FuncLocalStateSandboxCallParams {
+    };
     func_local_state_sandbox_call(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncPostIncrementParams {
 }
-//@formatter:on
 
 fn func_post_increment_thunk(ctx: &ScCallContext) {
-    let params = FuncPostIncrementParams {};
+    let params = FuncPostIncrementParams {
+    };
     func_post_increment(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncRepeatManyParams {
     pub num_repeats: ScImmutableInt, // number of times to recursively call myself
 }
-//@formatter:on
 
 fn func_repeat_many_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -130,62 +119,56 @@ fn func_repeat_many_thunk(ctx: &ScCallContext) {
     func_repeat_many(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncResultsTestParams {
 }
-//@formatter:on
 
 fn func_results_test_thunk(ctx: &ScCallContext) {
-    let params = FuncResultsTestParams {};
+    let params = FuncResultsTestParams {
+    };
     func_results_test(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncStateTestParams {
 }
-//@formatter:on
 
 fn func_state_test_thunk(ctx: &ScCallContext) {
-    let params = FuncStateTestParams {};
+    let params = FuncStateTestParams {
+    };
     func_state_test(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncWhenMustIncrementParams {
 }
-//@formatter:on
 
 fn func_when_must_increment_thunk(ctx: &ScCallContext) {
-    let params = FuncWhenMustIncrementParams {};
+    let params = FuncWhenMustIncrementParams {
+    };
     func_when_must_increment(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewGetCounterParams {
 }
-//@formatter:on
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
-    let params = ViewGetCounterParams {};
+    let params = ViewGetCounterParams {
+    };
     view_get_counter(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewResultsCheckParams {
 }
-//@formatter:on
 
 fn view_results_check_thunk(ctx: &ScViewContext) {
-    let params = ViewResultsCheckParams {};
+    let params = ViewResultsCheckParams {
+    };
     view_results_check(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewStateCheckParams {
 }
-//@formatter:on
 
 fn view_state_check_thunk(ctx: &ScViewContext) {
-    let params = ViewStateCheckParams {};
+    let params = ViewStateCheckParams {
+    };
     view_state_check(ctx, &params);
 }

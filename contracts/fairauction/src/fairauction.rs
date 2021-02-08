@@ -23,7 +23,7 @@ pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionPa
     if !auction_info.exists() {
         ctx.panic("Missing auction info");
     }
-    let auction = decode_auction_info(&auction_info.value());
+    let auction = Auction::from_bytes(&auction_info.value());
     if auction.highest_bid < 0 {
         ctx.log(&("No one bid on ".to_string() + &color.to_string()));
         let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
@@ -50,7 +50,7 @@ pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionPa
         let bidder = bidder_list.get_agent_id(i).value();
         if !bidder.equals(&auction.highest_bidder) {
             let loser = bidders.get_bytes(&bidder);
-            let bid = decode_bid_info(&loser.value());
+            let bid = Bid::from_bytes(&loser.value());
             transfer(ctx, &bidder, &ScColor::IOTA, bid.amount);
         }
     }
@@ -76,18 +76,18 @@ pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
         ctx.panic("Missing auction info");
     }
 
-    let mut auction = decode_auction_info(&auction_info.value());
+    let mut auction = Auction::from_bytes(&auction_info.value());
     let bidders = current_auction.get_map(VAR_BIDDERS);
     let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
     let caller = ctx.caller();
     let bidder = bidders.get_bytes(&caller);
     if bidder.exists() {
         ctx.log(&("Upped bid from: ".to_string() + &caller.to_string()));
-        let mut bid = decode_bid_info(&bidder.value());
+        let mut bid = Bid::from_bytes(&bidder.value());
         bid_amount += bid.amount;
         bid.amount = bid_amount;
         bid.timestamp = ctx.timestamp();
-        bidder.set_value(&encode_bid_info(&bid));
+        bidder.set_value(&bid.to_bytes());
     } else {
         if bid_amount < auction.minimum_bid {
             ctx.panic("Insufficient bid amount");
@@ -95,18 +95,18 @@ pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
         ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
         let index = bidder_list.length();
         bidder_list.get_agent_id(index).set_value(&caller);
-        let bid = BidInfo {
+        let bid = Bid {
             index: index as i64,
             amount: bid_amount,
             timestamp: ctx.timestamp(),
         };
-        bidder.set_value(&encode_bid_info(&bid));
+        bidder.set_value(&bid.to_bytes());
     }
     if bid_amount > auction.highest_bid {
         ctx.log("New highest bidder");
         auction.highest_bid = bid_amount;
         auction.highest_bidder = caller;
-        auction_info.set_value(&encode_auction_info(&auction));
+        auction_info.set_value(&auction.to_bytes());
     }
 }
 
@@ -178,7 +178,7 @@ pub fn func_start_auction(ctx: &ScCallContext, params: &FuncStartAuctionParams) 
         ctx.panic("Auction for this token color already exists");
     }
 
-    let auction = &AuctionInfo {
+    let auction = Auction {
         creator: ctx.caller(),
         color: color,
         deposit: deposit,
@@ -191,7 +191,7 @@ pub fn func_start_auction(ctx: &ScCallContext, params: &FuncStartAuctionParams) 
         owner_margin: owner_margin,
         when_started: ctx.timestamp(),
     };
-    auction_info.set_value(&encode_auction_info(auction));
+    auction_info.set_value(&auction.to_bytes());
 
     let finalize_params = ScMutableMap::new();
     finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
@@ -215,7 +215,7 @@ pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
         ctx.panic("Missing auction info");
     }
 
-    let auction = decode_auction_info(&auction_info.value());
+    let auction = Auction::from_bytes(&auction_info.value());
     let results = ctx.results();
     results.get_color(VAR_COLOR).set_value(&auction.color);
     results.get_agent_id(VAR_CREATOR).set_value(&auction.creator);

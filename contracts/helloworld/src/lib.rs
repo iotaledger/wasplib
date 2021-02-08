@@ -19,22 +19,20 @@ fn on_load() {
     exports.add_view(VIEW_GET_HELLO_WORLD, view_get_hello_world_thunk);
 }
 
-//@formatter:off
 pub struct FuncHelloWorldParams {
 }
-//@formatter:on
 
 fn func_hello_world_thunk(ctx: &ScCallContext) {
-    let params = FuncHelloWorldParams {};
+    let params = FuncHelloWorldParams {
+    };
     func_hello_world(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewGetHelloWorldParams {
 }
-//@formatter:on
 
 fn view_get_hello_world_thunk(ctx: &ScViewContext) {
-    let params = ViewGetHelloWorldParams {};
+    let params = ViewGetHelloWorldParams {
+    };
     view_get_hello_world(ctx, &params);
 }

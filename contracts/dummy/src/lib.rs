@@ -18,11 +18,9 @@ fn on_load() {
     exports.add_call(FUNC_INIT, func_init_thunk);
 }
 
-//@formatter:off
 pub struct FuncInitParams {
     pub fail_init_param: ScImmutableInt, // when present fail on purpose
 }
-//@formatter:on
 
 fn func_init_thunk(ctx: &ScCallContext) {
     let p = ctx.params();

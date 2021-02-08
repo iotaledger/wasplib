@@ -10,26 +10,28 @@
 use wasmlib::*;
 
 //@formatter:off
-pub struct BetInfo {
+pub struct Bet {
     pub amount: i64,      
     pub better: ScAgentId,
     pub number: i64,      
 }
 //@formatter:on
 
-pub fn encode_bet_info(o: &BetInfo) -> Vec<u8> {
-    let mut encode = BytesEncoder::new();
-    encode.int(o.amount);
-    encode.agent_id(&o.better);
-    encode.int(o.number);
-    return encode.data();
-}
+impl Bet {
+    pub fn from_bytes(bytes: &[u8]) -> Bet {
+        let mut decode = BytesDecoder::new(bytes);
+        Bet {
+            amount: decode.int(),
+            better: decode.agent_id(),
+            number: decode.int(),
+        }
+    }
 
-pub fn decode_bet_info(bytes: &[u8]) -> BetInfo {
-    let mut decode = BytesDecoder::new(bytes);
-    BetInfo {
-        amount: decode.int(),
-        better: decode.agent_id(),
-        number: decode.int(),
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut encode = BytesEncoder::new();
+        encode.int(self.amount);
+        encode.agent_id(&self.better);
+        encode.int(self.number);
+        return encode.data();
     }
 }

@@ -9,15 +9,26 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-type DonationInfo struct {
-	Amount    int64
-	Donator   *wasmlib.ScAgentId
-	Error     string
-	Feedback  string
-	Timestamp int64
+type Donation struct {
+	Amount    int64              // amount donated
+	Donator   *wasmlib.ScAgentId // who donated
+	Error     string             // error to be reported to donator if anything goes wrong
+	Feedback  string             // the feedback for the person donated to
+	Timestamp int64              // when the donation took place
 }
 
-func EncodeDonationInfo(o *DonationInfo) []byte {
+func NewDonationFromBytes(bytes []byte) *Donation {
+	decode := wasmlib.NewBytesDecoder(bytes)
+	data := &Donation{}
+	data.Amount = decode.Int()
+	data.Donator = decode.AgentId()
+	data.Error = decode.String()
+	data.Feedback = decode.String()
+	data.Timestamp = decode.Int()
+	return data
+}
+
+func (o *Donation) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Int(o.Amount).
 		AgentId(o.Donator).
@@ -25,15 +36,4 @@ func EncodeDonationInfo(o *DonationInfo) []byte {
 		String(o.Feedback).
 		Int(o.Timestamp).
 		Data()
-}
-
-func DecodeDonationInfo(bytes []byte) *DonationInfo {
-	decode := wasmlib.NewBytesDecoder(bytes)
-	data := &DonationInfo{}
-	data.Amount = decode.Int()
-	data.Donator = decode.AgentId()
-	data.Error = decode.String()
-	data.Feedback = decode.String()
-	data.Timestamp = decode.Int()
-	return data
 }

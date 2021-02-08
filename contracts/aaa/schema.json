@@ -2,7 +2,7 @@
   "name": "aaa",
   "description": "Generator test contract",
   "types": {
-    "DonationInfo": {
+    "Donation": {
       "amount": "Int",
       "donator": "AgentId",
       "error": "String",
@@ -16,7 +16,7 @@
     "donator": "AgentId",
     "error": "String",
     "feedback": "String",
-    "log": "[]DonationInfo",
+    "log": "[]Donation",
     "maxDonation": "Int",
     "timestamp": "Int",
     "totalDonation": "Int"

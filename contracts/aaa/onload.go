@@ -10,55 +10,55 @@ package aaa
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncDonate, funcDonateThunk)
-	exports.AddCall(FuncWithdraw, funcWithdrawThunk)
-	exports.AddView(ViewDonations, viewDonationsThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncDonate, funcDonateThunk)
+    exports.AddCall(FuncWithdraw, funcWithdrawThunk)
+    exports.AddView(ViewDonations, viewDonationsThunk)
 }
 
 type FuncDonateParams struct {
-	Feedback wasmlib.ScImmutableString // feedback for the person you donate to
+    Feedback wasmlib.ScImmutableString // feedback for the person you donate to
 }
 
 func funcDonateThunk(ctx *wasmlib.ScCallContext) {
-	// only the super spy can donate
-	grantee := ctx.State().GetAgentId(wasmlib.Key("superspy"))
-	if !grantee.Exists() {
-		ctx.Panic("grantee not set: superspy")
-	}
-	if !ctx.From(grantee.Value()) {
-		ctx.Panic("no permission")
-	}
+    // only the super spy can donate
+    grantee := ctx.State().GetAgentId(wasmlib.Key("superspy"))
+    if !grantee.Exists() {
+        ctx.Panic("grantee not set: superspy")
+    }
+    if !ctx.From(grantee.Value()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncDonateParams{
-		Feedback: p.GetString(ParamFeedback),
-	}
-	funcDonate(ctx, params)
+    p := ctx.Params()
+    params := &FuncDonateParams {
+        Feedback: p.GetString(ParamFeedback),
+    }
+    funcDonate(ctx, params)
 }
 
 type FuncWithdrawParams struct {
-	Amount wasmlib.ScImmutableInt // amount to withdraw
+    Amount wasmlib.ScImmutableInt // amount to withdraw
 }
 
 func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
-	// only SC creator can withdraw donated funds
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    // only SC creator can withdraw donated funds
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncWithdrawParams{
-		Amount: p.GetInt(ParamAmount),
-	}
-	funcWithdraw(ctx, params)
+    p := ctx.Params()
+    params := &FuncWithdrawParams {
+        Amount: p.GetInt(ParamAmount),
+    }
+    funcWithdraw(ctx, params)
 }
 
 type ViewDonationsParams struct {
 }
 
 func viewDonationsThunk(ctx *wasmlib.ScViewContext) {
-	params := &ViewDonationsParams{
-	}
-	viewDonations(ctx, params)
+    params := &ViewDonationsParams {
+    }
+    viewDonations(ctx, params)
 }

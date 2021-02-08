@@ -20,13 +20,12 @@ fn on_load() {
     exports.add_call(FUNC_MEMBER, func_member_thunk);
 }
 
-//@formatter:off
 pub struct FuncDivideParams {
 }
-//@formatter:on
 
 fn func_divide_thunk(ctx: &ScCallContext) {
-    let params = FuncDivideParams {};
+    let params = FuncDivideParams {
+    };
     func_divide(ctx, &params);
 }
 

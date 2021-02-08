@@ -23,11 +23,9 @@ fn on_load() {
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
 }
 
-//@formatter:off
 pub struct FuncFinalizeAuctionParams {
     pub color: ScImmutableColor, // color identifies the auction
 }
-//@formatter:on
 
 fn func_finalize_auction_thunk(ctx: &ScCallContext) {
     // only SC itself can invoke this function
@@ -43,11 +41,9 @@ fn func_finalize_auction_thunk(ctx: &ScCallContext) {
     func_finalize_auction(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncPlaceBidParams {
     pub color: ScImmutableColor, // color identifies the auction
 }
-//@formatter:on
 
 fn func_place_bid_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -58,11 +54,9 @@ fn func_place_bid_thunk(ctx: &ScCallContext) {
     func_place_bid(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncSetOwnerMarginParams {
     pub owner_margin: ScImmutableInt, // new SC owner margin in promilles
 }
-//@formatter:on
 
 fn func_set_owner_margin_thunk(ctx: &ScCallContext) {
     // only SC creator can set owner margin
@@ -100,11 +94,9 @@ fn func_start_auction_thunk(ctx: &ScCallContext) {
     func_start_auction(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewGetInfoParams {
     pub color: ScImmutableColor, // color identifies the auction
 }
-//@formatter:on
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     let p = ctx.params();

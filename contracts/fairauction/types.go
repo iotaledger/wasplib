@@ -9,7 +9,7 @@ package fairauction
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-type AuctionInfo struct {
+type Auction struct {
 	Color         *wasmlib.ScColor   // color of tokens for sale
 	Creator       *wasmlib.ScAgentId // issuer of start_auction transaction
 	Deposit       int64              // deposit by auction owner to cover the SC fees
@@ -23,13 +23,24 @@ type AuctionInfo struct {
 	WhenStarted   int64              // timestamp when auction started
 }
 
-type BidInfo struct {
-	Amount    int64 // cumulative amount of bids from same bidder
-	Index     int64 // index of bidder in bidder list
-	Timestamp int64 // timestamp of most recent bid
+func NewAuctionFromBytes(bytes []byte) *Auction {
+	decode := wasmlib.NewBytesDecoder(bytes)
+	data := &Auction{}
+	data.Color = decode.Color()
+	data.Creator = decode.AgentId()
+	data.Deposit = decode.Int()
+	data.Description = decode.String()
+	data.Duration = decode.Int()
+	data.HighestBid = decode.Int()
+	data.HighestBidder = decode.AgentId()
+	data.MinimumBid = decode.Int()
+	data.NumTokens = decode.Int()
+	data.OwnerMargin = decode.Int()
+	data.WhenStarted = decode.Int()
+	return data
 }
 
-func EncodeAuctionInfo(o *AuctionInfo) []byte {
+func (o *Auction) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Color(o.Color).
 		AgentId(o.Creator).
@@ -45,36 +56,25 @@ func EncodeAuctionInfo(o *AuctionInfo) []byte {
 		Data()
 }
 
-func DecodeAuctionInfo(bytes []byte) *AuctionInfo {
+type Bid struct {
+	Amount    int64 // cumulative amount of bids from same bidder
+	Index     int64 // index of bidder in bidder list
+	Timestamp int64 // timestamp of most recent bid
+}
+
+func NewBidFromBytes(bytes []byte) *Bid {
 	decode := wasmlib.NewBytesDecoder(bytes)
-	data := &AuctionInfo{}
-	data.Color = decode.Color()
-	data.Creator = decode.AgentId()
-	data.Deposit = decode.Int()
-	data.Description = decode.String()
-	data.Duration = decode.Int()
-	data.HighestBid = decode.Int()
-	data.HighestBidder = decode.AgentId()
-	data.MinimumBid = decode.Int()
-	data.NumTokens = decode.Int()
-	data.OwnerMargin = decode.Int()
-	data.WhenStarted = decode.Int()
+	data := &Bid{}
+	data.Amount = decode.Int()
+	data.Index = decode.Int()
+	data.Timestamp = decode.Int()
 	return data
 }
 
-func EncodeBidInfo(o *BidInfo) []byte {
+func (o *Bid) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Int(o.Amount).
 		Int(o.Index).
 		Int(o.Timestamp).
 		Data()
-}
-
-func DecodeBidInfo(bytes []byte) *BidInfo {
-	decode := wasmlib.NewBytesDecoder(bytes)
-	data := &BidInfo{}
-	data.Amount = decode.Int()
-	data.Index = decode.Int()
-	data.Timestamp = decode.Int()
-	return data
 }

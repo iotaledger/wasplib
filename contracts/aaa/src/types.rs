@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 //@formatter:off
-pub struct DonationInfo {
+pub struct Donation {
     pub amount:    i64,      
     pub donator:   ScAgentId,
     pub error:     String,   
@@ -19,23 +19,25 @@ pub struct DonationInfo {
 }
 //@formatter:on
 
-pub fn encode_donation_info(o: &DonationInfo) -> Vec<u8> {
-    let mut encode = BytesEncoder::new();
-    encode.int(o.amount);
-    encode.agent_id(&o.donator);
-    encode.string(&o.error);
-    encode.string(&o.feedback);
-    encode.int(o.timestamp);
-    return encode.data();
-}
+impl Donation {
+    pub fn from_bytes(bytes: &[u8]) -> Donation {
+        let mut decode = BytesDecoder::new(bytes);
+        Donation {
+            amount: decode.int(),
+            donator: decode.agent_id(),
+            error: decode.string(),
+            feedback: decode.string(),
+            timestamp: decode.int(),
+        }
+    }
 
-pub fn decode_donation_info(bytes: &[u8]) -> DonationInfo {
-    let mut decode = BytesDecoder::new(bytes);
-    DonationInfo {
-        amount: decode.int(),
-        donator: decode.agent_id(),
-        error: decode.string(),
-        feedback: decode.string(),
-        timestamp: decode.int(),
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut encode = BytesEncoder::new();
+        encode.int(self.amount);
+        encode.agent_id(&self.donator);
+        encode.string(&self.error);
+        encode.string(&self.feedback);
+        encode.int(self.timestamp);
+        return encode.data();
     }
 }

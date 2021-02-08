@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "dummy";
-pub const SC_DESCRIPTION: &str = "Dummy smart contract for testing";
+pub const SC_DESCRIPTION: &str =  "Dummy smart contract for testing";
 pub const SC_HNAME: ScHname = ScHname(0xc071ae66);
 
 pub const PARAM_FAIL_INIT_PARAM: &str = "failInitParam";

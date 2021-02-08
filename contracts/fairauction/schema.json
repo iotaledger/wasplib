@@ -1,7 +1,7 @@
 {
   "name": "fairauction",
   "types": {
-    "AuctionInfo": {
+    "Auction": {
       "color": "Color // color of tokens for sale",
       "creator": "AgentId // issuer of start_auction transaction",
       "deposit": "Int // deposit by auction owner to cover the SC fees",
@@ -14,16 +14,16 @@
       "ownerMargin": "Int // auction owner's margin in promilles",
       "whenStarted": "Int // timestamp when auction started"
     },
-    "BidInfo": {
+    "Bid": {
       "amount": "Int // cumulative amount of bids from same bidder",
       "index": "Int // index of bidder in bidder list",
       "timestamp": "Int // timestamp of most recent bid"
     }
   },
   "vars": {
-    "auctions": "[]AuctionInfo",
-    "bidderList": "[]BidInfo",
-    "bidders": "[]BidInfo",
+    "auctions": "[]Auction",
+    "bidderList": "[]Bid",
+    "bidders": "[]Bid",
     "color": "Color",
     "creator": "AgentId",
     "deposit": "Int",

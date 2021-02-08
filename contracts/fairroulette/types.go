@@ -9,25 +9,25 @@ package fairroulette
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-type BetInfo struct {
-	Amount int64
+type Bet struct {
+	Amount int64             
 	Better *wasmlib.ScAgentId
-	Number int64
+	Number int64             
 }
 
-func EncodeBetInfo(o *BetInfo) []byte {
+func NewBetFromBytes(bytes []byte) *Bet {
+	decode := wasmlib.NewBytesDecoder(bytes)
+	data := &Bet{}
+	data.Amount = decode.Int()
+	data.Better = decode.AgentId()
+	data.Number = decode.Int()
+	return data
+}
+
+func (o *Bet) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Int(o.Amount).
 		AgentId(o.Better).
 		Int(o.Number).
 		Data()
-}
-
-func DecodeBetInfo(bytes []byte) *BetInfo {
-	decode := wasmlib.NewBytesDecoder(bytes)
-	data := &BetInfo{}
-	data.Amount = decode.Int()
-	data.Better = decode.AgentId()
-	data.Number = decode.Int()
-	return data
 }

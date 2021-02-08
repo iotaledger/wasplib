@@ -10,68 +10,68 @@ package fairroulette
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncLockBets, funcLockBetsThunk)
-	exports.AddCall(FuncPayWinners, funcPayWinnersThunk)
-	exports.AddCall(FuncPlaceBet, funcPlaceBetThunk)
-	exports.AddCall(FuncPlayPeriod, funcPlayPeriodThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncLockBets, funcLockBetsThunk)
+    exports.AddCall(FuncPayWinners, funcPayWinnersThunk)
+    exports.AddCall(FuncPlaceBet, funcPlaceBetThunk)
+    exports.AddCall(FuncPlayPeriod, funcPlayPeriodThunk)
 }
 
 type FuncLockBetsParams struct {
 }
 
 func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
-	// only SC itself can invoke this function
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("no permission")
-	}
+    // only SC itself can invoke this function
+    if !ctx.From(ctx.ContractId().AsAgentId()) {
+        ctx.Panic("no permission")
+    }
 
-	params := &FuncLockBetsParams{
-	}
-	funcLockBets(ctx, params)
+    params := &FuncLockBetsParams {
+    }
+    funcLockBets(ctx, params)
 }
 
 type FuncPayWinnersParams struct {
 }
 
 func funcPayWinnersThunk(ctx *wasmlib.ScCallContext) {
-	// only SC itself can invoke this function
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("no permission")
-	}
+    // only SC itself can invoke this function
+    if !ctx.From(ctx.ContractId().AsAgentId()) {
+        ctx.Panic("no permission")
+    }
 
-	params := &FuncPayWinnersParams{
-	}
-	funcPayWinners(ctx, params)
+    params := &FuncPayWinnersParams {
+    }
+    funcPayWinners(ctx, params)
 }
 
 type FuncPlaceBetParams struct {
-	Number wasmlib.ScImmutableInt // the number a better bets on
+    Number wasmlib.ScImmutableInt // the number a better bets on
 }
 
 func funcPlaceBetThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncPlaceBetParams{
-		Number: p.GetInt(ParamNumber),
-	}
-	ctx.Require(params.Number.Exists(), "missing mandatory number")
-	funcPlaceBet(ctx, params)
+    p := ctx.Params()
+    params := &FuncPlaceBetParams {
+        Number: p.GetInt(ParamNumber),
+    }
+    ctx.Require(params.Number.Exists(), "missing mandatory number")
+    funcPlaceBet(ctx, params)
 }
 
 type FuncPlayPeriodParams struct {
-	PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
+    PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
 }
 
 func funcPlayPeriodThunk(ctx *wasmlib.ScCallContext) {
-	// only SC creator can update the play period
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    // only SC creator can update the play period
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncPlayPeriodParams{
-		PlayPeriod: p.GetInt(ParamPlayPeriod),
-	}
-	ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod")
-	funcPlayPeriod(ctx, params)
+    p := ctx.Params()
+    params := &FuncPlayPeriodParams {
+        PlayPeriod: p.GetInt(ParamPlayPeriod),
+    }
+    ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod")
+    funcPlayPeriod(ctx, params)
 }

@@ -21,11 +21,9 @@ fn on_load() {
     exports.add_view(VIEW_DONATIONS, view_donations_thunk);
 }
 
-//@formatter:off
 pub struct FuncDonateParams {
     pub feedback: ScImmutableString, // feedback for the person you donate to
 }
-//@formatter:on
 
 fn func_donate_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -35,11 +33,9 @@ fn func_donate_thunk(ctx: &ScCallContext) {
     func_donate(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncWithdrawParams {
     pub amount: ScImmutableInt, // amount to withdraw
 }
-//@formatter:on
 
 fn func_withdraw_thunk(ctx: &ScCallContext) {
     // only SC creator can withdraw donated funds
@@ -54,12 +50,11 @@ fn func_withdraw_thunk(ctx: &ScCallContext) {
     func_withdraw(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewDonationsParams {
 }
-//@formatter:on
 
 fn view_donations_thunk(ctx: &ScViewContext) {
-    let params = ViewDonationsParams {};
+    let params = ViewDonationsParams {
+    };
     view_donations(ctx, &params);
 }

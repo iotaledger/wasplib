@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "aaa";
-pub const SC_DESCRIPTION: &str = "Generator test contract";
+pub const SC_DESCRIPTION: &str =  "Generator test contract";
 pub const SC_HNAME: ScHname = ScHname(0xbe3cedc8);
 
 pub const PARAM_AMOUNT: &str = "amount";

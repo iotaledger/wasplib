@@ -10,92 +10,92 @@ package fairauction
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncFinalizeAuction, funcFinalizeAuctionThunk)
-	exports.AddCall(FuncPlaceBid, funcPlaceBidThunk)
-	exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMarginThunk)
-	exports.AddCall(FuncStartAuction, funcStartAuctionThunk)
-	exports.AddView(ViewGetInfo, viewGetInfoThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncFinalizeAuction, funcFinalizeAuctionThunk)
+    exports.AddCall(FuncPlaceBid, funcPlaceBidThunk)
+    exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMarginThunk)
+    exports.AddCall(FuncStartAuction, funcStartAuctionThunk)
+    exports.AddView(ViewGetInfo, viewGetInfoThunk)
 }
 
 type FuncFinalizeAuctionParams struct {
-	Color wasmlib.ScImmutableColor // color identifies the auction
+    Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
-	// only SC itself can invoke this function
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("no permission")
-	}
+    // only SC itself can invoke this function
+    if !ctx.From(ctx.ContractId().AsAgentId()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncFinalizeAuctionParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	funcFinalizeAuction(ctx, params)
+    p := ctx.Params()
+    params := &FuncFinalizeAuctionParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    funcFinalizeAuction(ctx, params)
 }
 
 type FuncPlaceBidParams struct {
-	Color wasmlib.ScImmutableColor // color identifies the auction
+    Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcPlaceBidThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncPlaceBidParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	funcPlaceBid(ctx, params)
+    p := ctx.Params()
+    params := &FuncPlaceBidParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    funcPlaceBid(ctx, params)
 }
 
 type FuncSetOwnerMarginParams struct {
-	OwnerMargin wasmlib.ScImmutableInt // new SC owner margin in promilles
+    OwnerMargin wasmlib.ScImmutableInt // new SC owner margin in promilles
 }
 
 func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
-	// only SC creator can set owner margin
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    // only SC creator can set owner margin
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncSetOwnerMarginParams{
-		OwnerMargin: p.GetInt(ParamOwnerMargin),
-	}
-	ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin")
-	funcSetOwnerMargin(ctx, params)
+    p := ctx.Params()
+    params := &FuncSetOwnerMarginParams {
+        OwnerMargin: p.GetInt(ParamOwnerMargin),
+    }
+    ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin")
+    funcSetOwnerMargin(ctx, params)
 }
 
 type FuncStartAuctionParams struct {
-	Color       wasmlib.ScImmutableColor  // color of the tokens being auctioned
-	Description wasmlib.ScImmutableString // description of the tokens being auctioned
-	Duration    wasmlib.ScImmutableInt    // duration of auction in minutes
-	MinimumBid  wasmlib.ScImmutableInt    // minimum required amount for any bid
+    Color       wasmlib.ScImmutableColor  // color of the tokens being auctioned
+    Description wasmlib.ScImmutableString // description of the tokens being auctioned
+    Duration    wasmlib.ScImmutableInt    // duration of auction in minutes
+    MinimumBid  wasmlib.ScImmutableInt    // minimum required amount for any bid
 }
 
 func funcStartAuctionThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncStartAuctionParams{
-		Color:       p.GetColor(ParamColor),
-		Description: p.GetString(ParamDescription),
-		Duration:    p.GetInt(ParamDuration),
-		MinimumBid:  p.GetInt(ParamMinimumBid),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid")
-	funcStartAuction(ctx, params)
+    p := ctx.Params()
+    params := &FuncStartAuctionParams {
+        Color: p.GetColor(ParamColor),
+        Description: p.GetString(ParamDescription),
+        Duration: p.GetInt(ParamDuration),
+        MinimumBid: p.GetInt(ParamMinimumBid),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid")
+    funcStartAuction(ctx, params)
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor // color identifies the auction
+    Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
-	p := ctx.Params()
-	params := &ViewGetInfoParams{
-		Color: p.GetColor(ParamColor),
-	}
-	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	viewGetInfo(ctx, params)
+    p := ctx.Params()
+    params := &ViewGetInfoParams {
+        Color: p.GetColor(ParamColor),
+    }
+    ctx.Require(params.Color.Exists(), "missing mandatory color")
+    viewGetInfo(ctx, params)
 }

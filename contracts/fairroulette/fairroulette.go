@@ -39,10 +39,10 @@ func funcPayWinners(ctx *wasmlib.ScCallContext, params *FuncPayWinnersParams) {
 	totalBetAmount := int64(0)
 	totalWinAmount := int64(0)
 	lockedBets := state.GetBytesArray(VarLockedBets)
-	winners := make([]*BetInfo, 0)
+	winners := make([]*Bet, 0)
 	nrBets := lockedBets.Length()
 	for i := int32(0); i < nrBets; i++ {
-		bet := DecodeBetInfo(lockedBets.GetBytes(i).Value())
+		bet := NewBetFromBytes(lockedBets.GetBytes(i).Value())
 		totalBetAmount += bet.Amount
 		if bet.Number == winningNumber {
 			totalWinAmount += bet.Amount
@@ -92,7 +92,7 @@ func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
 		ctx.Panic("Invalid number...")
 	}
 
-	bet := &BetInfo{
+	bet := &Bet{
 		Better: ctx.Caller(),
 		Amount: amount,
 		Number: number,
@@ -101,7 +101,7 @@ func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
 	state := ctx.State()
 	bets := state.GetBytesArray(VarBets)
 	betNr := bets.Length()
-	bets.GetBytes(betNr).SetValue(EncodeBetInfo(bet))
+	bets.GetBytes(betNr).SetValue(bet.Bytes())
 	if betNr == 0 {
 		playPeriod := state.GetInt(VarPlayPeriod).Value()
 		if playPeriod < 10 {

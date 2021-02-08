@@ -19,7 +19,7 @@ func funcDivide(ctx *wasmlib.ScCallContext, params *FuncDivideParams) {
 	parts := int64(0)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		m := DecodeMember(members.GetBytes(i).Value())
+		m := NewMemberFromBytes(members.GetBytes(i).Value())
 		part := amount * m.Factor / total
 		if part != 0 {
 			parts += part
@@ -46,18 +46,18 @@ func funcMember(ctx *wasmlib.ScCallContext, params *FuncMemberParams) {
 	members := state.GetBytesArray(VarMembers)
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		m := DecodeMember(members.GetBytes(i).Value())
+		m := NewMemberFromBytes(members.GetBytes(i).Value())
 		if m.Address.Equals(member.Address) {
 			total -= m.Factor
 			total += member.Factor
 			totalFactor.SetValue(total)
-			members.GetBytes(i).SetValue(EncodeMember(member))
+			members.GetBytes(i).SetValue(member.Bytes())
 			ctx.Log("Updated: " + member.Address.String())
 			return
 		}
 	}
 	total += member.Factor
 	totalFactor.SetValue(total)
-	members.GetBytes(size).SetValue(EncodeMember(member))
+	members.GetBytes(size).SetValue(member.Bytes())
 	ctx.Log("Appended: " + member.Address.String())
 }

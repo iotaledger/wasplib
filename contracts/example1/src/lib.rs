@@ -20,11 +20,9 @@ fn on_load() {
     exports.add_view(VIEW_GET_STRING, view_get_string_thunk);
 }
 
-//@formatter:off
 pub struct FuncStoreStringParams {
     pub string: ScImmutableString, // string to store
 }
-//@formatter:on
 
 fn func_store_string_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -35,10 +33,8 @@ fn func_store_string_thunk(ctx: &ScCallContext) {
     func_store_string(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncWithdrawIotaParams {
 }
-//@formatter:on
 
 fn func_withdraw_iota_thunk(ctx: &ScCallContext) {
     // only the contract creator can withdraw
@@ -46,16 +42,16 @@ fn func_withdraw_iota_thunk(ctx: &ScCallContext) {
         ctx.panic("no permission");
     }
 
-    let params = FuncWithdrawIotaParams {};
+    let params = FuncWithdrawIotaParams {
+    };
     func_withdraw_iota(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewGetStringParams {
 }
-//@formatter:on
 
 fn view_get_string_thunk(ctx: &ScViewContext) {
-    let params = ViewGetStringParams {};
+    let params = ViewGetStringParams {
+    };
     view_get_string(ctx, &params);
 }

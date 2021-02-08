@@ -7,7 +7,7 @@ use crate::*;
 use crate::types::*;
 
 pub fn func_donate(ctx: &ScCallContext, params: &FuncDonateParams) {
-    let mut donation = DonationInfo {
+    let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
         error: String::new(),
@@ -23,7 +23,7 @@ pub fn func_donate(ctx: &ScCallContext, params: &FuncDonateParams) {
     }
     let state = ctx.state();
     let log = state.get_bytes_array(VAR_LOG);
-    log.get_bytes(log.length()).set_value(&encode_donation_info(&donation));
+    log.get_bytes(log.length()).set_value(&donation.to_bytes());
 
     let largest_donation = state.get_int(VAR_MAX_DONATION);
     let total_donated = state.get_int(VAR_TOTAL_DONATION);
@@ -59,7 +59,7 @@ pub fn view_donations(ctx: &ScViewContext, _params: &ViewDonationsParams) {
     let donations = results.get_map_array(VAR_DONATIONS);
     let size = log.length();
     for i in 0..size {
-        let di = decode_donation_info(&log.get_bytes(i).value());
+        let di = Donation::from_bytes(&log.get_bytes(i).value());
         let donation = donations.get_map(i);
         donation.get_int(VAR_AMOUNT).set_value(di.amount);
         donation.get_string(VAR_DONATOR).set_value(&di.donator.to_string());

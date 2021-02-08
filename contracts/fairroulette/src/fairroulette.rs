@@ -40,10 +40,10 @@ pub fn func_pay_winners(ctx: &ScCallContext, _params: &FuncPayWinnersParams) {
     let mut total_bet_amount = 0_i64;
     let mut total_win_amount = 0_i64;
     let locked_bets = state.get_bytes_array(VAR_LOCKED_BETS);
-    let mut winners: Vec<BetInfo> = Vec::new();
+    let mut winners: Vec<Bet> = Vec::new();
     let nr_bets = locked_bets.length();
     for i in 0..nr_bets {
-        let bet = decode_bet_info(&locked_bets.get_bytes(i).value());
+        let bet = Bet::from_bytes(&locked_bets.get_bytes(i).value());
         total_bet_amount += bet.amount;
         if bet.number == winning_number {
             total_win_amount += bet.amount;
@@ -93,7 +93,7 @@ pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
         ctx.panic("Invalid number...");
     }
 
-    let bet = BetInfo {
+    let bet = Bet {
         better: ctx.caller(),
         amount: amount,
         number: number,
@@ -102,7 +102,7 @@ pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
     let state = ctx.state();
     let bets = state.get_bytes_array(VAR_BETS);
     let bet_nr = bets.length();
-    bets.get_bytes(bet_nr).set_value(&encode_bet_info(&bet));
+    bets.get_bytes(bet_nr).set_value(&bet.to_bytes());
     if bet_nr == 0 {
         let mut play_period = state.get_int(VAR_PLAY_PERIOD).value();
         if play_period < 10 {

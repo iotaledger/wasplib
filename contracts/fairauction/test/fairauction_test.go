@@ -164,7 +164,7 @@ func TestFaClientFullAccess(t *testing.T) {
 	currentAuction := auctions.GetMap(color)
 	currentInfo := currentAuction.GetBytes(fairauction.VarInfo)
 	require.True(t, currentInfo.Exists())
-	auction := fairauction.DecodeAuctionInfo(currentInfo.Value())
+	auction := fairauction.NewAuctionFromBytes(currentInfo.Value())
 	require.EqualValues(t, 500, auction.HighestBid)
 	require.EqualValues(t, te.Agent(1).Bytes(), auction.HighestBidder.Bytes())
 }

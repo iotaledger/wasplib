@@ -5,8 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use schema::*;
 use tokenregistry::*;
+use schema::*;
 use wasmlib::*;
 
 mod tokenregistry;
@@ -38,11 +38,9 @@ fn func_mint_supply_thunk(ctx: &ScCallContext) {
     func_mint_supply(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncTransferOwnershipParams {
     pub color: ScImmutableColor, // color of token to transfer ownership of
 }
-//@formatter:on
 
 fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
     //TODO the one who can transfer token ownership
@@ -58,11 +56,9 @@ fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
     func_transfer_ownership(ctx, &params);
 }
 
-//@formatter:off
 pub struct FuncUpdateMetadataParams {
     pub color: ScImmutableColor, // color of token to update metadata for
 }
-//@formatter:on
 
 fn func_update_metadata_thunk(ctx: &ScCallContext) {
     //TODO the one who can change the token info
@@ -78,11 +74,9 @@ fn func_update_metadata_thunk(ctx: &ScCallContext) {
     func_update_metadata(ctx, &params);
 }
 
-//@formatter:off
 pub struct ViewGetInfoParams {
     pub color: ScImmutableColor, // color of token to view registry info of
 }
-//@formatter:on
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     let p = ctx.params();

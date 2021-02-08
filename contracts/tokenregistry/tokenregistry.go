@@ -15,7 +15,7 @@ func funcMintSupply(ctx *wasmlib.ScCallContext, params *FuncMintSupplyParams) {
 	if registry.Exists() {
 		ctx.Panic("TokenRegistry: Color already exists")
 	}
-	token := &TokenInfo{
+	token := &Token{
 		Supply:      ctx.Incoming().Balance(minted),
 		MintedBy:    ctx.Caller(),
 		Owner:       ctx.Caller(),
@@ -30,7 +30,7 @@ func funcMintSupply(ctx *wasmlib.ScCallContext, params *FuncMintSupplyParams) {
 	if len(token.Description) == 0 {
 		token.Description += "no dscr"
 	}
-	registry.SetValue(EncodeTokenInfo(token))
+	registry.SetValue(token.Bytes())
 	colors := state.GetColorArray(VarColorList)
 	colors.GetColor(colors.Length()).SetValue(minted)
 }

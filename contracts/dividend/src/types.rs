@@ -16,17 +16,19 @@ pub struct Member {
 }
 //@formatter:on
 
-pub fn encode_member(o: &Member) -> Vec<u8> {
-    let mut encode = BytesEncoder::new();
-    encode.address(&o.address);
-    encode.int(o.factor);
-    return encode.data();
-}
+impl Member {
+    pub fn from_bytes(bytes: &[u8]) -> Member {
+        let mut decode = BytesDecoder::new(bytes);
+        Member {
+            address: decode.address(),
+            factor: decode.int(),
+        }
+    }
 
-pub fn decode_member(bytes: &[u8]) -> Member {
-    let mut decode = BytesDecoder::new(bytes);
-    Member {
-        address: decode.address(),
-        factor: decode.int(),
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut encode = BytesEncoder::new();
+        encode.address(&self.address);
+        encode.int(self.factor);
+        return encode.data();
     }
 }

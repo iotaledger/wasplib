@@ -18,7 +18,7 @@ pub fn func_divide(ctx: &ScCallContext, _params: &FuncDivideParams) {
     let mut parts = 0_i64;
     let size = members.length();
     for i in 0..size {
-        let m = decode_member(&members.get_bytes(i).value());
+        let m = Member::from_bytes(&members.get_bytes(i).value());
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;
@@ -45,18 +45,18 @@ pub fn func_member(ctx: &ScCallContext, params: &FuncMemberParams) {
     let members = state.get_bytes_array(VAR_MEMBERS);
     let size = members.length();
     for i in 0..size {
-        let m = decode_member(&members.get_bytes(i).value());
+        let m = Member::from_bytes(&members.get_bytes(i).value());
         if m.address.equals(&member.address) {
             total -= m.factor;
             total += member.factor;
             total_factor.set_value(total);
-            members.get_bytes(i).set_value(&encode_member(&member));
+            members.get_bytes(i).set_value(&member.to_bytes());
             ctx.log(&("Updated: ".to_string() + &member.address.to_string()));
             return;
         }
     }
     total += member.factor;
     total_factor.set_value(total);
-    members.get_bytes(size).set_value(&encode_member(&member));
+    members.get_bytes(size).set_value(&member.to_bytes());
     ctx.log(&("Appended: ".to_string() + &member.address.to_string()));
 }

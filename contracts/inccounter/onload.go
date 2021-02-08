@@ -10,161 +10,161 @@ package inccounter
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncCallIncrement, funcCallIncrementThunk)
-	exports.AddCall(FuncCallIncrementRecurse5x, funcCallIncrementRecurse5xThunk)
-	exports.AddCall(FuncIncrement, funcIncrementThunk)
-	exports.AddCall(FuncInit, funcInitThunk)
-	exports.AddCall(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
-	exports.AddCall(FuncLocalStatePost, funcLocalStatePostThunk)
-	exports.AddCall(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
-	exports.AddCall(FuncPostIncrement, funcPostIncrementThunk)
-	exports.AddCall(FuncRepeatMany, funcRepeatManyThunk)
-	exports.AddCall(FuncResultsTest, funcResultsTestThunk)
-	exports.AddCall(FuncStateTest, funcStateTestThunk)
-	exports.AddCall(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
-	exports.AddView(ViewGetCounter, viewGetCounterThunk)
-	exports.AddView(ViewResultsCheck, viewResultsCheckThunk)
-	exports.AddView(ViewStateCheck, viewStateCheckThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncCallIncrement, funcCallIncrementThunk)
+    exports.AddCall(FuncCallIncrementRecurse5x, funcCallIncrementRecurse5xThunk)
+    exports.AddCall(FuncIncrement, funcIncrementThunk)
+    exports.AddCall(FuncInit, funcInitThunk)
+    exports.AddCall(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
+    exports.AddCall(FuncLocalStatePost, funcLocalStatePostThunk)
+    exports.AddCall(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
+    exports.AddCall(FuncPostIncrement, funcPostIncrementThunk)
+    exports.AddCall(FuncRepeatMany, funcRepeatManyThunk)
+    exports.AddCall(FuncResultsTest, funcResultsTestThunk)
+    exports.AddCall(FuncStateTest, funcStateTestThunk)
+    exports.AddCall(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
+    exports.AddView(ViewGetCounter, viewGetCounterThunk)
+    exports.AddView(ViewResultsCheck, viewResultsCheckThunk)
+    exports.AddView(ViewStateCheck, viewStateCheckThunk)
 }
 
 type FuncCallIncrementParams struct {
 }
 
 func funcCallIncrementThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncCallIncrementParams{
-	}
-	funcCallIncrement(ctx, params)
+    params := &FuncCallIncrementParams {
+    }
+    funcCallIncrement(ctx, params)
 }
 
 type FuncCallIncrementRecurse5xParams struct {
 }
 
 func funcCallIncrementRecurse5xThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncCallIncrementRecurse5xParams{
-	}
-	funcCallIncrementRecurse5x(ctx, params)
+    params := &FuncCallIncrementRecurse5xParams {
+    }
+    funcCallIncrementRecurse5x(ctx, params)
 }
 
 type FuncIncrementParams struct {
 }
 
 func funcIncrementThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncIncrementParams{
-	}
-	funcIncrement(ctx, params)
+    params := &FuncIncrementParams {
+    }
+    funcIncrement(ctx, params)
 }
 
 type FuncInitParams struct {
-	Counter wasmlib.ScImmutableInt // value to initialize state counter with
+    Counter wasmlib.ScImmutableInt // value to initialize state counter with
 }
 
 func funcInitThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncInitParams{
-		Counter: p.GetInt(ParamCounter),
-	}
-	funcInit(ctx, params)
+    p := ctx.Params()
+    params := &FuncInitParams {
+        Counter: p.GetInt(ParamCounter),
+    }
+    funcInit(ctx, params)
 }
 
 type FuncLocalStateInternalCallParams struct {
 }
 
 func funcLocalStateInternalCallThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncLocalStateInternalCallParams{
-	}
-	funcLocalStateInternalCall(ctx, params)
+    params := &FuncLocalStateInternalCallParams {
+    }
+    funcLocalStateInternalCall(ctx, params)
 }
 
 type FuncLocalStatePostParams struct {
 }
 
 func funcLocalStatePostThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncLocalStatePostParams{
-	}
-	funcLocalStatePost(ctx, params)
+    params := &FuncLocalStatePostParams {
+    }
+    funcLocalStatePost(ctx, params)
 }
 
 type FuncLocalStateSandboxCallParams struct {
 }
 
 func funcLocalStateSandboxCallThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncLocalStateSandboxCallParams{
-	}
-	funcLocalStateSandboxCall(ctx, params)
+    params := &FuncLocalStateSandboxCallParams {
+    }
+    funcLocalStateSandboxCall(ctx, params)
 }
 
 type FuncPostIncrementParams struct {
 }
 
 func funcPostIncrementThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncPostIncrementParams{
-	}
-	funcPostIncrement(ctx, params)
+    params := &FuncPostIncrementParams {
+    }
+    funcPostIncrement(ctx, params)
 }
 
 type FuncRepeatManyParams struct {
-	NumRepeats wasmlib.ScImmutableInt // number of times to recursively call myself
+    NumRepeats wasmlib.ScImmutableInt // number of times to recursively call myself
 }
 
 func funcRepeatManyThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncRepeatManyParams{
-		NumRepeats: p.GetInt(ParamNumRepeats),
-	}
-	funcRepeatMany(ctx, params)
+    p := ctx.Params()
+    params := &FuncRepeatManyParams {
+        NumRepeats: p.GetInt(ParamNumRepeats),
+    }
+    funcRepeatMany(ctx, params)
 }
 
 type FuncResultsTestParams struct {
 }
 
 func funcResultsTestThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncResultsTestParams{
-	}
-	funcResultsTest(ctx, params)
+    params := &FuncResultsTestParams {
+    }
+    funcResultsTest(ctx, params)
 }
 
 type FuncStateTestParams struct {
 }
 
 func funcStateTestThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncStateTestParams{
-	}
-	funcStateTest(ctx, params)
+    params := &FuncStateTestParams {
+    }
+    funcStateTest(ctx, params)
 }
 
 type FuncWhenMustIncrementParams struct {
 }
 
 func funcWhenMustIncrementThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncWhenMustIncrementParams{
-	}
-	funcWhenMustIncrement(ctx, params)
+    params := &FuncWhenMustIncrementParams {
+    }
+    funcWhenMustIncrement(ctx, params)
 }
 
 type ViewGetCounterParams struct {
 }
 
 func viewGetCounterThunk(ctx *wasmlib.ScViewContext) {
-	params := &ViewGetCounterParams{
-	}
-	viewGetCounter(ctx, params)
+    params := &ViewGetCounterParams {
+    }
+    viewGetCounter(ctx, params)
 }
 
 type ViewResultsCheckParams struct {
 }
 
 func viewResultsCheckThunk(ctx *wasmlib.ScViewContext) {
-	params := &ViewResultsCheckParams{
-	}
-	viewResultsCheck(ctx, params)
+    params := &ViewResultsCheckParams {
+    }
+    viewResultsCheck(ctx, params)
 }
 
 type ViewStateCheckParams struct {
 }
 
 func viewStateCheckThunk(ctx *wasmlib.ScViewContext) {
-	params := &ViewStateCheckParams{
-	}
-	viewStateCheck(ctx, params)
+    params := &ViewStateCheckParams {
+    }
+    viewStateCheck(ctx, params)
 }

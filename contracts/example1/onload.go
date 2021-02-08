@@ -10,44 +10,44 @@ package example1
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncStoreString, funcStoreStringThunk)
-	exports.AddCall(FuncWithdrawIota, funcWithdrawIotaThunk)
-	exports.AddView(ViewGetString, viewGetStringThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncStoreString, funcStoreStringThunk)
+    exports.AddCall(FuncWithdrawIota, funcWithdrawIotaThunk)
+    exports.AddView(ViewGetString, viewGetStringThunk)
 }
 
 type FuncStoreStringParams struct {
-	String wasmlib.ScImmutableString // string to store
+    String wasmlib.ScImmutableString // string to store
 }
 
 func funcStoreStringThunk(ctx *wasmlib.ScCallContext) {
-	p := ctx.Params()
-	params := &FuncStoreStringParams{
-		String: p.GetString(ParamString),
-	}
-	ctx.Require(params.String.Exists(), "missing mandatory string")
-	funcStoreString(ctx, params)
+    p := ctx.Params()
+    params := &FuncStoreStringParams {
+        String: p.GetString(ParamString),
+    }
+    ctx.Require(params.String.Exists(), "missing mandatory string")
+    funcStoreString(ctx, params)
 }
 
 type FuncWithdrawIotaParams struct {
 }
 
 func funcWithdrawIotaThunk(ctx *wasmlib.ScCallContext) {
-	// only the contract creator can withdraw
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    // only the contract creator can withdraw
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	params := &FuncWithdrawIotaParams{
-	}
-	funcWithdrawIota(ctx, params)
+    params := &FuncWithdrawIotaParams {
+    }
+    funcWithdrawIota(ctx, params)
 }
 
 type ViewGetStringParams struct {
 }
 
 func viewGetStringThunk(ctx *wasmlib.ScViewContext) {
-	params := &ViewGetStringParams{
-	}
-	viewGetString(ctx, params)
+    params := &ViewGetStringParams {
+    }
+    viewGetString(ctx, params)
 }

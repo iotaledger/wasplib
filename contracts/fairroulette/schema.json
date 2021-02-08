@@ -1,16 +1,16 @@
 {
   "name": "fairroulette",
   "types": {
-    "BetInfo": {
+    "Bet": {
       "amount": "Int",
       "better": "AgentId",
       "number": "Int"
     }
   },
   "vars": {
-    "bets": "[]BetInfo",
+    "bets": "[]Bet",
     "lastWinningNumber": "Int",
-    "lockedBets": "[]BetInfo",
+    "lockedBets": "[]Bet",
     "playPeriod": "Int"
   },
   "funcs": {

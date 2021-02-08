@@ -40,7 +40,7 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-var WasmRunner = 2
+var WasmRunner = 0
 
 var ScForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,

@@ -22,7 +22,7 @@ func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuction
 	if !auctionInfo.Exists() {
 		ctx.Panic("Missing auction info")
 	}
-	auction := DecodeAuctionInfo(auctionInfo.Value())
+	auction := NewAuctionFromBytes(auctionInfo.Value())
 	if auction.HighestBid < 0 {
 		ctx.Log("No one bid on " + color.String())
 		ownerFee := auction.MinimumBid * auction.OwnerMargin / 1000
@@ -49,7 +49,7 @@ func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuction
 		bidder := bidderList.GetAgentId(i).Value()
 		if !bidder.Equals(auction.HighestBidder) {
 			loser := bidders.GetBytes(bidder)
-			bid := DecodeBidInfo(loser.Value())
+			bid := NewBidFromBytes(loser.Value())
 			transfer(ctx, bidder, wasmlib.IOTA, bid.Amount)
 		}
 	}
@@ -75,18 +75,18 @@ func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
 		ctx.Panic("Missing auction info")
 	}
 
-	auction := DecodeAuctionInfo(auctionInfo.Value())
+	auction := NewAuctionFromBytes(auctionInfo.Value())
 	bidders := currentAuction.GetMap(VarBidders)
 	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
 	caller := ctx.Caller()
 	bidder := bidders.GetBytes(caller)
 	if bidder.Exists() {
 		ctx.Log("Upped bid from: " + caller.String())
-		bid := DecodeBidInfo(bidder.Value())
+		bid := NewBidFromBytes(bidder.Value())
 		bidAmount += bid.Amount
 		bid.Amount = bidAmount
 		bid.Timestamp = ctx.Timestamp()
-		bidder.SetValue(EncodeBidInfo(bid))
+		bidder.SetValue(bid.Bytes())
 	} else {
 		if bidAmount < auction.MinimumBid {
 			ctx.Panic("Insufficient bid amount")
@@ -94,18 +94,18 @@ func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
 		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
 		bidderList.GetAgentId(index).SetValue(caller)
-		bid := &BidInfo{
+		bid := &Bid{
 			Index:     int64(index),
 			Amount:    bidAmount,
 			Timestamp: ctx.Timestamp(),
 		}
-		bidder.SetValue(EncodeBidInfo(bid))
+		bidder.SetValue(bid.Bytes())
 	}
 	if bidAmount > auction.HighestBid {
 		ctx.Log("New highest bidder")
 		auction.HighestBid = bidAmount
 		auction.HighestBidder = caller
-		auctionInfo.SetValue(EncodeAuctionInfo(auction))
+		auctionInfo.SetValue(auction.Bytes())
 	}
 }
 
@@ -176,7 +176,7 @@ func funcStartAuction(ctx *wasmlib.ScCallContext, params *FuncStartAuctionParams
 		ctx.Panic("Auction for this token color already exists")
 	}
 
-	auction := &AuctionInfo{
+	auction := &Auction{
 		Creator:       ctx.Caller(),
 		Color:         color,
 		Deposit:       deposit,
@@ -189,7 +189,7 @@ func funcStartAuction(ctx *wasmlib.ScCallContext, params *FuncStartAuctionParams
 		OwnerMargin:   ownerMargin,
 		WhenStarted:   ctx.Timestamp(),
 	}
-	auctionInfo.SetValue(EncodeAuctionInfo(auction))
+	auctionInfo.SetValue(auction.Bytes())
 
 	finalizeParams := wasmlib.NewScMutableMap()
 	finalizeParams.GetColor(VarColor).SetValue(auction.Color)
@@ -213,7 +213,7 @@ func viewGetInfo(ctx *wasmlib.ScViewContext, params *ViewGetInfoParams) {
 		ctx.Panic("Missing auction info")
 	}
 
-	auction := DecodeAuctionInfo(auctionInfo.Value())
+	auction := NewAuctionFromBytes(auctionInfo.Value())
 	results := ctx.Results()
 	results.GetColor(VarColor).SetValue(auction.Color)
 	results.GetAgentId(VarCreator).SetValue(auction.Creator)

@@ -1,12 +1,12 @@
 {
   "name": "donatewithfeedback",
   "types": {
-    "DonationInfo": {
-      "amount": "Int",
-      "donator": "AgentId",
-      "error": "String",
-      "feedback": "String",
-      "timestamp": "Int"
+    "Donation": {
+      "amount": "Int // amount donated",
+      "donator": "AgentId // who donated",
+      "error": "String // error to be reported to donator if anything goes wrong",
+      "feedback": "String // the feedback for the person donated to",
+      "timestamp": "Int // when the donation took place"
     }
   },
   "vars": {
@@ -15,7 +15,7 @@
     "donator": "AgentId",
     "error": "String",
     "feedback": "String",
-    "log": "[]DonationInfo",
+    "log": "[]Donation",
     "maxDonation": "Int",
     "timestamp": "Int",
     "totalDonation": "Int"

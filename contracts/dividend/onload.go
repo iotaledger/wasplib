@@ -10,37 +10,37 @@ package dividend
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
-	exports := wasmlib.NewScExports()
-	exports.AddCall(FuncDivide, funcDivideThunk)
-	exports.AddCall(FuncMember, funcMemberThunk)
+    exports := wasmlib.NewScExports()
+    exports.AddCall(FuncDivide, funcDivideThunk)
+    exports.AddCall(FuncMember, funcMemberThunk)
 }
 
 type FuncDivideParams struct {
 }
 
 func funcDivideThunk(ctx *wasmlib.ScCallContext) {
-	params := &FuncDivideParams{
-	}
-	funcDivide(ctx, params)
+    params := &FuncDivideParams {
+    }
+    funcDivide(ctx, params)
 }
 
 type FuncMemberParams struct {
-	Address wasmlib.ScImmutableAddress // address of dividend recipient
-	Factor  wasmlib.ScImmutableInt     // relative division factor
+    Address wasmlib.ScImmutableAddress // address of dividend recipient
+    Factor  wasmlib.ScImmutableInt     // relative division factor
 }
 
 func funcMemberThunk(ctx *wasmlib.ScCallContext) {
-	// only creator can add members
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("no permission")
-	}
+    // only creator can add members
+    if !ctx.From(ctx.ContractCreator()) {
+        ctx.Panic("no permission")
+    }
 
-	p := ctx.Params()
-	params := &FuncMemberParams{
-		Address: p.GetAddress(ParamAddress),
-		Factor:  p.GetInt(ParamFactor),
-	}
-	ctx.Require(params.Address.Exists(), "missing mandatory address")
-	ctx.Require(params.Factor.Exists(), "missing mandatory factor")
-	funcMember(ctx, params)
+    p := ctx.Params()
+    params := &FuncMemberParams {
+        Address: p.GetAddress(ParamAddress),
+        Factor: p.GetInt(ParamFactor),
+    }
+    ctx.Require(params.Address.Exists(), "missing mandatory address")
+    ctx.Require(params.Factor.Exists(), "missing mandatory factor")
+    funcMember(ctx, params)
 }

@@ -9,7 +9,7 @@ package tokenregistry
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-type TokenInfo struct {
+type Token struct {
 	Created     int64              // creation timestamp
 	Description string             // description what minted token represents
 	MintedBy    *wasmlib.ScAgentId // original minter
@@ -19,7 +19,20 @@ type TokenInfo struct {
 	UserDefined string             // any user defined text
 }
 
-func EncodeTokenInfo(o *TokenInfo) []byte {
+func NewTokenFromBytes(bytes []byte) *Token {
+	decode := wasmlib.NewBytesDecoder(bytes)
+	data := &Token{}
+	data.Created = decode.Int()
+	data.Description = decode.String()
+	data.MintedBy = decode.AgentId()
+	data.Owner = decode.AgentId()
+	data.Supply = decode.Int()
+	data.Updated = decode.Int()
+	data.UserDefined = decode.String()
+	return data
+}
+
+func (o *Token) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Int(o.Created).
 		String(o.Description).
@@ -29,17 +42,4 @@ func EncodeTokenInfo(o *TokenInfo) []byte {
 		Int(o.Updated).
 		String(o.UserDefined).
 		Data()
-}
-
-func DecodeTokenInfo(bytes []byte) *TokenInfo {
-	decode := wasmlib.NewBytesDecoder(bytes)
-	data := &TokenInfo{}
-	data.Created = decode.Int()
-	data.Description = decode.String()
-	data.MintedBy = decode.AgentId()
-	data.Owner = decode.AgentId()
-	data.Supply = decode.Int()
-	data.Updated = decode.Int()
-	data.UserDefined = decode.String()
-	return data
 }

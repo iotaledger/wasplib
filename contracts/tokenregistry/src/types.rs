@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 //@formatter:off
-pub struct TokenInfo {
+pub struct Token {
     pub created:      i64,       // creation timestamp
     pub description:  String,    // description what minted token represents
     pub minted_by:    ScAgentId, // original minter
@@ -21,27 +21,29 @@ pub struct TokenInfo {
 }
 //@formatter:on
 
-pub fn encode_token_info(o: &TokenInfo) -> Vec<u8> {
-    let mut encode = BytesEncoder::new();
-    encode.int(o.created);
-    encode.string(&o.description);
-    encode.agent_id(&o.minted_by);
-    encode.agent_id(&o.owner);
-    encode.int(o.supply);
-    encode.int(o.updated);
-    encode.string(&o.user_defined);
-    return encode.data();
-}
+impl Token {
+    pub fn from_bytes(bytes: &[u8]) -> Token {
+        let mut decode = BytesDecoder::new(bytes);
+        Token {
+            created: decode.int(),
+            description: decode.string(),
+            minted_by: decode.agent_id(),
+            owner: decode.agent_id(),
+            supply: decode.int(),
+            updated: decode.int(),
+            user_defined: decode.string(),
+        }
+    }
 
-pub fn decode_token_info(bytes: &[u8]) -> TokenInfo {
-    let mut decode = BytesDecoder::new(bytes);
-    TokenInfo {
-        created: decode.int(),
-        description: decode.string(),
-        minted_by: decode.agent_id(),
-        owner: decode.agent_id(),
-        supply: decode.int(),
-        updated: decode.int(),
-        user_defined: decode.string(),
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut encode = BytesEncoder::new();
+        encode.int(self.created);
+        encode.string(&self.description);
+        encode.agent_id(&self.minted_by);
+        encode.agent_id(&self.owner);
+        encode.int(self.supply);
+        encode.int(self.updated);
+        encode.string(&self.user_defined);
+        return encode.data();
     }
 }
