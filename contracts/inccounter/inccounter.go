@@ -40,8 +40,7 @@ func funcInit(ctx *wasmlib.ScCallContext, params *FuncInitParams) {
 
 func funcLocalStateInternalCall(ctx *wasmlib.ScCallContext, params *FuncLocalStateInternalCallParams) {
 	LocalStateMustIncrement = false
-	par := &FuncWhenMustIncrementParams{
-	}
+	par := &FuncWhenMustIncrementParams{}
 	funcWhenMustIncrement(ctx, par)
 	LocalStateMustIncrement = true
 	funcWhenMustIncrement(ctx, par)

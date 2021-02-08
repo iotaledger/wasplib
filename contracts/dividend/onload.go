@@ -25,11 +25,16 @@ func funcDivideThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncMemberParams struct {
-	Address wasmlib.ScImmutableAddress
-	Factor  wasmlib.ScImmutableInt
+	Address wasmlib.ScImmutableAddress // address of dividend recipient
+	Factor  wasmlib.ScImmutableInt     // relative division factor
 }
 
 func funcMemberThunk(ctx *wasmlib.ScCallContext) {
+	// only creator can add members
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncMemberParams{
 		Address: p.GetAddress(ParamAddress),

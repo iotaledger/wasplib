@@ -34,11 +34,6 @@ pub fn func_donate(ctx: &ScCallContext, params: &FuncDonateParams) {
 }
 
 pub fn func_withdraw(ctx: &ScCallContext, params: &FuncWithdrawParams) {
-    let sc_owner = ctx.contract_creator();
-    if !ctx.from(&sc_owner) {
-        ctx.panic("Cancel spoofed request");
-    }
-
     let balance = ctx.balances().balance(&ScColor::IOTA);
     let mut amount = params.amount.value();
     if amount == 0 || amount > balance {
@@ -49,10 +44,11 @@ pub fn func_withdraw(ctx: &ScCallContext, params: &FuncWithdrawParams) {
         return;
     }
 
-    ctx.transfer_to_address(&sc_owner.address(), &ScTransfers::new(&ScColor::IOTA, amount));
+    let sc_creator = ctx.contract_creator().address();
+    ctx.transfer_to_address(&sc_creator, &ScTransfers::new(&ScColor::IOTA, amount));
 }
 
-pub fn view_donations(ctx: &ScViewContext, params: &ViewDonationsParams) {
+pub fn view_donations(ctx: &ScViewContext, _params: &ViewDonationsParams) {
     let state = ctx.state();
     let largest_donation = state.get_int(VAR_MAX_DONATION);
     let total_donated = state.get_int(VAR_TOTAL_DONATION);

@@ -56,7 +56,7 @@ func funcIncrementThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncInitParams struct {
-	Counter wasmlib.ScImmutableInt
+	Counter wasmlib.ScImmutableInt // value to initialize state counter with
 }
 
 func funcInitThunk(ctx *wasmlib.ScCallContext) {
@@ -64,7 +64,6 @@ func funcInitThunk(ctx *wasmlib.ScCallContext) {
 	params := &FuncInitParams{
 		Counter: p.GetInt(ParamCounter),
 	}
-	ctx.Require(params.Counter.Exists(), "missing mandatory counter")
 	funcInit(ctx, params)
 }
 
@@ -105,7 +104,7 @@ func funcPostIncrementThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncRepeatManyParams struct {
-	NumRepeats wasmlib.ScImmutableInt
+	NumRepeats wasmlib.ScImmutableInt // number of times to recursively call myself
 }
 
 func funcRepeatManyThunk(ctx *wasmlib.ScCallContext) {
@@ -113,7 +112,6 @@ func funcRepeatManyThunk(ctx *wasmlib.ScCallContext) {
 	params := &FuncRepeatManyParams{
 		NumRepeats: p.GetInt(ParamNumRepeats),
 	}
-	ctx.Require(params.NumRepeats.Exists(), "missing mandatory numRepeats")
 	funcRepeatMany(ctx, params)
 }
 

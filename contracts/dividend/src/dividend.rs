@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_divide(ctx: &ScCallContext, params: &FuncDivideParams) {
+pub fn func_divide(ctx: &ScCallContext, _params: &FuncDivideParams) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");
@@ -35,9 +35,6 @@ pub fn func_divide(ctx: &ScCallContext, params: &FuncDivideParams) {
 }
 
 pub fn func_member(ctx: &ScCallContext, params: &FuncMemberParams) {
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("Cancel spoofed request");
-    }
     let member = Member {
         address: params.address.value(),
         factor: params.factor.value(),

@@ -23,10 +23,11 @@
   },
   "funcs": {
     "donate": {
+      "#grant": "superspy // only the super spy can donate",
       "feedback": "?String // feedback for the person you donate to"
     },
     "withdraw": {
-      "#owner": "creator // only SC creator can withdraw donated funds",
+      "#grant": "creator // only SC creator can withdraw donated funds",
       "amount": "?Int // amount to withdraw"
     }
   },

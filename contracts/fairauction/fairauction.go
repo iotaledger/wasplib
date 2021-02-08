@@ -14,13 +14,7 @@ const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
 func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuctionParams) {
-	// can only be sent by SC itself
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	color := params.Color.Value()
-
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
@@ -73,7 +67,6 @@ func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
 	}
 
 	color := params.Color.Value()
-
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
@@ -117,11 +110,6 @@ func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
 }
 
 func funcSetOwnerMargin(ctx *wasmlib.ScCallContext, params *FuncSetOwnerMarginParams) {
-	// can only be sent by SC creator
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	ownerMargin := params.OwnerMargin.Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin

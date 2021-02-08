@@ -36,9 +36,6 @@ func funcDivide(ctx *wasmlib.ScCallContext, params *FuncDivideParams) {
 }
 
 func funcMember(ctx *wasmlib.ScCallContext, params *FuncMemberParams) {
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("Cancel spoofed request")
-	}
 	member := &Member{
 		Address: params.Address.Value(),
 		Factor:  params.Factor.Value(),

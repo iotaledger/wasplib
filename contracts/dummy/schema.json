@@ -1,0 +1,15 @@
+{
+  "name": "dummy",
+  "description": "Dummy smart contract for testing",
+  "types": {
+  },
+  "vars": {
+  },
+  "funcs": {
+    "init": {
+      "failInitParam": "?Int // when present fail on purpose"
+    }
+  },
+  "views": {
+  }
+}

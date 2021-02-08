@@ -35,11 +35,6 @@ func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
 }
 
 func funcWithdraw(ctx *wasmlib.ScCallContext, params *FuncWithdrawParams) {
-	scOwner := ctx.ContractCreator()
-	if !ctx.From(scOwner) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
 	amount := params.Amount.Value()
 	if amount == 0 || amount > balance {
@@ -50,7 +45,8 @@ func funcWithdraw(ctx *wasmlib.ScCallContext, params *FuncWithdrawParams) {
 		return
 	}
 
-	ctx.TransferToAddress(scOwner.Address(), wasmlib.NewScTransfer(wasmlib.IOTA, amount))
+	scCreator := ctx.ContractCreator().Address()
+	ctx.TransferToAddress(scCreator, wasmlib.NewScTransfer(wasmlib.IOTA, amount))
 }
 
 func viewDonations(ctx *wasmlib.ScViewContext, params *ViewDonationsParams) {

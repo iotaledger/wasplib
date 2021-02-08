@@ -40,7 +40,7 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-var WasmRunner = 0
+var WasmRunner = 2
 
 var ScForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,
@@ -147,7 +147,7 @@ func (te *TestEnv) ScImmutableMap(keyId int32, kvStore kv.KVStore) wasmlib.ScImm
 	root := wasmproc.NewScDictFromKvStore(host, kvStore)
 	host.Init(null, root, logger)
 	root.InitObj(1, keyId, root)
-	logger.Info("Direct access to %s", host.GetKeyStringFromId(keyId))
+	logger.Infof("Direct access to %s", host.GetKeyStringFromId(keyId))
 	oldHost := wasmlib.ConnectHost(host)
 	if te.host == nil {
 		te.host = oldHost

@@ -1,0 +1,21 @@
+{
+  "name": "example1",
+  "description": "Example1 ISCP smart contract to the tutorial",
+  "types": {
+  },
+  "vars": {
+    "string=storedString": "String // the stored string"
+  },
+  "funcs": {
+    "storeString": {
+      "string=paramString": "String // string to store"
+    },
+    "withdrawIota": {
+      "#grant": "creator // only the contract creator can withdraw"
+    }
+  },
+  "views": {
+    "getString": {
+    }
+  }
+}

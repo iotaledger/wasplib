@@ -22,10 +22,12 @@ fn on_load() {
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
 }
 
+//@formatter:off
 pub struct FuncMintSupplyParams {
-    pub description: ScImmutableString,
-    pub user_defined: ScImmutableString,
+    pub description:  ScImmutableString, // description what minted token represents
+    pub user_defined: ScImmutableString, // any user defined text
 }
+//@formatter:on
 
 fn func_mint_supply_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -33,16 +35,21 @@ fn func_mint_supply_thunk(ctx: &ScCallContext) {
         description: p.get_string(PARAM_DESCRIPTION),
         user_defined: p.get_string(PARAM_USER_DEFINED),
     };
-    ctx.require(params.description.exists(), "missing mandatory description");
-    ctx.require(params.user_defined.exists(), "missing mandatory userDefined");
     func_mint_supply(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncTransferOwnershipParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color of token to transfer ownership of
 }
+//@formatter:on
 
 fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
+    //TODO the one who can transfer token ownership
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncTransferOwnershipParams {
         color: p.get_color(PARAM_COLOR),
@@ -51,11 +58,18 @@ fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
     func_transfer_ownership(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncUpdateMetadataParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color of token to update metadata for
 }
+//@formatter:on
 
 fn func_update_metadata_thunk(ctx: &ScCallContext) {
+    //TODO the one who can change the token info
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncUpdateMetadataParams {
         color: p.get_color(PARAM_COLOR),
@@ -64,9 +78,11 @@ fn func_update_metadata_thunk(ctx: &ScCallContext) {
     func_update_metadata(ctx, &params);
 }
 
+//@formatter:off
 pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color of token to view registry info of
 }
+//@formatter:on
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     let p = ctx.params();

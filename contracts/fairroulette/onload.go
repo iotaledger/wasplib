@@ -21,6 +21,11 @@ type FuncLockBetsParams struct {
 }
 
 func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
+	// only SC itself can invoke this function
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
+		ctx.Panic("no permission")
+	}
+
 	params := &FuncLockBetsParams{
 	}
 	funcLockBets(ctx, params)
@@ -30,13 +35,18 @@ type FuncPayWinnersParams struct {
 }
 
 func funcPayWinnersThunk(ctx *wasmlib.ScCallContext) {
+	// only SC itself can invoke this function
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
+		ctx.Panic("no permission")
+	}
+
 	params := &FuncPayWinnersParams{
 	}
 	funcPayWinners(ctx, params)
 }
 
 type FuncPlaceBetParams struct {
-	Number wasmlib.ScImmutableInt
+	Number wasmlib.ScImmutableInt // the number a better bets on
 }
 
 func funcPlaceBetThunk(ctx *wasmlib.ScCallContext) {
@@ -49,10 +59,15 @@ func funcPlaceBetThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncPlayPeriodParams struct {
-	PlayPeriod wasmlib.ScImmutableInt
+	PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
 }
 
 func funcPlayPeriodThunk(ctx *wasmlib.ScCallContext) {
+	// only SC creator can update the play period
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncPlayPeriodParams{
 		PlayPeriod: p.GetInt(ParamPlayPeriod),

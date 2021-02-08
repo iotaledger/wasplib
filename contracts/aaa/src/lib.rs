@@ -21,33 +21,52 @@ fn on_load() {
     exports.add_view(VIEW_DONATIONS, view_donations_thunk);
 }
 
+//@formatter:off
 pub struct FuncDonateParams {
-    pub feedback: ScImmutableString,
+    pub feedback: ScImmutableString, // feedback for the person you donate to
 }
+//@formatter:on
 
 fn func_donate_thunk(ctx: &ScCallContext) {
+    // only the super spy can donate
+    let grantee = ctx.state().get_agent_id("superspy");
+    if !grantee.exists() {
+        ctx.panic("grantee not set: superspy");
+    }
+    if !ctx.from(&grantee.value()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncDonateParams {
         feedback: p.get_string(PARAM_FEEDBACK),
     };
-    ctx.require(params.feedback.exists(), "missing mandatory feedback");
     func_donate(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncWithdrawParams {
-    pub amount: ScImmutableInt,
+    pub amount: ScImmutableInt, // amount to withdraw
 }
+//@formatter:on
 
 fn func_withdraw_thunk(ctx: &ScCallContext) {
+    // only SC creator can withdraw donated funds
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncWithdrawParams {
         amount: p.get_int(PARAM_AMOUNT),
     };
-    ctx.require(params.amount.exists(), "missing mandatory amount");
     func_withdraw(ctx, &params);
 }
 
-pub struct ViewDonationsParams {}
+//@formatter:off
+pub struct ViewDonationsParams {
+}
+//@formatter:on
 
 fn view_donations_thunk(ctx: &ScViewContext) {
     let params = ViewDonationsParams {};

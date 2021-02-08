@@ -12,6 +12,7 @@
   },
   "funcs": {
     "member": {
+      "#grant": "creator // only creator can add members",
       "address": "Address // address of dividend recipient",
       "factor": "Int // relative division factor"
     },

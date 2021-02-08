@@ -9,12 +9,7 @@ use crate::types::*;
 const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-pub fn func_lock_bets(ctx: &ScCallContext, params: &FuncLockBetsParams) {
-    // can only be sent by SC itself
-    if !ctx.from(&ctx.contract_id().as_agent_id()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
+pub fn func_lock_bets(ctx: &ScCallContext, _params: &FuncLockBetsParams) {
     // move all current bets to the locked_bets array
     let state = ctx.state();
     let bets = state.get_bytes_array(VAR_BETS);
@@ -35,13 +30,8 @@ pub fn func_lock_bets(ctx: &ScCallContext, params: &FuncLockBetsParams) {
     });
 }
 
-pub fn func_pay_winners(ctx: &ScCallContext, params: &FuncPayWinnersParams) {
-    // can only be sent by SC itself
+pub fn func_pay_winners(ctx: &ScCallContext, _params: &FuncPayWinnersParams) {
     let sc_id = ctx.contract_id().as_agent_id();
-    if !ctx.from(&sc_id) {
-        ctx.panic("Cancel spoofed request");
-    }
-
     let winning_number = ctx.utility().random(5) + 1;
     let state = ctx.state();
     state.get_int(VAR_LAST_WINNING_NUMBER).set_value(winning_number);
@@ -129,11 +119,6 @@ pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
 }
 
 pub fn func_play_period(ctx: &ScCallContext, params: &FuncPlayPeriodParams) {
-    // can only be sent by SC creator
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
     let play_period = params.play_period.value();
     if play_period < 10 {
         ctx.panic("Invalid play period...");

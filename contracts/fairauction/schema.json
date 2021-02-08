@@ -45,14 +45,14 @@
       "minimumBid": "Int // minimum required amount for any bid"
     },
     "finalizeAuction": {
-      "#owner": "contract // only SC itself can invoke this function",
+      "#grant": "self // only SC itself can invoke this function",
       "color": "Color // color identifies the auction"
     },
     "placeBid": {
       "color": "Color // color identifies the auction"
     },
     "setOwnerMargin": {
-      "#owner": "creator // only SC creator can set owner margin",
+      "#grant": "creator // only SC creator can set owner margin",
       "ownerMargin": "Int // new SC owner margin in promilles"
     }
   },

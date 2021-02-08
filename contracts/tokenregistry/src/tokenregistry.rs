@@ -38,14 +38,14 @@ pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-pub fn func_transfer_ownership(_sc: &ScCallContext, params: &FuncTransferOwnershipParams) {
+pub fn func_transfer_ownership(_sc: &ScCallContext, _params: &FuncTransferOwnershipParams) {
     //TODO
 }
 
-pub fn func_update_metadata(_sc: &ScCallContext, params: &FuncUpdateMetadataParams) {
+pub fn func_update_metadata(_sc: &ScCallContext, _params: &FuncUpdateMetadataParams) {
     //TODO
 }
 
-pub fn view_get_info(_sc: &ScViewContext, params: &ViewGetInfoParams) {
+pub fn view_get_info(_sc: &ScViewContext, _params: &ViewGetInfoParams) {
     //TODO
 }

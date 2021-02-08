@@ -23,11 +23,18 @@ fn on_load() {
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
 }
 
+//@formatter:off
 pub struct FuncFinalizeAuctionParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color identifies the auction
 }
+//@formatter:on
 
 fn func_finalize_auction_thunk(ctx: &ScCallContext) {
+    // only SC itself can invoke this function
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncFinalizeAuctionParams {
         color: p.get_color(PARAM_COLOR),
@@ -36,9 +43,11 @@ fn func_finalize_auction_thunk(ctx: &ScCallContext) {
     func_finalize_auction(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncPlaceBidParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color identifies the auction
 }
+//@formatter:on
 
 fn func_place_bid_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -49,11 +58,18 @@ fn func_place_bid_thunk(ctx: &ScCallContext) {
     func_place_bid(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncSetOwnerMarginParams {
-    pub owner_margin: ScImmutableInt,
+    pub owner_margin: ScImmutableInt, // new SC owner margin in promilles
 }
+//@formatter:on
 
 fn func_set_owner_margin_thunk(ctx: &ScCallContext) {
+    // only SC creator can set owner margin
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncSetOwnerMarginParams {
         owner_margin: p.get_int(PARAM_OWNER_MARGIN),
@@ -62,12 +78,14 @@ fn func_set_owner_margin_thunk(ctx: &ScCallContext) {
     func_set_owner_margin(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncStartAuctionParams {
-    pub color: ScImmutableColor,
-    pub description: ScImmutableString,
-    pub duration: ScImmutableInt,
-    pub minimum_bid: ScImmutableInt,
+    pub color:       ScImmutableColor,  // color of the tokens being auctioned
+    pub description: ScImmutableString, // description of the tokens being auctioned
+    pub duration:    ScImmutableInt,    // duration of auction in minutes
+    pub minimum_bid: ScImmutableInt,    // minimum required amount for any bid
 }
+//@formatter:on
 
 fn func_start_auction_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -78,15 +96,15 @@ fn func_start_auction_thunk(ctx: &ScCallContext) {
         minimum_bid: p.get_int(PARAM_MINIMUM_BID),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.require(params.description.exists(), "missing mandatory description");
-    ctx.require(params.duration.exists(), "missing mandatory duration");
     ctx.require(params.minimum_bid.exists(), "missing mandatory minimumBid");
     func_start_auction(ctx, &params);
 }
 
+//@formatter:off
 pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor,
+    pub color: ScImmutableColor, // color identifies the auction
 }
+//@formatter:on
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     let p = ctx.params();

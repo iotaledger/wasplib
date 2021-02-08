@@ -19,10 +19,15 @@ func OnLoad() {
 }
 
 type FuncFinalizeAuctionParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
+	// only SC itself can invoke this function
+	if !ctx.From(ctx.ContractId().AsAgentId()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncFinalizeAuctionParams{
 		Color: p.GetColor(ParamColor),
@@ -32,7 +37,7 @@ func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncPlaceBidParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcPlaceBidThunk(ctx *wasmlib.ScCallContext) {
@@ -45,10 +50,15 @@ func funcPlaceBidThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncSetOwnerMarginParams struct {
-	OwnerMargin wasmlib.ScImmutableInt
+	OwnerMargin wasmlib.ScImmutableInt // new SC owner margin in promilles
 }
 
 func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
+	// only SC creator can set owner margin
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncSetOwnerMarginParams{
 		OwnerMargin: p.GetInt(ParamOwnerMargin),
@@ -58,10 +68,10 @@ func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncStartAuctionParams struct {
-	Color       wasmlib.ScImmutableColor
-	Description wasmlib.ScImmutableString
-	Duration    wasmlib.ScImmutableInt
-	MinimumBid  wasmlib.ScImmutableInt
+	Color       wasmlib.ScImmutableColor  // color of the tokens being auctioned
+	Description wasmlib.ScImmutableString // description of the tokens being auctioned
+	Duration    wasmlib.ScImmutableInt    // duration of auction in minutes
+	MinimumBid  wasmlib.ScImmutableInt    // minimum required amount for any bid
 }
 
 func funcStartAuctionThunk(ctx *wasmlib.ScCallContext) {
@@ -73,14 +83,12 @@ func funcStartAuctionThunk(ctx *wasmlib.ScCallContext) {
 		MinimumBid:  p.GetInt(ParamMinimumBid),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	ctx.Require(params.Description.Exists(), "missing mandatory description")
-	ctx.Require(params.Duration.Exists(), "missing mandatory duration")
 	ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid")
 	funcStartAuction(ctx, params)
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {

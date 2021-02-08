@@ -18,13 +18,13 @@
       "number": "Int // the number a better bets on"
     },
     "lockBets": {
-      "#owner": "contract // only SC itself can invoke this function"
+      "#grant": "self // only SC itself can invoke this function"
     },
     "payWinners": {
-      "#owner": "contract // only SC itself can invoke this function"
+      "#grant": "self // only SC itself can invoke this function"
     },
     "playPeriod": {
-      "#owner": "creator // only SC creator can update the play period",
+      "#grant": "creator // only SC creator can update the play period",
       "playPeriod": "Int // number of minutes in one playing round"
     }
   },

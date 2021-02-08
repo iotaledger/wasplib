@@ -9,11 +9,6 @@ const MaxNumber = 5
 const DefaultPlayPeriod = 120
 
 func funcLockBets(ctx *wasmlib.ScCallContext, params *FuncLockBetsParams) {
-	// can only be sent by SC itself
-	if !ctx.From(ctx.ContractId().AsAgentId()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	// move all current bets to the locked_bets array
 	state := ctx.State()
 	bets := state.GetBytesArray(VarBets)
@@ -35,12 +30,7 @@ func funcLockBets(ctx *wasmlib.ScCallContext, params *FuncLockBetsParams) {
 }
 
 func funcPayWinners(ctx *wasmlib.ScCallContext, params *FuncPayWinnersParams) {
-	// can only be sent by SC itself
 	scId := ctx.ContractId().AsAgentId()
-	if !ctx.From(scId) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	winningNumber := ctx.Utility().Random(5) + 1
 	state := ctx.State()
 	state.GetInt(VarLastWinningNumber).SetValue(winningNumber)
@@ -128,11 +118,6 @@ func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
 }
 
 func funcPlayPeriod(ctx *wasmlib.ScCallContext, params *FuncPlayPeriodParams) {
-	// can only be sent by SC creator
-	if !ctx.From(ctx.ContractCreator()) {
-		ctx.Panic("Cancel spoofed request")
-	}
-
 	playPeriod := params.PlayPeriod.Value()
 	if playPeriod < 10 {
 		ctx.Panic("Invalid play period...")

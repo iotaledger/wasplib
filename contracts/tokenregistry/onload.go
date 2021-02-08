@@ -18,8 +18,8 @@ func OnLoad() {
 }
 
 type FuncMintSupplyParams struct {
-	Description wasmlib.ScImmutableString
-	UserDefined wasmlib.ScImmutableString
+	Description wasmlib.ScImmutableString // description what minted token represents
+	UserDefined wasmlib.ScImmutableString // any user defined text
 }
 
 func funcMintSupplyThunk(ctx *wasmlib.ScCallContext) {
@@ -28,16 +28,19 @@ func funcMintSupplyThunk(ctx *wasmlib.ScCallContext) {
 		Description: p.GetString(ParamDescription),
 		UserDefined: p.GetString(ParamUserDefined),
 	}
-	ctx.Require(params.Description.Exists(), "missing mandatory description")
-	ctx.Require(params.UserDefined.Exists(), "missing mandatory userDefined")
 	funcMintSupply(ctx, params)
 }
 
 type FuncTransferOwnershipParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color of token to transfer ownership of
 }
 
 func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
+	//TODO the one who can transfer token ownership
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncTransferOwnershipParams{
 		Color: p.GetColor(ParamColor),
@@ -47,10 +50,15 @@ func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type FuncUpdateMetadataParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color of token to update metadata for
 }
 
 func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
+	//TODO the one who can change the token info
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncUpdateMetadataParams{
 		Color: p.GetColor(ParamColor),
@@ -60,7 +68,7 @@ func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor
+	Color wasmlib.ScImmutableColor // color of token to view registry info of
 }
 
 func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {

@@ -5,41 +5,18 @@ package example1
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-const ParamString = wasmlib.Key("paramString")
-const VarString = wasmlib.Key("storedString")
-
-func OnLoad() {
-	// declare entry points of the smart contract
-	exports := wasmlib.NewScExports()
-	exports.AddCall("storeString", storeString)
-	exports.AddView("getString", getString)
-	exports.AddCall("withdrawIota", withdrawIota)
-}
-
 // storeString entry point stores a string provided as parameters
 // in the state as a value of the key 'storedString'
 // panics if parameter is not provided
-func storeString(ctx *wasmlib.ScCallContext) {
+func funcStoreString(ctx *wasmlib.ScCallContext, params *FuncStoreStringParams) {
 	// take parameter paramString
-	par := ctx.Params().GetString(ParamString)
-	// require parameter exists
-	ctx.Require(par.Exists(), "string parameter not found")
+	paramString := params.String.Value()
 
 	// store the string in "storedString" variable
-	ctx.State().GetString(VarString).SetValue(par.Value())
+	ctx.State().GetString(VarString).SetValue(paramString)
 	// log the text
-	msg := "Message stored: " + par.Value()
+	msg := "Message stored: " + paramString
 	ctx.Log(msg)
-}
-
-// getString view returns the string value of the key 'storedString'
-// The call return result as a key/value dictionary.
-// the returned value in the result is under key 'paramString'
-func getString(ctx *wasmlib.ScViewContext) {
-	// take the stored string
-	s := ctx.State().GetString(VarString).Value()
-	// return the string value in the result dictionary
-	ctx.Results().GetString(ParamString).SetValue(s)
 }
 
 // withdraw_iota sends all iotas contained in the contract's account
@@ -47,15 +24,22 @@ func getString(ctx *wasmlib.ScViewContext) {
 // Panics of the caller is not an address
 // Panics if the address is not the creator of the contract is the caller
 // The caller will be address only if request is sent from the wallet on the L1, not a smart contract
-func withdrawIota(ctx *wasmlib.ScCallContext) {
-	creator := ctx.ContractCreator()
+func funcWithdrawIota(ctx *wasmlib.ScCallContext, params *FuncWithdrawIotaParams) {
 	caller := ctx.Caller()
-
-	ctx.Require(creator.Equals(caller), "not authorised")
 	ctx.Require(caller.IsAddress(), "caller must be an address")
 
 	bal := ctx.Balances().Balance(wasmlib.IOTA)
 	if bal > 0 {
 		ctx.TransferToAddress(caller.Address(), wasmlib.NewScTransfer(wasmlib.IOTA, bal))
 	}
+}
+
+// getString view returns the string value of the key 'storedString'
+// The call return result as a key/value dictionary.
+// the returned value in the result is under key 'paramString'
+func viewGetString(ctx *wasmlib.ScViewContext, params *ViewGetStringParams) {
+	// take the stored string
+	s := ctx.State().GetString(VarString).Value()
+	// return the string value in the result dictionary
+	ctx.Results().GetString(ParamString).SetValue(s)
 }

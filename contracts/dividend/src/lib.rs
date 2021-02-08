@@ -20,19 +20,29 @@ fn on_load() {
     exports.add_call(FUNC_MEMBER, func_member_thunk);
 }
 
-pub struct FuncDivideParams {}
+//@formatter:off
+pub struct FuncDivideParams {
+}
+//@formatter:on
 
 fn func_divide_thunk(ctx: &ScCallContext) {
     let params = FuncDivideParams {};
     func_divide(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncMemberParams {
-    pub address: ScImmutableAddress,
-    pub factor: ScImmutableInt,
+    pub address: ScImmutableAddress, // address of dividend recipient
+    pub factor:  ScImmutableInt,     // relative division factor
 }
+//@formatter:on
 
 fn func_member_thunk(ctx: &ScCallContext) {
+    // only creator can add members
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncMemberParams {
         address: p.get_address(PARAM_ADDRESS),

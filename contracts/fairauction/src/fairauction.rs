@@ -15,13 +15,7 @@ const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
 pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionParams) {
-    // can only be sent by SC itself
-    if !ctx.from(&ctx.contract_id().as_agent_id()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
     let color = params.color.value();
-
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
@@ -74,7 +68,6 @@ pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
     }
 
     let color = params.color.value();
-
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
@@ -118,11 +111,6 @@ pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
 }
 
 pub fn func_set_owner_margin(ctx: &ScCallContext, params: &FuncSetOwnerMarginParams) {
-    // can only be sent by SC creator
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("Cancel spoofed request");
-    }
-
     let mut owner_margin = params.owner_margin.value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;

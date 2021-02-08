@@ -17,28 +17,40 @@ func OnLoad() {
 }
 
 type FuncDonateParams struct {
-	Feedback wasmlib.ScImmutableString
+	Feedback wasmlib.ScImmutableString // feedback for the person you donate to
 }
 
 func funcDonateThunk(ctx *wasmlib.ScCallContext) {
+	// only the super spy can donate
+	grantee := ctx.State().GetAgentId(wasmlib.Key("superspy"))
+	if !grantee.Exists() {
+		ctx.Panic("grantee not set: superspy")
+	}
+	if !ctx.From(grantee.Value()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncDonateParams{
 		Feedback: p.GetString(ParamFeedback),
 	}
-	ctx.Require(params.Feedback.Exists(), "missing mandatory feedback")
 	funcDonate(ctx, params)
 }
 
 type FuncWithdrawParams struct {
-	Amount wasmlib.ScImmutableInt
+	Amount wasmlib.ScImmutableInt // amount to withdraw
 }
 
 func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
+	// only SC creator can withdraw donated funds
+	if !ctx.From(ctx.ContractCreator()) {
+		ctx.Panic("no permission")
+	}
+
 	p := ctx.Params()
 	params := &FuncWithdrawParams{
 		Amount: p.GetInt(ParamAmount),
 	}
-	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
 	funcWithdraw(ctx, params)
 }
 

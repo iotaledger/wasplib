@@ -22,23 +22,41 @@ fn on_load() {
     exports.add_call(FUNC_PLAY_PERIOD, func_play_period_thunk);
 }
 
-pub struct FuncLockBetsParams {}
+//@formatter:off
+pub struct FuncLockBetsParams {
+}
+//@formatter:on
 
 fn func_lock_bets_thunk(ctx: &ScCallContext) {
+    // only SC itself can invoke this function
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
+        ctx.panic("no permission");
+    }
+
     let params = FuncLockBetsParams {};
     func_lock_bets(ctx, &params);
 }
 
-pub struct FuncPayWinnersParams {}
+//@formatter:off
+pub struct FuncPayWinnersParams {
+}
+//@formatter:on
 
 fn func_pay_winners_thunk(ctx: &ScCallContext) {
+    // only SC itself can invoke this function
+    if !ctx.from(&ctx.contract_id().as_agent_id()) {
+        ctx.panic("no permission");
+    }
+
     let params = FuncPayWinnersParams {};
     func_pay_winners(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncPlaceBetParams {
-    pub number: ScImmutableInt,
+    pub number: ScImmutableInt, // the number a better bets on
 }
+//@formatter:on
 
 fn func_place_bet_thunk(ctx: &ScCallContext) {
     let p = ctx.params();
@@ -49,11 +67,18 @@ fn func_place_bet_thunk(ctx: &ScCallContext) {
     func_place_bet(ctx, &params);
 }
 
+//@formatter:off
 pub struct FuncPlayPeriodParams {
-    pub play_period: ScImmutableInt,
+    pub play_period: ScImmutableInt, // number of minutes in one playing round
 }
+//@formatter:on
 
 fn func_play_period_thunk(ctx: &ScCallContext) {
+    // only SC creator can update the play period
+    if !ctx.from(&ctx.contract_creator()) {
+        ctx.panic("no permission");
+    }
+
     let p = ctx.params();
     let params = FuncPlayPeriodParams {
         play_period: p.get_int(PARAM_PLAY_PERIOD),
