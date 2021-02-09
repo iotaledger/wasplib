@@ -11,9 +11,9 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncMintSupply, funcMintSupplyThunk)
-    exports.AddCall(FuncTransferOwnership, funcTransferOwnershipThunk)
-    exports.AddCall(FuncUpdateMetadata, funcUpdateMetadataThunk)
+    exports.AddFunc(FuncMintSupply, funcMintSupplyThunk)
+    exports.AddFunc(FuncTransferOwnership, funcTransferOwnershipThunk)
+    exports.AddFunc(FuncUpdateMetadata, funcUpdateMetadataThunk)
     exports.AddView(ViewGetInfo, viewGetInfoThunk)
 }
 
@@ -22,7 +22,7 @@ type FuncMintSupplyParams struct {
     UserDefined wasmlib.ScImmutableString // any user defined text
 }
 
-func funcMintSupplyThunk(ctx *wasmlib.ScCallContext) {
+func funcMintSupplyThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncMintSupplyParams {
         Description: p.GetString(ParamDescription),
@@ -35,7 +35,7 @@ type FuncTransferOwnershipParams struct {
     Color wasmlib.ScImmutableColor // color of token to transfer ownership of
 }
 
-func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
+func funcTransferOwnershipThunk(ctx *wasmlib.ScFuncContext) {
     //TODO the one who can transfer token ownership
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
@@ -51,7 +51,7 @@ type FuncUpdateMetadataParams struct {
     Color wasmlib.ScImmutableColor // color of token to update metadata for
 }
 
-func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
+func funcUpdateMetadataThunk(ctx *wasmlib.ScFuncContext) {
     //TODO the one who can change the token info
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 

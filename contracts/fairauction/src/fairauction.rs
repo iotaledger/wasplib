@@ -14,7 +14,7 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionParams) {
+pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionParams) {
     let color = params.color.value();
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
@@ -61,7 +61,7 @@ pub fn func_finalize_auction(ctx: &ScCallContext, params: &FuncFinalizeAuctionPa
     transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
+pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
     let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
     if bid_amount == 0 {
         ctx.panic("Missing bid amount");
@@ -110,7 +110,7 @@ pub fn func_place_bid(ctx: &ScCallContext, params: &FuncPlaceBidParams) {
     }
 }
 
-pub fn func_set_owner_margin(ctx: &ScCallContext, params: &FuncSetOwnerMarginParams) {
+pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginParams) {
     let mut owner_margin = params.owner_margin.value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
@@ -122,7 +122,7 @@ pub fn func_set_owner_margin(ctx: &ScCallContext, params: &FuncSetOwnerMarginPar
     ctx.log("Updated owner margin");
 }
 
-pub fn func_start_auction(ctx: &ScCallContext, params: &FuncStartAuctionParams) {
+pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
     let color = params.color.value();
     if color.equals(&ScColor::IOTA) || color.equals(&ScColor::MINT) {
         ctx.panic("Reserved auction token color");
@@ -233,7 +233,7 @@ pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
     results.get_int(VAR_BIDDERS).set_value(bidder_list.length() as i64);
 }
 
-fn transfer(ctx: &ScCallContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
+fn transfer(ctx: &ScFuncContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
     if agent.is_address() {
         // send back to original Tangle address
         ctx.transfer_to_address(&agent.address(), &ScTransfers::new(color, amount));

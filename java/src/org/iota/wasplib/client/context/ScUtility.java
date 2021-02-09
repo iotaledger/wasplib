@@ -17,7 +17,7 @@ public class ScUtility {
 	}
 
 	public static String Base58String(byte[] bytes) {
-		return new ScCallContext().Utility().Base58Encode(bytes);
+		return new ScFuncContext().Utility().Base58Encode(bytes);
 	}
 
 	public byte[] Base58Decode(String value) {

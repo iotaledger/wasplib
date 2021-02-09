@@ -10,26 +10,14 @@ package aaa
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 const ScName = "aaa"
-const ScDescription = "Generator test contract"
+const ScDescription = "AAA playground for IOTA Smart Contracts"
 const ScHname = wasmlib.ScHname(0xbe3cedc8)
 
-const ParamAmount = wasmlib.Key("amount")
-const ParamFeedback = wasmlib.Key("feedback")
+const ParamText = wasmlib.Key("text")
+const ParamValue = wasmlib.Key("value")
 
-const VarAmount = wasmlib.Key("amount")
-const VarDonations = wasmlib.Key("donations")
-const VarDonator = wasmlib.Key("donator")
-const VarError = wasmlib.Key("error")
-const VarFeedback = wasmlib.Key("feedback")
-const VarLog = wasmlib.Key("log")
-const VarMaxDonation = wasmlib.Key("maxDonation")
-const VarTimestamp = wasmlib.Key("timestamp")
-const VarTotalDonation = wasmlib.Key("totalDonation")
+const FuncMyFunc = "myFunc"
+const ViewMyView = "myView"
 
-const FuncDonate = "donate"
-const FuncWithdraw = "withdraw"
-const ViewDonations = "donations"
-
-const HFuncDonate = wasmlib.ScHname(0xdc9b133a)
-const HFuncWithdraw = wasmlib.ScHname(0x9dcc0f41)
-const HViewDonations = wasmlib.ScHname(0x45686a15)
+const HFuncMyFunc = wasmlib.ScHname(0xe50afdda)
+const HViewMyView = wasmlib.ScHname(0x85549b52)

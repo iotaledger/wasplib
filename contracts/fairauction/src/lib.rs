@@ -16,10 +16,10 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_FINALIZE_AUCTION, func_finalize_auction_thunk);
-    exports.add_call(FUNC_PLACE_BID, func_place_bid_thunk);
-    exports.add_call(FUNC_SET_OWNER_MARGIN, func_set_owner_margin_thunk);
-    exports.add_call(FUNC_START_AUCTION, func_start_auction_thunk);
+    exports.add_func(FUNC_FINALIZE_AUCTION, func_finalize_auction_thunk);
+    exports.add_func(FUNC_PLACE_BID, func_place_bid_thunk);
+    exports.add_func(FUNC_SET_OWNER_MARGIN, func_set_owner_margin_thunk);
+    exports.add_func(FUNC_START_AUCTION, func_start_auction_thunk);
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
 }
 
@@ -27,7 +27,7 @@ pub struct FuncFinalizeAuctionParams {
     pub color: ScImmutableColor, // color identifies the auction
 }
 
-fn func_finalize_auction_thunk(ctx: &ScCallContext) {
+fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
 
@@ -43,7 +43,7 @@ pub struct FuncPlaceBidParams {
     pub color: ScImmutableColor, // color identifies the auction
 }
 
-fn func_place_bid_thunk(ctx: &ScCallContext) {
+fn func_place_bid_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncPlaceBidParams {
         color: p.get_color(PARAM_COLOR),
@@ -56,7 +56,7 @@ pub struct FuncSetOwnerMarginParams {
     pub owner_margin: ScImmutableInt, // new SC owner margin in promilles
 }
 
-fn func_set_owner_margin_thunk(ctx: &ScCallContext) {
+fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
     // only SC creator can set owner margin
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
@@ -77,7 +77,7 @@ pub struct FuncStartAuctionParams {
 }
 //@formatter:on
 
-fn func_start_auction_thunk(ctx: &ScCallContext) {
+fn func_start_auction_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncStartAuctionParams {
         color: p.get_color(PARAM_COLOR),

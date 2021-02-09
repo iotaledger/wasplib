@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_donate(ctx: &ScCallContext, params: &FuncDonateParams) {
+pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
     let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
@@ -33,7 +33,7 @@ pub fn func_donate(ctx: &ScCallContext, params: &FuncDonateParams) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-pub fn func_withdraw(ctx: &ScCallContext, params: &FuncWithdrawParams) {
+pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
     let balance = ctx.balances().balance(&ScColor::IOTA);
     let mut amount = params.amount.value();
     if amount == 0 || amount > balance {

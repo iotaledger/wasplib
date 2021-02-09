@@ -12,7 +12,7 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-func funcApprove(ctx *wasmlib.ScCallContext, params *FuncApproveParams) {
+func funcApprove(ctx *wasmlib.ScFuncContext, params *FuncApproveParams) {
 	ctx.Trace("erc20.approve")
 
 	delegation := params.Delegation.Value()
@@ -30,7 +30,7 @@ func funcApprove(ctx *wasmlib.ScCallContext, params *FuncApproveParams) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-func funcInit(ctx *wasmlib.ScCallContext, params *FuncInitParams) {
+func funcInit(ctx *wasmlib.ScFuncContext, params *FuncInitParams) {
 	ctx.Trace("erc20.on_init.begin")
 
 	supply := params.Supply.Value()
@@ -52,7 +52,7 @@ func funcInit(ctx *wasmlib.ScCallContext, params *FuncInitParams) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-func funcTransfer(ctx *wasmlib.ScCallContext, params *FuncTransferParams) {
+func funcTransfer(ctx *wasmlib.ScFuncContext, params *FuncTransferParams) {
 	ctx.Trace("erc20.transfer")
 
 	amount := params.Amount.Value()
@@ -78,7 +78,7 @@ func funcTransfer(ctx *wasmlib.ScCallContext, params *FuncTransferParams) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-func funcTransferFrom(ctx *wasmlib.ScCallContext, params *FuncTransferFromParams) {
+func funcTransferFrom(ctx *wasmlib.ScFuncContext, params *FuncTransferFromParams) {
 	ctx.Trace("erc20.transfer_from")
 
 	account := params.Account.Value()

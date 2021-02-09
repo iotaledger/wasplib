@@ -8,7 +8,7 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 const MaxNumber = 5
 const DefaultPlayPeriod = 120
 
-func funcLockBets(ctx *wasmlib.ScCallContext, params *FuncLockBetsParams) {
+func funcLockBets(ctx *wasmlib.ScFuncContext, params *FuncLockBetsParams) {
 	// move all current bets to the locked_bets array
 	state := ctx.State()
 	bets := state.GetBytesArray(VarBets)
@@ -29,7 +29,7 @@ func funcLockBets(ctx *wasmlib.ScCallContext, params *FuncLockBetsParams) {
 	})
 }
 
-func funcPayWinners(ctx *wasmlib.ScCallContext, params *FuncPayWinnersParams) {
+func funcPayWinners(ctx *wasmlib.ScFuncContext, params *FuncPayWinnersParams) {
 	scId := ctx.ContractId().AsAgentId()
 	winningNumber := ctx.Utility().Random(5) + 1
 	state := ctx.State()
@@ -82,7 +82,7 @@ func funcPayWinners(ctx *wasmlib.ScCallContext, params *FuncPayWinnersParams) {
 	}
 }
 
-func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
+func funcPlaceBet(ctx *wasmlib.ScFuncContext, params *FuncPlaceBetParams) {
 	amount := ctx.Incoming().Balance(wasmlib.IOTA)
 	if amount == 0 {
 		ctx.Panic("Empty bet...")
@@ -117,7 +117,7 @@ func funcPlaceBet(ctx *wasmlib.ScCallContext, params *FuncPlaceBetParams) {
 	}
 }
 
-func funcPlayPeriod(ctx *wasmlib.ScCallContext, params *FuncPlayPeriodParams) {
+func funcPlayPeriod(ctx *wasmlib.ScFuncContext, params *FuncPlayPeriodParams) {
 	playPeriod := params.PlayPeriod.Value()
 	if playPeriod < 10 {
 		ctx.Panic("Invalid play period...")

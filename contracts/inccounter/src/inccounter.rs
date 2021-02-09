@@ -7,7 +7,7 @@ use crate::*;
 
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
 
-pub fn func_call_increment(ctx: &ScCallContext, _params: &FuncCallIncrementParams) {
+pub fn func_call_increment(ctx: &ScFuncContext, _params: &FuncCallIncrementParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -16,7 +16,7 @@ pub fn func_call_increment(ctx: &ScCallContext, _params: &FuncCallIncrementParam
     }
 }
 
-pub fn func_call_increment_recurse5x(ctx: &ScCallContext, _params: &FuncCallIncrementRecurse5xParams) {
+pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, _params: &FuncCallIncrementRecurse5xParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -25,12 +25,12 @@ pub fn func_call_increment_recurse5x(ctx: &ScCallContext, _params: &FuncCallIncr
     }
 }
 
-pub fn func_increment(ctx: &ScCallContext, _params: &FuncIncrementParams) {
+pub fn func_increment(ctx: &ScFuncContext, _params: &FuncIncrementParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     counter.set_value(counter.value() + 1);
 }
 
-pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
     let counter = params.counter.value();
     if counter == 0 {
         return;
@@ -38,7 +38,7 @@ pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
     ctx.state().get_int(VAR_COUNTER).set_value(counter);
 }
 
-pub fn func_local_state_internal_call(ctx: &ScCallContext, _params: &FuncLocalStateInternalCallParams) {
+pub fn func_local_state_internal_call(ctx: &ScFuncContext, _params: &FuncLocalStateInternalCallParams) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -52,7 +52,7 @@ pub fn func_local_state_internal_call(ctx: &ScCallContext, _params: &FuncLocalSt
     // counter ends up as 2
 }
 
-pub fn func_local_state_post(ctx: &ScCallContext, _params: &FuncLocalStatePostParams) {
+pub fn func_local_state_post(ctx: &ScFuncContext, _params: &FuncLocalStatePostParams) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -72,7 +72,7 @@ pub fn func_local_state_post(ctx: &ScCallContext, _params: &FuncLocalStatePostPa
     // counter ends up as 0
 }
 
-pub fn func_local_state_sandbox_call(ctx: &ScCallContext, _params: &FuncLocalStateSandboxCallParams) {
+pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _params: &FuncLocalStateSandboxCallParams) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -85,7 +85,7 @@ pub fn func_local_state_sandbox_call(ctx: &ScCallContext, _params: &FuncLocalSta
     // counter ends up as 0
 }
 
-pub fn func_post_increment(ctx: &ScCallContext, _params: &FuncPostIncrementParams) {
+pub fn func_post_increment(ctx: &ScFuncContext, _params: &FuncPostIncrementParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -100,7 +100,7 @@ pub fn func_post_increment(ctx: &ScCallContext, _params: &FuncPostIncrementParam
     }
 }
 
-pub fn func_repeat_many(ctx: &ScCallContext, params: &FuncRepeatManyParams) {
+pub fn func_repeat_many(ctx: &ScFuncContext, params: &FuncRepeatManyParams) {
     let counter = ctx.state().get_int(VAR_COUNTER);
     let value = counter.value();
     counter.set_value(value + 1);
@@ -122,18 +122,18 @@ pub fn func_repeat_many(ctx: &ScCallContext, params: &FuncRepeatManyParams) {
     });
 }
 
-pub fn func_results_test(ctx: &ScCallContext, _params: &FuncResultsTestParams) {
+pub fn func_results_test(ctx: &ScFuncContext, _params: &FuncResultsTestParams) {
     test_map(ctx.results());
     check_map(ctx.results().immutable());
     //ctx.call_self(HFUNC_RESULTS_CHECK, None, None);
 }
 
-pub fn func_state_test(ctx: &ScCallContext, _params: &FuncStateTestParams) {
+pub fn func_state_test(ctx: &ScFuncContext, _params: &FuncStateTestParams) {
     test_map(ctx.state());
     ctx.call_self(HVIEW_STATE_CHECK, None, None);
 }
 
-pub fn func_when_must_increment(ctx: &ScCallContext, _params: &FuncWhenMustIncrementParams) {
+pub fn func_when_must_increment(ctx: &ScFuncContext, _params: &FuncWhenMustIncrementParams) {
     ctx.log("when_must_increment called");
     unsafe {
         if !LOCAL_STATE_MUST_INCREMENT {

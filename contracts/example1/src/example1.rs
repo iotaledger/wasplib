@@ -8,7 +8,7 @@ use crate::*;
 // storeString entry point stores a string provided as parameters
 // in the state as a value of the key 'storedString'
 // panics if parameter is not provided
-pub fn func_store_string(ctx: &ScCallContext, params: &FuncStoreStringParams) {
+pub fn func_store_string(ctx: &ScFuncContext, params: &FuncStoreStringParams) {
     // take parameter paramString
     let param_string = params.string.value();
 
@@ -24,7 +24,7 @@ pub fn func_store_string(ctx: &ScCallContext, params: &FuncStoreStringParams) {
 // Panics of the caller is not an address
 // Panics if the address is not the creator of the contract is the caller
 // The caller will be address only if request is sent from the wallet on the L1, not a smart contract
-pub fn func_withdraw_iota(ctx: &ScCallContext, _params: &FuncWithdrawIotaParams) {
+pub fn func_withdraw_iota(ctx: &ScFuncContext, _params: &FuncWithdrawIotaParams) {
     let caller = ctx.caller();
     ctx.require(caller.is_address(), "caller must be an address");
 

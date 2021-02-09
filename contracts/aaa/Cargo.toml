@@ -1,6 +1,6 @@
 [package]
 name = "aaa"
-description = "Generator test contract"
+description = "AAA PoC for IOTA Smart Contracts"
 license = "Apache-2.0"
 version = "0.1.0"
 authors = ["Eric Hop <eric@iota.org>"]

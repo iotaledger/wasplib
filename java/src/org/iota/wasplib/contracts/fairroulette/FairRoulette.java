@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.contracts.fairroulette;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
 import org.iota.wasplib.client.hashtypes.ScColor;
@@ -25,14 +25,14 @@ public class FairRoulette {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("place_bet", FairRoulette::placeBet);
-		exports.AddCall("lock_bets", FairRoulette::lockBets);
-		exports.AddCall("pay_winners", FairRoulette::payWinners);
-		exports.AddCall("play_period", FairRoulette::playPeriod);
-		exports.AddCall("nothing", ScExports::nothing);
+		exports.AddFunc("place_bet", FairRoulette::placeBet);
+		exports.AddFunc("lock_bets", FairRoulette::lockBets);
+		exports.AddFunc("pay_winners", FairRoulette::payWinners);
+		exports.AddFunc("play_period", FairRoulette::playPeriod);
+		exports.AddFunc("nothing", ScExports::nothing);
 	}
 
-	public static void placeBet(ScCallContext sc) {
+	public static void placeBet(ScFuncContext sc) {
 		long amount = sc.Incoming().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Panic("Empty bet...");
@@ -65,7 +65,7 @@ public class FairRoulette {
 		}
 	}
 
-	public static void lockBets(ScCallContext sc) {
+	public static void lockBets(ScFuncContext sc) {
 		// can only be sent by SC itself
 		if (!sc.From(sc.ContractId().AsAgent())) {
 			sc.Panic("Cancel spoofed request");
@@ -85,7 +85,7 @@ public class FairRoulette {
 		sc.Post("pay_winners").Post(0);
 	}
 
-	public static void payWinners(ScCallContext sc) {
+	public static void payWinners(ScFuncContext sc) {
 		// can only be sent by SC itself
 		ScAgent scId = sc.ContractId().AsAgent();
 		if (!sc.From(scId)) {
@@ -143,7 +143,7 @@ public class FairRoulette {
 		}
 	}
 
-	public static void playPeriod(ScCallContext sc) {
+	public static void playPeriod(ScFuncContext sc) {
 		// can only be sent by SC creator
 		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");

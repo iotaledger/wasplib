@@ -11,8 +11,8 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncStoreString, funcStoreStringThunk)
-    exports.AddCall(FuncWithdrawIota, funcWithdrawIotaThunk)
+    exports.AddFunc(FuncStoreString, funcStoreStringThunk)
+    exports.AddFunc(FuncWithdrawIota, funcWithdrawIotaThunk)
     exports.AddView(ViewGetString, viewGetStringThunk)
 }
 
@@ -20,7 +20,7 @@ type FuncStoreStringParams struct {
     String wasmlib.ScImmutableString // string to store
 }
 
-func funcStoreStringThunk(ctx *wasmlib.ScCallContext) {
+func funcStoreStringThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncStoreStringParams {
         String: p.GetString(ParamString),
@@ -32,7 +32,7 @@ func funcStoreStringThunk(ctx *wasmlib.ScCallContext) {
 type FuncWithdrawIotaParams struct {
 }
 
-func funcWithdrawIotaThunk(ctx *wasmlib.ScCallContext) {
+func funcWithdrawIotaThunk(ctx *wasmlib.ScFuncContext) {
     // only the contract creator can withdraw
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 

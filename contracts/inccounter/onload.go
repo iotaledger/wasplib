@@ -11,18 +11,18 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncCallIncrement, funcCallIncrementThunk)
-    exports.AddCall(FuncCallIncrementRecurse5x, funcCallIncrementRecurse5xThunk)
-    exports.AddCall(FuncIncrement, funcIncrementThunk)
-    exports.AddCall(FuncInit, funcInitThunk)
-    exports.AddCall(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
-    exports.AddCall(FuncLocalStatePost, funcLocalStatePostThunk)
-    exports.AddCall(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
-    exports.AddCall(FuncPostIncrement, funcPostIncrementThunk)
-    exports.AddCall(FuncRepeatMany, funcRepeatManyThunk)
-    exports.AddCall(FuncResultsTest, funcResultsTestThunk)
-    exports.AddCall(FuncStateTest, funcStateTestThunk)
-    exports.AddCall(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
+    exports.AddFunc(FuncCallIncrement, funcCallIncrementThunk)
+    exports.AddFunc(FuncCallIncrementRecurse5x, funcCallIncrementRecurse5xThunk)
+    exports.AddFunc(FuncIncrement, funcIncrementThunk)
+    exports.AddFunc(FuncInit, funcInitThunk)
+    exports.AddFunc(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
+    exports.AddFunc(FuncLocalStatePost, funcLocalStatePostThunk)
+    exports.AddFunc(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
+    exports.AddFunc(FuncPostIncrement, funcPostIncrementThunk)
+    exports.AddFunc(FuncRepeatMany, funcRepeatManyThunk)
+    exports.AddFunc(FuncResultsTest, funcResultsTestThunk)
+    exports.AddFunc(FuncStateTest, funcStateTestThunk)
+    exports.AddFunc(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
     exports.AddView(ViewGetCounter, viewGetCounterThunk)
     exports.AddView(ViewResultsCheck, viewResultsCheckThunk)
     exports.AddView(ViewStateCheck, viewStateCheckThunk)
@@ -31,7 +31,7 @@ func OnLoad() {
 type FuncCallIncrementParams struct {
 }
 
-func funcCallIncrementThunk(ctx *wasmlib.ScCallContext) {
+func funcCallIncrementThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncCallIncrementParams {
     }
     funcCallIncrement(ctx, params)
@@ -40,7 +40,7 @@ func funcCallIncrementThunk(ctx *wasmlib.ScCallContext) {
 type FuncCallIncrementRecurse5xParams struct {
 }
 
-func funcCallIncrementRecurse5xThunk(ctx *wasmlib.ScCallContext) {
+func funcCallIncrementRecurse5xThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncCallIncrementRecurse5xParams {
     }
     funcCallIncrementRecurse5x(ctx, params)
@@ -49,7 +49,7 @@ func funcCallIncrementRecurse5xThunk(ctx *wasmlib.ScCallContext) {
 type FuncIncrementParams struct {
 }
 
-func funcIncrementThunk(ctx *wasmlib.ScCallContext) {
+func funcIncrementThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncIncrementParams {
     }
     funcIncrement(ctx, params)
@@ -59,7 +59,7 @@ type FuncInitParams struct {
     Counter wasmlib.ScImmutableInt // value to initialize state counter with
 }
 
-func funcInitThunk(ctx *wasmlib.ScCallContext) {
+func funcInitThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncInitParams {
         Counter: p.GetInt(ParamCounter),
@@ -70,7 +70,7 @@ func funcInitThunk(ctx *wasmlib.ScCallContext) {
 type FuncLocalStateInternalCallParams struct {
 }
 
-func funcLocalStateInternalCallThunk(ctx *wasmlib.ScCallContext) {
+func funcLocalStateInternalCallThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncLocalStateInternalCallParams {
     }
     funcLocalStateInternalCall(ctx, params)
@@ -79,7 +79,7 @@ func funcLocalStateInternalCallThunk(ctx *wasmlib.ScCallContext) {
 type FuncLocalStatePostParams struct {
 }
 
-func funcLocalStatePostThunk(ctx *wasmlib.ScCallContext) {
+func funcLocalStatePostThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncLocalStatePostParams {
     }
     funcLocalStatePost(ctx, params)
@@ -88,7 +88,7 @@ func funcLocalStatePostThunk(ctx *wasmlib.ScCallContext) {
 type FuncLocalStateSandboxCallParams struct {
 }
 
-func funcLocalStateSandboxCallThunk(ctx *wasmlib.ScCallContext) {
+func funcLocalStateSandboxCallThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncLocalStateSandboxCallParams {
     }
     funcLocalStateSandboxCall(ctx, params)
@@ -97,7 +97,7 @@ func funcLocalStateSandboxCallThunk(ctx *wasmlib.ScCallContext) {
 type FuncPostIncrementParams struct {
 }
 
-func funcPostIncrementThunk(ctx *wasmlib.ScCallContext) {
+func funcPostIncrementThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncPostIncrementParams {
     }
     funcPostIncrement(ctx, params)
@@ -107,7 +107,7 @@ type FuncRepeatManyParams struct {
     NumRepeats wasmlib.ScImmutableInt // number of times to recursively call myself
 }
 
-func funcRepeatManyThunk(ctx *wasmlib.ScCallContext) {
+func funcRepeatManyThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncRepeatManyParams {
         NumRepeats: p.GetInt(ParamNumRepeats),
@@ -118,7 +118,7 @@ func funcRepeatManyThunk(ctx *wasmlib.ScCallContext) {
 type FuncResultsTestParams struct {
 }
 
-func funcResultsTestThunk(ctx *wasmlib.ScCallContext) {
+func funcResultsTestThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncResultsTestParams {
     }
     funcResultsTest(ctx, params)
@@ -127,7 +127,7 @@ func funcResultsTestThunk(ctx *wasmlib.ScCallContext) {
 type FuncStateTestParams struct {
 }
 
-func funcStateTestThunk(ctx *wasmlib.ScCallContext) {
+func funcStateTestThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncStateTestParams {
     }
     funcStateTest(ctx, params)
@@ -136,7 +136,7 @@ func funcStateTestThunk(ctx *wasmlib.ScCallContext) {
 type FuncWhenMustIncrementParams struct {
 }
 
-func funcWhenMustIncrementThunk(ctx *wasmlib.ScCallContext) {
+func funcWhenMustIncrementThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncWhenMustIncrementParams {
     }
     funcWhenMustIncrement(ctx, params)

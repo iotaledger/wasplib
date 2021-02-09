@@ -9,7 +9,7 @@ use crate::types::*;
 const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-pub fn func_lock_bets(ctx: &ScCallContext, _params: &FuncLockBetsParams) {
+pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
     // move all current bets to the locked_bets array
     let state = ctx.state();
     let bets = state.get_bytes_array(VAR_BETS);
@@ -30,7 +30,7 @@ pub fn func_lock_bets(ctx: &ScCallContext, _params: &FuncLockBetsParams) {
     });
 }
 
-pub fn func_pay_winners(ctx: &ScCallContext, _params: &FuncPayWinnersParams) {
+pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     let sc_id = ctx.contract_id().as_agent_id();
     let winning_number = ctx.utility().random(5) + 1;
     let state = ctx.state();
@@ -83,7 +83,7 @@ pub fn func_pay_winners(ctx: &ScCallContext, _params: &FuncPayWinnersParams) {
     }
 }
 
-pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
+pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
     let amount = ctx.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Empty bet...");
@@ -118,7 +118,7 @@ pub fn func_place_bet(ctx: &ScCallContext, params: &FuncPlaceBetParams) {
     }
 }
 
-pub fn func_play_period(ctx: &ScCallContext, params: &FuncPlayPeriodParams) {
+pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
     let play_period = params.play_period.value();
     if play_period < 10 {
         ctx.panic("Invalid play period...");

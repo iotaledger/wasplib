@@ -11,16 +11,16 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncLockBets, funcLockBetsThunk)
-    exports.AddCall(FuncPayWinners, funcPayWinnersThunk)
-    exports.AddCall(FuncPlaceBet, funcPlaceBetThunk)
-    exports.AddCall(FuncPlayPeriod, funcPlayPeriodThunk)
+    exports.AddFunc(FuncLockBets, funcLockBetsThunk)
+    exports.AddFunc(FuncPayWinners, funcPayWinnersThunk)
+    exports.AddFunc(FuncPlaceBet, funcPlaceBetThunk)
+    exports.AddFunc(FuncPlayPeriod, funcPlayPeriodThunk)
 }
 
 type FuncLockBetsParams struct {
 }
 
-func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
+func funcLockBetsThunk(ctx *wasmlib.ScFuncContext) {
     // only SC itself can invoke this function
     ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
@@ -32,7 +32,7 @@ func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
 type FuncPayWinnersParams struct {
 }
 
-func funcPayWinnersThunk(ctx *wasmlib.ScCallContext) {
+func funcPayWinnersThunk(ctx *wasmlib.ScFuncContext) {
     // only SC itself can invoke this function
     ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
@@ -45,7 +45,7 @@ type FuncPlaceBetParams struct {
     Number wasmlib.ScImmutableInt // the number a better bets on
 }
 
-func funcPlaceBetThunk(ctx *wasmlib.ScCallContext) {
+func funcPlaceBetThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncPlaceBetParams {
         Number: p.GetInt(ParamNumber),
@@ -58,7 +58,7 @@ type FuncPlayPeriodParams struct {
     PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
 }
 
-func funcPlayPeriodThunk(ctx *wasmlib.ScCallContext) {
+func funcPlayPeriodThunk(ctx *wasmlib.ScFuncContext) {
     // only SC creator can update the play period
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 

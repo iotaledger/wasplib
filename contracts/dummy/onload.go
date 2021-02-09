@@ -11,14 +11,14 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncInit, funcInitThunk)
+    exports.AddFunc(FuncInit, funcInitThunk)
 }
 
 type FuncInitParams struct {
     FailInitParam wasmlib.ScImmutableInt // when present fail on purpose
 }
 
-func funcInitThunk(ctx *wasmlib.ScCallContext) {
+func funcInitThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncInitParams {
         FailInitParam: p.GetInt(ParamFailInitParam),

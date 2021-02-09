@@ -3,16 +3,16 @@
 
 package org.iota.wasplib.contracts.helloworld;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.exports.ScExports;
 
 public class HelloWorld {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("hello_world", HelloWorld::helloWorld);
+		exports.AddFunc("hello_world", HelloWorld::helloWorld);
 	}
 
-	public static void helloWorld(ScCallContext sc) {
+	public static void helloWorld(ScFuncContext sc) {
 		sc.Log("Hello, world!");
 	}
 }

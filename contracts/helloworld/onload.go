@@ -11,14 +11,14 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncHelloWorld, funcHelloWorldThunk)
+    exports.AddFunc(FuncHelloWorld, funcHelloWorldThunk)
     exports.AddView(ViewGetHelloWorld, viewGetHelloWorldThunk)
 }
 
 type FuncHelloWorldParams struct {
 }
 
-func funcHelloWorldThunk(ctx *wasmlib.ScCallContext) {
+func funcHelloWorldThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncHelloWorldParams {
     }
     funcHelloWorld(ctx, params)

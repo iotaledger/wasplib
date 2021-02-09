@@ -15,10 +15,10 @@ mod schema;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_APPROVE, func_approve_thunk);
-    exports.add_call(FUNC_INIT, func_init_thunk);
-    exports.add_call(FUNC_TRANSFER, func_transfer_thunk);
-    exports.add_call(FUNC_TRANSFER_FROM, func_transfer_from_thunk);
+    exports.add_func(FUNC_APPROVE, func_approve_thunk);
+    exports.add_func(FUNC_INIT, func_init_thunk);
+    exports.add_func(FUNC_TRANSFER, func_transfer_thunk);
+    exports.add_func(FUNC_TRANSFER_FROM, func_transfer_from_thunk);
     exports.add_view(VIEW_ALLOWANCE, view_allowance_thunk);
     exports.add_view(VIEW_BALANCE_OF, view_balance_of_thunk);
     exports.add_view(VIEW_TOTAL_SUPPLY, view_total_supply_thunk);
@@ -31,7 +31,7 @@ pub struct FuncApproveParams {
 }
 //@formatter:on
 
-fn func_approve_thunk(ctx: &ScCallContext) {
+fn func_approve_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncApproveParams {
         amount: p.get_int(PARAM_AMOUNT),
@@ -49,7 +49,7 @@ pub struct FuncInitParams {
 }
 //@formatter:on
 
-fn func_init_thunk(ctx: &ScCallContext) {
+fn func_init_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncInitParams {
         creator: p.get_agent_id(PARAM_CREATOR),
@@ -67,7 +67,7 @@ pub struct FuncTransferParams {
 }
 //@formatter:on
 
-fn func_transfer_thunk(ctx: &ScCallContext) {
+fn func_transfer_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncTransferParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
@@ -86,7 +86,7 @@ pub struct FuncTransferFromParams {
 }
 //@formatter:on
 
-fn func_transfer_from_thunk(ctx: &ScCallContext) {
+fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncTransferFromParams {
         account: p.get_agent_id(PARAM_ACCOUNT),

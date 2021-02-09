@@ -11,10 +11,10 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncApprove, funcApproveThunk)
-    exports.AddCall(FuncInit, funcInitThunk)
-    exports.AddCall(FuncTransfer, funcTransferThunk)
-    exports.AddCall(FuncTransferFrom, funcTransferFromThunk)
+    exports.AddFunc(FuncApprove, funcApproveThunk)
+    exports.AddFunc(FuncInit, funcInitThunk)
+    exports.AddFunc(FuncTransfer, funcTransferThunk)
+    exports.AddFunc(FuncTransferFrom, funcTransferFromThunk)
     exports.AddView(ViewAllowance, viewAllowanceThunk)
     exports.AddView(ViewBalanceOf, viewBalanceOfThunk)
     exports.AddView(ViewTotalSupply, viewTotalSupplyThunk)
@@ -25,7 +25,7 @@ type FuncApproveParams struct {
     Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
-func funcApproveThunk(ctx *wasmlib.ScCallContext) {
+func funcApproveThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncApproveParams {
         Amount: p.GetInt(ParamAmount),
@@ -41,7 +41,7 @@ type FuncInitParams struct {
     Supply  wasmlib.ScImmutableInt     // initial token supply
 }
 
-func funcInitThunk(ctx *wasmlib.ScCallContext) {
+func funcInitThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncInitParams {
         Creator: p.GetAgentId(ParamCreator),
@@ -57,7 +57,7 @@ type FuncTransferParams struct {
     Amount  wasmlib.ScImmutableInt     // amount of tokens to transfer
 }
 
-func funcTransferThunk(ctx *wasmlib.ScCallContext) {
+func funcTransferThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncTransferParams {
         Account: p.GetAgentId(ParamAccount),
@@ -74,7 +74,7 @@ type FuncTransferFromParams struct {
     Recipient wasmlib.ScImmutableAgentId // recipient account
 }
 
-func funcTransferFromThunk(ctx *wasmlib.ScCallContext) {
+func funcTransferFromThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncTransferFromParams {
         Account: p.GetAgentId(ParamAccount),

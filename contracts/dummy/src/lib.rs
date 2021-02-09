@@ -15,14 +15,14 @@ mod schema;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_INIT, func_init_thunk);
+    exports.add_func(FUNC_INIT, func_init_thunk);
 }
 
 pub struct FuncInitParams {
     pub fail_init_param: ScImmutableInt, // when present fail on purpose
 }
 
-fn func_init_thunk(ctx: &ScCallContext) {
+fn func_init_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncInitParams {
         fail_init_param: p.get_int(PARAM_FAIL_INIT_PARAM),

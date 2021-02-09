@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.contracts.dividend;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableAddress;
@@ -22,11 +22,11 @@ public class Dividend {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("member", Dividend::member);
-		exports.AddCall("divide", Dividend::divide);
+		exports.AddFunc("member", Dividend::member);
+		exports.AddFunc("divide", Dividend::divide);
 	}
 
-	public static void member(ScCallContext sc) {
+	public static void member(ScFuncContext sc) {
 		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");
 		}
@@ -66,7 +66,7 @@ public class Dividend {
 		sc.Log("Appended: " + member.Address);
 	}
 
-	public static void divide(ScCallContext sc) {
+	public static void divide(ScFuncContext sc) {
 		long amount = sc.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			sc.Panic("Nothing to divide");

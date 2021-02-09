@@ -16,16 +16,16 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_LOCK_BETS, func_lock_bets_thunk);
-    exports.add_call(FUNC_PAY_WINNERS, func_pay_winners_thunk);
-    exports.add_call(FUNC_PLACE_BET, func_place_bet_thunk);
-    exports.add_call(FUNC_PLAY_PERIOD, func_play_period_thunk);
+    exports.add_func(FUNC_LOCK_BETS, func_lock_bets_thunk);
+    exports.add_func(FUNC_PAY_WINNERS, func_pay_winners_thunk);
+    exports.add_func(FUNC_PLACE_BET, func_place_bet_thunk);
+    exports.add_func(FUNC_PLAY_PERIOD, func_play_period_thunk);
 }
 
 pub struct FuncLockBetsParams {
 }
 
-fn func_lock_bets_thunk(ctx: &ScCallContext) {
+fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
 
@@ -37,7 +37,7 @@ fn func_lock_bets_thunk(ctx: &ScCallContext) {
 pub struct FuncPayWinnersParams {
 }
 
-fn func_pay_winners_thunk(ctx: &ScCallContext) {
+fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
 
@@ -50,7 +50,7 @@ pub struct FuncPlaceBetParams {
     pub number: ScImmutableInt, // the number a better bets on
 }
 
-fn func_place_bet_thunk(ctx: &ScCallContext) {
+fn func_place_bet_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncPlaceBetParams {
         number: p.get_int(PARAM_NUMBER),
@@ -63,7 +63,7 @@ pub struct FuncPlayPeriodParams {
     pub play_period: ScImmutableInt, // number of minutes in one playing round
 }
 
-fn func_play_period_thunk(ctx: &ScCallContext) {
+fn func_play_period_thunk(ctx: &ScFuncContext) {
     // only SC creator can update the play period
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 

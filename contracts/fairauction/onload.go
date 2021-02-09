@@ -11,10 +11,10 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncFinalizeAuction, funcFinalizeAuctionThunk)
-    exports.AddCall(FuncPlaceBid, funcPlaceBidThunk)
-    exports.AddCall(FuncSetOwnerMargin, funcSetOwnerMarginThunk)
-    exports.AddCall(FuncStartAuction, funcStartAuctionThunk)
+    exports.AddFunc(FuncFinalizeAuction, funcFinalizeAuctionThunk)
+    exports.AddFunc(FuncPlaceBid, funcPlaceBidThunk)
+    exports.AddFunc(FuncSetOwnerMargin, funcSetOwnerMarginThunk)
+    exports.AddFunc(FuncStartAuction, funcStartAuctionThunk)
     exports.AddView(ViewGetInfo, viewGetInfoThunk)
 }
 
@@ -22,7 +22,7 @@ type FuncFinalizeAuctionParams struct {
     Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
-func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
+func funcFinalizeAuctionThunk(ctx *wasmlib.ScFuncContext) {
     // only SC itself can invoke this function
     ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
@@ -38,7 +38,7 @@ type FuncPlaceBidParams struct {
     Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
-func funcPlaceBidThunk(ctx *wasmlib.ScCallContext) {
+func funcPlaceBidThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncPlaceBidParams {
         Color: p.GetColor(ParamColor),
@@ -51,7 +51,7 @@ type FuncSetOwnerMarginParams struct {
     OwnerMargin wasmlib.ScImmutableInt // new SC owner margin in promilles
 }
 
-func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
+func funcSetOwnerMarginThunk(ctx *wasmlib.ScFuncContext) {
     // only SC creator can set owner margin
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
@@ -70,7 +70,7 @@ type FuncStartAuctionParams struct {
     MinimumBid  wasmlib.ScImmutableInt    // minimum required amount for any bid
 }
 
-func funcStartAuctionThunk(ctx *wasmlib.ScCallContext) {
+func funcStartAuctionThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncStartAuctionParams {
         Color: p.GetColor(ParamColor),

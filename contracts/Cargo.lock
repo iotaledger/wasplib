@@ -6,7 +6,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=develop)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -44,7 +44,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -54,7 +54,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -64,7 +64,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -74,7 +74,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -84,7 +84,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -94,7 +94,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -104,7 +104,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -114,7 +114,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -124,7 +124,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -205,7 +205,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -215,7 +215,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen-test",
- "wasmlib 0.1.0 (git+https://github.com/iotaledger/wasp?branch=vmtest)",
+ "wasmlib",
  "wee_alloc",
 ]
 
@@ -318,16 +318,7 @@ dependencies = [
 [[package]]
 name = "wasmlib"
 version = "0.1.0"
-source = "git+https://github.com/iotaledger/wasp?branch=develop#62047b618934ddfefec1abc21c39ad15092bd8cd"
-dependencies = [
- "console_error_panic_hook",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "wasmlib"
-version = "0.1.0"
-source = "git+https://github.com/iotaledger/wasp?branch=vmtest#8983fb53087da50386bd33fb33c1006faef0e753"
+source = "git+https://github.com/iotaledger/wasp?branch=develop#407a58d7b652d1ba7b42bdcb75ca5b2742e0fde7"
 dependencies = [
  "console_error_panic_hook",
  "wasm-bindgen",

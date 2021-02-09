@@ -4,7 +4,7 @@
 package org.iota.wasplib.contracts.fairauction;
 
 import org.iota.wasplib.client.builders.ScPostBuilder;
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -45,14 +45,14 @@ public class FairAuction {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("start_auction", FairAuction::startAuction);
-		exports.AddCall("finalize_auction", FairAuction::finalizeAuction);
-		exports.AddCall("place_bid", FairAuction::placeBid);
-		exports.AddCall("set_owner_margin", FairAuction::setOwnerMargin);
+		exports.AddFunc("start_auction", FairAuction::startAuction);
+		exports.AddFunc("finalize_auction", FairAuction::finalizeAuction);
+		exports.AddFunc("place_bid", FairAuction::placeBid);
+		exports.AddFunc("set_owner_margin", FairAuction::setOwnerMargin);
 		exports.AddView("get_info", FairAuction::getInfo);
 	}
 
-	public static void startAuction(ScCallContext sc) {
+	public static void startAuction(ScFuncContext sc) {
 		ScImmutableMap params = sc.Params();
 		ScImmutableColor colorParam = params.GetColor(KeyColor);
 		if (!colorParam.Exists()) {
@@ -138,7 +138,7 @@ public class FairAuction {
 		sc.Log("New auction started");
 	}
 
-	public static void finalizeAuction(ScCallContext sc) {
+	public static void finalizeAuction(ScFuncContext sc) {
 		// can only be sent by SC itself
 		if (!sc.From(sc.ContractId().AsAgent())) {
 			sc.Panic("Cancel spoofed request");
@@ -196,7 +196,7 @@ public class FairAuction {
 		transfer(sc, auction.Creator, ScColor.IOTA, auction.Deposit + auction.HighestBid - ownerFee);
 	}
 
-	public static void placeBid(ScCallContext sc) {
+	public static void placeBid(ScFuncContext sc) {
 		long bidAmount = sc.Incoming().Balance(ScColor.IOTA);
 		if (bidAmount == 0) {
 			sc.Panic("Missing bid amount");
@@ -251,7 +251,7 @@ public class FairAuction {
 		}
 	}
 
-	public static void setOwnerMargin(ScCallContext sc) {
+	public static void setOwnerMargin(ScFuncContext sc) {
 		// can only be sent by SC creator
 		if (!sc.From(sc.ContractCreator())) {
 			sc.Panic("Cancel spoofed request");
@@ -301,7 +301,7 @@ public class FairAuction {
 		results.GetInt(KeyBidders).SetValue(bidderList.Length());
 	}
 
-	private static void transfer(ScCallContext sc, ScAgent agent, ScColor color, long amount) {
+	private static void transfer(ScFuncContext sc, ScAgent agent, ScColor color, long amount) {
 		if (!agent.IsAddress()) {
 			// not an address, deposit into account on chain
 			sc.Transfer(agent, color, amount);

@@ -11,51 +11,35 @@ use wasmlib::*;
 
 mod aaa;
 mod schema;
-mod types;
 
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_DONATE, func_donate_thunk);
-    exports.add_call(FUNC_WITHDRAW, func_withdraw_thunk);
-    exports.add_view(VIEW_DONATIONS, view_donations_thunk);
+    exports.add_func(FUNC_MY_FUNC, func_my_func_thunk);
+    exports.add_view(VIEW_MY_VIEW, view_my_view_thunk);
 }
 
-pub struct FuncDonateParams {
-    pub feedback: ScImmutableString, // feedback for the person you donate to
+pub struct FuncMyFuncParams {
+    pub text: ScImmutableString, // some mandatory string parameter
 }
 
-fn func_donate_thunk(ctx: &ScCallContext) {
-    // only the super spy can donate
-    let grantee = ctx.state().get_agent_id("superspy");
-    ctx.require(grantee.exists(), "grantee not set: superspy");
-    ctx.require(ctx.from(&grantee.value()), "no permission");
-
+fn func_my_func_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
-    let params = FuncDonateParams {
-        feedback: p.get_string(PARAM_FEEDBACK),
+    let params = FuncMyFuncParams {
+        text: p.get_string(PARAM_TEXT),
     };
-    func_donate(ctx, &params);
+    ctx.require(params.text.exists(), "missing mandatory text");
+    func_my_func(ctx, &params);
 }
 
-pub struct FuncWithdrawParams {
-    pub amount: ScImmutableInt, // amount to withdraw
+pub struct ViewMyViewParams {
+    pub value: ScImmutableInt, // some optional integer parameter
 }
 
-fn func_withdraw_thunk(ctx: &ScCallContext) {
-    // only SC creator can withdraw donated funds
-    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
-
+fn view_my_view_thunk(ctx: &ScViewContext) {
     let p = ctx.params();
-    let params = FuncWithdrawParams {
-        amount: p.get_int(PARAM_AMOUNT),
+    let params = ViewMyViewParams {
+        value: p.get_int(PARAM_VALUE),
     };
-    func_withdraw(ctx, &params);
-}
-
-pub struct ViewDonationsParams {}
-
-fn view_donations_thunk(ctx: &ScViewContext) {
-    let params = ViewDonationsParams {};
-    view_donations(ctx, &params);
+    view_my_view(ctx, &params);
 }

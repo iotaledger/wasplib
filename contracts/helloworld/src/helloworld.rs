@@ -5,7 +5,7 @@ use wasmlib::*;
 
 use crate::*;
 
-pub fn func_hello_world(ctx: &ScCallContext, _params: &FuncHelloWorldParams) {
+pub fn func_hello_world(ctx: &ScFuncContext, _params: &FuncHelloWorldParams) {
     ctx.log("Hello, world!");
 }
 

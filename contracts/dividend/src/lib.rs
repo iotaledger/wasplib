@@ -16,14 +16,14 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_DIVIDE, func_divide_thunk);
-    exports.add_call(FUNC_MEMBER, func_member_thunk);
+    exports.add_func(FUNC_DIVIDE, func_divide_thunk);
+    exports.add_func(FUNC_MEMBER, func_member_thunk);
 }
 
 pub struct FuncDivideParams {
 }
 
-fn func_divide_thunk(ctx: &ScCallContext) {
+fn func_divide_thunk(ctx: &ScFuncContext) {
     let params = FuncDivideParams {
     };
     func_divide(ctx, &params);
@@ -36,7 +36,7 @@ pub struct FuncMemberParams {
 }
 //@formatter:on
 
-fn func_member_thunk(ctx: &ScCallContext) {
+fn func_member_thunk(ctx: &ScFuncContext) {
     // only creator can add members
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 

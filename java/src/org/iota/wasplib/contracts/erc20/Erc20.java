@@ -6,7 +6,7 @@
 
 package org.iota.wasplib.contracts.erc20;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -36,13 +36,13 @@ public class Erc20 {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("init", Erc20::onInit);
+		exports.AddFunc("init", Erc20::onInit);
 		exports.AddView("total_supply", Erc20::totalSupply);
 		exports.AddView("balance_of", Erc20::balanceOf);
 		exports.AddView("allowance", Erc20::allowance);
-		exports.AddCall("transfer", Erc20::transfer);
-		exports.AddCall("approve", Erc20::approve);
-		exports.AddCall("transfer_from", Erc20::transferFrom);
+		exports.AddFunc("transfer", Erc20::transfer);
+		exports.AddFunc("approve", Erc20::approve);
+		exports.AddFunc("transfer_from", Erc20::transferFrom);
 	}
 
 	// TODO would be awesome to have some less syntactically cumbersome way to check and validate parameters.
@@ -52,7 +52,7 @@ public class Erc20 {
 	// - input:
 	//   -- PARAM_SUPPLY must be nonzero positive integer
 	//   -- PARAM_CREATOR is the AgentID where initial supply is placed
-	public static void onInit(ScCallContext ctx) {
+	public static void onInit(ScFuncContext ctx) {
 		ctx.Log("erc20.onInit.begin");
 		// validate parameters
 		// supply
@@ -130,7 +130,7 @@ public class Erc20 {
 	// Input:
 	// - PARAM_ACCOUNT: agentID
 	// - PARAM_AMOUNT: i64
-	public static void transfer(ScCallContext ctx) {
+	public static void transfer(ScFuncContext ctx) {
 		ctx.Log("erc20.transfer");
 
 		// validate params
@@ -166,7 +166,7 @@ public class Erc20 {
 	// inputs:
 	//  - PARAM_DELEGATION: agentID
 	//  - PARAM_AMOUNT: i64
-	public static void approve(ScCallContext ctx) {
+	public static void approve(ScFuncContext ctx) {
 		ctx.Log("erc20.approve");
 
 		// validate parameters
@@ -191,7 +191,7 @@ public class Erc20 {
 	// - PARAM_ACCOUNT: agentID   the spender
 	// - PARAM_RECIPIENT: agentID   the target
 	// - PARAM_AMOUNT: i64
-	public static void transferFrom(ScCallContext ctx) {
+	public static void transferFrom(ScFuncContext ctx) {
 		ctx.Log("erc20.transferFrom");
 
 		// validate parameters

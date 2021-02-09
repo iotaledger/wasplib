@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_divide(ctx: &ScCallContext, _params: &FuncDivideParams) {
+pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");
@@ -34,7 +34,7 @@ pub fn func_divide(ctx: &ScCallContext, _params: &FuncDivideParams) {
     }
 }
 
-pub fn func_member(ctx: &ScCallContext, params: &FuncMemberParams) {
+pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
     let member = Member {
         address: params.address.value(),
         factor: params.factor.value(),

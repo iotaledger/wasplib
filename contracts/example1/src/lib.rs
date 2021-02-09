@@ -15,8 +15,8 @@ mod schema;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_STORE_STRING, func_store_string_thunk);
-    exports.add_call(FUNC_WITHDRAW_IOTA, func_withdraw_iota_thunk);
+    exports.add_func(FUNC_STORE_STRING, func_store_string_thunk);
+    exports.add_func(FUNC_WITHDRAW_IOTA, func_withdraw_iota_thunk);
     exports.add_view(VIEW_GET_STRING, view_get_string_thunk);
 }
 
@@ -24,7 +24,7 @@ pub struct FuncStoreStringParams {
     pub string: ScImmutableString, // string to store
 }
 
-fn func_store_string_thunk(ctx: &ScCallContext) {
+fn func_store_string_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncStoreStringParams {
         string: p.get_string(PARAM_STRING),
@@ -36,7 +36,7 @@ fn func_store_string_thunk(ctx: &ScCallContext) {
 pub struct FuncWithdrawIotaParams {
 }
 
-fn func_withdraw_iota_thunk(ctx: &ScCallContext) {
+fn func_withdraw_iota_thunk(ctx: &ScFuncContext) {
     // only the contract creator can withdraw
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 

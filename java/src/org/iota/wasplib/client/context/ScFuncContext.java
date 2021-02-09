@@ -15,8 +15,8 @@ import org.iota.wasplib.client.keys.Key;
 import org.iota.wasplib.client.keys.MapKey;
 import org.iota.wasplib.client.mutable.ScMutableMap;
 
-public class ScCallContext extends ScBaseContext {
-	public ScCallContext() {
+public class ScFuncContext extends ScBaseContext {
+	public ScFuncContext() {
 	}
 
 	public ScCallBuilder Call(String function) {

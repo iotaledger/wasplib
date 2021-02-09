@@ -11,14 +11,14 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncDivide, funcDivideThunk)
-    exports.AddCall(FuncMember, funcMemberThunk)
+    exports.AddFunc(FuncDivide, funcDivideThunk)
+    exports.AddFunc(FuncMember, funcMemberThunk)
 }
 
 type FuncDivideParams struct {
 }
 
-func funcDivideThunk(ctx *wasmlib.ScCallContext) {
+func funcDivideThunk(ctx *wasmlib.ScFuncContext) {
     params := &FuncDivideParams {
     }
     funcDivide(ctx, params)
@@ -29,7 +29,7 @@ type FuncMemberParams struct {
     Factor  wasmlib.ScImmutableInt     // relative division factor
 }
 
-func funcMemberThunk(ctx *wasmlib.ScCallContext) {
+func funcMemberThunk(ctx *wasmlib.ScFuncContext) {
     // only creator can add members
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 

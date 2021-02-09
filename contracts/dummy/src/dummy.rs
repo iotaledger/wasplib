@@ -5,7 +5,7 @@ use wasmlib::*;
 
 use crate::*;
 
-pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
     if params.fail_init_param.exists() {
         ctx.panic("dummy: failing on purpose");
     }

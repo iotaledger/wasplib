@@ -8,7 +8,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
+pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
     let minted = ctx.incoming().minted();
     if minted.equals(&ScColor::MINT) {
         ctx.panic("TokenRegistry: No newly minted tokens found");
@@ -38,11 +38,11 @@ pub fn func_mint_supply(ctx: &ScCallContext, params: &FuncMintSupplyParams) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-pub fn func_transfer_ownership(_sc: &ScCallContext, _params: &FuncTransferOwnershipParams) {
+pub fn func_transfer_ownership(_sc: &ScFuncContext, _params: &FuncTransferOwnershipParams) {
     //TODO
 }
 
-pub fn func_update_metadata(_sc: &ScCallContext, _params: &FuncUpdateMetadataParams) {
+pub fn func_update_metadata(_sc: &ScFuncContext, _params: &FuncUpdateMetadataParams) {
     //TODO
 }
 

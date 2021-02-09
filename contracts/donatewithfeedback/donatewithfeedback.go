@@ -7,7 +7,7 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 )
 
-func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
+func funcDonate(ctx *wasmlib.ScFuncContext, params *FuncDonateParams) {
 	donation := &Donation{
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
@@ -34,7 +34,7 @@ func funcDonate(ctx *wasmlib.ScCallContext, params *FuncDonateParams) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func funcWithdraw(ctx *wasmlib.ScCallContext, params *FuncWithdrawParams) {
+func funcWithdraw(ctx *wasmlib.ScFuncContext, params *FuncWithdrawParams) {
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
 	amount := params.Amount.Value()
 	if amount == 0 || amount > balance {

@@ -1,38 +1,18 @@
 {
   "name": "aaa",
-  "description": "Generator test contract",
+  "description": "AAA playground for IOTA Smart Contracts",
   "types": {
-    "Donation": {
-      "amount": "Int",
-      "donator": "AgentId",
-      "error": "String",
-      "feedback": "String",
-      "timestamp": "Int"
-    }
   },
   "vars": {
-    "amount": "Int",
-    "donations": "[]String",
-    "donator": "AgentId",
-    "error": "String",
-    "feedback": "String",
-    "log": "[]Donation",
-    "maxDonation": "Int",
-    "timestamp": "Int",
-    "totalDonation": "Int"
   },
   "funcs": {
-    "donate": {
-      "#grant": "superspy // only the super spy can donate",
-      "feedback": "?String // feedback for the person you donate to"
-    },
-    "withdraw": {
-      "#grant": "creator // only SC creator can withdraw donated funds",
-      "amount": "?Int // amount to withdraw"
+    "myFunc": {
+      "text": "String // some mandatory string parameter"
     }
   },
   "views": {
-    "donations": {
+    "myView": {
+      "value": "?Int // some optional integer parameter"
     }
   }
 }

@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.client.exports;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.host.Host;
 import org.iota.wasplib.client.keys.Key;
@@ -12,7 +12,7 @@ import org.iota.wasplib.client.mutable.ScMutableStringArray;
 import java.util.ArrayList;
 
 public class ScExports {
-	private static final ArrayList<ScCall> calls = new ArrayList<>();
+	private static final ArrayList<ScFunc> funcs = new ArrayList<>();
 	private static final ArrayList<ScView> views = new ArrayList<>();
 
 	ScMutableStringArray exports;
@@ -27,20 +27,19 @@ public class ScExports {
 	//export on_call_entrypoint
 	static void scCallEntrypoint(int index) {
 		if ((index & 0x8000) != 0) {
-			ScView view = views.get(index & 0x7fff);
-			view.call(new ScViewContext());
+			views.get(index & 0x7fff).call(new ScViewContext());
 			return;
 		}
-		calls.get(index).call(new ScCallContext());
+		funcs.get(index).call(new ScFuncContext());
 	}
 
-	public static void nothing(ScCallContext sc) {
+	public static void nothing(ScFuncContext sc) {
 		sc.Log("Doing nothing as requested. Oh, wait...");
 	}
 
-	public void AddCall(String name, ScCall f) {
-		int index = calls.size();
-		calls.add(f);
+	public void AddFunc(String name, ScFunc f) {
+		int index = funcs.size();
+		funcs.add(f);
 		exports.GetString(index).SetValue(name);
 	}
 

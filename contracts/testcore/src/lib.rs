@@ -34,51 +34,51 @@ const MSG_PANIC_UNAUTHORIZED: &str = "============== panic due to unauthorized c
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call("init", on_init);
-    exports.add_call("doNothing", do_nothing);
-    exports.add_call("callOnChain", call_on_chain);
-    exports.add_call("setInt", set_int);
+    exports.add_func("init", on_init);
+    exports.add_func("doNothing", do_nothing);
+    exports.add_func("callOnChain", call_on_chain);
+    exports.add_func("setInt", set_int);
     exports.add_view("getInt", get_int);
     exports.add_view("fibonacci", fibonacci);
     exports.add_view("getCounter", get_counter);
-    exports.add_call("runRecursion", run_recursion);
+    exports.add_func("runRecursion", run_recursion);
 
-    exports.add_call("testPanicFullEP", test_panic_full_ep);
+    exports.add_func("testPanicFullEP", test_panic_full_ep);
     exports.add_view("testPanicViewEP", test_panic_view_ep);
-    exports.add_call("testCallPanicFullEP", test_call_panic_full_ep);
-    exports.add_call("testCallPanicViewEPFromFull", test_call_panic_view_from_full);
+    exports.add_func("testCallPanicFullEP", test_call_panic_full_ep);
+    exports.add_func("testCallPanicViewEPFromFull", test_call_panic_view_from_full);
     exports.add_view("testCallPanicViewEPFromView", test_call_panic_view_from_view);
 
     exports.add_view("testChainOwnerIDView", test_chain_owner_id_view);
-    exports.add_call("testChainOwnerIDFull", test_chain_owner_id_full);
+    exports.add_func("testChainOwnerIDFull", test_chain_owner_id_full);
     exports.add_view("testContractIDView", test_contract_id_view);
-    exports.add_call("testContractIDFull", test_contract_id_full);
+    exports.add_func("testContractIDFull", test_contract_id_full);
     exports.add_view("testSandboxCall", test_sandbox_call);
 
-    exports.add_call("passTypesFull", pass_types_full);
+    exports.add_func("passTypesFull", pass_types_full);
     exports.add_view("passTypesView", pass_types_view);
-    exports.add_call("checkContextFromFullEP", check_ctx_from_full);
+    exports.add_func("checkContextFromFullEP", check_ctx_from_full);
     exports.add_view("checkContextFromViewEP", check_ctx_from_view);
 
-    exports.add_call("sendToAddress", send_to_address);
+    exports.add_func("sendToAddress", send_to_address);
     exports.add_view("justView", test_just_view);
 
-    exports.add_call("testEventLogGenericData", test_event_log_generic_data);
-    exports.add_call("testEventLogEventData", test_event_log_event_data);
-    exports.add_call("testEventLogDeploy", test_event_log_deploy);
+    exports.add_func("testEventLogGenericData", test_event_log_generic_data);
+    exports.add_func("testEventLogEventData", test_event_log_event_data);
+    exports.add_func("testEventLogDeploy", test_event_log_deploy);
 
-    exports.add_call("withdrawToChain", withdraw_to_chain);
+    exports.add_func("withdrawToChain", withdraw_to_chain);
 }
 
-fn on_init(ctx: &ScCallContext) {
+fn on_init(ctx: &ScFuncContext) {
     ctx.log("testcore.on_init.wasm.begin");
 }
 
-fn do_nothing(ctx: &ScCallContext) {
+fn do_nothing(ctx: &ScFuncContext) {
     ctx.log("testcore.do_nothing.begin");
 }
 
-fn set_int(ctx: &ScCallContext) {
+fn set_int(ctx: &ScFuncContext) {
     ctx.log("testcore.set_int.begin");
     let param_name = ctx.params().get_string(PARAM_INT_PARAM_NAME);
     ctx.require(param_name.exists(), "param 'name' not found");
@@ -100,7 +100,7 @@ fn get_int(ctx: &ScViewContext) {
     ctx.results().get_int(&param_name.value() as &str).set_value(param_value.value());
 }
 
-fn call_on_chain(ctx: &ScCallContext) {
+fn call_on_chain(ctx: &ScFuncContext) {
     let param_value = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
     ctx.require(param_value.exists(), "param 'value' not found");
     let param_in = param_value.value();
@@ -142,7 +142,7 @@ fn get_counter(ctx: &ScViewContext) {
     ctx.results().get_int(VAR_COUNTER).set_value(counter.value());
 }
 
-fn run_recursion(ctx: &ScCallContext) {
+fn run_recursion(ctx: &ScFuncContext) {
     let param_value = ctx.params().get_int(PARAM_INT_PARAM_VALUE);
     ctx.require(param_value.exists(), "param no found");
     let depth = param_value.value();
@@ -179,7 +179,7 @@ fn fibonacci(ctx: &ScViewContext) {
     ctx.results().get_int(PARAM_INT_PARAM_VALUE).set_value(n1 + n2);
 }
 
-fn test_panic_full_ep(ctx: &ScCallContext) {
+fn test_panic_full_ep(ctx: &ScFuncContext) {
     ctx.panic(MSG_FULL_PANIC)
 }
 
@@ -187,11 +187,11 @@ fn test_panic_view_ep(ctx: &ScViewContext) {
     ctx.panic(MSG_VIEW_PANIC)
 }
 
-fn test_call_panic_full_ep(ctx: &ScCallContext) {
+fn test_call_panic_full_ep(ctx: &ScFuncContext) {
     ctx.call(ctx.contract_id().hname(), ScHname::new("testPanicFullEP"), None, None);
 }
 
-fn test_call_panic_view_from_full(ctx: &ScCallContext) {
+fn test_call_panic_view_from_full(ctx: &ScFuncContext) {
     ctx.call(ctx.contract_id().hname(), ScHname::new("testPanicViewEP"), None, None);
 }
 
@@ -203,7 +203,7 @@ fn test_just_view(ctx: &ScViewContext) {
     ctx.log("calling empty view entry point")
 }
 
-fn send_to_address(ctx: &ScCallContext) {
+fn send_to_address(ctx: &ScFuncContext) {
     ctx.log("sendToAddress");
     ctx.require(ctx.caller().equals(&ctx.contract_creator()), MSG_PANIC_UNAUTHORIZED);
 
@@ -218,7 +218,7 @@ fn test_chain_owner_id_view(ctx: &ScViewContext) {
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
-fn test_chain_owner_id_full(ctx: &ScCallContext) {
+fn test_chain_owner_id_full(ctx: &ScFuncContext) {
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
@@ -226,7 +226,7 @@ fn test_contract_id_view(ctx: &ScViewContext) {
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
-fn test_contract_id_full(ctx: &ScCallContext) {
+fn test_contract_id_full(ctx: &ScFuncContext) {
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
@@ -236,7 +236,7 @@ fn test_sandbox_call(ctx: &ScViewContext) {
     ctx.results().get_string("sandboxCall").set_value(&desc);
 }
 
-fn pass_types_full(ctx: &ScCallContext) {
+fn pass_types_full(ctx: &ScFuncContext) {
     ctx.require(ctx.params().get_int(PARAM_INT64).exists(), "!int64.exist");
     ctx.require(ctx.params().get_int(PARAM_INT64).value() == 42, "int64 wrong");
 
@@ -286,7 +286,7 @@ fn pass_types_view(ctx: &ScViewContext) {
     ctx.require(ctx.params().get_hname(PARAM_HNAME_ZERO).value().equals(ScHname(0)), "Hname-0 wrong");
 }
 
-fn check_ctx_from_full(ctx: &ScCallContext) {
+fn check_ctx_from_full(ctx: &ScFuncContext) {
     let par = ctx.params();
 
     let chain_id = par.get_chain_id(PARAM_CHAIN_ID);
@@ -329,25 +329,25 @@ fn check_ctx_from_view(ctx: &ScViewContext) {
     ctx.require(creator.exists() && creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
-fn test_event_log_generic_data(ctx: &ScCallContext) {
+fn test_event_log_generic_data(ctx: &ScFuncContext) {
     let counter = ctx.params().get_int(VAR_COUNTER);
     ctx.require(counter.exists(), "!counter.exist");
     let event = "[GenericData] Counter Number: ".to_string() + &counter.to_string();
     ctx.event(&event)
 }
 
-fn test_event_log_event_data(ctx: &ScCallContext) {
+fn test_event_log_event_data(ctx: &ScFuncContext) {
     ctx.event("[Event] - Testing Event...");
 }
 
-fn test_event_log_deploy(ctx: &ScCallContext) {
+fn test_event_log_deploy(ctx: &ScFuncContext) {
     //Deploy the same contract with another name
     let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
     ctx.deploy(&program_hash, VAR_CONTRACT_NAME_DEPLOYED,
                "test contract deploy log", None)
 }
 
-fn withdraw_to_chain(ctx: &ScCallContext) {
+fn withdraw_to_chain(ctx: &ScFuncContext) {
     //Deploy the same contract with another name
     let target_chain = ctx.params().get_chain_id(PARAM_CHAIN_ID);
     ctx.require(target_chain.exists(), "chainID not provided");

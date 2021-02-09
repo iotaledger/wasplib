@@ -11,8 +11,8 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncDonate, funcDonateThunk)
-    exports.AddCall(FuncWithdraw, funcWithdrawThunk)
+    exports.AddFunc(FuncDonate, funcDonateThunk)
+    exports.AddFunc(FuncWithdraw, funcWithdrawThunk)
     exports.AddView(ViewDonations, viewDonationsThunk)
 }
 
@@ -20,7 +20,7 @@ type FuncDonateParams struct {
     Feedback wasmlib.ScImmutableString // feedback for the person you donate to
 }
 
-func funcDonateThunk(ctx *wasmlib.ScCallContext) {
+func funcDonateThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
     params := &FuncDonateParams {
         Feedback: p.GetString(ParamFeedback),
@@ -32,7 +32,7 @@ type FuncWithdrawParams struct {
     Amount wasmlib.ScImmutableInt // amount to withdraw
 }
 
-func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
+func funcWithdrawThunk(ctx *wasmlib.ScFuncContext) {
     // only SC creator can withdraw donated funds
     ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 

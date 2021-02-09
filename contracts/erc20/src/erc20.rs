@@ -12,7 +12,7 @@ use crate::*;
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-pub fn func_approve(ctx: &ScCallContext, params: &FuncApproveParams) {
+pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
     ctx.trace("erc20.approve");
 
     let delegation = params.delegation.value();
@@ -30,7 +30,7 @@ pub fn func_approve(ctx: &ScCallContext, params: &FuncApproveParams) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
     ctx.trace("erc20.on_init.begin");
 
     let supply = params.supply.value();
@@ -52,7 +52,7 @@ pub fn func_init(ctx: &ScCallContext, params: &FuncInitParams) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-pub fn func_transfer(ctx: &ScCallContext, params: &FuncTransferParams) {
+pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
     ctx.trace("erc20.transfer");
 
     let amount = params.amount.value();
@@ -78,7 +78,7 @@ pub fn func_transfer(ctx: &ScCallContext, params: &FuncTransferParams) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-pub fn func_transfer_from(ctx: &ScCallContext, params: &FuncTransferFromParams) {
+pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) {
     ctx.trace("erc20.transfer_from");
 
     // validate parameters

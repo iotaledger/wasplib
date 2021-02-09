@@ -16,9 +16,9 @@ mod types;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_call(FUNC_MINT_SUPPLY, func_mint_supply_thunk);
-    exports.add_call(FUNC_TRANSFER_OWNERSHIP, func_transfer_ownership_thunk);
-    exports.add_call(FUNC_UPDATE_METADATA, func_update_metadata_thunk);
+    exports.add_func(FUNC_MINT_SUPPLY, func_mint_supply_thunk);
+    exports.add_func(FUNC_TRANSFER_OWNERSHIP, func_transfer_ownership_thunk);
+    exports.add_func(FUNC_UPDATE_METADATA, func_update_metadata_thunk);
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
 }
 
@@ -29,7 +29,7 @@ pub struct FuncMintSupplyParams {
 }
 //@formatter:on
 
-fn func_mint_supply_thunk(ctx: &ScCallContext) {
+fn func_mint_supply_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncMintSupplyParams {
         description: p.get_string(PARAM_DESCRIPTION),
@@ -42,7 +42,7 @@ pub struct FuncTransferOwnershipParams {
     pub color: ScImmutableColor, // color of token to transfer ownership of
 }
 
-fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
+fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
     //TODO the one who can transfer token ownership
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
@@ -58,7 +58,7 @@ pub struct FuncUpdateMetadataParams {
     pub color: ScImmutableColor, // color of token to update metadata for
 }
 
-fn func_update_metadata_thunk(ctx: &ScCallContext) {
+fn func_update_metadata_thunk(ctx: &ScFuncContext) {
     //TODO the one who can change the token info
     ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 

@@ -11,48 +11,31 @@ import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 func OnLoad() {
     exports := wasmlib.NewScExports()
-    exports.AddCall(FuncDonate, funcDonateThunk)
-    exports.AddCall(FuncWithdraw, funcWithdrawThunk)
-    exports.AddView(ViewDonations, viewDonationsThunk)
+    exports.AddFunc(FuncMyFunc, funcMyFuncThunk)
+    exports.AddView(ViewMyView, viewMyViewThunk)
 }
 
-type FuncDonateParams struct {
-    Feedback wasmlib.ScImmutableString // feedback for the person you donate to
+type FuncMyFuncParams struct {
+    Text wasmlib.ScImmutableString // some mandatory string parameter
 }
 
-func funcDonateThunk(ctx *wasmlib.ScCallContext) {
-    // only the super spy can donate
-    grantee := ctx.State().GetAgentId(wasmlib.Key("superspy"))
-    ctx.Require(grantee.Exists(), "grantee not set: superspy")
-    ctx.Require(ctx.From(grantee.Value()), "no permission")
-
+func funcMyFuncThunk(ctx *wasmlib.ScFuncContext) {
     p := ctx.Params()
-    params := &FuncDonateParams {
-        Feedback: p.GetString(ParamFeedback),
+    params := &FuncMyFuncParams {
+        Text: p.GetString(ParamText),
     }
-    funcDonate(ctx, params)
+    ctx.Require(params.Text.Exists(), "missing mandatory text")
+    funcMyFunc(ctx, params)
 }
 
-type FuncWithdrawParams struct {
-    Amount wasmlib.ScImmutableInt // amount to withdraw
+type ViewMyViewParams struct {
+    Value wasmlib.ScImmutableInt // some optional integer parameter
 }
 
-func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
-    // only SC creator can withdraw donated funds
-    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
-
+func viewMyViewThunk(ctx *wasmlib.ScViewContext) {
     p := ctx.Params()
-    params := &FuncWithdrawParams {
-        Amount: p.GetInt(ParamAmount),
+    params := &ViewMyViewParams {
+        Value: p.GetInt(ParamValue),
     }
-    funcWithdraw(ctx, params)
-}
-
-type ViewDonationsParams struct {
-}
-
-func viewDonationsThunk(ctx *wasmlib.ScViewContext) {
-    params := &ViewDonationsParams {
-    }
-    viewDonations(ctx, params)
+    viewMyView(ctx, params)
 }

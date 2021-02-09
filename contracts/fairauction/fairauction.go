@@ -13,7 +13,7 @@ const OwnerMarginDefault = 50
 const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
-func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuctionParams) {
+func funcFinalizeAuction(ctx *wasmlib.ScFuncContext, params *FuncFinalizeAuctionParams) {
 	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
@@ -60,7 +60,7 @@ func funcFinalizeAuction(ctx *wasmlib.ScCallContext, params *FuncFinalizeAuction
 	transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
 
-func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
+func funcPlaceBid(ctx *wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
 	if bidAmount == 0 {
 		ctx.Panic("Missing bid amount")
@@ -109,7 +109,7 @@ func funcPlaceBid(ctx *wasmlib.ScCallContext, params *FuncPlaceBidParams) {
 	}
 }
 
-func funcSetOwnerMargin(ctx *wasmlib.ScCallContext, params *FuncSetOwnerMarginParams) {
+func funcSetOwnerMargin(ctx *wasmlib.ScFuncContext, params *FuncSetOwnerMarginParams) {
 	ownerMargin := params.OwnerMargin.Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
@@ -121,7 +121,7 @@ func funcSetOwnerMargin(ctx *wasmlib.ScCallContext, params *FuncSetOwnerMarginPa
 	ctx.Log("Updated owner margin")
 }
 
-func funcStartAuction(ctx *wasmlib.ScCallContext, params *FuncStartAuctionParams) {
+func funcStartAuction(ctx *wasmlib.ScFuncContext, params *FuncStartAuctionParams) {
 	color := params.Color.Value()
 	if color.Equals(wasmlib.IOTA) || color.Equals(wasmlib.MINT) {
 		ctx.Panic("Reserved auction token color")
@@ -231,7 +231,7 @@ func viewGetInfo(ctx *wasmlib.ScViewContext, params *ViewGetInfoParams) {
 	results.GetInt(VarBidders).SetValue(int64(bidderList.Length()))
 }
 
-func transfer(ctx *wasmlib.ScCallContext, agent *wasmlib.ScAgentId, color *wasmlib.ScColor, amount int64) {
+func transfer(ctx *wasmlib.ScFuncContext, agent *wasmlib.ScAgentId, color *wasmlib.ScColor, amount int64) {
 	if agent.IsAddress() {
 		// send back to original Tangle address
 		ctx.TransferToAddress(agent.Address(), wasmlib.NewScTransfer(color, amount))

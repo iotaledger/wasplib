@@ -5,7 +5,7 @@ package tokenregistry
 
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
-func funcMintSupply(ctx *wasmlib.ScCallContext, params *FuncMintSupplyParams) {
+func funcMintSupply(ctx *wasmlib.ScFuncContext, params *FuncMintSupplyParams) {
 	minted := ctx.Incoming().Minted()
 	if minted.Equals(wasmlib.MINT) {
 		ctx.Panic("TokenRegistry: No newly minted tokens found")
@@ -35,11 +35,11 @@ func funcMintSupply(ctx *wasmlib.ScCallContext, params *FuncMintSupplyParams) {
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 
-func funcTransferOwnership(_sc *wasmlib.ScCallContext, params *FuncTransferOwnershipParams) {
+func funcTransferOwnership(_sc *wasmlib.ScFuncContext, params *FuncTransferOwnershipParams) {
 	//TODO
 }
 
-func funcUpdateMetadata(_sc *wasmlib.ScCallContext, params *FuncUpdateMetadataParams) {
+func funcUpdateMetadata(_sc *wasmlib.ScFuncContext, params *FuncUpdateMetadataParams) {
 	//TODO
 }
 

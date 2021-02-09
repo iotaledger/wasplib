@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.contracts.inccounter;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.host.Host;
@@ -19,26 +19,26 @@ public class IncCounter {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("init", IncCounter::onInit);
-		exports.AddCall("increment", IncCounter::increment);
-		exports.AddCall("increment_call_increment", IncCounter::incrementCallIncrement);
-		exports.AddCall("increment_call_increment_recurse5x", IncCounter::incrementCallIncrementRecurse5x);
-		exports.AddCall("increment_post_increment", IncCounter::incrementPostIncrement);
+		exports.AddFunc("init", IncCounter::onInit);
+		exports.AddFunc("increment", IncCounter::increment);
+		exports.AddFunc("increment_call_increment", IncCounter::incrementCallIncrement);
+		exports.AddFunc("increment_call_increment_recurse5x", IncCounter::incrementCallIncrementRecurse5x);
+		exports.AddFunc("increment_post_increment", IncCounter::incrementPostIncrement);
 		exports.AddView("increment_view_counter", IncCounter::incrementViewCounter);
-		exports.AddCall("increment_repeat_many", IncCounter::incrementRepeatMany);
-		exports.AddCall("increment_when_must_increment", IncCounter::incrementWhenMustIncrement);
-		exports.AddCall("increment_local_state_internal_call", IncCounter::incrementLocalStateInternalCall);
-		exports.AddCall("increment_local_state_sandbox_call", IncCounter::incrementLocalStateSandboxCall);
-		exports.AddCall("increment_local_state_post", IncCounter::incrementLocalStatePost);
-		exports.AddCall("nothing", ScExports::nothing);
-		exports.AddCall("test", IncCounter::test);
-		exports.AddCall("state_test", IncCounter::stateTest);
+		exports.AddFunc("increment_repeat_many", IncCounter::incrementRepeatMany);
+		exports.AddFunc("increment_when_must_increment", IncCounter::incrementWhenMustIncrement);
+		exports.AddFunc("increment_local_state_internal_call", IncCounter::incrementLocalStateInternalCall);
+		exports.AddFunc("increment_local_state_sandbox_call", IncCounter::incrementLocalStateSandboxCall);
+		exports.AddFunc("increment_local_state_post", IncCounter::incrementLocalStatePost);
+		exports.AddFunc("nothing", ScExports::nothing);
+		exports.AddFunc("test", IncCounter::test);
+		exports.AddFunc("state_test", IncCounter::stateTest);
 		exports.AddView("state_check", IncCounter::stateCheck);
-		exports.AddCall("results_test", IncCounter::resultsTest);
+		exports.AddFunc("results_test", IncCounter::resultsTest);
 		exports.AddView("results_check", IncCounter::resultsCheck);
 	}
 
-	public static void onInit(ScCallContext sc) {
+	public static void onInit(ScFuncContext sc) {
 		long counter = sc.Params().GetInt(KeyCounter).Value();
 		if (counter == 0) {
 			return;
@@ -46,12 +46,12 @@ public class IncCounter {
 		sc.State().GetInt(KeyCounter).SetValue(counter);
 	}
 
-	public static void increment(ScCallContext sc) {
+	public static void increment(ScFuncContext sc) {
 		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void incrementCallIncrement(ScCallContext sc) {
+	public static void incrementCallIncrement(ScFuncContext sc) {
 		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -60,7 +60,7 @@ public class IncCounter {
 		}
 	}
 
-	public static void incrementCallIncrementRecurse5x(ScCallContext sc) {
+	public static void incrementCallIncrementRecurse5x(ScFuncContext sc) {
 		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -69,7 +69,7 @@ public class IncCounter {
 		}
 	}
 
-	public static void incrementPostIncrement(ScCallContext sc) {
+	public static void incrementPostIncrement(ScFuncContext sc) {
 		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -83,7 +83,7 @@ public class IncCounter {
 		sc.Results().GetInt(KeyCounter).SetValue(counter);
 	}
 
-	public static void incrementRepeatMany(ScCallContext sc) {
+	public static void incrementRepeatMany(ScFuncContext sc) {
 		ScMutableInt counter = sc.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -99,7 +99,7 @@ public class IncCounter {
 		sc.Post("increment_repeat_many").Post(0);
 	}
 
-	public static void incrementWhenMustIncrement(ScCallContext sc) {
+	public static void incrementWhenMustIncrement(ScFuncContext sc) {
 		sc.Log("increment_when_must_increment called");
 		{
 			if (!localStateMustIncrement) {
@@ -110,7 +110,7 @@ public class IncCounter {
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void incrementLocalStateInternalCall(ScCallContext sc) {
+	public static void incrementLocalStateInternalCall(ScFuncContext sc) {
 		incrementWhenMustIncrement(sc);
 		{
 			localStateMustIncrement = true;
@@ -120,7 +120,7 @@ public class IncCounter {
 		// counter ends up as 2
 	}
 
-	public static void incrementLocalStateSandboxCall(ScCallContext sc) {
+	public static void incrementLocalStateSandboxCall(ScFuncContext sc) {
 		sc.Call("increment_when_must_increment").Call();
 		{
 			localStateMustIncrement = true;
@@ -130,7 +130,7 @@ public class IncCounter {
 		// counter ends up as 0
 	}
 
-	public static void incrementLocalStatePost(ScCallContext sc) {
+	public static void incrementLocalStatePost(ScFuncContext sc) {
 		sc.Post("increment_when_must_increment").Post(0);
 		{
 			localStateMustIncrement = true;
@@ -140,7 +140,7 @@ public class IncCounter {
 		// counter ends up as 0
 	}
 
-	public static void test(ScCallContext _sc) {
+	public static void test(ScFuncContext _sc) {
 		int KeyId = Host.GetKeyIdFromString("timestamp");
 		Host.SetInt(1, KeyId, 123456789);
 		long timestamp = Host.GetInt(1, KeyId);
@@ -157,13 +157,13 @@ public class IncCounter {
 		Host.SetString(1, KeyId2, s3);
 	}
 
-	public static void resultsTest(ScCallContext sc) {
+	public static void resultsTest(ScFuncContext sc) {
 		testMap(sc.Results());
 		checkMap(sc.Results().Immutable());
 		//sc.call("results_check");
 	}
 
-	public static void stateTest(ScCallContext sc) {
+	public static void stateTest(ScFuncContext sc) {
 		testMap(sc.State());
 		sc.Call("state_check");
 	}

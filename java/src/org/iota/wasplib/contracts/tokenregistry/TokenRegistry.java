@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.contracts.tokenregistry;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScColor;
 import org.iota.wasplib.client.immutable.ScImmutableMap;
@@ -20,12 +20,12 @@ public class TokenRegistry {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("mint_supply", TokenRegistry::mintSupply);
-		exports.AddCall("update_metadata", TokenRegistry::updateMetadata);
-		exports.AddCall("transfer_ownership", TokenRegistry::transferOwnership);
+		exports.AddFunc("mint_supply", TokenRegistry::mintSupply);
+		exports.AddFunc("update_metadata", TokenRegistry::updateMetadata);
+		exports.AddFunc("transfer_ownership", TokenRegistry::transferOwnership);
 	}
 
-	public static void mintSupply(ScCallContext sc) {
+	public static void mintSupply(ScFuncContext sc) {
 		ScColor minted = sc.Incoming().Minted();
 		if (minted.equals(ScColor.MINT)) {
 			sc.Panic("TokenRegistry: No newly minted tokens found");
@@ -57,11 +57,11 @@ public class TokenRegistry {
 		colors.GetColor(colors.Length()).SetValue(minted);
 	}
 
-	public static void updateMetadata(ScCallContext _sc) {
+	public static void updateMetadata(ScFuncContext _sc) {
 		//TODO
 	}
 
-	public static void transferOwnership(ScCallContext _sc) {
+	public static void transferOwnership(ScFuncContext _sc) {
 		//TODO
 	}
 }

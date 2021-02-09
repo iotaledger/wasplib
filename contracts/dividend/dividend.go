@@ -7,7 +7,7 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 )
 
-func funcDivide(ctx *wasmlib.ScCallContext, params *FuncDivideParams) {
+func funcDivide(ctx *wasmlib.ScFuncContext, params *FuncDivideParams) {
 	amount := ctx.Balances().Balance(wasmlib.IOTA)
 	if amount == 0 {
 		ctx.Panic("Nothing to divide")
@@ -35,7 +35,7 @@ func funcDivide(ctx *wasmlib.ScCallContext, params *FuncDivideParams) {
 	}
 }
 
-func funcMember(ctx *wasmlib.ScCallContext, params *FuncMemberParams) {
+func funcMember(ctx *wasmlib.ScFuncContext, params *FuncMemberParams) {
 	member := &Member{
 		Address: params.Address.Value(),
 		Factor:  params.Factor.Value(),

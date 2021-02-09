@@ -3,7 +3,7 @@
 
 package org.iota.wasplib.contracts.donatewithfeedback;
 
-import org.iota.wasplib.client.context.ScCallContext;
+import org.iota.wasplib.client.context.ScFuncContext;
 import org.iota.wasplib.client.context.ScViewContext;
 import org.iota.wasplib.client.exports.ScExports;
 import org.iota.wasplib.client.hashtypes.ScAgent;
@@ -31,12 +31,12 @@ public class DonateWithFeedback {
 
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddCall("donate", DonateWithFeedback::donate);
-		exports.AddCall("withdraw", DonateWithFeedback::withdraw);
+		exports.AddFunc("donate", DonateWithFeedback::donate);
+		exports.AddFunc("withdraw", DonateWithFeedback::withdraw);
 		exports.AddView("view_donations", DonateWithFeedback::viewDonations);
 	}
 
-	public static void donate(ScCallContext sc) {
+	public static void donate(ScFuncContext sc) {
 		DonationInfo donation = new DonationInfo();
 		{
 			donation.Amount = sc.Incoming().Balance(ScColor.IOTA);
@@ -64,7 +64,7 @@ public class DonateWithFeedback {
 		totalDonated.SetValue(totalDonated.Value() + donation.Amount);
 	}
 
-	public static void withdraw(ScCallContext sc) {
+	public static void withdraw(ScFuncContext sc) {
 		ScAgent scOwner = sc.ContractCreator();
 		if (!sc.From(scOwner)) {
 			sc.Panic("Cancel spoofed request");
