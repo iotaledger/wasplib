@@ -39,9 +39,7 @@ pub struct FuncWithdrawParams {
 
 fn func_withdraw_thunk(ctx: &ScCallContext) {
     // only SC creator can withdraw donated funds
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
     let p = ctx.params();
     let params = FuncWithdrawParams {

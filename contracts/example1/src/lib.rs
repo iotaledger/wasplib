@@ -38,9 +38,7 @@ pub struct FuncWithdrawIotaParams {
 
 fn func_withdraw_iota_thunk(ctx: &ScCallContext) {
     // only the contract creator can withdraw
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
     let params = FuncWithdrawIotaParams {
     };

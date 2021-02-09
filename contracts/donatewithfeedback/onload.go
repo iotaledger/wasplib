@@ -34,9 +34,7 @@ type FuncWithdrawParams struct {
 
 func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
     // only SC creator can withdraw donated funds
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncWithdrawParams {

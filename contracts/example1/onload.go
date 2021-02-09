@@ -34,9 +34,7 @@ type FuncWithdrawIotaParams struct {
 
 func funcWithdrawIotaThunk(ctx *wasmlib.ScCallContext) {
     // only the contract creator can withdraw
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     params := &FuncWithdrawIotaParams {
     }

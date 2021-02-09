@@ -22,9 +22,7 @@ type FuncLockBetsParams struct {
 
 func funcLockBetsThunk(ctx *wasmlib.ScCallContext) {
     // only SC itself can invoke this function
-    if !ctx.From(ctx.ContractId().AsAgentId()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
     params := &FuncLockBetsParams {
     }
@@ -36,9 +34,7 @@ type FuncPayWinnersParams struct {
 
 func funcPayWinnersThunk(ctx *wasmlib.ScCallContext) {
     // only SC itself can invoke this function
-    if !ctx.From(ctx.ContractId().AsAgentId()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
     params := &FuncPayWinnersParams {
     }
@@ -64,9 +60,7 @@ type FuncPlayPeriodParams struct {
 
 func funcPlayPeriodThunk(ctx *wasmlib.ScCallContext) {
     // only SC creator can update the play period
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncPlayPeriodParams {

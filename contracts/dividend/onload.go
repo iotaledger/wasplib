@@ -31,9 +31,7 @@ type FuncMemberParams struct {
 
 func funcMemberThunk(ctx *wasmlib.ScCallContext) {
     // only creator can add members
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncMemberParams {

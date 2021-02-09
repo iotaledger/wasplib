@@ -37,9 +37,7 @@ type FuncTransferOwnershipParams struct {
 
 func funcTransferOwnershipThunk(ctx *wasmlib.ScCallContext) {
     //TODO the one who can transfer token ownership
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncTransferOwnershipParams {
@@ -55,9 +53,7 @@ type FuncUpdateMetadataParams struct {
 
 func funcUpdateMetadataThunk(ctx *wasmlib.ScCallContext) {
     //TODO the one who can change the token info
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncUpdateMetadataParams {

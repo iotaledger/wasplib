@@ -24,9 +24,7 @@ type FuncFinalizeAuctionParams struct {
 
 func funcFinalizeAuctionThunk(ctx *wasmlib.ScCallContext) {
     // only SC itself can invoke this function
-    if !ctx.From(ctx.ContractId().AsAgentId()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
 
     p := ctx.Params()
     params := &FuncFinalizeAuctionParams {
@@ -55,9 +53,7 @@ type FuncSetOwnerMarginParams struct {
 
 func funcSetOwnerMarginThunk(ctx *wasmlib.ScCallContext) {
     // only SC creator can set owner margin
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncSetOwnerMarginParams {

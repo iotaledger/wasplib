@@ -28,12 +28,8 @@ pub struct FuncDonateParams {
 fn func_donate_thunk(ctx: &ScCallContext) {
     // only the super spy can donate
     let grantee = ctx.state().get_agent_id("superspy");
-    if !grantee.exists() {
-        ctx.panic("grantee not set: superspy");
-    }
-    if !ctx.from(&grantee.value()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(grantee.exists(), "grantee not set: superspy");
+    ctx.require(ctx.from(&grantee.value()), "no permission");
 
     let p = ctx.params();
     let params = FuncDonateParams {
@@ -48,9 +44,7 @@ pub struct FuncWithdrawParams {
 
 fn func_withdraw_thunk(ctx: &ScCallContext) {
     // only SC creator can withdraw donated funds
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
     let p = ctx.params();
     let params = FuncWithdrawParams {
@@ -59,11 +53,9 @@ fn func_withdraw_thunk(ctx: &ScCallContext) {
     func_withdraw(ctx, &params);
 }
 
-pub struct ViewDonationsParams {
-}
+pub struct ViewDonationsParams {}
 
 fn view_donations_thunk(ctx: &ScViewContext) {
-    let params = ViewDonationsParams {
-    };
+    let params = ViewDonationsParams {};
     view_donations(ctx, &params);
 }

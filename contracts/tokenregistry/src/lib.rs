@@ -44,9 +44,7 @@ pub struct FuncTransferOwnershipParams {
 
 fn func_transfer_ownership_thunk(ctx: &ScCallContext) {
     //TODO the one who can transfer token ownership
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
     let p = ctx.params();
     let params = FuncTransferOwnershipParams {
@@ -62,9 +60,7 @@ pub struct FuncUpdateMetadataParams {
 
 fn func_update_metadata_thunk(ctx: &ScCallContext) {
     //TODO the one who can change the token info
-    if !ctx.from(&ctx.contract_creator()) {
-        ctx.panic("no permission");
-    }
+    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
 
     let p = ctx.params();
     let params = FuncUpdateMetadataParams {

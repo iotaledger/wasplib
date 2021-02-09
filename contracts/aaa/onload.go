@@ -23,12 +23,8 @@ type FuncDonateParams struct {
 func funcDonateThunk(ctx *wasmlib.ScCallContext) {
     // only the super spy can donate
     grantee := ctx.State().GetAgentId(wasmlib.Key("superspy"))
-    if !grantee.Exists() {
-        ctx.Panic("grantee not set: superspy")
-    }
-    if !ctx.From(grantee.Value()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(grantee.Exists(), "grantee not set: superspy")
+    ctx.Require(ctx.From(grantee.Value()), "no permission")
 
     p := ctx.Params()
     params := &FuncDonateParams {
@@ -43,9 +39,7 @@ type FuncWithdrawParams struct {
 
 func funcWithdrawThunk(ctx *wasmlib.ScCallContext) {
     // only SC creator can withdraw donated funds
-    if !ctx.From(ctx.ContractCreator()) {
-        ctx.Panic("no permission")
-    }
+    ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
 
     p := ctx.Params()
     params := &FuncWithdrawParams {
