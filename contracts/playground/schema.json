@@ -1,6 +1,6 @@
 {
-  "name": "aaa",
-  "description": "AAA playground for IOTA Smart Contracts",
+  "name": "playground",
+  "description": "Playground for IOTA Smart Contracts",
   "types": {
   },
   "vars": {

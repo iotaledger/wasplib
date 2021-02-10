@@ -1,17 +1,6 @@
 [workspace]
 members = [
-    "aaa",
-    "dividend",
-    "donatewithfeedback",
-    "dummy",
-    "erc20",
-    "example1",
-    "fairauction",
-    "fairroulette",
-    "helloworld",
-    "inccounter",
-    "testcore",
-    "tokenregistry",
+    "playground",
 ]
 
 [profile.release]
