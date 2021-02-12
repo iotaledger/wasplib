@@ -10,7 +10,6 @@ package fairroulette
 import "github.com/iotaledger/wasp/packages/vm/wasmlib"
 
 const ScName = "fairroulette"
-const ScDescription = "blaegkakjhf"
 const ScHname = wasmlib.ScHname(0xdf79d138)
 
 const ParamNumber = wasmlib.Key("number")

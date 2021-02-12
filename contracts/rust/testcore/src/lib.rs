@@ -159,7 +159,7 @@ pub struct FuncSendToAddressParams {
 }
 
 fn func_send_to_address_thunk(ctx: &ScFuncContext) {
-    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
     let p = ctx.params();
     let params = FuncSendToAddressParams {

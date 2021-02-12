@@ -29,7 +29,7 @@ pub struct FuncFinalizeAuctionParams {
 
 fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
-    ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let p = ctx.params();
     let params = FuncFinalizeAuctionParams {
@@ -58,7 +58,7 @@ pub struct FuncSetOwnerMarginParams {
 
 fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
     // only SC creator can set owner margin
-    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
     let p = ctx.params();
     let params = FuncSetOwnerMarginParams {

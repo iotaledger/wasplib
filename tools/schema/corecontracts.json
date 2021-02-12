@@ -1,0 +1,105 @@
+[
+  {
+    "name": "accounts",
+    "description": "Chain account ledger contract",
+    "funcs": {
+      "deposit": {
+        "agentID=a": "AgentId"
+      },
+      "withdrawToAddress": {
+      },
+      "withdrawToChain": {
+      }
+    },
+    "views": {
+      "accounts": {
+      },
+      "balance": {
+        "agentID=a": "AgentId"
+      },
+      "totalAssets": {
+      }
+    }
+  },
+  {
+    "name": "blob",
+    "description": "Blob Contract",
+    "funcs": {
+      "storeBlob": {
+      }
+    },
+    "views": {
+      "getBlobField": {
+        "hash": "Hash",
+        "field": "String"
+      },
+      "getBlobInfo": {
+        "hash": "Hash"
+      },
+      "listBlobs": {
+      }
+    }
+  },
+  {
+    "name": "eventlog",
+    "description": "Event log Contract",
+    "vars": {
+      "numRecords": "Int",
+      "records": "[]Bytes"
+    },
+    "funcs": {
+    },
+    "views": {
+      "getNumRecords": {
+        "contractHname": "Hname"
+      },
+      "getRecords": {
+        "contractHname": "Hname",
+        "maxLastRecords": "?Int",
+        "fromTs": "?Int",
+        "toTs": "?Int"
+      }
+    }
+  },
+  {
+    "name": "root",
+    "description": "Root Contract",
+    "funcs": {
+      "claimChainOwnership": {
+      },
+      "delegateChainOwnership": {
+        "chainOwner=$$owner$$": "AgentId"
+      },
+      "deployContract": {
+        "programHash=$$proghash$$": "Hash",
+        "name=$$name$$": "String",
+        "description=$$description$$": "?String"
+      },
+      "grantDeployPermission": {
+        "deployer=$$deployer$$": "AgentId"
+      },
+      "revokeDeployPermission": {
+        "deployer=$$deployer$$": "AgentId"
+      },
+      "setContractFee": {
+        "hname=$$hname$$": "Hname",
+        "ownerFee=$$ownerfee$$": "?Int",
+        "validatorFee=$$validatorfee$$": "?Int"
+      },
+      "setDefaultFee": {
+        "ownerFee=$$ownerfee$$": "?Int",
+        "validatorFee=$$validatorfee$$": "?Int"
+      }
+    },
+    "views": {
+      "findContract": {
+        "hname=$$hname$$": "Hname"
+      },
+      "getChainInfo": {
+      },
+      "getFeeInfo": {
+        "hname=$$hname$$": "Hname"
+      }
+    }
+  }
+]

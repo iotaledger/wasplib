@@ -33,6 +33,10 @@ extern {
     pub fn hostSetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *const u8, len: i32);
 }
 
+pub fn clear(obj_id: i32) {
+    set_bytes(obj_id, KEY_LENGTH, TYPE_INT, &0_i64.to_le_bytes())
+}
+
 pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
     unsafe {
         // negative length (-1) means only test for existence
@@ -87,8 +91,4 @@ pub fn set_bytes(obj_id: i32, key_id: Key32, type_id: i32, value: &[u8]) {
     unsafe {
         hostSetBytes(obj_id, key_id.0, type_id, value.as_ptr(), value.len() as i32)
     }
-}
-
-pub fn set_clear(obj_id: i32) {
-    set_bytes(obj_id, KEY_LENGTH, TYPE_INT, &0_i64.to_le_bytes())
 }

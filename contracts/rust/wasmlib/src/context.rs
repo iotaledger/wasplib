@@ -9,6 +9,9 @@ use crate::immutable::*;
 use crate::keys::*;
 use crate::mutable::*;
 
+// all access to the objects in host's object tree starts here
+pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
+
 // parameter structure required for ctx.post()
 pub struct PostRequestParams {
     //@formatter:off
@@ -218,7 +221,7 @@ pub trait ScBaseContext {
         ROOT.get_map(&KEY_PARAMS).immutable()
     }
 
-    // panicswith specified message if specified condition is not satisfied
+    // panics with specified message if specified condition is not satisfied
     fn require(&self, cond: bool, msg: &str) {
         if !cond {
             self.panic(msg)
@@ -301,11 +304,6 @@ impl ScFuncContext {
     // signals an event on the node that external entities can subscribe to
     pub fn event(&self, text: &str) {
         ROOT.get_string(&KEY_EVENT).set_value(text)
-    }
-
-    // quick check to see if the caller of the smart contract was the specified originator
-    pub fn from(&self, originator: &ScAgentId) -> bool {
-        self.caller().equals(originator)
     }
 
     // access the incoming balances for all token colors

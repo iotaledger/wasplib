@@ -28,11 +28,6 @@ impl ScAddress {
         a
     }
 
-    // equality check
-    pub fn equals(&self, other: &ScAddress) -> bool {
-        self.id == other.id
-    }
-
     // convert to byte array representation
     pub fn to_bytes(&self) -> &[u8] {
         &self.id
@@ -72,14 +67,9 @@ impl ScAgentId {
         a
     }
 
-    // equality check
-    pub fn equals(&self, other: &ScAgentId) -> bool {
-        self.id == other.id
-    }
-
     // checks to see if agent id represents a Tangle address
     pub fn is_address(&self) -> bool {
-        self.address().as_agent_id().equals(self)
+        self.address().as_agent_id() == *self
     }
 
     // convert to byte array representation
@@ -112,11 +102,6 @@ impl ScChainId {
     // construct from byte array
     pub fn from_bytes(bytes: &[u8]) -> ScChainId {
         ScChainId { id: bytes.try_into().expect("invalid chain id length") }
-    }
-
-    // equality check
-    pub fn equals(&self, other: &ScChainId) -> bool {
-        self.id == other.id
     }
 
     // convert to byte array representation
@@ -173,11 +158,6 @@ impl ScContractId {
         c
     }
 
-    // equality check
-    pub fn equals(&self, other: &ScContractId) -> bool {
-        self.id == other.id
-    }
-
     // get contract name hash for this contract
     pub fn hname(&self) -> ScHname {
         ScHname::from_bytes(&self.id[33..])
@@ -219,11 +199,6 @@ impl ScColor {
         ScColor { id: bytes.try_into().expect("invalid color id length") }
     }
 
-    // equality check
-    pub fn equals(&self, other: &ScColor) -> bool {
-        self.id == other.id
-    }
-
     // convert to byte array representation
     pub fn to_bytes(&self) -> &[u8] {
         &self.id
@@ -256,11 +231,6 @@ impl ScHash {
         ScHash { id: bytes.try_into().expect("invalid hash id length") }
     }
 
-    // equality check
-    pub fn equals(&self, other: &ScHash) -> bool {
-        self.id == other.id
-    }
-
     // convert to byte array representation
     pub fn to_bytes(&self) -> &[u8] {
         &self.id
@@ -282,7 +252,7 @@ impl MapKey for ScHash {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // container object for 4-byte name hash
-#[derive(Clone, Copy)]
+#[derive(PartialEq, Clone)]
 pub struct ScHname(pub u32);
 
 impl ScHname {
@@ -299,11 +269,6 @@ impl ScHname {
         let val = (val << 8) | (bytes[1] as u32);
         let val = (val << 8) | (bytes[0] as u32);
         ScHname(val)
-    }
-
-    // equality check
-    pub fn equals(&self, other: ScHname) -> bool {
-        self.0 == other.0
     }
 
     // convert to byte array representation

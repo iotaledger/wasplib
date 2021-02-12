@@ -10,7 +10,7 @@ use crate::types::*;
 
 pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
     let minted = ctx.incoming().minted();
-    if minted.equals(&ScColor::MINT) {
+    if minted == ScColor::MINT {
         ctx.panic("TokenRegistry: No newly minted tokens found");
     }
     let state = ctx.state();

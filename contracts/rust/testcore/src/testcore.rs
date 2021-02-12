@@ -68,10 +68,10 @@ pub fn func_pass_types_full(ctx: &ScFuncContext, params: &FuncPassTypesFullParam
     ctx.require(params.string_zero.value() == "", "string-0 wrong");
 
     let hash = ctx.utility().hash_blake2b(PARAM_HASH.as_bytes());
-    ctx.require(params.hash.value().equals(&hash), "Hash wrong");
+    ctx.require(params.hash.value() == hash, "Hash wrong");
 
-    ctx.require(params.hname.value().equals(ScHname::new(PARAM_HNAME)), "Hname wrong");
-    ctx.require(params.hname_zero.value().equals(ScHname(0)), "Hname-0 wrong");
+    ctx.require(params.hname.value() == ScHname::new(PARAM_HNAME), "Hname wrong");
+    ctx.require(params.hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
 
 pub fn func_run_recursion(ctx: &ScFuncContext, params: &FuncRunRecursionParams) {
@@ -214,10 +214,10 @@ pub fn view_pass_types_view(ctx: &ScViewContext, params: &ViewPassTypesViewParam
     ctx.require(params.string_zero.value() == "", "string-0 wrong");
 
     let hash = ctx.utility().hash_blake2b(PARAM_HASH.as_bytes());
-    ctx.require(params.hash.value().equals(&hash), "Hash wrong");
+    ctx.require(params.hash.value() == hash, "Hash wrong");
 
-    ctx.require(params.hname.value().equals(ScHname::new(PARAM_HNAME)), "Hname wrong");
-    ctx.require(params.hname_zero.value().equals(ScHname(0)), "Hname-0 wrong");
+    ctx.require(params.hname.value() == ScHname::new(PARAM_HNAME), "Hname wrong");
+    ctx.require(params.hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
 
 pub fn view_test_call_panic_view_epfrom_view(ctx: &ScViewContext, _params: &ViewTestCallPanicViewEPFromViewParams) {

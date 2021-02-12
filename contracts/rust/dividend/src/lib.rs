@@ -36,7 +36,7 @@ pub struct FuncMemberParams {
 
 fn func_member_thunk(ctx: &ScFuncContext) {
     // only creator can add members
-    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
     let p = ctx.params();
     let params = FuncMemberParams {

@@ -48,7 +48,7 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionPa
     let size = bidder_list.length();
     for i in 0..size {
         let bidder = bidder_list.get_agent_id(i).value();
-        if !bidder.equals(&auction.highest_bidder) {
+        if bidder != auction.highest_bidder {
             let loser = bidders.get_bytes(&bidder);
             let bid = Bid::from_bytes(&loser.value());
             transfer(ctx, &bidder, &ScColor::IOTA, bid.amount);
@@ -124,7 +124,7 @@ pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginPar
 
 pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
     let color = params.color.value();
-    if color.equals(&ScColor::IOTA) || color.equals(&ScColor::MINT) {
+    if color == ScColor::IOTA || color == ScColor::MINT {
         ctx.panic("Reserved auction token color");
     }
     let num_tokens = ctx.incoming().balance(&color);

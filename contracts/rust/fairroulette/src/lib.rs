@@ -26,7 +26,7 @@ pub struct FuncLockBetsParams {}
 
 fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
-    ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncLockBetsParams {};
     func_lock_bets(ctx, &params);
@@ -36,7 +36,7 @@ pub struct FuncPayWinnersParams {}
 
 fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
-    ctx.require(ctx.from(&ctx.contract_id().as_agent_id()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncPayWinnersParams {};
     func_pay_winners(ctx, &params);
@@ -61,7 +61,7 @@ pub struct FuncPlayPeriodParams {
 
 fn func_play_period_thunk(ctx: &ScFuncContext) {
     // only SC creator can update the play period
-    ctx.require(ctx.from(&ctx.contract_creator()), "no permission");
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
     let p = ctx.params();
     let params = FuncPlayPeriodParams {

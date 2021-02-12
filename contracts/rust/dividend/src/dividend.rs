@@ -46,7 +46,7 @@ pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
     let size = members.length();
     for i in 0..size {
         let m = Member::from_bytes(&members.get_bytes(i).value());
-        if m.address.equals(&member.address) {
+        if m.address == member.address {
             total -= m.factor;
             total += member.factor;
             total_factor.set_value(total);
