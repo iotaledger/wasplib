@@ -1,0 +1,49 @@
+{
+  "name": "inccounter",
+  "types": {
+  },
+  "vars": {
+    "counter": "Int",
+    "numRepeats": "Int",
+    "int1": "Int",
+    "string1": "String",
+    "intArray1": "[]Int",
+    "stringArray1": "[]String"
+  },
+  "funcs": {
+    "init": {
+      "counter": "?Int // value to initialize state counter with"
+    },
+    "increment": {
+    },
+    "callIncrement": {
+    },
+    "callIncrementRecurse5x": {
+    },
+    "postIncrement": {
+    },
+    "repeatMany": {
+      "numRepeats": "?Int // number of times to recursively call myself"
+    },
+    "whenMustIncrement": {
+    },
+    "localStateInternalCall": {
+    },
+    "localStateSandboxCall": {
+    },
+    "localStatePost": {
+    },
+    "stateTest": {
+    },
+    "resultsTest": {
+    }
+  },
+  "views": {
+    "resultsCheck": {
+    },
+    "stateCheck": {
+    },
+    "getCounter": {
+    }
+  }
+}

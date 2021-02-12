@@ -1,0 +1,19 @@
+# Copyright 2020 IOTA Stiftung
+# SPDX-License-Identifier: Apache-2.0
+
+[workspace]
+members = [
+    "dividend",
+    "donatewithfeedback",
+    "erc20",
+    "fairauction",
+    "fairroulette",
+    "helloworld",
+    "inccounter",
+    "testcore",
+    "tokenregistry",
+]
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"

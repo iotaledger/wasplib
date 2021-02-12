@@ -1,0 +1,107 @@
+{
+  "name": "testcore",
+  "description": "Core test for ISCP wasmlib Rust/Wasm library",
+  "types": {
+  },
+  "vars": {
+    "counter": "Int",
+    "hnameEP": "Hname"
+  },
+  "funcs": {
+    "callOnChain": {
+      "intValue=intParamValue": "Int",
+      "hnameContract": "?Hname",
+      "hnameEP": "?Hname"
+    },
+    "checkContextFromFullEP": {
+      "chainId=chainid": "ChainId",
+      "chainOwnerId=chainOwnerID": "AgentId",
+      "caller": "AgentId",
+      "contractId=contractID": "ContractId",
+      "agentId=agentID": "AgentId",
+      "contractCreator": "AgentId"
+    },
+    "doNothing": {
+    },
+    "init": {
+    },
+    "passTypesFull": {
+      "int64": "Int",
+      "int64Zero=int64-0": "Int",
+      "string": "String",
+      "stringZero=string-0": "String",
+      "hash=Hash": "Hash",
+      "hname=Hname": "Hname",
+      "hnameZero=Hname-0": "Hname"
+    },
+    "runRecursion": {
+      "intValue=intParamValue": "Int"
+    },
+    "sendToAddress": {
+      "#grant": "creator",
+      "address": "Address"
+    },
+    "setInt": {
+      "name=intParamName": "String",
+      "intValue=intParamValue": "Int"
+    },
+    "testCallPanicFullEP": {
+    },
+    "testCallPanicViewEPFromFull": {
+    },
+    "testChainOwnerIDFull": {
+    },
+    "testContractIDFull": {
+    },
+    "testEventLogDeploy": {
+    },
+    "testEventLogEventData": {
+    },
+    "testEventLogGenericData": {
+      "counter": "Int"
+    },
+    "testPanicFullEP": {
+    },
+    "withdrawToChain": {
+      "chainId=chainid": "ChainId"
+    }
+  },
+  "views": {
+    "checkContextFromViewEP": {
+      "chainId=chainid": "ChainId",
+      "chainOwnerId=chainOwnerID": "AgentId",
+      "contractId=contractID": "ContractId",
+      "agentId=agentID": "AgentId",
+      "contractCreator": "AgentId"
+    },
+    "fibonacci": {
+      "intValue=intParamValue": "Int"
+    },
+    "getCounter": {
+    },
+    "getInt": {
+      "name=intParamName": "String"
+    },
+    "justView": {
+    },
+    "passTypesView": {
+      "int64": "Int",
+      "int64Zero=int64-0": "Int",
+      "string": "String",
+      "stringZero=string-0": "String",
+      "hash=Hash": "Hash",
+      "hname=Hname": "Hname",
+      "hnameZero=Hname-0": "Hname"
+    },
+    "testCallPanicViewEPFromView": {
+    },
+    "testChainOwnerIDView": {
+    },
+    "testContractIDView": {
+    },
+    "testPanicViewEP": {
+    },
+    "testSandboxCall": {
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "dividend",
+  "types": {
+    "Member": {
+      "address": "Address // address of dividend recipient",
+      "factor": "Int // relative division factor"
+    }
+  },
+  "vars": {
+    "members": "[]Member // all the recipients of this dividend",
+    "totalFactor": "Int // sum of all recipient factors"
+  },
+  "funcs": {
+    "member": {
+      "#grant": "creator // only creator can add members",
+      "address": "Address // address of dividend recipient",
+      "factor": "Int // relative division factor"
+    },
+    "divide": {
+    }
+  },
+  "views": {
+  }
+}

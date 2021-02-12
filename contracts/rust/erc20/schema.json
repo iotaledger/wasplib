@@ -1,0 +1,40 @@
+{
+  "name": "erc20",
+  "description": "ERC-20 PoC for IOTA Smart Contracts",
+  "types": {
+  },
+  "vars": {
+    "supply=s": "Int // total supply of the token",
+    "balances=b": "[]Int // balances per account"
+  },
+  "funcs": {
+    "approve": {
+      "delegation=d": "AgentId // delegated account",
+      "amount=am": "Int // allowance value for delegated account"
+    },
+    "init": {
+      "supply=s": "Int // initial token supply",
+      "creator=c": "AgentId // creator/owner of the initial supply"
+    },
+    "transfer": {
+      "account=ac": "AgentId // target account",
+      "amount=am": "Int // amount of tokens to transfer"
+    },
+    "transferFrom": {
+      "account=ac": "AgentId // sender account",
+      "recipient=r": "AgentId // recipient account",
+      "amount=am": "Int // amount of tokens to transfer"
+    }
+  },
+  "views": {
+    "allowance": {
+      "account=ac": "AgentId // sender account",
+      "delegation=d": "AgentId // delegated account"
+    },
+    "balanceOf": {
+      "account=ac": "AgentId // sender account"
+    },
+    "totalSupply": {
+    }
+  }
+}
