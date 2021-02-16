@@ -9,7 +9,7 @@ use crate::types::*;
 const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-pub fn func_lock_bets(ctx: &ScFuncContext) {
+pub fn func_lock_bets(ctx: &ScFuncContext, params: &FuncLockBetsParams) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
@@ -33,7 +33,7 @@ pub fn func_lock_bets(ctx: &ScFuncContext) {
     });
 }
 
-pub fn func_pay_winners(ctx: &ScFuncContext) {
+pub fn func_pay_winners(ctx: &ScFuncContext, params: &FuncPayWinnersParams) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
@@ -89,7 +89,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext) {
     }
 }
 
-pub fn func_place_bet(ctx: &ScFuncContext) {
+pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
     let p = ctx.params();
     let param_number = p.get_int(PARAM_NUMBER);
 
@@ -129,7 +129,7 @@ pub fn func_place_bet(ctx: &ScFuncContext) {
     }
 }
 
-pub fn func_play_period(ctx: &ScFuncContext) {
+pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
     // only SC creator can update the play period
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 

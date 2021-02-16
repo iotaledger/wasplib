@@ -14,7 +14,7 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_finalize_auction(ctx: &ScFuncContext) {
+pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionParams) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
@@ -67,7 +67,7 @@ pub fn func_finalize_auction(ctx: &ScFuncContext) {
     transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-pub fn func_place_bid(ctx: &ScFuncContext) {
+pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
     let p = ctx.params();
     let param_color = p.get_color(PARAM_COLOR);
 
@@ -115,7 +115,7 @@ pub fn func_place_bid(ctx: &ScFuncContext) {
     }
 }
 
-pub fn func_set_owner_margin(ctx: &ScFuncContext) {
+pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginParams) {
     // only SC creator can set owner margin
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -135,7 +135,7 @@ pub fn func_set_owner_margin(ctx: &ScFuncContext) {
     ctx.log("Updated owner margin");
 }
 
-pub fn func_start_auction(ctx: &ScFuncContext) {
+pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
     let p = ctx.params();
     let param_color = p.get_color(PARAM_COLOR);
     let param_description = p.get_string(PARAM_DESCRIPTION);
@@ -227,7 +227,7 @@ pub fn func_start_auction(ctx: &ScFuncContext) {
     ctx.log("New auction started");
 }
 
-pub fn view_get_info(ctx: &ScViewContext) {
+pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
     let p = ctx.params();
     let param_color = p.get_color(PARAM_COLOR);
 

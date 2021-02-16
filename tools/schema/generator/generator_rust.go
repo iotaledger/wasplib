@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var generateRustThunk = false
+var generateRustThunk = true
 
 var rustFuncRegexp = regexp.MustCompile("^pub fn (\\w+).+$")
 
@@ -332,7 +332,7 @@ func (s *Schema) GenerateRustThunk(file *os.File, funcDef *FuncDef) {
 			fmt.Fprintf(file, "    ctx.require(grantee.exists(), \"grantee not set: %s\");\n", grant)
 			grant = fmt.Sprintf("grantee.value()")
 		}
-		fmt.Fprintf(file, "    ctx.require(ctx.from(&%s), \"no permission\");\n\n", grant)
+		fmt.Fprintf(file, "    ctx.require(ctx.caller() == %s, \"no permission\");\n\n", grant)
 	}
 	if len(funcDef.Params) != 0 {
 		fmt.Fprintf(file, "    let p = ctx.params();\n")

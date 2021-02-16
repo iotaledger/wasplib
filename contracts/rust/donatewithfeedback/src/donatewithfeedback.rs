@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_donate(ctx: &ScFuncContext) {
+pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
     let p = ctx.params();
     let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
@@ -34,7 +34,7 @@ pub fn func_donate(ctx: &ScFuncContext) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-pub fn func_withdraw(ctx: &ScFuncContext) {
+pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
     // only SC creator can withdraw donated funds
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -53,7 +53,7 @@ pub fn func_withdraw(ctx: &ScFuncContext) {
     ctx.transfer_to_address(&sc_creator, &ScTransfers::new(&ScColor::IOTA, amount));
 }
 
-pub fn view_donations(ctx: &ScViewContext) {
+pub fn view_donations(ctx: &ScViewContext, params: &ViewDonationsParams) {
     let state = ctx.state();
     let largest_donation = state.get_int(VAR_MAX_DONATION);
     let total_donated = state.get_int(VAR_TOTAL_DONATION);

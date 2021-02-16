@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_divide(ctx: &ScFuncContext) {
+pub fn func_divide(ctx: &ScFuncContext, params: &FuncDivideParams) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");
@@ -34,7 +34,7 @@ pub fn func_divide(ctx: &ScFuncContext) {
     }
 }
 
-pub fn func_member(ctx: &ScFuncContext) {
+pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
     // only creator can add members
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 

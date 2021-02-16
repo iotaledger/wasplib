@@ -9,7 +9,7 @@ const CONTRACT_NAME_DEPLOYED: &str = "exampleDeployTR";
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
 const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
 
-pub fn func_call_on_chain(ctx: &ScFuncContext) {
+pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
     ctx.log("calling callOnChain");
 
     let p = ctx.params();
@@ -46,7 +46,7 @@ pub fn func_call_on_chain(ctx: &ScFuncContext) {
     ctx.results().get_int(PARAM_INT_VALUE).set_value(ret_val.value());
 }
 
-pub fn func_check_context_from_full_ep(ctx: &ScFuncContext) {
+pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, params: &FuncCheckContextFromFullEPParams) {
     ctx.log("calling checkContextFromFullEP");
 
     let p = ctx.params();
@@ -65,15 +65,15 @@ pub fn func_check_context_from_full_ep(ctx: &ScFuncContext) {
     ctx.require(param_contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
-pub fn func_do_nothing(ctx: &ScFuncContext) {
+pub fn func_do_nothing(ctx: &ScFuncContext, params: &FuncDoNothingParams) {
     ctx.log("calling doNothing");
 }
 
-pub fn func_init(ctx: &ScFuncContext) {
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
     ctx.log("calling init");
 }
 
-pub fn func_pass_types_full(ctx: &ScFuncContext) {
+pub fn func_pass_types_full(ctx: &ScFuncContext, params: &FuncPassTypesFullParams) {
     ctx.log("calling passTypesFull");
 
     let p = ctx.params();
@@ -102,7 +102,7 @@ pub fn func_pass_types_full(ctx: &ScFuncContext) {
     ctx.require(param_hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
 
-pub fn func_run_recursion(ctx: &ScFuncContext) {
+pub fn func_run_recursion(ctx: &ScFuncContext, params: &FuncRunRecursionParams) {
     ctx.log("calling runRecursion");
 
     let p = ctx.params();
@@ -123,7 +123,7 @@ pub fn func_run_recursion(ctx: &ScFuncContext) {
     ctx.results().get_int(PARAM_INT_VALUE).set_value(depth - 1);
 }
 
-pub fn func_send_to_address(ctx: &ScFuncContext) {
+pub fn func_send_to_address(ctx: &ScFuncContext, params: &FuncSendToAddressParams) {
     ctx.log("calling sendToAddress");
 
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
@@ -136,7 +136,7 @@ pub fn func_send_to_address(ctx: &ScFuncContext) {
     ctx.transfer_to_address(&param_address.value(), &ctx.balances());
 }
 
-pub fn func_set_int(ctx: &ScFuncContext) {
+pub fn func_set_int(ctx: &ScFuncContext, params: &FuncSetIntParams) {
     ctx.log("calling setInt");
 
     let p = ctx.params();
@@ -149,27 +149,27 @@ pub fn func_set_int(ctx: &ScFuncContext) {
     ctx.state().get_int(&param_name.value()).set_value(param_int_value.value());
 }
 
-pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext) {
+pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, params: &FuncTestCallPanicFullEPParams) {
     ctx.log("calling testCallPanicFullEP");
     ctx.call_self(HFUNC_TEST_PANIC_FULL_EP, None, None);
 }
 
-pub fn func_test_call_panic_view_epfrom_full(ctx: &ScFuncContext) {
+pub fn func_test_call_panic_view_epfrom_full(ctx: &ScFuncContext, params: &FuncTestCallPanicViewEPFromFullParams) {
     ctx.log("calling testCallPanicViewEPFromFull");
     ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None, None);
 }
 
-pub fn func_test_chain_owner_idfull(ctx: &ScFuncContext) {
+pub fn func_test_chain_owner_idfull(ctx: &ScFuncContext, params: &FuncTestChainOwnerIDFullParams) {
     ctx.log("calling testChainOwnerIDFull");
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
-pub fn func_test_contract_idfull(ctx: &ScFuncContext) {
+pub fn func_test_contract_idfull(ctx: &ScFuncContext, params: &FuncTestContractIDFullParams) {
     ctx.log("calling testContractIDFull");
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
-pub fn func_test_event_log_deploy(ctx: &ScFuncContext) {
+pub fn func_test_event_log_deploy(ctx: &ScFuncContext, params: &FuncTestEventLogDeployParams) {
     ctx.log("calling testEventLogDeploy");
     //Deploy the same contract with another name
     let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
@@ -177,12 +177,12 @@ pub fn func_test_event_log_deploy(ctx: &ScFuncContext) {
                "test contract deploy log", None)
 }
 
-pub fn func_test_event_log_event_data(ctx: &ScFuncContext) {
+pub fn func_test_event_log_event_data(ctx: &ScFuncContext, params: &FuncTestEventLogEventDataParams) {
     ctx.log("calling testEventLogEventData");
     ctx.event("[Event] - Testing Event...");
 }
 
-pub fn func_test_event_log_generic_data(ctx: &ScFuncContext) {
+pub fn func_test_event_log_generic_data(ctx: &ScFuncContext, params: &FuncTestEventLogGenericDataParams) {
     ctx.log("calling testEventLogGenericData");
 
     let p = ctx.params();
@@ -194,12 +194,12 @@ pub fn func_test_event_log_generic_data(ctx: &ScFuncContext) {
     ctx.event(&event)
 }
 
-pub fn func_test_panic_full_ep(ctx: &ScFuncContext) {
+pub fn func_test_panic_full_ep(ctx: &ScFuncContext, params: &FuncTestPanicFullEPParams) {
     ctx.log("calling testPanicFullEP");
     ctx.panic(MSG_FULL_PANIC)
 }
 
-pub fn func_withdraw_to_chain(ctx: &ScFuncContext) {
+pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainParams) {
     ctx.log("calling withdrawToChain");
 
     let p = ctx.params();
@@ -221,7 +221,7 @@ pub fn func_withdraw_to_chain(ctx: &ScFuncContext) {
     // TODO how to check if post was successful
 }
 
-pub fn view_check_context_from_view_ep(ctx: &ScViewContext) {
+pub fn view_check_context_from_view_ep(ctx: &ScViewContext, params: &ViewCheckContextFromViewEPParams) {
     ctx.log("calling checkContextFromViewEP");
 
     let p = ctx.params();
@@ -238,7 +238,7 @@ pub fn view_check_context_from_view_ep(ctx: &ScViewContext) {
     ctx.require(param_contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
-pub fn view_fibonacci(ctx: &ScViewContext) {
+pub fn view_fibonacci(ctx: &ScViewContext, params: &ViewFibonacciParams) {
     ctx.log("calling fibonacci");
 
     let p = ctx.params();
@@ -264,13 +264,13 @@ pub fn view_fibonacci(ctx: &ScViewContext) {
     ctx.results().get_int(PARAM_INT_VALUE).set_value(n1 + n2);
 }
 
-pub fn view_get_counter(ctx: &ScViewContext) {
+pub fn view_get_counter(ctx: &ScViewContext, params: &ViewGetCounterParams) {
     ctx.log("calling getCounter");
     let counter = ctx.state().get_int(VAR_COUNTER);
     ctx.results().get_int(VAR_COUNTER).set_value(counter.value());
 }
 
-pub fn view_get_int(ctx: &ScViewContext) {
+pub fn view_get_int(ctx: &ScViewContext, params: &ViewGetIntParams) {
     ctx.log("calling getInt");
 
     let p = ctx.params();
@@ -284,11 +284,11 @@ pub fn view_get_int(ctx: &ScViewContext) {
     ctx.results().get_int(&name).set_value(value.value());
 }
 
-pub fn view_just_view(ctx: &ScViewContext) {
+pub fn view_just_view(ctx: &ScViewContext, params: &ViewJustViewParams) {
     ctx.log("calling justView");
 }
 
-pub fn view_pass_types_view(ctx: &ScViewContext) {
+pub fn view_pass_types_view(ctx: &ScViewContext, params: &ViewPassTypesViewParams) {
     ctx.log("calling passTypesView");
 
     let p = ctx.params();
@@ -318,27 +318,27 @@ pub fn view_pass_types_view(ctx: &ScViewContext) {
     ctx.require(param_hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
 
-pub fn view_test_call_panic_view_epfrom_view(ctx: &ScViewContext) {
+pub fn view_test_call_panic_view_epfrom_view(ctx: &ScViewContext, params: &ViewTestCallPanicViewEPFromViewParams) {
     ctx.log("calling testCallPanicViewEPFromView");
     ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None);
 }
 
-pub fn view_test_chain_owner_idview(ctx: &ScViewContext) {
+pub fn view_test_chain_owner_idview(ctx: &ScViewContext, params: &ViewTestChainOwnerIDViewParams) {
     ctx.log("calling testChainOwnerIDView");
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
-pub fn view_test_contract_idview(ctx: &ScViewContext) {
+pub fn view_test_contract_idview(ctx: &ScViewContext, params: &ViewTestContractIDViewParams) {
     ctx.log("calling testContractIDView");
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
-pub fn view_test_panic_view_ep(ctx: &ScViewContext) {
+pub fn view_test_panic_view_ep(ctx: &ScViewContext, params: &ViewTestPanicViewEPParams) {
     ctx.log("calling testPanicViewEP");
     ctx.panic(MSG_VIEW_PANIC)
 }
 
-pub fn view_test_sandbox_call(ctx: &ScViewContext) {
+pub fn view_test_sandbox_call(ctx: &ScViewContext, params: &ViewTestSandboxCallParams) {
     ctx.log("calling testSandboxCall");
     let ret = ctx.call(CORE_ROOT, CORE_ROOT_VIEW_GET_CHAIN_INFO, None);
     let desc = ret.get_string("d").value();

@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScFuncContext) {
+pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
     let p = ctx.params();
     let param_description = p.get_string(PARAM_DESCRIPTION);
     let param_user_defined = p.get_string(PARAM_USER_DEFINED);
@@ -40,7 +40,7 @@ pub fn func_mint_supply(ctx: &ScFuncContext) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-pub fn func_transfer_ownership(ctx: &ScFuncContext) {
+pub fn func_transfer_ownership(ctx: &ScFuncContext, params: &FuncTransferOwnershipParams) {
     //TODO the one who can transfer token ownership
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -51,7 +51,7 @@ pub fn func_transfer_ownership(ctx: &ScFuncContext) {
     //TODO
 }
 
-pub fn func_update_metadata(ctx: &ScFuncContext) {
+pub fn func_update_metadata(ctx: &ScFuncContext, params: &FuncUpdateMetadataParams) {
     //TODO the one who can change the token info
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -62,7 +62,7 @@ pub fn func_update_metadata(ctx: &ScFuncContext) {
     //TODO
 }
 
-pub fn view_get_info(ctx: &ScViewContext) {
+pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
     let p = ctx.params();
     let param_color = p.get_color(PARAM_COLOR);
     ctx.require(param_color.exists(), "missing mandatory color");

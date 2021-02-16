@@ -15,15 +15,102 @@ mod inccounter;
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
-    exports.add_func(FUNC_CALL_INCREMENT, func_call_increment);
-    exports.add_func(FUNC_CALL_INCREMENT_RECURSE5X, func_call_increment_recurse5x);
-    exports.add_func(FUNC_INCREMENT, func_increment);
-    exports.add_func(FUNC_INIT, func_init);
-    exports.add_func(FUNC_LOCAL_STATE_INTERNAL_CALL, func_local_state_internal_call);
-    exports.add_func(FUNC_LOCAL_STATE_POST, func_local_state_post);
-    exports.add_func(FUNC_LOCAL_STATE_SANDBOX_CALL, func_local_state_sandbox_call);
-    exports.add_func(FUNC_POST_INCREMENT, func_post_increment);
-    exports.add_func(FUNC_REPEAT_MANY, func_repeat_many);
-    exports.add_func(FUNC_WHEN_MUST_INCREMENT, func_when_must_increment);
-    exports.add_view(VIEW_GET_COUNTER, view_get_counter);
+    exports.add_func(FUNC_CALL_INCREMENT, func_call_increment_thunk);
+    exports.add_func(FUNC_CALL_INCREMENT_RECURSE5X, func_call_increment_recurse5x_thunk);
+    exports.add_func(FUNC_INCREMENT, func_increment_thunk);
+    exports.add_func(FUNC_INIT, func_init_thunk);
+    exports.add_func(FUNC_LOCAL_STATE_INTERNAL_CALL, func_local_state_internal_call_thunk);
+    exports.add_func(FUNC_LOCAL_STATE_POST, func_local_state_post_thunk);
+    exports.add_func(FUNC_LOCAL_STATE_SANDBOX_CALL, func_local_state_sandbox_call_thunk);
+    exports.add_func(FUNC_POST_INCREMENT, func_post_increment_thunk);
+    exports.add_func(FUNC_REPEAT_MANY, func_repeat_many_thunk);
+    exports.add_func(FUNC_WHEN_MUST_INCREMENT, func_when_must_increment_thunk);
+    exports.add_view(VIEW_GET_COUNTER, view_get_counter_thunk);
+}
+
+pub struct FuncCallIncrementParams {}
+
+fn func_call_increment_thunk(ctx: &ScFuncContext) {
+    let params = FuncCallIncrementParams {};
+    func_call_increment(ctx, &params);
+}
+
+pub struct FuncCallIncrementRecurse5xParams {}
+
+fn func_call_increment_recurse5x_thunk(ctx: &ScFuncContext) {
+    let params = FuncCallIncrementRecurse5xParams {};
+    func_call_increment_recurse5x(ctx, &params);
+}
+
+pub struct FuncIncrementParams {}
+
+fn func_increment_thunk(ctx: &ScFuncContext) {
+    let params = FuncIncrementParams {};
+    func_increment(ctx, &params);
+}
+
+pub struct FuncInitParams {
+    pub counter: ScImmutableInt, // value to initialize state counter with
+}
+
+fn func_init_thunk(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let params = FuncInitParams {
+        counter: p.get_int(PARAM_COUNTER),
+    };
+    func_init(ctx, &params);
+}
+
+pub struct FuncLocalStateInternalCallParams {}
+
+fn func_local_state_internal_call_thunk(ctx: &ScFuncContext) {
+    let params = FuncLocalStateInternalCallParams {};
+    func_local_state_internal_call(ctx, &params);
+}
+
+pub struct FuncLocalStatePostParams {}
+
+fn func_local_state_post_thunk(ctx: &ScFuncContext) {
+    let params = FuncLocalStatePostParams {};
+    func_local_state_post(ctx, &params);
+}
+
+pub struct FuncLocalStateSandboxCallParams {}
+
+fn func_local_state_sandbox_call_thunk(ctx: &ScFuncContext) {
+    let params = FuncLocalStateSandboxCallParams {};
+    func_local_state_sandbox_call(ctx, &params);
+}
+
+pub struct FuncPostIncrementParams {}
+
+fn func_post_increment_thunk(ctx: &ScFuncContext) {
+    let params = FuncPostIncrementParams {};
+    func_post_increment(ctx, &params);
+}
+
+pub struct FuncRepeatManyParams {
+    pub num_repeats: ScImmutableInt, // number of times to recursively call myself
+}
+
+fn func_repeat_many_thunk(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let params = FuncRepeatManyParams {
+        num_repeats: p.get_int(PARAM_NUM_REPEATS),
+    };
+    func_repeat_many(ctx, &params);
+}
+
+pub struct FuncWhenMustIncrementParams {}
+
+fn func_when_must_increment_thunk(ctx: &ScFuncContext) {
+    let params = FuncWhenMustIncrementParams {};
+    func_when_must_increment(ctx, &params);
+}
+
+pub struct ViewGetCounterParams {}
+
+fn view_get_counter_thunk(ctx: &ScViewContext) {
+    let params = ViewGetCounterParams {};
+    view_get_counter(ctx, &params);
 }

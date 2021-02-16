@@ -12,7 +12,7 @@ use crate::*;
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-pub fn func_approve(ctx: &ScFuncContext) {
+pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
     ctx.trace("erc20.approve");
 
     let p = ctx.params();
@@ -37,7 +37,7 @@ pub fn func_approve(ctx: &ScFuncContext) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-pub fn func_init(ctx: &ScFuncContext) {
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
     ctx.trace("erc20.on_init.begin");
 
     let p = ctx.params();
@@ -66,7 +66,7 @@ pub fn func_init(ctx: &ScFuncContext) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-pub fn func_transfer(ctx: &ScFuncContext) {
+pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
     ctx.trace("erc20.transfer");
 
     let p = ctx.params();
@@ -99,7 +99,7 @@ pub fn func_transfer(ctx: &ScFuncContext) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-pub fn func_transfer_from(ctx: &ScFuncContext) {
+pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) {
     ctx.trace("erc20.transfer_from");
 
     let p = ctx.params();
@@ -144,7 +144,7 @@ pub fn func_transfer_from(ctx: &ScFuncContext) {
 // - PARAM_DELEGATION: agentID
 // Output:
 // - PARAM_AMOUNT: i64
-pub fn view_allowance(ctx: &ScViewContext) {
+pub fn view_allowance(ctx: &ScViewContext, params: &ViewAllowanceParams) {
     ctx.trace("erc20.allowance");
 
     let p = ctx.params();
@@ -163,7 +163,7 @@ pub fn view_allowance(ctx: &ScViewContext) {
 // the view returns balance of the token held in the account
 // Input:
 // - PARAM_ACCOUNT: agentID
-pub fn view_balance_of(ctx: &ScViewContext) {
+pub fn view_balance_of(ctx: &ScViewContext, params: &ViewBalanceOfParams) {
     let p = ctx.params();
     let param_account = p.get_agent_id(PARAM_ACCOUNT);
     ctx.require(param_account.exists(), "missing mandatory account");
@@ -176,7 +176,7 @@ pub fn view_balance_of(ctx: &ScViewContext) {
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
-pub fn view_total_supply(ctx: &ScViewContext) {
+pub fn view_total_supply(ctx: &ScViewContext, params: &ViewTotalSupplyParams) {
     let supply = ctx.state().get_int(VAR_SUPPLY).value();
     ctx.results().get_int(PARAM_SUPPLY).set_value(supply);
 }
