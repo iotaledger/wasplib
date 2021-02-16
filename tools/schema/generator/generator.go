@@ -16,6 +16,9 @@ type Generator struct {
 	schema *JsonSchema
 }
 
+//TODO generate initial folders and schema.json
+//TODO generate initial tests
+
 var ModuleCwd string
 var ModuleName string
 var ModulePath string

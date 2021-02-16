@@ -14,6 +14,7 @@ import (
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
+	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/dividend"
 	"github.com/iotaledger/wasplib/contracts/rust/donatewithfeedback"
 	"github.com/iotaledger/wasplib/contracts/rust/erc20"
@@ -23,7 +24,6 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
-	"github.com/iotaledger/wasplib/packages/vm/wasmclient"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 	"strings"
@@ -188,7 +188,7 @@ func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
 // deploy the specified contract on the chain
 func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string, params ...interface{}) error {
 	if WasmRunner == WasmRunnerGoDirect {
-		wasmproc.GoWasmVM = wasmclient.NewWasmGoVM(ScForGoVM)
+		wasmproc.GoWasmVM = common.NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(sigScheme, []byte("go:"+contractName))
 		if err != nil {
 			return err

@@ -16,25 +16,27 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
-	"github.com/iotaledger/wasplib/packages/vm/wasmclient"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 const (
-	Debug      = true
-	StackTrace = true
-	TraceHost  = true
+	Debug      = false
+	StackTrace = false
+	TraceHost  = false
 )
 
-const WasmRunner = 1
+//TODO update contracts/readme
+//TODO figure out how to interrupt wasmtime VM
+
+
+const WasmRunner = 0
 
 var (
 	ContractAccount coretypes.AgentID
 	ContractId      coretypes.ContractID
 	CreatorWallet   signaturescheme.SignatureScheme
 
-	//TODO update contracts/readme
 	//TODO remove hardcoded dependency
 	ScForGoVM = map[string]func(){
 		"dividend":           dividend.OnLoad,
@@ -49,7 +51,7 @@ var (
 	}
 )
 
-func DeployContract(t *testing.T, scName string) *solo.Chain {
+func StartChainAndDeployWasmContractByName(t *testing.T, scName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
 	CreatorWallet = env.NewSignatureSchemeWithFunds()
@@ -58,7 +60,7 @@ func DeployContract(t *testing.T, scName string) *solo.Chain {
 	ContractAccount = coretypes.NewAgentIDFromContractID(ContractId)
 
 	if WasmRunner == 1 {
-		wasmproc.GoWasmVM = wasmclient.NewWasmGoVM(ScForGoVM)
+		wasmproc.GoWasmVM = NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(CreatorWallet, []byte("go:"+scName))
 		require.NoError(t, err)
 		err = chain.DeployContract(CreatorWallet, scName, hprog)

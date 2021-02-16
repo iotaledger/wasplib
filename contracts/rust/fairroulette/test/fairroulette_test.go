@@ -11,11 +11,11 @@ import (
 )
 
 func setupTest(t *testing.T) *solo.Chain {
-	return common.DeployContract(t, ScName)
+	return common.StartChainAndDeployWasmContractByName(t, ScName)
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.DeployContract(t, ScName)
+	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
 	_, err := chain.FindContract(ScName)
 	require.NoError(t, err)
 }
