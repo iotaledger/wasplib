@@ -7,7 +7,7 @@
 
 package helloworld
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -18,7 +18,7 @@ func OnLoad() {
 type FuncHelloWorldParams struct {
 }
 
-func funcHelloWorldThunk(ctx *wasmlib.ScFuncContext) {
+func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncHelloWorldParams{
 	}
 	funcHelloWorld(ctx, params)
@@ -27,7 +27,7 @@ func funcHelloWorldThunk(ctx *wasmlib.ScFuncContext) {
 type ViewGetHelloWorldParams struct {
 }
 
-func viewGetHelloWorldThunk(ctx *wasmlib.ScViewContext) {
+func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewGetHelloWorldParams{
 	}
 	viewGetHelloWorld(ctx, params)

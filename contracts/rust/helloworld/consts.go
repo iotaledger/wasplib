@@ -7,7 +7,7 @@
 
 package helloworld
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "helloworld"
 const ScDescription = "The ubiquitous hello world demo"

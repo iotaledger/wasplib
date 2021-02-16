@@ -6,13 +6,13 @@
 
 package erc20
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 // Sets the allowance value for delegated account
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-func funcApprove(ctx *wasmlib.ScFuncContext, params *FuncApproveParams) {
+func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
 	ctx.Trace("erc20.approve")
 
 	delegation := params.Delegation.Value()
@@ -30,7 +30,7 @@ func funcApprove(ctx *wasmlib.ScFuncContext, params *FuncApproveParams) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-func funcInit(ctx *wasmlib.ScFuncContext, params *FuncInitParams) {
+func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 	ctx.Trace("erc20.on_init.begin")
 
 	supply := params.Supply.Value()
@@ -52,7 +52,7 @@ func funcInit(ctx *wasmlib.ScFuncContext, params *FuncInitParams) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-func funcTransfer(ctx *wasmlib.ScFuncContext, params *FuncTransferParams) {
+func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
 	ctx.Trace("erc20.transfer")
 
 	amount := params.Amount.Value()
@@ -78,7 +78,7 @@ func funcTransfer(ctx *wasmlib.ScFuncContext, params *FuncTransferParams) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-func funcTransferFrom(ctx *wasmlib.ScFuncContext, params *FuncTransferFromParams) {
+func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams) {
 	ctx.Trace("erc20.transfer_from")
 
 	account := params.Account.Value()
@@ -113,7 +113,7 @@ func funcTransferFrom(ctx *wasmlib.ScFuncContext, params *FuncTransferFromParams
 // - PARAM_DELEGATION: agentID
 // Output:
 // - PARAM_AMOUNT: i64
-func viewAllowance(ctx *wasmlib.ScViewContext, params *ViewAllowanceParams) {
+func viewAllowance(ctx wasmlib.ScViewContext, params *ViewAllowanceParams) {
 	ctx.Trace("erc20.allowance")
 
 	// all allowances of the address 'owner' are stored in the map of the same name
@@ -125,7 +125,7 @@ func viewAllowance(ctx *wasmlib.ScViewContext, params *ViewAllowanceParams) {
 // the view returns balance of the token held in the account
 // Input:
 // - PARAM_ACCOUNT: agentID
-func viewBalanceOf(ctx *wasmlib.ScViewContext, params *ViewBalanceOfParams) {
+func viewBalanceOf(ctx wasmlib.ScViewContext, params *ViewBalanceOfParams) {
 	balances := ctx.State().GetMap(VarBalances)
 	balance := balances.GetInt(params.Account.Value()).Value()
 	ctx.Results().GetInt(ParamAmount).SetValue(balance)
@@ -134,7 +134,7 @@ func viewBalanceOf(ctx *wasmlib.ScViewContext, params *ViewBalanceOfParams) {
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
-func viewTotalSupply(ctx *wasmlib.ScViewContext, params *ViewTotalSupplyParams) {
+func viewTotalSupply(ctx wasmlib.ScViewContext, params *ViewTotalSupplyParams) {
 	supply := ctx.State().GetInt(VarSupply).Value()
 	ctx.Results().GetInt(ParamSupply).SetValue(supply)
 }

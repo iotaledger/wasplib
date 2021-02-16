@@ -9,8 +9,8 @@
 
 package main
 
-import "github.com/iotaledger/wasp/packages/vm/wasmclient"
-import "github.com/iotaledger/wasp/contracts/rust/erc20"
+import "github.com/iotaledger/wasplib/packages/vm/wasmclient"
+import "github.com/iotaledger/wasplib/contracts/rust/erc20"
 
 func main() {
 }

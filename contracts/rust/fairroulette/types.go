@@ -7,11 +7,11 @@
 
 package fairroulette
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type Bet struct {
 	Amount int64
-	Better *wasmlib.ScAgentId
+	Better wasmlib.ScAgentId
 	Number int64
 }
 

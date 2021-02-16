@@ -9,8 +9,8 @@
 
 package main
 
-import "github.com/iotaledger/wasp/packages/vm/wasmclient"
-import "github.com/iotaledger/wasp/contracts/rust/dividend"
+import "github.com/iotaledger/wasplib/packages/vm/wasmclient"
+import "github.com/iotaledger/wasplib/contracts/rust/dividend"
 
 func main() {
 }

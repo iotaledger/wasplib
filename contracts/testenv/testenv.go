@@ -6,15 +6,6 @@ package testenv
 import (
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
-	"github.com/iotaledger/wasp/contracts/rust/dividend"
-	"github.com/iotaledger/wasp/contracts/rust/donatewithfeedback"
-	"github.com/iotaledger/wasp/contracts/rust/erc20"
-	"github.com/iotaledger/wasp/contracts/rust/fairauction"
-	"github.com/iotaledger/wasp/contracts/rust/fairroulette"
-	"github.com/iotaledger/wasp/contracts/rust/helloworld"
-	"github.com/iotaledger/wasp/contracts/rust/inccounter"
-	"github.com/iotaledger/wasp/contracts/rust/testcore"
-	"github.com/iotaledger/wasp/contracts/rust/tokenregistry"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/dict"
@@ -22,8 +13,17 @@ import (
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
-	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
+	"github.com/iotaledger/wasplib/contracts/rust/dividend"
+	"github.com/iotaledger/wasplib/contracts/rust/donatewithfeedback"
+	"github.com/iotaledger/wasplib/contracts/rust/erc20"
+	"github.com/iotaledger/wasplib/contracts/rust/fairauction"
+	"github.com/iotaledger/wasplib/contracts/rust/fairroulette"
+	"github.com/iotaledger/wasplib/contracts/rust/helloworld"
+	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
+	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
@@ -202,7 +202,7 @@ func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureSche
 	if WasmRunner == WasmRunnerGo {
 		wasmFile = strings.Replace(wasmFile, "_bg", "_go", -1)
 	}
-	wasmFile = util.LocateFile(wasmFile, contractName + "/pkg")
+	wasmFile = util.LocateFile(wasmFile, contractName+"/pkg")
 	return chain.DeployWasmContract(sigScheme, name, wasmFile, filterKeys(params...)...)
 }
 

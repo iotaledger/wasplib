@@ -7,7 +7,7 @@
 
 package dividend
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "dividend"
 const ScHname = wasmlib.ScHname(0xcce2e239)

@@ -4,10 +4,10 @@
 package donatewithfeedback
 
 import (
-	"github.com/iotaledger/wasp/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcDonate(ctx *wasmlib.ScFuncContext, params *FuncDonateParams) {
+func funcDonate(ctx wasmlib.ScFuncContext, params *FuncDonateParams) {
 	donation := &Donation{
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
@@ -34,7 +34,7 @@ func funcDonate(ctx *wasmlib.ScFuncContext, params *FuncDonateParams) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func funcWithdraw(ctx *wasmlib.ScFuncContext, params *FuncWithdrawParams) {
+func funcWithdraw(ctx wasmlib.ScFuncContext, params *FuncWithdrawParams) {
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
 	amount := params.Amount.Value()
 	if amount == 0 || amount > balance {
@@ -49,7 +49,7 @@ func funcWithdraw(ctx *wasmlib.ScFuncContext, params *FuncWithdrawParams) {
 	ctx.TransferToAddress(scCreator, wasmlib.NewScTransfer(wasmlib.IOTA, amount))
 }
 
-func viewDonations(ctx *wasmlib.ScViewContext, params *ViewDonationsParams) {
+func viewDonations(ctx wasmlib.ScViewContext, params *ViewDonationsParams) {
 	state := ctx.State()
 	largestDonation := state.GetInt(VarMaxDonation)
 	totalDonated := state.GetInt(VarTotalDonation)

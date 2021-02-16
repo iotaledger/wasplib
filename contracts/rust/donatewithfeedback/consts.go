@@ -7,7 +7,7 @@
 
 package donatewithfeedback
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "donatewithfeedback"
 const ScHname = wasmlib.ScHname(0x696d7f66)

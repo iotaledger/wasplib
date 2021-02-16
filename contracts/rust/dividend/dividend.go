@@ -4,10 +4,10 @@
 package dividend
 
 import (
-	"github.com/iotaledger/wasp/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcDivide(ctx *wasmlib.ScFuncContext, params *FuncDivideParams) {
+func funcDivide(ctx wasmlib.ScFuncContext, params *FuncDivideParams) {
 	amount := ctx.Balances().Balance(wasmlib.IOTA)
 	if amount == 0 {
 		ctx.Panic("Nothing to divide")
@@ -35,7 +35,7 @@ func funcDivide(ctx *wasmlib.ScFuncContext, params *FuncDivideParams) {
 	}
 }
 
-func funcMember(ctx *wasmlib.ScFuncContext, params *FuncMemberParams) {
+func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
 	member := &Member{
 		Address: params.Address.Value(),
 		Factor:  params.Factor.Value(),
@@ -47,7 +47,7 @@ func funcMember(ctx *wasmlib.ScFuncContext, params *FuncMemberParams) {
 	size := members.Length()
 	for i := int32(0); i < size; i++ {
 		m := NewMemberFromBytes(members.GetBytes(i).Value())
-		if m.Address.Equals(member.Address) {
+		if m.Address == member.Address {
 			total -= m.Factor
 			total += member.Factor
 			totalFactor.SetValue(total)

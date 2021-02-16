@@ -59,7 +59,7 @@ impl ScMutableAddressArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableAddressArray {
-        ScImmutableAddressArray{obj_id:self.obj_id}
+        ScImmutableAddressArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -118,7 +118,7 @@ impl ScMutableAgentIdArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableAgentIdArray {
-        ScImmutableAgentIdArray{obj_id:self.obj_id}
+        ScImmutableAgentIdArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -177,7 +177,7 @@ impl ScMutableBytesArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableBytesArray {
-        ScImmutableBytesArray{obj_id:self.obj_id}
+        ScImmutableBytesArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -266,7 +266,7 @@ impl ScMutableColorArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableColorArray {
-        ScImmutableColorArray{obj_id:self.obj_id}
+        ScImmutableColorArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -355,7 +355,7 @@ impl ScMutableHashArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableHashArray {
-        ScImmutableHashArray{obj_id:self.obj_id}
+        ScImmutableHashArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -445,7 +445,7 @@ impl ScMutableIntArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableIntArray {
-        ScImmutableIntArray{obj_id:self.obj_id}
+        ScImmutableIntArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -577,7 +577,7 @@ impl ScMutableMap {
 
     // get immutable version of map
     pub fn immutable(&self) -> ScImmutableMap {
-        ScImmutableMap{obj_id:self.obj_id}
+        ScImmutableMap { obj_id: self.obj_id }
     }
 }
 
@@ -602,7 +602,7 @@ impl ScMutableMapArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableMapArray {
-        ScImmutableMapArray{obj_id:self.obj_id}
+        ScImmutableMapArray { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -662,7 +662,7 @@ impl ScMutableStringArray {
 
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableStringArray {
-        ScImmutableStringArray{obj_id:self.obj_id}
+        ScImmutableStringArray { obj_id: self.obj_id }
     }
 
     // number of items in array

@@ -6,7 +6,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/iotaledger/wasp/tools/schema/generator"
+	"github.com/iotaledger/wasplib/tools/schema/generator"
 	"os"
 )
 

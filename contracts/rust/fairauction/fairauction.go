@@ -3,7 +3,7 @@
 
 package fairauction
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const DurationDefault = 60
 const DurationMin = 1
@@ -13,7 +13,7 @@ const OwnerMarginDefault = 50
 const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
-func funcFinalizeAuction(ctx *wasmlib.ScFuncContext, params *FuncFinalizeAuctionParams) {
+func funcFinalizeAuction(ctx wasmlib.ScFuncContext, params *FuncFinalizeAuctionParams) {
 	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
@@ -47,7 +47,7 @@ func funcFinalizeAuction(ctx *wasmlib.ScFuncContext, params *FuncFinalizeAuction
 	size := bidderList.Length()
 	for i := int32(0); i < size; i++ {
 		bidder := bidderList.GetAgentId(i).Value()
-		if !bidder.Equals(auction.HighestBidder) {
+		if bidder != auction.HighestBidder {
 			loser := bidders.GetBytes(bidder)
 			bid := NewBidFromBytes(loser.Value())
 			transfer(ctx, bidder, wasmlib.IOTA, bid.Amount)
@@ -60,7 +60,7 @@ func funcFinalizeAuction(ctx *wasmlib.ScFuncContext, params *FuncFinalizeAuction
 	transfer(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
 
-func funcPlaceBid(ctx *wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
+func funcPlaceBid(ctx wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
 	if bidAmount == 0 {
 		ctx.Panic("Missing bid amount")
@@ -109,7 +109,7 @@ func funcPlaceBid(ctx *wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 	}
 }
 
-func funcSetOwnerMargin(ctx *wasmlib.ScFuncContext, params *FuncSetOwnerMarginParams) {
+func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, params *FuncSetOwnerMarginParams) {
 	ownerMargin := params.OwnerMargin.Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
@@ -121,9 +121,9 @@ func funcSetOwnerMargin(ctx *wasmlib.ScFuncContext, params *FuncSetOwnerMarginPa
 	ctx.Log("Updated owner margin")
 }
 
-func funcStartAuction(ctx *wasmlib.ScFuncContext, params *FuncStartAuctionParams) {
+func funcStartAuction(ctx wasmlib.ScFuncContext, params *FuncStartAuctionParams) {
 	color := params.Color.Value()
-	if color.Equals(wasmlib.IOTA) || color.Equals(wasmlib.MINT) {
+	if color == wasmlib.IOTA || color == wasmlib.MINT {
 		ctx.Panic("Reserved auction token color")
 	}
 	numTokens := ctx.Incoming().Balance(color)
@@ -183,7 +183,7 @@ func funcStartAuction(ctx *wasmlib.ScFuncContext, params *FuncStartAuctionParams
 		Description:   description,
 		Duration:      duration,
 		HighestBid:    -1,
-		HighestBidder: &wasmlib.ScAgentId{},
+		HighestBidder: wasmlib.ScAgentId{},
 		MinimumBid:    minimumBid,
 		NumTokens:     numTokens,
 		OwnerMargin:   ownerMargin,
@@ -203,7 +203,7 @@ func funcStartAuction(ctx *wasmlib.ScFuncContext, params *FuncStartAuctionParams
 	ctx.Log("New auction started")
 }
 
-func viewGetInfo(ctx *wasmlib.ScViewContext, params *ViewGetInfoParams) {
+func viewGetInfo(ctx wasmlib.ScViewContext, params *ViewGetInfoParams) {
 	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
@@ -231,7 +231,7 @@ func viewGetInfo(ctx *wasmlib.ScViewContext, params *ViewGetInfoParams) {
 	results.GetInt(VarBidders).SetValue(int64(bidderList.Length()))
 }
 
-func transfer(ctx *wasmlib.ScFuncContext, agent *wasmlib.ScAgentId, color *wasmlib.ScColor, amount int64) {
+func transfer(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentId, color wasmlib.ScColor, amount int64) {
 	if agent.IsAddress() {
 		// send back to original Tangle address
 		ctx.TransferToAddress(agent.Address(), wasmlib.NewScTransfer(color, amount))

@@ -7,7 +7,7 @@
 
 package fairroulette
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -20,9 +20,9 @@ func OnLoad() {
 type FuncLockBetsParams struct {
 }
 
-func funcLockBetsThunk(ctx *wasmlib.ScFuncContext) {
+func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
-	ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
 
 	params := &FuncLockBetsParams{
 	}
@@ -32,9 +32,9 @@ func funcLockBetsThunk(ctx *wasmlib.ScFuncContext) {
 type FuncPayWinnersParams struct {
 }
 
-func funcPayWinnersThunk(ctx *wasmlib.ScFuncContext) {
+func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
-	ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
 
 	params := &FuncPayWinnersParams{
 	}
@@ -45,7 +45,7 @@ type FuncPlaceBetParams struct {
 	Number wasmlib.ScImmutableInt // the number a better bets on
 }
 
-func funcPlaceBetThunk(ctx *wasmlib.ScFuncContext) {
+func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncPlaceBetParams{
 		Number: p.GetInt(ParamNumber),
@@ -58,9 +58,9 @@ type FuncPlayPeriodParams struct {
 	PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
 }
 
-func funcPlayPeriodThunk(ctx *wasmlib.ScFuncContext) {
+func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can update the play period
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncPlayPeriodParams{

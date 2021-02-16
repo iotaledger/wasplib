@@ -9,7 +9,10 @@ use crate::types::*;
 const MAX_NUMBER: i64 = 5;
 const DEFAULT_PLAY_PERIOD: i64 = 120;
 
-pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
+pub fn func_lock_bets(ctx: &ScFuncContext) {
+    // only SC itself can invoke this function
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+
     // move all current bets to the locked_bets array
     let state = ctx.state();
     let bets = state.get_bytes_array(VAR_BETS);
@@ -30,7 +33,10 @@ pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
     });
 }
 
-pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
+pub fn func_pay_winners(ctx: &ScFuncContext) {
+    // only SC itself can invoke this function
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+
     let sc_id = ctx.contract_id().as_agent_id();
     let winning_number = ctx.utility().random(5) + 1;
     let state = ctx.state();
@@ -83,12 +89,17 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     }
 }
 
-pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
+pub fn func_place_bet(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let param_number = p.get_int(PARAM_NUMBER);
+
+    ctx.require(param_number.exists(), "missing mandatory number");
+
     let amount = ctx.incoming().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Empty bet...");
     }
-    let number = params.number.value();
+    let number = param_number.value();
     if number < 1 || number > MAX_NUMBER {
         ctx.panic("Invalid number...");
     }
@@ -118,8 +129,16 @@ pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
     }
 }
 
-pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
-    let play_period = params.play_period.value();
+pub fn func_play_period(ctx: &ScFuncContext) {
+    // only SC creator can update the play period
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+
+    let p = ctx.params();
+    let param_play_period = p.get_int(PARAM_PLAY_PERIOD);
+
+    ctx.require(param_play_period.exists(), "missing mandatory playPeriod");
+
+    let play_period = param_play_period.value();
     if play_period < 10 {
         ctx.panic("Invalid play period...");
     }

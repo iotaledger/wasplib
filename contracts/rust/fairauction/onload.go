@@ -7,7 +7,7 @@
 
 package fairauction
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -22,9 +22,9 @@ type FuncFinalizeAuctionParams struct {
 	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
-func funcFinalizeAuctionThunk(ctx *wasmlib.ScFuncContext) {
+func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
-	ctx.Require(ctx.From(ctx.ContractId().AsAgentId()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncFinalizeAuctionParams{
@@ -38,7 +38,7 @@ type FuncPlaceBidParams struct {
 	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
-func funcPlaceBidThunk(ctx *wasmlib.ScFuncContext) {
+func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncPlaceBidParams{
 		Color: p.GetColor(ParamColor),
@@ -51,9 +51,9 @@ type FuncSetOwnerMarginParams struct {
 	OwnerMargin wasmlib.ScImmutableInt // new SC owner margin in promilles
 }
 
-func funcSetOwnerMarginThunk(ctx *wasmlib.ScFuncContext) {
+func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can set owner margin
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncSetOwnerMarginParams{
@@ -70,7 +70,7 @@ type FuncStartAuctionParams struct {
 	MinimumBid  wasmlib.ScImmutableInt    // minimum required amount for any bid
 }
 
-func funcStartAuctionThunk(ctx *wasmlib.ScFuncContext) {
+func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncStartAuctionParams{
 		Color:       p.GetColor(ParamColor),
@@ -87,7 +87,7 @@ type ViewGetInfoParams struct {
 	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
-func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
+func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewGetInfoParams{
 		Color: p.GetColor(ParamColor),

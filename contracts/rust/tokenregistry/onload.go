@@ -7,7 +7,7 @@
 
 package tokenregistry
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -22,7 +22,7 @@ type FuncMintSupplyParams struct {
 	UserDefined wasmlib.ScImmutableString // any user defined text
 }
 
-func funcMintSupplyThunk(ctx *wasmlib.ScFuncContext) {
+func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncMintSupplyParams{
 		Description: p.GetString(ParamDescription),
@@ -35,9 +35,9 @@ type FuncTransferOwnershipParams struct {
 	Color wasmlib.ScImmutableColor // color of token to transfer ownership of
 }
 
-func funcTransferOwnershipThunk(ctx *wasmlib.ScFuncContext) {
+func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can transfer token ownership
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncTransferOwnershipParams{
@@ -51,9 +51,9 @@ type FuncUpdateMetadataParams struct {
 	Color wasmlib.ScImmutableColor // color of token to update metadata for
 }
 
-func funcUpdateMetadataThunk(ctx *wasmlib.ScFuncContext) {
+func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can change the token info
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncUpdateMetadataParams{
@@ -67,7 +67,7 @@ type ViewGetInfoParams struct {
 	Color wasmlib.ScImmutableColor // color of token to view registry info of
 }
 
-func viewGetInfoThunk(ctx *wasmlib.ScViewContext) {
+func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewGetInfoParams{
 		Color: p.GetColor(ParamColor),

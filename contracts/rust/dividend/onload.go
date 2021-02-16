@@ -7,7 +7,7 @@
 
 package dividend
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -18,7 +18,7 @@ func OnLoad() {
 type FuncDivideParams struct {
 }
 
-func funcDivideThunk(ctx *wasmlib.ScFuncContext) {
+func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncDivideParams{
 	}
 	funcDivide(ctx, params)
@@ -29,9 +29,9 @@ type FuncMemberParams struct {
 	Factor  wasmlib.ScImmutableInt     // relative division factor
 }
 
-func funcMemberThunk(ctx *wasmlib.ScFuncContext) {
+func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	// only creator can add members
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncMemberParams{

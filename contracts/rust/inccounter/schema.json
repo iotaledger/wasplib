@@ -32,17 +32,9 @@
     "localStateSandboxCall": {
     },
     "localStatePost": {
-    },
-    "stateTest": {
-    },
-    "resultsTest": {
     }
   },
   "views": {
-    "resultsCheck": {
-    },
-    "stateCheck": {
-    },
     "getCounter": {
     }
   }

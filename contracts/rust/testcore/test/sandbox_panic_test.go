@@ -1,4 +1,4 @@
-package sandbox_tests
+package test
 
 import (
 	"github.com/iotaledger/wasp/packages/solo"

@@ -1,14 +1,16 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(dead_code)]
-
 use wasmlib::*;
 
 use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
+pub fn func_mint_supply(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let param_description = p.get_string(PARAM_DESCRIPTION);
+    let param_user_defined = p.get_string(PARAM_USER_DEFINED);
+
     let minted = ctx.incoming().minted();
     if minted == ScColor::MINT {
         ctx.panic("TokenRegistry: No newly minted tokens found");
@@ -24,8 +26,8 @@ pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
         owner: ctx.caller(),
         created: ctx.timestamp(),
         updated: ctx.timestamp(),
-        description: params.description.value(),
-        user_defined: params.user_defined.value(),
+        description: param_description.value(),
+        user_defined: param_user_defined.value(),
     };
     if token.supply <= 0 {
         ctx.panic("TokenRegistry: Insufficient supply");
@@ -38,14 +40,32 @@ pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
     colors.get_color(colors.length()).set_value(&minted);
 }
 
-pub fn func_transfer_ownership(_sc: &ScFuncContext, _params: &FuncTransferOwnershipParams) {
+pub fn func_transfer_ownership(ctx: &ScFuncContext) {
+    //TODO the one who can transfer token ownership
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+    ctx.require(param_color.exists(), "missing mandatory color");
+
     //TODO
 }
 
-pub fn func_update_metadata(_sc: &ScFuncContext, _params: &FuncUpdateMetadataParams) {
+pub fn func_update_metadata(ctx: &ScFuncContext) {
+    //TODO the one who can change the token info
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+    ctx.require(param_color.exists(), "missing mandatory color");
+
     //TODO
 }
 
-pub fn view_get_info(_sc: &ScViewContext, _params: &ViewGetInfoParams) {
+pub fn view_get_info(ctx: &ScViewContext) {
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+    ctx.require(param_color.exists(), "missing mandatory color");
+
     //TODO
 }

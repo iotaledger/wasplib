@@ -10,7 +10,7 @@ import (
 )
 
 type PostRequestParams struct {
-	ContractId *ScContractId
+	ContractId ScContractId
 	Function   ScHname
 	Params     *ScMutableMap
 	Transfer   balances
@@ -29,7 +29,7 @@ type ScBalances struct {
 }
 
 // retrieve the balance for the specified token color
-func (ctx ScBalances) Balance(color *ScColor) int64 {
+func (ctx ScBalances) Balance(color ScColor) int64 {
 	return ctx.balances.GetInt(color).Value()
 }
 
@@ -44,7 +44,7 @@ func (ctx ScBalances) mapId() int32 {
 }
 
 // retrieve the color of newly minted tokens
-func (ctx ScBalances) Minted() *ScColor {
+func (ctx ScBalances) Minted() ScColor {
 	return NewScColorFromBytes(ctx.balances.GetBytes(MINT).Value())
 }
 
@@ -55,7 +55,7 @@ type ScTransfers struct {
 }
 
 // special constructor for simplifying single transfers
-func NewScTransfer(color *ScColor, amount int64) ScTransfers {
+func NewScTransfer(color ScColor, amount int64) ScTransfers {
 	balance := NewScTransfers()
 	balance.Add(color, amount)
 	return balance
@@ -71,7 +71,7 @@ func (ctx ScTransfers) mapId() int32 {
 }
 
 // transfers the specified amount of tokens of the specified color
-func (ctx ScTransfers) Add(color *ScColor, amount int64) {
+func (ctx ScTransfers) Add(color ScColor, amount int64) {
 	ctx.transfers.GetInt(color).SetValue(amount)
 }
 
@@ -110,14 +110,14 @@ func (ctx ScUtility) Base58Encode(value []byte) string {
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
-func (ctx ScUtility) HashBlake2b(value []byte) *ScHash {
+func (ctx ScUtility) HashBlake2b(value []byte) ScHash {
 	hash := ctx.utility.GetBytes(KeyHashBlake2b)
 	hash.SetValue(value)
 	return NewScHashFromBytes(hash.Value())
 }
 
 // hashes the specified value bytes using sha3 hashing and returns the resulting 32-byte hash
-func (ctx ScUtility) HashSha3(value []byte) *ScHash {
+func (ctx ScUtility) HashSha3(value []byte) ScHash {
 	hash := ctx.utility.GetBytes(KeyHashSha3)
 	hash.SetValue(value)
 	return NewScHashFromBytes(hash.Value())
@@ -169,17 +169,17 @@ func (ctx ScBaseContext) Balances() ScBalances {
 }
 
 // retrieve the agent id of the owner of the chain this contract lives on
-func (ctx ScBaseContext) ChainOwnerId() *ScAgentId {
+func (ctx ScBaseContext) ChainOwnerId() ScAgentId {
 	return Root.GetAgentId(KeyChainOwnerId).Value()
 }
 
 // retrieve the agent id of the creator of this contract
-func (ctx ScBaseContext) ContractCreator() *ScAgentId {
+func (ctx ScBaseContext) ContractCreator() ScAgentId {
 	return Root.GetAgentId(KeyContractCreator).Value()
 }
 
 // retrieve the id of this contract
-func (ctx ScBaseContext) ContractId() *ScContractId {
+func (ctx ScBaseContext) ContractId() ScContractId {
 	return Root.GetContractId(KeyContractId).Value()
 }
 
@@ -254,7 +254,7 @@ func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMu
 }
 
 // retrieve the agent id of the caller of the smart contract
-func (ctx ScFuncContext) Caller() *ScAgentId {
+func (ctx ScFuncContext) Caller() ScAgentId {
 	return Root.GetAgentId(KeyCaller).Value()
 }
 
@@ -264,7 +264,7 @@ func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, trans
 }
 
 // deploys a smart contract
-func (ctx ScFuncContext) Deploy(programHash *ScHash, name string, description string, params *ScMutableMap) {
+func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description string, params *ScMutableMap) {
 	encode := NewBytesEncoder()
 	encode.Hash(programHash)
 	encode.String(name)
@@ -280,11 +280,6 @@ func (ctx ScFuncContext) Deploy(programHash *ScHash, name string, description st
 // signals an event on the node that external entities can subscribe to
 func (ctx ScBaseContext) Event(text string) {
 	Root.GetString(KeyEvent).SetValue(text)
-}
-
-// quick check to see if the caller of the smart contract was the specified originator agent
-func (ctx ScFuncContext) From(originator *ScAgentId) bool {
-	return ctx.Caller().Equals(originator)
 }
 
 // access the incoming balances for all token colors
@@ -317,7 +312,7 @@ func (ctx ScFuncContext) State() ScMutableMap {
 }
 
 // transfer colored token amounts to the specified Tangle ledger address
-func (ctx ScFuncContext) TransferToAddress(address *ScAddress, transfer balances) {
+func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer balances) {
 	transfers := Root.GetMapArray(KeyTransfers)
 	tx := transfers.GetMap(transfers.Length())
 	tx.GetAddress(KeyAddress).SetValue(address)

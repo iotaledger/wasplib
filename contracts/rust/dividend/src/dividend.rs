@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
+pub fn func_divide(ctx: &ScFuncContext) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");
@@ -34,10 +34,18 @@ pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
     }
 }
 
-pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
+pub fn func_member(ctx: &ScFuncContext) {
+    // only creator can add members
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+
+    let p = ctx.params();
+    let address = p.get_address(PARAM_ADDRESS);
+    let factor = p.get_int(PARAM_FACTOR);
+    ctx.require(address.exists(), "missing mandatory address");
+    ctx.require(factor.exists(), "missing mandatory factor");
     let member = Member {
-        address: params.address.value(),
-        factor: params.factor.value(),
+        address: address.value(),
+        factor: factor.value(),
     };
     let state = ctx.state();
     let total_factor = state.get_int(VAR_TOTAL_FACTOR);

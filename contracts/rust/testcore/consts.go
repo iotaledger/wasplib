@@ -7,7 +7,7 @@
 
 package testcore
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "testcore"
 const ScDescription = "Core test for ISCP wasmlib Rust/Wasm library"

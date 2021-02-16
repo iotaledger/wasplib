@@ -1,11 +1,11 @@
-package sandbox_tests
+package test
 
 import (
-	"github.com/iotaledger/wasp/contracts/testenv"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasplib/contracts/testenv"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

@@ -5,7 +5,7 @@
 
 package wasmclient
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 //go:wasm-module wasplib
 //export hostGetBytes

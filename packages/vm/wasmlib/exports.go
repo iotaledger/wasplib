@@ -4,17 +4,17 @@
 package wasmlib
 
 var (
-	funcs []func(ctx *ScFuncContext)
-	views []func(ctx *ScViewContext)
+	funcs []func(ctx ScFuncContext)
+	views []func(ctx ScViewContext)
 )
 
 //export on_call_entrypoint
 func ScCallEntrypoint(index int32) {
 	if (index & 0x8000) != 0 {
-		views[index&0x7fff](&ScViewContext{})
+		views[index&0x7fff](ScViewContext{})
 		return
 	}
-	funcs[index](&ScFuncContext{})
+	funcs[index](ScFuncContext{})
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -31,13 +31,13 @@ func NewScExports() ScExports {
 	return ScExports{exports: exports}
 }
 
-func (ctx ScExports) AddFunc(name string, f func(ctx *ScFuncContext)) {
+func (ctx ScExports) AddFunc(name string, f func(ctx ScFuncContext)) {
 	index := int32(len(funcs))
 	funcs = append(funcs, f)
 	ctx.exports.GetString(index).SetValue(name)
 }
 
-func (ctx ScExports) AddView(name string, f func(ctx *ScViewContext)) {
+func (ctx ScExports) AddView(name string, f func(ctx ScViewContext)) {
 	index := int32(len(views))
 	views = append(views, f)
 	ctx.exports.GetString(index | 0x8000).SetValue(name)

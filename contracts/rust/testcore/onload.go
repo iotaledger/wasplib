@@ -7,7 +7,7 @@
 
 package testcore
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -47,7 +47,7 @@ type FuncCallOnChainParams struct {
 	IntValue      wasmlib.ScImmutableInt
 }
 
-func funcCallOnChainThunk(ctx *wasmlib.ScFuncContext) {
+func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncCallOnChainParams{
 		HnameContract: p.GetHname(ParamHnameContract),
@@ -67,7 +67,7 @@ type FuncCheckContextFromFullEPParams struct {
 	ContractId      wasmlib.ScImmutableContractId
 }
 
-func funcCheckContextFromFullEPThunk(ctx *wasmlib.ScFuncContext) {
+func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncCheckContextFromFullEPParams{
 		AgentId:         p.GetAgentId(ParamAgentId),
@@ -89,7 +89,7 @@ func funcCheckContextFromFullEPThunk(ctx *wasmlib.ScFuncContext) {
 type FuncDoNothingParams struct {
 }
 
-func funcDoNothingThunk(ctx *wasmlib.ScFuncContext) {
+func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncDoNothingParams{
 	}
 	funcDoNothing(ctx, params)
@@ -98,7 +98,7 @@ func funcDoNothingThunk(ctx *wasmlib.ScFuncContext) {
 type FuncInitParams struct {
 }
 
-func funcInitThunk(ctx *wasmlib.ScFuncContext) {
+func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncInitParams{
 	}
 	funcInit(ctx, params)
@@ -114,7 +114,7 @@ type FuncPassTypesFullParams struct {
 	StringZero wasmlib.ScImmutableString
 }
 
-func funcPassTypesFullThunk(ctx *wasmlib.ScFuncContext) {
+func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncPassTypesFullParams{
 		Hash:       p.GetHash(ParamHash),
@@ -139,7 +139,7 @@ type FuncRunRecursionParams struct {
 	IntValue wasmlib.ScImmutableInt
 }
 
-func funcRunRecursionThunk(ctx *wasmlib.ScFuncContext) {
+func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncRunRecursionParams{
 		IntValue: p.GetInt(ParamIntValue),
@@ -152,8 +152,8 @@ type FuncSendToAddressParams struct {
 	Address wasmlib.ScImmutableAddress
 }
 
-func funcSendToAddressThunk(ctx *wasmlib.ScFuncContext) {
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncSendToAddressParams{
@@ -168,7 +168,7 @@ type FuncSetIntParams struct {
 	Name     wasmlib.ScImmutableString
 }
 
-func funcSetIntThunk(ctx *wasmlib.ScFuncContext) {
+func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncSetIntParams{
 		IntValue: p.GetInt(ParamIntValue),
@@ -182,7 +182,7 @@ func funcSetIntThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestCallPanicFullEPParams struct {
 }
 
-func funcTestCallPanicFullEPThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestCallPanicFullEPParams{
 	}
 	funcTestCallPanicFullEP(ctx, params)
@@ -191,7 +191,7 @@ func funcTestCallPanicFullEPThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestCallPanicViewEPFromFullParams struct {
 }
 
-func funcTestCallPanicViewEPFromFullThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestCallPanicViewEPFromFullParams{
 	}
 	funcTestCallPanicViewEPFromFull(ctx, params)
@@ -200,7 +200,7 @@ func funcTestCallPanicViewEPFromFullThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestChainOwnerIDFullParams struct {
 }
 
-func funcTestChainOwnerIDFullThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestChainOwnerIDFullParams{
 	}
 	funcTestChainOwnerIDFull(ctx, params)
@@ -209,7 +209,7 @@ func funcTestChainOwnerIDFullThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestContractIDFullParams struct {
 }
 
-func funcTestContractIDFullThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestContractIDFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestContractIDFullParams{
 	}
 	funcTestContractIDFull(ctx, params)
@@ -218,7 +218,7 @@ func funcTestContractIDFullThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestEventLogDeployParams struct {
 }
 
-func funcTestEventLogDeployThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestEventLogDeployParams{
 	}
 	funcTestEventLogDeploy(ctx, params)
@@ -227,7 +227,7 @@ func funcTestEventLogDeployThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestEventLogEventDataParams struct {
 }
 
-func funcTestEventLogEventDataThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestEventLogEventDataParams{
 	}
 	funcTestEventLogEventData(ctx, params)
@@ -237,7 +237,7 @@ type FuncTestEventLogGenericDataParams struct {
 	Counter wasmlib.ScImmutableInt
 }
 
-func funcTestEventLogGenericDataThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTestEventLogGenericDataParams{
 		Counter: p.GetInt(ParamCounter),
@@ -249,7 +249,7 @@ func funcTestEventLogGenericDataThunk(ctx *wasmlib.ScFuncContext) {
 type FuncTestPanicFullEPParams struct {
 }
 
-func funcTestPanicFullEPThunk(ctx *wasmlib.ScFuncContext) {
+func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestPanicFullEPParams{
 	}
 	funcTestPanicFullEP(ctx, params)
@@ -259,7 +259,7 @@ type FuncWithdrawToChainParams struct {
 	ChainId wasmlib.ScImmutableChainId
 }
 
-func funcWithdrawToChainThunk(ctx *wasmlib.ScFuncContext) {
+func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncWithdrawToChainParams{
 		ChainId: p.GetChainId(ParamChainId),
@@ -276,7 +276,7 @@ type ViewCheckContextFromViewEPParams struct {
 	ContractId      wasmlib.ScImmutableContractId
 }
 
-func viewCheckContextFromViewEPThunk(ctx *wasmlib.ScViewContext) {
+func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewCheckContextFromViewEPParams{
 		AgentId:         p.GetAgentId(ParamAgentId),
@@ -297,7 +297,7 @@ type ViewFibonacciParams struct {
 	IntValue wasmlib.ScImmutableInt
 }
 
-func viewFibonacciThunk(ctx *wasmlib.ScViewContext) {
+func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewFibonacciParams{
 		IntValue: p.GetInt(ParamIntValue),
@@ -309,7 +309,7 @@ func viewFibonacciThunk(ctx *wasmlib.ScViewContext) {
 type ViewGetCounterParams struct {
 }
 
-func viewGetCounterThunk(ctx *wasmlib.ScViewContext) {
+func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewGetCounterParams{
 	}
 	viewGetCounter(ctx, params)
@@ -319,7 +319,7 @@ type ViewGetIntParams struct {
 	Name wasmlib.ScImmutableString
 }
 
-func viewGetIntThunk(ctx *wasmlib.ScViewContext) {
+func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewGetIntParams{
 		Name: p.GetString(ParamName),
@@ -331,7 +331,7 @@ func viewGetIntThunk(ctx *wasmlib.ScViewContext) {
 type ViewJustViewParams struct {
 }
 
-func viewJustViewThunk(ctx *wasmlib.ScViewContext) {
+func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewJustViewParams{
 	}
 	viewJustView(ctx, params)
@@ -347,7 +347,7 @@ type ViewPassTypesViewParams struct {
 	StringZero wasmlib.ScImmutableString
 }
 
-func viewPassTypesViewThunk(ctx *wasmlib.ScViewContext) {
+func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewPassTypesViewParams{
 		Hash:       p.GetHash(ParamHash),
@@ -371,7 +371,7 @@ func viewPassTypesViewThunk(ctx *wasmlib.ScViewContext) {
 type ViewTestCallPanicViewEPFromViewParams struct {
 }
 
-func viewTestCallPanicViewEPFromViewThunk(ctx *wasmlib.ScViewContext) {
+func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestCallPanicViewEPFromViewParams{
 	}
 	viewTestCallPanicViewEPFromView(ctx, params)
@@ -380,7 +380,7 @@ func viewTestCallPanicViewEPFromViewThunk(ctx *wasmlib.ScViewContext) {
 type ViewTestChainOwnerIDViewParams struct {
 }
 
-func viewTestChainOwnerIDViewThunk(ctx *wasmlib.ScViewContext) {
+func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestChainOwnerIDViewParams{
 	}
 	viewTestChainOwnerIDView(ctx, params)
@@ -389,7 +389,7 @@ func viewTestChainOwnerIDViewThunk(ctx *wasmlib.ScViewContext) {
 type ViewTestContractIDViewParams struct {
 }
 
-func viewTestContractIDViewThunk(ctx *wasmlib.ScViewContext) {
+func viewTestContractIDViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestContractIDViewParams{
 	}
 	viewTestContractIDView(ctx, params)
@@ -398,7 +398,7 @@ func viewTestContractIDViewThunk(ctx *wasmlib.ScViewContext) {
 type ViewTestPanicViewEPParams struct {
 }
 
-func viewTestPanicViewEPThunk(ctx *wasmlib.ScViewContext) {
+func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestPanicViewEPParams{
 	}
 	viewTestPanicViewEP(ctx, params)
@@ -407,7 +407,7 @@ func viewTestPanicViewEPThunk(ctx *wasmlib.ScViewContext) {
 type ViewTestSandboxCallParams struct {
 }
 
-func viewTestSandboxCallThunk(ctx *wasmlib.ScViewContext) {
+func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestSandboxCallParams{
 	}
 	viewTestSandboxCall(ctx, params)

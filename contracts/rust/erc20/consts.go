@@ -7,7 +7,7 @@
 
 package erc20
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "erc20"
 const ScDescription = "ERC-20 PoC for IOTA Smart Contracts"

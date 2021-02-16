@@ -28,7 +28,7 @@ var goReplacements = []string{
 	".Post(PostRequestParams", ".Post(&PostRequestParams",
 	"PostRequestParams", "wasmlib.PostRequestParams",
 	", &", ", ",
-	": &Sc", " *wasmlib.Sc",
+	": &Sc", " wasmlib.Sc",
 	": i64", " int64",
 	": &str", " string",
 	"0_i64", "int64(0)",

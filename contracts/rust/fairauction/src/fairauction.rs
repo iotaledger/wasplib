@@ -14,15 +14,21 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionParams) {
-    let color = params.color.value();
+pub fn func_finalize_auction(ctx: &ScFuncContext) {
+    // only SC itself can invoke this function
+    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+
+    ctx.require(param_color.exists(), "missing mandatory color");
+
+    let color = param_color.value();
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
     let auction_info = current_auction.get_bytes(VAR_INFO);
-    if !auction_info.exists() {
-        ctx.panic("Missing auction info");
-    }
+    ctx.require(auction_info.exists(), "Missing auction info");
     let auction = Auction::from_bytes(&auction_info.value());
     if auction.highest_bid < 0 {
         ctx.log(&("No one bid on ".to_string() + &color.to_string()));
@@ -61,20 +67,21 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionPa
     transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
-    let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
-    if bid_amount == 0 {
-        ctx.panic("Missing bid amount");
-    }
+pub fn func_place_bid(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
 
-    let color = params.color.value();
+    ctx.require(param_color.exists(), "missing mandatory color");
+
+    let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
+    ctx.require(bid_amount > 0, "Missing bid amount");
+
+    let color = param_color.value();
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);
     let auction_info = current_auction.get_bytes(VAR_INFO);
-    if !auction_info.exists() {
-        ctx.panic("Missing auction info");
-    }
+    ctx.require(auction_info.exists(), "Missing auction info");
 
     let mut auction = Auction::from_bytes(&auction_info.value());
     let bidders = current_auction.get_map(VAR_BIDDERS);
@@ -89,9 +96,7 @@ pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
         bid.timestamp = ctx.timestamp();
         bidder.set_value(&bid.to_bytes());
     } else {
-        if bid_amount < auction.minimum_bid {
-            ctx.panic("Insufficient bid amount");
-        }
+        ctx.require(bid_amount >= auction.minimum_bid, "Insufficient bid amount");
         ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
         let index = bidder_list.length();
         bidder_list.get_agent_id(index).set_value(&caller);
@@ -110,8 +115,16 @@ pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
     }
 }
 
-pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginParams) {
-    let mut owner_margin = params.owner_margin.value();
+pub fn func_set_owner_margin(ctx: &ScFuncContext) {
+    // only SC creator can set owner margin
+    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+
+    let p = ctx.params();
+    let param_owner_margin = p.get_int(PARAM_OWNER_MARGIN);
+
+    ctx.require(param_owner_margin.exists(), "missing mandatory ownerMargin");
+
+    let mut owner_margin = param_owner_margin.value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
     }
@@ -122,8 +135,17 @@ pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginPar
     ctx.log("Updated owner margin");
 }
 
-pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
-    let color = params.color.value();
+pub fn func_start_auction(ctx: &ScFuncContext) {
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+    let param_description = p.get_string(PARAM_DESCRIPTION);
+    let param_duration = p.get_int(PARAM_DURATION);
+    let param_minimum_bid = p.get_int(PARAM_MINIMUM_BID);
+
+    ctx.require(param_color.exists(), "missing mandatory color");
+    ctx.require(param_minimum_bid.exists(), "missing mandatory minimumBid");
+
+    let color = param_color.value();
     if color == ScColor::IOTA || color == ScColor::MINT {
         ctx.panic("Reserved auction token color");
     }
@@ -132,10 +154,10 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         ctx.panic("Missing auction tokens");
     }
 
-    let minimum_bid = params.minimum_bid.value();
+    let minimum_bid = param_minimum_bid.value();
 
     // duration in minutes
-    let mut duration = params.duration.value();
+    let mut duration = param_duration.value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -146,7 +168,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         duration = DURATION_MAX;
     }
 
-    let mut description = params.description.value();
+    let mut description = param_description.value();
     if description == "" {
         description = "N/A".to_string()
     }
@@ -205,8 +227,12 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
     ctx.log("New auction started");
 }
 
-pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
-    let color = params.color.value();
+pub fn view_get_info(ctx: &ScViewContext) {
+    let p = ctx.params();
+    let param_color = p.get_color(PARAM_COLOR);
+
+    ctx.require(param_color.exists(), "missing mandatory color");
+    let color = param_color.value();
     let state = ctx.state();
     let auctions = state.get_map(VAR_AUCTIONS);
     let current_auction = auctions.get_map(&color);

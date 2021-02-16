@@ -21,7 +21,7 @@ func (o ScImmutableAddress) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableAddress) Value() *ScAddress {
+func (o ScImmutableAddress) Value() ScAddress {
 	return NewScAddressFromBytes(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
 }
 
@@ -54,7 +54,7 @@ func (o ScImmutableAgentId) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableAgentId) Value() *ScAgentId {
+func (o ScImmutableAgentId) Value() ScAgentId {
 	return NewScAgentIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_AGENT_ID))
 }
 
@@ -120,7 +120,7 @@ func (o ScImmutableChainId) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableChainId) Value() *ScChainId {
+func (o ScImmutableChainId) Value() ScChainId {
 	return NewScChainIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CHAIN_ID))
 }
 
@@ -139,7 +139,7 @@ func (o ScImmutableColor) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableColor) Value() *ScColor {
+func (o ScImmutableColor) Value() ScColor {
 	return NewScColorFromBytes(GetBytes(o.objId, o.keyId, TYPE_COLOR))
 }
 
@@ -172,7 +172,7 @@ func (o ScImmutableContractId) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableContractId) Value() *ScContractId {
+func (o ScImmutableContractId) Value() ScContractId {
 	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID))
 }
 
@@ -191,7 +191,7 @@ func (o ScImmutableHash) String() string {
 	return o.Value().String()
 }
 
-func (o ScImmutableHash) Value() *ScHash {
+func (o ScImmutableHash) Value() ScHash {
 	return NewScHashFromBytes(GetBytes(o.objId, o.keyId, TYPE_HASH))
 }
 

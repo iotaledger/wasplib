@@ -7,7 +7,7 @@
 
 package inccounter
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "inccounter"
 const ScHname = wasmlib.ScHname(0xaf2438e9)
@@ -31,12 +31,8 @@ const FuncLocalStatePost = "localStatePost"
 const FuncLocalStateSandboxCall = "localStateSandboxCall"
 const FuncPostIncrement = "postIncrement"
 const FuncRepeatMany = "repeatMany"
-const FuncResultsTest = "resultsTest"
-const FuncStateTest = "stateTest"
 const FuncWhenMustIncrement = "whenMustIncrement"
 const ViewGetCounter = "getCounter"
-const ViewResultsCheck = "resultsCheck"
-const ViewStateCheck = "stateCheck"
 
 const HFuncCallIncrement = wasmlib.ScHname(0xeb5dcacd)
 const HFuncCallIncrementRecurse5x = wasmlib.ScHname(0x8749fbff)
@@ -47,9 +43,5 @@ const HFuncLocalStatePost = wasmlib.ScHname(0x3fd54d13)
 const HFuncLocalStateSandboxCall = wasmlib.ScHname(0x7bd22c53)
 const HFuncPostIncrement = wasmlib.ScHname(0x81c772f5)
 const HFuncRepeatMany = wasmlib.ScHname(0x4ff450d3)
-const HFuncResultsTest = wasmlib.ScHname(0xd0544634)
-const HFuncStateTest = wasmlib.ScHname(0x41830d59)
 const HFuncWhenMustIncrement = wasmlib.ScHname(0xb4c3e7a6)
 const HViewGetCounter = wasmlib.ScHname(0xb423e607)
-const HViewResultsCheck = wasmlib.ScHname(0xa39ac571)
-const HViewStateCheck = wasmlib.ScHname(0xaafeb10a)

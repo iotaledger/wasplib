@@ -7,7 +7,7 @@
 
 package donatewithfeedback
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -20,7 +20,7 @@ type FuncDonateParams struct {
 	Feedback wasmlib.ScImmutableString // feedback for the person you donate to
 }
 
-func funcDonateThunk(ctx *wasmlib.ScFuncContext) {
+func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncDonateParams{
 		Feedback: p.GetString(ParamFeedback),
@@ -32,9 +32,9 @@ type FuncWithdrawParams struct {
 	Amount wasmlib.ScImmutableInt // amount to withdraw
 }
 
-func funcWithdrawThunk(ctx *wasmlib.ScFuncContext) {
+func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can withdraw donated funds
-	ctx.Require(ctx.From(ctx.ContractCreator()), "no permission")
+	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncWithdrawParams{
@@ -46,7 +46,7 @@ func funcWithdrawThunk(ctx *wasmlib.ScFuncContext) {
 type ViewDonationsParams struct {
 }
 
-func viewDonationsThunk(ctx *wasmlib.ScViewContext) {
+func viewDonationsThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewDonationsParams{
 	}
 	viewDonations(ctx, params)

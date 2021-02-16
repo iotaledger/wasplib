@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+var generateRustThunk = false
+
 var rustFuncRegexp = regexp.MustCompile("^pub fn (\\w+).+$")
 
 var rustTypes = StringMap{
@@ -140,17 +142,6 @@ func (s *Schema) GenerateRustFuncs() error {
 		}
 	}
 
-	// append any new views
-	for _, viewDef := range s.Views {
-		name := snake(viewDef.FullName)
-		if existing[name] == "" {
-			err = s.GenerateRustFunc(file, viewDef)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	return os.Remove(scOriginal)
 }
 
@@ -196,12 +187,6 @@ func (s *Schema) GenerateRustFuncsNew(scFileName string) error {
 			return err
 		}
 	}
-	for _, viewDef := range s.Views {
-		err = s.GenerateRustFunc(file, viewDef)
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
@@ -214,41 +199,41 @@ func (s *Schema) GenerateRustLib() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "use %s::*;\n", s.Name)
-	fmt.Fprintf(file, "use schema::*;\n")
-	fmt.Fprintf(file, "use wasmlib::*;\n\n")
+	fmt.Fprintf(file, "use consts::*;\n")
+	fmt.Fprintf(file, "use wasmlib::*;\n")
+	fmt.Fprintf(file, "use %s::*;\n\n", s.Name)
 
-	fmt.Fprintf(file, "mod %s;\n", s.Name)
-	fmt.Fprintf(file, "mod schema;\n")
+	fmt.Fprintf(file, "mod consts;\n")
 	if len(s.Types) != 0 {
 		fmt.Fprintf(file, "mod types;\n")
 	}
+	fmt.Fprintf(file, "mod %s;\n\n", s.Name)
 
-	fmt.Fprintf(file, "\n#[no_mangle]\n")
+	thunk := ""
+	if generateRustThunk {
+		thunk = "_thunk"
+	}
+	fmt.Fprintf(file, "#[no_mangle]\n")
 	fmt.Fprintf(file, "fn on_load() {\n")
 	fmt.Fprintf(file, "    let exports = ScExports::new();\n")
 	for _, funcDef := range s.Funcs {
 		name := snake(funcDef.FullName)
-		fmt.Fprintf(file, "    exports.add_func(%s, %s_thunk);\n", upper(name), name)
-	}
-	for _, viewDef := range s.Views {
-		name := snake(viewDef.FullName)
-		fmt.Fprintf(file, "    exports.add_view(%s, %s_thunk);\n", upper(name), name)
+		kind := funcDef.FullName[:4]
+		fmt.Fprintf(file, "    exports.add_%s(%s, %s%s);\n", kind, upper(name), name, thunk)
 	}
 	fmt.Fprintf(file, "}\n")
 
-	// generate parameter structs and thunks to set up and check parameters
-	for _, funcDef := range s.Funcs {
-		s.GenerateRustThunk(file, funcDef)
-	}
-	for _, viewDef := range s.Views {
-		s.GenerateRustThunk(file, viewDef)
+	if generateRustThunk {
+		// generate parameter structs and thunks to set up and check parameters
+		for _, funcDef := range s.Funcs {
+			s.GenerateRustThunk(file, funcDef)
+		}
 	}
 	return nil
 }
 
 func (s *Schema) GenerateRustSchema() error {
-	file, err := os.Create("schema.rs")
+	file, err := os.Create("consts.rs")
 	if err != nil {
 		return err
 	}
@@ -283,15 +268,11 @@ func (s *Schema) GenerateRustSchema() error {
 		}
 	}
 
-	if len(s.Funcs)+len(s.Views) != 0 {
+	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := upper(snake(funcDef.FullName))
 			fmt.Fprintf(file, "pub const %s: &str = \"%s\";\n", name, funcDef.Name)
-		}
-		for _, viewDef := range s.Views {
-			name := upper(snake(viewDef.FullName))
-			fmt.Fprintf(file, "pub const %s: &str = \"%s\";\n", name, viewDef.Name)
 		}
 
 		fmt.Fprintln(file)
@@ -300,29 +281,13 @@ func (s *Schema) GenerateRustSchema() error {
 			hName = coretypes.Hn(funcDef.Name)
 			fmt.Fprintf(file, "pub const H%s: ScHname = ScHname(0x%s);\n", name, hName.String())
 		}
-		for _, viewDef := range s.Views {
-			name := upper(snake(viewDef.FullName))
-			hName = coretypes.Hn(viewDef.Name)
-			fmt.Fprintf(file, "pub const H%s: ScHname = ScHname(0x%s);\n", name, hName.String())
-		}
 	}
 	return nil
 }
 
 func (s *Schema) GenerateRustThunk(file *os.File, funcDef *FuncDef) {
 	// calculate padding
-	nameLen := 0
-	typeLen := 0
-	for _, param := range funcDef.Params {
-		fldName := snake(param.Name)
-		if nameLen < len(fldName) {
-			nameLen = len(fldName)
-		}
-		fldType := param.Type
-		if typeLen < len(fldType) {
-			typeLen = len(fldType)
-		}
-	}
+	nameLen, typeLen := calculatePadding(funcDef.Params, true)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
@@ -411,18 +376,7 @@ func (s *Schema) GenerateRustTypes() error {
 	// write structs
 	for _, typeDef := range s.Types {
 		// calculate padding
-		nameLen := 0
-		typeLen := 0
-		for _, field := range typeDef.Fields {
-			fldName := snake(field.Name)
-			if nameLen < len(fldName) {
-				nameLen = len(fldName)
-			}
-			fldType := rustTypes[field.Type]
-			if typeLen < len(fldType) {
-				typeLen = len(fldType)
-			}
-		}
+		nameLen, typeLen := calculatePadding(typeDef.Fields, true)
 
 		// write struct
 		if len(typeDef.Fields) > 1 {

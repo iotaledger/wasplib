@@ -11,11 +11,11 @@ func NewBytesDecoder(data []byte) *BytesDecoder {
 	return &BytesDecoder{data: data}
 }
 
-func (d *BytesDecoder) Address() *ScAddress {
+func (d *BytesDecoder) Address() ScAddress {
 	return NewScAddressFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) AgentId() *ScAgentId {
+func (d *BytesDecoder) AgentId() ScAgentId {
 	return NewScAgentIdFromBytes(d.Bytes())
 }
 
@@ -29,19 +29,19 @@ func (d *BytesDecoder) Bytes() []byte {
 	return value
 }
 
-func (d *BytesDecoder) ChainId() *ScChainId {
+func (d *BytesDecoder) ChainId() ScChainId {
 	return NewScChainIdFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) Color() *ScColor {
+func (d *BytesDecoder) Color() ScColor {
 	return NewScColorFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) ContractId() *ScContractId {
+func (d *BytesDecoder) ContractId() ScContractId {
 	return NewScContractIdFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) Hash() *ScHash {
+func (d *BytesDecoder) Hash() ScHash {
 	return NewScHashFromBytes(d.Bytes())
 }
 
@@ -89,11 +89,11 @@ func NewBytesEncoder() *BytesEncoder {
 	return &BytesEncoder{data: make([]byte, 0, 128)}
 }
 
-func (e *BytesEncoder) Address(value *ScAddress) *BytesEncoder {
+func (e *BytesEncoder) Address(value ScAddress) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) AgentId(value *ScAgentId) *BytesEncoder {
+func (e *BytesEncoder) AgentId(value ScAgentId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -103,15 +103,15 @@ func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 	return e
 }
 
-func (e *BytesEncoder) ChainId(value *ScChainId) *BytesEncoder {
+func (e *BytesEncoder) ChainId(value ScChainId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) Color(value *ScColor) *BytesEncoder {
+func (e *BytesEncoder) Color(value ScColor) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) ContractId(value *ScContractId) *BytesEncoder {
+func (e *BytesEncoder) ContractId(value ScContractId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -119,7 +119,7 @@ func (e *BytesEncoder) Data() []byte {
 	return e.data
 }
 
-func (e *BytesEncoder) Hash(value *ScHash) *BytesEncoder {
+func (e *BytesEncoder) Hash(value ScHash) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 

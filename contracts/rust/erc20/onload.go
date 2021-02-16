@@ -7,7 +7,7 @@
 
 package erc20
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
@@ -25,7 +25,7 @@ type FuncApproveParams struct {
 	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
-func funcApproveThunk(ctx *wasmlib.ScFuncContext) {
+func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncApproveParams{
 		Amount:     p.GetInt(ParamAmount),
@@ -41,7 +41,7 @@ type FuncInitParams struct {
 	Supply  wasmlib.ScImmutableInt     // initial token supply
 }
 
-func funcInitThunk(ctx *wasmlib.ScFuncContext) {
+func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncInitParams{
 		Creator: p.GetAgentId(ParamCreator),
@@ -57,7 +57,7 @@ type FuncTransferParams struct {
 	Amount  wasmlib.ScImmutableInt     // amount of tokens to transfer
 }
 
-func funcTransferThunk(ctx *wasmlib.ScFuncContext) {
+func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTransferParams{
 		Account: p.GetAgentId(ParamAccount),
@@ -74,7 +74,7 @@ type FuncTransferFromParams struct {
 	Recipient wasmlib.ScImmutableAgentId // recipient account
 }
 
-func funcTransferFromThunk(ctx *wasmlib.ScFuncContext) {
+func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTransferFromParams{
 		Account:   p.GetAgentId(ParamAccount),
@@ -92,7 +92,7 @@ type ViewAllowanceParams struct {
 	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
-func viewAllowanceThunk(ctx *wasmlib.ScViewContext) {
+func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewAllowanceParams{
 		Account:    p.GetAgentId(ParamAccount),
@@ -107,7 +107,7 @@ type ViewBalanceOfParams struct {
 	Account wasmlib.ScImmutableAgentId // sender account
 }
 
-func viewBalanceOfThunk(ctx *wasmlib.ScViewContext) {
+func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewBalanceOfParams{
 		Account: p.GetAgentId(ParamAccount),
@@ -119,7 +119,7 @@ func viewBalanceOfThunk(ctx *wasmlib.ScViewContext) {
 type ViewTotalSupplyParams struct {
 }
 
-func viewTotalSupplyThunk(ctx *wasmlib.ScViewContext) {
+func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTotalSupplyParams{
 	}
 	viewTotalSupply(ctx, params)

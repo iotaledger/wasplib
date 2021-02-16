@@ -21,7 +21,7 @@ func (o ScMutableAddress) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_ADDRESS)
 }
 
-func (o ScMutableAddress) SetValue(value *ScAddress) {
+func (o ScMutableAddress) SetValue(value ScAddress) {
 	SetBytes(o.objId, o.keyId, TYPE_ADDRESS, value.Bytes())
 }
 
@@ -29,7 +29,7 @@ func (o ScMutableAddress) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableAddress) Value() *ScAddress {
+func (o ScMutableAddress) Value() ScAddress {
 	return NewScAddressFromBytes(GetBytes(o.objId, o.keyId, TYPE_ADDRESS))
 }
 
@@ -66,7 +66,7 @@ func (o ScMutableAgentId) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_AGENT_ID)
 }
 
-func (o ScMutableAgentId) SetValue(value *ScAgentId) {
+func (o ScMutableAgentId) SetValue(value ScAgentId) {
 	SetBytes(o.objId, o.keyId, TYPE_AGENT_ID, value.Bytes())
 }
 
@@ -74,7 +74,7 @@ func (o ScMutableAgentId) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableAgentId) Value() *ScAgentId {
+func (o ScMutableAgentId) Value() ScAgentId {
 	return NewScAgentIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_AGENT_ID))
 }
 
@@ -156,7 +156,7 @@ func (o ScMutableChainId) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_CHAIN_ID)
 }
 
-func (o ScMutableChainId) SetValue(value *ScChainId) {
+func (o ScMutableChainId) SetValue(value ScChainId) {
 	SetBytes(o.objId, o.keyId, TYPE_CHAIN_ID, value.Bytes())
 }
 
@@ -164,7 +164,7 @@ func (o ScMutableChainId) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableChainId) Value() *ScChainId {
+func (o ScMutableChainId) Value() ScChainId {
 	return NewScChainIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CHAIN_ID))
 }
 
@@ -179,7 +179,7 @@ func (o ScMutableColor) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_COLOR)
 }
 
-func (o ScMutableColor) SetValue(value *ScColor) {
+func (o ScMutableColor) SetValue(value ScColor) {
 	SetBytes(o.objId, o.keyId, TYPE_COLOR, value.Bytes())
 }
 
@@ -187,7 +187,7 @@ func (o ScMutableColor) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableColor) Value() *ScColor {
+func (o ScMutableColor) Value() ScColor {
 	return NewScColorFromBytes(GetBytes(o.objId, o.keyId, TYPE_COLOR))
 }
 
@@ -224,7 +224,7 @@ func (o ScMutableContractId) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_CONTRACT_ID)
 }
 
-func (o ScMutableContractId) SetValue(value *ScContractId) {
+func (o ScMutableContractId) SetValue(value ScContractId) {
 	SetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID, value.Bytes())
 }
 
@@ -232,7 +232,7 @@ func (o ScMutableContractId) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableContractId) Value() *ScContractId {
+func (o ScMutableContractId) Value() ScContractId {
 	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID))
 }
 
@@ -247,7 +247,7 @@ func (o ScMutableHash) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_HASH)
 }
 
-func (o ScMutableHash) SetValue(value *ScHash) {
+func (o ScMutableHash) SetValue(value ScHash) {
 	SetBytes(o.objId, o.keyId, TYPE_HASH, value.Bytes())
 }
 
@@ -255,7 +255,7 @@ func (o ScMutableHash) String() string {
 	return o.Value().String()
 }
 
-func (o ScMutableHash) Value() *ScHash {
+func (o ScMutableHash) Value() ScHash {
 	return NewScHashFromBytes(GetBytes(o.objId, o.keyId, TYPE_HASH))
 }
 

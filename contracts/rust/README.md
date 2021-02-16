@@ -1,6 +1,6 @@
 ## Smart Contracts
 
-Note that most example smart contracts only show the concepts involved in creating them but should 
+Note that most example smart contracts only show the concepts involved in creating them but should
 not be taken as fully functional code.
 
 Sample smart contracts:

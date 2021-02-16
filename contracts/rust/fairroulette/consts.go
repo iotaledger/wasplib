@@ -7,7 +7,7 @@
 
 package fairroulette
 
-import "github.com/iotaledger/wasp/packages/vm/wasmlib"
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "fairroulette"
 const ScHname = wasmlib.ScHname(0xdf79d138)

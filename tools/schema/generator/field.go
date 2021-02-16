@@ -5,7 +5,7 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasp/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"regexp"
 	"strings"
 )

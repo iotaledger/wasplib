@@ -12,18 +12,20 @@ import (
 	"strings"
 )
 
-const importWasmLib = "import \"github.com/iotaledger/wasp/packages/vm/wasmlib\"\n"
-const importWasmClient = "import \"github.com/iotaledger/wasp/packages/vm/wasmclient\"\n"
+const generateGoThunk = true
+
+const importWasmLib = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
+const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/wasmclient\"\n"
 
 var goFuncRegexp = regexp.MustCompile("^func (\\w+).+$")
 
 var goTypes = StringMap{
-	"Address":    "*wasmlib.ScAddress",
-	"AgentId":    "*wasmlib.ScAgentId",
-	"ChainId":    "*wasmlib.ScChainId",
-	"Color":      "*wasmlib.ScColor",
-	"ContractId": "*wasmlib.ScContractId",
-	"Hash":       "*wasmlib.ScHash",
+	"Address":    "wasmlib.ScAddress",
+	"AgentId":    "wasmlib.ScAgentId",
+	"ChainId":    "wasmlib.ScChainId",
+	"Color":      "wasmlib.ScColor",
+	"ContractId": "wasmlib.ScContractId",
+	"Hash":       "wasmlib.ScHash",
 	"Hname":      "wasmlib.ScHname",
 	"Int":        "int64",
 	"String":     "string",
@@ -65,7 +67,7 @@ func (s *Schema) GenerateGo() error {
 func (s *Schema) GenerateGoFunc(file *os.File, funcDef *FuncDef) error {
 	funcName := funcDef.FullName
 	funcKind := capitalize(funcDef.FullName[:4])
-	fmt.Fprintf(file, "\nfunc %s(ctx *wasmlib.Sc%sContext, params *%sParams) {\n", funcName, funcKind, capitalize(funcName))
+	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, params *%sParams) {\n", funcName, funcKind, capitalize(funcName))
 	fmt.Fprintf(file, "\tctx.Log(\"calling %s\")\n", funcDef.Name)
 	fmt.Fprintf(file, "}\n")
 	return nil
@@ -103,16 +105,6 @@ func (s *Schema) GenerateGoFuncs() error {
 	for _, funcDef := range s.Funcs {
 		if existing[funcDef.FullName] == "" {
 			err = s.GenerateGoFunc(file, funcDef)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	// append any new views
-	for _, viewDef := range s.Views {
-		if existing[viewDef.FullName] == "" {
-			err = s.GenerateGoFunc(file, viewDef)
 			if err != nil {
 				return err
 			}
@@ -160,12 +152,6 @@ func (s *Schema) GenerateGoFuncsNew(scFileName string) error {
 			return err
 		}
 	}
-	for _, viewDef := range s.Views {
-		err = s.GenerateGoFunc(file, viewDef)
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
@@ -181,30 +167,31 @@ func (s *Schema) GenerateGoOnLoad() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintln(file, importWasmLib)
 
+	thunk := ""
+	if generateGoThunk {
+		thunk = "Thunk"
+	}
+
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "\texports := wasmlib.NewScExports()\n")
 	for _, funcDef := range s.Funcs {
 		name := capitalize(funcDef.FullName)
-		fmt.Fprintf(file, "\texports.AddFunc(%s, %sThunk)\n", name, funcDef.FullName)
-	}
-	for _, viewDef := range s.Views {
-		name := capitalize(viewDef.FullName)
-		fmt.Fprintf(file, "\texports.AddView(%s, %sThunk)\n", name, viewDef.FullName)
+		kind := capitalize(funcDef.FullName[:4])
+		fmt.Fprintf(file, "\texports.Add%s(%s, %s%s)\n", kind, name, funcDef.FullName, thunk)
 	}
 	fmt.Fprintf(file, "}\n")
 
-	// generate parameter structs and thunks to set up and check parameters
-	for _, funcDef := range s.Funcs {
-		s.GenerateGoThunk(file, funcDef)
-	}
-	for _, viewDef := range s.Views {
-		s.GenerateGoThunk(file, viewDef)
+	if generateGoThunk {
+		// generate parameter structs and thunks to set up and check parameters
+		for _, funcDef := range s.Funcs {
+			s.GenerateGoThunk(file, funcDef)
+		}
 	}
 	return nil
 }
 
 func (s *Schema) GenerateGoSchema() error {
-	file, err := os.Create("schema.go")
+	file, err := os.Create("consts.go")
 	if err != nil {
 		return err
 	}
@@ -239,26 +226,17 @@ func (s *Schema) GenerateGoSchema() error {
 		}
 	}
 
-	if len(s.Funcs)+len(s.Views) != 0 {
+	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
 			fmt.Fprintf(file, "const %s = \"%s\"\n", name, funcDef.Name)
-		}
-		for _, viewDef := range s.Views {
-			name := capitalize(viewDef.FullName)
-			fmt.Fprintf(file, "const %s = \"%s\"\n", name, viewDef.Name)
 		}
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "const H%s = wasmlib.ScHname(0x%s)\n", name, hName.String())
-		}
-		for _, viewDef := range s.Views {
-			name := capitalize(viewDef.FullName)
-			hName = coretypes.Hn(viewDef.Name)
 			fmt.Fprintf(file, "const H%s = wasmlib.ScHname(0x%s)\n", name, hName.String())
 		}
 	}
@@ -273,18 +251,7 @@ func (s *Schema) GenerateGoTests() error {
 
 func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 	// calculate padding
-	nameLen := 0
-	typeLen := 0
-	for _, param := range funcDef.Params {
-		fldName := param.Name
-		if nameLen < len(fldName) {
-			nameLen = len(fldName)
-		}
-		fldType := param.Type
-		if typeLen < len(fldType) {
-			typeLen = len(fldType)
-		}
-	}
+	nameLen, typeLen := calculatePadding(funcDef.Params, false)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
@@ -298,7 +265,7 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 		fmt.Fprintf(file, "\t%s wasmlib.ScImmutable%s%s\n", fldName, fldType, param.Comment)
 	}
 	fmt.Fprintf(file, "}\n")
-	fmt.Fprintf(file, "\nfunc %sThunk(ctx *wasmlib.Sc%sContext) {\n", funcDef.FullName, funcKind)
+	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", funcDef.FullName, funcKind)
 	grant := funcDef.Annotations["#grant"]
 	if grant != "" {
 		index := strings.Index(grant, "//")
@@ -318,7 +285,7 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 			fmt.Fprintf(file, "\tctx.Require(grantee.Exists(), \"grantee not set: %s\")\n", grant)
 			grant = fmt.Sprintf("grantee.Value()")
 		}
-		fmt.Fprintf(file, "\tctx.Require(ctx.From(%s), \"no permission\")\n\n", grant)
+		fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
 	}
 	if len(funcDef.Params) != 0 {
 		fmt.Fprintf(file, "\tp := ctx.Params()\n")
@@ -359,18 +326,7 @@ func (s *Schema) GenerateGoTypes() error {
 	// write structs
 	for _, typeDef := range s.Types {
 		// calculate padding
-		nameLen := 0
-		typeLen := 0
-		for _, field := range typeDef.Fields {
-			fldName := field.Name
-			if nameLen < len(fldName) {
-				nameLen = len(fldName)
-			}
-			fldType := goTypes[field.Type]
-			if typeLen < len(fldType) {
-				typeLen = len(fldType)
-			}
-		}
+		nameLen, typeLen := calculatePadding(typeDef.Fields, false)
 
 		fmt.Fprintf(file, "\ntype %s struct {\n", typeDef.Name)
 		for _, field := range typeDef.Fields {

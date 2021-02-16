@@ -85,8 +85,10 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
 	//TODO check for clashing Hnames
 
+	prefix := "func"
 	jsonFuncs := jsonSchema.Funcs
 	if views {
+		prefix = "view"
 		jsonFuncs = jsonSchema.Views
 	}
 	for _, funcName := range sortedMaps(jsonFuncs) {
@@ -96,10 +98,7 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
 		paramMap := jsonFuncs[funcName]
 		funcDef := &FuncDef{}
 		funcDef.Name = funcName
-		funcDef.FullName = "func" + capitalize(funcDef.Name)
-		if views {
-			funcDef.FullName = "view" + funcDef.FullName[4:]
-		}
+		funcDef.FullName = prefix + capitalize(funcDef.Name)
 		funcDef.Annotations = make(StringMap)
 		fieldNames := make(StringMap)
 		fieldAliases := make(StringMap)
@@ -134,11 +133,7 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
 			}
 			funcDef.Params = append(funcDef.Params, param)
 		}
-		if views {
-			s.Views = append(s.Views, funcDef)
-		} else {
-			s.Funcs = append(s.Funcs, funcDef)
-		}
+		s.Funcs = append(s.Funcs, funcDef)
 	}
 	return nil
 }
