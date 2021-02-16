@@ -12,7 +12,7 @@ use wasmlib::*;
 //@formatter:off
 pub struct Member {
     pub address: ScAddress, // address of dividend recipient
-    pub factor:  i64,       // relative division factor
+    pub factor:  i64,     // relative division factor
 }
 //@formatter:on
 

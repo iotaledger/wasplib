@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	erc20file = "erc20_bg.wasm"
+	erc20file = "../pkg/erc20_bg.wasm"
 )
 
 func TestDeployErc20(t *testing.T) {

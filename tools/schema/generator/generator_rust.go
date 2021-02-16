@@ -200,8 +200,8 @@ func (s *Schema) GenerateRustLib() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "use consts::*;\n")
-	fmt.Fprintf(file, "use wasmlib::*;\n")
-	fmt.Fprintf(file, "use %s::*;\n\n", s.Name)
+	fmt.Fprintf(file, "use %s::*;\n", s.Name)
+	fmt.Fprintf(file, "use wasmlib::*;\n\n")
 
 	fmt.Fprintf(file, "mod consts;\n")
 	if len(s.Types) != 0 {

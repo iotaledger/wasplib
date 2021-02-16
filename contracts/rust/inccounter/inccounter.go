@@ -122,8 +122,10 @@ func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, params *FuncWhenMustIncrem
 }
 
 func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
-	counter := ctx.State().GetInt(VarCounter).Value()
-	ctx.Results().GetInt(VarCounter).SetValue(counter)
+	counter := ctx.State().GetInt(VarCounter)
+	if counter.Exists() {
+		ctx.Results().GetInt(VarCounter).SetValue(counter.Value())
+	}
 }
 
 func testMap(kvstore wasmlib.ScMutableMap) {
