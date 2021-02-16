@@ -4,8 +4,8 @@
 package test
 
 import (
-	"github.com/iotaledger/wasp/contracts/common"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

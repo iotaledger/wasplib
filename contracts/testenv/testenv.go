@@ -23,6 +23,7 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
+	"github.com/iotaledger/wasplib/packages/vm/wasmclient"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 	"strings"
@@ -39,10 +40,7 @@ const (
 	WasmRunnerGoDirect = 2 // run Go code directly, without using Wasm
 )
 
-//TODO update contracts/readme
-//TODO remove hardcoded dependency in ScForGoVM
-
-var WasmRunner = 0
+var WasmRunner = 2
 
 var ScForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,
@@ -190,7 +188,7 @@ func (te *TestEnv) WithTransfers(transfer map[balance.Color]int64) *TestEnv {
 // deploy the specified contract on the chain
 func DeployGoContract(chain *solo.Chain, sigScheme signaturescheme.SignatureScheme, name string, contractName string, params ...interface{}) error {
 	if WasmRunner == WasmRunnerGoDirect {
-		wasmproc.GoWasmVM = wasmhost.NewWasmGoVM(ScForGoVM)
+		wasmproc.GoWasmVM = wasmclient.NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(sigScheme, []byte("go:"+contractName))
 		if err != nil {
 			return err
