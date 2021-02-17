@@ -25,6 +25,7 @@ var ModulePath string
 
 var camelRegExp = regexp.MustCompile("_[a-z]")
 var snakeRegExp = regexp.MustCompile("[a-z0-9][A-Z]")
+var snakeRegExp2 = regexp.MustCompile("[A-Z][A-Z]+[a-z]")
 
 func calculatePadding(fields []*Field, snakeName bool) (nameLen int, typeLen int) {
 	for _, param := range fields {
@@ -118,9 +119,14 @@ func pad(name string, size int) string {
 
 // convert camel case to lower case snake case
 func snake(name string) string {
-	return lower(snakeRegExp.ReplaceAllStringFunc(name, func(sub string) string {
+	name = snakeRegExp.ReplaceAllStringFunc(name, func(sub string) string {
 		return sub[:1] + "_" + sub[1:]
-	}))
+	})
+	name = snakeRegExp2.ReplaceAllStringFunc(name, func(sub string) string {
+		n := len(sub)
+		return sub[:n-2] + "_" + sub[n-2:]
+	})
+	return lower(name)
 }
 
 // convert to upper case

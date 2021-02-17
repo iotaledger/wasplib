@@ -94,17 +94,17 @@ pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _params: &FuncTestCallP
     ctx.call_self(HFUNC_TEST_PANIC_FULL_EP, None, None);
 }
 
-pub fn func_test_call_panic_view_epfrom_full(ctx: &ScFuncContext, _params: &FuncTestCallPanicViewEPFromFullParams) {
+pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _params: &FuncTestCallPanicViewEPFromFullParams) {
     ctx.log("calling testCallPanicViewEPFromFull");
     ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None, None);
 }
 
-pub fn func_test_chain_owner_idfull(ctx: &ScFuncContext, _params: &FuncTestChainOwnerIDFullParams) {
+pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, _params: &FuncTestChainOwnerIDFullParams) {
     ctx.log("calling testChainOwnerIDFull");
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
-pub fn func_test_contract_idfull(ctx: &ScFuncContext, _params: &FuncTestContractIDFullParams) {
+pub fn func_test_contract_id_full(ctx: &ScFuncContext, _params: &FuncTestContractIDFullParams) {
     ctx.log("calling testContractIDFull");
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
@@ -207,17 +207,17 @@ pub fn view_pass_types_view(ctx: &ScViewContext, params: &ViewPassTypesViewParam
     ctx.require(params.hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
 
-pub fn view_test_call_panic_view_epfrom_view(ctx: &ScViewContext, _params: &ViewTestCallPanicViewEPFromViewParams) {
+pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _params: &ViewTestCallPanicViewEPFromViewParams) {
     ctx.log("calling testCallPanicViewEPFromView");
     ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None);
 }
 
-pub fn view_test_chain_owner_idview(ctx: &ScViewContext, _params: &ViewTestChainOwnerIDViewParams) {
+pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, _params: &ViewTestChainOwnerIDViewParams) {
     ctx.log("calling testChainOwnerIDView");
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
 }
 
-pub fn view_test_contract_idview(ctx: &ScViewContext, _params: &ViewTestContractIDViewParams) {
+pub fn view_test_contract_id_view(ctx: &ScViewContext, _params: &ViewTestContractIDViewParams) {
     ctx.log("calling testContractIDView");
     ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }

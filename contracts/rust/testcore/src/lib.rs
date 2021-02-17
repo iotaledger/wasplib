@@ -24,9 +24,9 @@ fn on_load() {
     exports.add_func(FUNC_SEND_TO_ADDRESS, func_send_to_address_thunk);
     exports.add_func(FUNC_SET_INT, func_set_int_thunk);
     exports.add_func(FUNC_TEST_CALL_PANIC_FULL_EP, func_test_call_panic_full_ep_thunk);
-    exports.add_func(FUNC_TEST_CALL_PANIC_VIEW_EPFROM_FULL, func_test_call_panic_view_epfrom_full_thunk);
-    exports.add_func(FUNC_TEST_CHAIN_OWNER_IDFULL, func_test_chain_owner_idfull_thunk);
-    exports.add_func(FUNC_TEST_CONTRACT_IDFULL, func_test_contract_idfull_thunk);
+    exports.add_func(FUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL, func_test_call_panic_view_ep_from_full_thunk);
+    exports.add_func(FUNC_TEST_CHAIN_OWNER_ID_FULL, func_test_chain_owner_id_full_thunk);
+    exports.add_func(FUNC_TEST_CONTRACT_ID_FULL, func_test_contract_id_full_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_DEPLOY, func_test_event_log_deploy_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_EVENT_DATA, func_test_event_log_event_data_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_GENERIC_DATA, func_test_event_log_generic_data_thunk);
@@ -38,9 +38,9 @@ fn on_load() {
     exports.add_view(VIEW_GET_INT, view_get_int_thunk);
     exports.add_view(VIEW_JUST_VIEW, view_just_view_thunk);
     exports.add_view(VIEW_PASS_TYPES_VIEW, view_pass_types_view_thunk);
-    exports.add_view(VIEW_TEST_CALL_PANIC_VIEW_EPFROM_VIEW, view_test_call_panic_view_epfrom_view_thunk);
-    exports.add_view(VIEW_TEST_CHAIN_OWNER_IDVIEW, view_test_chain_owner_idview_thunk);
-    exports.add_view(VIEW_TEST_CONTRACT_IDVIEW, view_test_contract_idview_thunk);
+    exports.add_view(VIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, view_test_call_panic_view_ep_from_view_thunk);
+    exports.add_view(VIEW_TEST_CHAIN_OWNER_ID_VIEW, view_test_chain_owner_id_view_thunk);
+    exports.add_view(VIEW_TEST_CONTRACT_ID_VIEW, view_test_contract_id_view_thunk);
     exports.add_view(VIEW_TEST_PANIC_VIEW_EP, view_test_panic_view_ep_thunk);
     exports.add_view(VIEW_TEST_SANDBOX_CALL, view_test_sandbox_call_thunk);
 }
@@ -196,23 +196,23 @@ fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
 
 pub struct FuncTestCallPanicViewEPFromFullParams {}
 
-fn func_test_call_panic_view_epfrom_full_thunk(ctx: &ScFuncContext) {
+fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
     let params = FuncTestCallPanicViewEPFromFullParams {};
-    func_test_call_panic_view_epfrom_full(ctx, &params);
+    func_test_call_panic_view_ep_from_full(ctx, &params);
 }
 
 pub struct FuncTestChainOwnerIDFullParams {}
 
-fn func_test_chain_owner_idfull_thunk(ctx: &ScFuncContext) {
+fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     let params = FuncTestChainOwnerIDFullParams {};
-    func_test_chain_owner_idfull(ctx, &params);
+    func_test_chain_owner_id_full(ctx, &params);
 }
 
 pub struct FuncTestContractIDFullParams {}
 
-fn func_test_contract_idfull_thunk(ctx: &ScFuncContext) {
+fn func_test_contract_id_full_thunk(ctx: &ScFuncContext) {
     let params = FuncTestContractIDFullParams {};
-    func_test_contract_idfull(ctx, &params);
+    func_test_contract_id_full(ctx, &params);
 }
 
 pub struct FuncTestEventLogDeployParams {}
@@ -364,23 +364,23 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
 
 pub struct ViewTestCallPanicViewEPFromViewParams {}
 
-fn view_test_call_panic_view_epfrom_view_thunk(ctx: &ScViewContext) {
+fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
     let params = ViewTestCallPanicViewEPFromViewParams {};
-    view_test_call_panic_view_epfrom_view(ctx, &params);
+    view_test_call_panic_view_ep_from_view(ctx, &params);
 }
 
 pub struct ViewTestChainOwnerIDViewParams {}
 
-fn view_test_chain_owner_idview_thunk(ctx: &ScViewContext) {
+fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     let params = ViewTestChainOwnerIDViewParams {};
-    view_test_chain_owner_idview(ctx, &params);
+    view_test_chain_owner_id_view(ctx, &params);
 }
 
 pub struct ViewTestContractIDViewParams {}
 
-fn view_test_contract_idview_thunk(ctx: &ScViewContext) {
+fn view_test_contract_id_view_thunk(ctx: &ScViewContext) {
     let params = ViewTestContractIDViewParams {};
-    view_test_contract_idview(ctx, &params);
+    view_test_contract_id_view(ctx, &params);
 }
 
 pub struct ViewTestPanicViewEPParams {}

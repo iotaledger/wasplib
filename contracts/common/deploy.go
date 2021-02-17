@@ -30,7 +30,7 @@ const (
 //TODO figure out how to interrupt wasmtime VM
 
 
-const WasmRunner = 1
+const WasmRunner = 0
 
 var (
 	ContractAccount coretypes.AgentID
