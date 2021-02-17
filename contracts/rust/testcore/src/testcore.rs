@@ -31,16 +31,23 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
     ctx.log(&format!("call depth = {} hnameContract = {} hnameEP = {} counter = {}",
                      param_int, &target_contract.to_string(), &target_ep.to_string(), counter));
 
-    let params = ScMutableMap::new();
-    params.get_int(PARAM_INT_VALUE).set_value(param_int);
-    let ret = ctx.call(target_contract, target_ep, Some(params), None);
+    let parms = ScMutableMap::new();
+    parms.get_int(PARAM_INT_VALUE).set_value(param_int);
+    let ret = ctx.call(target_contract, target_ep, Some(parms), None);
 
     let ret_val = ret.get_int(PARAM_INT_VALUE);
     ctx.results().get_int(PARAM_INT_VALUE).set_value(ret_val.value());
 }
 
-pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, _params: &FuncCheckContextFromFullEPParams) {
+pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, params: &FuncCheckContextFromFullEPParams) {
     ctx.log("calling checkContextFromFullEP");
+
+    ctx.require(params.chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
+    ctx.require(params.chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
+    ctx.require(params.caller.value() == ctx.caller(), "fail: caller");
+    ctx.require(params.contract_id.value() == ctx.contract_id(), "fail: contractID");
+    ctx.require(params.agent_id.value() == ctx.contract_id().as_agent_id(), "fail: agentID");
+    ctx.require(params.contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
 pub fn func_do_nothing(ctx: &ScFuncContext, _params: &FuncDoNothingParams) {
@@ -71,10 +78,10 @@ pub fn func_run_recursion(ctx: &ScFuncContext, params: &FuncRunRecursionParams) 
         return;
     }
 
-    let params = ScMutableMap::new();
-    params.get_int(PARAM_INT_VALUE).set_value(depth - 1);
-    params.get_hname(PARAM_HNAME_EP).set_value(HFUNC_RUN_RECURSION);
-    ctx.call_self(HFUNC_CALL_ON_CHAIN, Some(params), None);
+    let parms = ScMutableMap::new();
+    parms.get_int(PARAM_INT_VALUE).set_value(depth - 1);
+    parms.get_hname(PARAM_HNAME_EP).set_value(HFUNC_RUN_RECURSION);
+    ctx.call_self(HFUNC_CALL_ON_CHAIN, Some(parms), None);
     // TODO how would I return result of the call ???
     ctx.results().get_int(PARAM_INT_VALUE).set_value(depth - 1);
 }
@@ -150,8 +157,14 @@ pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainP
     // TODO how to check if post was successful
 }
 
-pub fn view_check_context_from_view_ep(ctx: &ScViewContext, _params: &ViewCheckContextFromViewEPParams) {
+pub fn view_check_context_from_view_ep(ctx: &ScViewContext, params: &ViewCheckContextFromViewEPParams) {
     ctx.log("calling checkContextFromViewEP");
+
+    ctx.require(params.chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
+    ctx.require(params.chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
+    ctx.require(params.contract_id.value() == ctx.contract_id(), "fail: contractID");
+    ctx.require(params.agent_id.value() == ctx.contract_id().as_agent_id(), "fail: agentID");
+    ctx.require(params.contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
 pub fn view_fibonacci(ctx: &ScViewContext, params: &ViewFibonacciParams) {
@@ -162,14 +175,14 @@ pub fn view_fibonacci(ctx: &ScViewContext, params: &ViewFibonacciParams) {
         ctx.results().get_int(PARAM_INT_VALUE).set_value(n);
         return;
     }
-    let params1 = ScMutableMap::new();
-    params1.get_int(PARAM_INT_VALUE).set_value(n - 1);
-    let results1 = ctx.call_self(HVIEW_FIBONACCI, Some(params1));
+    let parms1 = ScMutableMap::new();
+    parms1.get_int(PARAM_INT_VALUE).set_value(n - 1);
+    let results1 = ctx.call_self(HVIEW_FIBONACCI, Some(parms1));
     let n1 = results1.get_int(PARAM_INT_VALUE).value();
 
-    let params2 = ScMutableMap::new();
-    params2.get_int(PARAM_INT_VALUE).set_value(n - 2);
-    let results2 = ctx.call_self(HVIEW_FIBONACCI, Some(params2));
+    let parms2 = ScMutableMap::new();
+    parms2.get_int(PARAM_INT_VALUE).set_value(n - 2);
+    let results2 = ctx.call_self(HVIEW_FIBONACCI, Some(parms2));
     let n2 = results2.get_int(PARAM_INT_VALUE).value();
 
     ctx.results().get_int(PARAM_INT_VALUE).set_value(n1 + n2);

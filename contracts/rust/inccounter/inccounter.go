@@ -31,25 +31,30 @@ func funcIncrement(ctx wasmlib.ScFuncContext, params *FuncIncrementParams) {
 }
 
 func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
+    if params.Counter.Exists() {
 	counter := params.Counter.Value()
-	if counter == 0 {
-		return
+        ctx.State().GetInt(VarCounter).SetValue(counter)
 	}
-	ctx.State().GetInt(VarCounter).SetValue(counter)
 }
 
 func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, params *FuncLocalStateInternalCallParams) {
-	LocalStateMustIncrement = false
-	par := &FuncWhenMustIncrementParams{}
-	funcWhenMustIncrement(ctx, par)
-	LocalStateMustIncrement = true
-	funcWhenMustIncrement(ctx, par)
-	funcWhenMustIncrement(ctx, par)
-	// counter ends up as 2
+    {
+        LocalStateMustIncrement = false
+    }
+    par := FuncWhenMustIncrementParams{}
+    funcWhenMustIncrement(ctx, par)
+    {
+        LocalStateMustIncrement = true
+    }
+    funcWhenMustIncrement(ctx, par)
+    funcWhenMustIncrement(ctx, par)
+    // counter ends up as 2
 }
 
 func funcLocalStatePost(ctx wasmlib.ScFuncContext, params *FuncLocalStatePostParams) {
-	LocalStateMustIncrement = false
+    {
+        LocalStateMustIncrement = false
+    }
 	request := &wasmlib.PostRequestParams{
 		ContractId: ctx.ContractId(),
 		Function:   HFuncWhenMustIncrement,
@@ -58,19 +63,25 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, params *FuncLocalStatePostPar
 		Delay:      0,
 	}
 	ctx.Post(request)
-	LocalStateMustIncrement = true
-	ctx.Post(request)
-	ctx.Post(request)
-	// counter ends up as 0 (non-existent)
+    {
+        LocalStateMustIncrement = true
+    }
+    ctx.Post(request)
+    ctx.Post(request)
+    // counter ends up as 0
 }
 
 func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, params *FuncLocalStateSandboxCallParams) {
-	LocalStateMustIncrement = false
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	LocalStateMustIncrement = true
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	// counter ends up as 0 (non-existent)
+    {
+        LocalStateMustIncrement = false
+    }
+    ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+    {
+        LocalStateMustIncrement = true
+    }
+    ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+    ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+    // counter ends up as 0
 }
 
 func funcPostIncrement(ctx wasmlib.ScFuncContext, params *FuncPostIncrementParams) {
@@ -121,62 +132,11 @@ func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, params *FuncWhenMustIncrem
 	counter.SetValue(counter.Value() + 1)
 }
 
+// note that get_counter mirrors the state of the 'counter' state variable
+// which means that if the state variable was not present it also will not be present in the result
 func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
 	counter := ctx.State().GetInt(VarCounter)
 	if counter.Exists() {
 		ctx.Results().GetInt(VarCounter).SetValue(counter.Value())
-	}
-}
-
-func testMap(kvstore wasmlib.ScMutableMap) {
-	int1 := kvstore.GetInt(VarInt1)
-	check(int1.Value() == 0)
-	int1.SetValue(1)
-
-	string1 := kvstore.GetString(VarString1)
-	check(string1.Value() == "")
-	string1.SetValue("a")
-	check(string1.Value() == "a")
-
-	ia1 := kvstore.GetIntArray(VarIntArray1)
-	int2 := ia1.GetInt(0)
-	check(int2.Value() == 0)
-	int2.SetValue(2)
-	int3 := ia1.GetInt(1)
-	check(int3.Value() == 0)
-	int3.SetValue(3)
-
-	sa1 := kvstore.GetStringArray(VarStringArray1)
-	string2 := sa1.GetString(0)
-	check(string2.Value() == "")
-	string2.SetValue("bc")
-	string3 := sa1.GetString(1)
-	check(string3.Value() == "")
-	string3.SetValue("def")
-}
-
-func checkMap(kvstore wasmlib.ScImmutableMap) {
-	int1 := kvstore.GetInt(VarInt1)
-	check(int1.Value() == 1)
-
-	string1 := kvstore.GetString(VarString1)
-	check(string1.Value() == "a")
-
-	ia1 := kvstore.GetIntArray(VarIntArray1)
-	int2 := ia1.GetInt(0)
-	check(int2.Value() == 2)
-	int3 := ia1.GetInt(1)
-	check(int3.Value() == 3)
-
-	sa1 := kvstore.GetStringArray(VarStringArray1)
-	string2 := sa1.GetString(0)
-	check(string2.Value() == "bc")
-	string3 := sa1.GetString(1)
-	check(string3.Value() == "def")
-}
-
-func check(condition bool) {
-	if !condition {
-		panic("Check failed!")
 	}
 }

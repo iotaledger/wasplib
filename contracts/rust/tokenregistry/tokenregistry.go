@@ -35,14 +35,14 @@ func funcMintSupply(ctx wasmlib.ScFuncContext, params *FuncMintSupplyParams) {
 	colors.GetColor(colors.Length()).SetValue(minted)
 }
 
-func funcTransferOwnership(_sc wasmlib.ScFuncContext, params *FuncTransferOwnershipParams) {
+func funcTransferOwnership(ctx wasmlib.ScFuncContext, params *FuncTransferOwnershipParams) {
 	//TODO
 }
 
-func funcUpdateMetadata(_sc wasmlib.ScFuncContext, params *FuncUpdateMetadataParams) {
+func funcUpdateMetadata(ctx wasmlib.ScFuncContext, params *FuncUpdateMetadataParams) {
 	//TODO
 }
 
-func viewGetInfo(_sc wasmlib.ScViewContext, params *ViewGetInfoParams) {
+func viewGetInfo(ctx wasmlib.ScViewContext, params *ViewGetInfoParams) {
 	//TODO
 }

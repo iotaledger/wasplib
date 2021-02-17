@@ -33,9 +33,9 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 		" counter = " + ctx.Utility().String(counter)
 	ctx.Log(msg)
 
-	par := wasmlib.NewScMutableMap()
-	par.GetInt(ParamIntValue).SetValue(paramIn)
-	ret := ctx.Call(targetContract, targetEp, par, nil)
+	parms := wasmlib.NewScMutableMap()
+	parms.GetInt(ParamIntValue).SetValue(paramIn)
+	ret := ctx.Call(targetContract, targetEp, parms, nil)
 
 	retVal := ret.GetInt(ParamIntValue)
 
@@ -82,10 +82,10 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams)
 	if depth <= 0 {
 		return
 	}
-	par := wasmlib.NewScMutableMap()
-	par.GetInt(ParamIntValue).SetValue(depth - 1)
-	par.GetHname(VarHnameEP).SetValue(HFuncRunRecursion)
-	ctx.CallSelf(HFuncCallOnChain, par, nil)
+	parms := wasmlib.NewScMutableMap()
+	parms.GetInt(ParamIntValue).SetValue(depth - 1)
+	parms.GetHname(VarHnameEP).SetValue(HFuncRunRecursion)
+	ctx.CallSelf(HFuncCallOnChain, parms, nil)
 	// TODO how would I return result of the call ???
 	ctx.Results().GetInt(ParamIntValue).SetValue(depth - 1)
 }
@@ -176,14 +176,14 @@ func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
 		ctx.Results().GetInt(ParamIntValue).SetValue(n)
 		return
 	}
-	params1 := wasmlib.NewScMutableMap()
-	params1.GetInt(ParamIntValue).SetValue(n - 1)
-	results1 := ctx.CallSelf(HViewFibonacci, params1)
+	parms1 := wasmlib.NewScMutableMap()
+	parms1.GetInt(ParamIntValue).SetValue(n - 1)
+	results1 := ctx.CallSelf(HViewFibonacci, parms1)
 	n1 := results1.GetInt(ParamIntValue).Value()
 
-	params2 := wasmlib.NewScMutableMap()
-	params2.GetInt(ParamIntValue).SetValue(n - 2)
-	results2 := ctx.CallSelf(HViewFibonacci, params2)
+	parms2 := wasmlib.NewScMutableMap()
+	parms2.GetInt(ParamIntValue).SetValue(n - 2)
+	results2 := ctx.CallSelf(HViewFibonacci, parms2)
 	n2 := results2.GetInt(ParamIntValue).Value()
 
 	ctx.Results().GetInt(ParamIntValue).SetValue(n1 + n2)

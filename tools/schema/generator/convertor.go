@@ -15,19 +15,18 @@ import (
 var goReplacements = []string{
 	"pub fn ", "func ",
 	"fn ", "func ",
-	"Hname::new", "wasmlib.NewHname",
+	//"Hname::new", "wasmlib.NewHname",
 	"None", "nil",
 	"ScColor::Iota", "wasmlib.IOTA",
 	"ScColor::Mint", "wasmlib.MINT",
-	"ScExports::new", "wasmlib.NewScExports",
-	"ScExports::nothing", "wasmlib.Nothing",
+	//"ScExports::new", "wasmlib.NewScExports",
 	"ScMutableMap::new", "wasmlib.NewScMutableMap",
 	"ScTransfers::new", "wasmlib.NewScTransfer",
 	"String::new()", "\"\"",
 	"(&", "(",
+	", &", ", ",
 	".Post(PostRequestParams", ".Post(&PostRequestParams",
 	"PostRequestParams", "wasmlib.PostRequestParams",
-	", &", ", ",
 	": &Sc", " wasmlib.Sc",
 	": i64", " int64",
 	": &str", " string",
@@ -38,12 +37,17 @@ var goReplacements = []string{
 	" unsafe ", " ",
 	".Value().String()", ".String()",
 	".ToString()", ".String()",
+	".ToBytes()", ".Bytes()",
 	" onLoad()", " OnLoad()",
-	"decode", "Decode",
-	"encode", "Encode",
+	"Hview", "HView",
+	"Hfunc", "HFunc",
+	"_ctx", "ctx",
+	"_params", "params",
+	"params: &", "params *",
 	"#[noMangle]", "",
 	"mod types", "",
-	"use types::*", "",
+	"use crate::*", "",
+	"use crate::types::*", "",
 }
 
 var javaReplacements = []string{
@@ -76,6 +80,7 @@ var matchConstStr = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): &str 
 var matchExtraBraces = regexp.MustCompile("\\((\\([^)]+\\))\\)")
 var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_]+")
 var matchForLoop = regexp.MustCompile("for (\\w+) in ([0-9+])\\.\\.(\\w+)")
+var matchFromBytes = regexp.MustCompile("(\\w+)::from_bytes")
 var matchFuncCall = regexp.MustCompile("\\.[a-z][a-z_]+\\(")
 var matchIf = regexp.MustCompile("if (.+) {")
 var matchInitializer = regexp.MustCompile("(\\w+): (.+),$")
@@ -124,17 +129,22 @@ func replaceVarName(m string) string {
 	return m
 }
 
+var matchContract = regexp.MustCompile("^rust.(\\w+).src.(\\w+).rs")
+
 func RustConvertor(convertLine func(string, string) string, outPath string) error {
-	return filepath.Walk("../rust/contracts",
+	return filepath.Walk("rust",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			if !strings.HasSuffix(path, "\\lib.rs") {
+			if !matchContract.MatchString(path) {
 				return nil
 			}
-			var matchContract = regexp.MustCompile(".+\\W(\\w+)\\Wsrc\\W.+")
-			contract := matchContract.ReplaceAllString(path, "$1")
+			matches := matchContract.FindStringSubmatch(path)
+			if len(matches) != 3 || matches[1] != matches[2] {
+				return nil
+			}
+			contract := matches[1]
 			file, err := os.Open(path)
 			if err != nil {
 				return err
@@ -174,6 +184,7 @@ func RustToGoLine(line string, contract string) string {
 	line = matchToString.ReplaceAllString(line, "+ $1.String()")
 	line = matchInitializerHeader.ReplaceAllString(line, "$1 := &$2 {")
 	line = matchSome.ReplaceAllString(line, "$1")
+	line = matchFromBytes.ReplaceAllString(line, "New${1}FromBytes")
 
 	lhs := strings.Index(line, "\"")
 	if lhs < 0 {
@@ -195,7 +206,7 @@ func RustToGoLine(line string, contract string) string {
 	line = matchExtraBraces.ReplaceAllString(line, "$1")
 
 	if strings.HasPrefix(line, "use wasmlib::*") {
-		line = fmt.Sprintf("package %s\n\nimport \"github.com/iotaledger/wasplib/client\"", contract)
+		line = fmt.Sprintf("package %s\n\nimport \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"", contract)
 	}
 
 	return line

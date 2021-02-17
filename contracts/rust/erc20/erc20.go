@@ -38,7 +38,7 @@ func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 	ctx.State().GetInt(VarSupply).SetValue(supply)
 
 	// we cannot use 'caller' here because on_init is always called from the 'root'
-	// so, creator/owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
+    // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
 	// assign the whole supply to creator
 	creator := params.Creator.Value()
 	ctx.State().GetMap(VarBalances).GetInt(creator).SetValue(supply)
@@ -81,6 +81,7 @@ func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
 func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams) {
 	ctx.Trace("erc20.transfer_from")
 
+    // validate parameters
 	account := params.Account.Value()
 	recipient := params.Recipient.Value()
 	amount := params.Amount.Value()

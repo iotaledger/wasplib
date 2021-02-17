@@ -45,7 +45,7 @@ func (s *Schema) GenerateGo() error {
 	if err != nil {
 		return err
 	}
-	err = s.GenerateGoOnLoad()
+	err = s.GenerateGoLib()
 	if err != nil {
 		return err
 	}
@@ -155,8 +155,8 @@ func (s *Schema) GenerateGoFuncsNew(scFileName string) error {
 	return nil
 }
 
-func (s *Schema) GenerateGoOnLoad() error {
-	file, err := os.Create("onload.go")
+func (s *Schema) GenerateGoLib() error {
+	file, err := os.Create("lib.go")
 	if err != nil {
 		return err
 	}

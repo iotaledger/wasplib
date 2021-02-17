@@ -19,9 +19,7 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, params *FuncFinalizeAuctionP
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(VarInfo)
-	if !auctionInfo.Exists() {
-		ctx.Panic("Missing auction info")
-	}
+    ctx.Require(auctionInfo.Exists(), "Missing auction info")
 	auction := NewAuctionFromBytes(auctionInfo.Value())
 	if auction.HighestBid < 0 {
 		ctx.Log("No one bid on " + color.String())
@@ -62,18 +60,14 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, params *FuncFinalizeAuctionP
 
 func funcPlaceBid(ctx wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
-	if bidAmount == 0 {
-		ctx.Panic("Missing bid amount")
-	}
+    ctx.Require(bidAmount > 0, "Missing bid amount")
 
 	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(VarInfo)
-	if !auctionInfo.Exists() {
-		ctx.Panic("Missing auction info")
-	}
+    ctx.Require(auctionInfo.Exists(), "Missing auction info")
 
 	auction := NewAuctionFromBytes(auctionInfo.Value())
 	bidders := currentAuction.GetMap(VarBidders)
@@ -88,9 +82,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 		bid.Timestamp = ctx.Timestamp()
 		bidder.SetValue(bid.Bytes())
 	} else {
-		if bidAmount < auction.MinimumBid {
-			ctx.Panic("Insufficient bid amount")
-		}
+        ctx.Require(bidAmount >= auction.MinimumBid, "Insufficient bid amount")
 		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
 		bidderList.GetAgentId(index).SetValue(caller)
