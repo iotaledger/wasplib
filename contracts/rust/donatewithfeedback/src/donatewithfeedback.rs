@@ -7,12 +7,11 @@ use crate::*;
 use crate::types::*;
 
 pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
-    let p = ctx.params();
     let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
         error: String::new(),
-        feedback: p.get_string(PARAM_FEEDBACK).value(),
+        feedback: params.feedback.value(),
         timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
@@ -35,12 +34,8 @@ pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
 }
 
 pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
-    // only SC creator can withdraw donated funds
-    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
-
     let balance = ctx.balances().balance(&ScColor::IOTA);
-    let p = ctx.params();
-    let mut amount = p.get_int(PARAM_AMOUNT).value();
+    let mut amount = params.amount.value();
     if amount == 0 || amount > balance {
         amount = balance;
     }
@@ -53,7 +48,7 @@ pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
     ctx.transfer_to_address(&sc_creator, &ScTransfers::new(&ScColor::IOTA, amount));
 }
 
-pub fn view_donations(ctx: &ScViewContext, params: &ViewDonationsParams) {
+pub fn view_donations(ctx: &ScViewContext, _params: &ViewDonationsParams) {
     let state = ctx.state();
     let largest_donation = state.get_int(VAR_MAX_DONATION);
     let total_donated = state.get_int(VAR_TOTAL_DONATION);
