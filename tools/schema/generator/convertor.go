@@ -13,18 +13,19 @@ import (
 )
 
 var goReplacements = []string{
+	"(&", "(",
+	", &", ", ",
 	"pub fn ", "func ",
 	"fn ", "func ",
-	//"Hname::new", "wasmlib.NewHname",
 	"None", "nil",
 	"ScColor::Iota", "wasmlib.IOTA",
 	"ScColor::Mint", "wasmlib.MINT",
-	//"ScExports::new", "wasmlib.NewScExports",
+	"ScContractId::new", "wasmlib.NewScContractId",
+	"ScHname::new", "wasmlib.NewScHname",
 	"ScMutableMap::new", "wasmlib.NewScMutableMap",
 	"ScTransfers::new", "wasmlib.NewScTransfer",
+	" str = \"", " = \"",
 	"String::new()", "\"\"",
-	"(&", "(",
-	", &", ", ",
 	".Post(PostRequestParams", ".Post(&PostRequestParams",
 	"PostRequestParams", "wasmlib.PostRequestParams",
 	": &Sc", " wasmlib.Sc",
@@ -35,9 +36,9 @@ var goReplacements = []string{
 	" &\"", " \"",
 	" + &", " + ",
 	" unsafe ", " ",
-	".Value().String()", ".String()",
 	".ToString()", ".String()",
 	".ToBytes()", ".Bytes()",
+	".Value().String()", ".String()",
 	" onLoad()", " OnLoad()",
 	"Hview", "HView",
 	"Hfunc", "HFunc",
@@ -77,11 +78,13 @@ var matchComment = regexp.MustCompile("^\\s*//")
 var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_0-9]+")
 var matchConstInt = regexp.MustCompile("const ([A-Z])([A-Z_0-9]+): \\w+ = ([0-9]+)")
 var matchConstStr = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = (\"[^\"]+\")")
+var matchConstStr2 = regexp.MustCompile("const ([A-Z_0-9]+): &str = (\"[^\"]+\")")
+var matchCore = regexp.MustCompile("([^a-zA-Z_])Core([A-Z])")
 var matchExtraBraces = regexp.MustCompile("\\((\\([^)]+\\))\\)")
-var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_]+")
+var matchFieldName = regexp.MustCompile("\\.[a-z][a-z_0-9]+")
 var matchForLoop = regexp.MustCompile("for (\\w+) in ([0-9+])\\.\\.(\\w+)")
 var matchFromBytes = regexp.MustCompile("(\\w+)::from_bytes")
-var matchFuncCall = regexp.MustCompile("\\.[a-z][a-z_]+\\(")
+var matchFuncCall = regexp.MustCompile("\\.[a-z][a-z_0-9]+\\(")
 var matchIf = regexp.MustCompile("if (.+) {")
 var matchInitializer = regexp.MustCompile("(\\w+): (.+),$")
 var matchInitializerHeader = regexp.MustCompile("(\\w+) :?= &?(\\w+) {")
@@ -89,7 +92,7 @@ var matchLet = regexp.MustCompile("let (mut )?(\\w+)(: &str)? =")
 var matchParam = regexp.MustCompile("(\\(|, ?)(\\w+): &?(\\w+)")
 var matchSome = regexp.MustCompile("Some\\(([^)]+)\\)")
 var matchToString = regexp.MustCompile("\\+ &([^ ]+)\\.ToString\\(\\)")
-var matchVarName = regexp.MustCompile("[^a-zA-Z_][a-z][a-z_]+")
+var matchVarName = regexp.MustCompile("[^a-zA-Z_][a-z][a-z_0-9]+")
 
 var lastInit string
 
@@ -101,13 +104,13 @@ func replaceConst(m string) string {
 }
 
 func replaceFieldName(m string) string {
-	// "\\.[a-z][a-z_]+"
+	// "\\.[a-z][a-z_0-9]+"
 	// replace Rust lower snake case to Go public camel case
 	return replaceVarName(strings.ToUpper(m[:2]) + m[2:])
 }
 
 func replaceFuncCall(m string) string {
-	// "\\.[a-z][a-z_]+\\("
+	// "\\.[a-z][a-z_0-9]+\\("
 	// replace Rust lower snake case to Go public camel case
 	return replaceVarName(strings.ToUpper(m[:2]) + m[2:])
 }
@@ -119,7 +122,7 @@ func replaceInitializer(m string) string {
 }
 
 func replaceVarName(m string) string {
-	// "[^a-zA-Z_][a-z][a-z_]+"
+	// "[^a-zA-Z_][a-z][a-z_0-9]+"
 	// replace Rust lower snake case to Go camel case
 	index := strings.Index(m, "_")
 	for index > 0 && index < len(m)-1 {
@@ -158,11 +161,18 @@ func RustConvertor(convertLine func(string, string) string, outPath string) erro
 			}
 			defer out.Close()
 			scanner := bufio.NewScanner(file)
+			emptyLines := 0
 			for scanner.Scan() {
 				text := scanner.Text()
 				line := convertLine(text, contract)
-				if line == "" && text != "" {
-					continue
+				if line == "" {
+					if emptyLines != 0 || text != "" {
+						// remove empty line
+						continue
+					}
+					emptyLines++
+				} else {
+					emptyLines = 0
 				}
 				fmt.Fprintln(out, line)
 			}
@@ -178,6 +188,7 @@ func RustToGoLine(line string, contract string) string {
 	line = strings.Replace(line, ";", "", -1)
 	line = matchConstInt.ReplaceAllString(line, "const $1$2 = $3")
 	line = matchConstStr.ReplaceAllString(line, "const $1$2 = wasmlib.Key($3)")
+	line = matchConstStr2.ReplaceAllString(line, "const $1 = $2")
 	line = matchLet.ReplaceAllString(line, "$2 :=")
 	line = matchForLoop.ReplaceAllString(line, "for $1 := int32($2); $1 < $3; $1++")
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
@@ -197,6 +208,7 @@ func RustToGoLine(line string, contract string) string {
 		line = left + mid + right
 	}
 
+	line = matchCore.ReplaceAllString(line, "${1}wasmlib.Core$2")
 	line = matchInitializer.ReplaceAllStringFunc(line, replaceInitializer)
 
 	for i := 0; i < len(goReplacements); i += 2 {
@@ -206,7 +218,7 @@ func RustToGoLine(line string, contract string) string {
 	line = matchExtraBraces.ReplaceAllString(line, "$1")
 
 	if strings.HasPrefix(line, "use wasmlib::*") {
-		line = fmt.Sprintf("package %s\n\nimport \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"", contract)
+		line = fmt.Sprintf("package %s\n\nimport (\n\t\"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n)", contract)
 	}
 
 	return line

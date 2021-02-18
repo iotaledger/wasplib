@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -22,10 +23,6 @@ const (
 	// ERC20 constants
 	PARAM_SUPPLY     = "s"
 	PARAM_CREATOR    = "c"
-	PARAM_ACCOUNT    = "ac"
-	PARAM_DELEGATION = "d"
-	PARAM_AMOUNT     = "am"
-	PARAM_RECIPIENT  = "r"
 )
 
 var WasmFileTestcore = util.LocateFile("testcore_bg.wasm", "testcore/pkg")
@@ -52,11 +49,15 @@ func setupDeployer(t *testing.T, chain *solo.Chain) signaturescheme.SignatureSch
 }
 
 func run2(t *testing.T, test func(*testing.T, bool), skipWasm ...bool) {
+	t.Run(fmt.Sprintf("run CORE version of %s", t.Name()), func(t *testing.T) {
 	test(t, false)
+	})
 	if len(skipWasm) == 0 || !skipWasm[0] {
+		t.Run(fmt.Sprintf("run WASM version of %s", t.Name()), func(t *testing.T) {
 		test(t, true)
+		})
 	} else {
-		t.Logf("skipped wasm version of '%s'", t.Name())
+		t.Logf("skipped WASM version of '%s'", t.Name())
 	}
 }
 

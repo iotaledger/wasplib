@@ -30,7 +30,8 @@ const (
 //TODO figure out how to interrupt wasmtime VM
 
 
-const WasmRunner = 0
+// set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
+const WasmRunner = 1
 
 var (
 	ContractAccount coretypes.AgentID

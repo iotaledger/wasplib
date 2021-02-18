@@ -9,6 +9,7 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
 	"github.com/stretchr/testify/require"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -143,7 +144,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(SandboxSCName,
 		test_sandbox_sc.FuncEventLogGenericData,
-		test_sandbox_sc.VarCounter, 1337,
+		test_sandbox_sc.VarCounter, solo.Saldo,
 	)
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
@@ -166,7 +167,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 	require.EqualValues(t, 2, strings.Count(str, "[req]"))
 	require.EqualValues(t, 1, strings.Count(str, "[GenericData]"))
 	require.EqualValues(t, 0, strings.Count(str, "[Event]"))
-	require.EqualValues(t, 1, strings.Count(str, "1337"))
+	require.EqualValues(t, 1, strings.Count(str, strconv.FormatInt(solo.Saldo, 10)))
 }
 
 func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy) }

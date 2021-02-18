@@ -3,7 +3,9 @@
 
 package helloworld
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 func funcHelloWorld(ctx wasmlib.ScFuncContext, params *FuncHelloWorldParams) {
 	ctx.Log("Hello, world!")

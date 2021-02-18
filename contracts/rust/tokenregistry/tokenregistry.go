@@ -3,7 +3,9 @@
 
 package tokenregistry
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 func funcMintSupply(ctx wasmlib.ScFuncContext, params *FuncMintSupplyParams) {
 	minted := ctx.Incoming().Minted()

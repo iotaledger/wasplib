@@ -115,8 +115,13 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
 
-	// global var in wasm execution has no effect
-	checkStateCounter(t, chain, nil)
+	if common.WasmRunner == 0 {
+		// global var in wasm execution has no effect
+		checkStateCounter(t, chain, nil)
+		return
+	}
+
+	checkStateCounter(t, chain, 2)
 }
 
 func TestIncrementLocalStatePost(t *testing.T) {
@@ -128,8 +133,13 @@ func TestIncrementLocalStatePost(t *testing.T) {
 
 	chain.WaitForEmptyBacklog()
 
-	// global var in wasm execution has no effect
-	checkStateCounter(t, chain, nil)
+	if common.WasmRunner == 0 {
+		// global var in wasm execution has no effect
+		checkStateCounter(t, chain, nil)
+		return
+	}
+
+	checkStateCounter(t, chain, 1)
 }
 
 func checkStateCounter(t *testing.T, chain *solo.Chain, expected interface{}) {

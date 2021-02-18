@@ -3,7 +3,9 @@
 
 package inccounter
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 var LocalStateMustIncrement = false
 
@@ -42,12 +44,12 @@ func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, params *FuncLocalStat
         LocalStateMustIncrement = false
     }
     par := FuncWhenMustIncrementParams{}
-    funcWhenMustIncrement(ctx, par)
+    funcWhenMustIncrement(ctx, &par)
     {
         LocalStateMustIncrement = true
     }
-    funcWhenMustIncrement(ctx, par)
-    funcWhenMustIncrement(ctx, par)
+    funcWhenMustIncrement(ctx, &par)
+    funcWhenMustIncrement(ctx, &par)
     // counter ends up as 2
 }
 

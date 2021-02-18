@@ -12,7 +12,7 @@ import (
 )
 
 func TestRustToGo(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := generator.RustConvertor(generator.RustToGoLine, "converted/$1/$1.go")
 	require.NoError(t, err)
 }

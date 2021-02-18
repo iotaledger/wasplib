@@ -3,7 +3,9 @@
 
 package testcore
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 const ContractNameDeployed = "exampleDeployTR"
 const MsgFullPanic = "========== panic FULL ENTRY POINT ========="
@@ -11,7 +13,8 @@ const MsgViewPanic = "========== panic VIEW ========="
 
 func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 	ctx.Log("calling callOnChain")
-	paramIn := params.IntValue.Value()
+
+	paramInt := params.IntValue.Value()
 
 	targetContract := ctx.ContractId().Hname()
 	if params.HnameContract.Exists() {
@@ -34,11 +37,10 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 	ctx.Log(msg)
 
 	parms := wasmlib.NewScMutableMap()
-	parms.GetInt(ParamIntValue).SetValue(paramIn)
+	parms.GetInt(ParamIntValue).SetValue(paramInt)
 	ret := ctx.Call(targetContract, targetEp, parms, nil)
 
 	retVal := ret.GetInt(ParamIntValue)
-
 	ctx.Results().GetInt(ParamIntValue).SetValue(retVal.Value())
 }
 
@@ -64,27 +66,26 @@ func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 func funcPassTypesFull(ctx wasmlib.ScFuncContext, params *FuncPassTypesFullParams) {
 	ctx.Log("calling passTypesFull")
 
+    hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
+    ctx.Require(params.Hash.Value() == hash, "Hash wrong")
 	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
-	ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
-	ctx.Require(params.String.Value() == string(ParamString), "string wrong")
-	ctx.Require(params.StringZero.Value() == "", "string-0 wrong")
-
-	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
-	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
-
-	ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
-	ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
+    ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
+    ctx.Require(params.String.Value() == string(ParamString), "string wrong")
+    ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
+    ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }
 
 func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams) {
 	ctx.Log("calling runRecursion")
+
 	depth := params.IntValue.Value()
 	if depth <= 0 {
 		return
 	}
+
 	parms := wasmlib.NewScMutableMap()
 	parms.GetInt(ParamIntValue).SetValue(depth - 1)
-	parms.GetHname(VarHnameEP).SetValue(HFuncRunRecursion)
+    parms.GetHname(ParamHnameEP).SetValue(HFuncRunRecursion)
 	ctx.CallSelf(HFuncCallOnChain, parms, nil)
 	// TODO how would I return result of the call ???
 	ctx.Results().GetInt(ParamIntValue).SetValue(depth - 1)
@@ -146,13 +147,15 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestPanicFullEPP
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainParams) {
 	ctx.Log("calling withdrawToChain")
+
 	//Deploy the same contract with another name
-	targetContractId := wasmlib.NewScContractId(params.ChainId.Value(), wasmlib.CoreAccounts)
+    targetContractId := wasmlib.NewScContractId(params.ChainId.Value(), wasmlib.CoreAccounts)
+    transfers := wasmlib.NewScTransfer(wasmlib.IOTA, 2)
 	ctx.Post(&wasmlib.PostRequestParams{
 		ContractId: targetContractId,
 		Function:   wasmlib.CoreAccountsFuncWithdrawToChain,
 		Params:     nil,
-		Transfer:   wasmlib.NewScTransfer(wasmlib.IOTA, 2),
+		Transfer:   transfers,
 		Delay:      0,
 	})
 	ctx.Log("====  success ====")
@@ -171,6 +174,7 @@ func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckCont
 
 func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
 	ctx.Log("calling fibonacci")
+
 	n := params.IntValue.Value()
 	if n == 0 || n == 1 {
 		ctx.Results().GetInt(ParamIntValue).SetValue(n)
@@ -197,6 +201,7 @@ func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
 
 func viewGetInt(ctx wasmlib.ScViewContext, params *ViewGetIntParams) {
 	ctx.Log("calling getInt")
+
 	name := params.Name.Value()
 	value := ctx.State().GetInt(wasmlib.Key(name))
 	ctx.Require(value.Exists(), "param 'value' not found")
@@ -210,16 +215,14 @@ func viewJustView(ctx wasmlib.ScViewContext, params *ViewJustViewParams) {
 func viewPassTypesView(ctx wasmlib.ScViewContext, params *ViewPassTypesViewParams) {
 	ctx.Log("calling passTypesView")
 
+    hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
+    ctx.Require(params.Hash.Value() == hash, "Hash wrong")
 	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
-	ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
-	ctx.Require(params.String.Value() == string(ParamString), "string wrong")
+    ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
+    ctx.Require(params.String.Value() == string(ParamString), "string wrong")
 	ctx.Require(params.StringZero.Value() == "", "string-0 wrong")
-
-	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
-	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
-
-	ctx.Require(params.Hname.Value() == wasmlib.NewScHname("Hname"), "Hname wrong")
-	ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
+    ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
+    ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }
 
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, params *ViewTestCallPanicViewEPFromViewParams) {

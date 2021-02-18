@@ -6,7 +6,9 @@
 
 package erc20
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 // Sets the allowance value for delegated account
 // inputs:

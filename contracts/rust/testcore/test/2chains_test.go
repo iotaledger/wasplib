@@ -27,7 +27,7 @@ func test2Chains(t *testing.T, w bool) {
 	userWallet := env.NewSignatureSchemeWithFunds()
 	userAddress := userWallet.Address()
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
-	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, solo.Saldo)
 
 	chain1.AssertAccountBalance(contractAgentID1, balance.ColorIOTA, 0)
 	chain1.AssertAccountBalance(contractAgentID2, balance.ColorIOTA, 0)
@@ -45,7 +45,7 @@ func test2Chains(t *testing.T, w bool) {
 	accountsAgentID1 := coretypes.NewAgentIDFromContractID(accounts.Interface.ContractID(chain1.ChainID))
 	accountsAgentID2 := coretypes.NewAgentIDFromContractID(accounts.Interface.ContractID(chain2.ChainID))
 
-	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-43)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, solo.Saldo-43)
 	chain1.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain2.AssertAccountBalance(userAgentID, balance.ColorIOTA, 0)
 	chain1.AssertAccountBalance(contractAgentID1, balance.ColorIOTA, 0)
@@ -69,7 +69,7 @@ func test2Chains(t *testing.T, w bool) {
 	chain1.WaitForEmptyBacklog()
 	chain2.WaitForEmptyBacklog()
 
-	env.AssertAddressBalance(userAddress, balance.ColorIOTA, 1337-47)
+	env.AssertAddressBalance(userAddress, balance.ColorIOTA, solo.Saldo-47)
 	chain1.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain2.AssertAccountBalance(userAgentID, balance.ColorIOTA, 1)
 	chain1.AssertAccountBalance(contractAgentID1, balance.ColorIOTA, 0)

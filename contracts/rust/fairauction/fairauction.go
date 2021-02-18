@@ -3,7 +3,9 @@
 
 package fairauction
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 const DurationDefault = 60
 const DurationMin = 1

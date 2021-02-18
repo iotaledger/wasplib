@@ -3,7 +3,9 @@
 
 package fairroulette
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import (
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+)
 
 const MaxNumber = 5
 const DefaultPlayPeriod = 120
