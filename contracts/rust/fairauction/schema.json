@@ -1,5 +1,5 @@
 {
-  "name": "fairauction",
+  "name": "FairAuction",
   "types": {
     "Auction": {
       "color": "Color // color of tokens for sale",

@@ -42,7 +42,7 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncPlaceBetParams struct {
-	Number wasmlib.ScImmutableInt // the number a better bets on
+	Number wasmlib.ScImmutableInt   // the number a better bets on
 }
 
 func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
@@ -55,7 +55,7 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncPlayPeriodParams struct {
-	PlayPeriod wasmlib.ScImmutableInt // number of minutes in one playing round
+	PlayPeriod wasmlib.ScImmutableInt   // number of minutes in one playing round
 }
 
 func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {

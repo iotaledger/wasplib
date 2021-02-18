@@ -1,5 +1,5 @@
 {
-  "name": "donatewithfeedback",
+  "name": "DonateWithFeedback",
   "types": {
     "Donation": {
       "amount": "Int // amount donated",

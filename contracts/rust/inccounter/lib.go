@@ -52,7 +52,7 @@ func funcIncrementThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncInitParams struct {
-	Counter wasmlib.ScImmutableInt // value to initialize state counter with
+	Counter wasmlib.ScImmutableInt   // value to initialize state counter with
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
@@ -100,7 +100,7 @@ func funcPostIncrementThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncRepeatManyParams struct {
-	NumRepeats wasmlib.ScImmutableInt // number of times to recursively call myself
+	NumRepeats wasmlib.ScImmutableInt   // number of times to recursively call myself
 }
 
 func funcRepeatManyThunk(ctx wasmlib.ScFuncContext) {

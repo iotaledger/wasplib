@@ -29,8 +29,8 @@ fn func_divide_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncMemberParams {
-    pub address: ScImmutableAddress, // address of dividend recipient
-    pub factor:  ScImmutableInt,     // relative division factor
+    pub address: ScImmutableAddress,   // address of dividend recipient
+    pub factor:  ScImmutableInt,       // relative division factor
 }
 //@formatter:on
 

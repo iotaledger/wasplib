@@ -43,7 +43,7 @@ func (s *Schema) GenerateRust() error {
 	if err != nil {
 		return err
 	}
-	err = s.GenerateRustSchema()
+	err = s.GenerateRustConsts()
 	if err != nil {
 		return err
 	}
@@ -232,7 +232,7 @@ func (s *Schema) GenerateRustLib() error {
 	return nil
 }
 
-func (s *Schema) GenerateRustSchema() error {
+func (s *Schema) GenerateRustConsts() error {
 	file, err := os.Create("consts.rs")
 	if err != nil {
 		return err
@@ -287,7 +287,7 @@ func (s *Schema) GenerateRustSchema() error {
 
 func (s *Schema) GenerateRustThunk(file *os.File, funcDef *FuncDef) {
 	// calculate padding
-	nameLen, typeLen := calculatePadding(funcDef.Params, true)
+	nameLen, typeLen := calculatePadding(funcDef.Params, rustTypes, true)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
@@ -376,7 +376,7 @@ func (s *Schema) GenerateRustTypes() error {
 	// write structs
 	for _, typeDef := range s.Types {
 		// calculate padding
-		nameLen, typeLen := calculatePadding(typeDef.Fields, true)
+		nameLen, typeLen := calculatePadding(typeDef.Fields, rustTypes, true)
 
 		// write struct
 		if len(typeDef.Fields) > 1 {

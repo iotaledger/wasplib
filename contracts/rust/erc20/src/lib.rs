@@ -26,8 +26,8 @@ fn on_load() {
 
 //@formatter:off
 pub struct FuncApproveParams {
-    pub amount:     ScImmutableInt,     // allowance value for delegated account
-    pub delegation: ScImmutableAgentId, // delegated account
+    pub amount:     ScImmutableInt,       // allowance value for delegated account
+    pub delegation: ScImmutableAgentId,   // delegated account
 }
 //@formatter:on
 
@@ -44,8 +44,8 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncInitParams {
-    pub creator: ScImmutableAgentId, // creator/owner of the initial supply
-    pub supply:  ScImmutableInt,     // initial token supply
+    pub creator: ScImmutableAgentId,   // creator/owner of the initial supply
+    pub supply:  ScImmutableInt,       // initial token supply
 }
 //@formatter:on
 
@@ -62,8 +62,8 @@ fn func_init_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncTransferParams {
-    pub account: ScImmutableAgentId, // target account
-    pub amount:  ScImmutableInt,     // amount of tokens to transfer
+    pub account: ScImmutableAgentId,   // target account
+    pub amount:  ScImmutableInt,       // amount of tokens to transfer
 }
 //@formatter:on
 
@@ -80,9 +80,9 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncTransferFromParams {
-    pub account:   ScImmutableAgentId, // sender account
-    pub amount:    ScImmutableInt,     // amount of tokens to transfer
-    pub recipient: ScImmutableAgentId, // recipient account
+    pub account:   ScImmutableAgentId,   // sender account
+    pub amount:    ScImmutableInt,       // amount of tokens to transfer
+    pub recipient: ScImmutableAgentId,   // recipient account
 }
 //@formatter:on
 
@@ -101,8 +101,8 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct ViewAllowanceParams {
-    pub account:    ScImmutableAgentId, // sender account
-    pub delegation: ScImmutableAgentId, // delegated account
+    pub account:    ScImmutableAgentId,   // sender account
+    pub delegation: ScImmutableAgentId,   // delegated account
 }
 //@formatter:on
 
@@ -118,7 +118,7 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
 }
 
 pub struct ViewBalanceOfParams {
-    pub account: ScImmutableAgentId, // sender account
+    pub account: ScImmutableAgentId,   // sender account
 }
 
 fn view_balance_of_thunk(ctx: &ScViewContext) {

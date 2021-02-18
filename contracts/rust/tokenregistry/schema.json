@@ -1,5 +1,5 @@
 {
-  "name": "tokenregistry",
+  "name": "TokenRegistry",
   "types": {
     "Token": {
       "created": "Int // creation timestamp",

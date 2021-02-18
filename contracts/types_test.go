@@ -13,12 +13,12 @@ import (
 
 func TestRustToGo(t *testing.T) {
 	t.SkipNow()
-	err := generator.RustConvertor(generator.RustToGoLine, "converted/$1/$1.go")
+	err := generator.RustConvertor(generator.RustToGoLine, "converted/$c/$c.go")
 	require.NoError(t, err)
 }
 
 func TestRustToJava(t *testing.T) {
-	t.SkipNow()
-	err := generator.RustConvertor(generator.RustToJavaLine, "converted/$1/$1.java")
+	//t.SkipNow()
+	err := generator.RustConvertor(generator.RustToJavaLine, "converted/$c/$C.java")
 	require.NoError(t, err)
 }

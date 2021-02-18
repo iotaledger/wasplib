@@ -24,7 +24,7 @@ fn on_load() {
 }
 
 pub struct FuncFinalizeAuctionParams {
-    pub color: ScImmutableColor, // color identifies the auction
+    pub color: ScImmutableColor,   // color identifies the auction
 }
 
 fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
@@ -40,7 +40,7 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncPlaceBidParams {
-    pub color: ScImmutableColor, // color identifies the auction
+    pub color: ScImmutableColor,   // color identifies the auction
 }
 
 fn func_place_bid_thunk(ctx: &ScFuncContext) {
@@ -70,10 +70,10 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncStartAuctionParams {
-    pub color:       ScImmutableColor,  // color of the tokens being auctioned
-    pub description: ScImmutableString, // description of the tokens being auctioned
-    pub duration:    ScImmutableInt,    // duration of auction in minutes
-    pub minimum_bid: ScImmutableInt,    // minimum required amount for any bid
+    pub color:       ScImmutableColor,   // color of the tokens being auctioned
+    pub description: ScImmutableString,  // description of the tokens being auctioned
+    pub duration:    ScImmutableInt,     // duration of auction in minutes
+    pub minimum_bid: ScImmutableInt,     // minimum required amount for any bid
 }
 //@formatter:on
 
@@ -91,7 +91,7 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor, // color identifies the auction
+    pub color: ScImmutableColor,   // color identifies the auction
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {

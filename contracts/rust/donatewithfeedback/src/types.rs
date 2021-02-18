@@ -11,11 +11,11 @@ use wasmlib::*;
 
 //@formatter:off
 pub struct Donation {
-    pub amount:    i64,     // amount donated
+    pub amount:    i64,       // amount donated
     pub donator:   ScAgentId, // who donated
-    pub error:     String,  // error to be reported to donator if anything goes wrong
-    pub feedback:  String,  // the feedback for the person donated to
-    pub timestamp: i64,     // when the donation took place
+    pub error:     String,    // error to be reported to donator if anything goes wrong
+    pub feedback:  String,    // the feedback for the person donated to
+    pub timestamp: i64,       // when the donation took place
 }
 //@formatter:on
 

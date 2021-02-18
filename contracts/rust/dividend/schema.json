@@ -1,5 +1,5 @@
 {
-  "name": "dividend",
+  "name": "Dividend",
   "types": {
     "Member": {
       "address": "Address // address of dividend recipient",

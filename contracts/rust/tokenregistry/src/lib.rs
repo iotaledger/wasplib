@@ -39,7 +39,7 @@ fn func_mint_supply_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncTransferOwnershipParams {
-    pub color: ScImmutableColor, // color of token to transfer ownership of
+    pub color: ScImmutableColor,   // color of token to transfer ownership of
 }
 
 fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
@@ -55,7 +55,7 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncUpdateMetadataParams {
-    pub color: ScImmutableColor, // color of token to update metadata for
+    pub color: ScImmutableColor,   // color of token to update metadata for
 }
 
 fn func_update_metadata_thunk(ctx: &ScFuncContext) {
@@ -71,7 +71,7 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor, // color of token to view registry info of
+    pub color: ScImmutableColor,   // color of token to view registry info of
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {

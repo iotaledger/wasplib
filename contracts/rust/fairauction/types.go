@@ -10,17 +10,17 @@ package fairauction
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type Auction struct {
-	Color         wasmlib.ScColor // color of tokens for sale
+	Color         wasmlib.ScColor   // color of tokens for sale
 	Creator       wasmlib.ScAgentId // issuer of start_auction transaction
-	Deposit       int64   // deposit by auction owner to cover the SC fees
-	Description   string  // auction description
-	Duration      int64   // auction duration in minutes
-	HighestBid    int64   // the current highest bid amount
+	Deposit       int64             // deposit by auction owner to cover the SC fees
+	Description   string            // auction description
+	Duration      int64             // auction duration in minutes
+	HighestBid    int64             // the current highest bid amount
 	HighestBidder wasmlib.ScAgentId // the current highest bidder
-	MinimumBid    int64   // minimum bid amount
-	NumTokens     int64   // number of tokens for sale
-	OwnerMargin   int64   // auction owner's margin in promilles
-	WhenStarted   int64   // timestamp when auction started
+	MinimumBid    int64             // minimum bid amount
+	NumTokens     int64             // number of tokens for sale
+	OwnerMargin   int64             // auction owner's margin in promilles
+	WhenStarted   int64             // timestamp when auction started
 }
 
 func NewAuctionFromBytes(bytes []byte) *Auction {

@@ -49,7 +49,7 @@ func (s *Schema) GenerateGo() error {
 	if err != nil {
 		return err
 	}
-	err = s.GenerateGoSchema()
+	err = s.GenerateGoConsts()
 	if err != nil {
 		return err
 	}
@@ -190,7 +190,7 @@ func (s *Schema) GenerateGoLib() error {
 	return nil
 }
 
-func (s *Schema) GenerateGoSchema() error {
+func (s *Schema) GenerateGoConsts() error {
 	file, err := os.Create("consts.go")
 	if err != nil {
 		return err
@@ -251,7 +251,7 @@ func (s *Schema) GenerateGoTests() error {
 
 func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 	// calculate padding
-	nameLen, typeLen := calculatePadding(funcDef.Params, false)
+	nameLen, typeLen := calculatePadding(funcDef.Params, goTypes, false)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
@@ -326,7 +326,7 @@ func (s *Schema) GenerateGoTypes() error {
 	// write structs
 	for _, typeDef := range s.Types {
 		// calculate padding
-		nameLen, typeLen := calculatePadding(typeDef.Fields, false)
+		nameLen, typeLen := calculatePadding(typeDef.Fields, goTypes, false)
 
 		fmt.Fprintf(file, "\ntype %s struct {\n", typeDef.Name)
 		for _, field := range typeDef.Fields {

@@ -27,7 +27,7 @@ var camelRegExp = regexp.MustCompile("_[a-z]")
 var snakeRegExp = regexp.MustCompile("[a-z0-9][A-Z]")
 var snakeRegExp2 = regexp.MustCompile("[A-Z][A-Z]+[a-z]")
 
-func calculatePadding(fields []*Field, snakeName bool) (nameLen int, typeLen int) {
+func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen int, typeLen int) {
 	for _, param := range fields {
 		fldName := param.Name
 		if snakeName {
@@ -36,7 +36,7 @@ func calculatePadding(fields []*Field, snakeName bool) (nameLen int, typeLen int
 		if nameLen < len(fldName) {
 			nameLen = len(fldName)
 		}
-		fldType := param.Type
+		fldType := types[param.Type]
 		if typeLen < len(fldType) {
 			typeLen = len(fldType)
 		}

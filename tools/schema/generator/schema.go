@@ -30,14 +30,10 @@ type FuncDef struct {
 	Params      []*Field
 }
 
-type TypeDef struct {
-	Name   string
-	Fields []*Field
-}
-
 type Schema struct {
 	Description string
 	Funcs       []*FuncDef
+	FullName    string
 	Name        string
 	Params      FieldMap
 	Types       []*TypeDef
@@ -52,10 +48,11 @@ func NewSchema() *Schema {
 }
 
 func (s *Schema) Compile(jsonSchema *JsonSchema) error {
-	s.Name = strings.TrimSpace(jsonSchema.Name)
-	if s.Name == "" {
+	s.FullName = strings.TrimSpace(jsonSchema.Name)
+	if s.FullName == "" {
 		return fmt.Errorf("missing contract name")
 	}
+	s.Name = lower(s.FullName)
 	s.Description = strings.TrimSpace(jsonSchema.Description)
 
 	err := s.compileTypes(jsonSchema)

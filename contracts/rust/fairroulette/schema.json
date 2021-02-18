@@ -1,5 +1,5 @@
 {
-  "name": "fairroulette",
+  "name": "FairRoulette",
   "types": {
     "Bet": {
       "amount": "Int",

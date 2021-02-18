@@ -26,12 +26,19 @@ var goReplacements = []string{
 	"ScTransfers::new", "wasmlib.NewScTransfer",
 	" str = \"", " = \"",
 	"String::new()", "\"\"",
+
 	".Post(PostRequestParams", ".Post(&PostRequestParams",
 	"PostRequestParams", "wasmlib.PostRequestParams",
 	": &Sc", " wasmlib.Sc",
 	": i64", " int64",
 	": &str", " string",
 	"0_i64", "int64(0)",
+
+	"_ctx", "ctx",
+	"_params", "params",
+	"Hview", "HView",
+	"Hfunc", "HFunc",
+
 	"\".ToString()", "\"",
 	" &\"", " \"",
 	" + &", " + ",
@@ -40,37 +47,48 @@ var goReplacements = []string{
 	".ToBytes()", ".Bytes()",
 	".Value().String()", ".String()",
 	" onLoad()", " OnLoad()",
-	"Hview", "HView",
-	"Hfunc", "HFunc",
-	"_ctx", "ctx",
-	"_params", "params",
 	"params: &", "params *",
+
 	"#[noMangle]", "",
 	"mod types", "",
 	"use crate::*", "",
 	"use crate::types::*", "",
+	"\u001A", "",
 }
 
 var javaReplacements = []string{
-	"pub fn ", "public static void ",
-	"fn ", "public static void ",
-	"ScExports::new", "new ScExports",
-	"ScTransfers::new", "new ScTransfers",
-	"::Iota", ".IOTA",
-	"::Mint", ".MINT",
-	"String::new()", "\"\"",
 	"(&", "(",
 	", &", ", ",
+	"pub fn ", "public static void ",
+	"fn ", "public static void ",
+	"None", "null",
+	"ScColor::Iota", "ScColor.IOTA",
+	"ScColor::Mint", "ScColor.MINT",
+	"ScContractId::new", "new ScContractId",
+	"ScHname::new", "new ScHnamee",
+	"ScMutableMap::new", "new ScMutableMapp",
+	"ScTransfers::new", "new ScTransfers",
+	" str = \"", " = \"",
+	"String::new()", "\"\"",
+
 	"};", "}",
 	"0_i64", "0",
+
+	"_ctx", "ctx",
+	"_params", "params",
+	"Hview", "HView",
+	"Hfunc", "HFunc",
+
 	"+ &\"", "+ \"",
 	"\".ToString()", "\"",
 	".Value().String()", ".toString()",
 	".ToString()", ".toString()",
-	".Equals(", ".equals(",
+
 	"#[noMangle]", "",
 	"mod types;", "",
-	"use types::*;", "",
+	"use crate::*;", "",
+	"use crate::types::*;", "",
+	"\u001A", "}",
 }
 
 var matchCodec = regexp.MustCompile("(encode|decode)(\\w+)")
@@ -153,7 +171,8 @@ func RustConvertor(convertLine func(string, string) string, outPath string) erro
 				return err
 			}
 			defer file.Close()
-			outFile := strings.Replace(outPath, "$1", contract, -1)
+			outFile := strings.Replace(outPath, "$c", contract, -1)
+			outFile = strings.Replace(outFile, "$C", capitalize(contract), -1)
 			os.MkdirAll(outFile[:strings.LastIndex(outFile, "/")], 0755)
 			out, err := os.Create(outFile)
 			if err != nil {
@@ -176,7 +195,15 @@ func RustConvertor(convertLine func(string, string) string, outPath string) erro
 				}
 				fmt.Fprintln(out, line)
 			}
-			return scanner.Err()
+			err = scanner.Err()
+			if err != nil {
+				return err
+			}
+			line := convertLine("\u001A", contract)
+			if line != "" {
+				fmt.Fprintln(out, line)
+			}
+			return nil
 		})
 
 }
@@ -270,7 +297,7 @@ func RustToJavaLine(line string, contract string) string {
 	line = matchExtraBraces.ReplaceAllString(line, "$1")
 
 	if strings.HasPrefix(line, "use wasmlib::*") {
-		line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;", contract)
+		line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;\n\npublic class %s {", contract, capitalize(contract))
 	}
 
 	return line

@@ -1,5 +1,5 @@
 {
-  "name": "testcore",
+  "name": "TestCore",
   "description": "Core test for ISCP wasmlib Rust/Wasm library",
   "types": {
   },
