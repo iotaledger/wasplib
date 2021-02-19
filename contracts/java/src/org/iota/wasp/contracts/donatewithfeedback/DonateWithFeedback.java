@@ -35,7 +35,7 @@ public class DonateWithFeedback {
 		if (donation.Amount == 0 || donation.Feedback.length() == 0) {
 			donation.Error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
 			if (donation.Amount > 0) {
-				ctx.Transfer(donation.Donator, ScColor.IOTA, donation.Amount);
+				ctx.TransferToAddress(donation.Donator.Address(), new ScTransfers(ScColor.IOTA, donation.Amount));
 				donation.Amount = 0;
 			}
 		}
@@ -66,7 +66,7 @@ public class DonateWithFeedback {
 			ctx.Panic("DonateWithFeedback: nothing to withdraw");
 		}
 
-		ctx.Transfer(scOwner, ScColor.IOTA, withdrawAmount);
+		ctx.TransferToAddress(scOwner.Address(), new ScTransfers(ScColor.IOTA, withdrawAmount));
 	}
 
 	public static void ViewDonations(ScViewContext ctx, ViewDonationsParams params) {

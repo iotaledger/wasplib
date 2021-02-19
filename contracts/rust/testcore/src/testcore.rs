@@ -88,7 +88,8 @@ pub fn func_run_recursion(ctx: &ScFuncContext, params: &FuncRunRecursionParams) 
 
 pub fn func_send_to_address(ctx: &ScFuncContext, params: &FuncSendToAddressParams) {
     ctx.log("calling sendToAddress");
-    ctx.transfer_to_address(&params.address.value(), &ctx.balances());
+    let balances = ScTransfers::new_transfers_from_balances(ctx.balances());
+    ctx.transfer_to_address(&params.address.value(), balances);
 }
 
 pub fn func_set_int(ctx: &ScFuncContext, params: &FuncSetIntParams) {
@@ -150,7 +151,7 @@ pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainP
         contract_id: target_contract_id,
         function: CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN,
         params: None,
-        transfer: Some(Box::new(transfers)),
+        transfer: Some(transfers),
         delay: 0,
     });
     ctx.log("====  success ====");

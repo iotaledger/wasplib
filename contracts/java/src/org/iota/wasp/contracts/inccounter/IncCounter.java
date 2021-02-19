@@ -5,6 +5,7 @@ package org.iota.wasp.contracts.inccounter;
 
 import org.iota.wasp.contracts.inccounter.lib.*;
 import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
@@ -19,7 +20,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			ctx.Call("increment_call_increment").Call();
+			ctx.CallSelf(new ScHname("increment_call_increment"), null, null);
 		}
 	}
 
@@ -28,7 +29,7 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
-			ctx.Call("increment_call_increment_recurse5x").Call();
+			ctx.CallSelf(new ScHname("increment_call_increment_recurse5x"), null, null);
 		}
 	}
 
@@ -57,22 +58,25 @@ public class IncCounter {
 	}
 
 	public static void FuncLocalStatePost(ScFuncContext ctx, FuncLocalStatePostParams params) {
-		ctx.Post("whenMustIncrement").Post(0);
+		PostRequestParams req = new PostRequestParams();
+		req.ContractId = ctx.ContractId();
+		req.Function = new ScHname("whenMustIncrement");
+		ctx.Post(req);
 		{
 			localStateMustIncrement = true;
 		}
-		ctx.Post("whenMustIncrement").Post(0);
-		ctx.Post("whenMustIncrement").Post(0);
+		ctx.Post(req);
+		ctx.Post(req);
 		// counter ends up as 0
 	}
 
 	public static void FuncLocalStateSandboxCall(ScFuncContext ctx, FuncLocalStateSandboxCallParams params) {
-		ctx.Call("whenMustIncrement").Call();
+		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
 		{
 			localStateMustIncrement = true;
 		}
-		ctx.Call("whenMustIncrement").Call();
-		ctx.Call("whenMustIncrement").Call();
+		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
+		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
 		// counter ends up as 0
 	}
 
@@ -81,7 +85,10 @@ public class IncCounter {
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			ctx.Post("increment_post_increment").Post(0);
+			PostRequestParams req = new PostRequestParams();
+			req.ContractId = ctx.ContractId();
+			req.Function = new ScHname("increment_post_increment");
+			ctx.Post(req);
 		}
 	}
 
@@ -98,7 +105,10 @@ public class IncCounter {
 			}
 		}
 		stateRepeats.SetValue(repeats - 1);
-		ctx.Post("increment_repeat_many").Post(0);
+		PostRequestParams req = new PostRequestParams();
+		req.ContractId = ctx.ContractId();
+		req.Function = new ScHname("increment_repeat_many");
+		ctx.Post(req);
 	}
 
 	public static void FuncWhenMustIncrement(ScFuncContext ctx, FuncWhenMustIncrementParams params) {

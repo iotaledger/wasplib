@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "dividend";
-pub const SC_HNAME: ScHname = ScHname(0xcce2e239);
+pub const HSC_NAME: ScHname = ScHname(0xcce2e239);
 
 pub const PARAM_ADDRESS: &str = "address";
 pub const PARAM_FACTOR: &str = "factor";

@@ -11,7 +11,7 @@ use wasmlib::*;
 
 pub const SC_NAME: &str = "erc20";
 pub const SC_DESCRIPTION: &str = "ERC-20 PoC for IOTA Smart Contracts";
-pub const SC_HNAME: ScHname = ScHname(0x200e3733);
+pub const HSC_NAME: ScHname = ScHname(0x200e3733);
 
 pub const PARAM_ACCOUNT: &str = "ac";
 pub const PARAM_AMOUNT: &str = "am";

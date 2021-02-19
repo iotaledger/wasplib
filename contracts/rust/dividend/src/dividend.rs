@@ -22,7 +22,7 @@ pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
         let part = amount * m.factor / total;
         if part != 0 {
             parts += part;
-            ctx.transfer_to_address(&m.address, &ScTransfers::new(&ScColor::IOTA, part));
+            ctx.transfer_to_address(&m.address, ScTransfers::new(&ScColor::IOTA, part));
         }
     }
     if parts != amount {

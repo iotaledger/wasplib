@@ -33,7 +33,7 @@ public class Dividend {
 			long part = amount * m.Factor / total;
 			if (part != 0) {
 				parts += part;
-				ctx.Transfer(m.Address.AsAgentId(), ScColor.IOTA, part);
+				ctx.TransferToAddress(m.Address, new ScTransfers(ScColor.IOTA, part));
 			}
 		}
 		if (parts != amount) {

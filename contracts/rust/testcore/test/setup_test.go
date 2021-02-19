@@ -9,7 +9,7 @@ import (
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasplib/contracts/testenv"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -68,13 +68,13 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 		err = testenv.DeployGoContract(chain, user, SandboxSCName, "testcore")
 		extraToken = 1
 	} else {
-		err = chain.DeployContract(user, SandboxSCName, test_sandbox_sc.Interface.ProgramHash)
+		err = chain.DeployContract(user, SandboxSCName, sbtestsc.Interface.ProgramHash)
 		extraToken = 0
 	}
 	require.NoError(t, err)
 
-	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(test_sandbox_sc.Interface.Name))
-	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncDoNothing)
+	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(sbtestsc.Interface.Name))
+	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing)
 	_, err = chain.PostRequest(req, user)
 	require.NoError(t, err)
 	t.Logf("deployed test_sandbox'%s': %s", SandboxSCName, coretypes.Hn(SandboxSCName))
@@ -99,7 +99,7 @@ func setupERC20(t *testing.T, chain *solo.Chain, user signaturescheme.SignatureS
 	)
 	require.NoError(t, err)
 
-	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(test_sandbox_sc.Interface.Name))
+	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(sbtestsc.Interface.Name))
 	t.Logf("deployed erc20'%s': %s --  %s", ERC20_NAME, coretypes.Hn(ERC20_NAME), deployed)
 	return deployed
 }

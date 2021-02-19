@@ -5,7 +5,6 @@ package org.iota.wasp.contracts.fairauction;
 
 import org.iota.wasp.contracts.fairauction.lib.*;
 import org.iota.wasp.contracts.fairauction.types.*;
-import org.iota.wasp.wasmlib.builders.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.immutable.*;
@@ -246,10 +245,13 @@ public class FairAuction {
 		}
 		auctionInfo.SetValue(auction.toBytes());
 
-		ScPostBuilder finalizeRequest = ctx.Post("finalize_auction");
-		ScMutableMap finalizeParams = finalizeRequest.Params();
-		finalizeParams.GetColor(KeyColor).SetValue(auction.Color);
-		finalizeRequest.Post(duration * 60);
+		PostRequestParams req = new PostRequestParams();
+		req.ContractId = ctx.ContractId();
+		req.Function = new ScHname("finalize_auction");
+		req.Params = new ScMutableMap();
+		req.Params.GetColor(KeyColor).SetValue(auction.Color);
+		req.Delay = duration * 60;
+		ctx.Post(req);
 		ctx.Log("New auction started");
 	}
 
@@ -287,13 +289,13 @@ public class FairAuction {
 	}
 
 	private static void transfer(ScFuncContext ctx, ScAgentId agent, ScColor color, long amount) {
-		if (!agent.IsAddress()) {
-			// not an address, deposit into account on chain
-			ctx.Transfer(agent, color, amount);
+		if (agent.IsAddress()) {
+			// send back to original Tangle address
+			ctx.TransferToAddress(agent.Address(), new ScTransfers(color, amount));
 			return;
 		}
 
-		// send to original Tangle address
-		ctx.TransferToAddress(agent.Address()).Transfer(color, amount).Send();
+		// TODO not an address, deposit into account on chain
+		ctx.TransferToAddress(agent.Address(), new ScTransfers(color, amount));
 	}
 }

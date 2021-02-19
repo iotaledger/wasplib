@@ -11,7 +11,7 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "erc20"
 const ScDescription = "ERC-20 PoC for IOTA Smart Contracts"
-const ScHname = wasmlib.ScHname(0x200e3733)
+const HScName = wasmlib.ScHname(0x200e3733)
 
 const ParamAccount = wasmlib.Key("ac")
 const ParamAmount = wasmlib.Key("am")

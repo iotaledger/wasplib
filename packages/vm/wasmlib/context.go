@@ -13,14 +13,8 @@ type PostRequestParams struct {
 	ContractId ScContractId
 	Function   ScHname
 	Params     *ScMutableMap
-	Transfer   balances
+	Transfer   *ScTransfers
 	Delay      int64
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type balances interface {
-	mapId() int32
 }
 
 // used to retrieve any information that is related to colored token balances
@@ -38,11 +32,6 @@ func (ctx ScBalances) Colors() ScImmutableColorArray {
 	return ctx.balances.GetColorArray(KeyColor)
 }
 
-// implements Balances interface
-func (ctx ScBalances) mapId() int32 {
-	return ctx.balances.objId
-}
-
 // retrieve the color of newly minted tokens
 func (ctx ScBalances) Minted() ScColor {
 	return NewScColorFromBytes(ctx.balances.GetBytes(MINT).Value())
@@ -56,18 +45,24 @@ type ScTransfers struct {
 
 // special constructor for simplifying single transfers
 func NewScTransfer(color ScColor, amount int64) ScTransfers {
-	balance := NewScTransfers()
-	balance.Add(color, amount)
-	return balance
+	transfer := NewScTransfers()
+	transfer.Add(color, amount)
+	return transfer
 }
 
 func NewScTransfers() ScTransfers {
 	return ScTransfers{transfers: *NewScMutableMap()}
 }
 
-// implements Balances interface
-func (ctx ScTransfers) mapId() int32 {
-	return ctx.transfers.objId
+func NewScTransfersFromBalances(balances ScBalances) ScTransfers {
+	transfers := NewScTransfers()
+	colors := balances.Colors()
+	length := colors.Length()
+	for i := int32(0); i < length; i++ {
+		color := colors.GetColor(i).Value()
+		transfers.Add(color, balances.Balance(color))
+	}
+	return transfers
 }
 
 // transfers the specified amount of tokens of the specified color
@@ -81,22 +76,6 @@ type ScUtility struct {
 	utility ScMutableMap
 }
 
-func (ctx ScUtility) AggregateBLSSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
-	encode := NewBytesEncoder()
-	encode.Int(int64(len(pubKeys)))
-	for _, pubKey := range pubKeys {
-		encode.Bytes(pubKey)
-	}
-	encode.Int(int64(len(sigs)))
-	for _, sig := range sigs {
-		encode.Bytes(sig)
-	}
-	aggregator := ctx.utility.GetBytes(KeyAggregateBls)
-	aggregator.SetValue(encode.Data())
-	decode := NewBytesDecoder(aggregator.Value())
-	return decode.Bytes(), decode.Bytes()
-}
-
 // decodes the specified base58-encoded string value to its original bytes
 func (ctx ScUtility) Base58Decode(value string) []byte {
 	ctx.utility.GetString(KeyBase58String).SetValue(value)
@@ -107,6 +86,44 @@ func (ctx ScUtility) Base58Decode(value string) []byte {
 func (ctx ScUtility) Base58Encode(value []byte) string {
 	ctx.utility.GetBytes(KeyBase58Bytes).SetValue(value)
 	return ctx.utility.GetString(KeyBase58String).Value()
+}
+
+func (ctx ScUtility) BlsAddressFromPubKey(pubKey []byte) ScAddress {
+	ctx.utility.GetBytes(KeyBlsAddress).SetValue(pubKey)
+	return ctx.utility.GetAddress(KeyAddress).Value()
+}
+
+func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
+	encode := NewBytesEncoder()
+	encode.Int(int64(len(pubKeys)))
+	for _, pubKey := range pubKeys {
+		encode.Bytes(pubKey)
+	}
+	encode.Int(int64(len(sigs)))
+	for _, sig := range sigs {
+		encode.Bytes(sig)
+	}
+	aggregator := ctx.utility.GetBytes(KeyBlsAggregate)
+	aggregator.SetValue(encode.Data())
+	decode := NewBytesDecoder(aggregator.Value())
+	return decode.Bytes(), decode.Bytes()
+}
+
+func (ctx ScUtility) BlsValidSignature(data []byte, pubKey []byte, signature []byte) bool {
+	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
+	ctx.utility.GetBytes(KeyBlsValid).SetValue(bytes)
+	return ctx.utility.GetInt(KeyValid).Value() != 0
+}
+
+func (ctx ScUtility) Ed25519AddressFromPubKey(pubKey []byte) ScAddress {
+	ctx.utility.GetBytes(KeyEd25519Address).SetValue(pubKey)
+	return ctx.utility.GetAddress(KeyAddress).Value()
+}
+
+func (ctx ScUtility) Ed25519ValidSignature(data []byte, pubKey []byte, signature []byte) bool {
+	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
+	ctx.utility.GetBytes(KeyEd25519Valid).SetValue(bytes)
+	return ctx.utility.GetInt(KeyValid).Value() != 0
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
@@ -138,18 +155,6 @@ func (ctx ScUtility) Random(max int64) int64 {
 // converts an integer to its string representation
 func (ctx ScUtility) String(value int64) string {
 	return strconv.FormatInt(value, 10)
-}
-
-func (ctx ScUtility) ValidBlsSignature(data []byte, pubKey []byte, signature []byte) bool {
-	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
-	ctx.utility.GetBytes(KeyValidBls).SetValue(bytes)
-	return ctx.utility.GetInt(KeyValid).Value() != 0
-}
-
-func (ctx ScUtility) ValidED25519Signature(data []byte, pubKey []byte, signature []byte) bool {
-	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
-	ctx.utility.GetBytes(KeyValidEd25519).SetValue(bytes)
-	return ctx.utility.GetInt(KeyValid).Value() != 0
 }
 
 // wrapper for simplified use by hashtypes
@@ -232,10 +237,8 @@ type ScFuncContext struct {
 	ScBaseContext
 }
 
-//TODO parameter type checks
-
 // calls a smart contract function
-func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer balances) ScImmutableMap {
+func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
 	encode := NewBytesEncoder()
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
@@ -245,7 +248,7 @@ func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMu
 		encode.Int(0)
 	}
 	if transfer != nil {
-		encode.Int(int64(transfer.mapId()))
+		encode.Int(int64(transfer.transfers.objId))
 	} else {
 		encode.Int(0)
 	}
@@ -259,7 +262,7 @@ func (ctx ScFuncContext) Caller() ScAgentId {
 }
 
 // calls a smart contract function on the current contract
-func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, transfer balances) ScImmutableMap {
+func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
 	return ctx.Call(ctx.ContractId().Hname(), hFunction, params, transfer)
 }
 
@@ -298,7 +301,7 @@ func (ctx ScFuncContext) Post(par *PostRequestParams) {
 		encode.Int(0)
 	}
 	if par.Transfer != nil {
-		encode.Int(int64(par.Transfer.mapId()))
+		encode.Int(int64(par.Transfer.transfers.objId))
 	} else {
 		encode.Int(0)
 	}
@@ -312,11 +315,11 @@ func (ctx ScFuncContext) State() ScMutableMap {
 }
 
 // transfer colored token amounts to the specified Tangle ledger address
-func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer balances) {
+func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer ScTransfers) {
 	transfers := Root.GetMapArray(KeyTransfers)
 	tx := transfers.GetMap(transfers.Length())
 	tx.GetAddress(KeyAddress).SetValue(address)
-	tx.GetInt(KeyBalances).SetValue(int64(transfer.mapId()))
+	tx.GetInt(KeyBalances).SetValue(int64(transfer.transfers.objId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

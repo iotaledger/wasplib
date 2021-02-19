@@ -3,7 +3,7 @@
 
 use crate::hashtypes::*;
 
-// decodes binary encoded data into its separate entities
+// decodes separate entities from a byte buffer
 pub struct BytesDecoder<'a> {
     data: &'a [u8],
 }
@@ -96,7 +96,7 @@ impl BytesDecoder<'_> {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// encodes entities into a binary data buffer
+// encodes separate entities into a byte buffer
 pub struct BytesEncoder {
     data: Vec<u8>,
 }

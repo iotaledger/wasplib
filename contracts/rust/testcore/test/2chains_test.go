@@ -5,7 +5,7 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -58,8 +58,8 @@ func test2Chains(t *testing.T, w bool) {
 	chain2.AssertAccountBalance(accountsAgentID1, balance.ColorIOTA, 0)
 	chain2.AssertAccountBalance(accountsAgentID2, balance.ColorIOTA, 0)
 
-	req = solo.NewCallParams(test_sandbox_sc.Name, test_sandbox_sc.FuncWithdrawToChain,
-		test_sandbox_sc.ParamChainID, chain1.ChainID,
+	req = solo.NewCallParams(sbtestsc.Name, sbtestsc.FuncWithdrawToChain,
+		sbtestsc.ParamChainID, chain1.ChainID,
 	).WithTransfer(
 		balance.ColorIOTA, 3,
 	)

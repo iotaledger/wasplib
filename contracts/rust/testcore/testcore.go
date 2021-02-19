@@ -93,7 +93,8 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams)
 
 func funcSendToAddress(ctx wasmlib.ScFuncContext, params *FuncSendToAddressParams) {
 	ctx.Log("calling sendToAddress")
-	ctx.TransferToAddress(params.Address.Value(), ctx.Balances())
+	balances := wasmlib.NewScTransfersFromBalances(ctx.Balances())
+	ctx.TransferToAddress(params.Address.Value(), balances)
 }
 
 func funcSetInt(ctx wasmlib.ScFuncContext, params *FuncSetIntParams) {
@@ -155,7 +156,7 @@ func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainP
 		ContractId: targetContractId,
 		Function:   wasmlib.CoreAccountsFuncWithdrawToChain,
 		Params:     nil,
-		Transfer:   transfers,
+		Transfer:   &transfers,
 		Delay:      0,
 	})
 	ctx.Log("====  success ====")

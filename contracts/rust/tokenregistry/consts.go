@@ -10,7 +10,7 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "tokenregistry"
-const ScHname = wasmlib.ScHname(0xe1ba0c78)
+const HScName = wasmlib.ScHname(0xe1ba0c78)
 
 const ParamColor = wasmlib.Key("color")
 const ParamDescription = wasmlib.Key("description")

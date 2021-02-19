@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "inccounter";
-pub const SC_HNAME: ScHname = ScHname(0xaf2438e9);
+pub const HSC_NAME: ScHname = ScHname(0xaf2438e9);
 
 pub const PARAM_COUNTER: &str = "counter";
 pub const PARAM_NUM_REPEATS: &str = "numRepeats";

@@ -55,7 +55,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     if winners.is_empty() {
         ctx.log("Nobody wins!");
         // compact separate bet deposit UTXOs into a single one
-        ctx.transfer_to_address(&sc_id.address(), &ScTransfers::new(&ScColor::IOTA, total_bet_amount));
+        ctx.transfer_to_address(&sc_id.address(), ScTransfers::new(&ScColor::IOTA, total_bet_amount));
         return;
     }
 
@@ -67,7 +67,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
         let payout = total_bet_amount * bet.amount / total_win_amount;
         if payout != 0 {
             total_payout += payout;
-            ctx.transfer_to_address(&bet.better.address(), &ScTransfers::new(&ScColor::IOTA, payout));
+            ctx.transfer_to_address(&bet.better.address(), ScTransfers::new(&ScColor::IOTA, payout));
         }
         let text = "Pay ".to_string() + &payout.to_string() +
             " to " + &bet.better.to_string();
@@ -79,7 +79,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
         let remainder = total_bet_amount - total_payout;
         let text = "Remainder is ".to_string() + &remainder.to_string();
         ctx.log(&text);
-        ctx.transfer_to_address(&sc_id.address(), &ScTransfers::new(&ScColor::IOTA, remainder));
+        ctx.transfer_to_address(&sc_id.address(), ScTransfers::new(&ScColor::IOTA, remainder));
     }
 }
 

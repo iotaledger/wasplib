@@ -1,6 +1,6 @@
 .idea/
 */.idea/
-*/out/
+**/out/
 */pkg/
 **/target/
 dump/

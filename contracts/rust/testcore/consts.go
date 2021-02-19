@@ -11,7 +11,7 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "testcore"
 const ScDescription = "Core test for ISCP wasmlib Rust/Wasm library"
-const ScHname = wasmlib.ScHname(0x370d33ad)
+const HScName = wasmlib.ScHname(0x370d33ad)
 
 const ParamAddress = wasmlib.Key("address")
 const ParamAgentId = wasmlib.Key("agentID")

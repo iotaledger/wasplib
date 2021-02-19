@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "donatewithfeedback";
-pub const SC_HNAME: ScHname = ScHname(0x696d7f66);
+pub const HSC_NAME: ScHname = ScHname(0x696d7f66);
 
 pub const PARAM_AMOUNT: &str = "amount";
 pub const PARAM_FEEDBACK: &str = "feedback";

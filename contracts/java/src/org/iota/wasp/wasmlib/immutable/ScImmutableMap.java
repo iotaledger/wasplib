@@ -101,4 +101,8 @@ public class ScImmutableMap {
 	public int Length() {
 		return Host.GetLength(objId);
 	}
+
+	public int mapId() {
+		return objId;
+	}
 }

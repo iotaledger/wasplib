@@ -4,7 +4,7 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/hashing"
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -14,7 +14,7 @@ func testTypesFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncPassTypesFull,
+	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncPassTypesFull,
 		"string", "string",
 		"string-0", "",
 		"int64", 42,
@@ -36,7 +36,7 @@ func testTypesView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(SandboxSCName, test_sandbox_sc.FuncPassTypesView,
+	_, err := chain.CallView(SandboxSCName, sbtestsc.FuncPassTypesView,
 		"string", "string",
 		"string-0", "",
 		"int64", 42,

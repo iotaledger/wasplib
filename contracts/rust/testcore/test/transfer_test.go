@@ -7,7 +7,7 @@ import (
 	"github.com/iotaledger/wasp/packages/testutil"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -17,7 +17,7 @@ func testDoNothing(t *testing.T, w bool) {
 	env, chain := setupChain(t, nil)
 	cID, extraToken := setupTestSandboxSC(t, chain, nil, w)
 	cAID := coretypes.NewAgentIDFromContractID(cID)
-	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncDoNothing).
+	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, nil)
 	require.NoError(t, err)
@@ -37,7 +37,7 @@ func testDoNothingUser(t *testing.T, w bool) {
 
 	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
 
-	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncDoNothing).
+	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, user)
 	require.NoError(t, err)
@@ -61,7 +61,7 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 	userAddress := user.Address()
 	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
 
-	req := solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncDoNothing).
+	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, user)
 	require.NoError(t, err)
@@ -73,8 +73,8 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-42)
 
-	req = solo.NewCallParams(SandboxSCName, test_sandbox_sc.FuncSendToAddress,
-		test_sandbox_sc.ParamAddress, userAddress,
+	req = solo.NewCallParams(SandboxSCName, sbtestsc.FuncSendToAddress,
+		sbtestsc.ParamAddress, userAddress,
 	)
 	_, err = chain.PostRequest(req, nil)
 	require.NoError(t, err)
@@ -104,7 +104,7 @@ func testDoPanicUser(t *testing.T, w bool) {
 	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, user)
 	require.Error(t, err)
@@ -134,7 +134,7 @@ func testDoPanicUserFeeless(t *testing.T, w bool) {
 	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-4-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, user)
 	require.Error(t, err)
@@ -187,7 +187,7 @@ func testDoPanicUserFee(t *testing.T, w bool) {
 	env.AssertAddressBalance(chain.OriginatorAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1-5-extraToken)
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
-	req = solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP).
+	req = solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err = chain.PostRequest(req, user)
 	require.Error(t, err)
@@ -218,7 +218,7 @@ func testRequestToView(t *testing.T, w bool) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount)
 
 	// sending request to the view entry point should return an error and invoke fallback for tokens
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncJustView).
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncJustView).
 		WithTransfer(balance.ColorIOTA, 42)
 	_, err := chain.PostRequest(req, user)
 	require.Error(t, err)

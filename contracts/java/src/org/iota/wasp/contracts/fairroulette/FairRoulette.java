@@ -39,7 +39,10 @@ public class FairRoulette {
 		}
 		bets.Clear();
 
-		ctx.Post("pay_winners").Post(0);
+		PostRequestParams req = new PostRequestParams();
+		req.ContractId = ctx.ContractId();
+		req.Function = new ScHname("pay_winners");
+		ctx.Post(req);
 	}
 
 	public static void FuncPayWinners(ScFuncContext ctx, FuncPayWinnersParams params) {
@@ -72,7 +75,7 @@ public class FairRoulette {
 		if (winners.size() == 0) {
 			ctx.Log("Nobody wins!");
 			// compact separate UTXOs into a single one
-			ctx.Transfer(scId, ScColor.IOTA, totalBetAmount);
+			ctx.TransferToAddress(scId.Address(), new ScTransfers(ScColor.IOTA, totalBetAmount));
 			return;
 		}
 
@@ -85,7 +88,7 @@ public class FairRoulette {
 			long payout = totalBetAmount * bet.Amount / totalWinAmount;
 			if (payout != 0) {
 				totalPayout += payout;
-				ctx.Transfer(bet.Better, ScColor.IOTA, payout);
+				ctx.TransferToAddress(bet.Better.Address(), new ScTransfers(ScColor.IOTA, payout));
 			}
 			text = "Pay " + payout + " to " + bet.Better;
 			ctx.Log(text);
@@ -96,7 +99,7 @@ public class FairRoulette {
 			long remainder = totalBetAmount - totalPayout;
 			text = "Remainder is " + remainder;
 			ctx.Log(text);
-			ctx.Transfer(scId, ScColor.IOTA, remainder);
+			ctx.TransferToAddress(scId.Address(), new ScTransfers(ScColor.IOTA, remainder));
 		}
 	}
 
@@ -129,7 +132,11 @@ public class FairRoulette {
 			if (playPeriod < 10) {
 				playPeriod = defaultPlayPeriod;
 			}
-			ctx.Post("lock_bets").Post(playPeriod);
+			PostRequestParams req = new PostRequestParams();
+			req.ContractId = ctx.ContractId();
+			req.Function = new ScHname("lock_bets");
+			req.Delay = playPeriod;
+			ctx.Post(req);
 		}
 	}
 

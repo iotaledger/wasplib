@@ -15,20 +15,15 @@ pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
 // parameter structure required for ctx.post()
 pub struct PostRequestParams {
     //@formatter:off
-    pub contract_id: ScContractId,              // full contract id (chain id + contract Hname)
-    pub function:    ScHname,                   // Hname of the contract func or view to call
-    pub params:      Option<ScMutableMap>,      // an optional map of parameters to pass to the function
-    pub transfer:    Option<Box<dyn Balances>>, // optional balances to transfer as part of the call
-    pub delay:       i64,                       // delay in seconds before the function will be run
+    pub contract_id: ScContractId,         // full contract id (chain id + contract Hname)
+    pub function:    ScHname,              // Hname of the contract func or view to call
+    pub params:      Option<ScMutableMap>, // an optional map of parameters to pass to the function
+    pub transfer:    Option<ScTransfers>,  // optional balances to transfer as part of the call
+    pub delay:       i64,                  // delay in seconds before the function will be run
     //@formatter:on
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-// defines which map objects can be passed as a map of transfers to a function call or post
-pub trait Balances {
-    fn map_id(&self) -> i32;
-}
 
 // used to retrieve any information that is related to colored token balances
 pub struct ScBalances {
@@ -52,13 +47,6 @@ impl ScBalances {
     }
 }
 
-// ScBalances can be used to transfer tokens to a function call
-impl Balances for ScBalances {
-    fn map_id(&self) -> i32 {
-        self.balances.obj_id
-    }
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // used to pass token transfer information to a function call
@@ -69,9 +57,9 @@ pub struct ScTransfers {
 impl ScTransfers {
     // create a new transfers object and initialize it with the specified token transfer
     pub fn new(color: &ScColor, amount: i64) -> ScTransfers {
-        let balance = ScTransfers::new_transfers();
-        balance.add(color, amount);
-        balance
+        let transfer = ScTransfers::new_transfers();
+        transfer.add(color, amount);
+        transfer
     }
 
     // create a new transfer object ready to add token transfers
@@ -79,16 +67,20 @@ impl ScTransfers {
         ScTransfers { transfers: ScMutableMap::new() }
     }
 
+    // create a new transfer object ready to add token transfers
+    pub fn new_transfers_from_balances(balances: ScBalances) -> ScTransfers {
+        let transfers = ScTransfers::new_transfers();
+        let colors = balances.colors();
+        for i in 0..colors.length() {
+            let color = colors.get_color(i).value();
+            transfers.add(&color, balances.balance(&color));
+        } 
+        transfers
+    }
+
     // add the specified token transfer to the transfer object
     pub fn add(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int(color).set_value(amount);
-    }
-}
-
-// ScTransfers can be used to transfer tokens to a function call
-impl Balances for ScTransfers {
-    fn map_id(&self) -> i32 {
-        self.transfers.obj_id
     }
 }
 
@@ -100,24 +92,6 @@ pub struct ScUtility {
 }
 
 impl ScUtility {
-    // aggregates the specified multiple BLS signatures and public keys into a single one
-    pub fn aggregate_bls_signatures(&self, pub_keys_bin: &[&[u8]], sigs_bin: &[&[u8]]) -> (Vec<u8>, Vec<u8>) {
-        let mut encode = BytesEncoder::new();
-        encode.int(pub_keys_bin.len() as i64);
-        for pub_key in pub_keys_bin {
-            encode.bytes(pub_key);
-        }
-        encode.int(sigs_bin.len() as i64);
-        for sig in sigs_bin {
-            encode.bytes(sig);
-        }
-        let aggregator = self.utility.get_bytes(&KEY_AGGREGATE_BLS);
-        aggregator.set_value(&encode.data());
-        let aggregated = aggregator.value();
-        let mut decode = BytesDecoder::new(&aggregated);
-        return (decode.bytes().to_vec(), decode.bytes().to_vec());
-    }
-
     // decodes the specified base58-encoded string value to its original bytes
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
         self.utility.get_string(&KEY_BASE58_STRING).set_value(value);
@@ -128,6 +102,56 @@ impl ScUtility {
     pub fn base58_encode(&self, value: &[u8]) -> String {
         self.utility.get_bytes(&KEY_BASE58_BYTES).set_value(value);
         self.utility.get_string(&KEY_BASE58_STRING).value()
+    }
+
+    // retrieves the address for the specified ED25519 public key
+    // retrieves the address for the specified BLS public key
+    pub fn bls_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
+        self.utility.get_bytes(&KEY_BLS_ADDRESS).set_value(pub_key);
+        self.utility.get_address(&KEY_ADDRESS).value()
+    }
+
+    // aggregates the specified multiple BLS signatures and public keys into a single one
+    pub fn bls_aggregate_signatures(&self, pub_keys_bin: &[&[u8]], sigs_bin: &[&[u8]]) -> (Vec<u8>, Vec<u8>) {
+        let mut encode = BytesEncoder::new();
+        encode.int(pub_keys_bin.len() as i64);
+        for pub_key in pub_keys_bin {
+            encode.bytes(pub_key);
+        }
+        encode.int(sigs_bin.len() as i64);
+        for sig in sigs_bin {
+            encode.bytes(sig);
+        }
+        let aggregator = self.utility.get_bytes(&KEY_BLS_AGGREGATE);
+        aggregator.set_value(&encode.data());
+        let aggregated = aggregator.value();
+        let mut decode = BytesDecoder::new(&aggregated);
+        return (decode.bytes().to_vec(), decode.bytes().to_vec());
+    }
+
+    // checks if the specified BLS signature is valid
+    pub fn bls_valid_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
+        let mut encode = BytesEncoder::new();
+        encode.bytes(data);
+        encode.bytes(pub_key);
+        encode.bytes(signature);
+        self.utility.get_bytes(&KEY_BLS_VALID).set_value(&encode.data());
+        self.utility.get_int(&KEY_VALID).value() != 0
+    }
+
+    pub fn ed25519_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
+        self.utility.get_bytes(&KEY_ED25519_ADDRESS).set_value(pub_key);
+        self.utility.get_address(&KEY_ADDRESS).value()
+    }
+
+    // checks if the specified ED25519 signature is valid
+    pub fn ed25519_valid_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
+        let mut encode = BytesEncoder::new();
+        encode.bytes(data);
+        encode.bytes(pub_key);
+        encode.bytes(signature);
+        self.utility.get_bytes(&KEY_ED25519_VALID).set_value(&encode.data());
+        self.utility.get_int(&KEY_VALID).value() != 0
     }
 
     // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
@@ -154,26 +178,6 @@ impl ScUtility {
     pub fn random(&self, max: i64) -> i64 {
         let rnd = self.utility.get_int(&KEY_RANDOM).value();
         (rnd as u64 % max as u64) as i64
-    }
-
-    // checks if the specified BLS signature is valid
-    pub fn valid_bls_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
-        let mut encode = BytesEncoder::new();
-        encode.bytes(data);
-        encode.bytes(pub_key);
-        encode.bytes(signature);
-        self.utility.get_bytes(&KEY_VALID_BLS).set_value(&encode.data());
-        self.utility.get_int(&KEY_VALID).value() != 0
-    }
-
-    // checks if the specified ED25519 signature is valid
-    pub fn valid_ed25519_signature(&self, data: &[u8], pub_key: &[u8], signature: &[u8]) -> bool {
-        let mut encode = BytesEncoder::new();
-        encode.bytes(data);
-        encode.bytes(pub_key);
-        encode.bytes(signature);
-        self.utility.get_bytes(&KEY_VALID_ED25519).set_value(&encode.data());
-        self.utility.get_int(&KEY_VALID).value() != 0
     }
 }
 
@@ -260,7 +264,7 @@ impl ScBaseContext for ScFuncContext {}
 impl ScFuncContext {
     // synchronously calls the specified smart contract function,
     // passing the provided parameters and token transfers to it
-    pub fn call(&self, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
+    pub fn call(&self, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: Option<ScTransfers>) -> ScImmutableMap {
         let mut encode = BytesEncoder::new();
         encode.hname(&hcontract);
         encode.hname(&hfunction);
@@ -269,8 +273,8 @@ impl ScFuncContext {
         } else {
             encode.int(0);
         }
-        if let Some(transfer) = transfer {
-            encode.int(transfer.map_id() as i64);
+        if let Some(transfers) = transfer {
+            encode.int(transfers.transfers.obj_id as i64);
         } else {
             encode.int(0);
         }
@@ -282,8 +286,8 @@ impl ScFuncContext {
     pub fn caller(&self) -> ScAgentId { ROOT.get_agent_id(&KEY_CALLER).value() }
 
     // shorthand to synchronously call a smart contract function on the current contract
-    pub fn call_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfer: Option<Box<dyn Balances>>) -> ScImmutableMap {
-        self.call(self.contract_id().hname(), hfunction, params, transfer)
+    pub fn call_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfers: Option<ScTransfers>) -> ScImmutableMap {
+        self.call(self.contract_id().hname(), hfunction, params, transfers)
     }
 
     // deploys a new instance of the specified smart contract on the current chain
@@ -323,7 +327,7 @@ impl ScFuncContext {
             encode.int(0);
         }
         if let Some(transfer) = &par.transfer {
-            encode.int(transfer.map_id() as i64);
+            encode.int(transfer.transfers.obj_id as i64);
         } else {
             encode.int(0);
         }
@@ -337,11 +341,11 @@ impl ScFuncContext {
     }
 
     // transfers the specified tokens to the specified Tangle ledger address
-    pub fn transfer_to_address<T: Balances + ?Sized>(&self, address: &ScAddress, transfer: &T) {
+    pub fn transfer_to_address(&self, address: &ScAddress, transfer: ScTransfers) {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let tx = transfers.get_map(transfers.length());
         tx.get_address(&KEY_ADDRESS).set_value(address);
-        tx.get_int(&KEY_BALANCES).set_value(transfer.map_id() as i64);
+        tx.get_int(&KEY_BALANCES).set_value(transfer.transfers.obj_id as i64);
     }
 }
 

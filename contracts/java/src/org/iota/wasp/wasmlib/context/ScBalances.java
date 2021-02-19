@@ -19,7 +19,7 @@ public class ScBalances {
 	}
 
 	public ScImmutableColorArray Colors() {
-		return balances.GetColorArray(Key.Caller);
+		return balances.GetColorArray(Key.Color);
 	}
 
 	public ScColor Minted() {

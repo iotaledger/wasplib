@@ -10,6 +10,11 @@ import org.iota.wasp.wasmlib.keys.*;
 public class ScMutableMap {
 	int objId;
 
+	public ScMutableMap() {
+		ScMutableMapArray maps = Host.root.GetMapArray(Key.Maps);
+		objId = maps.GetMap(maps.Length()).objId;
+	}
+
 	public ScMutableMap(int objId) {
 		this.objId = objId;
 	}
@@ -109,5 +114,9 @@ public class ScMutableMap {
 
 	public int Length() {
 		return Host.GetLength(objId);
+	}
+
+	public int mapId() {
+		return objId;
 	}
 }

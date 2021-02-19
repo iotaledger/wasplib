@@ -11,7 +11,7 @@ use wasmlib::*;
 
 pub const SC_NAME: &str = "helloworld";
 pub const SC_DESCRIPTION: &str = "The ubiquitous hello world demo";
-pub const SC_HNAME: ScHname = ScHname(0x0683223c);
+pub const HSC_NAME: ScHname = ScHname(0x0683223c);
 
 pub const VAR_HELLO_WORLD: &str = "helloWorld";
 

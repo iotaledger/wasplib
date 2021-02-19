@@ -10,7 +10,7 @@ package fairauction
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "fairauction"
-const ScHname = wasmlib.ScHname(0x1b5c43b1)
+const HScName = wasmlib.ScHname(0x1b5c43b1)
 
 const ParamColor = wasmlib.Key("color")
 const ParamDescription = wasmlib.Key("description")

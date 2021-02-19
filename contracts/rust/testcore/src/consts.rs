@@ -11,7 +11,7 @@ use wasmlib::*;
 
 pub const SC_NAME: &str = "testcore";
 pub const SC_DESCRIPTION: &str = "Core test for ISCP wasmlib Rust/Wasm library";
-pub const SC_HNAME: ScHname = ScHname(0x370d33ad);
+pub const HSC_NAME: ScHname = ScHname(0x370d33ad);
 
 pub const PARAM_ADDRESS: &str = "address";
 pub const PARAM_AGENT_ID: &str = "agentID";

@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "fairroulette";
-pub const SC_HNAME: ScHname = ScHname(0xdf79d138);
+pub const HSC_NAME: ScHname = ScHname(0xdf79d138);
 
 pub const PARAM_NUMBER: &str = "number";
 pub const PARAM_PLAY_PERIOD: &str = "playPeriod";

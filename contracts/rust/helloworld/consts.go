@@ -11,7 +11,7 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "helloworld"
 const ScDescription = "The ubiquitous hello world demo"
-const ScHname = wasmlib.ScHname(0x0683223c)
+const HScName = wasmlib.ScHname(0x0683223c)
 
 const VarHelloWorld = wasmlib.Key("helloWorld")
 

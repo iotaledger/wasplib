@@ -10,7 +10,7 @@ package inccounter
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "inccounter"
-const ScHname = wasmlib.ScHname(0xaf2438e9)
+const HScName = wasmlib.ScHname(0xaf2438e9)
 
 const ParamCounter = wasmlib.Key("counter")
 const ParamNumRepeats = wasmlib.Key("numRepeats")

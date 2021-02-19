@@ -2,7 +2,7 @@ package test
 
 import (
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sandbox_tests/test_sandbox_sc"
+	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
@@ -13,10 +13,10 @@ func testPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicFullEP)
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgFullPanic))
+	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 }
 
 func TestPanicViewCall(t *testing.T) { run2(t, testPanicViewCall) }
@@ -24,9 +24,9 @@ func testPanicViewCall(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncPanicViewEP)
+	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncPanicViewEP)
 	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgViewPanic))
+	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 }
 
 func TestCallPanicFull(t *testing.T) { run2(t, testCallPanicFull) }
@@ -34,10 +34,10 @@ func testCallPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicFullEP)
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicFullEP)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgFullPanic))
+	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 }
 
 func TestCallPanicViewFromFull(t *testing.T) { run2(t, testCallPanicViewFromFull) }
@@ -45,10 +45,10 @@ func testCallPanicViewFromFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicViewEPFromFull)
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicViewEPFromFull)
 	_, err := chain.PostRequest(req, nil)
 	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgViewPanic))
+	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 }
 
 func TestCallPanicViewFromView(t *testing.T) { run2(t, testCallPanicViewFromView) }
@@ -56,7 +56,7 @@ func testCallPanicViewFromView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(test_sandbox_sc.Interface.Name, test_sandbox_sc.FuncCallPanicViewEPFromView)
+	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicViewEPFromView)
 	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), test_sandbox_sc.MsgViewPanic))
+	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 }

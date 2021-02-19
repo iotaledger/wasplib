@@ -3,7 +3,6 @@
 
 package org.iota.wasp.wasmlib.context;
 
-import org.iota.wasp.wasmlib.builders.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
@@ -18,20 +17,16 @@ public class ScBaseContext {
 		return new ScBalances(Host.root.GetMap(Key.Balances).Immutable());
 	}
 
-	public ScAgentId Caller() {
-		return Host.root.GetAgentId(Key.Caller).Value();
-	}
-
-	public ScAgentId ChainOwner() {
-		return Host.root.GetAgentId(Key.ChainOwner).Value();
+	public ScAgentId ChainOwnerId() {
+		return Host.root.GetAgentId(Key.ChainOwnerId).Value();
 	}
 
 	public ScAgentId ContractCreator() {
-		return Host.root.GetAgentId(Key.Creator).Value();
+		return Host.root.GetAgentId(Key.ContractCreator).Value();
 	}
 
 	public ScContractId ContractId() {
-		return Host.root.GetContractId(Key.Id).Value();
+		return Host.root.GetContractId(Key.ContractId).Value();
 	}
 
 	public void Log(String text) {
@@ -67,9 +62,5 @@ public class ScBaseContext {
 
 	public ScUtility Utility() {
 		return new ScUtility(Host.root.GetMap(Key.Utility));
-	}
-
-	public ScViewBuilder View(String function) {
-		return new ScViewBuilder(function);
 	}
 }
