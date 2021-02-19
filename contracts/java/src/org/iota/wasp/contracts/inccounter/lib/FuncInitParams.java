@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.inccounter.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncInitParams {
-	ScImmutableInt Counter; // value to initialize state counter with
+	ScImmutableInt  Counter; // value to initialize state counter with
 }

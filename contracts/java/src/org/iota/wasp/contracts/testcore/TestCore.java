@@ -1,8 +1,7 @@
 package org.iota.wasp.contracts.testcore;
 
 import org.iota.wasp.contracts.testcore.lib.*;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
+import org.iota.wasp.wasmlib.context.*;
 
 public class TestCore {
 	public static void FuncCallOnChain(ScFuncContext ctx, FuncCallOnChainParams params) {

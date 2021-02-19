@@ -3,11 +3,10 @@
 
 package org.iota.wasp.wasmlib.builders;
 
-import org.iota.wasp.wasmlib.hashtypes.ScHash;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
-import org.iota.wasp.wasmlib.mutable.ScMutableMapArray;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScDeployBuilder {
 	ScMutableMap deploy;

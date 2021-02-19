@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.fairauction.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncSetOwnerMarginParams {
-	ScImmutableInt OwnerMargin; // new SC owner margin in promilles
+	ScImmutableInt  OwnerMargin; // new SC owner margin in promilles
 }

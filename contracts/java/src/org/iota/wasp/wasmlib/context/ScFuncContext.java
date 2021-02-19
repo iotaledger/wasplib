@@ -3,16 +3,11 @@
 
 package org.iota.wasp.wasmlib.context;
 
-import org.iota.wasp.wasmlib.builders.ScCallBuilder;
-import org.iota.wasp.wasmlib.builders.ScDeployBuilder;
-import org.iota.wasp.wasmlib.builders.ScPostBuilder;
-import org.iota.wasp.wasmlib.builders.ScTransferBuilder;
-import org.iota.wasp.wasmlib.hashtypes.ScAddress;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.wasmlib.builders.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScFuncContext extends ScBaseContext {
 	public ScFuncContext() {

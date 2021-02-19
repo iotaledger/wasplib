@@ -7,10 +7,10 @@
 
 package org.iota.wasp.contracts.fairroulette.lib;
 
-import org.iota.wasp.contracts.fairroulette.FairRoulette;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
+import org.iota.wasp.contracts.fairroulette.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.exports.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FairRouletteThunk {
 	public static void onLoad() {

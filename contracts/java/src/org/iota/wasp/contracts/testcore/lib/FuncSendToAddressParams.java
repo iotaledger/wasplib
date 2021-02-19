@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.testcore.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAddress;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncSendToAddressParams {
-	ScImmutableAddress Address;
+	ScImmutableAddress   Address;
 }

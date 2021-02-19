@@ -3,7 +3,7 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.host.*;
 
 public class ScMutableString {
 	int objId;

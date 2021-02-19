@@ -3,22 +3,13 @@
 
 package org.iota.wasp.contracts.donatewithfeedback;
 
-import org.iota.wasp.contracts.donatewithfeedback.lib.FuncDonateParams;
-import org.iota.wasp.contracts.donatewithfeedback.lib.FuncWithdrawParams;
-import org.iota.wasp.contracts.donatewithfeedback.lib.ViewDonationsParams;
-import org.iota.wasp.contracts.donatewithfeedback.types.Donation;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableBytesArray;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableBytesArray;
-import org.iota.wasp.wasmlib.mutable.ScMutableInt;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
-import org.iota.wasp.wasmlib.mutable.ScMutableMapArray;
+import org.iota.wasp.contracts.donatewithfeedback.lib.*;
+import org.iota.wasp.contracts.donatewithfeedback.types.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class DonateWithFeedback {
 	private static final Key KeyAmount = new Key("amount");

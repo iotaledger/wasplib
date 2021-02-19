@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.immutable;
 
-import org.iota.wasp.wasmlib.hashtypes.ScContractId;
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
 
 public class ScImmutableContractId {
 	int objId;

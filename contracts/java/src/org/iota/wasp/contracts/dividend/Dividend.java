@@ -3,18 +3,13 @@
 
 package org.iota.wasp.contracts.dividend;
 
-import org.iota.wasp.contracts.dividend.lib.FuncDivideParams;
-import org.iota.wasp.contracts.dividend.lib.FuncMemberParams;
-import org.iota.wasp.contracts.dividend.types.Member;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableAddress;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableBytesArray;
-import org.iota.wasp.wasmlib.mutable.ScMutableInt;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.contracts.dividend.lib.*;
+import org.iota.wasp.contracts.dividend.types.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class Dividend {
 	private static final Key KeyAddress = new Key("address");

@@ -3,9 +3,8 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.hashtypes.ScHname;
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
 
 public class ScMutableHname {
 	int objId;

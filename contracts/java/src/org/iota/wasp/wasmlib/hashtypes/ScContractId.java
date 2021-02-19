@@ -3,11 +3,11 @@
 
 package org.iota.wasp.wasmlib.hashtypes;
 
-import org.iota.wasp.wasmlib.context.ScUtility;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.MapKey;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class ScContractId implements MapKey {
 	final byte[] id = new byte[37];

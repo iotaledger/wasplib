@@ -7,15 +7,13 @@
 
 package org.iota.wasp.contracts.testcore.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentId;
-import org.iota.wasp.wasmlib.immutable.ScImmutableChainId;
-import org.iota.wasp.wasmlib.immutable.ScImmutableContractId;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncCheckContextFromFullEPParams {
-	ScImmutableAgentId AgentId;
-	ScImmutableAgentId Caller;
-	ScImmutableChainId ChainId;
-	ScImmutableAgentId ChainOwnerId;
-	ScImmutableAgentId ContractCreator;
-	ScImmutableContractId ContractId;
+	ScImmutableAgentId      AgentId;
+	ScImmutableAgentId      Caller;
+	ScImmutableChainId      ChainId;
+	ScImmutableAgentId      ChainOwnerId;
+	ScImmutableAgentId      ContractCreator;
+	ScImmutableContractId   ContractId;
 }

@@ -3,13 +3,12 @@
 
 package org.iota.wasp.wasmlib.context;
 
-import org.iota.wasp.wasmlib.builders.ScViewBuilder;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScContractId;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.wasmlib.builders.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScBaseContext {
 	protected ScBaseContext() {

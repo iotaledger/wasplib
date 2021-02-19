@@ -3,10 +3,9 @@
 
 package org.iota.wasp.wasmlib.hashtypes;
 
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.keys.MapKey;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScHname implements MapKey {
 	int id;

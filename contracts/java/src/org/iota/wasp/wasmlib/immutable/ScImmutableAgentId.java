@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.immutable;
 
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
 
 public class ScImmutableAgentId {
 	int objId;

@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.tokenregistry.lib;
 
-import org.iota.wasp.contracts.tokenregistry.TokenRegistry;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
+import org.iota.wasp.contracts.tokenregistry.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.exports.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class TokenRegistryThunk {
 	public static void onLoad() {

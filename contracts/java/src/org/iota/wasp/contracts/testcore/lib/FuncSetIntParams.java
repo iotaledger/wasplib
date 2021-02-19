@@ -7,10 +7,9 @@
 
 package org.iota.wasp.contracts.testcore.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
-import org.iota.wasp.wasmlib.immutable.ScImmutableString;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncSetIntParams {
-	ScImmutableInt IntValue;
+	ScImmutableInt    IntValue;
 	ScImmutableString Name;
 }

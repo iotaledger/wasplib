@@ -7,9 +7,9 @@
 
 package org.iota.wasp.contracts.erc20.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentId;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewAllowanceParams {
-	ScImmutableAgentId Account;    // sender account
-	ScImmutableAgentId Delegation; // delegated account
+	ScImmutableAgentId   Account;    // sender account
+	ScImmutableAgentId   Delegation; // delegated account
 }

@@ -7,10 +7,9 @@
 
 package org.iota.wasp.contracts.erc20.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentId;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncApproveParams {
-	ScImmutableInt Amount;     // allowance value for delegated account
-	ScImmutableAgentId Delegation; // delegated account
+	ScImmutableInt       Amount;     // allowance value for delegated account
+	ScImmutableAgentId   Delegation; // delegated account
 }

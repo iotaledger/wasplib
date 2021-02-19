@@ -3,9 +3,9 @@
 
 package org.iota.wasp.wasmlib.builders;
 
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScCallBuilder extends ScRequestBuilder {
 	public ScCallBuilder(String function) {

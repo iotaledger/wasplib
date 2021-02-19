@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.fairauction.lib;
 
-import org.iota.wasp.contracts.fairauction.FairAuction;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
+import org.iota.wasp.contracts.fairauction.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.exports.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FairAuctionThunk {
 	public static void onLoad() {

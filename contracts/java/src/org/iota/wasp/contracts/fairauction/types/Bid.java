@@ -7,10 +7,10 @@
 
 package org.iota.wasp.contracts.fairauction.types;
 
-import org.iota.wasp.wasmlib.bytes.BytesDecoder;
-import org.iota.wasp.wasmlib.bytes.BytesEncoder;
+import org.iota.wasp.wasmlib.bytes.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 
-public class Bid {
+public class Bid{
 	//@formatter:off
 	public long Amount;    // cumulative amount of bids from same bidder
 	public long Index;     // index of bidder in bidder list
@@ -27,7 +27,7 @@ public class Bid {
 		Timestamp = decode.Int();
 	}
 
-	public byte[] toBytes() {
+	public byte[] toBytes(){
 		return new BytesEncoder().
 				Int(Amount).
 				Int(Index).

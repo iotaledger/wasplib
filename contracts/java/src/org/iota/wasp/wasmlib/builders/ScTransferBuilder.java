@@ -3,13 +3,10 @@
 
 package org.iota.wasp.wasmlib.builders;
 
-import org.iota.wasp.wasmlib.hashtypes.ScAddress;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
-import org.iota.wasp.wasmlib.mutable.ScMutableMapArray;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScTransferBuilder {
 	ScMutableMap transfer;

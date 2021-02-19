@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.erc20.lib;
 
-import org.iota.wasp.contracts.erc20.Erc20;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
+import org.iota.wasp.contracts.erc20.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.exports.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class Erc20Thunk {
 	public static void onLoad() {

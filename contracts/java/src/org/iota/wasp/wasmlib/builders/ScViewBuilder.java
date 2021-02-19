@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.builders;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScViewBuilder extends ScRequestBuilder {
 	public ScViewBuilder(String function) {

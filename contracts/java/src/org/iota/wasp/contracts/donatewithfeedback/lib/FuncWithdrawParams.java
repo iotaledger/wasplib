@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.donatewithfeedback.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncWithdrawParams {
-	ScImmutableInt Amount; // amount to withdraw
+	ScImmutableInt  Amount; // amount to withdraw
 }

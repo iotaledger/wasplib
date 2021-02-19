@@ -3,9 +3,8 @@
 
 package org.iota.wasp.wasmlib.immutable;
 
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.host.ScType;
-import org.iota.wasp.wasmlib.keys.MapKey;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class ScImmutableMap {
 	int objId;

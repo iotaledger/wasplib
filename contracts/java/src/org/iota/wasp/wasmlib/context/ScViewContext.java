@@ -3,9 +3,9 @@
 
 package org.iota.wasp.wasmlib.context;
 
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class ScViewContext extends ScBaseContext {
 	public ScViewContext() {

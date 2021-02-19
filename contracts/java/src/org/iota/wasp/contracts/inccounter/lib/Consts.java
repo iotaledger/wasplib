@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.inccounter.lib;
 
-import org.iota.wasp.wasmlib.hashtypes.ScHname;
-import org.iota.wasp.wasmlib.keys.Key;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class Consts {
 	public static final String ScName = "inccounter";

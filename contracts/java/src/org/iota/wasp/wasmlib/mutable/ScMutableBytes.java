@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.context.ScUtility;
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.host.*;
 
 public class ScMutableBytes {
 	int objId;

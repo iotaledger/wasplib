@@ -4,21 +4,13 @@
 package org.iota.wasp.contracts.fairauction;
 
 import org.iota.wasp.contracts.fairauction.lib.*;
-import org.iota.wasp.contracts.fairauction.types.Auction;
-import org.iota.wasp.contracts.fairauction.types.Bid;
-import org.iota.wasp.wasmlib.builders.ScPostBuilder;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentIdArray;
-import org.iota.wasp.wasmlib.immutable.ScImmutableBytes;
-import org.iota.wasp.wasmlib.immutable.ScImmutableColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableAgentIdArray;
-import org.iota.wasp.wasmlib.mutable.ScMutableBytes;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.contracts.fairauction.types.*;
+import org.iota.wasp.wasmlib.builders.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class FairAuction {
 	private static final Key KeyAuctions = new Key("auctions");

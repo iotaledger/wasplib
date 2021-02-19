@@ -4,10 +4,9 @@
 package org.iota.wasp.contracts.inccounter;
 
 import org.iota.wasp.contracts.inccounter.lib.*;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableInt;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class IncCounter {
 	private static final Key KeyCounter = new Key("counter");

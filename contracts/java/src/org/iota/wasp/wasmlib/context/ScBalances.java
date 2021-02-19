@@ -3,10 +3,9 @@
 
 package org.iota.wasp.wasmlib.context;
 
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableColorArray;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class ScBalances {
 	ScImmutableMap balances;

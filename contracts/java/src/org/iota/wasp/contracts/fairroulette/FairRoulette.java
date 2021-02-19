@@ -3,19 +3,14 @@
 
 package org.iota.wasp.contracts.fairroulette;
 
-import org.iota.wasp.contracts.fairroulette.lib.FuncLockBetsParams;
-import org.iota.wasp.contracts.fairroulette.lib.FuncPayWinnersParams;
-import org.iota.wasp.contracts.fairroulette.lib.FuncPlaceBetParams;
-import org.iota.wasp.contracts.fairroulette.lib.FuncPlayPeriodParams;
-import org.iota.wasp.contracts.fairroulette.types.Bet;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableBytesArray;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.contracts.fairroulette.lib.*;
+import org.iota.wasp.contracts.fairroulette.types.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class FairRoulette {
 	private static final Key KeyBets = new Key("bets");

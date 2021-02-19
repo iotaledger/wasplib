@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.fairroulette.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncPlaceBetParams {
-	ScImmutableInt Number; // the number a better bets on
+	ScImmutableInt  Number; // the number a better bets on
 }

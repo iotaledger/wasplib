@@ -4,10 +4,10 @@
 package org.iota.wasp.wasmlib.bytes;
 
 import org.iota.wasp.wasmlib.hashtypes.*;
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.host.*;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.nio.charset.*;
+import java.util.*;
 
 public class BytesDecoder {
 	byte[] data;

@@ -3,19 +3,13 @@
 
 package org.iota.wasp.contracts.tokenregistry;
 
-import org.iota.wasp.contracts.tokenregistry.lib.FuncMintSupplyParams;
-import org.iota.wasp.contracts.tokenregistry.lib.FuncTransferOwnershipParams;
-import org.iota.wasp.contracts.tokenregistry.lib.FuncUpdateMetadataParams;
-import org.iota.wasp.contracts.tokenregistry.lib.ViewGetInfoParams;
-import org.iota.wasp.contracts.tokenregistry.types.Token;
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.hashtypes.ScColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableBytes;
-import org.iota.wasp.wasmlib.mutable.ScMutableColorArray;
-import org.iota.wasp.wasmlib.mutable.ScMutableMap;
+import org.iota.wasp.contracts.tokenregistry.lib.*;
+import org.iota.wasp.contracts.tokenregistry.types.*;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class TokenRegistry {
 	private static final Key KeyColorList = new Key("color_list");

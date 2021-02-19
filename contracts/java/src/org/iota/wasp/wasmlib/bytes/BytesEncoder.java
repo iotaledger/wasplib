@@ -5,9 +5,8 @@ package org.iota.wasp.wasmlib.bytes;
 
 import org.iota.wasp.wasmlib.hashtypes.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
+import java.nio.charset.*;
 
 public class BytesEncoder {
 	ByteArrayOutputStream data;

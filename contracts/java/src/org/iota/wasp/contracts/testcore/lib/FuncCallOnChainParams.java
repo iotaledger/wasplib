@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.testcore.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableHname;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncCallOnChainParams {
 	ScImmutableHname HnameContract;
 	ScImmutableHname HnameEP;
-	ScImmutableInt IntValue;
+	ScImmutableInt   IntValue;
 }

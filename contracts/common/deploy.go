@@ -31,7 +31,7 @@ const (
 
 
 // set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
-const WasmRunner = 1
+const WasmRunner = 0
 
 var (
 	ContractAccount coretypes.AgentID

@@ -25,8 +25,8 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncMemberParams struct {
-	Address wasmlib.ScImmutableAddress // address of dividend recipient
-	Factor  wasmlib.ScImmutableInt     // relative division factor
+	Address wasmlib.ScImmutableAddress           // address of dividend recipient
+	Factor  wasmlib.ScImmutableInt               // relative division factor
 }
 
 func funcMemberThunk(ctx wasmlib.ScFuncContext) {

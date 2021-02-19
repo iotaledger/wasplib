@@ -7,10 +7,9 @@
 
 package org.iota.wasp.contracts.erc20.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentId;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncTransferParams {
-	ScImmutableAgentId Account; // target account
-	ScImmutableInt Amount;  // amount of tokens to transfer
+	ScImmutableAgentId   Account; // target account
+	ScImmutableInt       Amount;  // amount of tokens to transfer
 }

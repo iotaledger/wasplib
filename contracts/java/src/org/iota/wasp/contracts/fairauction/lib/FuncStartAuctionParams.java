@@ -7,13 +7,11 @@
 
 package org.iota.wasp.contracts.fairauction.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableColor;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
-import org.iota.wasp.wasmlib.immutable.ScImmutableString;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncStartAuctionParams {
-	ScImmutableColor Color;       // color of the tokens being auctioned
-	ScImmutableString Description; // description of the tokens being auctioned
-	ScImmutableInt Duration;    // duration of auction in minutes
-	ScImmutableInt MinimumBid;  // minimum required amount for any bid
+	ScImmutableColor   Color;       // color of the tokens being auctioned
+	ScImmutableString  Description; // description of the tokens being auctioned
+	ScImmutableInt     Duration;    // duration of auction in minutes
+	ScImmutableInt     MinimumBid;  // minimum required amount for any bid
 }

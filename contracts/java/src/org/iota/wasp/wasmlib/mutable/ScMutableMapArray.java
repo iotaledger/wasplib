@@ -3,9 +3,8 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.host.ScType;
-import org.iota.wasp.wasmlib.immutable.ScImmutableMapArray;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableMapArray {
 	int objId;

@@ -1,6 +1,6 @@
 package org.iota.wasp.wasmlib.keys;
 
-import org.iota.wasp.wasmlib.host.Host;
+import org.iota.wasp.wasmlib.host.*;
 
 public class Key implements MapKey {
 	// @formatter:off

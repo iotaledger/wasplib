@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.fairroulette.types;
 
-import org.iota.wasp.wasmlib.bytes.BytesDecoder;
-import org.iota.wasp.wasmlib.bytes.BytesEncoder;
-import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
+import org.iota.wasp.wasmlib.bytes.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 
-public class Bet {
+public class Bet{
 	//@formatter:off
 	public long      Amount;
 	public ScAgentId Better;
@@ -28,7 +27,7 @@ public class Bet {
 		Number = decode.Int();
 	}
 
-	public byte[] toBytes() {
+	public byte[] toBytes(){
 		return new BytesEncoder().
 				Int(Amount).
 				AgentId(Better).

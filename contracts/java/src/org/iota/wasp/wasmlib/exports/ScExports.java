@@ -3,13 +3,12 @@
 
 package org.iota.wasp.wasmlib.exports;
 
-import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.mutable.ScMutableStringArray;
+import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class ScExports {
 	private static final ArrayList<ScFunc> funcs = new ArrayList<>();

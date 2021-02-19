@@ -207,7 +207,7 @@ func (s *Schema) GenerateGoConsts() error {
 		fmt.Fprintf(file, "const ScDescription = \"%s\"\n", s.Description)
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "const ScHname = wasmlib.ScHname(0x%s)\n", hName.String())
+	fmt.Fprintf(file, "const HScName = wasmlib.ScHname(0x%s)\n", hName.String())
 
 	if len(s.Params) != 0 {
 		fmt.Fprintln(file)

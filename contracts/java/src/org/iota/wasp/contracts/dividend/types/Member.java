@@ -7,11 +7,10 @@
 
 package org.iota.wasp.contracts.dividend.types;
 
-import org.iota.wasp.wasmlib.bytes.BytesDecoder;
-import org.iota.wasp.wasmlib.bytes.BytesEncoder;
-import org.iota.wasp.wasmlib.hashtypes.ScAddress;
+import org.iota.wasp.wasmlib.bytes.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 
-public class Member {
+public class Member{
 	//@formatter:off
 	public ScAddress Address; // address of dividend recipient
 	public long      Factor;  // relative division factor
@@ -26,7 +25,7 @@ public class Member {
 		Factor = decode.Int();
 	}
 
-	public byte[] toBytes() {
+	public byte[] toBytes(){
 		return new BytesEncoder().
 				Address(Address).
 				Int(Factor).

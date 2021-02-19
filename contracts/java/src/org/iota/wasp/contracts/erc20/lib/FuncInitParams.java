@@ -7,10 +7,9 @@
 
 package org.iota.wasp.contracts.erc20.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableAgentId;
-import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncInitParams {
-	ScImmutableAgentId Creator; // creator/owner of the initial supply
-	ScImmutableInt Supply;  // initial token supply
+	ScImmutableAgentId   Creator; // creator/owner of the initial supply
+	ScImmutableInt       Supply;  // initial token supply
 }

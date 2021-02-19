@@ -7,8 +7,8 @@
 
 package org.iota.wasp.contracts.fairauction.lib;
 
-import org.iota.wasp.wasmlib.immutable.ScImmutableColor;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncPlaceBidParams {
-	ScImmutableColor Color; // color identifies the auction
+	ScImmutableColor   Color; // color identifies the auction
 }

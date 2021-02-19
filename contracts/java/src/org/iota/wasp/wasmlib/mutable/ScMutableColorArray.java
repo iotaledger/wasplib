@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.host.Host;
-import org.iota.wasp.wasmlib.immutable.ScImmutableColorArray;
+import org.iota.wasp.wasmlib.host.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableColorArray {
 	int objId;

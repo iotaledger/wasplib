@@ -249,7 +249,7 @@ func (s *Schema) GenerateRustConsts() error {
 		fmt.Fprintf(file, "pub const SC_DESCRIPTION: &str = \"%s\";\n", s.Description)
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "pub const SC_HNAME: ScHname = ScHname(0x%s);\n", hName.String())
+	fmt.Fprintf(file, "pub const HSC_NAME: ScHname = ScHname(0x%s);\n", hName.String())
 
 	if len(s.Params) != 0 {
 		fmt.Fprintln(file)
