@@ -294,7 +294,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 	for _, param := range funcDef.Params {
 		fldName := capitalize(param.Name) + ";"
 		if param.Comment != "" {
-			fldName = pad(fldName, nameLen + 1)
+			fldName = pad(fldName, nameLen+1)
 		}
 		fldType := pad(param.Type, typeLen)
 		fmt.Fprintf(params, "\tScImmutable%s %s%s\n", fldType, fldName, param.Comment)
