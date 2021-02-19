@@ -50,8 +50,8 @@ public class BytesDecoder {
 		return new ScHash(Bytes());
 	}
 
-	public Hname Hname() {
-		return new Hname(Bytes());
+	public ScHname Hname() {
+		return new ScHname(Bytes());
 	}
 
 	public long Int() {

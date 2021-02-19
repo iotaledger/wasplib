@@ -3,6 +3,7 @@
 
 package org.iota.wasp.contracts.inccounter;
 
+import org.iota.wasp.contracts.inccounter.lib.*;
 import org.iota.wasp.wasmlib.context.ScFuncContext;
 import org.iota.wasp.wasmlib.context.ScViewContext;
 import org.iota.wasp.wasmlib.keys.Key;
@@ -14,7 +15,7 @@ public class IncCounter {
 
 	static boolean localStateMustIncrement = false;
 
-	public static void FuncCallIncrement(ScFuncContext ctx) {
+	public static void FuncCallIncrement(ScFuncContext ctx, FuncCallIncrementParams params) {
 		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -23,7 +24,7 @@ public class IncCounter {
 		}
 	}
 
-	public static void FuncCallIncrementRecurse5x(ScFuncContext ctx) {
+	public static void FuncCallIncrementRecurse5x(ScFuncContext ctx, FuncCallIncrementRecurse5xParams params) {
 		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -32,12 +33,12 @@ public class IncCounter {
 		}
 	}
 
-	public static void FuncIncrement(ScFuncContext ctx) {
+	public static void FuncIncrement(ScFuncContext ctx, FuncIncrementParams params) {
 		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void FuncInit(ScFuncContext ctx) {
+	public static void FuncInit(ScFuncContext ctx, FuncInitParams params) {
 		long counter = ctx.Params().GetInt(KeyCounter).Value();
 		if (counter == 0) {
 			return;
@@ -45,17 +46,18 @@ public class IncCounter {
 		ctx.State().GetInt(KeyCounter).SetValue(counter);
 	}
 
-	public static void FuncLocalStateInternalCall(ScFuncContext ctx) {
-		FuncWhenMustIncrement(ctx);
+	public static void FuncLocalStateInternalCall(ScFuncContext ctx, FuncLocalStateInternalCallParams params) {
+		FuncWhenMustIncrementParams par = new FuncWhenMustIncrementParams();
+		FuncWhenMustIncrement(ctx, par);
 		{
 			localStateMustIncrement = true;
 		}
-		FuncWhenMustIncrement(ctx);
-		FuncWhenMustIncrement(ctx);
+		FuncWhenMustIncrement(ctx, par);
+		FuncWhenMustIncrement(ctx, par);
 		// counter ends up as 2
 	}
 
-	public static void FuncLocalStatePost(ScFuncContext ctx) {
+	public static void FuncLocalStatePost(ScFuncContext ctx, FuncLocalStatePostParams params) {
 		ctx.Post("whenMustIncrement").Post(0);
 		{
 			localStateMustIncrement = true;
@@ -65,7 +67,7 @@ public class IncCounter {
 		// counter ends up as 0
 	}
 
-	public static void FuncLocalStateSandboxCall(ScFuncContext ctx) {
+	public static void FuncLocalStateSandboxCall(ScFuncContext ctx, FuncLocalStateSandboxCallParams params) {
 		ctx.Call("whenMustIncrement").Call();
 		{
 			localStateMustIncrement = true;
@@ -75,7 +77,7 @@ public class IncCounter {
 		// counter ends up as 0
 	}
 
-	public static void FuncPostIncrement(ScFuncContext ctx) {
+	public static void FuncPostIncrement(ScFuncContext ctx, FuncPostIncrementParams params) {
 		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -84,7 +86,7 @@ public class IncCounter {
 		}
 	}
 
-	public static void FuncRepeatMany(ScFuncContext ctx) {
+	public static void FuncRepeatMany(ScFuncContext ctx, FuncRepeatManyParams params) {
 		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
@@ -100,7 +102,7 @@ public class IncCounter {
 		ctx.Post("increment_repeat_many").Post(0);
 	}
 
-	public static void FuncWhenMustIncrement(ScFuncContext ctx) {
+	public static void FuncWhenMustIncrement(ScFuncContext ctx, FuncWhenMustIncrementParams params) {
 		ctx.Log("increment_when_must_increment called");
 		{
 			if (!localStateMustIncrement) {
@@ -111,7 +113,7 @@ public class IncCounter {
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void ViewGetCounter(ScViewContext ctx) {
+	public static void ViewGetCounter(ScViewContext ctx, ViewGetCounterParams params) {
 		long counter = ctx.State().GetInt(KeyCounter).Value();
 		ctx.Results().GetInt(KeyCounter).SetValue(counter);
 	}

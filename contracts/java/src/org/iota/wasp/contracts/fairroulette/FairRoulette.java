@@ -3,9 +3,12 @@
 
 package org.iota.wasp.contracts.fairroulette;
 
+import org.iota.wasp.contracts.fairroulette.lib.FuncLockBetsParams;
+import org.iota.wasp.contracts.fairroulette.lib.FuncPayWinnersParams;
+import org.iota.wasp.contracts.fairroulette.lib.FuncPlaceBetParams;
+import org.iota.wasp.contracts.fairroulette.lib.FuncPlayPeriodParams;
 import org.iota.wasp.contracts.fairroulette.types.Bet;
 import org.iota.wasp.wasmlib.context.ScFuncContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
 import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
 import org.iota.wasp.wasmlib.hashtypes.ScColor;
 import org.iota.wasp.wasmlib.keys.Key;
@@ -24,7 +27,7 @@ public class FairRoulette {
 	private static final int numColors = 5;
 	private static final int defaultPlayPeriod = 120;
 
-	public static void FuncLockBets(ScFuncContext ctx) {
+	public static void FuncLockBets(ScFuncContext ctx, FuncLockBetsParams params) {
 		// can only be sent by SC itself
 		if (!ctx.Caller().equals(ctx.ContractId().AsAgentId())) {
 			ctx.Panic("Cancel spoofed request");
@@ -44,7 +47,7 @@ public class FairRoulette {
 		ctx.Post("pay_winners").Post(0);
 	}
 
-	public static void FuncPayWinners(ScFuncContext ctx) {
+	public static void FuncPayWinners(ScFuncContext ctx, FuncPayWinnersParams params) {
 		// can only be sent by SC itself
 		ScAgentId scId = ctx.ContractId().AsAgentId();
 		if (!ctx.Caller().equals(scId)) {
@@ -102,7 +105,7 @@ public class FairRoulette {
 		}
 	}
 
-	public static void FuncPlaceBet(ScFuncContext ctx) {
+	public static void FuncPlaceBet(ScFuncContext ctx, FuncPlaceBetParams params) {
 		long amount = ctx.Incoming().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			ctx.Panic("Empty bet...");
@@ -135,7 +138,7 @@ public class FairRoulette {
 		}
 	}
 
-	public static void FuncPlayPeriod(ScFuncContext ctx) {
+	public static void FuncPlayPeriod(ScFuncContext ctx, FuncPlayPeriodParams params) {
 		// can only be sent by SC creator
 		if (!ctx.Caller().equals(ctx.ContractCreator())) {
 			ctx.Panic("Cancel spoofed request");

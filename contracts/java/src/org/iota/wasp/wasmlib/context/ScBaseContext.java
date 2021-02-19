@@ -47,6 +47,13 @@ public class ScBaseContext {
 		return Host.root.GetMap(Key.Params).Immutable();
 	}
 
+	// panics with specified message if specified condition is not satisfied
+	public void Require(boolean cond, String msg) {
+		if (!cond) {
+			Panic(msg);
+		}
+	}
+
 	public ScMutableMap Results() {
 		return Host.root.GetMap(Key.Results);
 	}

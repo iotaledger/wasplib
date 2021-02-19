@@ -5,19 +5,58 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.tokenregistry.lib;
 
-import org.iota.wasp.contracts.tokenregistry.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.tokenregistry.TokenRegistry;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.context.ScViewContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class TokenRegistryThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("mintSupply", TokenRegistry::FuncMintSupply);
-		exports.AddFunc("transferOwnership", TokenRegistry::FuncTransferOwnership);
-		exports.AddFunc("updateMetadata", TokenRegistry::FuncUpdateMetadata);
-		exports.AddView("getInfo", TokenRegistry::ViewGetInfo);
+		exports.AddFunc("mintSupply", TokenRegistryThunk::funcMintSupplyThunk);
+		exports.AddFunc("transferOwnership", TokenRegistryThunk::funcTransferOwnershipThunk);
+		exports.AddFunc("updateMetadata", TokenRegistryThunk::funcUpdateMetadataThunk);
+		exports.AddView("getInfo", TokenRegistryThunk::viewGetInfoThunk);
+	}
+
+	private static void funcMintSupplyThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncMintSupplyParams params = new FuncMintSupplyParams();
+		params.Description = p.GetString(Consts.ParamDescription);
+		params.UserDefined = p.GetString(Consts.ParamUserDefined);
+		TokenRegistry.FuncMintSupply(ctx, params);
+	}
+
+	private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
+		//TODO the one who can transfer token ownership
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncTransferOwnershipParams params = new FuncTransferOwnershipParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		TokenRegistry.FuncTransferOwnership(ctx, params);
+	}
+
+	private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
+		//TODO the one who can change the token info
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncUpdateMetadataParams params = new FuncUpdateMetadataParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		TokenRegistry.FuncUpdateMetadata(ctx, params);
+	}
+
+	private static void viewGetInfoThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewGetInfoParams params = new ViewGetInfoParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		TokenRegistry.ViewGetInfo(ctx, params);
 	}
 }

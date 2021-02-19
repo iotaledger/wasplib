@@ -3,7 +3,7 @@
 
 package org.iota.wasp.wasmlib.immutable;
 
-import org.iota.wasp.wasmlib.hashtypes.Hname;
+import org.iota.wasp.wasmlib.hashtypes.ScHname;
 import org.iota.wasp.wasmlib.host.Host;
 
 public class ScImmutableHname {
@@ -24,7 +24,7 @@ public class ScImmutableHname {
 		return Value().toString();
 	}
 
-	public Hname Value() {
-		return new Hname(Host.GetBytes(objId, keyId));
+	public ScHname Value() {
+		return new ScHname(Host.GetBytes(objId, keyId));
 	}
 }

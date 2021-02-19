@@ -3,10 +3,12 @@
 
 package org.iota.wasp.contracts.donatewithfeedback;
 
+import org.iota.wasp.contracts.donatewithfeedback.lib.FuncDonateParams;
+import org.iota.wasp.contracts.donatewithfeedback.lib.FuncWithdrawParams;
+import org.iota.wasp.contracts.donatewithfeedback.lib.ViewDonationsParams;
 import org.iota.wasp.contracts.donatewithfeedback.types.Donation;
 import org.iota.wasp.wasmlib.context.ScFuncContext;
 import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
 import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
 import org.iota.wasp.wasmlib.hashtypes.ScColor;
 import org.iota.wasp.wasmlib.immutable.ScImmutableBytesArray;
@@ -30,7 +32,7 @@ public class DonateWithFeedback {
 	private static final Key KeyTotalDonation = new Key("total_donation");
 	private static final Key KeyWithdrawAmount = new Key("withdraw");
 
-	public static void FuncDonate(ScFuncContext ctx) {
+	public static void FuncDonate(ScFuncContext ctx, FuncDonateParams params) {
 		Donation donation = new Donation();
 		{
 			donation.Amount = ctx.Incoming().Balance(ScColor.IOTA);
@@ -58,7 +60,7 @@ public class DonateWithFeedback {
 		totalDonated.SetValue(totalDonated.Value() + donation.Amount);
 	}
 
-	public static void FuncWithdraw(ScFuncContext ctx) {
+	public static void FuncWithdraw(ScFuncContext ctx, FuncWithdrawParams params) {
 		ScAgentId scOwner = ctx.ContractCreator();
 		if (!ctx.Caller().equals(scOwner)) {
 			ctx.Panic("Cancel spoofed request");
@@ -76,7 +78,7 @@ public class DonateWithFeedback {
 		ctx.Transfer(scOwner, ScColor.IOTA, withdrawAmount);
 	}
 
-	public static void ViewDonations(ScViewContext ctx) {
+	public static void ViewDonations(ScViewContext ctx, ViewDonationsParams params) {
 		ScImmutableMap state = ctx.State();
 		ScImmutableInt largestDonation = state.GetInt(KeyMaxDonation);
 		ScImmutableInt totalDonated = state.GetInt(KeyTotalDonation);

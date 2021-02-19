@@ -45,8 +45,8 @@ public class ScContractId implements MapKey {
 		return Arrays.hashCode(id);
 	}
 
-	public Hname Hname() {
-		return new Hname(Arrays.copyOfRange(id, 33, 37));
+	public ScHname Hname() {
+		return new ScHname(Arrays.copyOfRange(id, 33, 37));
 	}
 
 	public byte[] toBytes() {

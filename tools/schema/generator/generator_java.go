@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const generateJavaThunk = false
+const generateJavaThunk = true
 
 var javaTypes = StringMap{
 	"Address":    "ScAddress",
@@ -58,10 +58,10 @@ func (s *Schema) GenerateJava() error {
 	if err != nil {
 		return err
 	}
-	//err = s.GenerateJavaConsts()
-	//if err != nil {
-	//	return err
-	//}
+	err = s.GenerateJavaConsts()
+	if err != nil {
+		return err
+	}
 	err = s.GenerateJavaTypes()
 	if err != nil {
 		return err
@@ -177,10 +177,11 @@ func (s *Schema) GenerateJavaLib() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "\npackage org.iota.wasp.contracts.%s.lib;\n\n", s.Name)
+	fmt.Fprintf(file, "package org.iota.wasp.contracts.%s.lib;\n\n", s.Name)
 	fmt.Fprintf(file, "import org.iota.wasp.contracts.%s.*;\n", s.Name)
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.context.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.exports.*;\n")
-	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.immutable.*;\n\n")
 
 	thunk := ""
 	if generateJavaThunk {
@@ -188,27 +189,35 @@ func (s *Schema) GenerateJavaLib() error {
 	}
 
 	fmt.Fprintf(file, "public class %sThunk {\n", s.FullName)
+
 	fmt.Fprintf(file, "\tpublic static void onLoad() {\n")
 	fmt.Fprintf(file, "\t\tScExports exports = new ScExports();\n")
 	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FullName)
+		name := funcDef.FullName
 		kind := capitalize(funcDef.FullName[:4])
 		fmt.Fprintf(file, "\t\texports.Add%s(\"%s\", %s%s::%s%s);\n", kind, funcDef.Name, s.FullName, thunk, name, thunk)
 	}
 	fmt.Fprintf(file, "\t}\n")
-	fmt.Fprintf(file, "}\n")
 
 	if generateJavaThunk {
 		// generate parameter structs and thunks to set up and check parameters
 		for _, funcDef := range s.Funcs {
-			s.GenerateJavaThunk(file, funcDef)
+			name := capitalize(funcDef.FullName)
+			params, err := os.Create("lib/" + name + "Params.java")
+			if err != nil {
+				return err
+			}
+			defer params.Close()
+			s.GenerateJavaThunk(file, params, funcDef)
 		}
 	}
+
+	fmt.Fprintf(file, "}\n")
 	return nil
 }
 
 func (s *Schema) GenerateJavaConsts() error {
-	file, err := os.Create("consts.go")
+	file, err := os.Create("lib/Consts.java")
 	if err != nil {
 		return err
 	}
@@ -216,22 +225,24 @@ func (s *Schema) GenerateJavaConsts() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintln(file, importWasmLib)
+	fmt.Fprintf(file, "package org.iota.wasp.contracts.%s.lib;\n\n", s.Name)
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.keys.*;\n")
+	fmt.Fprintf(file, "\npublic class Consts {\n")
 
-	fmt.Fprintf(file, "const ScName = \"%s\"\n", s.Name)
+	fmt.Fprintf(file, "\tpublic static final String ScName = \"%s\";\n", s.Name)
 	if s.Description != "" {
-		fmt.Fprintf(file, "const ScDescription = \"%s\"\n", s.Description)
+		fmt.Fprintf(file, "\tpublic static final String ScDescription = \"%s\";\n", s.Description)
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "const ScHname = wasmlib.ScHname(0x%s)\n", hName.String())
+	fmt.Fprintf(file, "\tpublic static final ScHname HScName = new ScHname(0x%s);\n", hName.String())
 
 	if len(s.Params) != 0 {
 		fmt.Fprintln(file)
 		for _, name := range sortedFields(s.Params) {
 			param := s.Params[name]
 			name = capitalize(param.Name)
-			fmt.Fprintf(file, "const Param%s = wasmlib.Key(\"%s\")\n", name, param.Alias)
+			fmt.Fprintf(file, "\tpublic static final Key Param%s = new Key(\"%s\");\n", name, param.Alias)
 		}
 	}
 
@@ -239,7 +250,7 @@ func (s *Schema) GenerateJavaConsts() error {
 		fmt.Fprintln(file)
 		for _, field := range s.Vars {
 			name := capitalize(field.Name)
-			fmt.Fprintf(file, "const Var%s = wasmlib.Key(\"%s\")\n", name, field.Alias)
+			fmt.Fprintf(file, "\tpublic static final Key Var%s = new Key(\"%s\");\n", name, field.Alias)
 		}
 	}
 
@@ -247,17 +258,18 @@ func (s *Schema) GenerateJavaConsts() error {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
-			fmt.Fprintf(file, "const %s = \"%s\"\n", name, funcDef.Name)
+			fmt.Fprintf(file, "\tpublic static final String %s = \"%s\";\n", name, funcDef.Name)
 		}
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "const H%s = wasmlib.ScHname(0x%s)\n", name, hName.String())
+			fmt.Fprintf(file, "\tpublic static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
 		}
 	}
 
+	fmt.Fprintf(file, "}\n")
 	return nil
 }
 
@@ -266,28 +278,35 @@ func (s *Schema) GenerateJavaTests() error {
 	return nil
 }
 
-func (s *Schema) GenerateJavaThunk(file *os.File, funcDef *FuncDef) {
+func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *FuncDef) {
 	// calculate padding
 	nameLen, typeLen := calculatePadding(funcDef.Params, javaTypes, false)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
-	fmt.Fprintf(file, "\ntype %sParams struct {\n", funcName)
-	for _, param := range funcDef.Params {
-		fldName := pad(capitalize(param.Name), nameLen)
-		fldType := param.Type
-		if param.Comment != "" {
-			fldType = pad(fldType, typeLen)
-		}
-		fmt.Fprintf(file, "\t%s wasmlib.ScImmutable%s%s\n", fldName, fldType, param.Comment)
+
+	fmt.Fprintln(params, copyright(true))
+	fmt.Fprintf(params, "package org.iota.wasp.contracts.%s.lib;\n", s.Name)
+	if len(funcDef.Params) != 0 {
+		fmt.Fprintf(params, "\nimport org.iota.wasp.wasmlib.immutable.*;\n")
 	}
-	fmt.Fprintf(file, "}\n")
-	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", funcDef.FullName, funcKind)
+	fmt.Fprintf(params, "\npublic class %sParams {\n", funcName)
+	for _, param := range funcDef.Params {
+		fldName := capitalize(param.Name) + ";"
+		if param.Comment != "" {
+			fldName = pad(fldName, nameLen + 1)
+		}
+		fldType := pad(param.Type, typeLen)
+		fmt.Fprintf(params, "\tScImmutable%s %s%s\n", fldType, fldName, param.Comment)
+	}
+	fmt.Fprintf(params, "}\n")
+
+	fmt.Fprintf(file, "\n\tprivate static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
 	grant := funcDef.Annotations["#grant"]
 	if grant != "" {
 		index := strings.Index(grant, "//")
 		if index >= 0 {
-			fmt.Fprintf(file, "\t%s\n", grant[index:])
+			fmt.Fprintf(file, "\t\t%s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
 		}
 		switch grant {
@@ -298,30 +317,28 @@ func (s *Schema) GenerateJavaThunk(file *os.File, funcDef *FuncDef) {
 		case "creator":
 			grant = "ctx.ContractCreator()"
 		default:
-			fmt.Fprintf(file, "\tgrantee := ctx.State().GetAgentId(wasmlib.Key(\"%s\"))\n", grant)
-			fmt.Fprintf(file, "\tctx.Require(grantee.Exists(), \"grantee not set: %s\")\n", grant)
+			fmt.Fprintf(file, "\t\tScAgentId grantee := ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
+			fmt.Fprintf(file, "\t\tctx.Require(grantee.Exists(), \"grantee not set: %s\");\n", grant)
 			grant = fmt.Sprintf("grantee.Value()")
 		}
-		fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
+		fmt.Fprintf(file, "\t\tctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}
 	if len(funcDef.Params) != 0 {
-		fmt.Fprintf(file, "\tp := ctx.Params()\n")
+		fmt.Fprintf(file, "\t\tScImmutableMap p = ctx.Params();\n")
 	}
-	fmt.Fprintf(file, "\tparams := &%sParams{\n", funcName)
+	fmt.Fprintf(file, "\t\t%sParams params = new %sParams();\n", funcName, funcName)
 	for _, param := range funcDef.Params {
 		name := capitalize(param.Name)
-		field := pad(name+":", nameLen+1)
-		fmt.Fprintf(file, "\t\t%s p.Get%s(Param%s),\n", field, param.Type, name)
+		fmt.Fprintf(file, "\t\tparams.%s = p.Get%s(Consts.Param%s);\n", name, param.Type, name)
 	}
-	fmt.Fprintf(file, "\t}\n")
 	for _, param := range funcDef.Params {
 		if !param.Optional {
 			name := capitalize(param.Name)
-			fmt.Fprintf(file, "\tctx.Require(params.%s.Exists(), \"missing mandatory %s\")\n", name, param.Name)
+			fmt.Fprintf(file, "\t\tctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "\t%s(ctx, params)\n", funcDef.FullName)
-	fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\t\t%s.%s(ctx, params);\n", s.FullName, funcName)
+	fmt.Fprintf(file, "\t}\n")
 }
 
 func (s *Schema) GenerateJavaTypes() error {

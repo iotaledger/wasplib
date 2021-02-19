@@ -14,6 +14,10 @@ public class ScMutableString {
 		this.keyId = keyId;
 	}
 
+	public boolean Exists() {
+		return Host.Exists(objId, keyId);
+	}
+
 	public void SetValue(String value) {
 		Host.SetString(objId, keyId, value);
 	}

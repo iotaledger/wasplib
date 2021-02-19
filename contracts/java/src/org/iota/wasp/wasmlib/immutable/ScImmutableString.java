@@ -14,6 +14,10 @@ public class ScImmutableString {
 		this.keyId = keyId;
 	}
 
+	public boolean Exists() {
+		return Host.Exists(objId, keyId);
+	}
+
 	@Override
 	public String toString() {
 		return Value();

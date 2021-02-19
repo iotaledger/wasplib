@@ -53,7 +53,7 @@ public class BytesEncoder {
 		return Bytes(value.toBytes());
 	}
 
-	public BytesEncoder Hname(Hname value) {
+	public BytesEncoder Hname(ScHname value) {
 		return Bytes(value.toBytes());
 	}
 

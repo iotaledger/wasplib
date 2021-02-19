@@ -5,43 +5,268 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.testcore.lib;
 
-import org.iota.wasp.contracts.testcore.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.testcore.TestCore;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.context.ScViewContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class TestCoreThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("callOnChain", TestCore::FuncCallOnChain);
-		exports.AddFunc("checkContextFromFullEP", TestCore::FuncCheckContextFromFullEP);
-		exports.AddFunc("doNothing", TestCore::FuncDoNothing);
-		exports.AddFunc("init", TestCore::FuncInit);
-		exports.AddFunc("passTypesFull", TestCore::FuncPassTypesFull);
-		exports.AddFunc("runRecursion", TestCore::FuncRunRecursion);
-		exports.AddFunc("sendToAddress", TestCore::FuncSendToAddress);
-		exports.AddFunc("setInt", TestCore::FuncSetInt);
-		exports.AddFunc("testCallPanicFullEP", TestCore::FuncTestCallPanicFullEP);
-		exports.AddFunc("testCallPanicViewEPFromFull", TestCore::FuncTestCallPanicViewEPFromFull);
-		exports.AddFunc("testChainOwnerIDFull", TestCore::FuncTestChainOwnerIDFull);
-		exports.AddFunc("testContractIDFull", TestCore::FuncTestContractIDFull);
-		exports.AddFunc("testEventLogDeploy", TestCore::FuncTestEventLogDeploy);
-		exports.AddFunc("testEventLogEventData", TestCore::FuncTestEventLogEventData);
-		exports.AddFunc("testEventLogGenericData", TestCore::FuncTestEventLogGenericData);
-		exports.AddFunc("testPanicFullEP", TestCore::FuncTestPanicFullEP);
-		exports.AddFunc("withdrawToChain", TestCore::FuncWithdrawToChain);
-		exports.AddView("checkContextFromViewEP", TestCore::ViewCheckContextFromViewEP);
-		exports.AddView("fibonacci", TestCore::ViewFibonacci);
-		exports.AddView("getCounter", TestCore::ViewGetCounter);
-		exports.AddView("getInt", TestCore::ViewGetInt);
-		exports.AddView("justView", TestCore::ViewJustView);
-		exports.AddView("passTypesView", TestCore::ViewPassTypesView);
-		exports.AddView("testCallPanicViewEPFromView", TestCore::ViewTestCallPanicViewEPFromView);
-		exports.AddView("testChainOwnerIDView", TestCore::ViewTestChainOwnerIDView);
-		exports.AddView("testContractIDView", TestCore::ViewTestContractIDView);
-		exports.AddView("testPanicViewEP", TestCore::ViewTestPanicViewEP);
-		exports.AddView("testSandboxCall", TestCore::ViewTestSandboxCall);
+		exports.AddFunc("callOnChain", TestCoreThunk::funcCallOnChainThunk);
+		exports.AddFunc("checkContextFromFullEP", TestCoreThunk::funcCheckContextFromFullEPThunk);
+		exports.AddFunc("doNothing", TestCoreThunk::funcDoNothingThunk);
+		exports.AddFunc("init", TestCoreThunk::funcInitThunk);
+		exports.AddFunc("passTypesFull", TestCoreThunk::funcPassTypesFullThunk);
+		exports.AddFunc("runRecursion", TestCoreThunk::funcRunRecursionThunk);
+		exports.AddFunc("sendToAddress", TestCoreThunk::funcSendToAddressThunk);
+		exports.AddFunc("setInt", TestCoreThunk::funcSetIntThunk);
+		exports.AddFunc("testCallPanicFullEP", TestCoreThunk::funcTestCallPanicFullEPThunk);
+		exports.AddFunc("testCallPanicViewEPFromFull", TestCoreThunk::funcTestCallPanicViewEPFromFullThunk);
+		exports.AddFunc("testChainOwnerIDFull", TestCoreThunk::funcTestChainOwnerIDFullThunk);
+		exports.AddFunc("testContractIDFull", TestCoreThunk::funcTestContractIDFullThunk);
+		exports.AddFunc("testEventLogDeploy", TestCoreThunk::funcTestEventLogDeployThunk);
+		exports.AddFunc("testEventLogEventData", TestCoreThunk::funcTestEventLogEventDataThunk);
+		exports.AddFunc("testEventLogGenericData", TestCoreThunk::funcTestEventLogGenericDataThunk);
+		exports.AddFunc("testPanicFullEP", TestCoreThunk::funcTestPanicFullEPThunk);
+		exports.AddFunc("withdrawToChain", TestCoreThunk::funcWithdrawToChainThunk);
+		exports.AddView("checkContextFromViewEP", TestCoreThunk::viewCheckContextFromViewEPThunk);
+		exports.AddView("fibonacci", TestCoreThunk::viewFibonacciThunk);
+		exports.AddView("getCounter", TestCoreThunk::viewGetCounterThunk);
+		exports.AddView("getInt", TestCoreThunk::viewGetIntThunk);
+		exports.AddView("justView", TestCoreThunk::viewJustViewThunk);
+		exports.AddView("passTypesView", TestCoreThunk::viewPassTypesViewThunk);
+		exports.AddView("testCallPanicViewEPFromView", TestCoreThunk::viewTestCallPanicViewEPFromViewThunk);
+		exports.AddView("testChainOwnerIDView", TestCoreThunk::viewTestChainOwnerIDViewThunk);
+		exports.AddView("testContractIDView", TestCoreThunk::viewTestContractIDViewThunk);
+		exports.AddView("testPanicViewEP", TestCoreThunk::viewTestPanicViewEPThunk);
+		exports.AddView("testSandboxCall", TestCoreThunk::viewTestSandboxCallThunk);
+	}
+
+	private static void funcCallOnChainThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncCallOnChainParams params = new FuncCallOnChainParams();
+		params.HnameContract = p.GetHname(Consts.ParamHnameContract);
+		params.HnameEP = p.GetHname(Consts.ParamHnameEP);
+		params.IntValue = p.GetInt(Consts.ParamIntValue);
+		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
+		TestCore.FuncCallOnChain(ctx, params);
+	}
+
+	private static void funcCheckContextFromFullEPThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncCheckContextFromFullEPParams params = new FuncCheckContextFromFullEPParams();
+		params.AgentId = p.GetAgentId(Consts.ParamAgentId);
+		params.Caller = p.GetAgentId(Consts.ParamCaller);
+		params.ChainId = p.GetChainId(Consts.ParamChainId);
+		params.ChainOwnerId = p.GetAgentId(Consts.ParamChainOwnerId);
+		params.ContractCreator = p.GetAgentId(Consts.ParamContractCreator);
+		params.ContractId = p.GetContractId(Consts.ParamContractId);
+		ctx.Require(params.AgentId.Exists(), "missing mandatory agentId");
+		ctx.Require(params.Caller.Exists(), "missing mandatory caller");
+		ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
+		ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
+		ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
+		ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
+		TestCore.FuncCheckContextFromFullEP(ctx, params);
+	}
+
+	private static void funcDoNothingThunk(ScFuncContext ctx) {
+		FuncDoNothingParams params = new FuncDoNothingParams();
+		TestCore.FuncDoNothing(ctx, params);
+	}
+
+	private static void funcInitThunk(ScFuncContext ctx) {
+		FuncInitParams params = new FuncInitParams();
+		TestCore.FuncInit(ctx, params);
+	}
+
+	private static void funcPassTypesFullThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncPassTypesFullParams params = new FuncPassTypesFullParams();
+		params.Hash = p.GetHash(Consts.ParamHash);
+		params.Hname = p.GetHname(Consts.ParamHname);
+		params.HnameZero = p.GetHname(Consts.ParamHnameZero);
+		params.Int64 = p.GetInt(Consts.ParamInt64);
+		params.Int64Zero = p.GetInt(Consts.ParamInt64Zero);
+		params.String = p.GetString(Consts.ParamString);
+		params.StringZero = p.GetString(Consts.ParamStringZero);
+		ctx.Require(params.Hash.Exists(), "missing mandatory hash");
+		ctx.Require(params.Hname.Exists(), "missing mandatory hname");
+		ctx.Require(params.HnameZero.Exists(), "missing mandatory hnameZero");
+		ctx.Require(params.Int64.Exists(), "missing mandatory int64");
+		ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero");
+		ctx.Require(params.String.Exists(), "missing mandatory string");
+		ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero");
+		TestCore.FuncPassTypesFull(ctx, params);
+	}
+
+	private static void funcRunRecursionThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncRunRecursionParams params = new FuncRunRecursionParams();
+		params.IntValue = p.GetInt(Consts.ParamIntValue);
+		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
+		TestCore.FuncRunRecursion(ctx, params);
+	}
+
+	private static void funcSendToAddressThunk(ScFuncContext ctx) {
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncSendToAddressParams params = new FuncSendToAddressParams();
+		params.Address = p.GetAddress(Consts.ParamAddress);
+		ctx.Require(params.Address.Exists(), "missing mandatory address");
+		TestCore.FuncSendToAddress(ctx, params);
+	}
+
+	private static void funcSetIntThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncSetIntParams params = new FuncSetIntParams();
+		params.IntValue = p.GetInt(Consts.ParamIntValue);
+		params.Name = p.GetString(Consts.ParamName);
+		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
+		ctx.Require(params.Name.Exists(), "missing mandatory name");
+		TestCore.FuncSetInt(ctx, params);
+	}
+
+	private static void funcTestCallPanicFullEPThunk(ScFuncContext ctx) {
+		FuncTestCallPanicFullEPParams params = new FuncTestCallPanicFullEPParams();
+		TestCore.FuncTestCallPanicFullEP(ctx, params);
+	}
+
+	private static void funcTestCallPanicViewEPFromFullThunk(ScFuncContext ctx) {
+		FuncTestCallPanicViewEPFromFullParams params = new FuncTestCallPanicViewEPFromFullParams();
+		TestCore.FuncTestCallPanicViewEPFromFull(ctx, params);
+	}
+
+	private static void funcTestChainOwnerIDFullThunk(ScFuncContext ctx) {
+		FuncTestChainOwnerIDFullParams params = new FuncTestChainOwnerIDFullParams();
+		TestCore.FuncTestChainOwnerIDFull(ctx, params);
+	}
+
+	private static void funcTestContractIDFullThunk(ScFuncContext ctx) {
+		FuncTestContractIDFullParams params = new FuncTestContractIDFullParams();
+		TestCore.FuncTestContractIDFull(ctx, params);
+	}
+
+	private static void funcTestEventLogDeployThunk(ScFuncContext ctx) {
+		FuncTestEventLogDeployParams params = new FuncTestEventLogDeployParams();
+		TestCore.FuncTestEventLogDeploy(ctx, params);
+	}
+
+	private static void funcTestEventLogEventDataThunk(ScFuncContext ctx) {
+		FuncTestEventLogEventDataParams params = new FuncTestEventLogEventDataParams();
+		TestCore.FuncTestEventLogEventData(ctx, params);
+	}
+
+	private static void funcTestEventLogGenericDataThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncTestEventLogGenericDataParams params = new FuncTestEventLogGenericDataParams();
+		params.Counter = p.GetInt(Consts.ParamCounter);
+		ctx.Require(params.Counter.Exists(), "missing mandatory counter");
+		TestCore.FuncTestEventLogGenericData(ctx, params);
+	}
+
+	private static void funcTestPanicFullEPThunk(ScFuncContext ctx) {
+		FuncTestPanicFullEPParams params = new FuncTestPanicFullEPParams();
+		TestCore.FuncTestPanicFullEP(ctx, params);
+	}
+
+	private static void funcWithdrawToChainThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncWithdrawToChainParams params = new FuncWithdrawToChainParams();
+		params.ChainId = p.GetChainId(Consts.ParamChainId);
+		ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
+		TestCore.FuncWithdrawToChain(ctx, params);
+	}
+
+	private static void viewCheckContextFromViewEPThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewCheckContextFromViewEPParams params = new ViewCheckContextFromViewEPParams();
+		params.AgentId = p.GetAgentId(Consts.ParamAgentId);
+		params.ChainId = p.GetChainId(Consts.ParamChainId);
+		params.ChainOwnerId = p.GetAgentId(Consts.ParamChainOwnerId);
+		params.ContractCreator = p.GetAgentId(Consts.ParamContractCreator);
+		params.ContractId = p.GetContractId(Consts.ParamContractId);
+		ctx.Require(params.AgentId.Exists(), "missing mandatory agentId");
+		ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
+		ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
+		ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
+		ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
+		TestCore.ViewCheckContextFromViewEP(ctx, params);
+	}
+
+	private static void viewFibonacciThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewFibonacciParams params = new ViewFibonacciParams();
+		params.IntValue = p.GetInt(Consts.ParamIntValue);
+		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
+		TestCore.ViewFibonacci(ctx, params);
+	}
+
+	private static void viewGetCounterThunk(ScViewContext ctx) {
+		ViewGetCounterParams params = new ViewGetCounterParams();
+		TestCore.ViewGetCounter(ctx, params);
+	}
+
+	private static void viewGetIntThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewGetIntParams params = new ViewGetIntParams();
+		params.Name = p.GetString(Consts.ParamName);
+		ctx.Require(params.Name.Exists(), "missing mandatory name");
+		TestCore.ViewGetInt(ctx, params);
+	}
+
+	private static void viewJustViewThunk(ScViewContext ctx) {
+		ViewJustViewParams params = new ViewJustViewParams();
+		TestCore.ViewJustView(ctx, params);
+	}
+
+	private static void viewPassTypesViewThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewPassTypesViewParams params = new ViewPassTypesViewParams();
+		params.Hash = p.GetHash(Consts.ParamHash);
+		params.Hname = p.GetHname(Consts.ParamHname);
+		params.HnameZero = p.GetHname(Consts.ParamHnameZero);
+		params.Int64 = p.GetInt(Consts.ParamInt64);
+		params.Int64Zero = p.GetInt(Consts.ParamInt64Zero);
+		params.String = p.GetString(Consts.ParamString);
+		params.StringZero = p.GetString(Consts.ParamStringZero);
+		ctx.Require(params.Hash.Exists(), "missing mandatory hash");
+		ctx.Require(params.Hname.Exists(), "missing mandatory hname");
+		ctx.Require(params.HnameZero.Exists(), "missing mandatory hnameZero");
+		ctx.Require(params.Int64.Exists(), "missing mandatory int64");
+		ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero");
+		ctx.Require(params.String.Exists(), "missing mandatory string");
+		ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero");
+		TestCore.ViewPassTypesView(ctx, params);
+	}
+
+	private static void viewTestCallPanicViewEPFromViewThunk(ScViewContext ctx) {
+		ViewTestCallPanicViewEPFromViewParams params = new ViewTestCallPanicViewEPFromViewParams();
+		TestCore.ViewTestCallPanicViewEPFromView(ctx, params);
+	}
+
+	private static void viewTestChainOwnerIDViewThunk(ScViewContext ctx) {
+		ViewTestChainOwnerIDViewParams params = new ViewTestChainOwnerIDViewParams();
+		TestCore.ViewTestChainOwnerIDView(ctx, params);
+	}
+
+	private static void viewTestContractIDViewThunk(ScViewContext ctx) {
+		ViewTestContractIDViewParams params = new ViewTestContractIDViewParams();
+		TestCore.ViewTestContractIDView(ctx, params);
+	}
+
+	private static void viewTestPanicViewEPThunk(ScViewContext ctx) {
+		ViewTestPanicViewEPParams params = new ViewTestPanicViewEPParams();
+		TestCore.ViewTestPanicViewEP(ctx, params);
+	}
+
+	private static void viewTestSandboxCallThunk(ScViewContext ctx) {
+		ViewTestSandboxCallParams params = new ViewTestSandboxCallParams();
+		TestCore.ViewTestSandboxCall(ctx, params);
 	}
 }

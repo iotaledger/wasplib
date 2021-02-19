@@ -3,6 +3,7 @@
 
 package org.iota.wasp.contracts.fairauction;
 
+import org.iota.wasp.contracts.fairauction.lib.*;
 import org.iota.wasp.contracts.fairauction.types.Auction;
 import org.iota.wasp.contracts.fairauction.types.Bid;
 import org.iota.wasp.wasmlib.builders.ScPostBuilder;
@@ -44,7 +45,7 @@ public class FairAuction {
 	private static final int OwnerMarginMin = 5;
 	private static final int OwnerMarginMax = 100;
 
-	public static void FuncFinalizeAuction(ScFuncContext ctx) {
+	public static void FuncFinalizeAuction(ScFuncContext ctx, FuncFinalizeAuctionParams params) {
 		// can only be sent by SC itself
 		if (!ctx.Caller().equals(ctx.ContractId().AsAgentId())) {
 			ctx.Panic("Cancel spoofed request");
@@ -102,7 +103,7 @@ public class FairAuction {
 		transfer(ctx, auction.Creator, ScColor.IOTA, auction.Deposit + auction.HighestBid - ownerFee);
 	}
 
-	public static void FuncPlaceBid(ScFuncContext ctx) {
+	public static void FuncPlaceBid(ScFuncContext ctx, FuncPlaceBidParams params) {
 		long bidAmount = ctx.Incoming().Balance(ScColor.IOTA);
 		if (bidAmount == 0) {
 			ctx.Panic("Missing bid amount");
@@ -157,7 +158,7 @@ public class FairAuction {
 		}
 	}
 
-	public static void FuncSetOwnerMargin(ScFuncContext ctx) {
+	public static void FuncSetOwnerMargin(ScFuncContext ctx, FuncSetOwnerMarginParams params) {
 		// can only be sent by SC creator
 		if (!ctx.Caller().equals(ctx.ContractCreator())) {
 			ctx.Panic("Cancel spoofed request");
@@ -174,9 +175,9 @@ public class FairAuction {
 		ctx.Log("Updated owner margin");
 	}
 
-	public static void FuncStartAuction(ScFuncContext ctx) {
-		ScImmutableMap params = ctx.Params();
-		ScImmutableColor colorParam = params.GetColor(KeyColor);
+	public static void FuncStartAuction(ScFuncContext ctx, FuncStartAuctionParams params) {
+		ScImmutableMap p = ctx.Params();
+		ScImmutableColor colorParam = p.GetColor(KeyColor);
 		if (!colorParam.Exists()) {
 			ctx.Panic("Missing auction token color");
 		}
@@ -189,13 +190,13 @@ public class FairAuction {
 			ctx.Panic("Missing auction tokens");
 		}
 
-		long minimumBid = params.GetInt(KeyMinimumBid).Value();
+		long minimumBid = p.GetInt(KeyMinimumBid).Value();
 		if (minimumBid == 0) {
 			ctx.Panic("Missing minimum bid");
 		}
 
 		// duration in minutes
-		long duration = params.GetInt(KeyDuration).Value();
+		long duration = p.GetInt(KeyDuration).Value();
 		if (duration == 0) {
 			duration = DurationDefault;
 		}
@@ -206,7 +207,7 @@ public class FairAuction {
 			duration = DurationMax;
 		}
 
-		String description = params.GetString(KeyDescription).Value();
+		String description = p.GetString(KeyDescription).Value();
 		if (description == "") {
 			description = "N/A";
 		}
@@ -260,7 +261,7 @@ public class FairAuction {
 		ctx.Log("New auction started");
 	}
 
-	public static void ViewGetInfo(ScViewContext ctx) {
+	public static void ViewGetInfo(ScViewContext ctx, ViewGetInfoParams params) {
 		ScImmutableColor colorParam = ctx.Params().GetColor(KeyColor);
 		if (!colorParam.Exists()) {
 			ctx.Panic("Missing token color");

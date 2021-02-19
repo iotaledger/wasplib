@@ -3,8 +3,8 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.hashtypes.Hname;
 import org.iota.wasp.wasmlib.hashtypes.ScColor;
+import org.iota.wasp.wasmlib.hashtypes.ScHname;
 import org.iota.wasp.wasmlib.host.Host;
 
 public class ScMutableHname {
@@ -29,7 +29,7 @@ public class ScMutableHname {
 		return Value().toString();
 	}
 
-	public Hname Value() {
-		return new Hname(Host.GetBytes(objId, keyId));
+	public ScHname Value() {
+		return new ScHname(Host.GetBytes(objId, keyId));
 	}
 }

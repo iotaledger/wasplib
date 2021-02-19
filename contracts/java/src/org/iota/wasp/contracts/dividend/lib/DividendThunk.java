@@ -5,17 +5,35 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.dividend.lib;
 
-import org.iota.wasp.contracts.dividend.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.dividend.Dividend;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class DividendThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("divide", Dividend::FuncDivide);
-		exports.AddFunc("member", Dividend::FuncMember);
+		exports.AddFunc("divide", DividendThunk::funcDivideThunk);
+		exports.AddFunc("member", DividendThunk::funcMemberThunk);
+	}
+
+	private static void funcDivideThunk(ScFuncContext ctx) {
+		FuncDivideParams params = new FuncDivideParams();
+		Dividend.FuncDivide(ctx, params);
+	}
+
+	private static void funcMemberThunk(ScFuncContext ctx) {
+		// only creator can add members
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncMemberParams params = new FuncMemberParams();
+		params.Address = p.GetAddress(Consts.ParamAddress);
+		params.Factor = p.GetInt(Consts.ParamFactor);
+		ctx.Require(params.Address.Exists(), "missing mandatory address");
+		ctx.Require(params.Factor.Exists(), "missing mandatory factor");
+		Dividend.FuncMember(ctx, params);
 	}
 }

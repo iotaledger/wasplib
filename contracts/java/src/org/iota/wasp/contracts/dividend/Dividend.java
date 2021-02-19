@@ -3,12 +3,18 @@
 
 package org.iota.wasp.contracts.dividend;
 
+import org.iota.wasp.contracts.dividend.lib.FuncDivideParams;
+import org.iota.wasp.contracts.dividend.lib.FuncMemberParams;
 import org.iota.wasp.contracts.dividend.types.Member;
-import org.iota.wasp.wasmlib.context.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
-import org.iota.wasp.wasmlib.immutable.*;
-import org.iota.wasp.wasmlib.keys.*;
-import org.iota.wasp.wasmlib.mutable.*;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.hashtypes.ScColor;
+import org.iota.wasp.wasmlib.immutable.ScImmutableAddress;
+import org.iota.wasp.wasmlib.immutable.ScImmutableInt;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
+import org.iota.wasp.wasmlib.keys.Key;
+import org.iota.wasp.wasmlib.mutable.ScMutableBytesArray;
+import org.iota.wasp.wasmlib.mutable.ScMutableInt;
+import org.iota.wasp.wasmlib.mutable.ScMutableMap;
 
 public class Dividend {
 	private static final Key KeyAddress = new Key("address");
@@ -16,7 +22,7 @@ public class Dividend {
 	private static final Key KeyMembers = new Key("members");
 	private static final Key KeyTotalFactor = new Key("total_factor");
 
-	public static void FuncDivide(ScFuncContext ctx) {
+	public static void FuncDivide(ScFuncContext ctx, FuncDivideParams params) {
 		long amount = ctx.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			ctx.Panic("Nothing to divide");
@@ -44,16 +50,16 @@ public class Dividend {
 		}
 	}
 
-	public static void FuncMember(ScFuncContext ctx) {
+	public static void FuncMember(ScFuncContext ctx, FuncMemberParams params) {
 		if (!ctx.Caller().equals(ctx.ContractCreator())) {
 			ctx.Panic("Cancel spoofed request");
 		}
-		ScImmutableMap params = ctx.Params();
-		ScImmutableAddress address = params.GetAddress(KeyAddress);
+		ScImmutableMap p = ctx.Params();
+		ScImmutableAddress address = p.GetAddress(KeyAddress);
 		if (!address.Exists()) {
 			ctx.Panic("Missing address");
 		}
-		ScImmutableInt factor = params.GetInt(KeyFactor);
+		ScImmutableInt factor = p.GetInt(KeyFactor);
 		if (!factor.Exists()) {
 			ctx.Panic("Missing factor");
 		}

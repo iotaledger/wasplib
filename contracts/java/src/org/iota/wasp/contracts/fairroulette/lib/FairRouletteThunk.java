@@ -5,19 +5,54 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.fairroulette.lib;
 
-import org.iota.wasp.contracts.fairroulette.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.fairroulette.FairRoulette;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class FairRouletteThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("lockBets", FairRoulette::FuncLockBets);
-		exports.AddFunc("payWinners", FairRoulette::FuncPayWinners);
-		exports.AddFunc("placeBet", FairRoulette::FuncPlaceBet);
-		exports.AddFunc("playPeriod", FairRoulette::FuncPlayPeriod);
+		exports.AddFunc("lockBets", FairRouletteThunk::funcLockBetsThunk);
+		exports.AddFunc("payWinners", FairRouletteThunk::funcPayWinnersThunk);
+		exports.AddFunc("placeBet", FairRouletteThunk::funcPlaceBetThunk);
+		exports.AddFunc("playPeriod", FairRouletteThunk::funcPlayPeriodThunk);
+	}
+
+	private static void funcLockBetsThunk(ScFuncContext ctx) {
+		// only SC itself can invoke this function
+		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+
+		FuncLockBetsParams params = new FuncLockBetsParams();
+		FairRoulette.FuncLockBets(ctx, params);
+	}
+
+	private static void funcPayWinnersThunk(ScFuncContext ctx) {
+		// only SC itself can invoke this function
+		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+
+		FuncPayWinnersParams params = new FuncPayWinnersParams();
+		FairRoulette.FuncPayWinners(ctx, params);
+	}
+
+	private static void funcPlaceBetThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncPlaceBetParams params = new FuncPlaceBetParams();
+		params.Number = p.GetInt(Consts.ParamNumber);
+		ctx.Require(params.Number.Exists(), "missing mandatory number");
+		FairRoulette.FuncPlaceBet(ctx, params);
+	}
+
+	private static void funcPlayPeriodThunk(ScFuncContext ctx) {
+		// only SC creator can update the play period
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncPlayPeriodParams params = new FuncPlayPeriodParams();
+		params.PlayPeriod = p.GetInt(Consts.ParamPlayPeriod);
+		ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod");
+		FairRoulette.FuncPlayPeriod(ctx, params);
 	}
 }

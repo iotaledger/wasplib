@@ -5,20 +5,71 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.fairauction.lib;
 
-import org.iota.wasp.contracts.fairauction.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.fairauction.FairAuction;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.context.ScViewContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class FairAuctionThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("finalizeAuction", FairAuction::FuncFinalizeAuction);
-		exports.AddFunc("placeBid", FairAuction::FuncPlaceBid);
-		exports.AddFunc("setOwnerMargin", FairAuction::FuncSetOwnerMargin);
-		exports.AddFunc("startAuction", FairAuction::FuncStartAuction);
-		exports.AddView("getInfo", FairAuction::ViewGetInfo);
+		exports.AddFunc("finalizeAuction", FairAuctionThunk::funcFinalizeAuctionThunk);
+		exports.AddFunc("placeBid", FairAuctionThunk::funcPlaceBidThunk);
+		exports.AddFunc("setOwnerMargin", FairAuctionThunk::funcSetOwnerMarginThunk);
+		exports.AddFunc("startAuction", FairAuctionThunk::funcStartAuctionThunk);
+		exports.AddView("getInfo", FairAuctionThunk::viewGetInfoThunk);
+	}
+
+	private static void funcFinalizeAuctionThunk(ScFuncContext ctx) {
+		// only SC itself can invoke this function
+		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncFinalizeAuctionParams params = new FuncFinalizeAuctionParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		FairAuction.FuncFinalizeAuction(ctx, params);
+	}
+
+	private static void funcPlaceBidThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncPlaceBidParams params = new FuncPlaceBidParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		FairAuction.FuncPlaceBid(ctx, params);
+	}
+
+	private static void funcSetOwnerMarginThunk(ScFuncContext ctx) {
+		// only SC creator can set owner margin
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncSetOwnerMarginParams params = new FuncSetOwnerMarginParams();
+		params.OwnerMargin = p.GetInt(Consts.ParamOwnerMargin);
+		ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin");
+		FairAuction.FuncSetOwnerMargin(ctx, params);
+	}
+
+	private static void funcStartAuctionThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncStartAuctionParams params = new FuncStartAuctionParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		params.Description = p.GetString(Consts.ParamDescription);
+		params.Duration = p.GetInt(Consts.ParamDuration);
+		params.MinimumBid = p.GetInt(Consts.ParamMinimumBid);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid");
+		FairAuction.FuncStartAuction(ctx, params);
+	}
+
+	private static void viewGetInfoThunk(ScViewContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		ViewGetInfoParams params = new ViewGetInfoParams();
+		params.Color = p.GetColor(Consts.ParamColor);
+		ctx.Require(params.Color.Exists(), "missing mandatory color");
+		FairAuction.ViewGetInfo(ctx, params);
 	}
 }

@@ -5,18 +5,41 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-
 package org.iota.wasp.contracts.donatewithfeedback.lib;
 
-import org.iota.wasp.contracts.donatewithfeedback.*;
-import org.iota.wasp.wasmlib.exports.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.contracts.donatewithfeedback.DonateWithFeedback;
+import org.iota.wasp.wasmlib.context.ScFuncContext;
+import org.iota.wasp.wasmlib.context.ScViewContext;
+import org.iota.wasp.wasmlib.exports.ScExports;
+import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 
 public class DonateWithFeedbackThunk {
 	public static void onLoad() {
 		ScExports exports = new ScExports();
-		exports.AddFunc("donate", DonateWithFeedback::FuncDonate);
-		exports.AddFunc("withdraw", DonateWithFeedback::FuncWithdraw);
-		exports.AddView("donations", DonateWithFeedback::ViewDonations);
+		exports.AddFunc("donate", DonateWithFeedbackThunk::funcDonateThunk);
+		exports.AddFunc("withdraw", DonateWithFeedbackThunk::funcWithdrawThunk);
+		exports.AddView("donations", DonateWithFeedbackThunk::viewDonationsThunk);
+	}
+
+	private static void funcDonateThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncDonateParams params = new FuncDonateParams();
+		params.Feedback = p.GetString(Consts.ParamFeedback);
+		DonateWithFeedback.FuncDonate(ctx, params);
+	}
+
+	private static void funcWithdrawThunk(ScFuncContext ctx) {
+		// only SC creator can withdraw donated funds
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+
+		ScImmutableMap p = ctx.Params();
+		FuncWithdrawParams params = new FuncWithdrawParams();
+		params.Amount = p.GetInt(Consts.ParamAmount);
+		DonateWithFeedback.FuncWithdraw(ctx, params);
+	}
+
+	private static void viewDonationsThunk(ScViewContext ctx) {
+		ViewDonationsParams params = new ViewDonationsParams();
+		DonateWithFeedback.ViewDonations(ctx, params);
 	}
 }

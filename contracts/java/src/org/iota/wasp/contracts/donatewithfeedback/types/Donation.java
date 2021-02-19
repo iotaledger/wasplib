@@ -7,10 +7,11 @@
 
 package org.iota.wasp.contracts.donatewithfeedback.types;
 
-import org.iota.wasp.wasmlib.bytes.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.bytes.BytesDecoder;
+import org.iota.wasp.wasmlib.bytes.BytesEncoder;
+import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
 
-public class Donation{
+public class Donation {
 	//@formatter:off
 	public long      Amount;    // amount donated
 	public ScAgentId Donator;   // who donated
@@ -31,7 +32,7 @@ public class Donation{
 		Timestamp = decode.Int();
 	}
 
-	public byte[] toBytes(){
+	public byte[] toBytes() {
 		return new BytesEncoder().
 				Int(Amount).
 				AgentId(Donator).

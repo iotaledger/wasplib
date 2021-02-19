@@ -12,7 +12,6 @@ import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
 import org.iota.wasp.wasmlib.hashtypes.ScColor;
 import org.iota.wasp.wasmlib.host.Host;
 import org.iota.wasp.wasmlib.keys.Key;
-import org.iota.wasp.wasmlib.keys.MapKey;
 import org.iota.wasp.wasmlib.mutable.ScMutableMap;
 
 public class ScFuncContext extends ScBaseContext {

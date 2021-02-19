@@ -7,10 +7,12 @@
 
 package org.iota.wasp.contracts.fairauction.types;
 
-import org.iota.wasp.wasmlib.bytes.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.bytes.BytesDecoder;
+import org.iota.wasp.wasmlib.bytes.BytesEncoder;
+import org.iota.wasp.wasmlib.hashtypes.ScAgentId;
+import org.iota.wasp.wasmlib.hashtypes.ScColor;
 
-public class Auction{
+public class Auction {
 	//@formatter:off
 	public ScColor   Color;         // color of tokens for sale
 	public ScAgentId Creator;       // issuer of start_auction transaction
@@ -43,7 +45,7 @@ public class Auction{
 		WhenStarted = decode.Int();
 	}
 
-	public byte[] toBytes(){
+	public byte[] toBytes() {
 		return new BytesEncoder().
 				Color(Color).
 				AgentId(Creator).

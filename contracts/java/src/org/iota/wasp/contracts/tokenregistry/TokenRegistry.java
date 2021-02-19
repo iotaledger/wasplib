@@ -3,10 +3,13 @@
 
 package org.iota.wasp.contracts.tokenregistry;
 
+import org.iota.wasp.contracts.tokenregistry.lib.FuncMintSupplyParams;
+import org.iota.wasp.contracts.tokenregistry.lib.FuncTransferOwnershipParams;
+import org.iota.wasp.contracts.tokenregistry.lib.FuncUpdateMetadataParams;
+import org.iota.wasp.contracts.tokenregistry.lib.ViewGetInfoParams;
 import org.iota.wasp.contracts.tokenregistry.types.Token;
 import org.iota.wasp.wasmlib.context.ScFuncContext;
 import org.iota.wasp.wasmlib.context.ScViewContext;
-import org.iota.wasp.wasmlib.exports.ScExports;
 import org.iota.wasp.wasmlib.hashtypes.ScColor;
 import org.iota.wasp.wasmlib.immutable.ScImmutableMap;
 import org.iota.wasp.wasmlib.keys.Key;
@@ -20,7 +23,7 @@ public class TokenRegistry {
 	private static final Key KeyRegistry = new Key("registry");
 	private static final Key KeyUserDefined = new Key("user_defined");
 
-	public static void FuncMintSupply(ScFuncContext ctx) {
+	public static void FuncMintSupply(ScFuncContext ctx, FuncMintSupplyParams params) {
 		ScColor minted = ctx.Incoming().Minted();
 		if (minted.equals(ScColor.MINT)) {
 			ctx.Panic("TokenRegistry: No newly minted tokens found");
@@ -30,7 +33,7 @@ public class TokenRegistry {
 		if (registry.Exists()) {
 			ctx.Panic("TokenRegistry: Color already exists");
 		}
-		ScImmutableMap params = ctx.Params();
+		ScImmutableMap p = ctx.Params();
 		Token token = new Token();
 		{
 			token.Supply = ctx.Incoming().Balance(minted);
@@ -38,8 +41,8 @@ public class TokenRegistry {
 			token.Owner = ctx.Caller();
 			token.Created = ctx.Timestamp();
 			token.Updated = ctx.Timestamp();
-			token.Description = params.GetString(KeyDescription).Value();
-			token.UserDefined = params.GetString(KeyUserDefined).Value();
+			token.Description = p.GetString(KeyDescription).Value();
+			token.UserDefined = p.GetString(KeyUserDefined).Value();
 		}
 		if (token.Supply <= 0) {
 			ctx.Panic("TokenRegistry: Insufficient supply");
@@ -52,15 +55,15 @@ public class TokenRegistry {
 		colors.GetColor(colors.Length()).SetValue(minted);
 	}
 
-	public static void FuncTransferOwnership(ScFuncContext ctx) {
+	public static void FuncTransferOwnership(ScFuncContext ctx, FuncTransferOwnershipParams params) {
 		//TODO
 	}
 
-	public static void FuncUpdateMetadata(ScFuncContext ctx) {
+	public static void FuncUpdateMetadata(ScFuncContext ctx, FuncUpdateMetadataParams params) {
 		//TODO
 	}
 
-	public static void ViewGetInfo(ScViewContext ctx) {
+	public static void ViewGetInfo(ScViewContext ctx, ViewGetInfoParams params) {
 		//TODO
 	}
 }
