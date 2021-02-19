@@ -57,7 +57,7 @@ public class Key implements MapKey {
 	}
 
 	@Override
-	public int GetId() {
+	public int KeyId() {
 		return key == null ? keyId : Host.GetKeyIdFromString(key);
 	}
 }

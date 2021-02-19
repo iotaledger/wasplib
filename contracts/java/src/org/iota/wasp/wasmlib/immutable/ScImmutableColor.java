@@ -16,7 +16,7 @@ public class ScImmutableColor {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_COLOR);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableColor {
 	}
 
 	public ScColor Value() {
-		return new ScColor(Host.GetBytes(objId, keyId));
+		return new ScColor(Host.GetBytes(objId, keyId, ScType.TYPE_COLOR));
 	}
 }

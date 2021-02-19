@@ -15,7 +15,7 @@ public class ScImmutableInt {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_INT);
 	}
 
 	@Override
@@ -24,6 +24,14 @@ public class ScImmutableInt {
 	}
 
 	public long Value() {
-		return Host.GetInt(objId, keyId);
+		byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT);
+		return (bytes[0] & 0xffL) |
+				((bytes[1] & 0xffL) << 8) |
+				((bytes[2] & 0xffL) << 16) |
+				((bytes[3] & 0xffL) << 24) |
+				((bytes[4] & 0xffL) << 32) |
+				((bytes[5] & 0xffL) << 40) |
+				((bytes[6] & 0xffL) << 48) |
+				((bytes[7] & 0xffL) << 56);
 	}
 }

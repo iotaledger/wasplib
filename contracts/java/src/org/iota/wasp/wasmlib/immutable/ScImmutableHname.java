@@ -16,7 +16,7 @@ public class ScImmutableHname {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_HNAME);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableHname {
 	}
 
 	public ScHname Value() {
-		return new ScHname(Host.GetBytes(objId, keyId));
+		return new ScHname(Host.GetBytes(objId, keyId, ScType.TYPE_HNAME));
 	}
 }

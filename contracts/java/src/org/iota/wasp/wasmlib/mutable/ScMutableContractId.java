@@ -16,11 +16,11 @@ public class ScMutableContractId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_CONTRACT_ID);
 	}
 
 	public void SetValue(ScColor value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableContractId {
 	}
 
 	public ScContractId Value() {
-		return new ScContractId(Host.GetBytes(objId, keyId));
+		return new ScContractId(Host.GetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID));
 	}
 }

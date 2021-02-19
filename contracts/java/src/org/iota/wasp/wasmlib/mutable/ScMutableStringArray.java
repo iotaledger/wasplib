@@ -14,7 +14,7 @@ public class ScMutableStringArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableString GetString(int index) {

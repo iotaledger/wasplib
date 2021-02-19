@@ -14,7 +14,7 @@ public class ScMutableAgentIdArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableAgentId GetAgentId(int index) {

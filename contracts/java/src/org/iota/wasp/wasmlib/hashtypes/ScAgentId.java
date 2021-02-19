@@ -32,7 +32,7 @@ public class ScAgentId implements MapKey {
 	}
 
 	@Override
-	public int GetId() {
+	public int KeyId() {
 		return Host.GetKeyIdFromBytes(id);
 	}
 
@@ -50,6 +50,6 @@ public class ScAgentId implements MapKey {
 	}
 
 	public String toString() {
-		return ScUtility.Base58String(id);
+		return ScUtility.base58Encode(id);
 	}
 }

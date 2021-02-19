@@ -16,7 +16,7 @@ public class ScImmutableChainId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_CHAIN_ID);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableChainId {
 	}
 
 	public ScChainId Value() {
-		return new ScChainId(Host.GetBytes(objId, keyId));
+		return new ScChainId(Host.GetBytes(objId, keyId, ScType.TYPE_CHAIN_ID));
 	}
 }

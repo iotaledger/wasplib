@@ -5,6 +5,8 @@ package org.iota.wasp.wasmlib.immutable;
 
 import org.iota.wasp.wasmlib.host.*;
 
+import java.nio.charset.*;
+
 public class ScImmutableString {
 	int objId;
 	int keyId;
@@ -15,7 +17,7 @@ public class ScImmutableString {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_STRING);
 	}
 
 	@Override
@@ -24,6 +26,8 @@ public class ScImmutableString {
 	}
 
 	public String Value() {
-		return Host.GetString(objId, keyId);
+		// convert UTF8-encoded bytes array to string
+		byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_STRING);
+		return bytes == null ? "" : new String(bytes, StandardCharsets.UTF_8);
 	}
 }

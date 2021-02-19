@@ -12,6 +12,12 @@ import java.util.*;
 public class ScContractId implements MapKey {
 	final byte[] id = new byte[37];
 
+	public ScContractId(ScChainId chainId, ScHname hContract) {
+		System.arraycopy(chainId.id, 0, id, 0, chainId.id.length);
+		byte[] bytes = hContract.toBytes();
+		System.arraycopy(bytes, 0, id, chainId.id.length, bytes.length);
+	}
+
 	public ScContractId(byte[] bytes) {
 		if (bytes == null || bytes.length != id.length) {
 			throw new RuntimeException("invalid contract id length");
@@ -36,7 +42,7 @@ public class ScContractId implements MapKey {
 	}
 
 	@Override
-	public int GetId() {
+	public int KeyId() {
 		return Host.GetKeyIdFromBytes(id);
 	}
 
@@ -54,6 +60,6 @@ public class ScContractId implements MapKey {
 	}
 
 	public String toString() {
-		return ScUtility.Base58String(id);
+		return ScUtility.base58Encode(id);
 	}
 }

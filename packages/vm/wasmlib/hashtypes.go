@@ -25,7 +25,7 @@ func NewScAddressFromBytes(bytes []byte) ScAddress {
 
 func (o ScAddress) AsAgentId() ScAgentId {
 	a := ScAgentId{}
-	// agent is address padded with zeroes
+	// agent id is address padded with zeroes
 	copy(a.id[:], o.id[:])
 	return a
 }

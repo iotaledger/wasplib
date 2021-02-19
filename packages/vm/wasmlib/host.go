@@ -43,6 +43,10 @@ func ConnectHost(h ScHost) ScHost {
 	return oldHost
 }
 
+func Clear(objId int32) {
+	SetBytes(objId, KeyLength, TYPE_INT, make([]byte, 8))
+}
+
 func Exists(objId int32, keyId Key32, typeId int32) bool {
 	return host.Exists(objId, int32(keyId), typeId)
 }
@@ -64,7 +68,8 @@ func GetKeyIdFromString(key string) Key32 {
 }
 
 func GetLength(objId int32) int32 {
-	return int32(binary.LittleEndian.Uint64(GetBytes(objId, KeyLength, TYPE_INT)))
+	bytes := GetBytes(objId, KeyLength, TYPE_INT)
+	return int32(binary.LittleEndian.Uint64(bytes))
 }
 
 func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
@@ -73,9 +78,4 @@ func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
 
 func SetBytes(objId int32, keyId Key32, typeId int32, value []byte) {
 	host.SetBytes(objId, int32(keyId), typeId, value)
-}
-
-func SetClear(objId int32) {
-	bytes := make([]byte, 8)
-	SetBytes(objId, KeyLength, TYPE_INT, bytes)
 }

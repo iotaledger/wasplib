@@ -16,11 +16,11 @@ public class ScMutableAgentId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_AGENT_ID);
 	}
 
 	public void SetValue(ScAgentId value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_AGENT_ID, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableAgentId {
 	}
 
 	public ScAgentId Value() {
-		return new ScAgentId(Host.GetBytes(objId, keyId));
+		return new ScAgentId(Host.GetBytes(objId, keyId, ScType.TYPE_AGENT_ID));
 	}
 }

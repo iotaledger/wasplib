@@ -16,11 +16,11 @@ public class ScMutableHname {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_HNAME);
 	}
 
 	public void SetValue(ScColor value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_HNAME, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableHname {
 	}
 
 	public ScHname Value() {
-		return new ScHname(Host.GetBytes(objId, keyId));
+		return new ScHname(Host.GetBytes(objId, ScType.TYPE_HNAME, keyId));
 	}
 }

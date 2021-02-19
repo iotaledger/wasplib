@@ -16,7 +16,7 @@ public class ScImmutableAgentId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_AGENT_ID);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableAgentId {
 	}
 
 	public ScAgentId Value() {
-		return new ScAgentId(Host.GetBytes(objId, keyId));
+		return new ScAgentId(Host.GetBytes(objId, keyId, ScType.TYPE_AGENT_ID));
 	}
 }

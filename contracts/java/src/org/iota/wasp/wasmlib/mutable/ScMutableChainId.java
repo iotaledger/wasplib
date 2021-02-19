@@ -16,11 +16,11 @@ public class ScMutableChainId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_CHAIN_ID);
 	}
 
 	public void SetValue(ScColor value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_CHAIN_ID, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableChainId {
 	}
 
 	public ScChainId Value() {
-		return new ScChainId(Host.GetBytes(objId, keyId));
+		return new ScChainId(Host.GetBytes(objId, keyId, ScType.TYPE_CHAIN_ID));
 	}
 }

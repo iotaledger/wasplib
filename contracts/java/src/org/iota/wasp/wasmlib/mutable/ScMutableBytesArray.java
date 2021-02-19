@@ -14,7 +14,7 @@ public class ScMutableBytesArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableBytes GetBytes(int index) {

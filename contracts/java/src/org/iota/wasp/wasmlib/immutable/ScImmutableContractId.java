@@ -16,7 +16,7 @@ public class ScImmutableContractId {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_CONTRACT_ID);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableContractId {
 	}
 
 	public ScContractId Value() {
-		return new ScContractId(Host.GetBytes(objId, keyId));
+		return new ScContractId(Host.GetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID));
 	}
 }

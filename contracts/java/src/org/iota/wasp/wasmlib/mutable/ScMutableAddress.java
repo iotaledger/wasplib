@@ -16,11 +16,11 @@ public class ScMutableAddress {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_ADDRESS);
 	}
 
 	public void SetValue(ScAddress value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_ADDRESS, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableAddress {
 	}
 
 	public ScAddress Value() {
-		return new ScAddress(Host.GetBytes(objId, keyId));
+		return new ScAddress(Host.GetBytes(objId, keyId, ScType.TYPE_ADDRESS));
 	}
 }

@@ -16,7 +16,7 @@ public class ScImmutableAddress {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_ADDRESS);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableAddress {
 	}
 
 	public ScAddress Value() {
-		return new ScAddress(Host.GetBytes(objId, keyId));
+		return new ScAddress(Host.GetBytes(objId, keyId, ScType.TYPE_ADDRESS));
 	}
 }

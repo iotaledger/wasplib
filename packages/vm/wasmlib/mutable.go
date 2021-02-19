@@ -40,7 +40,7 @@ type ScMutableAddressArray struct {
 }
 
 func (o ScMutableAddressArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableAddressArray) GetAddress(index int32) ScMutableAddress {
@@ -85,7 +85,7 @@ type ScMutableAgentArray struct {
 }
 
 func (o ScMutableAgentArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableAgentArray) GetAgentId(index int32) ScMutableAgentId {
@@ -130,7 +130,7 @@ type ScMutableBytesArray struct {
 }
 
 func (o ScMutableBytesArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableBytesArray) GetBytes(index int32) ScMutableBytes {
@@ -198,7 +198,7 @@ type ScMutableColorArray struct {
 }
 
 func (o ScMutableColorArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableColorArray) GetColor(index int32) ScMutableColor {
@@ -266,7 +266,7 @@ type ScMutableHashArray struct {
 }
 
 func (o ScMutableHashArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableHashArray) GetHash(index int32) ScMutableHash {
@@ -337,7 +337,7 @@ type ScMutableIntArray struct {
 }
 
 func (o ScMutableIntArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableIntArray) GetInt(index int32) ScMutableInt {
@@ -364,7 +364,7 @@ func NewScMutableMap() *ScMutableMap {
 }
 
 func (o ScMutableMap) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableMap) GetAddress(key MapKey) ScMutableAddress {
@@ -463,7 +463,7 @@ type ScMutableMapArray struct {
 }
 
 func (o ScMutableMapArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableMapArray) GetMap(index int32) ScMutableMap {
@@ -513,7 +513,7 @@ type ScMutableStringArray struct {
 }
 
 func (o ScMutableStringArray) Clear() {
-	SetClear(o.objId)
+	Clear(o.objId)
 }
 
 func (o ScMutableStringArray) GetString(index int32) ScMutableString {

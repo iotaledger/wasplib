@@ -16,11 +16,11 @@ public class ScMutableColor {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_COLOR);
 	}
 
 	public void SetValue(ScColor value) {
-		Host.SetBytes(objId, keyId, value.toBytes());
+		Host.SetBytes(objId, keyId, ScType.TYPE_COLOR, value.toBytes());
 	}
 
 	@Override
@@ -29,6 +29,6 @@ public class ScMutableColor {
 	}
 
 	public ScColor Value() {
-		return new ScColor(Host.GetBytes(objId, keyId));
+		return new ScColor(Host.GetBytes(objId, keyId, ScType.TYPE_COLOR));
 	}
 }

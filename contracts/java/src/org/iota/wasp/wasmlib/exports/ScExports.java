@@ -20,7 +20,7 @@ public class ScExports {
 		exports = Host.root.GetStringArray(Key.Exports);
 		// tell host what our highest predefined key is
 		// this helps detect missing or extra keys
-		exports.GetString(Key.Zzzzzzz.GetId()).SetValue("Java:KEY_ZZZZZZZ");
+		exports.GetString(Key.Zzzzzzz.KeyId()).SetValue("Java:KEY_ZZZZZZZ");
 	}
 
 	//export on_call_entrypoint
@@ -30,10 +30,6 @@ public class ScExports {
 			return;
 		}
 		funcs.get(index).call(new ScFuncContext());
-	}
-
-	public static void nothing(ScFuncContext ctx) {
-		ctx.Log("Doing nothing as requested. Oh, wait...");
 	}
 
 	public void AddFunc(String name, ScFunc f) {

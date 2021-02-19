@@ -14,7 +14,7 @@ public class ScMutableHashArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableHash GetHash(int index) {

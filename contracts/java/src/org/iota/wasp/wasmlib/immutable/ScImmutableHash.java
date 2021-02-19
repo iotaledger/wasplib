@@ -16,7 +16,7 @@ public class ScImmutableHash {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_HASH);
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class ScImmutableHash {
 	}
 
 	public ScHash Value() {
-		return new ScHash(Host.GetBytes(objId, keyId));
+		return new ScHash(Host.GetBytes(objId, keyId, ScType.TYPE_HASH));
 	}
 }

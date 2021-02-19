@@ -16,19 +16,19 @@ public class ScMutableBytes {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_BYTES);
 	}
 
 	public void SetValue(byte[] value) {
-		Host.SetBytes(objId, keyId, value);
+		Host.SetBytes(objId, keyId, ScType.TYPE_BYTES, value);
 	}
 
 	@Override
 	public String toString() {
-		return ScUtility.Base58String(Value());
+		return ScUtility.base58Encode(Value());
 	}
 
 	public byte[] Value() {
-		return Host.GetBytes(objId, keyId);
+		return Host.GetBytes(objId, ScType.TYPE_BYTES, keyId);
 	}
 }

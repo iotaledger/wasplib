@@ -14,7 +14,7 @@ public class ScMutableColorArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableColor GetColor(int index) {

@@ -14,7 +14,7 @@ public class ScMutableAddressArray {
 	}
 
 	public void Clear() {
-		Host.SetClear(objId);
+		Host.Clear(objId);
 	}
 
 	public ScMutableAddress GetAddress(int index) {

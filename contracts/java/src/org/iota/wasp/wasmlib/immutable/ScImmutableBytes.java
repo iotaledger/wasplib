@@ -16,15 +16,15 @@ public class ScImmutableBytes {
 	}
 
 	public boolean Exists() {
-		return Host.Exists(objId, keyId);
+		return Host.Exists(objId, keyId, ScType.TYPE_BYTES);
 	}
 
 	@Override
 	public String toString() {
-		return ScUtility.Base58String(Value());
+		return ScUtility.base58Encode(Value());
 	}
 
 	public byte[] Value() {
-		return Host.GetBytes(objId, keyId);
+		return Host.GetBytes(objId, keyId, ScType.TYPE_BYTES);
 	}
 }

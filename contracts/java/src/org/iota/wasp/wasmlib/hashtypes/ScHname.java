@@ -3,9 +3,9 @@
 
 package org.iota.wasp.wasmlib.hashtypes;
 
+import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.keys.*;
-import org.iota.wasp.wasmlib.mutable.*;
 
 public class ScHname implements MapKey {
 	int id;
@@ -15,13 +15,14 @@ public class ScHname implements MapKey {
 	}
 
 	public ScHname(String name) {
-		ScMutableMap utility = Host.root.GetMap(Key.Utility);
-		utility.GetString(Key.Name).SetValue(name);
-		fromBytes(utility.GetBytes(Key.Name).Value());
+		id = new ScFuncContext().Utility().Hname(name).id;
 	}
 
 	public ScHname(byte[] bytes) {
-		fromBytes(bytes);
+		if (bytes == null || bytes.length != Integer.BYTES) {
+			throw new RuntimeException("invalid hname length");
+		}
+		id = (bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8) | ((bytes[2] & 0xff) << 16) | ((bytes[3] & 0xff) << 24);
 	}
 
 	@Override
@@ -32,15 +33,8 @@ public class ScHname implements MapKey {
 		return id == other.id;
 	}
 
-	private void fromBytes(byte[] bytes) {
-		if (bytes == null || bytes.length != 4) {
-			throw new RuntimeException("invalid hname length");
-		}
-		id = (bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8) | ((bytes[2] & 0xff) << 16) | ((bytes[3] & 0xff) << 24);
-	}
-
 	@Override
-	public int GetId() {
+	public int KeyId() {
 		return Host.GetKeyIdFromBytes(toBytes());
 	}
 
@@ -59,7 +53,6 @@ public class ScHname implements MapKey {
 	}
 
 	@Override
-
 	public String toString() {
 		return "" + id;
 	}
