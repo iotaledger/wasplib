@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.inccounter.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncRepeatManyParams {
-	ScImmutableInt  NumRepeats; // number of times to recursively call myself
+	public ScImmutableInt  NumRepeats; // number of times to recursively call myself
 }

@@ -26,7 +26,7 @@ public class FairRouletteThunk {
 		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
 		FuncLockBetsParams params = new FuncLockBetsParams();
-		FairRoulette.FuncLockBets(ctx, params);
+		FairRoulette.funcLockBets(ctx, params);
 	}
 
 	private static void funcPayWinnersThunk(ScFuncContext ctx) {
@@ -34,7 +34,7 @@ public class FairRouletteThunk {
 		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
 		FuncPayWinnersParams params = new FuncPayWinnersParams();
-		FairRoulette.FuncPayWinners(ctx, params);
+		FairRoulette.funcPayWinners(ctx, params);
 	}
 
 	private static void funcPlaceBetThunk(ScFuncContext ctx) {
@@ -42,7 +42,7 @@ public class FairRouletteThunk {
 		FuncPlaceBetParams params = new FuncPlaceBetParams();
 		params.Number = p.GetInt(Consts.ParamNumber);
 		ctx.Require(params.Number.Exists(), "missing mandatory number");
-		FairRoulette.FuncPlaceBet(ctx, params);
+		FairRoulette.funcPlaceBet(ctx, params);
 	}
 
 	private static void funcPlayPeriodThunk(ScFuncContext ctx) {
@@ -53,6 +53,6 @@ public class FairRouletteThunk {
 		FuncPlayPeriodParams params = new FuncPlayPeriodParams();
 		params.PlayPeriod = p.GetInt(Consts.ParamPlayPeriod);
 		ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod");
-		FairRoulette.FuncPlayPeriod(ctx, params);
+		FairRoulette.funcPlayPeriod(ctx, params);
 	}
 }

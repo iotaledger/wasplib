@@ -24,7 +24,7 @@ public class DonateWithFeedbackThunk {
 		ScImmutableMap p = ctx.Params();
 		FuncDonateParams params = new FuncDonateParams();
 		params.Feedback = p.GetString(Consts.ParamFeedback);
-		DonateWithFeedback.FuncDonate(ctx, params);
+		DonateWithFeedback.funcDonate(ctx, params);
 	}
 
 	private static void funcWithdrawThunk(ScFuncContext ctx) {
@@ -34,11 +34,11 @@ public class DonateWithFeedbackThunk {
 		ScImmutableMap p = ctx.Params();
 		FuncWithdrawParams params = new FuncWithdrawParams();
 		params.Amount = p.GetInt(Consts.ParamAmount);
-		DonateWithFeedback.FuncWithdraw(ctx, params);
+		DonateWithFeedback.funcWithdraw(ctx, params);
 	}
 
 	private static void viewDonationsThunk(ScViewContext ctx) {
 		ViewDonationsParams params = new ViewDonationsParams();
-		DonateWithFeedback.ViewDonations(ctx, params);
+		DonateWithFeedback.viewDonations(ctx, params);
 	}
 }

@@ -61,21 +61,21 @@ public class ScFuncContext extends ScBaseContext {
 		return new ScBalances(Host.root.GetMap(Key.Incoming).Immutable());
 	}
 
-	public void Post(PostRequestParams par) {
+	public void Post(PostRequestParams req) {
 		BytesEncoder encode = new BytesEncoder();
-		encode.ContractId(par.ContractId);
-		encode.Hname(par.Function);
-		if (par.Params != null) {
-			encode.Int(par.Params.mapId());
+		encode.ContractId(req.ContractId);
+		encode.Hname(req.Function);
+		if (req.Params != null) {
+			encode.Int(req.Params.mapId());
 		} else {
 			encode.Int(0);
 		}
-		if (par.Transfer != null) {
-			encode.Int(par.Transfer.mapId());
+		if (req.Transfer != null) {
+			encode.Int(req.Transfer.mapId());
 		} else {
 			encode.Int(0);
 		}
-		encode.Int(par.Delay);
+		encode.Int(req.Delay);
 		Host.root.GetBytes(Key.Post).SetValue(encode.Data());
 	}
 

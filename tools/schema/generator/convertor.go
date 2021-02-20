@@ -12,85 +12,6 @@ import (
 	"strings"
 )
 
-var goReplacements = []string{
-	"(&", "(",
-	", &", ", ",
-	"pub fn ", "func ",
-	"fn ", "func ",
-	"None", "nil",
-	"ScColor::Iota", "wasmlib.IOTA",
-	"ScColor::Mint", "wasmlib.MINT",
-	"ScContractId::new", "wasmlib.NewScContractId",
-	"ScHname::new", "wasmlib.NewScHname",
-	"ScMutableMap::new", "wasmlib.NewScMutableMap",
-	"ScTransfers::new", "wasmlib.NewScTransfer",
-	" str = \"", " = \"",
-	"String::new()", "\"\"",
-
-	".Post(PostRequestParams", ".Post(&PostRequestParams",
-	"PostRequestParams", "wasmlib.PostRequestParams",
-	": &Sc", " wasmlib.Sc",
-	": i64", " int64",
-	": &str", " string",
-	"0_i64", "int64(0)",
-
-	"_ctx", "ctx",
-	"_params", "params",
-	"Hview", "HView",
-	"Hfunc", "HFunc",
-
-	"\".ToString()", "\"",
-	" &\"", " \"",
-	" + &", " + ",
-	" unsafe ", " ",
-	".ToString()", ".String()",
-	".ToBytes()", ".Bytes()",
-	".Value().String()", ".String()",
-	" onLoad()", " OnLoad()",
-	"params: &", "params *",
-
-	"#[noMangle]", "",
-	"mod types", "",
-	"use crate::*", "",
-	"use crate::types::*", "",
-	"\u001A", "",
-}
-
-var javaReplacements = []string{
-	"(&", "(",
-	", &", ", ",
-	"pub fn ", "public static void ",
-	"fn ", "public static void ",
-	"None", "null",
-	"ScColor::Iota", "ScColor.IOTA",
-	"ScColor::Mint", "ScColor.MINT",
-	"ScContractId::new", "new ScContractId",
-	"ScHname::new", "new ScHnamee",
-	"ScMutableMap::new", "new ScMutableMapp",
-	"ScTransfers::new", "new ScTransfers",
-	" str = \"", " = \"",
-	"String::new()", "\"\"",
-
-	"};", "}",
-	"0_i64", "0",
-
-	"_ctx", "ctx",
-	"_params", "params",
-	"Hview", "HView",
-	"Hfunc", "HFunc",
-
-	"+ &\"", "+ \"",
-	"\".ToString()", "\"",
-	".Value().String()", ".toString()",
-	".ToString()", ".toString()",
-
-	"#[noMangle]", "",
-	"mod types;", "",
-	"use crate::*;", "",
-	"use crate::types::*;", "",
-	"\u001A", "}",
-}
-
 var matchCodec = regexp.MustCompile("(encode|decode)(\\w+)")
 var matchComment = regexp.MustCompile("^\\s*//")
 var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_0-9]+")
@@ -153,159 +74,59 @@ func replaceVarName(m string) string {
 var matchContract = regexp.MustCompile("^rust.(\\w+).src.(\\w+).rs")
 
 func RustConvertor(convertLine func(string, string) string, outPath string) error {
-	return filepath.Walk("rust",
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if !matchContract.MatchString(path) {
-				return nil
-			}
-			matches := matchContract.FindStringSubmatch(path)
-			if len(matches) != 3 || matches[1] != matches[2] {
-				return nil
-			}
-			contract := matches[1]
-			file, err := os.Open(path)
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-			outFile := strings.Replace(outPath, "$c", contract, -1)
-			outFile = strings.Replace(outFile, "$C", capitalize(contract), -1)
-			os.MkdirAll(outFile[:strings.LastIndex(outFile, "/")], 0755)
-			out, err := os.Create(outFile)
-			if err != nil {
-				return err
-			}
-			defer out.Close()
-			scanner := bufio.NewScanner(file)
-			emptyLines := 0
-			for scanner.Scan() {
-				text := scanner.Text()
-				line := convertLine(text, contract)
-				if line == "" {
-					if emptyLines != 0 || text != "" {
-						// remove empty line
-						continue
-					}
-					emptyLines++
-				} else {
-					emptyLines = 0
-				}
-				fmt.Fprintln(out, line)
-			}
-			err = scanner.Err()
-			if err != nil {
-				return err
-			}
-			line := convertLine("\u001A", contract)
-			if line != "" {
-				fmt.Fprintln(out, line)
-			}
-			return nil
-		})
-
+	return filepath.Walk("rust", func(path string, info os.FileInfo, err error) error {
+		return walker(convertLine, outPath, path, info, err)
+	})
 }
 
-func RustToGoLine(line string, contract string) string {
-	if matchComment.MatchString(line) {
-		return line
+func walker(convertLine func(string, string) string, outPath string, path string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
 	}
-	line = strings.Replace(line, ";", "", -1)
-	line = matchConstInt.ReplaceAllString(line, "const $1$2 = $3")
-	line = matchConstStr.ReplaceAllString(line, "const $1$2 = wasmlib.Key($3)")
-	line = matchConstStr2.ReplaceAllString(line, "const $1 = $2")
-	line = matchLet.ReplaceAllString(line, "$2 :=")
-	line = matchForLoop.ReplaceAllString(line, "for $1 := int32($2); $1 < $3; $1++")
-	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
-	line = matchToString.ReplaceAllString(line, "+ $1.String()")
-	line = matchInitializerHeader.ReplaceAllString(line, "$1 := &$2 {")
-	line = matchSome.ReplaceAllString(line, "$1")
-	line = matchFromBytes.ReplaceAllString(line, "New${1}FromBytes")
-
-	lhs := strings.Index(line, "\"")
-	if lhs < 0 {
-		line = RustToGoVarNames(line)
-	} else {
-		rhs := strings.LastIndex(line, "\"")
-		left := RustToGoVarNames(line[:lhs+1])
-		mid := line[lhs+1 : rhs]
-		right := RustToGoVarNames(line[rhs:])
-		line = left + mid + right
+	if !matchContract.MatchString(path) {
+		return nil
 	}
-
-	line = matchCore.ReplaceAllString(line, "${1}wasmlib.Core$2")
-	line = matchInitializer.ReplaceAllStringFunc(line, replaceInitializer)
-
-	for i := 0; i < len(goReplacements); i += 2 {
-		line = strings.Replace(line, goReplacements[i], goReplacements[i+1], -1)
+	matches := matchContract.FindStringSubmatch(path)
+	if len(matches) != 3 || matches[1] != matches[2] {
+		return nil
 	}
-
-	line = matchExtraBraces.ReplaceAllString(line, "$1")
-
-	if strings.HasPrefix(line, "use wasmlib::*") {
-		line = fmt.Sprintf("package %s\n\nimport (\n\t\"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n)", contract)
+	contract := matches[1]
+	file, err := os.Open(path)
+	if err != nil {
+		return err
 	}
-
-	return line
-}
-
-func RustToGoVarNames(line string) string {
-	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
-	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
-	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
-	return line
-}
-
-func RustToJavaLine(line string, contract string) string {
-	if matchComment.MatchString(line) {
-		return line
+	defer file.Close()
+	outFile := strings.Replace(outPath, "$c", contract, -1)
+	outFile = strings.Replace(outFile, "$C", capitalize(contract), -1)
+	os.MkdirAll(outFile[:strings.LastIndex(outFile, "/")], 0755)
+	out, err := os.Create(outFile)
+	if err != nil {
+		return err
 	}
-	line = matchConstStr.ReplaceAllString(line, "private static final Key $1$2 = new Key($3)")
-	line = matchConstInt.ReplaceAllString(line, "private static final int $1$2 = $3")
-	line = matchLet.ReplaceAllString(line, "$2 =")
-	line = matchForLoop.ReplaceAllString(line, "for (int $1 = $2; $1 < $3; $1++)")
-	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
-	line = matchInitializer.ReplaceAllString(line, lastInit+".$1 = $2;")
-	line = matchToString.ReplaceAllString(line, "+ $1")
-	line = matchIf.ReplaceAllString(line, "if ($1) {")
-	line = matchParam.ReplaceAllString(line, "$1$3 $2")
-	initParts := matchInitializerHeader.FindStringSubmatch(line)
-	if initParts != nil {
-		lastInit = initParts[1]
+	defer out.Close()
+	scanner := bufio.NewScanner(file)
+	emptyLines := 0
+	for scanner.Scan() {
+		text := scanner.Text()
+		line := convertLine(text, contract)
+		if line == "" {
+			if emptyLines != 0 || text != "" {
+				// remove empty line
+				continue
+			}
+			emptyLines++
+		} else {
+			emptyLines = 0
+		}
+		fmt.Fprintln(out, line)
 	}
-	line = matchInitializerHeader.ReplaceAllString(line, "$2 $1 = new $2();\n         {")
-
-	lhs := strings.Index(line, "\"")
-	if lhs < 0 {
-		line = RustToJavaVarNames(line)
-	} else {
-		rhs := strings.LastIndex(line, "\"")
-		left := RustToJavaVarNames(line[:lhs+1])
-		mid := line[lhs+1 : rhs]
-		right := RustToJavaVarNames(line[rhs:])
-		line = left + mid + right
+	err = scanner.Err()
+	if err != nil {
+		return err
 	}
-
-	line = matchCodec.ReplaceAllString(line, "$2.$1")
-
-	for i := 0; i < len(javaReplacements); i += 2 {
-		line = strings.Replace(line, javaReplacements[i], javaReplacements[i+1], -1)
+	line := convertLine("\u001A", contract)
+	if line != "" {
+		fmt.Fprintln(out, line)
 	}
-
-	line = matchExtraBraces.ReplaceAllString(line, "$1")
-
-	if strings.HasPrefix(line, "use wasmlib::*") {
-		line = fmt.Sprintf("package org.iota.wasplib.contracts.%s;\n\npublic class %s {", contract, capitalize(contract))
-	}
-
-	return line
-}
-
-func RustToJavaVarNames(line string) string {
-	line = matchFieldName.ReplaceAllStringFunc(line, replaceFieldName)
-	line = matchVarName.ReplaceAllStringFunc(line, replaceVarName)
-	line = matchConst.ReplaceAllStringFunc(line, replaceConst)
-	return line
+	return nil
 }

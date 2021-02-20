@@ -21,7 +21,7 @@ public class DividendThunk {
 
 	private static void funcDivideThunk(ScFuncContext ctx) {
 		FuncDivideParams params = new FuncDivideParams();
-		Dividend.FuncDivide(ctx, params);
+		Dividend.funcDivide(ctx, params);
 	}
 
 	private static void funcMemberThunk(ScFuncContext ctx) {
@@ -34,6 +34,6 @@ public class DividendThunk {
 		params.Factor = p.GetInt(Consts.ParamFactor);
 		ctx.Require(params.Address.Exists(), "missing mandatory address");
 		ctx.Require(params.Factor.Exists(), "missing mandatory factor");
-		Dividend.FuncMember(ctx, params);
+		Dividend.funcMember(ctx, params);
 	}
 }

@@ -297,7 +297,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fldName = pad(fldName, nameLen+1)
 		}
 		fldType := pad(param.Type, typeLen)
-		fmt.Fprintf(params, "\tScImmutable%s %s%s\n", fldType, fldName, param.Comment)
+		fmt.Fprintf(params, "\tpublic ScImmutable%s %s%s\n", fldType, fldName, param.Comment)
 	}
 	fmt.Fprintf(params, "}\n")
 
@@ -337,7 +337,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fmt.Fprintf(file, "\t\tctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "\t\t%s.%s(ctx, params);\n", s.FullName, funcName)
+	fmt.Fprintf(file, "\t\t%s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
 	fmt.Fprintf(file, "\t}\n")
 }
 

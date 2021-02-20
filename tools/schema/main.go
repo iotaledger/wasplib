@@ -55,6 +55,10 @@ func generateCoreContractsSchema(file *os.File) error {
 	if err != nil {
 		return err
 	}
+	err = generator.GenerateJavaCoreContractsSchema(coreSchemas)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

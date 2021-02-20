@@ -5,99 +5,112 @@ package org.iota.wasp.contracts.inccounter;
 
 import org.iota.wasp.contracts.inccounter.lib.*;
 import org.iota.wasp.wasmlib.context.*;
-import org.iota.wasp.wasmlib.hashtypes.*;
-import org.iota.wasp.wasmlib.keys.*;
+import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class IncCounter {
-	private static final Key KeyCounter = new Key("counter");
-	private static final Key KeyNumRepeats = new Key("num_repeats");
 
-	static boolean localStateMustIncrement = false;
+	private static boolean LocalStateMustIncrement = false;
 
-	public static void FuncCallIncrement(ScFuncContext ctx, FuncCallIncrementParams params) {
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+	public static void funcCallIncrement(ScFuncContext ctx, FuncCallIncrementParams params) {
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
-			ctx.CallSelf(new ScHname("increment_call_increment"), null, null);
+			ctx.CallSelf(Consts.HFuncCallIncrement, null, null);
 		}
 	}
 
-	public static void FuncCallIncrementRecurse5x(ScFuncContext ctx, FuncCallIncrementRecurse5xParams params) {
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+	public static void funcCallIncrementRecurse5x(ScFuncContext ctx, FuncCallIncrementRecurse5xParams params) {
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value < 5) {
-			ctx.CallSelf(new ScHname("increment_call_increment_recurse5x"), null, null);
+			ctx.CallSelf(Consts.HFuncCallIncrementRecurse5x, null, null);
 		}
 	}
 
-	public static void FuncIncrement(ScFuncContext ctx, FuncIncrementParams params) {
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+	public static void funcIncrement(ScFuncContext ctx, FuncIncrementParams params) {
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void FuncInit(ScFuncContext ctx, FuncInitParams params) {
-		long counter = ctx.Params().GetInt(KeyCounter).Value();
-		if (counter == 0) {
-			return;
+	public static void funcInit(ScFuncContext ctx, FuncInitParams params) {
+		if (params.Counter.Exists()) {
+			long counter = params.Counter.Value();
+			ctx.State().GetInt(Consts.VarCounter).SetValue(counter);
 		}
-		ctx.State().GetInt(KeyCounter).SetValue(counter);
 	}
 
-	public static void FuncLocalStateInternalCall(ScFuncContext ctx, FuncLocalStateInternalCallParams params) {
-		FuncWhenMustIncrementParams par = new FuncWhenMustIncrementParams();
-		FuncWhenMustIncrement(ctx, par);
+	public static void funcLocalStateInternalCall(ScFuncContext ctx, FuncLocalStateInternalCallParams params) {
 		{
-			localStateMustIncrement = true;
+			LocalStateMustIncrement = false;
 		}
-		FuncWhenMustIncrement(ctx, par);
-		FuncWhenMustIncrement(ctx, par);
+		FuncWhenMustIncrementParams par = new FuncWhenMustIncrementParams();
+		funcWhenMustIncrement(ctx, par);
+		{
+			LocalStateMustIncrement = true;
+		}
+		funcWhenMustIncrement(ctx, par);
+		funcWhenMustIncrement(ctx, par);
 		// counter ends up as 2
 	}
 
-	public static void FuncLocalStatePost(ScFuncContext ctx, FuncLocalStatePostParams params) {
-		PostRequestParams req = new PostRequestParams();
-		req.ContractId = ctx.ContractId();
-		req.Function = new ScHname("whenMustIncrement");
-		ctx.Post(req);
+	public static void funcLocalStatePost(ScFuncContext ctx, FuncLocalStatePostParams params) {
 		{
-			localStateMustIncrement = true;
+			LocalStateMustIncrement = false;
 		}
-		ctx.Post(req);
-		ctx.Post(req);
+		PostRequestParams request = new PostRequestParams();
+		{
+			request.ContractId = ctx.ContractId();
+			request.Function = Consts.HFuncWhenMustIncrement;
+			request.Params = null;
+			request.Transfer = null;
+			request.Delay = 0;
+		}
+		ctx.Post(request);
+		{
+			LocalStateMustIncrement = true;
+		}
+		ctx.Post(request);
+		ctx.Post(request);
 		// counter ends up as 0
 	}
 
-	public static void FuncLocalStateSandboxCall(ScFuncContext ctx, FuncLocalStateSandboxCallParams params) {
-		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
+	public static void funcLocalStateSandboxCall(ScFuncContext ctx, FuncLocalStateSandboxCallParams params) {
 		{
-			localStateMustIncrement = true;
+			LocalStateMustIncrement = false;
 		}
-		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
-		ctx.CallSelf(new ScHname("whenMustIncrement"), null, null);
+		ctx.CallSelf(Consts.HFuncWhenMustIncrement, null, null);
+		{
+			LocalStateMustIncrement = true;
+		}
+		ctx.CallSelf(Consts.HFuncWhenMustIncrement, null, null);
+		ctx.CallSelf(Consts.HFuncWhenMustIncrement, null, null);
 		// counter ends up as 0
 	}
 
-	public static void FuncPostIncrement(ScFuncContext ctx, FuncPostIncrementParams params) {
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+	public static void funcPostIncrement(ScFuncContext ctx, FuncPostIncrementParams params) {
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
 		if (value == 0) {
 			PostRequestParams req = new PostRequestParams();
 			req.ContractId = ctx.ContractId();
-			req.Function = new ScHname("increment_post_increment");
+			req.Function = Consts.HFuncPostIncrement;
+			req.Params = null;
+			req.Transfer = null;
+			req.Delay = 0;
 			ctx.Post(req);
 		}
 	}
 
-	public static void FuncRepeatMany(ScFuncContext ctx, FuncRepeatManyParams params) {
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+	public static void funcRepeatMany(ScFuncContext ctx, FuncRepeatManyParams params) {
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		long value = counter.Value();
 		counter.SetValue(value + 1);
-		ScMutableInt stateRepeats = ctx.State().GetInt(KeyNumRepeats);
-		long repeats = ctx.Params().GetInt(KeyNumRepeats).Value();
+		ScMutableInt stateRepeats = ctx.State().GetInt(Consts.VarNumRepeats);
+		long repeats = params.NumRepeats.Value();
 		if (repeats == 0) {
 			repeats = stateRepeats.Value();
 			if (repeats == 0) {
@@ -107,23 +120,30 @@ public class IncCounter {
 		stateRepeats.SetValue(repeats - 1);
 		PostRequestParams req = new PostRequestParams();
 		req.ContractId = ctx.ContractId();
-		req.Function = new ScHname("increment_repeat_many");
+		req.Function = Consts.HFuncRepeatMany;
+		req.Params = null;
+		req.Transfer = null;
+		req.Delay = 0;
 		ctx.Post(req);
 	}
 
-	public static void FuncWhenMustIncrement(ScFuncContext ctx, FuncWhenMustIncrementParams params) {
-		ctx.Log("increment_when_must_increment called");
+	public static void funcWhenMustIncrement(ScFuncContext ctx, FuncWhenMustIncrementParams params) {
+		ctx.Log("when_must_increment called");
 		{
-			if (!localStateMustIncrement) {
+			if (!LocalStateMustIncrement) {
 				return;
 			}
 		}
-		ScMutableInt counter = ctx.State().GetInt(KeyCounter);
+		ScMutableInt counter = ctx.State().GetInt(Consts.VarCounter);
 		counter.SetValue(counter.Value() + 1);
 	}
 
-	public static void ViewGetCounter(ScViewContext ctx, ViewGetCounterParams params) {
-		long counter = ctx.State().GetInt(KeyCounter).Value();
-		ctx.Results().GetInt(KeyCounter).SetValue(counter);
+	// note that get_counter mirrors the state of the 'counter' state variable
+// which means that if the state variable was not present it also will not be present in the result
+	public static void viewGetCounter(ScViewContext ctx, ViewGetCounterParams params) {
+		ScImmutableInt counter = ctx.State().GetInt(Consts.VarCounter);
+		if (counter.Exists()) {
+			ctx.Results().GetInt(Consts.VarCounter).SetValue(counter.Value());
+		}
 	}
 }

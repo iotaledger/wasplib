@@ -7,25 +7,19 @@ import org.iota.wasp.contracts.dividend.lib.*;
 import org.iota.wasp.contracts.dividend.types.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
-import org.iota.wasp.wasmlib.immutable.*;
-import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class Dividend {
-	private static final Key KeyAddress = new Key("address");
-	private static final Key KeyFactor = new Key("factor");
-	private static final Key KeyMembers = new Key("members");
-	private static final Key KeyTotalFactor = new Key("total_factor");
 
-	public static void FuncDivide(ScFuncContext ctx, FuncDivideParams params) {
+	public static void funcDivide(ScFuncContext ctx, FuncDivideParams params) {
 		long amount = ctx.Balances().Balance(ScColor.IOTA);
 		if (amount == 0) {
 			ctx.Panic("Nothing to divide");
 		}
 		ScMutableMap state = ctx.State();
-		ScMutableInt totalFactor = state.GetInt(KeyTotalFactor);
+		ScMutableInt totalFactor = state.GetInt(Consts.VarTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray(KeyMembers);
+		ScMutableBytesArray members = state.GetBytesArray(Consts.VarMembers);
 		long parts = 0;
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
@@ -45,32 +39,20 @@ public class Dividend {
 		}
 	}
 
-	public static void FuncMember(ScFuncContext ctx, FuncMemberParams params) {
-		if (!ctx.Caller().equals(ctx.ContractCreator())) {
-			ctx.Panic("Cancel spoofed request");
-		}
-		ScImmutableMap p = ctx.Params();
-		ScImmutableAddress address = p.GetAddress(KeyAddress);
-		if (!address.Exists()) {
-			ctx.Panic("Missing address");
-		}
-		ScImmutableInt factor = p.GetInt(KeyFactor);
-		if (!factor.Exists()) {
-			ctx.Panic("Missing factor");
-		}
+	public static void funcMember(ScFuncContext ctx, FuncMemberParams params) {
 		Member member = new Member();
 		{
-			member.Address = address.Value();
-			member.Factor = factor.Value();
+			member.Address = params.Address.Value();
+			member.Factor = params.Factor.Value();
 		}
 		ScMutableMap state = ctx.State();
-		ScMutableInt totalFactor = state.GetInt(KeyTotalFactor);
+		ScMutableInt totalFactor = state.GetInt(Consts.VarTotalFactor);
 		long total = totalFactor.Value();
-		ScMutableBytesArray members = state.GetBytesArray(KeyMembers);
+		ScMutableBytesArray members = state.GetBytesArray(Consts.VarMembers);
 		int size = members.Length();
 		for (int i = 0; i < size; i++) {
 			Member m = new Member(members.GetBytes(i).Value());
-			if (m.Address.equals(member.Address)) {
+			if (m.Address == member.Address) {
 				total -= m.Factor;
 				total += member.Factor;
 				totalFactor.SetValue(total);

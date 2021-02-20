@@ -8,28 +8,17 @@ import org.iota.wasp.contracts.donatewithfeedback.types.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.immutable.*;
-import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class DonateWithFeedback {
-	private static final Key KeyAmount = new Key("amount");
-	private static final Key KeyDonations = new Key("donations");
-	private static final Key KeyDonator = new Key("donator");
-	private static final Key KeyError = new Key("error");
-	private static final Key KeyFeedback = new Key("feedback");
-	private static final Key KeyLog = new Key("log");
-	private static final Key KeyMaxDonation = new Key("max_donation");
-	private static final Key KeyTimestamp = new Key("timestamp");
-	private static final Key KeyTotalDonation = new Key("total_donation");
-	private static final Key KeyWithdrawAmount = new Key("withdraw");
 
-	public static void FuncDonate(ScFuncContext ctx, FuncDonateParams params) {
+	public static void funcDonate(ScFuncContext ctx, FuncDonateParams params) {
 		Donation donation = new Donation();
 		{
 			donation.Amount = ctx.Incoming().Balance(ScColor.IOTA);
 			donation.Donator = ctx.Caller();
 			donation.Error = "";
-			donation.Feedback = ctx.Params().GetString(KeyFeedback).Value();
+			donation.Feedback = params.Feedback.Value();
 			donation.Timestamp = ctx.Timestamp();
 		}
 		if (donation.Amount == 0 || donation.Feedback.length() == 0) {
@@ -40,53 +29,50 @@ public class DonateWithFeedback {
 			}
 		}
 		ScMutableMap state = ctx.State();
-		ScMutableBytesArray log = state.GetBytesArray(KeyLog);
+		ScMutableBytesArray log = state.GetBytesArray(Consts.VarLog);
 		log.GetBytes(log.Length()).SetValue(donation.toBytes());
 
-		ScMutableInt largestDonation = state.GetInt(KeyMaxDonation);
-		ScMutableInt totalDonated = state.GetInt(KeyTotalDonation);
+		ScMutableInt largestDonation = state.GetInt(Consts.VarMaxDonation);
+		ScMutableInt totalDonated = state.GetInt(Consts.VarTotalDonation);
 		if (donation.Amount > largestDonation.Value()) {
 			largestDonation.SetValue(donation.Amount);
 		}
 		totalDonated.SetValue(totalDonated.Value() + donation.Amount);
 	}
 
-	public static void FuncWithdraw(ScFuncContext ctx, FuncWithdrawParams params) {
-		ScAgentId scOwner = ctx.ContractCreator();
-		if (!ctx.Caller().equals(scOwner)) {
-			ctx.Panic("Cancel spoofed request");
+	public static void funcWithdraw(ScFuncContext ctx, FuncWithdrawParams params) {
+		long balance = ctx.Balances().Balance(ScColor.IOTA);
+		long amount = params.Amount.Value();
+		if (amount == 0 || amount > balance) {
+			amount = balance;
+		}
+		if (amount == 0) {
+			ctx.Log("DonateWithFeedback: nothing to withdraw");
+			return;
 		}
 
-		long amount = ctx.Balances().Balance(ScColor.IOTA);
-		long withdrawAmount = ctx.Params().GetInt(KeyWithdrawAmount).Value();
-		if (withdrawAmount == 0 || withdrawAmount > amount) {
-			withdrawAmount = amount;
-		}
-		if (withdrawAmount == 0) {
-			ctx.Panic("DonateWithFeedback: nothing to withdraw");
-		}
-
-		ctx.TransferToAddress(scOwner.Address(), new ScTransfers(ScColor.IOTA, withdrawAmount));
+		ScAddress scCreator = ctx.ContractCreator().Address();
+		ctx.TransferToAddress(scCreator, new ScTransfers(ScColor.IOTA, amount));
 	}
 
-	public static void ViewDonations(ScViewContext ctx, ViewDonationsParams params) {
+	public static void viewDonations(ScViewContext ctx, ViewDonationsParams params) {
 		ScImmutableMap state = ctx.State();
-		ScImmutableInt largestDonation = state.GetInt(KeyMaxDonation);
-		ScImmutableInt totalDonated = state.GetInt(KeyTotalDonation);
-		ScImmutableBytesArray log = state.GetBytesArray(KeyLog);
+		ScImmutableInt largestDonation = state.GetInt(Consts.VarMaxDonation);
+		ScImmutableInt totalDonated = state.GetInt(Consts.VarTotalDonation);
+		ScImmutableBytesArray log = state.GetBytesArray(Consts.VarLog);
 		ScMutableMap results = ctx.Results();
-		results.GetInt(KeyMaxDonation).SetValue(largestDonation.Value());
-		results.GetInt(KeyTotalDonation).SetValue(totalDonated.Value());
-		ScMutableMapArray donations = results.GetMapArray(KeyDonations);
+		results.GetInt(Consts.VarMaxDonation).SetValue(largestDonation.Value());
+		results.GetInt(Consts.VarTotalDonation).SetValue(totalDonated.Value());
+		ScMutableMapArray donations = results.GetMapArray(Consts.VarDonations);
 		int size = log.Length();
 		for (int i = 0; i < size; i++) {
 			Donation di = new Donation(log.GetBytes(i).Value());
 			ScMutableMap donation = donations.GetMap(i);
-			donation.GetInt(KeyAmount).SetValue(di.Amount);
-			donation.GetString(KeyDonator).SetValue(di.Donator.toString());
-			donation.GetString(KeyError).SetValue(di.Error);
-			donation.GetString(KeyFeedback).SetValue(di.Feedback);
-			donation.GetInt(KeyTimestamp).SetValue(di.Timestamp);
+			donation.GetInt(Consts.VarAmount).SetValue(di.Amount);
+			donation.GetString(Consts.VarDonator).SetValue(di.Donator.toString());
+			donation.GetString(Consts.VarError).SetValue(di.Error);
+			donation.GetString(Consts.VarFeedback).SetValue(di.Feedback);
+			donation.GetInt(Consts.VarTimestamp).SetValue(di.Timestamp);
 		}
 	}
 }

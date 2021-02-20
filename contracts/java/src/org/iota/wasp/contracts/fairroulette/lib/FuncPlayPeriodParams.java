@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.fairroulette.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncPlayPeriodParams {
-	ScImmutableInt  PlayPeriod; // number of minutes in one playing round
+	public ScImmutableInt  PlayPeriod; // number of minutes in one playing round
 }

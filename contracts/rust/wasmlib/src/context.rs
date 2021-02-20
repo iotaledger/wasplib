@@ -74,7 +74,7 @@ impl ScTransfers {
         for i in 0..colors.length() {
             let color = colors.get_color(i).value();
             transfers.add(&color, balances.balance(&color));
-        } 
+        }
         transfers
     }
 
@@ -317,21 +317,21 @@ impl ScFuncContext {
 
     // posts a request to asynchronously invoke the specified smart
     // contract function according to the specified request parameters
-    pub fn post(&self, par: &PostRequestParams) {
+    pub fn post(&self, req: &PostRequestParams) {
         let mut encode = BytesEncoder::new();
-        encode.contract_id(&par.contract_id);
-        encode.hname(&par.function);
-        if let Some(params) = &par.params {
+        encode.contract_id(&req.contract_id);
+        encode.hname(&req.function);
+        if let Some(params) = &req.params {
             encode.int(params.obj_id as i64);
         } else {
             encode.int(0);
         }
-        if let Some(transfer) = &par.transfer {
+        if let Some(transfer) = &req.transfer {
             encode.int(transfer.transfers.obj_id as i64);
         } else {
             encode.int(0);
         }
-        encode.int(par.delay);
+        encode.int(req.delay);
         ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
     }
 

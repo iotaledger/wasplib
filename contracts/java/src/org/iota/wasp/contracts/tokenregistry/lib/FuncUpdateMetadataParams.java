@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.tokenregistry.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncUpdateMetadataParams {
-	ScImmutableColor   Color; // color of token to update metadata for
+	public ScImmutableColor   Color; // color of token to update metadata for
 }

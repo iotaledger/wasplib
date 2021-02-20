@@ -71,6 +71,7 @@ func funcPassTypesFull(ctx wasmlib.ScFuncContext, params *FuncPassTypesFullParam
 	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
     ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
     ctx.Require(params.String.Value() == string(ParamString), "string wrong")
+	ctx.Require(params.StringZero.Value() == "", "string-0 wrong")
     ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
     ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }

@@ -21,11 +21,11 @@ public class HelloWorldThunk {
 
 	private static void funcHelloWorldThunk(ScFuncContext ctx) {
 		FuncHelloWorldParams params = new FuncHelloWorldParams();
-		HelloWorld.FuncHelloWorld(ctx, params);
+		HelloWorld.funcHelloWorld(ctx, params);
 	}
 
 	private static void viewGetHelloWorldThunk(ScViewContext ctx) {
 		ViewGetHelloWorldParams params = new ViewGetHelloWorldParams();
-		HelloWorld.ViewGetHelloWorld(ctx, params);
+		HelloWorld.viewGetHelloWorld(ctx, params);
 	}
 }

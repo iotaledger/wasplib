@@ -19,7 +19,7 @@ public class ScMutableHname {
 		return Host.Exists(objId, keyId, ScType.TYPE_HNAME);
 	}
 
-	public void SetValue(ScColor value) {
+	public void SetValue(ScHname value) {
 		Host.SetBytes(objId, keyId, ScType.TYPE_HNAME, value.toBytes());
 	}
 

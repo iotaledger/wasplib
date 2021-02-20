@@ -52,7 +52,7 @@ public class TestCoreThunk {
 		params.HnameEP = p.GetHname(Consts.ParamHnameEP);
 		params.IntValue = p.GetInt(Consts.ParamIntValue);
 		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
-		TestCore.FuncCallOnChain(ctx, params);
+		TestCore.funcCallOnChain(ctx, params);
 	}
 
 	private static void funcCheckContextFromFullEPThunk(ScFuncContext ctx) {
@@ -70,17 +70,17 @@ public class TestCoreThunk {
 		ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
 		ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
 		ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
-		TestCore.FuncCheckContextFromFullEP(ctx, params);
+		TestCore.funcCheckContextFromFullEP(ctx, params);
 	}
 
 	private static void funcDoNothingThunk(ScFuncContext ctx) {
 		FuncDoNothingParams params = new FuncDoNothingParams();
-		TestCore.FuncDoNothing(ctx, params);
+		TestCore.funcDoNothing(ctx, params);
 	}
 
 	private static void funcInitThunk(ScFuncContext ctx) {
 		FuncInitParams params = new FuncInitParams();
-		TestCore.FuncInit(ctx, params);
+		TestCore.funcInit(ctx, params);
 	}
 
 	private static void funcPassTypesFullThunk(ScFuncContext ctx) {
@@ -100,7 +100,7 @@ public class TestCoreThunk {
 		ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero");
 		ctx.Require(params.String.Exists(), "missing mandatory string");
 		ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero");
-		TestCore.FuncPassTypesFull(ctx, params);
+		TestCore.funcPassTypesFull(ctx, params);
 	}
 
 	private static void funcRunRecursionThunk(ScFuncContext ctx) {
@@ -108,7 +108,7 @@ public class TestCoreThunk {
 		FuncRunRecursionParams params = new FuncRunRecursionParams();
 		params.IntValue = p.GetInt(Consts.ParamIntValue);
 		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
-		TestCore.FuncRunRecursion(ctx, params);
+		TestCore.funcRunRecursion(ctx, params);
 	}
 
 	private static void funcSendToAddressThunk(ScFuncContext ctx) {
@@ -118,7 +118,7 @@ public class TestCoreThunk {
 		FuncSendToAddressParams params = new FuncSendToAddressParams();
 		params.Address = p.GetAddress(Consts.ParamAddress);
 		ctx.Require(params.Address.Exists(), "missing mandatory address");
-		TestCore.FuncSendToAddress(ctx, params);
+		TestCore.funcSendToAddress(ctx, params);
 	}
 
 	private static void funcSetIntThunk(ScFuncContext ctx) {
@@ -128,37 +128,37 @@ public class TestCoreThunk {
 		params.Name = p.GetString(Consts.ParamName);
 		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
 		ctx.Require(params.Name.Exists(), "missing mandatory name");
-		TestCore.FuncSetInt(ctx, params);
+		TestCore.funcSetInt(ctx, params);
 	}
 
 	private static void funcTestCallPanicFullEPThunk(ScFuncContext ctx) {
 		FuncTestCallPanicFullEPParams params = new FuncTestCallPanicFullEPParams();
-		TestCore.FuncTestCallPanicFullEP(ctx, params);
+		TestCore.funcTestCallPanicFullEP(ctx, params);
 	}
 
 	private static void funcTestCallPanicViewEPFromFullThunk(ScFuncContext ctx) {
 		FuncTestCallPanicViewEPFromFullParams params = new FuncTestCallPanicViewEPFromFullParams();
-		TestCore.FuncTestCallPanicViewEPFromFull(ctx, params);
+		TestCore.funcTestCallPanicViewEPFromFull(ctx, params);
 	}
 
 	private static void funcTestChainOwnerIDFullThunk(ScFuncContext ctx) {
 		FuncTestChainOwnerIDFullParams params = new FuncTestChainOwnerIDFullParams();
-		TestCore.FuncTestChainOwnerIDFull(ctx, params);
+		TestCore.funcTestChainOwnerIDFull(ctx, params);
 	}
 
 	private static void funcTestContractIDFullThunk(ScFuncContext ctx) {
 		FuncTestContractIDFullParams params = new FuncTestContractIDFullParams();
-		TestCore.FuncTestContractIDFull(ctx, params);
+		TestCore.funcTestContractIDFull(ctx, params);
 	}
 
 	private static void funcTestEventLogDeployThunk(ScFuncContext ctx) {
 		FuncTestEventLogDeployParams params = new FuncTestEventLogDeployParams();
-		TestCore.FuncTestEventLogDeploy(ctx, params);
+		TestCore.funcTestEventLogDeploy(ctx, params);
 	}
 
 	private static void funcTestEventLogEventDataThunk(ScFuncContext ctx) {
 		FuncTestEventLogEventDataParams params = new FuncTestEventLogEventDataParams();
-		TestCore.FuncTestEventLogEventData(ctx, params);
+		TestCore.funcTestEventLogEventData(ctx, params);
 	}
 
 	private static void funcTestEventLogGenericDataThunk(ScFuncContext ctx) {
@@ -166,12 +166,12 @@ public class TestCoreThunk {
 		FuncTestEventLogGenericDataParams params = new FuncTestEventLogGenericDataParams();
 		params.Counter = p.GetInt(Consts.ParamCounter);
 		ctx.Require(params.Counter.Exists(), "missing mandatory counter");
-		TestCore.FuncTestEventLogGenericData(ctx, params);
+		TestCore.funcTestEventLogGenericData(ctx, params);
 	}
 
 	private static void funcTestPanicFullEPThunk(ScFuncContext ctx) {
 		FuncTestPanicFullEPParams params = new FuncTestPanicFullEPParams();
-		TestCore.FuncTestPanicFullEP(ctx, params);
+		TestCore.funcTestPanicFullEP(ctx, params);
 	}
 
 	private static void funcWithdrawToChainThunk(ScFuncContext ctx) {
@@ -179,7 +179,7 @@ public class TestCoreThunk {
 		FuncWithdrawToChainParams params = new FuncWithdrawToChainParams();
 		params.ChainId = p.GetChainId(Consts.ParamChainId);
 		ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
-		TestCore.FuncWithdrawToChain(ctx, params);
+		TestCore.funcWithdrawToChain(ctx, params);
 	}
 
 	private static void viewCheckContextFromViewEPThunk(ScViewContext ctx) {
@@ -195,7 +195,7 @@ public class TestCoreThunk {
 		ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
 		ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
 		ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
-		TestCore.ViewCheckContextFromViewEP(ctx, params);
+		TestCore.viewCheckContextFromViewEP(ctx, params);
 	}
 
 	private static void viewFibonacciThunk(ScViewContext ctx) {
@@ -203,12 +203,12 @@ public class TestCoreThunk {
 		ViewFibonacciParams params = new ViewFibonacciParams();
 		params.IntValue = p.GetInt(Consts.ParamIntValue);
 		ctx.Require(params.IntValue.Exists(), "missing mandatory intValue");
-		TestCore.ViewFibonacci(ctx, params);
+		TestCore.viewFibonacci(ctx, params);
 	}
 
 	private static void viewGetCounterThunk(ScViewContext ctx) {
 		ViewGetCounterParams params = new ViewGetCounterParams();
-		TestCore.ViewGetCounter(ctx, params);
+		TestCore.viewGetCounter(ctx, params);
 	}
 
 	private static void viewGetIntThunk(ScViewContext ctx) {
@@ -216,12 +216,12 @@ public class TestCoreThunk {
 		ViewGetIntParams params = new ViewGetIntParams();
 		params.Name = p.GetString(Consts.ParamName);
 		ctx.Require(params.Name.Exists(), "missing mandatory name");
-		TestCore.ViewGetInt(ctx, params);
+		TestCore.viewGetInt(ctx, params);
 	}
 
 	private static void viewJustViewThunk(ScViewContext ctx) {
 		ViewJustViewParams params = new ViewJustViewParams();
-		TestCore.ViewJustView(ctx, params);
+		TestCore.viewJustView(ctx, params);
 	}
 
 	private static void viewPassTypesViewThunk(ScViewContext ctx) {
@@ -241,31 +241,31 @@ public class TestCoreThunk {
 		ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero");
 		ctx.Require(params.String.Exists(), "missing mandatory string");
 		ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero");
-		TestCore.ViewPassTypesView(ctx, params);
+		TestCore.viewPassTypesView(ctx, params);
 	}
 
 	private static void viewTestCallPanicViewEPFromViewThunk(ScViewContext ctx) {
 		ViewTestCallPanicViewEPFromViewParams params = new ViewTestCallPanicViewEPFromViewParams();
-		TestCore.ViewTestCallPanicViewEPFromView(ctx, params);
+		TestCore.viewTestCallPanicViewEPFromView(ctx, params);
 	}
 
 	private static void viewTestChainOwnerIDViewThunk(ScViewContext ctx) {
 		ViewTestChainOwnerIDViewParams params = new ViewTestChainOwnerIDViewParams();
-		TestCore.ViewTestChainOwnerIDView(ctx, params);
+		TestCore.viewTestChainOwnerIDView(ctx, params);
 	}
 
 	private static void viewTestContractIDViewThunk(ScViewContext ctx) {
 		ViewTestContractIDViewParams params = new ViewTestContractIDViewParams();
-		TestCore.ViewTestContractIDView(ctx, params);
+		TestCore.viewTestContractIDView(ctx, params);
 	}
 
 	private static void viewTestPanicViewEPThunk(ScViewContext ctx) {
 		ViewTestPanicViewEPParams params = new ViewTestPanicViewEPParams();
-		TestCore.ViewTestPanicViewEP(ctx, params);
+		TestCore.viewTestPanicViewEP(ctx, params);
 	}
 
 	private static void viewTestSandboxCallThunk(ScViewContext ctx) {
 		ViewTestSandboxCallParams params = new ViewTestSandboxCallParams();
-		TestCore.ViewTestSandboxCall(ctx, params);
+		TestCore.viewTestSandboxCall(ctx, params);
 	}
 }

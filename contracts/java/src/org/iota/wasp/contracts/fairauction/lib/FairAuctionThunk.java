@@ -30,7 +30,7 @@ public class FairAuctionThunk {
 		FuncFinalizeAuctionParams params = new FuncFinalizeAuctionParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		FairAuction.FuncFinalizeAuction(ctx, params);
+		FairAuction.funcFinalizeAuction(ctx, params);
 	}
 
 	private static void funcPlaceBidThunk(ScFuncContext ctx) {
@@ -38,7 +38,7 @@ public class FairAuctionThunk {
 		FuncPlaceBidParams params = new FuncPlaceBidParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		FairAuction.FuncPlaceBid(ctx, params);
+		FairAuction.funcPlaceBid(ctx, params);
 	}
 
 	private static void funcSetOwnerMarginThunk(ScFuncContext ctx) {
@@ -49,7 +49,7 @@ public class FairAuctionThunk {
 		FuncSetOwnerMarginParams params = new FuncSetOwnerMarginParams();
 		params.OwnerMargin = p.GetInt(Consts.ParamOwnerMargin);
 		ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin");
-		FairAuction.FuncSetOwnerMargin(ctx, params);
+		FairAuction.funcSetOwnerMargin(ctx, params);
 	}
 
 	private static void funcStartAuctionThunk(ScFuncContext ctx) {
@@ -61,7 +61,7 @@ public class FairAuctionThunk {
 		params.MinimumBid = p.GetInt(Consts.ParamMinimumBid);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
 		ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid");
-		FairAuction.FuncStartAuction(ctx, params);
+		FairAuction.funcStartAuction(ctx, params);
 	}
 
 	private static void viewGetInfoThunk(ScViewContext ctx) {
@@ -69,6 +69,6 @@ public class FairAuctionThunk {
 		ViewGetInfoParams params = new ViewGetInfoParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		FairAuction.ViewGetInfo(ctx, params);
+		FairAuction.viewGetInfo(ctx, params);
 	}
 }

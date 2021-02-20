@@ -66,6 +66,7 @@ pub fn func_pass_types_full(ctx: &ScFuncContext, params: &FuncPassTypesFullParam
     ctx.require(params.int64.value() == 42, "int64 wrong");
     ctx.require(params.int64_zero.value() == 0, "int64-0 wrong");
     ctx.require(params.string.value() == PARAM_STRING, "string wrong");
+    ctx.require(params.string_zero.value() == "", "string-0 wrong");
     ctx.require(params.hname.value() == ScHname::new(PARAM_HNAME), "Hname wrong");
     ctx.require(params.hname_zero.value() == ScHname(0), "Hname-0 wrong");
 }
@@ -109,7 +110,7 @@ pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _params: &Fun
 
 pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, _params: &FuncTestChainOwnerIDFullParams) {
     ctx.log("calling testChainOwnerIDFull");
-    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
+    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id());
 }
 
 pub fn func_test_contract_id_full(ctx: &ScFuncContext, _params: &FuncTestContractIDFullParams) {
@@ -121,8 +122,7 @@ pub fn func_test_event_log_deploy(ctx: &ScFuncContext, _params: &FuncTestEventLo
     ctx.log("calling testEventLogDeploy");
     //Deploy the same contract with another name
     let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
-    ctx.deploy(&program_hash, CONTRACT_NAME_DEPLOYED,
-               "test contract deploy log", None)
+    ctx.deploy(&program_hash, CONTRACT_NAME_DEPLOYED, "test contract deploy log", None);
 }
 
 pub fn func_test_event_log_event_data(ctx: &ScFuncContext, _params: &FuncTestEventLogEventDataParams) {
@@ -133,12 +133,12 @@ pub fn func_test_event_log_event_data(ctx: &ScFuncContext, _params: &FuncTestEve
 pub fn func_test_event_log_generic_data(ctx: &ScFuncContext, params: &FuncTestEventLogGenericDataParams) {
     ctx.log("calling testEventLogGenericData");
     let event = "[GenericData] Counter Number: ".to_string() + &params.counter.to_string();
-    ctx.event(&event)
+    ctx.event(&event);
 }
 
 pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _params: &FuncTestPanicFullEPParams) {
     ctx.log("calling testPanicFullEP");
-    ctx.panic(MSG_FULL_PANIC)
+    ctx.panic(MSG_FULL_PANIC);
 }
 
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainParams) {
@@ -228,7 +228,7 @@ pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _params: &Vie
 
 pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, _params: &ViewTestChainOwnerIDViewParams) {
     ctx.log("calling testChainOwnerIDView");
-    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id())
+    ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id());
 }
 
 pub fn view_test_contract_id_view(ctx: &ScViewContext, _params: &ViewTestContractIDViewParams) {
@@ -238,7 +238,7 @@ pub fn view_test_contract_id_view(ctx: &ScViewContext, _params: &ViewTestContrac
 
 pub fn view_test_panic_view_ep(ctx: &ScViewContext, _params: &ViewTestPanicViewEPParams) {
     ctx.log("calling testPanicViewEP");
-    ctx.panic(MSG_VIEW_PANIC)
+    ctx.panic(MSG_VIEW_PANIC);
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, _params: &ViewTestSandboxCallParams) {

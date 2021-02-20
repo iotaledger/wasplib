@@ -10,7 +10,7 @@ import (
 )
 
 func GenerateGoCoreContractsSchema(coreSchemas []*Schema) error {
-	file, err := os.Create("../../packages/vm/wasmlib/corecontracts.go")
+	file, err := os.Create("../corecontracts.go")
 	if err != nil {
 		return err
 	}
@@ -42,8 +42,45 @@ func GenerateGoCoreContractsSchema(coreSchemas []*Schema) error {
 	return nil
 }
 
+func GenerateJavaCoreContractsSchema(coreSchemas []*Schema) error {
+	file, err := os.Create("../Core.java")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintln(file, copyright(true))
+	fmt.Fprintf(file, "package org.iota.wasp.wasmlib.keys;\n\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n\n")
+	fmt.Fprintf(file, "public class Core {\n")
+
+	for _, schema := range coreSchemas {
+		scName := capitalize(schema.Name)
+		scHname := coretypes.Hn(schema.Name)
+		fmt.Fprintf(file, "\n\tpublic static final ScHname %s = new ScHname(0x%s);\n", scName, scHname.String())
+		for _, funcDef := range schema.Funcs {
+			funcHname := coretypes.Hn(funcDef.Name)
+			funcName := capitalize(funcDef.FullName)
+			fmt.Fprintf(file, "\tpublic static final ScHname %s%s = new ScHname(0x%s);\n", scName, funcName, funcHname.String())
+		}
+
+		if len(schema.Params) != 0 {
+			fmt.Fprintln(file)
+			for _, name := range sortedFields(schema.Params) {
+				param := schema.Params[name]
+				name = capitalize(param.Name)
+				fmt.Fprintf(file, "\tpublic static final Key %sParam%s = new Key(\"%s\");\n", scName, name, param.Alias)
+			}
+		}
+	}
+
+	fmt.Fprintf(file, "}\n")
+	return nil
+}
+
 func GenerateRustCoreContractsSchema(coreSchemas []*Schema) error {
-	file, err := os.Create("../../rust/wasmlib/src/corecontracts.rs")
+	file, err := os.Create("../corecontracts.rs")
 	if err != nil {
 		return err
 	}

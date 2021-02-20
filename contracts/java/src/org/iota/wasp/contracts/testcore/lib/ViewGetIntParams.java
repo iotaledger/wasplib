@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.testcore.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewGetIntParams {
-	ScImmutableString Name;
+	public ScImmutableString Name;
 }

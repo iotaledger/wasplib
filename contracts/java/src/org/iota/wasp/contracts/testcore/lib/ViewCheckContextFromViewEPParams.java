@@ -10,9 +10,9 @@ package org.iota.wasp.contracts.testcore.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewCheckContextFromViewEPParams {
-	ScImmutableAgentId      AgentId;
-	ScImmutableChainId      ChainId;
-	ScImmutableAgentId      ChainOwnerId;
-	ScImmutableAgentId      ContractCreator;
-	ScImmutableContractId   ContractId;
+	public ScImmutableAgentId      AgentId;
+	public ScImmutableChainId      ChainId;
+	public ScImmutableAgentId      ChainOwnerId;
+	public ScImmutableAgentId      ContractCreator;
+	public ScImmutableContractId   ContractId;
 }

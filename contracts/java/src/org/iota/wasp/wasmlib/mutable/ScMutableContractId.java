@@ -19,7 +19,7 @@ public class ScMutableContractId {
 		return Host.Exists(objId, keyId, ScType.TYPE_CONTRACT_ID);
 	}
 
-	public void SetValue(ScColor value) {
+	public void SetValue(ScContractId value) {
 		Host.SetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID, value.toBytes());
 	}
 

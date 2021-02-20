@@ -291,21 +291,21 @@ func (ctx ScFuncContext) Incoming() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(par *PostRequestParams) {
+func (ctx ScFuncContext) Post(req *PostRequestParams) {
 	encode := NewBytesEncoder()
-	encode.ContractId(par.ContractId)
-	encode.Hname(par.Function)
-	if par.Params != nil {
-		encode.Int(int64(par.Params.objId))
+	encode.ContractId(req.ContractId)
+	encode.Hname(req.Function)
+	if req.Params != nil {
+		encode.Int(int64(req.Params.objId))
 	} else {
 		encode.Int(0)
 	}
-	if par.Transfer != nil {
-		encode.Int(int64(par.Transfer.transfers.objId))
+	if req.Transfer != nil {
+		encode.Int(int64(req.Transfer.transfers.objId))
 	} else {
 		encode.Int(0)
 	}
-	encode.Int(par.Delay)
+	encode.Int(req.Delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 

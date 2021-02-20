@@ -26,7 +26,7 @@ public class TokenRegistryThunk {
 		FuncMintSupplyParams params = new FuncMintSupplyParams();
 		params.Description = p.GetString(Consts.ParamDescription);
 		params.UserDefined = p.GetString(Consts.ParamUserDefined);
-		TokenRegistry.FuncMintSupply(ctx, params);
+		TokenRegistry.funcMintSupply(ctx, params);
 	}
 
 	private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
@@ -37,7 +37,7 @@ public class TokenRegistryThunk {
 		FuncTransferOwnershipParams params = new FuncTransferOwnershipParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.FuncTransferOwnership(ctx, params);
+		TokenRegistry.funcTransferOwnership(ctx, params);
 	}
 
 	private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
@@ -48,7 +48,7 @@ public class TokenRegistryThunk {
 		FuncUpdateMetadataParams params = new FuncUpdateMetadataParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.FuncUpdateMetadata(ctx, params);
+		TokenRegistry.funcUpdateMetadata(ctx, params);
 	}
 
 	private static void viewGetInfoThunk(ScViewContext ctx) {
@@ -56,6 +56,6 @@ public class TokenRegistryThunk {
 		ViewGetInfoParams params = new ViewGetInfoParams();
 		params.Color = p.GetColor(Consts.ParamColor);
 		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.ViewGetInfo(ctx, params);
+		TokenRegistry.viewGetInfo(ctx, params);
 	}
 }

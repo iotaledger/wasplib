@@ -31,7 +31,7 @@ public class Erc20Thunk {
 		params.Delegation = p.GetAgentId(Consts.ParamDelegation);
 		ctx.Require(params.Amount.Exists(), "missing mandatory amount");
 		ctx.Require(params.Delegation.Exists(), "missing mandatory delegation");
-		Erc20.FuncApprove(ctx, params);
+		Erc20.funcApprove(ctx, params);
 	}
 
 	private static void funcInitThunk(ScFuncContext ctx) {
@@ -41,7 +41,7 @@ public class Erc20Thunk {
 		params.Supply = p.GetInt(Consts.ParamSupply);
 		ctx.Require(params.Creator.Exists(), "missing mandatory creator");
 		ctx.Require(params.Supply.Exists(), "missing mandatory supply");
-		Erc20.FuncInit(ctx, params);
+		Erc20.funcInit(ctx, params);
 	}
 
 	private static void funcTransferThunk(ScFuncContext ctx) {
@@ -51,7 +51,7 @@ public class Erc20Thunk {
 		params.Amount = p.GetInt(Consts.ParamAmount);
 		ctx.Require(params.Account.Exists(), "missing mandatory account");
 		ctx.Require(params.Amount.Exists(), "missing mandatory amount");
-		Erc20.FuncTransfer(ctx, params);
+		Erc20.funcTransfer(ctx, params);
 	}
 
 	private static void funcTransferFromThunk(ScFuncContext ctx) {
@@ -63,7 +63,7 @@ public class Erc20Thunk {
 		ctx.Require(params.Account.Exists(), "missing mandatory account");
 		ctx.Require(params.Amount.Exists(), "missing mandatory amount");
 		ctx.Require(params.Recipient.Exists(), "missing mandatory recipient");
-		Erc20.FuncTransferFrom(ctx, params);
+		Erc20.funcTransferFrom(ctx, params);
 	}
 
 	private static void viewAllowanceThunk(ScViewContext ctx) {
@@ -73,7 +73,7 @@ public class Erc20Thunk {
 		params.Delegation = p.GetAgentId(Consts.ParamDelegation);
 		ctx.Require(params.Account.Exists(), "missing mandatory account");
 		ctx.Require(params.Delegation.Exists(), "missing mandatory delegation");
-		Erc20.ViewAllowance(ctx, params);
+		Erc20.viewAllowance(ctx, params);
 	}
 
 	private static void viewBalanceOfThunk(ScViewContext ctx) {
@@ -81,11 +81,11 @@ public class Erc20Thunk {
 		ViewBalanceOfParams params = new ViewBalanceOfParams();
 		params.Account = p.GetAgentId(Consts.ParamAccount);
 		ctx.Require(params.Account.Exists(), "missing mandatory account");
-		Erc20.ViewBalanceOf(ctx, params);
+		Erc20.viewBalanceOf(ctx, params);
 	}
 
 	private static void viewTotalSupplyThunk(ScViewContext ctx) {
 		ViewTotalSupplyParams params = new ViewTotalSupplyParams();
-		Erc20.ViewTotalSupply(ctx, params);
+		Erc20.viewTotalSupply(ctx, params);
 	}
 }
