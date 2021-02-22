@@ -27,7 +27,7 @@ func testTypesFull(t *testing.T, w bool) {
 		"Address", chain.ChainAddress,
 		"AgentID", chain.OriginatorAgentID,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
 

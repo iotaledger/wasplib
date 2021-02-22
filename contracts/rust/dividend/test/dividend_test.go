@@ -28,7 +28,7 @@ func TestAddMemberOk(t *testing.T) {
 		ParamAddress, member1.Address(),
 		ParamFactor, 100,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
 
@@ -38,7 +38,7 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncMember,
 		ParamFactor, 100,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 }
 
@@ -49,6 +49,6 @@ func TestAddMemberFailMissingFactor(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncMember,
 		ParamAddress, member1.Address(),
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 }

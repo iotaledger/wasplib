@@ -25,7 +25,7 @@ func TestFuncHelloWorld(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncHelloWorld)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
 

@@ -27,7 +27,7 @@ func testChainOwnerIDFull(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncChainOwnerIDFull)
-	ret, err := chain.PostRequest(req, nil)
+	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
@@ -51,7 +51,7 @@ func testContractIDFull(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncContractIDFull)
-	ret, err := chain.PostRequest(req, nil)
+	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	cID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(SandboxSCName))
 	require.EqualValues(t, cID[:], ret.MustGet(sbtestsc.VarContractID))

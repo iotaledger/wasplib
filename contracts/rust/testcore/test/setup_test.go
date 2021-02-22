@@ -43,7 +43,7 @@ func setupDeployer(t *testing.T, chain *solo.Chain) signaturescheme.SignatureSch
 	req := solo.NewCallParams(root.Interface.Name, root.FuncGrantDeploy,
 		root.ParamDeployer, coretypes.NewAgentIDFromAddress(user.Address()),
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	return user
 }
@@ -75,7 +75,7 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user signaturescheme.Si
 
 	deployed := coretypes.NewContractID(chain.ChainID, coretypes.Hn(sbtestsc.Interface.Name))
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing)
-	_, err = chain.PostRequest(req, user)
+	_, err = chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 	t.Logf("deployed test_sandbox'%s': %s", SandboxSCName, coretypes.Hn(SandboxSCName))
 	return deployed, extraToken

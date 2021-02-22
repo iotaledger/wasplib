@@ -76,7 +76,7 @@ func TestTransferOk1(t *testing.T) {
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo-amount)
@@ -94,7 +94,7 @@ func TestTransferOk2(t *testing.T) {
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo-amount)
@@ -104,7 +104,7 @@ func TestTransferOk2(t *testing.T) {
 		ParamAccount, creatorAgentID,
 		ParamAmount, amount,
 	)
-	_, err = chain.PostRequest(req, user)
+	_, err = chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -125,7 +125,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.Error(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -146,7 +146,7 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 		ParamAccount, creatorAgentID,
 		ParamAmount, amount,
 	)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -169,7 +169,7 @@ func TestApprove(t *testing.T) {
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
@@ -186,7 +186,7 @@ func TestTransferFromOk1(t *testing.T) {
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
@@ -198,7 +198,7 @@ func TestTransferFromOk1(t *testing.T) {
 		ParamRecipient, userAgentID,
 		ParamAmount, 50,
 	)
-	_, err = chain.PostRequest(req, creator)
+	_, err = chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 50)
@@ -215,7 +215,7 @@ func TestTransferFromOk2(t *testing.T) {
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
@@ -227,7 +227,7 @@ func TestTransferFromOk2(t *testing.T) {
 		ParamRecipient, userAgentID,
 		ParamAmount, 100,
 	)
-	_, err = chain.PostRequest(req, creator)
+	_, err = chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
@@ -244,7 +244,7 @@ func TestTransferFromFail(t *testing.T) {
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
 	)
-	_, err := chain.PostRequest(req, creator)
+	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
@@ -256,7 +256,7 @@ func TestTransferFromFail(t *testing.T) {
 		ParamRecipient, userAgentID,
 		ParamAmount, 101,
 	)
-	_, err = chain.PostRequest(req, creator)
+	_, err = chain.PostRequestSync(req, creator)
 	require.Error(t, err)
 
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)

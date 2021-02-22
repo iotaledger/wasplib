@@ -19,7 +19,7 @@ func testGetSet(t *testing.T, w bool) {
 		sbtestsc.ParamIntParamName, "ppp",
 		sbtestsc.ParamIntParamValue, 314,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	ret, err := chain.CallView(SandboxSCName, sbtestsc.FuncGetInt,
@@ -44,7 +44,7 @@ func testCallRecursive(t *testing.T, w bool) {
 		sbtestsc.ParamHnameContract, cID.Hname(),
 		sbtestsc.ParamHnameEP, coretypes.Hn(sbtestsc.FuncRunRecursion),
 	)
-	ret, err := chain.PostRequest(req, nil)
+	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	ret, err = chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncGetCounter)
@@ -90,7 +90,7 @@ func testCallFibonacciIndirect(t *testing.T, w bool) {
 		sbtestsc.ParamHnameContract, cID.Hname(),
 		sbtestsc.ParamHnameEP, coretypes.Hn(sbtestsc.FuncGetFibonacci),
 	)
-	ret, err := chain.PostRequest(req, nil)
+	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	r, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.ParamIntParamValue))
 	require.NoError(t, err)

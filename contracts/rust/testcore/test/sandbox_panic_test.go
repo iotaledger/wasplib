@@ -14,7 +14,7 @@ func testPanicFull(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 }
@@ -35,7 +35,7 @@ func testCallPanicFull(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicFullEP)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 }
@@ -46,7 +46,7 @@ func testCallPanicViewFromFull(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, nil, w)
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicViewEPFromFull)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 }

@@ -263,23 +263,13 @@ impl ScHname {
 
     // construct from byte array
     pub fn from_bytes(bytes: &[u8]) -> ScHname {
-        if bytes.len() != 4 { panic!("Hname should be 4 bytes"); }
-        let val = bytes[3] as u32;
-        let val = (val << 8) | (bytes[2] as u32);
-        let val = (val << 8) | (bytes[1] as u32);
-        let val = (val << 8) | (bytes[0] as u32);
+        let val = u32::from_le_bytes(bytes.try_into().unwrap());
         ScHname(val)
     }
 
     // convert to byte array representation
     pub fn to_bytes(&self) -> Vec<u8> {
-        let val = self.0;
-        let mut bytes: Vec<u8> = Vec::new();
-        bytes.push((val >> 0) as u8);
-        bytes.push((val >> 8) as u8);
-        bytes.push((val >> 16) as u8);
-        bytes.push((val >> 24) as u8);
-        bytes
+        self.0.to_le_bytes().to_vec()
     }
 
     // human-readable string representation
@@ -291,6 +281,6 @@ impl ScHname {
 // allow to be used as key in maps
 impl MapKey for ScHname {
     fn get_id(&self) -> Key32 {
-        get_key_id_from_bytes(&self.0.to_ne_bytes())
+        get_key_id_from_bytes(&self.0.to_le_bytes())
     }
 }

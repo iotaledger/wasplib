@@ -39,7 +39,7 @@ func test2Chains(t *testing.T, w bool) {
 	).WithTransfer(
 		balance.ColorIOTA, 42,
 	)
-	_, err := chain1.PostRequest(req, userWallet)
+	_, err := chain1.PostRequestSync(req, userWallet)
 	require.NoError(t, err)
 
 	accountsAgentID1 := coretypes.NewAgentIDFromContractID(accounts.Interface.ContractID(chain1.ChainID))
@@ -63,7 +63,7 @@ func test2Chains(t *testing.T, w bool) {
 	).WithTransfer(
 		balance.ColorIOTA, 3,
 	)
-	_, err = chain2.PostRequest(req, userWallet)
+	_, err = chain2.PostRequestSync(req, userWallet)
 	require.NoError(t, err)
 
 	chain1.WaitForEmptyBacklog()

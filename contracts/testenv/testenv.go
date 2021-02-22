@@ -114,7 +114,7 @@ func (te *TestEnv) post(iotas int64, scheme []signaturescheme.SignatureScheme) (
 	if len(scheme) > 0 {
 		sigScheme = scheme[0]
 	}
-	ret, err := te.Chain.PostRequest(te.req, sigScheme)
+	ret, err := te.Chain.PostRequestSync(te.req, sigScheme)
 	return ret, err
 }
 

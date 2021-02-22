@@ -47,7 +47,7 @@ func TestDonateOnce(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Nice work!",
 	).WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, donator1)
+	_, err := chain.PostRequestSync(req, donator1)
 	require.NoError(t, err)
 
 	ret, err := chain.CallView(
@@ -79,14 +79,14 @@ func TestDonateTwice(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Nice work!",
 	).WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, donator1)
+	_, err := chain.PostRequestSync(req, donator1)
 	require.NoError(t, err)
 
 	donator2 := chain.Env.NewSignatureSchemeWithFunds()
 	req = solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Exactly what I needed!",
 	).WithTransfer(balance.ColorIOTA, 69)
-	_, err = chain.PostRequest(req, donator2)
+	_, err = chain.PostRequestSync(req, donator2)
 	require.NoError(t, err)
 
 	ret, err := chain.CallView(

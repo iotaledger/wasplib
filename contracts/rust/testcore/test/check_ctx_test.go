@@ -29,7 +29,7 @@ func testMainCallsFromFullEP(t *testing.T, w bool) {
 		sbtestsc.ParamContractID, contractID,
 		sbtestsc.ParamContractCreator, userAgentID,
 	)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 }
 

@@ -32,7 +32,7 @@ func TestIncrementOnce(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncIncrement)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	checkStateCounter(t, chain, 1)
@@ -42,11 +42,11 @@ func TestIncrementTwice(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncIncrement)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	req = solo.NewCallParams(ScName, FuncIncrement)
-	_, err = chain.PostRequest(req, nil)
+	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	checkStateCounter(t, chain, 2)
@@ -58,7 +58,7 @@ func TestIncrementRepeatThrice(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncRepeatMany,
 		ParamNumRepeats, 3,
 	).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	chain.WaitForEmptyBacklog()
@@ -70,7 +70,7 @@ func TestIncrementCallIncrement(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncCallIncrement)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	checkStateCounter(t, chain, 2)
@@ -80,7 +80,7 @@ func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncCallIncrementRecurse5x)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	checkStateCounter(t, chain, 6)
@@ -90,7 +90,7 @@ func TestIncrementPostIncrement(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncPostIncrement).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	chain.WaitForEmptyBacklog()
@@ -102,7 +102,7 @@ func TestIncrementLocalStateInternalCall(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncLocalStateInternalCall)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	checkStateCounter(t, chain, 2)
@@ -112,7 +112,7 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncLocalStateSandboxCall)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	if common.WasmRunner == 0 {
@@ -128,7 +128,7 @@ func TestIncrementLocalStatePost(t *testing.T) {
 	chain := setupTest(t)
 
 	req := solo.NewCallParams(ScName, FuncLocalStatePost).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	chain.WaitForEmptyBacklog()

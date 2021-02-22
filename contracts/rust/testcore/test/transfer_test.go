@@ -19,7 +19,7 @@ func testDoNothing(t *testing.T, w bool) {
 	cAID := coretypes.NewAgentIDFromContractID(cID)
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	t.Logf("dump accounts:\n%s", chain.DumpAccounts())
@@ -39,7 +39,7 @@ func testDoNothingUser(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 
 	t.Logf("dump accounts:\n%s", chain.DumpAccounts())
@@ -63,7 +63,7 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncDoNothing).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 
 	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
@@ -76,7 +76,7 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 	req = solo.NewCallParams(SandboxSCName, sbtestsc.FuncSendToAddress,
 		sbtestsc.ParamAddress, userAddress,
 	)
-	_, err = chain.PostRequest(req, nil)
+	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
@@ -106,7 +106,7 @@ func testDoPanicUser(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
@@ -136,7 +136,7 @@ func testDoPanicUserFeeless(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
@@ -147,7 +147,7 @@ func testDoPanicUserFeeless(t *testing.T, w bool) {
 	env.AssertAddressBalance(userAddress, balance.ColorIOTA, testutil.RequestFundsAmount-1)
 
 	req = solo.NewCallParams(accounts.Interface.Name, accounts.FuncWithdrawToAddress)
-	_, err = chain.PostRequest(req, user)
+	_, err = chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 
 	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 4+extraToken)
@@ -178,7 +178,7 @@ func testDoPanicUserFee(t *testing.T, w bool) {
 		root.ParamHname, cID.Hname(),
 		root.ParamOwnerFee, 10,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	chain.AssertAccountBalance(chain.OriginatorAgentID, balance.ColorIOTA, 5+extraToken)
@@ -189,7 +189,7 @@ func testDoPanicUserFee(t *testing.T, w bool) {
 
 	req = solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err = chain.PostRequest(req, user)
+	_, err = chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
@@ -220,7 +220,7 @@ func testRequestToView(t *testing.T, w bool) {
 	// sending request to the view entry point should return an error and invoke fallback for tokens
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncJustView).
 		WithTransfer(balance.ColorIOTA, 42)
-	_, err := chain.PostRequest(req, user)
+	_, err := chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
 	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())

@@ -24,7 +24,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 		req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncEventLogGenericData,
 			sbtestsc.VarCounter, i,
 		)
-		_, err := chain.PostRequest(req, nil)
+		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
 
@@ -50,7 +50,7 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 			sbtestsc.FuncEventLogGenericData,
 			sbtestsc.VarCounter, i,
 		)
-		_, err = chain.PostRequest(req, nil)
+		_, err = chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
 
@@ -74,7 +74,7 @@ func testEventLogEventData(t *testing.T, w bool) {
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogEventData,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
@@ -106,7 +106,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 			sbtestsc.VarCounter, count,
 		)
 		count++
-		_, err := chain.PostRequest(req, nil)
+		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
 	// generic
@@ -116,7 +116,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 			sbtestsc.VarCounter, count,
 		)
 		count++
-		_, err := chain.PostRequest(req, nil)
+		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
 	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
@@ -146,7 +146,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 		sbtestsc.FuncEventLogGenericData,
 		sbtestsc.VarCounter, solo.Saldo,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetNumRecords,
@@ -178,7 +178,7 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogDeploy,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	//This call should return only one record which should be the type of TRDeploy
@@ -206,14 +206,14 @@ func testChainLogMultiple(t *testing.T, w bool) {
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogEventData,
 	)
-	_, err := chain.PostRequest(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	req = solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogGenericData,
 		sbtestsc.VarCounter, 33333,
 	)
-	_, err = chain.PostRequest(req, nil)
+	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	/////Should return 4 logs records/////
