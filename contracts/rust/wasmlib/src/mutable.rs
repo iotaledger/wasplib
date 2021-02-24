@@ -11,6 +11,8 @@ use crate::host::*;
 use crate::immutable::*;
 use crate::keys::*;
 
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 // proxy object for mutable ScAddress in host map
 pub struct ScMutableAddress {
     obj_id: i32,
@@ -218,6 +220,35 @@ impl ScMutableChainId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+// mutable array of ScChainId
+pub struct ScMutableChainIdArray {
+    pub(crate) obj_id: i32
+}
+
+impl ScMutableChainIdArray {
+    // empty the array
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_chain_id(&self, index: i32) -> ScMutableChainId {
+        ScMutableChainId { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // get immutable version of array
+    pub fn immutable(&self) -> ScImmutableChainIdArray {
+        ScImmutableChainIdArray { obj_id: self.obj_id }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 // proxy object for mutable ScColor in host map
 pub struct ScMutableColor {
     obj_id: i32,
@@ -307,6 +338,35 @@ impl ScMutableContractId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+// mutable array of ScContractId
+pub struct ScMutableContractIdArray {
+    pub(crate) obj_id: i32
+}
+
+impl ScMutableContractIdArray {
+    // empty the array
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_contract_id(&self, index: i32) -> ScMutableContractId {
+        ScMutableContractId { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // get immutable version of array
+    pub fn immutable(&self) -> ScImmutableContractIdArray {
+        ScImmutableContractIdArray { obj_id: self.obj_id }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 // proxy object for mutable ScHash in host map
 pub struct ScMutableHash {
     obj_id: i32,
@@ -391,6 +451,35 @@ impl ScMutableHname {
     // retrieve value from host map
     pub fn value(&self) -> ScHname {
         ScHname::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_HNAME))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// mutable array of ScHname
+pub struct ScMutableHnameArray {
+    pub(crate) obj_id: i32
+}
+
+impl ScMutableHnameArray {
+    // empty the array
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_hname(&self, index: i32) -> ScMutableHname {
+        ScMutableHname { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // get immutable version of array
+    pub fn immutable(&self) -> ScImmutableHnameArray {
+        ScImmutableHnameArray { obj_id: self.obj_id }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
     }
 }
 
@@ -509,6 +598,12 @@ impl ScMutableMap {
         ScMutableChainId { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
+    // get proxy for ScMutableChainIdArray specified by key
+    pub fn get_chain_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableChainIdArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_CHAIN_ID | TYPE_ARRAY);
+        ScMutableChainIdArray { obj_id: arr_id }
+    }
+
     // get proxy for mutable ScColor field specified by key
     pub fn get_color<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColor {
         ScMutableColor { obj_id: self.obj_id, key_id: key.get_id() }
@@ -525,6 +620,12 @@ impl ScMutableMap {
         ScMutableContractId { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
+    // get proxy for ScMutableContractIdArray specified by key
+    pub fn get_contract_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableContractIdArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_CONTRACT_ID | TYPE_ARRAY);
+        ScMutableContractIdArray { obj_id: arr_id }
+    }
+
     // get proxy for mutable ScHash field specified by key
     pub fn get_hash<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHash {
         ScMutableHash { obj_id: self.obj_id, key_id: key.get_id() }
@@ -539,6 +640,12 @@ impl ScMutableMap {
     // get proxy for mutable ScHname field specified by key
     pub fn get_hname<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHname {
         ScMutableHname { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
+    // get proxy for ScMutableHnameArray specified by key
+    pub fn get_hname_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableHnameArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_HNAME | TYPE_ARRAY);
+        ScMutableHnameArray { obj_id: arr_id }
     }
 
     // get proxy for mutable int64 field specified by key
@@ -562,6 +669,17 @@ impl ScMutableMap {
     pub fn get_map_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableMapArray {
         let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_MAP | TYPE_ARRAY);
         ScMutableMapArray { obj_id: arr_id }
+    }
+
+    // get proxy for mutable ScRequestId field specified by key
+    pub fn get_request_id<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id: self.obj_id, key_id: key.get_id() }
+    }
+
+    // get proxy for ScMutableRequestIdArray specified by key
+    pub fn get_request_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableRequestIdArray {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_REQUEST_ID | TYPE_ARRAY);
+        ScMutableRequestIdArray { obj_id: arr_id }
     }
 
     // get proxy for mutable UTF-8 text string field specified by key
@@ -603,6 +721,65 @@ impl ScMutableMapArray {
     // get immutable version of array
     pub fn immutable(&self) -> ScImmutableMapArray {
         ScImmutableMapArray { obj_id: self.obj_id }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// proxy object for mutable ScRequestId in host map
+pub struct ScMutableRequestId {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScMutableRequestId {
+    // check if object exists in host map
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_REQUEST_ID)
+    }
+
+    // set value in host map
+    pub fn set_value(&self, val: &ScRequestId) {
+        set_bytes(self.obj_id, self.key_id, TYPE_REQUEST_ID, val.to_bytes());
+    }
+
+    // human-readable string representation
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    // retrieve value from host map
+    pub fn value(&self) -> ScRequestId {
+        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_REQUEST_ID))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// mutable array of ScRequestId
+pub struct ScMutableRequestIdArray {
+    pub(crate) obj_id: i32
+}
+
+impl ScMutableRequestIdArray {
+    // empty the array
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    // index 0..length(), when length() a new one is appended
+    pub fn get_request_id(&self, index: i32) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // get immutable version of array
+    pub fn immutable(&self) -> ScImmutableRequestIdArray {
+        ScImmutableRequestIdArray { obj_id: self.obj_id }
     }
 
     // number of items in array

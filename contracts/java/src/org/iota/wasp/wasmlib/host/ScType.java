@@ -17,5 +17,6 @@ public class ScType {
 	public static int TYPE_HNAME = 8;
 	public static int TYPE_INT = 9;
 	public static int TYPE_MAP = 10;
-	public static int TYPE_STRING = 11;
+	public static int TYPE_REQUEST_ID = 11;
+	public static int TYPE_STRING = 12;
 }

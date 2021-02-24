@@ -12,5 +12,5 @@ import org.iota.wasp.wasmlib.immutable.*;
 public class FuncCallOnChainParams {
 	public ScImmutableHname HnameContract;
 	public ScImmutableHname HnameEP;
-	public ScImmutableInt   IntValue;
+	public ScImmutableInt IntValue;
 }

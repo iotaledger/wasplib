@@ -10,11 +10,11 @@ package org.iota.wasp.contracts.testcore.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewPassTypesViewParams {
-	public ScImmutableHash   Hash;
-	public ScImmutableHname  Hname;
-	public ScImmutableHname  HnameZero;
-	public ScImmutableInt    Int64;
-	public ScImmutableInt    Int64Zero;
+	public ScImmutableHash Hash;
+	public ScImmutableHname Hname;
+	public ScImmutableHname HnameZero;
+	public ScImmutableInt Int64;
+	public ScImmutableInt Int64Zero;
 	public ScImmutableString String;
 	public ScImmutableString StringZero;
 }

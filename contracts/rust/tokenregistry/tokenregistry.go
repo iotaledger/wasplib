@@ -8,17 +8,19 @@ import (
 )
 
 func funcMintSupply(ctx wasmlib.ScFuncContext, params *FuncMintSupplyParams) {
-	minted := ctx.Incoming().Minted()
-	if minted == wasmlib.MINT {
+	mintedSupply := ctx.MintedSupply()
+	if mintedSupply == 0 {
 		ctx.Panic("TokenRegistry: No newly minted tokens found")
 	}
+	mintedColor := ctx.MintedColor()
 	state := ctx.State()
-	registry := state.GetMap(VarRegistry).GetBytes(minted)
+	registry := state.GetMap(VarRegistry).GetBytes(mintedColor)
 	if registry.Exists() {
-		ctx.Panic("TokenRegistry: Color already exists")
+		// should never happen, because transaction id is unique
+		ctx.Panic("TokenRegistry: registry for color already exists")
 	}
 	token := &Token{
-		Supply:      ctx.Incoming().Balance(minted),
+		Supply:      mintedSupply,
 		MintedBy:    ctx.Caller(),
 		Owner:       ctx.Caller(),
 		Created:     ctx.Timestamp(),
@@ -26,15 +28,12 @@ func funcMintSupply(ctx wasmlib.ScFuncContext, params *FuncMintSupplyParams) {
 		Description: params.Description.Value(),
 		UserDefined: params.UserDefined.Value(),
 	}
-	if token.Supply <= 0 {
-		ctx.Panic("TokenRegistry: Insufficient supply")
-	}
 	if len(token.Description) == 0 {
 		token.Description += "no dscr"
 	}
 	registry.SetValue(token.Bytes())
 	colors := state.GetColorArray(VarColorList)
-	colors.GetColor(colors.Length()).SetValue(minted)
+	colors.GetColor(colors.Length()).SetValue(mintedColor)
 }
 
 func funcTransferOwnership(ctx wasmlib.ScFuncContext, params *FuncTransferOwnershipParams) {

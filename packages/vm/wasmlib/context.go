@@ -32,11 +32,6 @@ func (ctx ScBalances) Colors() ScImmutableColorArray {
 	return ctx.balances.GetColorArray(KeyColor)
 }
 
-// retrieve the color of newly minted tokens
-func (ctx ScBalances) Minted() ScColor {
-	return NewScColorFromBytes(ctx.balances.GetBytes(MINT).Value())
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScTransfers struct {
@@ -290,6 +285,16 @@ func (ctx ScFuncContext) Incoming() ScBalances {
 	return ScBalances{Root.GetMap(KeyIncoming).Immutable()}
 }
 
+// retrieve the color of the tokens that were minted in this transaction
+func (ctx ScFuncContext) MintedColor() ScColor {
+	return NewScColorFromRequestId(ctx.RequestId())
+}
+
+// retrieve the amount of tokens that were minted in this transaction
+func (ctx ScFuncContext) MintedSupply() int64 {
+	return Root.GetInt(KeyMinted).Value()
+}
+
 // (delayed) posts a smart contract function
 func (ctx ScFuncContext) Post(req *PostRequestParams) {
 	encode := NewBytesEncoder()
@@ -307,6 +312,11 @@ func (ctx ScFuncContext) Post(req *PostRequestParams) {
 	}
 	encode.Int(req.Delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
+}
+
+// retrieve the request id of this transaction
+func (ctx ScFuncContext) RequestId() ScRequestId {
+	return Root.GetRequestId(KeyRequestId).Value()
 }
 
 // access to mutable state storage

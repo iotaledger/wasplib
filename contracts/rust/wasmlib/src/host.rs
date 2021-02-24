@@ -18,9 +18,10 @@ pub const TYPE_HASH: i32 = 7;
 pub const TYPE_HNAME: i32 = 8;
 pub const TYPE_INT: i32 = 9;
 pub const TYPE_MAP: i32 = 10;
-pub const TYPE_STRING: i32 = 11;
+pub const TYPE_REQUEST_ID: i32 = 11;
+pub const TYPE_STRING: i32 = 12;
 
-const TYPE_SIZES: &[usize] = &[0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 0];
+const TYPE_SIZES: &[usize] = &[0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0];
 
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.

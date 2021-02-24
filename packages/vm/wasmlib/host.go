@@ -19,10 +19,11 @@ const (
 	TYPE_HNAME       int32 = 8
 	TYPE_INT         int32 = 9
 	TYPE_MAP         int32 = 10
-	TYPE_STRING      int32 = 11
+	TYPE_REQUEST_ID  int32 = 11
+	TYPE_STRING      int32 = 12
 )
 
-var typeSizes = [...]int{0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 0}
+var typeSizes = [...]int{0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0}
 
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool

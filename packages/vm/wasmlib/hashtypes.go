@@ -130,6 +130,12 @@ func NewScColorFromBytes(bytes []byte) ScColor {
 	return o
 }
 
+func NewScColorFromRequestId(requestId ScRequestId) ScColor {
+	o := ScColor{}
+	copy(o.id[:], requestId.Bytes())
+	return o
+}
+
 func (o ScColor) Bytes() []byte {
 	return o.id[:]
 }
@@ -243,6 +249,33 @@ func (hn ScHname) KeyId() Key32 {
 
 func (hn ScHname) String() string {
 	return strconv.FormatInt(int64(hn), 10)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScRequestId struct {
+	id [34]byte
+}
+
+func NewScRequestIdFromBytes(bytes []byte) ScRequestId {
+	o := ScRequestId{}
+	if len(bytes) != len(o.id) {
+		logPanic("invalid request id length")
+	}
+	copy(o.id[:], bytes)
+	return o
+}
+
+func (o ScRequestId) Bytes() []byte {
+	return o.id[:]
+}
+
+func (o ScRequestId) KeyId() Key32 {
+	return GetKeyIdFromBytes(o.Bytes())
+}
+
+func (o ScRequestId) String() string {
+	return base58Encode(o.id[:])
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

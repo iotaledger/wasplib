@@ -40,11 +40,6 @@ impl ScBalances {
     pub fn colors(&self) -> ScImmutableColorArray {
         self.balances.get_color_array(&KEY_COLOR)
     }
-
-    // retrieve the color of newly minted tokens
-    pub fn minted(&self) -> ScColor {
-        ScColor::from_bytes(&self.balances.get_bytes(&ScColor::MINT).value())
-    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -315,6 +310,14 @@ impl ScFuncContext {
         ScBalances { balances: ROOT.get_map(&KEY_INCOMING).immutable() }
     }
 
+    // retrieve the color of the tokens that were minted in this transaction
+    pub fn minted_color(&self) -> ScColor { ScColor::from_request_id(&self.request_id()) }
+
+    // retrieve the amount of tokens that were minted in this transaction
+    pub fn minted_supply(&self) -> i64 {
+        ROOT.get_int(&KEY_MINTED).value()
+    }
+
     // posts a request to asynchronously invoke the specified smart
     // contract function according to the specified request parameters
     pub fn post(&self, req: &PostRequestParams) {
@@ -333,6 +336,11 @@ impl ScFuncContext {
         }
         encode.int(req.delay);
         ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
+    }
+
+    // retrieve the request id of this transaction
+    fn request_id(&self) -> ScRequestId {
+        ROOT.get_request_id(&KEY_REQUEST_ID).value()
     }
 
     // access to mutable state storage

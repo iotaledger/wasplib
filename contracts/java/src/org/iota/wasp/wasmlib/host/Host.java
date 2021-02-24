@@ -11,7 +11,7 @@ import java.nio.charset.*;
 public class Host {
 	public static final ScMutableMap root = new ScMutableMap(1);
 
-	private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 0};
+	private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0};
 
 	//TODO figure out how to specify extern hostXxxx functions for each
 	// of the functions below to call in Wasm module "waspJava"

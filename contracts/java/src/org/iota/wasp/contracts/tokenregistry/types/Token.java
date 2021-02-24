@@ -10,7 +10,7 @@ package org.iota.wasp.contracts.tokenregistry.types;
 import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
-public class Token{
+public class Token {
 	//@formatter:off
 	public long      Created;     // creation timestamp
 	public String    Description; // description what minted token represents
@@ -35,7 +35,7 @@ public class Token{
 		UserDefined = decode.String();
 	}
 
-	public byte[] toBytes(){
+	public byte[] toBytes() {
 		return new BytesEncoder().
 				Int(Created).
 				String(Description).

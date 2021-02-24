@@ -54,6 +54,11 @@ public class ScMutableMap {
 		return new ScMutableChainId(objId, key.KeyId());
 	}
 
+	public ScMutableChainIdArray GetChainIdArray(MapKey key) {
+		int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_CHAIN_ID | ScType.TYPE_ARRAY);
+		return new ScMutableChainIdArray(arrId);
+	}
+
 	public ScMutableColor GetColor(MapKey key) {
 		return new ScMutableColor(objId, key.KeyId());
 	}
@@ -67,6 +72,11 @@ public class ScMutableMap {
 		return new ScMutableContractId(objId, key.KeyId());
 	}
 
+	public ScMutableContractIdArray GetContractIdArray(MapKey key) {
+		int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_CONTRACT_ID | ScType.TYPE_ARRAY);
+		return new ScMutableContractIdArray(arrId);
+	}
+
 	public ScMutableHash GetHash(MapKey key) {
 		return new ScMutableHash(objId, key.KeyId());
 	}
@@ -78,6 +88,11 @@ public class ScMutableMap {
 
 	public ScMutableHname GetHname(MapKey key) {
 		return new ScMutableHname(objId, key.KeyId());
+	}
+
+	public ScMutableHnameArray GetHnameArray(MapKey key) {
+		int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_HNAME | ScType.TYPE_ARRAY);
+		return new ScMutableHnameArray(arrId);
 	}
 
 	public ScMutableInt GetInt(MapKey key) {
@@ -97,6 +112,15 @@ public class ScMutableMap {
 	public ScMutableMapArray GetMapArray(MapKey key) {
 		int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_MAP | ScType.TYPE_ARRAY);
 		return new ScMutableMapArray(arrId);
+	}
+
+	public ScMutableRequestId GetRequestId(MapKey key) {
+		return new ScMutableRequestId(objId, key.KeyId());
+	}
+
+	public ScMutableRequestIdArray GetRequestIdArray(MapKey key) {
+		int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_REQUEST_ID | ScType.TYPE_ARRAY);
+		return new ScMutableRequestIdArray(arrId);
 	}
 
 	public ScMutableString GetString(MapKey key) {

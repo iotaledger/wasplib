@@ -61,6 +61,14 @@ public class ScFuncContext extends ScBaseContext {
 		return new ScBalances(Host.root.GetMap(Key.Incoming).Immutable());
 	}
 
+	public ScColor MintedColor() {
+		return new ScColor(RequestId());
+	}
+
+	public long MintedSupply() {
+		return Host.root.GetInt(Key.Minted).Value();
+	}
+
 	public void Post(PostRequestParams req) {
 		BytesEncoder encode = new BytesEncoder();
 		encode.ContractId(req.ContractId);
@@ -77,6 +85,10 @@ public class ScFuncContext extends ScBaseContext {
 		}
 		encode.Int(req.Delay);
 		Host.root.GetBytes(Key.Post).SetValue(encode.Data());
+	}
+
+	public ScRequestId RequestId() {
+		return Host.root.GetRequestId(Key.RequestId).Value();
 	}
 
 	public ScMutableMap State() {

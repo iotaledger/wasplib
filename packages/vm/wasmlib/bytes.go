@@ -75,6 +75,10 @@ func (d *BytesDecoder) Int() int64 {
 	}
 }
 
+func (d *BytesDecoder) RequestId() ScRequestId {
+	return NewScRequestIdFromBytes(d.Bytes())
+}
+
 func (d *BytesDecoder) String() string {
 	return string(d.Bytes())
 }
@@ -139,6 +143,10 @@ func (e *BytesEncoder) Int(value int64) *BytesEncoder {
 		}
 		e.data = append(e.data, b|0x80)
 	}
+}
+
+func (e *BytesEncoder) RequestId(value ScRequestId) *BytesEncoder {
+	return e.Bytes(value.Bytes())
 }
 
 func (e *BytesEncoder) String(value string) *BytesEncoder {

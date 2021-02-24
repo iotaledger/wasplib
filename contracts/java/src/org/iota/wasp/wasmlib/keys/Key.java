@@ -29,20 +29,22 @@ public class Key implements MapKey {
 	public static final Key Length          = new Key(-23);
 	public static final Key Log             = new Key(-24);
 	public static final Key Maps            = new Key(-25);
-	public static final Key Name            = new Key(-26);
-	public static final Key Panic           = new Key(-27);
-	public static final Key Params          = new Key(-28);
-	public static final Key Post            = new Key(-29);
-	public static final Key Random          = new Key(-30);
-	public static final Key Results         = new Key(-31);
-	public static final Key Return          = new Key(-32);
-	public static final Key State           = new Key(-33);
-	public static final Key Timestamp       = new Key(-34);
-	public static final Key Trace           = new Key(-35);
-	public static final Key Transfers       = new Key(-36);
-	public static final Key Utility         = new Key(-37);
-	public static final Key Valid           = new Key(-38);
-	public static final Key Zzzzzzz         = new Key(-39);
+	public static final Key Minted          = new Key(-26);
+	public static final Key Name            = new Key(-27);
+	public static final Key Panic           = new Key(-28);
+	public static final Key Params          = new Key(-29);
+	public static final Key Post            = new Key(-30);
+	public static final Key Random          = new Key(-31);
+	public static final Key RequestId       = new Key(-32);
+	public static final Key Results         = new Key(-33);
+	public static final Key Return          = new Key(-34);
+	public static final Key State           = new Key(-35);
+	public static final Key Timestamp       = new Key(-36);
+	public static final Key Trace           = new Key(-37);
+	public static final Key Transfers       = new Key(-38);
+	public static final Key Utility         = new Key(-39);
+	public static final Key Valid           = new Key(-40);
+	public static final Key Zzzzzzz         = new Key(-41);
 	// @formatter:on
 
 	int keyId;
