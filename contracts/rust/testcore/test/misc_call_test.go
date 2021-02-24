@@ -18,7 +18,7 @@ func testChainOwnerIDView(t *testing.T, w bool) {
 
 	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
 
-	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
+	require.EqualValues(t, chain.OriginatorAgentID[:], c)
 }
 
 func TestChainOwnerIDFull(t *testing.T) { run2(t, testChainOwnerIDFull) }
@@ -31,7 +31,7 @@ func testChainOwnerIDFull(t *testing.T, w bool) {
 	require.NoError(t, err)
 
 	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
-	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
+	require.EqualValues(t, chain.OriginatorAgentID[:], c)
 }
 
 func TestContractIDView(t *testing.T) { run2(t, testContractIDView) }
