@@ -99,8 +99,8 @@ public class ScMutableMap {
         return new ScMutableInt64(objId, key.KeyId());
     }
 
-    public ScMutableInt64Array GetIntArray(MapKey key) {
-        int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_INT | ScType.TYPE_ARRAY);
+    public ScMutableInt64Array GetInt64Array(MapKey key) {
+        int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_INT64 | ScType.TYPE_ARRAY);
         return new ScMutableInt64Array(arrId);
     }
 

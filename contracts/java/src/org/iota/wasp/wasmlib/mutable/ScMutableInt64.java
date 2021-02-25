@@ -15,7 +15,7 @@ public class ScMutableInt64 {
     }
 
     public boolean Exists() {
-        return Host.Exists(objId, keyId, ScType.TYPE_INT);
+        return Host.Exists(objId, keyId, ScType.TYPE_INT64);
     }
 
     public void SetValue(long id) {
@@ -28,7 +28,7 @@ public class ScMutableInt64 {
         bytes[5] = (byte) (id >> 40);
         bytes[6] = (byte) (id >> 48);
         bytes[7] = (byte) (id >> 56);
-        Host.SetBytes(objId, keyId, ScType.TYPE_INT, bytes);
+        Host.SetBytes(objId, keyId, ScType.TYPE_INT64, bytes);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ScMutableInt64 {
     }
 
     public long Value() {
-        byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT);
+        byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT64);
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |

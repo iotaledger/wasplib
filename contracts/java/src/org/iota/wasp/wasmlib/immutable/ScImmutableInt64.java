@@ -15,7 +15,7 @@ public class ScImmutableInt64 {
     }
 
     public boolean Exists() {
-        return Host.Exists(objId, keyId, ScType.TYPE_INT);
+        return Host.Exists(objId, keyId, ScType.TYPE_INT64);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ScImmutableInt64 {
     }
 
     public long Value() {
-        byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT);
+        byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT64);
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |

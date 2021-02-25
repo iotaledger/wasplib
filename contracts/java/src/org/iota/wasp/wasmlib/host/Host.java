@@ -34,7 +34,7 @@ public class Host {
     }
 
     public static void Clear(int objId) {
-        SetBytes(objId, Key.Length.KeyId(), ScType.TYPE_INT, new byte[8]);
+        SetBytes(objId, Key.Length.KeyId(), ScType.TYPE_INT64, new byte[8]);
     }
 
     public static boolean Exists(int objId, int keyId, int typeId) {
@@ -72,7 +72,7 @@ public class Host {
     }
 
     public static int GetLength(int objId) {
-        byte[] bytes = GetBytes(objId, Key.Length.KeyId(), ScType.TYPE_INT);
+        byte[] bytes = GetBytes(objId, Key.Length.KeyId(), ScType.TYPE_INT64);
         return (bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8) | ((bytes[2] & 0xff) << 16) | ((bytes[3] & 0xff) << 24);
     }
 
