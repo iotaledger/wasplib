@@ -23,7 +23,7 @@ var FieldTypes = map[string]int32{
 	"ContractId": wasmlib.TYPE_CONTRACT_ID,
 	"Hash":       wasmlib.TYPE_HASH,
 	"Hname":      wasmlib.TYPE_HNAME,
-	"Int":        wasmlib.TYPE_INT,
+	"Int64":      wasmlib.TYPE_INT64,
 	"String":     wasmlib.TYPE_STRING,
 }
 

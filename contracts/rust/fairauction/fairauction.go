@@ -21,7 +21,7 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, params *FuncFinalizeAuctionP
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(VarInfo)
-    ctx.Require(auctionInfo.Exists(), "Missing auction info")
+	ctx.Require(auctionInfo.Exists(), "Missing auction info")
 	auction := NewAuctionFromBytes(auctionInfo.Value())
 	if auction.HighestBid < 0 {
 		ctx.Log("No one bid on " + color.String())
@@ -62,14 +62,14 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, params *FuncFinalizeAuctionP
 
 func funcPlaceBid(ctx wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
-    ctx.Require(bidAmount > 0, "Missing bid amount")
+	ctx.Require(bidAmount > 0, "Missing bid amount")
 
 	color := params.Color.Value()
 	state := ctx.State()
 	auctions := state.GetMap(VarAuctions)
 	currentAuction := auctions.GetMap(color)
 	auctionInfo := currentAuction.GetBytes(VarInfo)
-    ctx.Require(auctionInfo.Exists(), "Missing auction info")
+	ctx.Require(auctionInfo.Exists(), "Missing auction info")
 
 	auction := NewAuctionFromBytes(auctionInfo.Value())
 	bidders := currentAuction.GetMap(VarBidders)
@@ -84,7 +84,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, params *FuncPlaceBidParams) {
 		bid.Timestamp = ctx.Timestamp()
 		bidder.SetValue(bid.Bytes())
 	} else {
-        ctx.Require(bidAmount >= auction.MinimumBid, "Insufficient bid amount")
+		ctx.Require(bidAmount >= auction.MinimumBid, "Insufficient bid amount")
 		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
 		bidderList.GetAgentId(index).SetValue(caller)
@@ -111,7 +111,7 @@ func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, params *FuncSetOwnerMarginPar
 	if ownerMargin > OwnerMarginMax {
 		ownerMargin = OwnerMarginMax
 	}
-	ctx.State().GetInt(VarOwnerMargin).SetValue(ownerMargin)
+	ctx.State().GetInt64(VarOwnerMargin).SetValue(ownerMargin)
 	ctx.Log("Updated owner margin")
 }
 
@@ -148,7 +148,7 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, params *FuncStartAuctionParams)
 	}
 
 	state := ctx.State()
-	ownerMargin := state.GetInt(VarOwnerMargin).Value()
+	ownerMargin := state.GetInt64(VarOwnerMargin).Value()
 	if ownerMargin == 0 {
 		ownerMargin = OwnerMarginDefault
 	}
@@ -187,13 +187,7 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, params *FuncStartAuctionParams)
 
 	finalizeParams := wasmlib.NewScMutableMap()
 	finalizeParams.GetColor(VarColor).SetValue(auction.Color)
-	ctx.Post(&wasmlib.PostRequestParams{
-		ContractId: ctx.ContractId(),
-		Function:   HFuncFinalizeAuction,
-		Params:     finalizeParams,
-		Transfer:   nil,
-		Delay:      duration * 60,
-	})
+	ctx.PostSelf(HFuncFinalizeAuction, finalizeParams, nil, duration*60)
 	ctx.Log("New auction started")
 }
 
@@ -211,18 +205,18 @@ func viewGetInfo(ctx wasmlib.ScViewContext, params *ViewGetInfoParams) {
 	results := ctx.Results()
 	results.GetColor(VarColor).SetValue(auction.Color)
 	results.GetAgentId(VarCreator).SetValue(auction.Creator)
-	results.GetInt(VarDeposit).SetValue(auction.Deposit)
+	results.GetInt64(VarDeposit).SetValue(auction.Deposit)
 	results.GetString(VarDescription).SetValue(auction.Description)
-	results.GetInt(VarDuration).SetValue(auction.Duration)
-	results.GetInt(VarHighestBid).SetValue(auction.HighestBid)
+	results.GetInt64(VarDuration).SetValue(auction.Duration)
+	results.GetInt64(VarHighestBid).SetValue(auction.HighestBid)
 	results.GetAgentId(VarHighestBidder).SetValue(auction.HighestBidder)
-	results.GetInt(VarMinimumBid).SetValue(auction.MinimumBid)
-	results.GetInt(VarNumTokens).SetValue(auction.NumTokens)
-	results.GetInt(VarOwnerMargin).SetValue(auction.OwnerMargin)
-	results.GetInt(VarWhenStarted).SetValue(auction.WhenStarted)
+	results.GetInt64(VarMinimumBid).SetValue(auction.MinimumBid)
+	results.GetInt64(VarNumTokens).SetValue(auction.NumTokens)
+	results.GetInt64(VarOwnerMargin).SetValue(auction.OwnerMargin)
+	results.GetInt64(VarWhenStarted).SetValue(auction.WhenStarted)
 
 	bidderList := currentAuction.GetAgentIdArray(VarBidderList)
-	results.GetInt(VarBidders).SetValue(int64(bidderList.Length()))
+	results.GetInt64(VarBidders).SetValue(int64(bidderList.Length()))
 }
 
 func transfer(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentId, color wasmlib.ScColor, amount int64) {

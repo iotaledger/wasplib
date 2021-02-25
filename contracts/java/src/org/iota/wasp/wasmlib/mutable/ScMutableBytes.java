@@ -7,28 +7,28 @@ import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.host.*;
 
 public class ScMutableBytes {
-	int objId;
-	int keyId;
+    int objId;
+    int keyId;
 
-	public ScMutableBytes(int objId, int keyId) {
-		this.objId = objId;
-		this.keyId = keyId;
-	}
+    public ScMutableBytes(int objId, int keyId) {
+        this.objId = objId;
+        this.keyId = keyId;
+    }
 
-	public boolean Exists() {
-		return Host.Exists(objId, keyId, ScType.TYPE_BYTES);
-	}
+    public boolean Exists() {
+        return Host.Exists(objId, keyId, ScType.TYPE_BYTES);
+    }
 
-	public void SetValue(byte[] value) {
-		Host.SetBytes(objId, keyId, ScType.TYPE_BYTES, value);
-	}
+    public void SetValue(byte[] value) {
+        Host.SetBytes(objId, keyId, ScType.TYPE_BYTES, value);
+    }
 
-	@Override
-	public String toString() {
-		return ScUtility.base58Encode(Value());
-	}
+    @Override
+    public String toString() {
+        return ScUtility.base58Encode(Value());
+    }
 
-	public byte[] Value() {
-		return Host.GetBytes(objId, ScType.TYPE_BYTES, keyId);
-	}
+    public byte[] Value() {
+        return Host.GetBytes(objId, ScType.TYPE_BYTES, keyId);
+    }
 }

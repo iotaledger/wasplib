@@ -34,7 +34,7 @@ fn func_donate_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncWithdrawParams {
-    pub amount: ScImmutableInt, // amount to withdraw
+    pub amount: ScImmutableInt64, // amount to withdraw
 }
 
 fn func_withdraw_thunk(ctx: &ScFuncContext) {
@@ -43,7 +43,7 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
 
     let p = ctx.params();
     let params = FuncWithdrawParams {
-        amount: p.get_int(PARAM_AMOUNT),
+        amount: p.get_int64(PARAM_AMOUNT),
     };
     func_withdraw(ctx, &params);
 }

@@ -21,17 +21,17 @@ impl Bet {
     pub fn from_bytes(bytes: &[u8]) -> Bet {
         let mut decode = BytesDecoder::new(bytes);
         Bet {
-            amount: decode.int(),
+            amount: decode.int64(),
             better: decode.agent_id(),
-            number: decode.int(),
+            number: decode.int64(),
         }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut encode = BytesEncoder::new();
-        encode.int(self.amount);
+        encode.int64(self.amount);
         encode.agent_id(&self.better);
-        encode.int(self.number);
+        encode.int64(self.number);
         return encode.data();
     }
 }

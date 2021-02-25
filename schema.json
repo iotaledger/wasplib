@@ -1,33 +1,33 @@
 {
   "types": {
-    "Int": "64 bit integer",
+    "Int64": "64 bit integer",
     "String": "Arbitrary length UTF-8 encoded text",
     "Bytes": "Arbitrary length data bytes",
     "Address": "33-byte address: 1 byte address version + 32-byte address hash, version 1=ED25519, 2=BLS",
     "Agent": "37-byte agent id: 33-byte address + 4-byte hash of contract name",
     "Color": "32-byte token color: hash of request that minted the color, all zero for plain iota, all one for mint command",
     "DonationInfo": [
-      {"seq": "Int"},
+      {"seq": "Int64"},
       {"donator": "AgentId"},
-      {"amount": "Int"},
+      {"amount": "Int64"},
       {"feedback": "String"},
       {"error": "String"}
     ],
     "AuctionInfo": [
       {"color": "Color"},
-      {"num_tokens": "Int"},
-      {"minimum_bid": "Int"},
+      {"num_tokens": "Int64"},
+      {"minimum_bid": "Int64"},
       {"description": "String"},
-      {"when_started": "Int"},
-      {"duration": "Int"},
+      {"when_started": "Int64"},
+      {"duration": "Int64"},
       {"auction_owner": "AgentId"},
-      {"deposit": "Int"},
-      {"owner_margin": "Int"}
+      {"deposit": "Int64"},
+      {"owner_margin": "Int64"}
     ],
     "BidInfo": [
       {"bidder": "AgentId"},
-      {"amount": "Int"},
-      {"when": "Int"}
+      {"amount": "Int64"},
+      {"when": "Int64"}
     ]
   },
   "state:": {

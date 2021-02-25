@@ -11,7 +11,7 @@ import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
 public class Donation {
-	//@formatter:off
+    //@formatter:off
 	public long      Amount;    // amount donated
 	public ScAgentId Donator;   // who donated
 	public String    Error;     // error to be reported to donator if anything goes wrong
@@ -19,25 +19,25 @@ public class Donation {
 	public long      Timestamp; // when the donation took place
 	//@formatter:on
 
-	public Donation() {
-	}
+    public Donation() {
+    }
 
-	public Donation(byte[] bytes) {
-		BytesDecoder decode = new BytesDecoder(bytes);
-		Amount = decode.Int();
-		Donator = decode.AgentId();
-		Error = decode.String();
-		Feedback = decode.String();
-		Timestamp = decode.Int();
-	}
+    public Donation(byte[] bytes) {
+        BytesDecoder decode = new BytesDecoder(bytes);
+        Amount = decode.Int64();
+        Donator = decode.AgentId();
+        Error = decode.String();
+        Feedback = decode.String();
+        Timestamp = decode.Int64();
+    }
 
-	public byte[] toBytes() {
-		return new BytesEncoder().
-				Int(Amount).
-				AgentId(Donator).
-				String(Error).
-				String(Feedback).
-				Int(Timestamp).
-				Data();
-	}
+    public byte[] toBytes() {
+        return new BytesEncoder().
+                Int64(Amount).
+                AgentId(Donator).
+                String(Error).
+                String(Feedback).
+                Int64(Timestamp).
+                Data();
+    }
 }

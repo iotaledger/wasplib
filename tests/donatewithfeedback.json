@@ -1,11 +1,11 @@
 {
   "types": {
     "DonationInfo": [
-      {"field": "amount", "type": "Int"},
+      {"field": "amount", "type": "Int64"},
       {"field": "donator", "type": "Agent"},
       {"field": "error", "type": "String"},
       {"field": "feedback", "type": "String"},
-      {"field": "timestamp", "type": "Int"}
+      {"field": "timestamp", "type": "Int64"}
     ]
   },
   "setups": {

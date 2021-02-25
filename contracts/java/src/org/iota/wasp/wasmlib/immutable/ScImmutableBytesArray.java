@@ -6,17 +6,17 @@ package org.iota.wasp.wasmlib.immutable;
 import org.iota.wasp.wasmlib.host.*;
 
 public class ScImmutableBytesArray {
-	int objId;
+    int objId;
 
-	public ScImmutableBytesArray(int objId) {
-		this.objId = objId;
-	}
+    public ScImmutableBytesArray(int objId) {
+        this.objId = objId;
+    }
 
-	public ScImmutableBytes GetBytes(int index) {
-		return new ScImmutableBytes(objId, index);
-	}
+    public ScImmutableBytes GetBytes(int index) {
+        return new ScImmutableBytes(objId, index);
+    }
 
-	public int Length() {
-		return Host.GetLength(objId);
-	}
+    public int Length() {
+        return Host.GetLength(objId);
+    }
 }

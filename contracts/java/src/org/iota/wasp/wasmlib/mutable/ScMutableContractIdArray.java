@@ -7,25 +7,25 @@ import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableContractIdArray {
-	int objId;
+    int objId;
 
-	public ScMutableContractIdArray(int objId) {
-		this.objId = objId;
-	}
+    public ScMutableContractIdArray(int objId) {
+        this.objId = objId;
+    }
 
-	public void Clear() {
-		Host.Clear(objId);
-	}
+    public void Clear() {
+        Host.Clear(objId);
+    }
 
-	public ScMutableContractId GetContractId(int index) {
-		return new ScMutableContractId(objId, index);
-	}
+    public ScMutableContractId GetContractId(int index) {
+        return new ScMutableContractId(objId, index);
+    }
 
-	public ScImmutableContractIdArray Immutable() {
-		return new ScImmutableContractIdArray(objId);
-	}
+    public ScImmutableContractIdArray Immutable() {
+        return new ScImmutableContractIdArray(objId);
+    }
 
-	public int Length() {
-		return Host.GetLength(objId);
-	}
+    public int Length() {
+        return Host.GetLength(objId);
+    }
 }

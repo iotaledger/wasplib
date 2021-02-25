@@ -2,20 +2,20 @@
   "name": "FairRoulette",
   "types": {
     "Bet": {
-      "amount": "Int",
+      "amount": "Int64",
       "better": "AgentId",
-      "number": "Int"
+      "number": "Int64"
     }
   },
   "vars": {
     "bets": "[]Bet",
-    "lastWinningNumber": "Int",
+    "lastWinningNumber": "Int64",
     "lockedBets": "[]Bet",
-    "playPeriod": "Int"
+    "playPeriod": "Int64"
   },
   "funcs": {
     "placeBet": {
-      "number": "Int // the number a better bets on"
+      "number": "Int64 // the number a better bets on"
     },
     "lockBets": {
       "#grant": "self // only SC itself can invoke this function"
@@ -25,7 +25,7 @@
     },
     "playPeriod": {
       "#grant": "creator // only SC creator can update the play period",
-      "playPeriod": "Int // number of minutes in one playing round"
+      "playPeriod": "Int64 // number of minutes in one playing round"
     }
   },
   "views": {

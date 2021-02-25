@@ -7,25 +7,25 @@ import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableBytesArray {
-	int objId;
+    int objId;
 
-	public ScMutableBytesArray(int objId) {
-		this.objId = objId;
-	}
+    public ScMutableBytesArray(int objId) {
+        this.objId = objId;
+    }
 
-	public void Clear() {
-		Host.Clear(objId);
-	}
+    public void Clear() {
+        Host.Clear(objId);
+    }
 
-	public ScMutableBytes GetBytes(int index) {
-		return new ScMutableBytes(objId, index);
-	}
+    public ScMutableBytes GetBytes(int index) {
+        return new ScMutableBytes(objId, index);
+    }
 
-	public ScImmutableBytesArray Immutable() {
-		return new ScImmutableBytesArray(objId);
-	}
+    public ScImmutableBytesArray Immutable() {
+        return new ScImmutableBytesArray(objId);
+    }
 
-	public int Length() {
-		return Host.GetLength(objId);
-	}
+    public int Length() {
+        return Host.GetLength(objId);
+    }
 }

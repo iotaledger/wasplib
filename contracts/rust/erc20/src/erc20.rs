@@ -21,7 +21,7 @@ pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
 
     // all allowances are in the map under the name of he owner
     let allowances = ctx.state().get_map(&ctx.caller());
-    allowances.get_int(&delegation).set_value(amount);
+    allowances.get_int64(&delegation).set_value(amount);
     ctx.log("erc20.approve.success");
 }
 
@@ -35,13 +35,13 @@ pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
 
     let supply = params.supply.value();
     ctx.require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter");
-    ctx.state().get_int(VAR_SUPPLY).set_value(supply);
+    ctx.state().get_int64(VAR_SUPPLY).set_value(supply);
 
     // we cannot use 'caller' here because on_init is always called from the 'root'
     // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
     // assign the whole supply to creator
     let creator = params.creator.value();
-    ctx.state().get_map(VAR_BALANCES).get_int(&creator).set_value(supply);
+    ctx.state().get_map(VAR_BALANCES).get_int64(&creator).set_value(supply);
 
     let t = "erc20.on_init.success. Supply: ".to_string() + &supply.to_string() +
         &", creator:".to_string() + &creator.to_string();
@@ -59,11 +59,11 @@ pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
     ctx.require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter");
 
     let balances = ctx.state().get_map(VAR_BALANCES);
-    let source_balance = balances.get_int(&ctx.caller());
+    let source_balance = balances.get_int64(&ctx.caller());
     ctx.require(source_balance.value() >= amount, "erc20.transfer.fail: not enough funds");
 
     let target_addr = params.account.value();
-    let target_balance = balances.get_int(&target_addr);
+    let target_balance = balances.get_int64(&target_addr);
     let result = target_balance.value() + amount;
     ctx.require(result > 0, "erc20.transfer.fail: overflow");
 
@@ -89,14 +89,14 @@ pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) 
 
     // allowances are in the map under the name of the account
     let allowances = ctx.state().get_map(&account);
-    let allowance = allowances.get_int(&recipient);
+    let allowance = allowances.get_int64(&recipient);
     ctx.require(allowance.value() >= amount, "erc20.transfer_from.fail: not enough allowance");
 
     let balances = ctx.state().get_map(VAR_BALANCES);
-    let source_balance = balances.get_int(&account);
+    let source_balance = balances.get_int64(&account);
     ctx.require(source_balance.value() >= amount, "erc20.transfer_from.fail: not enough funds");
 
-    let recipient_balance = balances.get_int(&recipient);
+    let recipient_balance = balances.get_int64(&recipient);
     let result = recipient_balance.value() + amount;
     ctx.require(result > 0, "erc20.transfer_from.fail: overflow");
 
@@ -119,8 +119,8 @@ pub fn view_allowance(ctx: &ScViewContext, params: &ViewAllowanceParams) {
 
     // all allowances of the address 'owner' are stored in the map of the same name
     let allowances = ctx.state().get_map(&params.account.value());
-    let allow = allowances.get_int(&params.delegation.value()).value();
-    ctx.results().get_int(PARAM_AMOUNT).set_value(allow);
+    let allow = allowances.get_int64(&params.delegation.value()).value();
+    ctx.results().get_int64(PARAM_AMOUNT).set_value(allow);
 }
 
 // the view returns balance of the token held in the account
@@ -128,14 +128,14 @@ pub fn view_allowance(ctx: &ScViewContext, params: &ViewAllowanceParams) {
 // - PARAM_ACCOUNT: agentID
 pub fn view_balance_of(ctx: &ScViewContext, params: &ViewBalanceOfParams) {
     let balances = ctx.state().get_map(VAR_BALANCES);
-    let balance = balances.get_int(&params.account.value()).value();
-    ctx.results().get_int(PARAM_AMOUNT).set_value(balance)
+    let balance = balances.get_int64(&params.account.value()).value();
+    ctx.results().get_int64(PARAM_AMOUNT).set_value(balance)
 }
 
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
 pub fn view_total_supply(ctx: &ScViewContext, _params: &ViewTotalSupplyParams) {
-    let supply = ctx.state().get_int(VAR_SUPPLY).value();
-    ctx.results().get_int(PARAM_SUPPLY).set_value(supply);
+    let supply = ctx.state().get_int64(VAR_SUPPLY).value();
+    ctx.results().get_int64(PARAM_SUPPLY).set_value(supply);
 }

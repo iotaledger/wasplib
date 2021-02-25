@@ -11,24 +11,24 @@ import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
 public class Member {
-	//@formatter:off
+    //@formatter:off
 	public ScAddress Address; // address of dividend recipient
 	public long      Factor;  // relative division factor
 	//@formatter:on
 
-	public Member() {
-	}
+    public Member() {
+    }
 
-	public Member(byte[] bytes) {
-		BytesDecoder decode = new BytesDecoder(bytes);
-		Address = decode.Address();
-		Factor = decode.Int();
-	}
+    public Member(byte[] bytes) {
+        BytesDecoder decode = new BytesDecoder(bytes);
+        Address = decode.Address();
+        Factor = decode.Int64();
+    }
 
-	public byte[] toBytes() {
-		return new BytesEncoder().
-				Address(Address).
-				Int(Factor).
-				Data();
-	}
+    public byte[] toBytes() {
+        return new BytesEncoder().
+                Address(Address).
+                Int64(Factor).
+                Data();
+    }
 }

@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.donatewithfeedback.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncDonateParams {
-	public ScImmutableString Feedback; // feedback for the person you donate to
+    public ScImmutableString Feedback; // feedback for the person you donate to
 }

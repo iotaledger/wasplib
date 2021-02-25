@@ -2,23 +2,23 @@
   "name": "DonateWithFeedback",
   "types": {
     "Donation": {
-      "amount": "Int // amount donated",
+      "amount": "Int64 // amount donated",
       "donator": "AgentId // who donated",
       "error": "String // error to be reported to donator if anything goes wrong",
       "feedback": "String // the feedback for the person donated to",
-      "timestamp": "Int // when the donation took place"
+      "timestamp": "Int64 // when the donation took place"
     }
   },
   "vars": {
-    "amount": "Int",
+    "amount": "Int64",
     "donations": "[]String",
     "donator": "AgentId",
     "error": "String",
     "feedback": "String",
     "log": "[]Donation",
-    "maxDonation": "Int",
-    "timestamp": "Int",
-    "totalDonation": "Int"
+    "maxDonation": "Int64",
+    "timestamp": "Int64",
+    "totalDonation": "Int64"
   },
   "funcs": {
     "donate": {
@@ -26,7 +26,7 @@
     },
     "withdraw": {
       "#grant": "creator // only SC creator can withdraw donated funds",
-      "amount": "?Int // amount to withdraw"
+      "amount": "?Int64 // amount to withdraw"
     }
   },
   "views": {

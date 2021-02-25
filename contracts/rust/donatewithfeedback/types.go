@@ -20,20 +20,20 @@ type Donation struct {
 func NewDonationFromBytes(bytes []byte) *Donation {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Donation{}
-	data.Amount = decode.Int()
+	data.Amount = decode.Int64()
 	data.Donator = decode.AgentId()
 	data.Error = decode.String()
 	data.Feedback = decode.String()
-	data.Timestamp = decode.Int()
+	data.Timestamp = decode.Int64()
 	return data
 }
 
 func (o *Donation) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
-		Int(o.Amount).
+		Int64(o.Amount).
 		AgentId(o.Donator).
 		String(o.Error).
 		String(o.Feedback).
-		Int(o.Timestamp).
+		Int64(o.Timestamp).
 		Data()
 }

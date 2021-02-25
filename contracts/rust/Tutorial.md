@@ -45,24 +45,24 @@ the WasmLib interface provides proxy objects to hide the underlying data
 transfers between the separate systems.
 
 We tried to keep things as simple and understandable as possible, and therefore
-decided upon two kinds of proxy objects. Arrays and maps. The underlying USCP
+decided upon two kinds of proxy objects. Arrays and maps. The underlying ISCP
 sandbox provides access to its data in the form of key/value stores that can
 have arbitrary byte data for both key and value. The proxy objects channel those
 in easier to use data types, with the type conversions hidden within WasmLib,
 while still keeping the option open to use arbitrary byte strings for keys and
 values.
 
-Our initial implementation of WasmLib has been created for the Rust programming 
-language, because this language had the most advanced and stable support for 
-generating Wasm code at the time when we started implementing our Wasm VM 
+Our initial implementation of WasmLib has been created for the Rust programming
+language, because this language had the most advanced and stable support for
+generating Wasm code at the time when we started implementing our Wasm VM
 environment.
 
 ### WasmLib for Rust
 
-The implementation of WasmLib for Rust provides direct support for the 
-following data types:
+The implementation of WasmLib for Rust provides direct support for the following
+value data types:
 
-- Int64 - Any integer value is currently represented as a 64-bit integer.
+- Int64 - An integer value is currently represented as a 64-bit integer.
 - Bytes - An arbitrary-length byte array
 - String - An UTF-8 encoded string value.
 - ScAddress - A 33-byte Tangle address
@@ -74,6 +74,16 @@ following data types:
 - ScHname - A 4-byte unsigned integer hash value derived from a name string
 - ScRequestId - A 34-byte transaction request id
 
-The ScXxx data types are ISCP-specific and more detailed explanations will 
-be provided in those instances where they are used.
+The ScXxx data types are ISCP-specific and more detailed explanations will be
+provided in those instances where they are used. Each of the ScXxx value data
+types has at a minimum the ability to convert itself to a byte array, construct
+itself from a byte array, and provide a human-readable representation of its
+data, in most cases a base58 encoded string. Each value data type also
+implements a trait that allows it to be used as a key with the map proxy object.
+
+Since the smart contract data lives on the host, and we cannot simply copy all
+data to the Wasm client because it could be prohibitively large, we also use
+proxy objects to access values. Another thing to consider it that some data 
+provided by the host is immutable, whereas some may be mutable. To 
+facilitate this whe introduce two proxy objects per value type.
 

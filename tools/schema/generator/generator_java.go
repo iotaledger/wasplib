@@ -21,7 +21,7 @@ var javaTypes = StringMap{
 	"ContractId": "ScContractId",
 	"Hash":       "ScHash",
 	"Hname":      "Hname",
-	"Int":        "long",
+	"Int64":        "long",
 	"String":     "String",
 }
 

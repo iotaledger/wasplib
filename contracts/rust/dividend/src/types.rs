@@ -21,14 +21,14 @@ impl Member {
         let mut decode = BytesDecoder::new(bytes);
         Member {
             address: decode.address(),
-            factor: decode.int(),
+            factor: decode.int64(),
         }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut encode = BytesEncoder::new();
         encode.address(&self.address);
-        encode.int(self.factor);
+        encode.int64(self.factor);
         return encode.data();
     }
 }

@@ -272,35 +272,35 @@ func (o ScImmutableHnameArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScImmutableInt struct {
+type ScImmutableInt64 struct {
 	objId int32
 	keyId Key32
 }
 
-func (o ScImmutableInt) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_INT)
+func (o ScImmutableInt64) Exists() bool {
+	return Exists(o.objId, o.keyId, TYPE_INT64)
 }
 
-func (o ScImmutableInt) String() string {
+func (o ScImmutableInt64) String() string {
 	return strconv.FormatInt(o.Value(), 10)
 }
 
-func (o ScImmutableInt) Value() int64 {
-	bytes := GetBytes(o.objId, o.keyId, TYPE_INT)
+func (o ScImmutableInt64) Value() int64 {
+	bytes := GetBytes(o.objId, o.keyId, TYPE_INT64)
 	return int64(binary.LittleEndian.Uint64(bytes))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScImmutableIntArray struct {
+type ScImmutableInt64Array struct {
 	objId int32
 }
 
-func (o ScImmutableIntArray) GetInt(index int32) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: Key32(index)}
+func (o ScImmutableInt64Array) GetInt64(index int32) ScImmutableInt64 {
+	return ScImmutableInt64{objId: o.objId, keyId: Key32(index)}
 }
 
-func (o ScImmutableIntArray) Length() int32 {
+func (o ScImmutableInt64Array) Length() int32 {
 	return GetLength(o.objId)
 }
 
@@ -382,13 +382,13 @@ func (o ScImmutableMap) GetHnameArray(key MapKey) ScImmutableHnameArray {
 	return ScImmutableHnameArray{objId: arrId}
 }
 
-func (o ScImmutableMap) GetInt(key MapKey) ScImmutableInt {
-	return ScImmutableInt{objId: o.objId, keyId: key.KeyId()}
+func (o ScImmutableMap) GetInt64(key MapKey) ScImmutableInt64 {
+	return ScImmutableInt64{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScImmutableMap) GetIntArray(key MapKey) ScImmutableIntArray {
-	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT|TYPE_ARRAY)
-	return ScImmutableIntArray{objId: arrId}
+func (o ScImmutableMap) GetInt64Array(key MapKey) ScImmutableInt64Array {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT64|TYPE_ARRAY)
+	return ScImmutableInt64Array{objId: arrId}
 }
 
 func (o ScImmutableMap) GetMap(key MapKey) ScImmutableMap {

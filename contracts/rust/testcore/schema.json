@@ -4,12 +4,12 @@
   "types": {
   },
   "vars": {
-    "counter": "Int",
+    "counter": "Int64",
     "hnameEP": "Hname"
   },
   "funcs": {
     "callOnChain": {
-      "intValue=intParamValue": "Int",
+      "intValue=intParamValue": "Int64",
       "hnameContract": "?Hname",
       "hnameEP": "?Hname"
     },
@@ -26,8 +26,8 @@
     "init": {
     },
     "passTypesFull": {
-      "int64": "Int",
-      "int64Zero=int64-0": "Int",
+      "int64": "Int64",
+      "int64Zero=int64-0": "Int64",
       "string": "String",
       "stringZero=string-0": "String",
       "hash=Hash": "Hash",
@@ -35,7 +35,7 @@
       "hnameZero=Hname-0": "Hname"
     },
     "runRecursion": {
-      "intValue=intParamValue": "Int"
+      "intValue=intParamValue": "Int64"
     },
     "sendToAddress": {
       "#grant": "creator",
@@ -43,7 +43,7 @@
     },
     "setInt": {
       "name=intParamName": "String",
-      "intValue=intParamValue": "Int"
+      "intValue=intParamValue": "Int64"
     },
     "testCallPanicFullEP": {
     },
@@ -58,7 +58,7 @@
     "testEventLogEventData": {
     },
     "testEventLogGenericData": {
-      "counter": "Int"
+      "counter": "Int64"
     },
     "testPanicFullEP": {
     },
@@ -75,7 +75,7 @@
       "contractCreator": "AgentId"
     },
     "fibonacci": {
-      "intValue=intParamValue": "Int"
+      "intValue=intParamValue": "Int64"
     },
     "getCounter": {
     },
@@ -85,8 +85,8 @@
     "justView": {
     },
     "passTypesView": {
-      "int64": "Int",
-      "int64Zero=int64-0": "Int",
+      "int64": "Int64",
+      "int64Zero=int64-0": "Int64",
       "string": "String",
       "stringZero=string-0": "String",
       "hash=Hash": "Hash",

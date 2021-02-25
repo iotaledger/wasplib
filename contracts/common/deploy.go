@@ -29,7 +29,6 @@ const (
 //TODO update contracts/readme
 //TODO figure out how to interrupt wasmtime VM
 
-
 // set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
 const WasmRunner = 0
 

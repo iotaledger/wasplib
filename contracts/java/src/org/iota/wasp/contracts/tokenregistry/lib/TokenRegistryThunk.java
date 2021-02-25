@@ -13,49 +13,49 @@ import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class TokenRegistryThunk {
-	public static void onLoad() {
-		ScExports exports = new ScExports();
-		exports.AddFunc("mintSupply", TokenRegistryThunk::funcMintSupplyThunk);
-		exports.AddFunc("transferOwnership", TokenRegistryThunk::funcTransferOwnershipThunk);
-		exports.AddFunc("updateMetadata", TokenRegistryThunk::funcUpdateMetadataThunk);
-		exports.AddView("getInfo", TokenRegistryThunk::viewGetInfoThunk);
-	}
+    public static void onLoad() {
+        ScExports exports = new ScExports();
+        exports.AddFunc("mintSupply", TokenRegistryThunk::funcMintSupplyThunk);
+        exports.AddFunc("transferOwnership", TokenRegistryThunk::funcTransferOwnershipThunk);
+        exports.AddFunc("updateMetadata", TokenRegistryThunk::funcUpdateMetadataThunk);
+        exports.AddView("getInfo", TokenRegistryThunk::viewGetInfoThunk);
+    }
 
-	private static void funcMintSupplyThunk(ScFuncContext ctx) {
-		ScImmutableMap p = ctx.Params();
-		FuncMintSupplyParams params = new FuncMintSupplyParams();
-		params.Description = p.GetString(Consts.ParamDescription);
-		params.UserDefined = p.GetString(Consts.ParamUserDefined);
-		TokenRegistry.funcMintSupply(ctx, params);
-	}
+    private static void funcMintSupplyThunk(ScFuncContext ctx) {
+        ScImmutableMap p = ctx.Params();
+        FuncMintSupplyParams params = new FuncMintSupplyParams();
+        params.Description = p.GetString(Consts.ParamDescription);
+        params.UserDefined = p.GetString(Consts.ParamUserDefined);
+        TokenRegistry.funcMintSupply(ctx, params);
+    }
 
-	private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
-		//TODO the one who can transfer token ownership
-		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+    private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
+        //TODO the one who can transfer token ownership
+        ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-		ScImmutableMap p = ctx.Params();
-		FuncTransferOwnershipParams params = new FuncTransferOwnershipParams();
-		params.Color = p.GetColor(Consts.ParamColor);
-		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.funcTransferOwnership(ctx, params);
-	}
+        ScImmutableMap p = ctx.Params();
+        FuncTransferOwnershipParams params = new FuncTransferOwnershipParams();
+        params.Color = p.GetColor(Consts.ParamColor);
+        ctx.Require(params.Color.Exists(), "missing mandatory color");
+        TokenRegistry.funcTransferOwnership(ctx, params);
+    }
 
-	private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
-		//TODO the one who can change the token info
-		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+    private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
+        //TODO the one who can change the token info
+        ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-		ScImmutableMap p = ctx.Params();
-		FuncUpdateMetadataParams params = new FuncUpdateMetadataParams();
-		params.Color = p.GetColor(Consts.ParamColor);
-		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.funcUpdateMetadata(ctx, params);
-	}
+        ScImmutableMap p = ctx.Params();
+        FuncUpdateMetadataParams params = new FuncUpdateMetadataParams();
+        params.Color = p.GetColor(Consts.ParamColor);
+        ctx.Require(params.Color.Exists(), "missing mandatory color");
+        TokenRegistry.funcUpdateMetadata(ctx, params);
+    }
 
-	private static void viewGetInfoThunk(ScViewContext ctx) {
-		ScImmutableMap p = ctx.Params();
-		ViewGetInfoParams params = new ViewGetInfoParams();
-		params.Color = p.GetColor(Consts.ParamColor);
-		ctx.Require(params.Color.Exists(), "missing mandatory color");
-		TokenRegistry.viewGetInfo(ctx, params);
-	}
+    private static void viewGetInfoThunk(ScViewContext ctx) {
+        ScImmutableMap p = ctx.Params();
+        ViewGetInfoParams params = new ViewGetInfoParams();
+        params.Color = p.GetColor(Consts.ParamColor);
+        ctx.Require(params.Color.Exists(), "missing mandatory color");
+        TokenRegistry.viewGetInfo(ctx, params);
+    }
 }

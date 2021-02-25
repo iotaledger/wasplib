@@ -31,15 +31,15 @@ impl Auction {
         Auction {
             color: decode.color(),
             creator: decode.agent_id(),
-            deposit: decode.int(),
+            deposit: decode.int64(),
             description: decode.string(),
-            duration: decode.int(),
-            highest_bid: decode.int(),
+            duration: decode.int64(),
+            highest_bid: decode.int64(),
             highest_bidder: decode.agent_id(),
-            minimum_bid: decode.int(),
-            num_tokens: decode.int(),
-            owner_margin: decode.int(),
-            when_started: decode.int(),
+            minimum_bid: decode.int64(),
+            num_tokens: decode.int64(),
+            owner_margin: decode.int64(),
+            when_started: decode.int64(),
         }
     }
 
@@ -47,15 +47,15 @@ impl Auction {
         let mut encode = BytesEncoder::new();
         encode.color(&self.color);
         encode.agent_id(&self.creator);
-        encode.int(self.deposit);
+        encode.int64(self.deposit);
         encode.string(&self.description);
-        encode.int(self.duration);
-        encode.int(self.highest_bid);
+        encode.int64(self.duration);
+        encode.int64(self.highest_bid);
         encode.agent_id(&self.highest_bidder);
-        encode.int(self.minimum_bid);
-        encode.int(self.num_tokens);
-        encode.int(self.owner_margin);
-        encode.int(self.when_started);
+        encode.int64(self.minimum_bid);
+        encode.int64(self.num_tokens);
+        encode.int64(self.owner_margin);
+        encode.int64(self.when_started);
         return encode.data();
     }
 }
@@ -72,17 +72,17 @@ impl Bid {
     pub fn from_bytes(bytes: &[u8]) -> Bid {
         let mut decode = BytesDecoder::new(bytes);
         Bid {
-            amount: decode.int(),
-            index: decode.int(),
-            timestamp: decode.int(),
+            amount: decode.int64(),
+            index: decode.int64(),
+            timestamp: decode.int64(),
         }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut encode = BytesEncoder::new();
-        encode.int(self.amount);
-        encode.int(self.index);
-        encode.int(self.timestamp);
+        encode.int64(self.amount);
+        encode.int64(self.index);
+        encode.int64(self.timestamp);
         return encode.data();
     }
 }

@@ -49,7 +49,7 @@ fn on_load() {
 pub struct FuncCallOnChainParams {
     pub hname_contract: ScImmutableHname,
     pub hname_ep:       ScImmutableHname,
-    pub int_value:      ScImmutableInt,
+    pub int_value:      ScImmutableInt64,
 }
 //@formatter:on
 
@@ -58,7 +58,7 @@ fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
     let params = FuncCallOnChainParams {
         hname_contract: p.get_hname(PARAM_HNAME_CONTRACT),
         hname_ep: p.get_hname(PARAM_HNAME_EP),
-        int_value: p.get_int(PARAM_INT_VALUE),
+        int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
     func_call_on_chain(ctx, &params);
@@ -113,8 +113,8 @@ pub struct FuncPassTypesFullParams {
     pub hash:        ScImmutableHash,
     pub hname:       ScImmutableHname,
     pub hname_zero:  ScImmutableHname,
-    pub int64:       ScImmutableInt,
-    pub int64_zero:  ScImmutableInt,
+    pub int64:       ScImmutableInt64,
+    pub int64_zero:  ScImmutableInt64,
     pub string:      ScImmutableString,
     pub string_zero: ScImmutableString,
 }
@@ -126,8 +126,8 @@ fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
         hash: p.get_hash(PARAM_HASH),
         hname: p.get_hname(PARAM_HNAME),
         hname_zero: p.get_hname(PARAM_HNAME_ZERO),
-        int64: p.get_int(PARAM_INT64),
-        int64_zero: p.get_int(PARAM_INT64_ZERO),
+        int64: p.get_int64(PARAM_INT64),
+        int64_zero: p.get_int64(PARAM_INT64_ZERO),
         string: p.get_string(PARAM_STRING),
         string_zero: p.get_string(PARAM_STRING_ZERO),
     };
@@ -142,13 +142,13 @@ fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncRunRecursionParams {
-    pub int_value: ScImmutableInt,
+    pub int_value: ScImmutableInt64,
 }
 
 fn func_run_recursion_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncRunRecursionParams {
-        int_value: p.get_int(PARAM_INT_VALUE),
+        int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
     func_run_recursion(ctx, &params);
@@ -171,7 +171,7 @@ fn func_send_to_address_thunk(ctx: &ScFuncContext) {
 
 //@formatter:off
 pub struct FuncSetIntParams {
-    pub int_value: ScImmutableInt,
+    pub int_value: ScImmutableInt64,
     pub name:      ScImmutableString,
 }
 //@formatter:on
@@ -179,7 +179,7 @@ pub struct FuncSetIntParams {
 fn func_set_int_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncSetIntParams {
-        int_value: p.get_int(PARAM_INT_VALUE),
+        int_value: p.get_int64(PARAM_INT_VALUE),
         name: p.get_string(PARAM_NAME),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
@@ -230,13 +230,13 @@ fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncTestEventLogGenericDataParams {
-    pub counter: ScImmutableInt,
+    pub counter: ScImmutableInt64,
 }
 
 fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncTestEventLogGenericDataParams {
-        counter: p.get_int(PARAM_COUNTER),
+        counter: p.get_int64(PARAM_COUNTER),
     };
     ctx.require(params.counter.exists(), "missing mandatory counter");
     func_test_event_log_generic_data(ctx, &params);
@@ -290,13 +290,13 @@ fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
 }
 
 pub struct ViewFibonacciParams {
-    pub int_value: ScImmutableInt,
+    pub int_value: ScImmutableInt64,
 }
 
 fn view_fibonacci_thunk(ctx: &ScViewContext) {
     let p = ctx.params();
     let params = ViewFibonacciParams {
-        int_value: p.get_int(PARAM_INT_VALUE),
+        int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
     view_fibonacci(ctx, &params);
@@ -334,8 +334,8 @@ pub struct ViewPassTypesViewParams {
     pub hash:        ScImmutableHash,
     pub hname:       ScImmutableHname,
     pub hname_zero:  ScImmutableHname,
-    pub int64:       ScImmutableInt,
-    pub int64_zero:  ScImmutableInt,
+    pub int64:       ScImmutableInt64,
+    pub int64_zero:  ScImmutableInt64,
     pub string:      ScImmutableString,
     pub string_zero: ScImmutableString,
 }
@@ -347,8 +347,8 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
         hash: p.get_hash(PARAM_HASH),
         hname: p.get_hname(PARAM_HNAME),
         hname_zero: p.get_hname(PARAM_HNAME_ZERO),
-        int64: p.get_int(PARAM_INT64),
-        int64_zero: p.get_int(PARAM_INT64_ZERO),
+        int64: p.get_int64(PARAM_INT64),
+        int64_zero: p.get_int64(PARAM_INT64_ZERO),
         string: p.get_string(PARAM_STRING),
         string_zero: p.get_string(PARAM_STRING_ZERO),
     };

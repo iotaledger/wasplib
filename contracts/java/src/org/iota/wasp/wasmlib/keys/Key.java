@@ -3,7 +3,7 @@ package org.iota.wasp.wasmlib.keys;
 import org.iota.wasp.wasmlib.host.*;
 
 public class Key implements MapKey {
-	// @formatter:off
+    // @formatter:off
 	public static final Key Address         = new Key(-1);
 	public static final Key Balances        = new Key(-2);
 	public static final Key Base58Bytes     = new Key(-3);
@@ -47,19 +47,19 @@ public class Key implements MapKey {
 	public static final Key Zzzzzzz         = new Key(-41);
 	// @formatter:on
 
-	int keyId;
-	String key;
+    int keyId;
+    String key;
 
-	public Key(String key) {
-		this.key = key;
-	}
+    public Key(String key) {
+        this.key = key;
+    }
 
-	public Key(int keyId) {
-		this.keyId = keyId;
-	}
+    public Key(int keyId) {
+        this.keyId = keyId;
+    }
 
-	@Override
-	public int KeyId() {
-		return key == null ? keyId : Host.GetKeyIdFromString(key);
-	}
+    @Override
+    public int KeyId() {
+        return key == null ? keyId : Host.GetKeyIdFromString(key);
+    }
 }

@@ -43,20 +43,20 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncPlaceBetParams {
-    pub number: ScImmutableInt, // the number a better bets on
+    pub number: ScImmutableInt64, // the number a better bets on
 }
 
 fn func_place_bet_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncPlaceBetParams {
-        number: p.get_int(PARAM_NUMBER),
+        number: p.get_int64(PARAM_NUMBER),
     };
     ctx.require(params.number.exists(), "missing mandatory number");
     func_place_bet(ctx, &params);
 }
 
 pub struct FuncPlayPeriodParams {
-    pub play_period: ScImmutableInt, // number of minutes in one playing round
+    pub play_period: ScImmutableInt64, // number of minutes in one playing round
 }
 
 fn func_play_period_thunk(ctx: &ScFuncContext) {
@@ -65,7 +65,7 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
 
     let p = ctx.params();
     let params = FuncPlayPeriodParams {
-        play_period: p.get_int(PARAM_PLAY_PERIOD),
+        play_period: p.get_int64(PARAM_PLAY_PERIOD),
     };
     ctx.require(params.play_period.exists(), "missing mandatory playPeriod");
     func_play_period(ctx, &params);

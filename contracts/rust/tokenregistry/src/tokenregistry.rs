@@ -45,5 +45,5 @@ pub fn func_update_metadata(_ctx: &ScFuncContext, _params: &FuncUpdateMetadataPa
 }
 
 pub fn view_get_info(_ctx: &ScViewContext, _params: &ViewGetInfoParams) {
-     //TODO
+    //TODO
 }

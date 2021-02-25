@@ -7,12 +7,12 @@ import org.iota.wasp.contracts.helloworld.lib.*;
 import org.iota.wasp.wasmlib.context.*;
 
 public class HelloWorld {
-	public static void funcHelloWorld(ScFuncContext ctx, FuncHelloWorldParams params) {
-		ctx.Log("Hello, world!");
-	}
+    public static void funcHelloWorld(ScFuncContext ctx, FuncHelloWorldParams params) {
+        ctx.Log("Hello, world!");
+    }
 
-	public static void viewGetHelloWorld(ScViewContext ctx, ViewGetHelloWorldParams params) {
-		ctx.Log("Get Hello world!");
-		ctx.Results().GetString(Consts.VarHelloWorld).SetValue("Hello, world!");
-	}
+    public static void viewGetHelloWorld(ScViewContext ctx, ViewGetHelloWorldParams params) {
+        ctx.Log("Get Hello world!");
+        ctx.Results().GetString(Consts.VarHelloWorld).SetValue("Hello, world!");
+    }
 }

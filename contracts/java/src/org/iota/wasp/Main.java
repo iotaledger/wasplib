@@ -14,15 +14,15 @@ import org.iota.wasp.contracts.testcore.lib.*;
 import org.iota.wasp.contracts.tokenregistry.lib.*;
 
 public class Main {
-	public static void main(String[] args) {
-		DividendThunk.onLoad();
-		DonateWithFeedbackThunk.onLoad();
-		Erc20Thunk.onLoad();
-		FairAuctionThunk.onLoad();
-		FairRouletteThunk.onLoad();
-		HelloWorldThunk.onLoad();
-		IncCounterThunk.onLoad();
-		TestCoreThunk.onLoad();
-		TokenRegistryThunk.onLoad();
-	}
+    public static void main(String[] args) {
+        DividendThunk.onLoad();
+        DonateWithFeedbackThunk.onLoad();
+        Erc20Thunk.onLoad();
+        FairAuctionThunk.onLoad();
+        FairRouletteThunk.onLoad();
+        HelloWorldThunk.onLoad();
+        IncCounterThunk.onLoad();
+        TestCoreThunk.onLoad();
+        TokenRegistryThunk.onLoad();
+    }
 }

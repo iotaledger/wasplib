@@ -1,9 +1,9 @@
 {
   "types": {
     "BetInfo": [
-      {"field": "amount", "type": "Int"},
+      {"field": "amount", "type": "Int64"},
       {"field": "better", "type": "Agent"},
-      {"field": "color", "type": "Int"}
+      {"field": "color", "type": "Int64"}
     ]
   },
   "setups": {

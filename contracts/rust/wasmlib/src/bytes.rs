@@ -26,7 +26,7 @@ impl BytesDecoder<'_> {
 
     // decodes the next substring of bytes from the byte buffer
     pub fn bytes(&mut self) -> &[u8] {
-        let size = self.int() as usize;
+        let size = self.int64() as usize;
         if self.data.len() < size {
             panic!("Cannot decode bytes");
         }
@@ -62,7 +62,7 @@ impl BytesDecoder<'_> {
 
     // decodes an int64 from the byte buffer
     // note that ints are encoded using leb128 encoding
-    pub fn int(&mut self) -> i64 {
+    pub fn int64(&mut self) -> i64 {
         // leb128 decoder
         let mut val = 0_i64;
         let mut s = 0;
@@ -126,7 +126,7 @@ impl BytesEncoder {
 
     // encodes a substring of bytes into the byte buffer
     pub fn bytes(&mut self, value: &[u8]) -> &BytesEncoder {
-        self.int(value.len() as i64);
+        self.int64(value.len() as i64);
         self.data.extend_from_slice(value);
         self
     }
@@ -168,7 +168,7 @@ impl BytesEncoder {
 
     // encodes an int64 into the byte buffer
     // note that ints are encoded using leb128 encoding
-    pub fn int(&mut self, mut val: i64) -> &BytesEncoder {
+    pub fn int64(&mut self, mut val: i64) -> &BytesEncoder {
         // leb128 encoder
         loop {
             let b = val as u8;

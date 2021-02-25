@@ -50,13 +50,13 @@ fn func_increment_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncInitParams {
-    pub counter: ScImmutableInt, // value to initialize state counter with
+    pub counter: ScImmutableInt64, // value to initialize state counter with
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncInitParams {
-        counter: p.get_int(PARAM_COUNTER),
+        counter: p.get_int64(PARAM_COUNTER),
     };
     func_init(ctx, &params);
 }
@@ -90,13 +90,13 @@ fn func_post_increment_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncRepeatManyParams {
-    pub num_repeats: ScImmutableInt, // number of times to recursively call myself
+    pub num_repeats: ScImmutableInt64, // number of times to recursively call myself
 }
 
 fn func_repeat_many_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncRepeatManyParams {
-        num_repeats: p.get_int(PARAM_NUM_REPEATS),
+        num_repeats: p.get_int64(PARAM_NUM_REPEATS),
     };
     func_repeat_many(ctx, &params);
 }

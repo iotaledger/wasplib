@@ -26,7 +26,7 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 
 type FuncMemberParams struct {
 	Address wasmlib.ScImmutableAddress           // address of dividend recipient
-	Factor  wasmlib.ScImmutableInt               // relative division factor
+	Factor  wasmlib.ScImmutableInt64             // relative division factor
 }
 
 func funcMemberThunk(ctx wasmlib.ScFuncContext) {
@@ -36,7 +36,7 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncMemberParams{
 		Address: p.GetAddress(ParamAddress),
-		Factor:  p.GetInt(ParamFactor),
+		Factor:  p.GetInt64(ParamFactor),
 	}
 	ctx.Require(params.Address.Exists(), "missing mandatory address")
 	ctx.Require(params.Factor.Exists(), "missing mandatory factor")

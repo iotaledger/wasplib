@@ -8,32 +8,32 @@ import org.iota.wasp.wasmlib.host.*;
 import java.nio.charset.*;
 
 public class ScMutableString {
-	int objId;
-	int keyId;
+    int objId;
+    int keyId;
 
-	public ScMutableString(int objId, int keyId) {
-		this.objId = objId;
-		this.keyId = keyId;
-	}
+    public ScMutableString(int objId, int keyId) {
+        this.objId = objId;
+        this.keyId = keyId;
+    }
 
-	public boolean Exists() {
-		return Host.Exists(objId, keyId, ScType.TYPE_STRING);
-	}
+    public boolean Exists() {
+        return Host.Exists(objId, keyId, ScType.TYPE_STRING);
+    }
 
-	public void SetValue(String value) {
-		// convert string to UTF8-encoded bytes array
-		byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
-		Host.SetBytes(objId, keyId, ScType.TYPE_STRING, bytes);
-	}
+    public void SetValue(String value) {
+        // convert string to UTF8-encoded bytes array
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        Host.SetBytes(objId, keyId, ScType.TYPE_STRING, bytes);
+    }
 
-	@Override
-	public String toString() {
-		return Value();
-	}
+    @Override
+    public String toString() {
+        return Value();
+    }
 
-	public String Value() {
-		// convert UTF8-encoded bytes array to string
-		byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_STRING);
-		return bytes == null ? "" : new String(bytes, StandardCharsets.UTF_8);
-	}
+    public String Value() {
+        // convert UTF8-encoded bytes array to string
+        byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_STRING);
+        return bytes == null ? "" : new String(bytes, StandardCharsets.UTF_8);
+    }
 }

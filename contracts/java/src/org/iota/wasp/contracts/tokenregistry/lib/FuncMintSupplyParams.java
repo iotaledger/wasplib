@@ -10,6 +10,6 @@ package org.iota.wasp.contracts.tokenregistry.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncMintSupplyParams {
-	public ScImmutableString Description; // description what minted token represents
-	public ScImmutableString UserDefined; // any user defined text
+    public ScImmutableString Description; // description what minted token represents
+    public ScImmutableString UserDefined; // any user defined text
 }

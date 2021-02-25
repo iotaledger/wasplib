@@ -44,7 +44,7 @@ func OnLoad() {
 type FuncCallOnChainParams struct {
 	HnameContract wasmlib.ScImmutableHname
 	HnameEP       wasmlib.ScImmutableHname
-	IntValue      wasmlib.ScImmutableInt
+	IntValue      wasmlib.ScImmutableInt64
 }
 
 func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
@@ -52,7 +52,7 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncCallOnChainParams{
 		HnameContract: p.GetHname(ParamHnameContract),
 		HnameEP:       p.GetHname(ParamHnameEP),
-		IntValue:      p.GetInt(ParamIntValue),
+		IntValue:      p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
 	funcCallOnChain(ctx, params)
@@ -108,8 +108,8 @@ type FuncPassTypesFullParams struct {
 	Hash       wasmlib.ScImmutableHash
 	Hname      wasmlib.ScImmutableHname
 	HnameZero  wasmlib.ScImmutableHname
-	Int64      wasmlib.ScImmutableInt
-	Int64Zero  wasmlib.ScImmutableInt
+	Int64      wasmlib.ScImmutableInt64
+	Int64Zero  wasmlib.ScImmutableInt64
 	String     wasmlib.ScImmutableString
 	StringZero wasmlib.ScImmutableString
 }
@@ -120,8 +120,8 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 		Hash:       p.GetHash(ParamHash),
 		Hname:      p.GetHname(ParamHname),
 		HnameZero:  p.GetHname(ParamHnameZero),
-		Int64:      p.GetInt(ParamInt64),
-		Int64Zero:  p.GetInt(ParamInt64Zero),
+		Int64:      p.GetInt64(ParamInt64),
+		Int64Zero:  p.GetInt64(ParamInt64Zero),
 		String:     p.GetString(ParamString),
 		StringZero: p.GetString(ParamStringZero),
 	}
@@ -136,13 +136,13 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncRunRecursionParams struct {
-	IntValue wasmlib.ScImmutableInt
+	IntValue wasmlib.ScImmutableInt64
 }
 
 func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncRunRecursionParams{
-		IntValue: p.GetInt(ParamIntValue),
+		IntValue: p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
 	funcRunRecursion(ctx, params)
@@ -164,14 +164,14 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncSetIntParams struct {
-	IntValue wasmlib.ScImmutableInt
+	IntValue wasmlib.ScImmutableInt64
 	Name     wasmlib.ScImmutableString
 }
 
 func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncSetIntParams{
-		IntValue: p.GetInt(ParamIntValue),
+		IntValue: p.GetInt64(ParamIntValue),
 		Name:     p.GetString(ParamName),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
@@ -234,13 +234,13 @@ func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncTestEventLogGenericDataParams struct {
-	Counter wasmlib.ScImmutableInt
+	Counter wasmlib.ScImmutableInt64
 }
 
 func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTestEventLogGenericDataParams{
-		Counter: p.GetInt(ParamCounter),
+		Counter: p.GetInt64(ParamCounter),
 	}
 	ctx.Require(params.Counter.Exists(), "missing mandatory counter")
 	funcTestEventLogGenericData(ctx, params)
@@ -294,13 +294,13 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 }
 
 type ViewFibonacciParams struct {
-	IntValue wasmlib.ScImmutableInt
+	IntValue wasmlib.ScImmutableInt64
 }
 
 func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params()
 	params := &ViewFibonacciParams{
-		IntValue: p.GetInt(ParamIntValue),
+		IntValue: p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
 	viewFibonacci(ctx, params)
@@ -341,8 +341,8 @@ type ViewPassTypesViewParams struct {
 	Hash       wasmlib.ScImmutableHash
 	Hname      wasmlib.ScImmutableHname
 	HnameZero  wasmlib.ScImmutableHname
-	Int64      wasmlib.ScImmutableInt
-	Int64Zero  wasmlib.ScImmutableInt
+	Int64      wasmlib.ScImmutableInt64
+	Int64Zero  wasmlib.ScImmutableInt64
 	String     wasmlib.ScImmutableString
 	StringZero wasmlib.ScImmutableString
 }
@@ -353,8 +353,8 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 		Hash:       p.GetHash(ParamHash),
 		Hname:      p.GetHname(ParamHname),
 		HnameZero:  p.GetHname(ParamHnameZero),
-		Int64:      p.GetInt(ParamInt64),
-		Int64Zero:  p.GetInt(ParamInt64Zero),
+		Int64:      p.GetInt64(ParamInt64),
+		Int64Zero:  p.GetInt64(ParamInt64Zero),
 		String:     p.GetString(ParamString),
 		StringZero: p.GetString(ParamStringZero),
 	}

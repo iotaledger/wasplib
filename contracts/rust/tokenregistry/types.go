@@ -22,24 +22,24 @@ type Token struct {
 func NewTokenFromBytes(bytes []byte) *Token {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Token{}
-	data.Created = decode.Int()
+	data.Created = decode.Int64()
 	data.Description = decode.String()
 	data.MintedBy = decode.AgentId()
 	data.Owner = decode.AgentId()
-	data.Supply = decode.Int()
-	data.Updated = decode.Int()
+	data.Supply = decode.Int64()
+	data.Updated = decode.Int64()
 	data.UserDefined = decode.String()
 	return data
 }
 
 func (o *Token) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
-		Int(o.Created).
+		Int64(o.Created).
 		String(o.Description).
 		AgentId(o.MintedBy).
 		AgentId(o.Owner).
-		Int(o.Supply).
-		Int(o.Updated).
+		Int64(o.Supply).
+		Int64(o.Updated).
 		String(o.UserDefined).
 		Data()
 }

@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.erc20.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewBalanceOfParams {
-	public ScImmutableAgentId Account; // sender account
+    public ScImmutableAgentId Account; // sender account
 }

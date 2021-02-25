@@ -25,24 +25,24 @@ impl Token {
     pub fn from_bytes(bytes: &[u8]) -> Token {
         let mut decode = BytesDecoder::new(bytes);
         Token {
-            created: decode.int(),
+            created: decode.int64(),
             description: decode.string(),
             minted_by: decode.agent_id(),
             owner: decode.agent_id(),
-            supply: decode.int(),
-            updated: decode.int(),
+            supply: decode.int64(),
+            updated: decode.int64(),
             user_defined: decode.string(),
         }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut encode = BytesEncoder::new();
-        encode.int(self.created);
+        encode.int64(self.created);
         encode.string(&self.description);
         encode.agent_id(&self.minted_by);
         encode.agent_id(&self.owner);
-        encode.int(self.supply);
-        encode.int(self.updated);
+        encode.int64(self.supply);
+        encode.int64(self.updated);
         encode.string(&self.user_defined);
         return encode.data();
     }

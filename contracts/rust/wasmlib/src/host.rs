@@ -16,7 +16,7 @@ pub const TYPE_COLOR: i32 = 5;
 pub const TYPE_CONTRACT_ID: i32 = 6;
 pub const TYPE_HASH: i32 = 7;
 pub const TYPE_HNAME: i32 = 8;
-pub const TYPE_INT: i32 = 9;
+pub const TYPE_INT64: i32 = 9;
 pub const TYPE_MAP: i32 = 10;
 pub const TYPE_REQUEST_ID: i32 = 11;
 pub const TYPE_STRING: i32 = 12;
@@ -35,7 +35,7 @@ extern {
 }
 
 pub fn clear(obj_id: i32) {
-    set_bytes(obj_id, KEY_LENGTH, TYPE_INT, &0_i64.to_le_bytes())
+    set_bytes(obj_id, KEY_LENGTH, TYPE_INT64, &0_i64.to_le_bytes())
 }
 
 pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
@@ -78,7 +78,7 @@ pub fn get_key_id_from_string(key: &str) -> Key32 {
 }
 
 pub fn get_length(obj_id: i32) -> i32 {
-    let bytes = get_bytes(obj_id, KEY_LENGTH, TYPE_INT);
+    let bytes = get_bytes(obj_id, KEY_LENGTH, TYPE_INT64);
     i64::from_le_bytes(bytes.try_into().unwrap()) as i32
 }
 

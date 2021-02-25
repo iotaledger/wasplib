@@ -44,7 +44,7 @@
     "name": "eventlog",
     "description": "Event log Contract",
     "vars": {
-      "numRecords": "Int",
+      "numRecords": "Int64",
       "records": "[]Bytes"
     },
     "funcs": {
@@ -55,9 +55,9 @@
       },
       "getRecords": {
         "contractHname": "Hname",
-        "maxLastRecords": "?Int",
-        "fromTs": "?Int",
-        "toTs": "?Int"
+        "maxLastRecords": "?Int64",
+        "fromTs": "?Int64",
+        "toTs": "?Int64"
       }
     }
   },
@@ -83,12 +83,12 @@
       },
       "setContractFee": {
         "hname=$$hname$$": "Hname",
-        "ownerFee=$$ownerfee$$": "?Int",
-        "validatorFee=$$validatorfee$$": "?Int"
+        "ownerFee=$$ownerfee$$": "?Int64",
+        "validatorFee=$$validatorfee$$": "?Int64"
       },
       "setDefaultFee": {
-        "ownerFee=$$ownerfee$$": "?Int",
-        "validatorFee=$$validatorfee$$": "?Int"
+        "ownerFee=$$ownerfee$$": "?Int64",
+        "validatorFee=$$validatorfee$$": "?Int64"
       }
     },
     "views": {

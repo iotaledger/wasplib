@@ -1,11 +1,11 @@
 {
   "types": {
     "TokenInfo": [
-      {"field": "supply", "type": "Int"},
+      {"field": "supply", "type": "Int64"},
       {"field": "minted_by", "type": "Agent"},
       {"field": "creator", "type": "Agent"},
-      {"field": "created", "type": "Int"},
-      {"field": "updated", "type": "Int"},
+      {"field": "created", "type": "Int64"},
+      {"field": "updated", "type": "Int64"},
       {"field": "description", "type": "String"},
       {"field": "user_defined", "type": "String"}
     ]

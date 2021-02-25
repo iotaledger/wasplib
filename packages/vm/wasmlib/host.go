@@ -17,7 +17,7 @@ const (
 	TYPE_CONTRACT_ID int32 = 6
 	TYPE_HASH        int32 = 7
 	TYPE_HNAME       int32 = 8
-	TYPE_INT         int32 = 9
+	TYPE_INT64       int32 = 9
 	TYPE_MAP         int32 = 10
 	TYPE_REQUEST_ID  int32 = 11
 	TYPE_STRING      int32 = 12
@@ -45,7 +45,7 @@ func ConnectHost(h ScHost) ScHost {
 }
 
 func Clear(objId int32) {
-	SetBytes(objId, KeyLength, TYPE_INT, make([]byte, 8))
+	SetBytes(objId, KeyLength, TYPE_INT64, make([]byte, 8))
 }
 
 func Exists(objId int32, keyId Key32, typeId int32) bool {
@@ -69,7 +69,7 @@ func GetKeyIdFromString(key string) Key32 {
 }
 
 func GetLength(objId int32) int32 {
-	bytes := GetBytes(objId, KeyLength, TYPE_INT)
+	bytes := GetBytes(objId, KeyLength, TYPE_INT64)
 	return int32(binary.LittleEndian.Uint64(bytes))
 }
 

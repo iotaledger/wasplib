@@ -7,25 +7,25 @@ import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableColorArray {
-	int objId;
+    int objId;
 
-	public ScMutableColorArray(int objId) {
-		this.objId = objId;
-	}
+    public ScMutableColorArray(int objId) {
+        this.objId = objId;
+    }
 
-	public void Clear() {
-		Host.Clear(objId);
-	}
+    public void Clear() {
+        Host.Clear(objId);
+    }
 
-	public ScMutableColor GetColor(int index) {
-		return new ScMutableColor(objId, index);
-	}
+    public ScMutableColor GetColor(int index) {
+        return new ScMutableColor(objId, index);
+    }
 
-	public ScImmutableColorArray Immutable() {
-		return new ScImmutableColorArray(objId);
-	}
+    public ScImmutableColorArray Immutable() {
+        return new ScImmutableColorArray(objId);
+    }
 
-	public int Length() {
-		return Host.GetLength(objId);
-	}
+    public int Length() {
+        return Host.GetLength(objId);
+    }
 }

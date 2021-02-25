@@ -7,24 +7,24 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.host.*;
 
 public class ScImmutableContractId {
-	int objId;
-	int keyId;
+    int objId;
+    int keyId;
 
-	public ScImmutableContractId(int objId, int keyId) {
-		this.objId = objId;
-		this.keyId = keyId;
-	}
+    public ScImmutableContractId(int objId, int keyId) {
+        this.objId = objId;
+        this.keyId = keyId;
+    }
 
-	public boolean Exists() {
-		return Host.Exists(objId, keyId, ScType.TYPE_CONTRACT_ID);
-	}
+    public boolean Exists() {
+        return Host.Exists(objId, keyId, ScType.TYPE_CONTRACT_ID);
+    }
 
-	@Override
-	public String toString() {
-		return Value().toString();
-	}
+    @Override
+    public String toString() {
+        return Value().toString();
+    }
 
-	public ScContractId Value() {
-		return new ScContractId(Host.GetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID));
-	}
+    public ScContractId Value() {
+        return new ScContractId(Host.GetBytes(objId, keyId, ScType.TYPE_CONTRACT_ID));
+    }
 }

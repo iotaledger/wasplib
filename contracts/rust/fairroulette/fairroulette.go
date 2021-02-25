@@ -22,20 +22,14 @@ func funcLockBets(ctx wasmlib.ScFuncContext, params *FuncLockBetsParams) {
 	}
 	bets.Clear()
 
-	ctx.Post(&wasmlib.PostRequestParams{
-		ContractId: ctx.ContractId(),
-		Function:   HFuncPayWinners,
-		Params:     nil,
-		Transfer:   nil,
-		Delay:      0,
-	})
+	ctx.PostSelf(HFuncPayWinners, nil, nil, 0)
 }
 
 func funcPayWinners(ctx wasmlib.ScFuncContext, params *FuncPayWinnersParams) {
 	scId := ctx.ContractId().AsAgentId()
 	winningNumber := ctx.Utility().Random(5) + 1
 	state := ctx.State()
-	state.GetInt(VarLastWinningNumber).SetValue(winningNumber)
+	state.GetInt64(VarLastWinningNumber).SetValue(winningNumber)
 
 	// gather all winners and calculate some totals
 	totalBetAmount := int64(0)
@@ -105,17 +99,11 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, params *FuncPlaceBetParams) {
 	betNr := bets.Length()
 	bets.GetBytes(betNr).SetValue(bet.Bytes())
 	if betNr == 0 {
-		playPeriod := state.GetInt(VarPlayPeriod).Value()
+		playPeriod := state.GetInt64(VarPlayPeriod).Value()
 		if playPeriod < 10 {
 			playPeriod = DefaultPlayPeriod
 		}
-		ctx.Post(&wasmlib.PostRequestParams{
-			ContractId: ctx.ContractId(),
-			Function:   HFuncLockBets,
-			Params:     nil,
-			Transfer:   nil,
-			Delay:      playPeriod,
-		})
+		ctx.PostSelf(HFuncLockBets, nil, nil, playPeriod)
 	}
 }
 
@@ -125,5 +113,5 @@ func funcPlayPeriod(ctx wasmlib.ScFuncContext, params *FuncPlayPeriodParams) {
 		ctx.Panic("Invalid play period...")
 	}
 
-	ctx.State().GetInt(VarPlayPeriod).SetValue(playPeriod)
+	ctx.State().GetInt64(VarPlayPeriod).SetValue(playPeriod)
 }

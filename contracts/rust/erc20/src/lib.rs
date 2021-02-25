@@ -26,7 +26,7 @@ fn on_load() {
 
 //@formatter:off
 pub struct FuncApproveParams {
-    pub amount:     ScImmutableInt,       // allowance value for delegated account
+    pub amount:     ScImmutableInt64,     // allowance value for delegated account
     pub delegation: ScImmutableAgentId,   // delegated account
 }
 //@formatter:on
@@ -34,7 +34,7 @@ pub struct FuncApproveParams {
 fn func_approve_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncApproveParams {
-        amount: p.get_int(PARAM_AMOUNT),
+        amount: p.get_int64(PARAM_AMOUNT),
         delegation: p.get_agent_id(PARAM_DELEGATION),
     };
     ctx.require(params.amount.exists(), "missing mandatory amount");
@@ -45,7 +45,7 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
 //@formatter:off
 pub struct FuncInitParams {
     pub creator: ScImmutableAgentId,   // creator/owner of the initial supply
-    pub supply:  ScImmutableInt,       // initial token supply
+    pub supply:  ScImmutableInt64,     // initial token supply
 }
 //@formatter:on
 
@@ -53,7 +53,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncInitParams {
         creator: p.get_agent_id(PARAM_CREATOR),
-        supply: p.get_int(PARAM_SUPPLY),
+        supply: p.get_int64(PARAM_SUPPLY),
     };
     ctx.require(params.creator.exists(), "missing mandatory creator");
     ctx.require(params.supply.exists(), "missing mandatory supply");
@@ -63,7 +63,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
 //@formatter:off
 pub struct FuncTransferParams {
     pub account: ScImmutableAgentId,   // target account
-    pub amount:  ScImmutableInt,       // amount of tokens to transfer
+    pub amount:  ScImmutableInt64,     // amount of tokens to transfer
 }
 //@formatter:on
 
@@ -71,7 +71,7 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncTransferParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
-        amount: p.get_int(PARAM_AMOUNT),
+        amount: p.get_int64(PARAM_AMOUNT),
     };
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.amount.exists(), "missing mandatory amount");
@@ -81,7 +81,7 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
 //@formatter:off
 pub struct FuncTransferFromParams {
     pub account:   ScImmutableAgentId,   // sender account
-    pub amount:    ScImmutableInt,       // amount of tokens to transfer
+    pub amount:    ScImmutableInt64,     // amount of tokens to transfer
     pub recipient: ScImmutableAgentId,   // recipient account
 }
 //@formatter:on
@@ -90,7 +90,7 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     let p = ctx.params();
     let params = FuncTransferFromParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
-        amount: p.get_int(PARAM_AMOUNT),
+        amount: p.get_int64(PARAM_AMOUNT),
         recipient: p.get_agent_id(PARAM_RECIPIENT),
     };
     ctx.require(params.account.exists(), "missing mandatory account");

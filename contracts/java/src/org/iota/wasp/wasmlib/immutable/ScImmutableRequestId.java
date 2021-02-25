@@ -7,24 +7,24 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.host.*;
 
 public class ScImmutableRequestId {
-	int objId;
-	int keyId;
+    int objId;
+    int keyId;
 
-	public ScImmutableRequestId(int objId, int keyId) {
-		this.objId = objId;
-		this.keyId = keyId;
-	}
+    public ScImmutableRequestId(int objId, int keyId) {
+        this.objId = objId;
+        this.keyId = keyId;
+    }
 
-	public boolean Exists() {
-		return Host.Exists(objId, keyId, ScType.TYPE_REQUEST_ID);
-	}
+    public boolean Exists() {
+        return Host.Exists(objId, keyId, ScType.TYPE_REQUEST_ID);
+    }
 
-	@Override
-	public String toString() {
-		return Value().toString();
-	}
+    @Override
+    public String toString() {
+        return Value().toString();
+    }
 
-	public ScRequestId Value() {
-		return new ScRequestId(Host.GetBytes(objId, keyId, ScType.TYPE_REQUEST_ID));
-	}
+    public ScRequestId Value() {
+        return new ScRequestId(Host.GetBytes(objId, keyId, ScType.TYPE_REQUEST_ID));
+    }
 }

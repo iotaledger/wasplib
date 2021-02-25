@@ -13,7 +13,7 @@ func funcDivide(ctx wasmlib.ScFuncContext, params *FuncDivideParams) {
 		ctx.Panic("Nothing to divide")
 	}
 	state := ctx.State()
-	totalFactor := state.GetInt(VarTotalFactor)
+	totalFactor := state.GetInt64(VarTotalFactor)
 	total := totalFactor.Value()
 	members := state.GetBytesArray(VarMembers)
 	parts := int64(0)
@@ -41,7 +41,7 @@ func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
 		Factor:  params.Factor.Value(),
 	}
 	state := ctx.State()
-	totalFactor := state.GetInt(VarTotalFactor)
+	totalFactor := state.GetInt64(VarTotalFactor)
 	total := totalFactor.Value()
 	members := state.GetBytesArray(VarMembers)
 	size := members.Length()

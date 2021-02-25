@@ -42,20 +42,20 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncPlaceBetParams struct {
-	Number wasmlib.ScImmutableInt   // the number a better bets on
+	Number wasmlib.ScImmutableInt64 // the number a better bets on
 }
 
 func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncPlaceBetParams{
-		Number: p.GetInt(ParamNumber),
+		Number: p.GetInt64(ParamNumber),
 	}
 	ctx.Require(params.Number.Exists(), "missing mandatory number")
 	funcPlaceBet(ctx, params)
 }
 
 type FuncPlayPeriodParams struct {
-	PlayPeriod wasmlib.ScImmutableInt   // number of minutes in one playing round
+	PlayPeriod wasmlib.ScImmutableInt64 // number of minutes in one playing round
 }
 
 func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
@@ -64,7 +64,7 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 
 	p := ctx.Params()
 	params := &FuncPlayPeriodParams{
-		PlayPeriod: p.GetInt(ParamPlayPeriod),
+		PlayPeriod: p.GetInt64(ParamPlayPeriod),
 	}
 	ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod")
 	funcPlayPeriod(ctx, params)

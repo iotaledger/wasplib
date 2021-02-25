@@ -23,21 +23,21 @@ impl Donation {
     pub fn from_bytes(bytes: &[u8]) -> Donation {
         let mut decode = BytesDecoder::new(bytes);
         Donation {
-            amount: decode.int(),
+            amount: decode.int64(),
             donator: decode.agent_id(),
             error: decode.string(),
             feedback: decode.string(),
-            timestamp: decode.int(),
+            timestamp: decode.int64(),
         }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
         let mut encode = BytesEncoder::new();
-        encode.int(self.amount);
+        encode.int64(self.amount);
         encode.agent_id(&self.donator);
         encode.string(&self.error);
         encode.string(&self.feedback);
-        encode.int(self.timestamp);
+        encode.int64(self.timestamp);
         return encode.data();
     }
 }

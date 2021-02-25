@@ -9,14 +9,6 @@ import (
 	"strconv"
 )
 
-type PostRequestParams struct {
-	ContractId ScContractId
-	Function   ScHname
-	Params     *ScMutableMap
-	Transfer   *ScTransfers
-	Delay      int64
-}
-
 // used to retrieve any information that is related to colored token balances
 type ScBalances struct {
 	balances ScImmutableMap
@@ -24,7 +16,7 @@ type ScBalances struct {
 
 // retrieve the balance for the specified token color
 func (ctx ScBalances) Balance(color ScColor) int64 {
-	return ctx.balances.GetInt(color).Value()
+	return ctx.balances.GetInt64(color).Value()
 }
 
 // retrieve a list of all token colors that have a non-zero balance
@@ -62,7 +54,7 @@ func NewScTransfersFromBalances(balances ScBalances) ScTransfers {
 
 // transfers the specified amount of tokens of the specified color
 func (ctx ScTransfers) Add(color ScColor, amount int64) {
-	ctx.transfers.GetInt(color).SetValue(amount)
+	ctx.transfers.GetInt64(color).SetValue(amount)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -90,11 +82,11 @@ func (ctx ScUtility) BlsAddressFromPubKey(pubKey []byte) ScAddress {
 
 func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
 	encode := NewBytesEncoder()
-	encode.Int(int64(len(pubKeys)))
+	encode.Int64(int64(len(pubKeys)))
 	for _, pubKey := range pubKeys {
 		encode.Bytes(pubKey)
 	}
-	encode.Int(int64(len(sigs)))
+	encode.Int64(int64(len(sigs)))
 	for _, sig := range sigs {
 		encode.Bytes(sig)
 	}
@@ -107,7 +99,7 @@ func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]
 func (ctx ScUtility) BlsValidSignature(data []byte, pubKey []byte, signature []byte) bool {
 	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
 	ctx.utility.GetBytes(KeyBlsValid).SetValue(bytes)
-	return ctx.utility.GetInt(KeyValid).Value() != 0
+	return ctx.utility.GetInt64(KeyValid).Value() != 0
 }
 
 func (ctx ScUtility) Ed25519AddressFromPubKey(pubKey []byte) ScAddress {
@@ -118,7 +110,7 @@ func (ctx ScUtility) Ed25519AddressFromPubKey(pubKey []byte) ScAddress {
 func (ctx ScUtility) Ed25519ValidSignature(data []byte, pubKey []byte, signature []byte) bool {
 	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
 	ctx.utility.GetBytes(KeyEd25519Valid).SetValue(bytes)
-	return ctx.utility.GetInt(KeyValid).Value() != 0
+	return ctx.utility.GetInt64(KeyValid).Value() != 0
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
@@ -143,7 +135,7 @@ func (ctx ScUtility) Hname(value string) ScHname {
 
 // generates a random value from 0 to max (exclusive max) using a deterministic RNG
 func (ctx ScUtility) Random(max int64) int64 {
-	rnd := ctx.utility.GetInt(KeyRandom).Value()
+	rnd := ctx.utility.GetInt64(KeyRandom).Value()
 	return int64(uint64(rnd) % uint64(max))
 }
 
@@ -212,7 +204,7 @@ func (ctx ScBaseContext) Results() ScMutableMap {
 
 // deterministic time stamp fixed at the moment of calling the smart contract
 func (ctx ScBaseContext) Timestamp() int64 {
-	return Root.GetInt(KeyTimestamp).Value()
+	return Root.GetInt64(KeyTimestamp).Value()
 }
 
 // logs debugging trace text message
@@ -238,14 +230,14 @@ func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMu
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
 	if params != nil {
-		encode.Int(int64(params.objId))
+		encode.Int64(int64(params.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
 	if transfer != nil {
-		encode.Int(int64(transfer.transfers.objId))
+		encode.Int64(int64(transfer.transfers.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
@@ -268,9 +260,9 @@ func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description str
 	encode.String(name)
 	encode.String(description)
 	if params != nil {
-		encode.Int(int64(params.objId))
+		encode.Int64(int64(params.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
 	Root.GetBytes(KeyDeploy).SetValue(encode.Data())
 }
@@ -292,26 +284,30 @@ func (ctx ScFuncContext) MintedColor() ScColor {
 
 // retrieve the amount of tokens that were minted in this transaction
 func (ctx ScFuncContext) MintedSupply() int64 {
-	return Root.GetInt(KeyMinted).Value()
+	return Root.GetInt64(KeyMinted).Value()
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(req *PostRequestParams) {
+func (ctx ScFuncContext) Post(contractId ScContractId, function ScHname, params *ScMutableMap, transfer *ScTransfers, delay int64) {
 	encode := NewBytesEncoder()
-	encode.ContractId(req.ContractId)
-	encode.Hname(req.Function)
-	if req.Params != nil {
-		encode.Int(int64(req.Params.objId))
+	encode.ContractId(contractId)
+	encode.Hname(function)
+	if params != nil {
+		encode.Int64(int64(params.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
-	if req.Transfer != nil {
-		encode.Int(int64(req.Transfer.transfers.objId))
+	if transfer != nil {
+		encode.Int64(int64(transfer.transfers.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
-	encode.Int(req.Delay)
+	encode.Int64(delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
+}
+
+func (ctx ScFuncContext) PostSelf(function ScHname, params *ScMutableMap, transfer *ScTransfers, delay int64) {
+	ctx.Post(ctx.ContractId(), function, params, transfer, delay)
 }
 
 // retrieve the request id of this transaction
@@ -329,7 +325,7 @@ func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer ScTransfe
 	transfers := Root.GetMapArray(KeyTransfers)
 	tx := transfers.GetMap(transfers.Length())
 	tx.GetAddress(KeyAddress).SetValue(address)
-	tx.GetInt(KeyBalances).SetValue(int64(transfer.transfers.objId))
+	tx.GetInt64(KeyBalances).SetValue(int64(transfer.transfers.objId))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -345,11 +341,11 @@ func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMuta
 	encode.Hname(contract)
 	encode.Hname(function)
 	if params != nil {
-		encode.Int(int64(params.objId))
+		encode.Int64(int64(params.objId))
 	} else {
-		encode.Int(0)
+		encode.Int64(0)
 	}
-	encode.Int(0)
+	encode.Int64(0)
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
 }

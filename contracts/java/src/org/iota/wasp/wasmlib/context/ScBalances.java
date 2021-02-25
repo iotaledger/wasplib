@@ -8,21 +8,21 @@ import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.keys.*;
 
 public class ScBalances {
-	ScImmutableMap balances;
+    ScImmutableMap balances;
 
-	ScBalances(ScImmutableMap balances) {
-		this.balances = balances;
-	}
+    ScBalances(ScImmutableMap balances) {
+        this.balances = balances;
+    }
 
-	public long Balance(ScColor color) {
-		return balances.GetInt(color).Value();
-	}
+    public long Balance(ScColor color) {
+        return balances.GetInt64(color).Value();
+    }
 
-	public ScImmutableColorArray Colors() {
-		return balances.GetColorArray(Key.Color);
-	}
+    public ScImmutableColorArray Colors() {
+        return balances.GetColorArray(Key.Color);
+    }
 
-	public ScColor Minted() {
-		return new ScColor(balances.GetBytes(ScColor.MINT).Value());
-	}
+    public ScColor Minted() {
+        return new ScColor(balances.GetBytes(ScColor.MINT).Value());
+    }
 }

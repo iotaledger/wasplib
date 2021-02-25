@@ -7,25 +7,25 @@ import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ScMutableHnameArray {
-	int objId;
+    int objId;
 
-	public ScMutableHnameArray(int objId) {
-		this.objId = objId;
-	}
+    public ScMutableHnameArray(int objId) {
+        this.objId = objId;
+    }
 
-	public void Clear() {
-		Host.Clear(objId);
-	}
+    public void Clear() {
+        Host.Clear(objId);
+    }
 
-	public ScMutableHname GetHname(int index) {
-		return new ScMutableHname(objId, index);
-	}
+    public ScMutableHname GetHname(int index) {
+        return new ScMutableHname(objId, index);
+    }
 
-	public ScImmutableHnameArray Immutable() {
-		return new ScImmutableHnameArray(objId);
-	}
+    public ScImmutableHnameArray Immutable() {
+        return new ScImmutableHnameArray(objId);
+    }
 
-	public int Length() {
-		return Host.GetLength(objId);
-	}
+    public int Length() {
+        return Host.GetLength(objId);
+    }
 }

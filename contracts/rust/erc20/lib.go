@@ -21,14 +21,14 @@ func OnLoad() {
 }
 
 type FuncApproveParams struct {
-	Amount     wasmlib.ScImmutableInt               // allowance value for delegated account
+	Amount     wasmlib.ScImmutableInt64             // allowance value for delegated account
 	Delegation wasmlib.ScImmutableAgentId           // delegated account
 }
 
 func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncApproveParams{
-		Amount:     p.GetInt(ParamAmount),
+		Amount:     p.GetInt64(ParamAmount),
 		Delegation: p.GetAgentId(ParamDelegation),
 	}
 	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
@@ -38,14 +38,14 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 
 type FuncInitParams struct {
 	Creator wasmlib.ScImmutableAgentId           // creator/owner of the initial supply
-	Supply  wasmlib.ScImmutableInt               // initial token supply
+	Supply  wasmlib.ScImmutableInt64             // initial token supply
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncInitParams{
 		Creator: p.GetAgentId(ParamCreator),
-		Supply:  p.GetInt(ParamSupply),
+		Supply:  p.GetInt64(ParamSupply),
 	}
 	ctx.Require(params.Creator.Exists(), "missing mandatory creator")
 	ctx.Require(params.Supply.Exists(), "missing mandatory supply")
@@ -54,14 +54,14 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 
 type FuncTransferParams struct {
 	Account wasmlib.ScImmutableAgentId           // target account
-	Amount  wasmlib.ScImmutableInt               // amount of tokens to transfer
+	Amount  wasmlib.ScImmutableInt64             // amount of tokens to transfer
 }
 
 func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTransferParams{
 		Account: p.GetAgentId(ParamAccount),
-		Amount:  p.GetInt(ParamAmount),
+		Amount:  p.GetInt64(ParamAmount),
 	}
 	ctx.Require(params.Account.Exists(), "missing mandatory account")
 	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
@@ -70,7 +70,7 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 
 type FuncTransferFromParams struct {
 	Account   wasmlib.ScImmutableAgentId           // sender account
-	Amount    wasmlib.ScImmutableInt               // amount of tokens to transfer
+	Amount    wasmlib.ScImmutableInt64             // amount of tokens to transfer
 	Recipient wasmlib.ScImmutableAgentId           // recipient account
 }
 
@@ -78,7 +78,7 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params()
 	params := &FuncTransferFromParams{
 		Account:   p.GetAgentId(ParamAccount),
-		Amount:    p.GetInt(ParamAmount),
+		Amount:    p.GetInt64(ParamAmount),
 		Recipient: p.GetAgentId(ParamRecipient),
 	}
 	ctx.Require(params.Account.Exists(), "missing mandatory account")

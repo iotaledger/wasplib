@@ -24,7 +24,7 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
         target_ep = params.hname_ep.value()
     }
 
-    let var_counter = ctx.state().get_int(VAR_COUNTER);
+    let var_counter = ctx.state().get_int64(VAR_COUNTER);
     let counter = var_counter.value();
     var_counter.set_value(counter + 1);
 
@@ -32,11 +32,11 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
                      param_int, &target_contract.to_string(), &target_ep.to_string(), counter));
 
     let parms = ScMutableMap::new();
-    parms.get_int(PARAM_INT_VALUE).set_value(param_int);
+    parms.get_int64(PARAM_INT_VALUE).set_value(param_int);
     let ret = ctx.call(target_contract, target_ep, Some(parms), None);
 
-    let ret_val = ret.get_int(PARAM_INT_VALUE);
-    ctx.results().get_int(PARAM_INT_VALUE).set_value(ret_val.value());
+    let ret_val = ret.get_int64(PARAM_INT_VALUE);
+    ctx.results().get_int64(PARAM_INT_VALUE).set_value(ret_val.value());
 }
 
 pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, params: &FuncCheckContextFromFullEPParams) {
@@ -80,11 +80,11 @@ pub fn func_run_recursion(ctx: &ScFuncContext, params: &FuncRunRecursionParams) 
     }
 
     let parms = ScMutableMap::new();
-    parms.get_int(PARAM_INT_VALUE).set_value(depth - 1);
+    parms.get_int64(PARAM_INT_VALUE).set_value(depth - 1);
     parms.get_hname(PARAM_HNAME_EP).set_value(HFUNC_RUN_RECURSION);
     ctx.call_self(HFUNC_CALL_ON_CHAIN, Some(parms), None);
     // TODO how would I return result of the call ???
-    ctx.results().get_int(PARAM_INT_VALUE).set_value(depth - 1);
+    ctx.results().get_int64(PARAM_INT_VALUE).set_value(depth - 1);
 }
 
 pub fn func_send_to_address(ctx: &ScFuncContext, params: &FuncSendToAddressParams) {
@@ -95,7 +95,7 @@ pub fn func_send_to_address(ctx: &ScFuncContext, params: &FuncSendToAddressParam
 
 pub fn func_set_int(ctx: &ScFuncContext, params: &FuncSetIntParams) {
     ctx.log("calling setInt");
-    ctx.state().get_int(&params.name.value()).set_value(params.int_value.value());
+    ctx.state().get_int64(&params.name.value()).set_value(params.int_value.value());
 }
 
 pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _params: &FuncTestCallPanicFullEPParams) {
@@ -147,13 +147,7 @@ pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainP
     //Deploy the same contract with another name
     let target_contract_id = ScContractId::new(&params.chain_id.value(), &CORE_ACCOUNTS);
     let transfers = ScTransfers::new(&ScColor::IOTA, 2);
-    ctx.post(&PostRequestParams {
-        contract_id: target_contract_id,
-        function: CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN,
-        params: None,
-        transfer: Some(transfers),
-        delay: 0,
-    });
+    ctx.post(&target_contract_id, CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN, None, Some(transfers), 0);
     ctx.log("====  success ====");
     // TODO how to check if post was successful
 }
@@ -173,35 +167,35 @@ pub fn view_fibonacci(ctx: &ScViewContext, params: &ViewFibonacciParams) {
 
     let n = params.int_value.value();
     if n == 0 || n == 1 {
-        ctx.results().get_int(PARAM_INT_VALUE).set_value(n);
+        ctx.results().get_int64(PARAM_INT_VALUE).set_value(n);
         return;
     }
     let parms1 = ScMutableMap::new();
-    parms1.get_int(PARAM_INT_VALUE).set_value(n - 1);
+    parms1.get_int64(PARAM_INT_VALUE).set_value(n - 1);
     let results1 = ctx.call_self(HVIEW_FIBONACCI, Some(parms1));
-    let n1 = results1.get_int(PARAM_INT_VALUE).value();
+    let n1 = results1.get_int64(PARAM_INT_VALUE).value();
 
     let parms2 = ScMutableMap::new();
-    parms2.get_int(PARAM_INT_VALUE).set_value(n - 2);
+    parms2.get_int64(PARAM_INT_VALUE).set_value(n - 2);
     let results2 = ctx.call_self(HVIEW_FIBONACCI, Some(parms2));
-    let n2 = results2.get_int(PARAM_INT_VALUE).value();
+    let n2 = results2.get_int64(PARAM_INT_VALUE).value();
 
-    ctx.results().get_int(PARAM_INT_VALUE).set_value(n1 + n2);
+    ctx.results().get_int64(PARAM_INT_VALUE).set_value(n1 + n2);
 }
 
 pub fn view_get_counter(ctx: &ScViewContext, _params: &ViewGetCounterParams) {
     ctx.log("calling getCounter");
-    let counter = ctx.state().get_int(VAR_COUNTER);
-    ctx.results().get_int(VAR_COUNTER).set_value(counter.value());
+    let counter = ctx.state().get_int64(VAR_COUNTER);
+    ctx.results().get_int64(VAR_COUNTER).set_value(counter.value());
 }
 
 pub fn view_get_int(ctx: &ScViewContext, params: &ViewGetIntParams) {
     ctx.log("calling getInt");
 
     let name = params.name.value();
-    let value = ctx.state().get_int(&name);
+    let value = ctx.state().get_int64(&name);
     ctx.require(value.exists(), "param 'value' not found");
-    ctx.results().get_int(&name).set_value(value.value());
+    ctx.results().get_int64(&name).set_value(value.value());
 }
 
 pub fn view_just_view(ctx: &ScViewContext, _params: &ViewJustViewParams) {

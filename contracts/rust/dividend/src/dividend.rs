@@ -12,7 +12,7 @@ pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
         ctx.panic("Nothing to divide");
     }
     let state = ctx.state();
-    let total_factor = state.get_int(VAR_TOTAL_FACTOR);
+    let total_factor = state.get_int64(VAR_TOTAL_FACTOR);
     let total = total_factor.value();
     let members = state.get_bytes_array(VAR_MEMBERS);
     let mut parts = 0_i64;
@@ -40,7 +40,7 @@ pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
         factor: params.factor.value(),
     };
     let state = ctx.state();
-    let total_factor = state.get_int(VAR_TOTAL_FACTOR);
+    let total_factor = state.get_int64(VAR_TOTAL_FACTOR);
     let mut total = total_factor.value();
     let members = state.get_bytes_array(VAR_MEMBERS);
     let size = members.length();

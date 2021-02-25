@@ -11,27 +11,27 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.keys.*;
 
 public class Consts {
-	public static final String ScName = "donatewithfeedback";
-	public static final ScHname HScName = new ScHname(0x696d7f66);
+    public static final String ScName = "donatewithfeedback";
+    public static final ScHname HScName = new ScHname(0x696d7f66);
 
-	public static final Key ParamAmount = new Key("amount");
-	public static final Key ParamFeedback = new Key("feedback");
+    public static final Key ParamAmount = new Key("amount");
+    public static final Key ParamFeedback = new Key("feedback");
 
-	public static final Key VarAmount = new Key("amount");
-	public static final Key VarDonations = new Key("donations");
-	public static final Key VarDonator = new Key("donator");
-	public static final Key VarError = new Key("error");
-	public static final Key VarFeedback = new Key("feedback");
-	public static final Key VarLog = new Key("log");
-	public static final Key VarMaxDonation = new Key("maxDonation");
-	public static final Key VarTimestamp = new Key("timestamp");
-	public static final Key VarTotalDonation = new Key("totalDonation");
+    public static final Key VarAmount = new Key("amount");
+    public static final Key VarDonations = new Key("donations");
+    public static final Key VarDonator = new Key("donator");
+    public static final Key VarError = new Key("error");
+    public static final Key VarFeedback = new Key("feedback");
+    public static final Key VarLog = new Key("log");
+    public static final Key VarMaxDonation = new Key("maxDonation");
+    public static final Key VarTimestamp = new Key("timestamp");
+    public static final Key VarTotalDonation = new Key("totalDonation");
 
-	public static final String FuncDonate = "donate";
-	public static final String FuncWithdraw = "withdraw";
-	public static final String ViewDonations = "donations";
+    public static final String FuncDonate = "donate";
+    public static final String FuncWithdraw = "withdraw";
+    public static final String ViewDonations = "donations";
 
-	public static final ScHname HFuncDonate = new ScHname(0xdc9b133a);
-	public static final ScHname HFuncWithdraw = new ScHname(0x9dcc0f41);
-	public static final ScHname HViewDonations = new ScHname(0x45686a15);
+    public static final ScHname HFuncDonate = new ScHname(0xdc9b133a);
+    public static final ScHname HFuncWithdraw = new ScHname(0x9dcc0f41);
+    public static final ScHname HViewDonations = new ScHname(0x45686a15);
 }

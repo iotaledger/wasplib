@@ -4,26 +4,26 @@
   "types": {
   },
   "vars": {
-    "supply=s": "Int // total supply of the token",
-    "balances=b": "[]Int // balances per account"
+    "supply=s": "Int64 // total supply of the token",
+    "balances=b": "[]Int64 // balances per account"
   },
   "funcs": {
     "approve": {
       "delegation=d": "AgentId // delegated account",
-      "amount=am": "Int // allowance value for delegated account"
+      "amount=am": "Int64 // allowance value for delegated account"
     },
     "init": {
-      "supply=s": "Int // initial token supply",
+      "supply=s": "Int64 // initial token supply",
       "creator=c": "AgentId // creator/owner of the initial supply"
     },
     "transfer": {
       "account=ac": "AgentId // target account",
-      "amount=am": "Int // amount of tokens to transfer"
+      "amount=am": "Int64 // amount of tokens to transfer"
     },
     "transferFrom": {
       "account=ac": "AgentId // sender account",
       "recipient=r": "AgentId // recipient account",
-      "amount=am": "Int // amount of tokens to transfer"
+      "amount=am": "Int64 // amount of tokens to transfer"
     }
   },
   "views": {

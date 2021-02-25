@@ -3,20 +3,20 @@
     "AuctionInfo": [
       {"field": "color", "type": "Color"},
       {"field": "creator", "type": "Agent"},
-      {"field": "deposit", "type": "Int"},
+      {"field": "deposit", "type": "Int64"},
       {"field": "description", "type": "String"},
-      {"field": "duration", "type": "Int"},
-      {"field": "highest_bid", "type": "Int"},
+      {"field": "duration", "type": "Int64"},
+      {"field": "highest_bid", "type": "Int64"},
       {"field": "highest_bidder", "type": "Agent"},
-      {"field": "minimum_bid", "type": "Int"},
-      {"field": "num_tokens", "type": "Int"},
-      {"field": "owner_margin", "type": "Int"},
-      {"field": "when_started", "type": "Int"}
+      {"field": "minimum_bid", "type": "Int64"},
+      {"field": "num_tokens", "type": "Int64"},
+      {"field": "owner_margin", "type": "Int64"},
+      {"field": "when_started", "type": "Int64"}
     ],
     "BidInfo": [
-      {"field": "amount", "type": "Int"},
-      {"field": "index", "type": "Int"},
-      {"field": "timestamp", "type": "Int"}
+      {"field": "amount", "type": "Int64"},
+      {"field": "index", "type": "Int64"},
+      {"field": "timestamp", "type": "Int64"}
     ]
   },
   "setups": {

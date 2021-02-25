@@ -5,15 +5,15 @@ package org.iota.wasp.wasmlib.immutable;
 
 import org.iota.wasp.wasmlib.host.*;
 
-public class ScImmutableChainIdArray {
+public class ScImmutableInt64Array {
     int objId;
 
-    public ScImmutableChainIdArray(int objId) {
+    public ScImmutableInt64Array(int objId) {
         this.objId = objId;
     }
 
-    public ScImmutableChainId GetChainId(int index) {
-        return new ScImmutableChainId(objId, index);
+    public ScImmutableInt64 GetInt64(int index) {
+        return new ScImmutableInt64(objId, index);
     }
 
     public int Length() {

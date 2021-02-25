@@ -372,49 +372,49 @@ func (o ScMutableHnameArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScMutableInt struct {
+type ScMutableInt64 struct {
 	objId int32
 	keyId Key32
 }
 
-func (o ScMutableInt) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_INT)
+func (o ScMutableInt64) Exists() bool {
+	return Exists(o.objId, o.keyId, TYPE_INT64)
 }
 
-func (o ScMutableInt) SetValue(value int64) {
+func (o ScMutableInt64) SetValue(value int64) {
 	bytes := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bytes, uint64(value))
-	SetBytes(o.objId, o.keyId, TYPE_INT, bytes)
+	SetBytes(o.objId, o.keyId, TYPE_INT64, bytes)
 }
 
-func (o ScMutableInt) String() string {
+func (o ScMutableInt64) String() string {
 	return strconv.FormatInt(o.Value(), 10)
 }
 
-func (o ScMutableInt) Value() int64 {
-	bytes := GetBytes(o.objId, o.keyId, TYPE_INT)
+func (o ScMutableInt64) Value() int64 {
+	bytes := GetBytes(o.objId, o.keyId, TYPE_INT64)
 	return int64(binary.LittleEndian.Uint64(bytes))
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScMutableIntArray struct {
+type ScMutableInt64Array struct {
 	objId int32
 }
 
-func (o ScMutableIntArray) Clear() {
+func (o ScMutableInt64Array) Clear() {
 	Clear(o.objId)
 }
 
-func (o ScMutableIntArray) GetInt(index int32) ScMutableInt {
-	return ScMutableInt{objId: o.objId, keyId: Key32(index)}
+func (o ScMutableInt64Array) GetInt64(index int32) ScMutableInt64 {
+	return ScMutableInt64{objId: o.objId, keyId: Key32(index)}
 }
 
-func (o ScMutableIntArray) Immutable() ScImmutableIntArray {
-	return ScImmutableIntArray{objId: o.objId}
+func (o ScMutableInt64Array) Immutable() ScImmutableInt64Array {
+	return ScImmutableInt64Array{objId: o.objId}
 }
 
-func (o ScMutableIntArray) Length() int32 {
+func (o ScMutableInt64Array) Length() int32 {
 	return GetLength(o.objId)
 }
 
@@ -505,13 +505,13 @@ func (o ScMutableMap) GetHnameArray(key MapKey) ScMutableHnameArray {
 	return ScMutableHnameArray{objId: arrId}
 }
 
-func (o ScMutableMap) GetInt(key MapKey) ScMutableInt {
-	return ScMutableInt{objId: o.objId, keyId: key.KeyId()}
+func (o ScMutableMap) GetInt64(key MapKey) ScMutableInt64 {
+	return ScMutableInt64{objId: o.objId, keyId: key.KeyId()}
 }
 
-func (o ScMutableMap) GetIntArray(key MapKey) ScMutableIntArray {
-	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT|TYPE_ARRAY)
-	return ScMutableIntArray{objId: arrId}
+func (o ScMutableMap) GetInt64Array(key MapKey) ScMutableInt64Array {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT64|TYPE_ARRAY)
+	return ScMutableInt64Array{objId: arrId}
 }
 
 func (o ScMutableMap) GetMap(key MapKey) ScMutableMap {

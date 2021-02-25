@@ -10,21 +10,22 @@ package org.iota.wasp.contracts.helloworld.lib;
 import org.iota.wasp.contracts.helloworld.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
+import org.iota.wasp.wasmlib.immutable.*;
 
 public class HelloWorldThunk {
-	public static void onLoad() {
-		ScExports exports = new ScExports();
-		exports.AddFunc("helloWorld", HelloWorldThunk::funcHelloWorldThunk);
-		exports.AddView("getHelloWorld", HelloWorldThunk::viewGetHelloWorldThunk);
-	}
+    public static void onLoad() {
+        ScExports exports = new ScExports();
+        exports.AddFunc("helloWorld", HelloWorldThunk::funcHelloWorldThunk);
+        exports.AddView("getHelloWorld", HelloWorldThunk::viewGetHelloWorldThunk);
+    }
 
-	private static void funcHelloWorldThunk(ScFuncContext ctx) {
-		FuncHelloWorldParams params = new FuncHelloWorldParams();
-		HelloWorld.funcHelloWorld(ctx, params);
-	}
+    private static void funcHelloWorldThunk(ScFuncContext ctx) {
+        FuncHelloWorldParams params = new FuncHelloWorldParams();
+        HelloWorld.funcHelloWorld(ctx, params);
+    }
 
-	private static void viewGetHelloWorldThunk(ScViewContext ctx) {
-		ViewGetHelloWorldParams params = new ViewGetHelloWorldParams();
-		HelloWorld.viewGetHelloWorld(ctx, params);
-	}
+    private static void viewGetHelloWorldThunk(ScViewContext ctx) {
+        ViewGetHelloWorldParams params = new ViewGetHelloWorldParams();
+        HelloWorld.viewGetHelloWorld(ctx, params);
+    }
 }

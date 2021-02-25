@@ -2,12 +2,12 @@
   "name": "TokenRegistry",
   "types": {
     "Token": {
-      "created": "Int // creation timestamp",
+      "created": "Int64 // creation timestamp",
       "description": "String // description what minted token represents",
       "mintedBy": "AgentId // original minter",
       "owner": "AgentId // current owner",
-      "supply": "Int // amount of tokens originally minted",
-      "updated": "Int // last update timestamp",
+      "supply": "Int64 // amount of tokens originally minted",
+      "updated": "Int64 // last update timestamp",
       "userDefined": "String // any user defined text"
     }
   },

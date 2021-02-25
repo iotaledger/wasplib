@@ -11,27 +11,27 @@ import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
 public class Bet {
-	//@formatter:off
+    //@formatter:off
 	public long      Amount;
 	public ScAgentId Better;
 	public long      Number;
 	//@formatter:on
 
-	public Bet() {
-	}
+    public Bet() {
+    }
 
-	public Bet(byte[] bytes) {
-		BytesDecoder decode = new BytesDecoder(bytes);
-		Amount = decode.Int();
-		Better = decode.AgentId();
-		Number = decode.Int();
-	}
+    public Bet(byte[] bytes) {
+        BytesDecoder decode = new BytesDecoder(bytes);
+        Amount = decode.Int64();
+        Better = decode.AgentId();
+        Number = decode.Int64();
+    }
 
-	public byte[] toBytes() {
-		return new BytesEncoder().
-				Int(Amount).
-				AgentId(Better).
-				Int(Number).
-				Data();
-	}
+    public byte[] toBytes() {
+        return new BytesEncoder().
+                Int64(Amount).
+                AgentId(Better).
+                Int64(Number).
+                Data();
+    }
 }

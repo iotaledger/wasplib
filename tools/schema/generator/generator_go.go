@@ -27,7 +27,7 @@ var goTypes = StringMap{
 	"ContractId": "wasmlib.ScContractId",
 	"Hash":       "wasmlib.ScHash",
 	"Hname":      "wasmlib.ScHname",
-	"Int":        "int64",
+	"Int64":      "int64",
 	"String":     "string",
 }
 

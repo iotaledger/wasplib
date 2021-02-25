@@ -24,7 +24,7 @@ var rustTypes = StringMap{
 	"ContractId": "ScContractId",
 	"Hash":       "ScHash",
 	"Hname":      "ScHname",
-	"Int":        "i64",
+	"Int64":        "i64",
 	"String":     "String",
 }
 
@@ -414,7 +414,7 @@ func (s *Schema) GenerateRustTypes() error {
 		for _, field := range typeDef.Fields {
 			name := snake(field.Name)
 			ref := "&"
-			if field.Type == "Int" || field.Type == "Hname" {
+			if field.Type == "Int64" || field.Type == "Hname" {
 				ref = ""
 			}
 			fmt.Fprintf(file, "        encode.%s(%sself.%s);\n", snake(field.Type), ref, name)

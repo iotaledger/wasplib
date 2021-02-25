@@ -18,13 +18,13 @@ func NewMemberFromBytes(bytes []byte) *Member {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Member{}
 	data.Address = decode.Address()
-	data.Factor = decode.Int()
+	data.Factor = decode.Int64()
 	return data
 }
 
 func (o *Member) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Address(o.Address).
-		Int(o.Factor).
+		Int64(o.Factor).
 		Data()
 }

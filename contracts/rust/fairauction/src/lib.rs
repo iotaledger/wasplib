@@ -53,7 +53,7 @@ fn func_place_bid_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncSetOwnerMarginParams {
-    pub owner_margin: ScImmutableInt, // new SC owner margin in promilles
+    pub owner_margin: ScImmutableInt64, // new SC owner margin in promilles
 }
 
 fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
@@ -62,7 +62,7 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
 
     let p = ctx.params();
     let params = FuncSetOwnerMarginParams {
-        owner_margin: p.get_int(PARAM_OWNER_MARGIN),
+        owner_margin: p.get_int64(PARAM_OWNER_MARGIN),
     };
     ctx.require(params.owner_margin.exists(), "missing mandatory ownerMargin");
     func_set_owner_margin(ctx, &params);
@@ -72,8 +72,8 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
 pub struct FuncStartAuctionParams {
     pub color:       ScImmutableColor,   // color of the tokens being auctioned
     pub description: ScImmutableString,  // description of the tokens being auctioned
-    pub duration:    ScImmutableInt,     // duration of auction in minutes
-    pub minimum_bid: ScImmutableInt,     // minimum required amount for any bid
+    pub duration:    ScImmutableInt64,   // duration of auction in minutes
+    pub minimum_bid: ScImmutableInt64,   // minimum required amount for any bid
 }
 //@formatter:on
 
@@ -82,8 +82,8 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
     let params = FuncStartAuctionParams {
         color: p.get_color(PARAM_COLOR),
         description: p.get_string(PARAM_DESCRIPTION),
-        duration: p.get_int(PARAM_DURATION),
-        minimum_bid: p.get_int(PARAM_MINIMUM_BID),
+        duration: p.get_int64(PARAM_DURATION),
+        minimum_bid: p.get_int64(PARAM_MINIMUM_BID),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
     ctx.require(params.minimum_bid.exists(), "missing mandatory minimumBid");

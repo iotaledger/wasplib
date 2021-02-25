@@ -28,15 +28,15 @@ func NewAuctionFromBytes(bytes []byte) *Auction {
 	data := &Auction{}
 	data.Color = decode.Color()
 	data.Creator = decode.AgentId()
-	data.Deposit = decode.Int()
+	data.Deposit = decode.Int64()
 	data.Description = decode.String()
-	data.Duration = decode.Int()
-	data.HighestBid = decode.Int()
+	data.Duration = decode.Int64()
+	data.HighestBid = decode.Int64()
 	data.HighestBidder = decode.AgentId()
-	data.MinimumBid = decode.Int()
-	data.NumTokens = decode.Int()
-	data.OwnerMargin = decode.Int()
-	data.WhenStarted = decode.Int()
+	data.MinimumBid = decode.Int64()
+	data.NumTokens = decode.Int64()
+	data.OwnerMargin = decode.Int64()
+	data.WhenStarted = decode.Int64()
 	return data
 }
 
@@ -44,15 +44,15 @@ func (o *Auction) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Color(o.Color).
 		AgentId(o.Creator).
-		Int(o.Deposit).
+		Int64(o.Deposit).
 		String(o.Description).
-		Int(o.Duration).
-		Int(o.HighestBid).
+		Int64(o.Duration).
+		Int64(o.HighestBid).
 		AgentId(o.HighestBidder).
-		Int(o.MinimumBid).
-		Int(o.NumTokens).
-		Int(o.OwnerMargin).
-		Int(o.WhenStarted).
+		Int64(o.MinimumBid).
+		Int64(o.NumTokens).
+		Int64(o.OwnerMargin).
+		Int64(o.WhenStarted).
 		Data()
 }
 
@@ -65,16 +65,16 @@ type Bid struct {
 func NewBidFromBytes(bytes []byte) *Bid {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Bid{}
-	data.Amount = decode.Int()
-	data.Index = decode.Int()
-	data.Timestamp = decode.Int()
+	data.Amount = decode.Int64()
+	data.Index = decode.Int64()
+	data.Timestamp = decode.Int64()
 	return data
 }
 
 func (o *Bid) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
-		Int(o.Amount).
-		Int(o.Index).
-		Int(o.Timestamp).
+		Int64(o.Amount).
+		Int64(o.Index).
+		Int64(o.Timestamp).
 		Data()
 }

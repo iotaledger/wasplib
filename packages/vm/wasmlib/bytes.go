@@ -20,7 +20,7 @@ func (d *BytesDecoder) AgentId() ScAgentId {
 }
 
 func (d *BytesDecoder) Bytes() []byte {
-	size := d.Int()
+	size := d.Int64()
 	if len(d.data) < int(size) {
 		panic("Cannot decode bytes")
 	}
@@ -49,7 +49,7 @@ func (d *BytesDecoder) Hname() ScHname {
 	return NewScHnameFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) Int() int64 {
+func (d *BytesDecoder) Int64() int64 {
 	// leb128 decoder
 	val := int64(0)
 	s := 0
@@ -102,7 +102,7 @@ func (e *BytesEncoder) AgentId(value ScAgentId) *BytesEncoder {
 }
 
 func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
-	e.Int(int64(len(value)))
+	e.Int64(int64(len(value)))
 	e.data = append(e.data, value...)
 	return e
 }
@@ -131,7 +131,7 @@ func (e *BytesEncoder) Hname(value ScHname) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) Int(value int64) *BytesEncoder {
+func (e *BytesEncoder) Int64(value int64) *BytesEncoder {
 	// leb128 encoder
 	for {
 		b := byte(value)

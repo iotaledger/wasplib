@@ -10,40 +10,40 @@ import org.iota.wasp.wasmlib.keys.*;
 import java.util.*;
 
 public class ScHash implements MapKey {
-	final byte[] id = new byte[32];
+    final byte[] id = new byte[32];
 
-	public ScHash(byte[] bytes) {
-		if (bytes == null || bytes.length != id.length) {
-			throw new RuntimeException("invalid hash id length");
-		}
-		System.arraycopy(bytes, 0, id, 0, id.length);
-	}
+    public ScHash(byte[] bytes) {
+        if (bytes == null || bytes.length != id.length) {
+            throw new RuntimeException("invalid hash id length");
+        }
+        System.arraycopy(bytes, 0, id, 0, id.length);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		ScHash other = (ScHash) o;
-		return Arrays.equals(id, other.id);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ScHash other = (ScHash) o;
+        return Arrays.equals(id, other.id);
+    }
 
-	@Override
-	public int KeyId() {
-		return Host.GetKeyIdFromBytes(id);
-	}
+    @Override
+    public int KeyId() {
+        return Host.GetKeyIdFromBytes(id);
+    }
 
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(id);
-	}
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(id);
+    }
 
-	public byte[] toBytes() {
-		return id;
-	}
+    public byte[] toBytes() {
+        return id;
+    }
 
-	@Override
+    @Override
 
-	public String toString() {
-		return ScUtility.base58Encode(id);
-	}
+    public String toString() {
+        return ScUtility.base58Encode(id);
+    }
 }

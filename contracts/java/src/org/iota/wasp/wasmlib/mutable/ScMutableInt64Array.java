@@ -6,10 +6,10 @@ package org.iota.wasp.wasmlib.mutable;
 import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
-public class ScMutableRequestIdArray {
+public class ScMutableInt64Array {
     int objId;
 
-    public ScMutableRequestIdArray(int objId) {
+    public ScMutableInt64Array(int objId) {
         this.objId = objId;
     }
 
@@ -17,12 +17,12 @@ public class ScMutableRequestIdArray {
         Host.Clear(objId);
     }
 
-    public ScMutableRequestId GetRequestId(int index) {
-        return new ScMutableRequestId(objId, index);
+    public ScMutableInt64 GetInt64(int index) {
+        return new ScMutableInt64(objId, index);
     }
 
-    public ScImmutableRequestIdArray Immutable() {
-        return new ScImmutableRequestIdArray(objId);
+    public ScImmutableInt64Array Immutable() {
+        return new ScImmutableInt64Array(objId);
     }
 
     public int Length() {

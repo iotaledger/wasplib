@@ -486,20 +486,20 @@ impl ScMutableHnameArray {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // proxy object for mutable int64 in host map
-pub struct ScMutableInt {
+pub struct ScMutableInt64 {
     obj_id: i32,
     key_id: Key32,
 }
 
-impl ScMutableInt {
+impl ScMutableInt64 {
     // check if object exists in host map
     pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_INT)
+        exists(self.obj_id, self.key_id, TYPE_INT64)
     }
 
     // set value in host map
     pub fn set_value(&self, val: i64) {
-        set_bytes(self.obj_id, self.key_id, TYPE_INT, &val.to_le_bytes());
+        set_bytes(self.obj_id, self.key_id, TYPE_INT64, &val.to_le_bytes());
     }
 
     // human-readable string representation
@@ -509,7 +509,7 @@ impl ScMutableInt {
 
     // retrieve value from host map
     pub fn value(&self) -> i64 {
-        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT);
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT64);
         i64::from_le_bytes(bytes.try_into().expect("invalid i64 length"))
     }
 }
@@ -517,24 +517,24 @@ impl ScMutableInt {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // mutable array of int64
-pub struct ScMutableIntArray {
+pub struct ScMutableInt64Array {
     pub(crate) obj_id: i32
 }
 
-impl ScMutableIntArray {
+impl ScMutableInt64Array {
     // empty the array
     pub fn clear(&self) {
         clear(self.obj_id);
     }
 
     // index 0..length(), when length() a new one is appended
-    pub fn get_int(&self, index: i32) -> ScMutableInt {
-        ScMutableInt { obj_id: self.obj_id, key_id: Key32(index) }
+    pub fn get_int64(&self, index: i32) -> ScMutableInt64 {
+        ScMutableInt64 { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     // get immutable version of array
-    pub fn immutable(&self) -> ScImmutableIntArray {
-        ScImmutableIntArray { obj_id: self.obj_id }
+    pub fn immutable(&self) -> ScImmutableInt64Array {
+        ScImmutableInt64Array { obj_id: self.obj_id }
     }
 
     // number of items in array
@@ -649,14 +649,14 @@ impl ScMutableMap {
     }
 
     // get proxy for mutable int64 field specified by key
-    pub fn get_int<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt {
-        ScMutableInt { obj_id: self.obj_id, key_id: key.get_id() }
+    pub fn get_int64<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt64 {
+        ScMutableInt64 { obj_id: self.obj_id, key_id: key.get_id() }
     }
 
-    // get proxy for ScMutableIntArray specified by key
-    pub fn get_int_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableIntArray {
-        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT | TYPE_ARRAY);
-        ScMutableIntArray { obj_id: arr_id }
+    // get proxy for ScMutableInt64Array specified by key
+    pub fn get_int64_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableInt64Array {
+        let arr_id = get_object_id(self.obj_id, key.get_id(), TYPE_INT64 | TYPE_ARRAY);
+        ScMutableInt64Array { obj_id: arr_id }
     }
 
     // get proxy for ScMutableMap specified by key

@@ -29,7 +29,7 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncWithdrawParams struct {
-	Amount wasmlib.ScImmutableInt   // amount to withdraw
+	Amount wasmlib.ScImmutableInt64 // amount to withdraw
 }
 
 func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
@@ -38,7 +38,7 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 
 	p := ctx.Params()
 	params := &FuncWithdrawParams{
-		Amount: p.GetInt(ParamAmount),
+		Amount: p.GetInt64(ParamAmount),
 	}
 	funcWithdraw(ctx, params)
 }

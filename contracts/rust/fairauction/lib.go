@@ -48,7 +48,7 @@ func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncSetOwnerMarginParams struct {
-	OwnerMargin wasmlib.ScImmutableInt   // new SC owner margin in promilles
+	OwnerMargin wasmlib.ScImmutableInt64 // new SC owner margin in promilles
 }
 
 func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
@@ -57,7 +57,7 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 
 	p := ctx.Params()
 	params := &FuncSetOwnerMarginParams{
-		OwnerMargin: p.GetInt(ParamOwnerMargin),
+		OwnerMargin: p.GetInt64(ParamOwnerMargin),
 	}
 	ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin")
 	funcSetOwnerMargin(ctx, params)
@@ -66,8 +66,8 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 type FuncStartAuctionParams struct {
 	Color       wasmlib.ScImmutableColor           // color of the tokens being auctioned
 	Description wasmlib.ScImmutableString          // description of the tokens being auctioned
-	Duration    wasmlib.ScImmutableInt             // duration of auction in minutes
-	MinimumBid  wasmlib.ScImmutableInt             // minimum required amount for any bid
+	Duration    wasmlib.ScImmutableInt64           // duration of auction in minutes
+	MinimumBid  wasmlib.ScImmutableInt64           // minimum required amount for any bid
 }
 
 func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
@@ -75,8 +75,8 @@ func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncStartAuctionParams{
 		Color:       p.GetColor(ParamColor),
 		Description: p.GetString(ParamDescription),
-		Duration:    p.GetInt(ParamDuration),
-		MinimumBid:  p.GetInt(ParamMinimumBid),
+		Duration:    p.GetInt64(ParamDuration),
+		MinimumBid:  p.GetInt64(ParamMinimumBid),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
 	ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid")
