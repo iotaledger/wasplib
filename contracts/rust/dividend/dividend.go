@@ -61,3 +61,7 @@ func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
 	members.GetBytes(size).SetValue(member.Bytes())
 	ctx.Log("Appended: " + member.Address.String())
 }
+
+func viewGetFactor(ctx wasmlib.ScViewContext, params *ViewGetFactorParams) {
+	ctx.Log("calling getFactor")
+}

@@ -5,10 +5,10 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-package org.iota.wasp.contracts.fairauction.lib;
+package org.iota.wasp.contracts.dividend.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
-public class ViewGetInfoParams {
-	public ScImmutableColor   Color; // color identifies the auction
+public class ViewGetFactorParams {
+	public ScImmutableAddress   Address; // address of dividend recipient
 }

@@ -4,25 +4,27 @@
 use wasmlib::*;
 
 use crate::*;
-use crate::types::*;
 
 pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
+    ctx.log("calling divide");
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
         ctx.panic("Nothing to divide");
     }
     let state = ctx.state();
-    let total_factor = state.get_int64(VAR_TOTAL_FACTOR);
-    let total = total_factor.value();
-    let members = state.get_bytes_array(VAR_MEMBERS);
+    let total = state.get_int64(VAR_TOTAL_FACTOR).value();
+    let members = state.get_map(VAR_MEMBERS);
+    let member_list = state.get_address_array(VAR_MEMBER_LIST);
+    let size = member_list.length();
     let mut parts = 0_i64;
-    let size = members.length();
     for i in 0..size {
-        let m = Member::from_bytes(&members.get_bytes(i).value());
-        let part = amount * m.factor / total;
-        if part != 0 {
-            parts += part;
-            ctx.transfer_to_address(&m.address, ScTransfers::new(&ScColor::IOTA, part));
+        let address = member_list.get_address(i).value();
+        let factor = members.get_int64(&address).value();
+        let share = amount * factor / total;
+        if share != 0 {
+            parts += share;
+            let transfers = ScTransfers::new(&ScColor::IOTA, share);
+            ctx.transfer_to_address(&address, transfers);
         }
     }
     if parts != amount {
@@ -35,28 +37,27 @@ pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
 }
 
 pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
-    let member = Member {
-        address: params.address.value(),
-        factor: params.factor.value(),
-    };
+    ctx.log("calling member");
     let state = ctx.state();
-    let total_factor = state.get_int64(VAR_TOTAL_FACTOR);
-    let mut total = total_factor.value();
-    let members = state.get_bytes_array(VAR_MEMBERS);
-    let size = members.length();
-    for i in 0..size {
-        let m = Member::from_bytes(&members.get_bytes(i).value());
-        if m.address == member.address {
-            total -= m.factor;
-            total += member.factor;
-            total_factor.set_value(total);
-            members.get_bytes(i).set_value(&member.to_bytes());
-            ctx.log(&("Updated: ".to_string() + &member.address.to_string()));
-            return;
-        }
+    let members = state.get_map(VAR_MEMBERS);
+    let address = params.address.value();
+    let current_factor = members.get_int64(&address);
+    if !current_factor.exists() {
+        // add new address to member list
+        let member_list = state.get_address_array(VAR_MEMBER_LIST);
+        member_list.get_address(member_list.length()).set_value(&address);
     }
-    total += member.factor;
-    total_factor.set_value(total);
-    members.get_bytes(size).set_value(&member.to_bytes());
-    ctx.log(&("Appended: ".to_string() + &member.address.to_string()));
+    let factor = params.factor.value();
+    let total_factor = state.get_int64(VAR_TOTAL_FACTOR);
+    let new_total_factor = total_factor.value() - current_factor.value() + factor;
+    total_factor.set_value(new_total_factor);
+    current_factor.set_value(factor);
+}
+
+pub fn view_get_factor(ctx: &ScViewContext, params: &ViewGetFactorParams) {
+    ctx.log("calling getFactor");
+    let address = params.address.value();
+    let members = ctx.state().get_map(VAR_MEMBERS);
+    let factor = members.get_int64(&address).value();
+    ctx.results().get_int64(VAR_FACTOR).set_value(factor);
 }

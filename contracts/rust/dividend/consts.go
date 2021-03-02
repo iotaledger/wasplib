@@ -15,11 +15,15 @@ const HScName = wasmlib.ScHname(0xcce2e239)
 const ParamAddress = wasmlib.Key("address")
 const ParamFactor = wasmlib.Key("factor")
 
+const VarFactor = wasmlib.Key("factor")
+const VarMemberList = wasmlib.Key("memberList")
 const VarMembers = wasmlib.Key("members")
 const VarTotalFactor = wasmlib.Key("totalFactor")
 
 const FuncDivide = "divide"
 const FuncMember = "member"
+const ViewGetFactor = "getFactor"
 
 const HFuncDivide = wasmlib.ScHname(0xc7878107)
 const HFuncMember = wasmlib.ScHname(0xc07da2cb)
+const HViewGetFactor = wasmlib.ScHname(0x0ee668fe)

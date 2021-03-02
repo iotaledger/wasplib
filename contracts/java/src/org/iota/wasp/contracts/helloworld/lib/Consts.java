@@ -11,15 +11,15 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.keys.*;
 
 public class Consts {
-    public static final String ScName = "helloworld";
-    public static final String ScDescription = "The ubiquitous hello world demo";
-    public static final ScHname HScName = new ScHname(0x0683223c);
+	public static final String ScName = "helloworld";
+	public static final String ScDescription = "The ubiquitous hello world demo";
+	public static final ScHname HScName = new ScHname(0x0683223c);
 
-    public static final Key VarHelloWorld = new Key("helloWorld");
+	public static final Key VarHelloWorld = new Key("helloWorld");
 
-    public static final String FuncHelloWorld = "helloWorld";
-    public static final String ViewGetHelloWorld = "getHelloWorld";
+	public static final String FuncHelloWorld = "helloWorld";
+	public static final String ViewGetHelloWorld = "getHelloWorld";
 
-    public static final ScHname HFuncHelloWorld = new ScHname(0x9d042e65);
-    public static final ScHname HViewGetHelloWorld = new ScHname(0x210439ce);
+	public static final ScHname HFuncHelloWorld = new ScHname(0x9d042e65);
+	public static final ScHname HViewGetHelloWorld = new ScHname(0x210439ce);
 }

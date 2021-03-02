@@ -13,46 +13,46 @@ import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FairRouletteThunk {
-    public static void onLoad() {
-        ScExports exports = new ScExports();
-        exports.AddFunc("lockBets", FairRouletteThunk::funcLockBetsThunk);
-        exports.AddFunc("payWinners", FairRouletteThunk::funcPayWinnersThunk);
-        exports.AddFunc("placeBet", FairRouletteThunk::funcPlaceBetThunk);
-        exports.AddFunc("playPeriod", FairRouletteThunk::funcPlayPeriodThunk);
-    }
+	public static void onLoad() {
+		ScExports exports = new ScExports();
+		exports.AddFunc("lockBets", FairRouletteThunk::funcLockBetsThunk);
+		exports.AddFunc("payWinners", FairRouletteThunk::funcPayWinnersThunk);
+		exports.AddFunc("placeBet", FairRouletteThunk::funcPlaceBetThunk);
+		exports.AddFunc("playPeriod", FairRouletteThunk::funcPlayPeriodThunk);
+	}
 
-    private static void funcLockBetsThunk(ScFuncContext ctx) {
-        // only SC itself can invoke this function
-        ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+	private static void funcLockBetsThunk(ScFuncContext ctx) {
+		// only SC itself can invoke this function
+		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
-        FuncLockBetsParams params = new FuncLockBetsParams();
-        FairRoulette.funcLockBets(ctx, params);
-    }
+		FuncLockBetsParams params = new FuncLockBetsParams();
+		FairRoulette.funcLockBets(ctx, params);
+	}
 
-    private static void funcPayWinnersThunk(ScFuncContext ctx) {
-        // only SC itself can invoke this function
-        ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+	private static void funcPayWinnersThunk(ScFuncContext ctx) {
+		// only SC itself can invoke this function
+		ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
-        FuncPayWinnersParams params = new FuncPayWinnersParams();
-        FairRoulette.funcPayWinners(ctx, params);
-    }
+		FuncPayWinnersParams params = new FuncPayWinnersParams();
+		FairRoulette.funcPayWinners(ctx, params);
+	}
 
-    private static void funcPlaceBetThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncPlaceBetParams params = new FuncPlaceBetParams();
-        params.Number = p.GetInt64(Consts.ParamNumber);
-        ctx.Require(params.Number.Exists(), "missing mandatory number");
-        FairRoulette.funcPlaceBet(ctx, params);
-    }
+	private static void funcPlaceBetThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncPlaceBetParams params = new FuncPlaceBetParams();
+		params.Number = p.GetInt64(Consts.ParamNumber);
+		ctx.Require(params.Number.Exists(), "missing mandatory number");
+		FairRoulette.funcPlaceBet(ctx, params);
+	}
 
-    private static void funcPlayPeriodThunk(ScFuncContext ctx) {
-        // only SC creator can update the play period
-        ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+	private static void funcPlayPeriodThunk(ScFuncContext ctx) {
+		// only SC creator can update the play period
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncPlayPeriodParams params = new FuncPlayPeriodParams();
-        params.PlayPeriod = p.GetInt64(Consts.ParamPlayPeriod);
-        ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod");
-        FairRoulette.funcPlayPeriod(ctx, params);
-    }
+		ScImmutableMap p = ctx.Params();
+		FuncPlayPeriodParams params = new FuncPlayPeriodParams();
+		params.PlayPeriod = p.GetInt64(Consts.ParamPlayPeriod);
+		ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod");
+		FairRoulette.funcPlayPeriod(ctx, params);
+	}
 }

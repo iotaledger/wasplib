@@ -10,8 +10,8 @@ package org.iota.wasp.contracts.fairauction.types;
 import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
-public class Auction {
-    //@formatter:off
+public class Auction{
+	//@formatter:off
 	public ScColor   Color;         // color of tokens for sale
 	public ScAgentId Creator;       // issuer of start_auction transaction
 	public long      Deposit;       // deposit by auction owner to cover the SC fees
@@ -25,37 +25,37 @@ public class Auction {
 	public long      WhenStarted;   // timestamp when auction started
 	//@formatter:on
 
-    public Auction() {
-    }
+	public Auction() {
+	}
 
-    public Auction(byte[] bytes) {
-        BytesDecoder decode = new BytesDecoder(bytes);
-        Color = decode.Color();
-        Creator = decode.AgentId();
-        Deposit = decode.Int64();
-        Description = decode.String();
-        Duration = decode.Int64();
-        HighestBid = decode.Int64();
-        HighestBidder = decode.AgentId();
-        MinimumBid = decode.Int64();
-        NumTokens = decode.Int64();
-        OwnerMargin = decode.Int64();
-        WhenStarted = decode.Int64();
-    }
+	public Auction(byte[] bytes) {
+		BytesDecoder decode = new BytesDecoder(bytes);
+		Color = decode.Color();
+		Creator = decode.AgentId();
+		Deposit = decode.Int64();
+		Description = decode.String();
+		Duration = decode.Int64();
+		HighestBid = decode.Int64();
+		HighestBidder = decode.AgentId();
+		MinimumBid = decode.Int64();
+		NumTokens = decode.Int64();
+		OwnerMargin = decode.Int64();
+		WhenStarted = decode.Int64();
+	}
 
-    public byte[] toBytes() {
-        return new BytesEncoder().
-                Color(Color).
-                AgentId(Creator).
-                Int64(Deposit).
-                String(Description).
-                Int64(Duration).
-                Int64(HighestBid).
-                AgentId(HighestBidder).
-                Int64(MinimumBid).
-                Int64(NumTokens).
-                Int64(OwnerMargin).
-                Int64(WhenStarted).
-                Data();
-    }
+	public byte[] toBytes(){
+		return new BytesEncoder().
+				Color(Color).
+				AgentId(Creator).
+				Int64(Deposit).
+				String(Description).
+				Int64(Duration).
+				Int64(HighestBid).
+				AgentId(HighestBidder).
+				Int64(MinimumBid).
+				Int64(NumTokens).
+				Int64(OwnerMargin).
+				Int64(WhenStarted).
+				Data();
+	}
 }

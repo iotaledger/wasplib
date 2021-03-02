@@ -10,7 +10,6 @@ use dividend::*;
 use wasmlib::*;
 
 mod consts;
-mod types;
 mod dividend;
 
 #[no_mangle]
@@ -18,6 +17,7 @@ fn on_load() {
     let exports = ScExports::new();
     exports.add_func(FUNC_DIVIDE, func_divide_thunk);
     exports.add_func(FUNC_MEMBER, func_member_thunk);
+    exports.add_view(VIEW_GET_FACTOR, view_get_factor_thunk);
 }
 
 pub struct FuncDivideParams {}
@@ -46,4 +46,17 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.require(params.address.exists(), "missing mandatory address");
     ctx.require(params.factor.exists(), "missing mandatory factor");
     func_member(ctx, &params);
+}
+
+pub struct ViewGetFactorParams {
+    pub address: ScImmutableAddress,   // address of dividend recipient
+}
+
+fn view_get_factor_thunk(ctx: &ScViewContext) {
+    let p = ctx.params();
+    let params = ViewGetFactorParams {
+        address: p.get_address(PARAM_ADDRESS),
+    };
+    ctx.require(params.address.exists(), "missing mandatory address");
+    view_get_factor(ctx, &params);
 }

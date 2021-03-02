@@ -13,6 +13,7 @@ func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncDivide, funcDivideThunk)
 	exports.AddFunc(FuncMember, funcMemberThunk)
+	exports.AddView(ViewGetFactor, viewGetFactorThunk)
 }
 
 type FuncDivideParams struct {
@@ -41,4 +42,17 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(params.Address.Exists(), "missing mandatory address")
 	ctx.Require(params.Factor.Exists(), "missing mandatory factor")
 	funcMember(ctx, params)
+}
+
+type ViewGetFactorParams struct {
+	Address wasmlib.ScImmutableAddress           // address of dividend recipient
+}
+
+func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
+	p := ctx.Params()
+	params := &ViewGetFactorParams{
+		Address: p.GetAddress(ParamAddress),
+	}
+	ctx.Require(params.Address.Exists(), "missing mandatory address")
+	viewGetFactor(ctx, params)
 }

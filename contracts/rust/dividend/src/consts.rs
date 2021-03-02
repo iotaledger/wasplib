@@ -15,11 +15,15 @@ pub const HSC_NAME: ScHname = ScHname(0xcce2e239);
 pub const PARAM_ADDRESS: &str = "address";
 pub const PARAM_FACTOR: &str = "factor";
 
+pub const VAR_FACTOR: &str = "factor";
+pub const VAR_MEMBER_LIST: &str = "memberList";
 pub const VAR_MEMBERS: &str = "members";
 pub const VAR_TOTAL_FACTOR: &str = "totalFactor";
 
 pub const FUNC_DIVIDE: &str = "divide";
 pub const FUNC_MEMBER: &str = "member";
+pub const VIEW_GET_FACTOR: &str = "getFactor";
 
 pub const HFUNC_DIVIDE: ScHname = ScHname(0xc7878107);
 pub const HFUNC_MEMBER: ScHname = ScHname(0xc07da2cb);
+pub const HVIEW_GET_FACTOR: ScHname = ScHname(0x0ee668fe);

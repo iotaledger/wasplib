@@ -11,24 +11,24 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.keys.*;
 
 public class Consts {
-    public static final String ScName = "fairroulette";
-    public static final ScHname HScName = new ScHname(0xdf79d138);
+	public static final String ScName = "fairroulette";
+	public static final ScHname HScName = new ScHname(0xdf79d138);
 
-    public static final Key ParamNumber = new Key("number");
-    public static final Key ParamPlayPeriod = new Key("playPeriod");
+	public static final Key ParamNumber = new Key("number");
+	public static final Key ParamPlayPeriod = new Key("playPeriod");
 
-    public static final Key VarBets = new Key("bets");
-    public static final Key VarLastWinningNumber = new Key("lastWinningNumber");
-    public static final Key VarLockedBets = new Key("lockedBets");
-    public static final Key VarPlayPeriod = new Key("playPeriod");
+	public static final Key VarBets = new Key("bets");
+	public static final Key VarLastWinningNumber = new Key("lastWinningNumber");
+	public static final Key VarLockedBets = new Key("lockedBets");
+	public static final Key VarPlayPeriod = new Key("playPeriod");
 
-    public static final String FuncLockBets = "lockBets";
-    public static final String FuncPayWinners = "payWinners";
-    public static final String FuncPlaceBet = "placeBet";
-    public static final String FuncPlayPeriod = "playPeriod";
+	public static final String FuncLockBets = "lockBets";
+	public static final String FuncPayWinners = "payWinners";
+	public static final String FuncPlaceBet = "placeBet";
+	public static final String FuncPlayPeriod = "playPeriod";
 
-    public static final ScHname HFuncLockBets = new ScHname(0xe163b43c);
-    public static final ScHname HFuncPayWinners = new ScHname(0xfb2b0144);
-    public static final ScHname HFuncPlaceBet = new ScHname(0xdfba7d1b);
-    public static final ScHname HFuncPlayPeriod = new ScHname(0xcb94b293);
+	public static final ScHname HFuncLockBets = new ScHname(0xe163b43c);
+	public static final ScHname HFuncPayWinners = new ScHname(0xfb2b0144);
+	public static final ScHname HFuncPlaceBet = new ScHname(0xdfba7d1b);
+	public static final ScHname HFuncPlayPeriod = new ScHname(0xcb94b293);
 }

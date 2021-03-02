@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.inccounter.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncInitParams {
-    public ScImmutableInt64 Counter; // value to initialize state counter with
+	public ScImmutableInt64 Counter; // value to initialize state counter with
 }

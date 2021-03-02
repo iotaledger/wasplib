@@ -13,32 +13,32 @@ import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class DonateWithFeedbackThunk {
-    public static void onLoad() {
-        ScExports exports = new ScExports();
-        exports.AddFunc("donate", DonateWithFeedbackThunk::funcDonateThunk);
-        exports.AddFunc("withdraw", DonateWithFeedbackThunk::funcWithdrawThunk);
-        exports.AddView("donations", DonateWithFeedbackThunk::viewDonationsThunk);
-    }
+	public static void onLoad() {
+		ScExports exports = new ScExports();
+		exports.AddFunc("donate", DonateWithFeedbackThunk::funcDonateThunk);
+		exports.AddFunc("withdraw", DonateWithFeedbackThunk::funcWithdrawThunk);
+		exports.AddView("donations", DonateWithFeedbackThunk::viewDonationsThunk);
+	}
 
-    private static void funcDonateThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncDonateParams params = new FuncDonateParams();
-        params.Feedback = p.GetString(Consts.ParamFeedback);
-        DonateWithFeedback.funcDonate(ctx, params);
-    }
+	private static void funcDonateThunk(ScFuncContext ctx) {
+		ScImmutableMap p = ctx.Params();
+		FuncDonateParams params = new FuncDonateParams();
+		params.Feedback = p.GetString(Consts.ParamFeedback);
+		DonateWithFeedback.funcDonate(ctx, params);
+	}
 
-    private static void funcWithdrawThunk(ScFuncContext ctx) {
-        // only SC creator can withdraw donated funds
-        ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+	private static void funcWithdrawThunk(ScFuncContext ctx) {
+		// only SC creator can withdraw donated funds
+		ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncWithdrawParams params = new FuncWithdrawParams();
-        params.Amount = p.GetInt64(Consts.ParamAmount);
-        DonateWithFeedback.funcWithdraw(ctx, params);
-    }
+		ScImmutableMap p = ctx.Params();
+		FuncWithdrawParams params = new FuncWithdrawParams();
+		params.Amount = p.GetInt64(Consts.ParamAmount);
+		DonateWithFeedback.funcWithdraw(ctx, params);
+	}
 
-    private static void viewDonationsThunk(ScViewContext ctx) {
-        ViewDonationsParams params = new ViewDonationsParams();
-        DonateWithFeedback.viewDonations(ctx, params);
-    }
+	private static void viewDonationsThunk(ScViewContext ctx) {
+		ViewDonationsParams params = new ViewDonationsParams();
+		DonateWithFeedback.viewDonations(ctx, params);
+	}
 }
