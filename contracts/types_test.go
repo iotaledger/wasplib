@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-// + build feature_types
+// +build feature_types
 
 package contracts
 
@@ -12,13 +12,13 @@ import (
 )
 
 func TestRustToGo(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := generator.RustConvertor(generator.RustToGoLine, "converted/$c/$c.go")
 	require.NoError(t, err)
 }
 
 func TestRustToJava(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 	err := generator.RustConvertor(generator.RustToJavaLine, "converted/$c/$C.java")
 	require.NoError(t, err)
 }

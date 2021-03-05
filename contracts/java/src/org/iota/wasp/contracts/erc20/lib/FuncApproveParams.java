@@ -9,7 +9,9 @@ package org.iota.wasp.contracts.erc20.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
+//@formatter:off
 public class FuncApproveParams {
-    public ScImmutableInt64 Amount;     // allowance value for delegated account
-    public ScImmutableAgentId Delegation; // delegated account
+    public ScImmutableInt64     Amount;     // allowance value for delegated account
+    public ScImmutableAgentId   Delegation; // delegated account
 }
+//@formatter:on

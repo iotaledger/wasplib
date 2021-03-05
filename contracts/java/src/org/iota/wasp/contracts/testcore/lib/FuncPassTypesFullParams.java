@@ -9,12 +9,14 @@ package org.iota.wasp.contracts.testcore.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
+//@formatter:off
 public class FuncPassTypesFullParams {
-    public ScImmutableHash Hash;
-    public ScImmutableHname Hname;
-    public ScImmutableHname HnameZero;
-    public ScImmutableInt64 Int64;
-    public ScImmutableInt64 Int64Zero;
+    public ScImmutableHash   Hash;
+    public ScImmutableHname  Hname;
+    public ScImmutableHname  HnameZero;
+    public ScImmutableInt64  Int64;
+    public ScImmutableInt64  Int64Zero;
     public ScImmutableString String;
     public ScImmutableString StringZero;
 }
+//@formatter:on

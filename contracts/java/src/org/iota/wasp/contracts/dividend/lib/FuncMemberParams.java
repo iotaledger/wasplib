@@ -9,7 +9,9 @@ package org.iota.wasp.contracts.dividend.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
+//@formatter:off
 public class FuncMemberParams {
-    public ScImmutableAddress Address; // address of dividend recipient
-    public ScImmutableInt64 Factor;  // relative division factor
+    public ScImmutableAddress   Address; // address of dividend recipient
+    public ScImmutableInt64     Factor;  // relative division factor
 }
+//@formatter:on

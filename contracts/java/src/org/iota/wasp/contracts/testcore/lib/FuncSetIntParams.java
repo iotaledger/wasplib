@@ -9,7 +9,9 @@ package org.iota.wasp.contracts.testcore.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
+//@formatter:off
 public class FuncSetIntParams {
-    public ScImmutableInt64 IntValue;
+    public ScImmutableInt64  IntValue;
     public ScImmutableString Name;
 }
+//@formatter:on

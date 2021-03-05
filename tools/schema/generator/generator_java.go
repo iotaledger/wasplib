@@ -290,6 +290,9 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 	if len(funcDef.Params) != 0 {
 		fmt.Fprintf(params, "\nimport org.iota.wasp.wasmlib.immutable.*;\n")
 	}
+	if len(funcDef.Params) > 1 {
+		fmt.Fprintf(params, "\n//@formatter:off")
+	}
 	fmt.Fprintf(params, "\npublic class %sParams {\n", funcName)
 	for _, param := range funcDef.Params {
 		fldName := capitalize(param.Name) + ";"
@@ -300,6 +303,9 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		fmt.Fprintf(params, "    public ScImmutable%s %s%s\n", fldType, fldName, param.Comment)
 	}
 	fmt.Fprintf(params, "}\n")
+	if len(funcDef.Params) > 1 {
+		fmt.Fprintf(params, "//@formatter:on\n")
+	}
 
 	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
 	grant := funcDef.Annotations["#grant"]

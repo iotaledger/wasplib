@@ -29,7 +29,9 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 	fmt.Fprintf(file, "public class %s{\n", td.Name)
 
 	// write struct layout
-	fmt.Fprintf(file, "\t//@formatter:off\n")
+	if len(td.Fields) > 1 {
+		fmt.Fprintf(file, "\t//@formatter:off\n")
+	}
 	for _, field := range td.Fields {
 		fldName := capitalize(field.Name) + ";"
 		fldType := pad(javaTypes[field.Type], typeLen)
@@ -38,7 +40,9 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		}
 		fmt.Fprintf(file, "\tpublic %s %s%s\n", fldType, fldName, field.Comment)
 	}
-	fmt.Fprintf(file, "\t//@formatter:on\n")
+	if len(td.Fields) > 1 {
+		fmt.Fprintf(file, "\t//@formatter:on\n")
+	}
 
 	// write default constructor
 	fmt.Fprintf(file, "\n\tpublic %s() {\n\t}\n", td.Name)

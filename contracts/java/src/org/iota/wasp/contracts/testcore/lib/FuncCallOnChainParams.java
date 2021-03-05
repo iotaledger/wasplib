@@ -9,8 +9,10 @@ package org.iota.wasp.contracts.testcore.lib;
 
 import org.iota.wasp.wasmlib.immutable.*;
 
+//@formatter:off
 public class FuncCallOnChainParams {
     public ScImmutableHname HnameContract;
     public ScImmutableHname HnameEP;
     public ScImmutableInt64 IntValue;
 }
+//@formatter:on

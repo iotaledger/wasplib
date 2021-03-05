@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.fairauction.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewGetInfoParams {
-    public ScImmutableColor Color; // color identifies the auction
+    public ScImmutableColor   Color; // color identifies the auction
 }
