@@ -129,7 +129,7 @@ pub fn view_allowance(ctx: &ScViewContext, params: &ViewAllowanceParams) {
 pub fn view_balance_of(ctx: &ScViewContext, params: &ViewBalanceOfParams) {
     let balances = ctx.state().get_map(VAR_BALANCES);
     let balance = balances.get_int64(&params.account.value()).value();
-    ctx.results().get_int64(PARAM_AMOUNT).set_value(balance)
+    ctx.results().get_int64(PARAM_AMOUNT).set_value(balance);
 }
 
 // the view returns total supply set when creating the contract (a constant).

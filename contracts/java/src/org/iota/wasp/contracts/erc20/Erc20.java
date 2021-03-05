@@ -13,8 +13,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class Erc20 {
-    // implementation of ERC-20 smart contract for ISCP
-    // following https://ethereum.org/en/developers/tutorials/understand-the-erc-20-token-smart-contract/
 
     // Sets the allowance value for delegated account
     // inputs:
@@ -23,12 +21,12 @@ public class Erc20 {
     public static void funcApprove(ScFuncContext ctx, FuncApproveParams params) {
         ctx.Trace("erc20.approve");
 
-        ScAgentId delegation = params.Delegation.Value();
-        long amount = params.Amount.Value();
+        var delegation = params.Delegation.Value();
+        var amount = params.Amount.Value();
         ctx.Require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter");
 
         // all allowances are in the map under the name of he owner
-        ScMutableMap allowances = ctx.State().GetMap(ctx.Caller());
+        var allowances = ctx.State().GetMap(ctx.Caller());
         allowances.GetInt64(delegation).SetValue(amount);
         ctx.Log("erc20.approve.success");
     }
@@ -41,17 +39,17 @@ public class Erc20 {
     public static void funcInit(ScFuncContext ctx, FuncInitParams params) {
         ctx.Trace("erc20.on_init.begin");
 
-        long supply = params.Supply.Value();
+        var supply = params.Supply.Value();
         ctx.Require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter");
         ctx.State().GetInt64(Consts.VarSupply).SetValue(supply);
 
         // we cannot use 'caller' here because on_init is always called from the 'root'
         // so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
         // assign the whole supply to creator
-        ScAgentId creator = params.Creator.Value();
+        var creator = params.Creator.Value();
         ctx.State().GetMap(Consts.VarBalances).GetInt64(creator).SetValue(supply);
 
-        String t = "erc20.on_init.success. Supply: " + supply +
+        var t = "erc20.on_init.success. Supply: " + supply +
                 ", creator:" + creator;
         ctx.Log(t);
     }
@@ -63,16 +61,16 @@ public class Erc20 {
     public static void funcTransfer(ScFuncContext ctx, FuncTransferParams params) {
         ctx.Trace("erc20.transfer");
 
-        long amount = params.Amount.Value();
+        var amount = params.Amount.Value();
         ctx.Require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter");
 
-        ScMutableMap balances = ctx.State().GetMap(Consts.VarBalances);
-        ScMutableInt64 sourceBalance = balances.GetInt64(ctx.Caller());
+        var balances = ctx.State().GetMap(Consts.VarBalances);
+        var sourceBalance = balances.GetInt64(ctx.Caller());
         ctx.Require(sourceBalance.Value() >= amount, "erc20.transfer.fail: not enough funds");
 
-        ScAgentId targetAddr = params.Account.Value();
-        ScMutableInt64 targetBalance = balances.GetInt64(targetAddr);
-        long result = targetBalance.Value() + amount;
+        var targetAddr = params.Account.Value();
+        var targetBalance = balances.GetInt64(targetAddr);
+        var result = targetBalance.Value() + amount;
         ctx.Require(result > 0, "erc20.transfer.fail: overflow");
 
         sourceBalance.SetValue(sourceBalance.Value() - amount);
@@ -90,22 +88,22 @@ public class Erc20 {
         ctx.Trace("erc20.transfer_from");
 
         // validate parameters
-        ScAgentId account = params.Account.Value();
-        ScAgentId recipient = params.Recipient.Value();
-        long amount = params.Amount.Value();
+        var account = params.Account.Value();
+        var recipient = params.Recipient.Value();
+        var amount = params.Amount.Value();
         ctx.Require(amount > 0, "erc20.transfer_from.fail: wrong 'amount' parameter");
 
         // allowances are in the map under the name of the account
-        ScMutableMap allowances = ctx.State().GetMap(account);
-        ScMutableInt64 allowance = allowances.GetInt64(recipient);
+        var allowances = ctx.State().GetMap(account);
+        var allowance = allowances.GetInt64(recipient);
         ctx.Require(allowance.Value() >= amount, "erc20.transfer_from.fail: not enough allowance");
 
-        ScMutableMap balances = ctx.State().GetMap(Consts.VarBalances);
-        ScMutableInt64 sourceBalance = balances.GetInt64(account);
+        var balances = ctx.State().GetMap(Consts.VarBalances);
+        var sourceBalance = balances.GetInt64(account);
         ctx.Require(sourceBalance.Value() >= amount, "erc20.transfer_from.fail: not enough funds");
 
-        ScMutableInt64 recipientBalance = balances.GetInt64(recipient);
-        long result = recipientBalance.Value() + amount;
+        var recipientBalance = balances.GetInt64(recipient);
+        var result = recipientBalance.Value() + amount;
         ctx.Require(result > 0, "erc20.transfer_from.fail: overflow");
 
         sourceBalance.SetValue(sourceBalance.Value() - amount);
@@ -126,8 +124,8 @@ public class Erc20 {
         ctx.Trace("erc20.allowance");
 
         // all allowances of the address 'owner' are stored in the map of the same name
-        ScImmutableMap allowances = ctx.State().GetMap(params.Account.Value());
-        long allow = allowances.GetInt64(params.Delegation.Value()).Value();
+        var allowances = ctx.State().GetMap(params.Account.Value());
+        var allow = allowances.GetInt64(params.Delegation.Value()).Value();
         ctx.Results().GetInt64(Consts.ParamAmount).SetValue(allow);
     }
 
@@ -135,8 +133,8 @@ public class Erc20 {
     // Input:
     // - PARAM_ACCOUNT: agentID
     public static void viewBalanceOf(ScViewContext ctx, ViewBalanceOfParams params) {
-        ScImmutableMap balances = ctx.State().GetMap(Consts.VarBalances);
-        long balance = balances.GetInt64(params.Account.Value()).Value();
+        var balances = ctx.State().GetMap(Consts.VarBalances);
+        var balance = balances.GetInt64(params.Account.Value()).Value();
         ctx.Results().GetInt64(Consts.ParamAmount).SetValue(balance);
     }
 
@@ -144,7 +142,7 @@ public class Erc20 {
     // Output:
     // - PARAM_SUPPLY: i64
     public static void viewTotalSupply(ScViewContext ctx, ViewTotalSupplyParams params) {
-        long supply = ctx.State().GetInt64(Consts.VarSupply).Value();
+        var supply = ctx.State().GetInt64(Consts.VarSupply).Value();
         ctx.Results().GetInt64(Consts.ParamSupply).SetValue(supply);
     }
 }

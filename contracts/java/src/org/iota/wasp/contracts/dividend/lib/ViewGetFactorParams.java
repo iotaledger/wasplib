@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.dividend.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class ViewGetFactorParams {
-	public ScImmutableAddress   Address; // address of dividend recipient
+    public ScImmutableAddress Address; // address of dividend recipient
 }

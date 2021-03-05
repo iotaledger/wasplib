@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.testcore.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncWithdrawToChainParams {
-	public ScImmutableChainId   ChainId;
+    public ScImmutableChainId ChainId;
 }

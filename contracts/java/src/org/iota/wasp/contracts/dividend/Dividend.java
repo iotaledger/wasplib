@@ -4,66 +4,67 @@
 package org.iota.wasp.contracts.dividend;
 
 import org.iota.wasp.contracts.dividend.lib.*;
-import org.iota.wasp.contracts.dividend.types.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class Dividend {
 
     public static void funcDivide(ScFuncContext ctx, FuncDivideParams params) {
-        long amount = ctx.Balances().Balance(ScColor.IOTA);
+        ctx.Log("calling divide");
+        var amount = ctx.Balances().Balance(ScColor.IOTA);
         if (amount == 0) {
             ctx.Panic("Nothing to divide");
         }
-        ScMutableMap state = ctx.State();
-        ScMutableInt64 totalFactor = state.GetInt64(Consts.VarTotalFactor);
-        long total = totalFactor.Value();
-        ScMutableBytesArray members = state.GetBytesArray(Consts.VarMembers);
-        long parts = 0;
-        int size = members.Length();
-        for (int i = 0; i < size; i++) {
-            Member m = new Member(members.GetBytes(i).Value());
-            long part = amount * m.Factor / total;
-            if (part != 0) {
-                parts += part;
-                ctx.TransferToAddress(m.Address, new ScTransfers(ScColor.IOTA, part));
+        var state = ctx.State();
+        var total = state.GetInt64(Consts.VarTotalFactor).Value();
+        var members = state.GetMap(Consts.VarMembers);
+        var memberList = state.GetAddressArray(Consts.VarMemberList);
+        var size = memberList.Length();
+        var parts = 0;
+        for (var i = 0; i < size; i++) {
+            var address = memberList.GetAddress(i).Value();
+            var factor = members.GetInt64(address).Value();
+            var share = amount * factor / total;
+            if (share != 0) {
+                parts += share;
+                var transfers = new ScTransfers(ScColor.IOTA, share);
+                ctx.TransferToAddress(address, transfers);
             }
         }
         if (parts != amount) {
             // note we truncated the calculations down to the nearest integer
             // there could be some small remainder left in the contract, but
             // that will be picked up in the next round as part of the balance
-            long remainder = amount - parts;
+            var remainder = amount - parts;
             ctx.Log("Remainder in contract: " + remainder);
         }
     }
 
     public static void funcMember(ScFuncContext ctx, FuncMemberParams params) {
-        Member member = new Member();
-        {
-            member.Address = params.Address.Value();
-            member.Factor = params.Factor.Value();
+        ctx.Log("calling member");
+        var state = ctx.State();
+        var members = state.GetMap(Consts.VarMembers);
+        var address = params.Address.Value();
+        var currentFactor = members.GetInt64(address);
+        if (!currentFactor.Exists()) {
+            // add new address to member list
+            var memberList = state.GetAddressArray(Consts.VarMemberList);
+            memberList.GetAddress(memberList.Length()).SetValue(address);
         }
-        ScMutableMap state = ctx.State();
-        ScMutableInt64 totalFactor = state.GetInt64(Consts.VarTotalFactor);
-        long total = totalFactor.Value();
-        ScMutableBytesArray members = state.GetBytesArray(Consts.VarMembers);
-        int size = members.Length();
-        for (int i = 0; i < size; i++) {
-            Member m = new Member(members.GetBytes(i).Value());
-            if (m.Address == member.Address) {
-                total -= m.Factor;
-                total += member.Factor;
-                totalFactor.SetValue(total);
-                members.GetBytes(i).SetValue(member.toBytes());
-                ctx.Log("Updated: " + member.Address);
-                return;
-            }
-        }
-        total += member.Factor;
-        totalFactor.SetValue(total);
-        members.GetBytes(size).SetValue(member.toBytes());
-        ctx.Log("Appended: " + member.Address);
+        var factor = params.Factor.Value();
+        var totalFactor = state.GetInt64(Consts.VarTotalFactor);
+        var newTotalFactor = totalFactor.Value() - currentFactor.Value() + factor;
+        totalFactor.SetValue(newTotalFactor);
+        currentFactor.SetValue(factor);
+    }
+
+    public static void viewGetFactor(ScViewContext ctx, ViewGetFactorParams params) {
+        ctx.Log("calling getFactor");
+        var address = params.Address.Value();
+        var members = ctx.State().GetMap(Consts.VarMembers);
+        var factor = members.GetInt64(address).Value();
+        ctx.Results().GetInt64(Consts.VarFactor).SetValue(factor);
     }
 }

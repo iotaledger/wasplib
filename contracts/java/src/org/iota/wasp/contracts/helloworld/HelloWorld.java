@@ -5,8 +5,12 @@ package org.iota.wasp.contracts.helloworld;
 
 import org.iota.wasp.contracts.helloworld.lib.*;
 import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.mutable.*;
 
 public class HelloWorld {
+
     public static void funcHelloWorld(ScFuncContext ctx, FuncHelloWorldParams params) {
         ctx.Log("Hello, world!");
     }

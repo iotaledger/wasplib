@@ -13,77 +13,77 @@ import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class IncCounterThunk {
-	public static void onLoad() {
-		ScExports exports = new ScExports();
-		exports.AddFunc("callIncrement", IncCounterThunk::funcCallIncrementThunk);
-		exports.AddFunc("callIncrementRecurse5x", IncCounterThunk::funcCallIncrementRecurse5xThunk);
-		exports.AddFunc("increment", IncCounterThunk::funcIncrementThunk);
-		exports.AddFunc("init", IncCounterThunk::funcInitThunk);
-		exports.AddFunc("localStateInternalCall", IncCounterThunk::funcLocalStateInternalCallThunk);
-		exports.AddFunc("localStatePost", IncCounterThunk::funcLocalStatePostThunk);
-		exports.AddFunc("localStateSandboxCall", IncCounterThunk::funcLocalStateSandboxCallThunk);
-		exports.AddFunc("postIncrement", IncCounterThunk::funcPostIncrementThunk);
-		exports.AddFunc("repeatMany", IncCounterThunk::funcRepeatManyThunk);
-		exports.AddFunc("whenMustIncrement", IncCounterThunk::funcWhenMustIncrementThunk);
-		exports.AddView("getCounter", IncCounterThunk::viewGetCounterThunk);
-	}
+    public static void onLoad() {
+        ScExports exports = new ScExports();
+        exports.AddFunc("callIncrement", IncCounterThunk::funcCallIncrementThunk);
+        exports.AddFunc("callIncrementRecurse5x", IncCounterThunk::funcCallIncrementRecurse5xThunk);
+        exports.AddFunc("increment", IncCounterThunk::funcIncrementThunk);
+        exports.AddFunc("init", IncCounterThunk::funcInitThunk);
+        exports.AddFunc("localStateInternalCall", IncCounterThunk::funcLocalStateInternalCallThunk);
+        exports.AddFunc("localStatePost", IncCounterThunk::funcLocalStatePostThunk);
+        exports.AddFunc("localStateSandboxCall", IncCounterThunk::funcLocalStateSandboxCallThunk);
+        exports.AddFunc("postIncrement", IncCounterThunk::funcPostIncrementThunk);
+        exports.AddFunc("repeatMany", IncCounterThunk::funcRepeatManyThunk);
+        exports.AddFunc("whenMustIncrement", IncCounterThunk::funcWhenMustIncrementThunk);
+        exports.AddView("getCounter", IncCounterThunk::viewGetCounterThunk);
+    }
 
-	private static void funcCallIncrementThunk(ScFuncContext ctx) {
-		FuncCallIncrementParams params = new FuncCallIncrementParams();
-		IncCounter.funcCallIncrement(ctx, params);
-	}
+    private static void funcCallIncrementThunk(ScFuncContext ctx) {
+        FuncCallIncrementParams params = new FuncCallIncrementParams();
+        IncCounter.funcCallIncrement(ctx, params);
+    }
 
-	private static void funcCallIncrementRecurse5xThunk(ScFuncContext ctx) {
-		FuncCallIncrementRecurse5xParams params = new FuncCallIncrementRecurse5xParams();
-		IncCounter.funcCallIncrementRecurse5x(ctx, params);
-	}
+    private static void funcCallIncrementRecurse5xThunk(ScFuncContext ctx) {
+        FuncCallIncrementRecurse5xParams params = new FuncCallIncrementRecurse5xParams();
+        IncCounter.funcCallIncrementRecurse5x(ctx, params);
+    }
 
-	private static void funcIncrementThunk(ScFuncContext ctx) {
-		FuncIncrementParams params = new FuncIncrementParams();
-		IncCounter.funcIncrement(ctx, params);
-	}
+    private static void funcIncrementThunk(ScFuncContext ctx) {
+        FuncIncrementParams params = new FuncIncrementParams();
+        IncCounter.funcIncrement(ctx, params);
+    }
 
-	private static void funcInitThunk(ScFuncContext ctx) {
-		ScImmutableMap p = ctx.Params();
-		FuncInitParams params = new FuncInitParams();
-		params.Counter = p.GetInt64(Consts.ParamCounter);
-		IncCounter.funcInit(ctx, params);
-	}
+    private static void funcInitThunk(ScFuncContext ctx) {
+        ScImmutableMap p = ctx.Params();
+        FuncInitParams params = new FuncInitParams();
+        params.Counter = p.GetInt64(Consts.ParamCounter);
+        IncCounter.funcInit(ctx, params);
+    }
 
-	private static void funcLocalStateInternalCallThunk(ScFuncContext ctx) {
-		FuncLocalStateInternalCallParams params = new FuncLocalStateInternalCallParams();
-		IncCounter.funcLocalStateInternalCall(ctx, params);
-	}
+    private static void funcLocalStateInternalCallThunk(ScFuncContext ctx) {
+        FuncLocalStateInternalCallParams params = new FuncLocalStateInternalCallParams();
+        IncCounter.funcLocalStateInternalCall(ctx, params);
+    }
 
-	private static void funcLocalStatePostThunk(ScFuncContext ctx) {
-		FuncLocalStatePostParams params = new FuncLocalStatePostParams();
-		IncCounter.funcLocalStatePost(ctx, params);
-	}
+    private static void funcLocalStatePostThunk(ScFuncContext ctx) {
+        FuncLocalStatePostParams params = new FuncLocalStatePostParams();
+        IncCounter.funcLocalStatePost(ctx, params);
+    }
 
-	private static void funcLocalStateSandboxCallThunk(ScFuncContext ctx) {
-		FuncLocalStateSandboxCallParams params = new FuncLocalStateSandboxCallParams();
-		IncCounter.funcLocalStateSandboxCall(ctx, params);
-	}
+    private static void funcLocalStateSandboxCallThunk(ScFuncContext ctx) {
+        FuncLocalStateSandboxCallParams params = new FuncLocalStateSandboxCallParams();
+        IncCounter.funcLocalStateSandboxCall(ctx, params);
+    }
 
-	private static void funcPostIncrementThunk(ScFuncContext ctx) {
-		FuncPostIncrementParams params = new FuncPostIncrementParams();
-		IncCounter.funcPostIncrement(ctx, params);
-	}
+    private static void funcPostIncrementThunk(ScFuncContext ctx) {
+        FuncPostIncrementParams params = new FuncPostIncrementParams();
+        IncCounter.funcPostIncrement(ctx, params);
+    }
 
-	private static void funcRepeatManyThunk(ScFuncContext ctx) {
-		ScImmutableMap p = ctx.Params();
-		FuncRepeatManyParams params = new FuncRepeatManyParams();
-		params.NumRepeats = p.GetInt64(Consts.ParamNumRepeats);
-		IncCounter.funcRepeatMany(ctx, params);
-	}
+    private static void funcRepeatManyThunk(ScFuncContext ctx) {
+        ScImmutableMap p = ctx.Params();
+        FuncRepeatManyParams params = new FuncRepeatManyParams();
+        params.NumRepeats = p.GetInt64(Consts.ParamNumRepeats);
+        IncCounter.funcRepeatMany(ctx, params);
+    }
 
-	private static void funcWhenMustIncrementThunk(ScFuncContext ctx) {
-		FuncWhenMustIncrementParams params = new FuncWhenMustIncrementParams();
-		IncCounter.funcWhenMustIncrement(ctx, params);
-	}
+    private static void funcWhenMustIncrementThunk(ScFuncContext ctx) {
+        FuncWhenMustIncrementParams params = new FuncWhenMustIncrementParams();
+        IncCounter.funcWhenMustIncrement(ctx, params);
+    }
 
-	private static void viewGetCounterThunk(ScViewContext ctx) {
-		ViewGetCounterParams params = new ViewGetCounterParams();
-		IncCounter.viewGetCounter(ctx, params);
-	}
+    private static void viewGetCounterThunk(ScViewContext ctx) {
+        ViewGetCounterParams params = new ViewGetCounterParams();
+        IncCounter.viewGetCounter(ctx, params);
+    }
 }

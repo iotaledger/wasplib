@@ -16,12 +16,12 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
 
     let mut target_contract = ctx.contract_id().hname();
     if params.hname_contract.exists() {
-        target_contract = params.hname_contract.value()
+        target_contract = params.hname_contract.value();
     }
 
     let mut target_ep = HFUNC_CALL_ON_CHAIN;
     if params.hname_ep.exists() {
-        target_ep = params.hname_ep.value()
+        target_ep = params.hname_ep.value();
     }
 
     let var_counter = ctx.state().get_int64(VAR_COUNTER);

@@ -7,23 +7,27 @@ import org.iota.wasp.contracts.tokenregistry.lib.*;
 import org.iota.wasp.contracts.tokenregistry.types.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class TokenRegistry {
 
     public static void funcMintSupply(ScFuncContext ctx, FuncMintSupplyParams params) {
-        ScColor minted = ctx.Incoming().Minted();
-        if (minted == ScColor.MINT) {
+        var mintedSupply = ctx.MintedSupply();
+        if (mintedSupply == 0) {
             ctx.Panic("TokenRegistry: No newly minted tokens found");
         }
-        ScMutableMap state = ctx.State();
-        ScMutableBytes registry = state.GetMap(Consts.VarRegistry).GetBytes(minted);
+        var mintedColor = ctx.MintedColor();
+        var state = ctx.State();
+        var registry = state.GetMap(Consts.VarRegistry).GetBytes(mintedColor);
         if (registry.Exists()) {
-            ctx.Panic("TokenRegistry: Color already exists");
+            // should never happen, because transaction id is unique
+            ctx.Panic("TokenRegistry: registry for color already exists");
         }
-        Token token = new Token();
+        var token = new Token();
         {
-            token.Supply = ctx.Incoming().Balance(minted);
+            token.Supply = mintedSupply;
             token.MintedBy = ctx.Caller();
             token.Owner = ctx.Caller();
             token.Created = ctx.Timestamp();
@@ -31,15 +35,13 @@ public class TokenRegistry {
             token.Description = params.Description.Value();
             token.UserDefined = params.UserDefined.Value();
         }
-        if (token.Supply <= 0) {
-            ctx.Panic("TokenRegistry: Insufficient supply");
-        }
         if (token.Description.isEmpty()) {
             token.Description += "no dscr";
         }
         registry.SetValue(token.toBytes());
-        ScMutableColorArray colors = state.GetColorArray(Consts.VarColorList);
-        colors.GetColor(colors.Length()).SetValue(minted);
+        var colors = state.GetColorArray(Consts.VarColorList);
+        colors.GetColor(colors.Length()).SetValue(mintedColor);
+        ctx.Log("tokenregistry.mintSupply ok");
     }
 
     public static void funcTransferOwnership(ScFuncContext ctx, FuncTransferOwnershipParams params) {

@@ -190,14 +190,14 @@ func (s *Schema) GenerateJavaLib() error {
 
 	fmt.Fprintf(file, "public class %sThunk {\n", s.FullName)
 
-	fmt.Fprintf(file, "\tpublic static void onLoad() {\n")
-	fmt.Fprintf(file, "\t\tScExports exports = new ScExports();\n")
+	fmt.Fprintf(file, "    public static void onLoad() {\n")
+	fmt.Fprintf(file, "        ScExports exports = new ScExports();\n")
 	for _, funcDef := range s.Funcs {
 		name := funcDef.FullName
 		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "\t\texports.Add%s(\"%s\", %s%s::%s%s);\n", kind, funcDef.Name, s.FullName, thunk, name, thunk)
+		fmt.Fprintf(file, "        exports.Add%s(\"%s\", %s%s::%s%s);\n", kind, funcDef.Name, s.FullName, thunk, name, thunk)
 	}
-	fmt.Fprintf(file, "\t}\n")
+	fmt.Fprintf(file, "    }\n")
 
 	if generateJavaThunk {
 		// generate parameter structs and thunks to set up and check parameters
@@ -230,19 +230,19 @@ func (s *Schema) GenerateJavaConsts() error {
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.keys.*;\n")
 	fmt.Fprintf(file, "\npublic class Consts {\n")
 
-	fmt.Fprintf(file, "\tpublic static final String ScName = \"%s\";\n", s.Name)
+	fmt.Fprintf(file, "    public static final String ScName = \"%s\";\n", s.Name)
 	if s.Description != "" {
-		fmt.Fprintf(file, "\tpublic static final String ScDescription = \"%s\";\n", s.Description)
+		fmt.Fprintf(file, "    public static final String ScDescription = \"%s\";\n", s.Description)
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "\tpublic static final ScHname HScName = new ScHname(0x%s);\n", hName.String())
+	fmt.Fprintf(file, "    public static final ScHname HScName = new ScHname(0x%s);\n", hName.String())
 
 	if len(s.Params) != 0 {
 		fmt.Fprintln(file)
 		for _, name := range sortedFields(s.Params) {
 			param := s.Params[name]
 			name = capitalize(param.Name)
-			fmt.Fprintf(file, "\tpublic static final Key Param%s = new Key(\"%s\");\n", name, param.Alias)
+			fmt.Fprintf(file, "    public static final Key Param%s = new Key(\"%s\");\n", name, param.Alias)
 		}
 	}
 
@@ -250,7 +250,7 @@ func (s *Schema) GenerateJavaConsts() error {
 		fmt.Fprintln(file)
 		for _, field := range s.Vars {
 			name := capitalize(field.Name)
-			fmt.Fprintf(file, "\tpublic static final Key Var%s = new Key(\"%s\");\n", name, field.Alias)
+			fmt.Fprintf(file, "    public static final Key Var%s = new Key(\"%s\");\n", name, field.Alias)
 		}
 	}
 
@@ -258,14 +258,14 @@ func (s *Schema) GenerateJavaConsts() error {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
-			fmt.Fprintf(file, "\tpublic static final String %s = \"%s\";\n", name, funcDef.Name)
+			fmt.Fprintf(file, "    public static final String %s = \"%s\";\n", name, funcDef.Name)
 		}
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "\tpublic static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
+			fmt.Fprintf(file, "    public static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
 		}
 	}
 
@@ -297,16 +297,16 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fldName = pad(fldName, nameLen+1)
 		}
 		fldType := pad(param.Type, typeLen)
-		fmt.Fprintf(params, "\tpublic ScImmutable%s %s%s\n", fldType, fldName, param.Comment)
+		fmt.Fprintf(params, "    public ScImmutable%s %s%s\n", fldType, fldName, param.Comment)
 	}
 	fmt.Fprintf(params, "}\n")
 
-	fmt.Fprintf(file, "\n\tprivate static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
+	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
 	grant := funcDef.Annotations["#grant"]
 	if grant != "" {
 		index := strings.Index(grant, "//")
 		if index >= 0 {
-			fmt.Fprintf(file, "\t\t%s\n", grant[index:])
+			fmt.Fprintf(file, "        %s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
 		}
 		switch grant {
@@ -317,28 +317,28 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		case "creator":
 			grant = "ctx.ContractCreator()"
 		default:
-			fmt.Fprintf(file, "\t\tScAgentId grantee := ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
-			fmt.Fprintf(file, "\t\tctx.Require(grantee.Exists(), \"grantee not set: %s\");\n", grant)
+			fmt.Fprintf(file, "        ScAgentId grantee := ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
+			fmt.Fprintf(file, "        ctx.Require(grantee.Exists(), \"grantee not set: %s\");\n", grant)
 			grant = fmt.Sprintf("grantee.Value()")
 		}
-		fmt.Fprintf(file, "\t\tctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
+		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}
 	if len(funcDef.Params) != 0 {
-		fmt.Fprintf(file, "\t\tScImmutableMap p = ctx.Params();\n")
+		fmt.Fprintf(file, "        ScImmutableMap p = ctx.Params();\n")
 	}
-	fmt.Fprintf(file, "\t\t%sParams params = new %sParams();\n", funcName, funcName)
+	fmt.Fprintf(file, "        %sParams params = new %sParams();\n", funcName, funcName)
 	for _, param := range funcDef.Params {
 		name := capitalize(param.Name)
-		fmt.Fprintf(file, "\t\tparams.%s = p.Get%s(Consts.Param%s);\n", name, param.Type, name)
+		fmt.Fprintf(file, "        params.%s = p.Get%s(Consts.Param%s);\n", name, param.Type, name)
 	}
 	for _, param := range funcDef.Params {
 		if !param.Optional {
 			name := capitalize(param.Name)
-			fmt.Fprintf(file, "\t\tctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
+			fmt.Fprintf(file, "        ctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "\t\t%s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
-	fmt.Fprintf(file, "\t}\n")
+	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
+	fmt.Fprintf(file, "    }\n")
 }
 
 func (s *Schema) GenerateJavaTypes() error {
@@ -379,8 +379,8 @@ func (s *Schema) GenerateJavaWasmMain() error {
 
 	fmt.Fprintf(file, "//export on_load\n")
 	fmt.Fprintf(file, "func OnLoad() {\n")
-	fmt.Fprintf(file, "\twasmclient.ConnectWasmHost()\n")
-	fmt.Fprintf(file, "\t%s.OnLoad()\n", s.Name)
+	fmt.Fprintf(file, "    wasmclient.ConnectWasmHost()\n")
+	fmt.Fprintf(file, "    %s.OnLoad()\n", s.Name)
 	fmt.Fprintf(file, "}\n")
 
 	return nil

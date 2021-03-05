@@ -11,22 +11,22 @@ import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.keys.*;
 
 public class Consts {
-	public static final String ScName = "dividend";
-	public static final ScHname HScName = new ScHname(0xcce2e239);
+    public static final String ScName = "dividend";
+    public static final ScHname HScName = new ScHname(0xcce2e239);
 
-	public static final Key ParamAddress = new Key("address");
-	public static final Key ParamFactor = new Key("factor");
+    public static final Key ParamAddress = new Key("address");
+    public static final Key ParamFactor = new Key("factor");
 
-	public static final Key VarFactor = new Key("factor");
-	public static final Key VarMemberList = new Key("memberList");
-	public static final Key VarMembers = new Key("members");
-	public static final Key VarTotalFactor = new Key("totalFactor");
+    public static final Key VarFactor = new Key("factor");
+    public static final Key VarMemberList = new Key("memberList");
+    public static final Key VarMembers = new Key("members");
+    public static final Key VarTotalFactor = new Key("totalFactor");
 
-	public static final String FuncDivide = "divide";
-	public static final String FuncMember = "member";
-	public static final String ViewGetFactor = "getFactor";
+    public static final String FuncDivide = "divide";
+    public static final String FuncMember = "member";
+    public static final String ViewGetFactor = "getFactor";
 
-	public static final ScHname HFuncDivide = new ScHname(0xc7878107);
-	public static final ScHname HFuncMember = new ScHname(0xc07da2cb);
-	public static final ScHname HViewGetFactor = new ScHname(0x0ee668fe);
+    public static final ScHname HFuncDivide = new ScHname(0xc7878107);
+    public static final ScHname HFuncMember = new ScHname(0xc07da2cb);
+    public static final ScHname HViewGetFactor = new ScHname(0x0ee668fe);
 }

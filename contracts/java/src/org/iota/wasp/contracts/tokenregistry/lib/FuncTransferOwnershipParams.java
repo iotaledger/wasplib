@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.tokenregistry.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncTransferOwnershipParams {
-	public ScImmutableColor   Color; // color of token to transfer ownership of
+    public ScImmutableColor Color; // color of token to transfer ownership of
 }

@@ -13,7 +13,7 @@ import org.iota.wasp.wasmlib.mutable.*;
 public class DonateWithFeedback {
 
     public static void funcDonate(ScFuncContext ctx, FuncDonateParams params) {
-        Donation donation = new Donation();
+        var donation = new Donation();
         {
             donation.Amount = ctx.Incoming().Balance(ScColor.IOTA);
             donation.Donator = ctx.Caller();
@@ -28,12 +28,12 @@ public class DonateWithFeedback {
                 donation.Amount = 0;
             }
         }
-        ScMutableMap state = ctx.State();
-        ScMutableBytesArray log = state.GetBytesArray(Consts.VarLog);
+        var state = ctx.State();
+        var log = state.GetBytesArray(Consts.VarLog);
         log.GetBytes(log.Length()).SetValue(donation.toBytes());
 
-        ScMutableInt64 largestDonation = state.GetInt64(Consts.VarMaxDonation);
-        ScMutableInt64 totalDonated = state.GetInt64(Consts.VarTotalDonation);
+        var largestDonation = state.GetInt64(Consts.VarMaxDonation);
+        var totalDonated = state.GetInt64(Consts.VarTotalDonation);
         if (donation.Amount > largestDonation.Value()) {
             largestDonation.SetValue(donation.Amount);
         }
@@ -41,8 +41,8 @@ public class DonateWithFeedback {
     }
 
     public static void funcWithdraw(ScFuncContext ctx, FuncWithdrawParams params) {
-        long balance = ctx.Balances().Balance(ScColor.IOTA);
-        long amount = params.Amount.Value();
+        var balance = ctx.Balances().Balance(ScColor.IOTA);
+        var amount = params.Amount.Value();
         if (amount == 0 || amount > balance) {
             amount = balance;
         }
@@ -51,23 +51,23 @@ public class DonateWithFeedback {
             return;
         }
 
-        ScAddress scCreator = ctx.ContractCreator().Address();
+        var scCreator = ctx.ContractCreator().Address();
         ctx.TransferToAddress(scCreator, new ScTransfers(ScColor.IOTA, amount));
     }
 
     public static void viewDonations(ScViewContext ctx, ViewDonationsParams params) {
-        ScImmutableMap state = ctx.State();
-        ScImmutableInt64 largestDonation = state.GetInt64(Consts.VarMaxDonation);
-        ScImmutableInt64 totalDonated = state.GetInt64(Consts.VarTotalDonation);
-        ScImmutableBytesArray log = state.GetBytesArray(Consts.VarLog);
-        ScMutableMap results = ctx.Results();
+        var state = ctx.State();
+        var largestDonation = state.GetInt64(Consts.VarMaxDonation);
+        var totalDonated = state.GetInt64(Consts.VarTotalDonation);
+        var log = state.GetBytesArray(Consts.VarLog);
+        var results = ctx.Results();
         results.GetInt64(Consts.VarMaxDonation).SetValue(largestDonation.Value());
         results.GetInt64(Consts.VarTotalDonation).SetValue(totalDonated.Value());
-        ScMutableMapArray donations = results.GetMapArray(Consts.VarDonations);
-        int size = log.Length();
-        for (int i = 0; i < size; i++) {
-            Donation di = new Donation(log.GetBytes(i).Value());
-            ScMutableMap donation = donations.GetMap(i);
+        var donations = results.GetMapArray(Consts.VarDonations);
+        var size = log.Length();
+        for (var i = 0; i < size; i++) {
+            var di = new Donation(log.GetBytes(i).Value());
+            var donation = donations.GetMap(i);
             donation.GetInt64(Consts.VarAmount).SetValue(di.Amount);
             donation.GetString(Consts.VarDonator).SetValue(di.Donator.toString());
             donation.GetString(Consts.VarError).SetValue(di.Error);

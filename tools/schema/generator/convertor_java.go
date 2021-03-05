@@ -51,8 +51,8 @@ func RustToJavaLine(line string, contract string) string {
 	}
 	line = matchConstStr.ReplaceAllString(line, "private static final Key $1$2 = new Key($3)")
 	line = matchConstInt.ReplaceAllString(line, "private static final int $1$2 = $3")
-	line = matchLet.ReplaceAllString(line, "$2 =")
-	line = matchForLoop.ReplaceAllString(line, "for (int $1 = $2; $1 < $3; $1++)")
+	line = matchLet.ReplaceAllString(line, "var $2 =")
+	line = matchForLoop.ReplaceAllString(line, "for (var $1 = $2; $1 < $3; $1++)")
 	line = matchFuncCall.ReplaceAllStringFunc(line, replaceFuncCall)
 	line = matchInitializer.ReplaceAllString(line, lastInit+".$1 = $2;")
 	line = matchToString.ReplaceAllString(line, "+ $1")
@@ -62,7 +62,7 @@ func RustToJavaLine(line string, contract string) string {
 	if initParts != nil {
 		lastInit = initParts[1]
 	}
-	line = matchInitializerHeader.ReplaceAllString(line, "$2 $1 = new $2();\n         {")
+	line = matchInitializerHeader.ReplaceAllString(line, "$1 = new $2();\n         {")
 	line = matchFromBytes.ReplaceAllString(line, "new $1")
 
 	lhs := strings.Index(line, "\"")

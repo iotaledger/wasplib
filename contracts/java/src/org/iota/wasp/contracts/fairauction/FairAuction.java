@@ -21,17 +21,16 @@ public class FairAuction {
     private static final int OwnerMarginMax = 100;
 
     public static void funcFinalizeAuction(ScFuncContext ctx, FuncFinalizeAuctionParams params) {
-        ScColor color = params.Color.Value();
-        ScMutableMap state = ctx.State();
-        ScMutableMap auctions = state.GetMap(Consts.VarAuctions);
-        ScMutableMap currentAuction = auctions.GetMap(color);
-        ScMutableBytes auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
+        var color = params.Color.Value();
+        var state = ctx.State();
+        var auctions = state.GetMap(Consts.VarAuctions);
+        var currentAuction = auctions.GetMap(color);
+        var auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
         ctx.Require(auctionInfo.Exists(), "Missing auction info");
-        Auction auction = new Auction(auctionInfo.Value());
-        long ownerFee;
+        var auction = new Auction(auctionInfo.Value());
         if (auction.HighestBid < 0) {
             ctx.Log("No one bid on " + color);
-            ownerFee = auction.MinimumBid * auction.OwnerMargin / 1000;
+            var ownerFee = auction.MinimumBid * auction.OwnerMargin / 1000;
             if (ownerFee == 0) {
                 ownerFee = 1;
             }
@@ -42,20 +41,20 @@ public class FairAuction {
             return;
         }
 
-        ownerFee = auction.HighestBid * auction.OwnerMargin / 1000;
+        var ownerFee = auction.HighestBid * auction.OwnerMargin / 1000;
         if (ownerFee == 0) {
             ownerFee = 1;
         }
 
         // return staked bids to losers
-        ScMutableMap bidders = currentAuction.GetMap(Consts.VarBidders);
-        ScMutableAgentIdArray bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
-        int size = bidderList.Length();
-        for (int i = 0; i < size; i++) {
-            ScAgentId bidder = bidderList.GetAgentId(i).Value();
+        var bidders = currentAuction.GetMap(Consts.VarBidders);
+        var bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
+        var size = bidderList.Length();
+        for (var i = 0; i < size; i++) {
+            var bidder = bidderList.GetAgentId(i).Value();
             if (bidder != auction.HighestBidder) {
-                ScMutableBytes loser = bidders.GetBytes(bidder);
-                Bid bid = new Bid(loser.Value());
+                var loser = bidders.GetBytes(bidder);
+                var bid = new Bid(loser.Value());
                 transfer(ctx, bidder, ScColor.IOTA, bid.Amount);
             }
         }
@@ -67,24 +66,24 @@ public class FairAuction {
     }
 
     public static void funcPlaceBid(ScFuncContext ctx, FuncPlaceBidParams params) {
-        long bidAmount = ctx.Incoming().Balance(ScColor.IOTA);
+        var bidAmount = ctx.Incoming().Balance(ScColor.IOTA);
         ctx.Require(bidAmount > 0, "Missing bid amount");
 
-        ScColor color = params.Color.Value();
-        ScMutableMap state = ctx.State();
-        ScMutableMap auctions = state.GetMap(Consts.VarAuctions);
-        ScMutableMap currentAuction = auctions.GetMap(color);
-        ScMutableBytes auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
+        var color = params.Color.Value();
+        var state = ctx.State();
+        var auctions = state.GetMap(Consts.VarAuctions);
+        var currentAuction = auctions.GetMap(color);
+        var auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
         ctx.Require(auctionInfo.Exists(), "Missing auction info");
 
-        Auction auction = new Auction(auctionInfo.Value());
-        ScMutableMap bidders = currentAuction.GetMap(Consts.VarBidders);
-        ScMutableAgentIdArray bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
-        ScAgentId caller = ctx.Caller();
-        ScMutableBytes bidder = bidders.GetBytes(caller);
+        var auction = new Auction(auctionInfo.Value());
+        var bidders = currentAuction.GetMap(Consts.VarBidders);
+        var bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
+        var caller = ctx.Caller();
+        var bidder = bidders.GetBytes(caller);
         if (bidder.Exists()) {
             ctx.Log("Upped bid from: " + caller);
-            Bid bid = new Bid(bidder.Value());
+            var bid = new Bid(bidder.Value());
             bidAmount += bid.Amount;
             bid.Amount = bidAmount;
             bid.Timestamp = ctx.Timestamp();
@@ -92,9 +91,9 @@ public class FairAuction {
         } else {
             ctx.Require(bidAmount >= auction.MinimumBid, "Insufficient bid amount");
             ctx.Log("New bid from: " + caller);
-            int index = bidderList.Length();
+            var index = bidderList.Length();
             bidderList.GetAgentId(index).SetValue(caller);
-            Bid bid = new Bid();
+            var bid = new Bid();
             {
                 bid.Index = index;
                 bid.Amount = bidAmount;
@@ -111,7 +110,7 @@ public class FairAuction {
     }
 
     public static void funcSetOwnerMargin(ScFuncContext ctx, FuncSetOwnerMarginParams params) {
-        long ownerMargin = params.OwnerMargin.Value();
+        var ownerMargin = params.OwnerMargin.Value();
         if (ownerMargin < OwnerMarginMin) {
             ownerMargin = OwnerMarginMin;
         }
@@ -123,19 +122,19 @@ public class FairAuction {
     }
 
     public static void funcStartAuction(ScFuncContext ctx, FuncStartAuctionParams params) {
-        ScColor color = params.Color.Value();
-        if (color == ScColor.IOTA || color == ScColor.MINT) {
+        var color = params.Color.Value();
+        if (color.equals(ScColor.IOTA) || color.equals(ScColor.MINT)) {
             ctx.Panic("Reserved auction token color");
         }
-        long numTokens = ctx.Incoming().Balance(color);
+        var numTokens = ctx.Incoming().Balance(color);
         if (numTokens == 0) {
             ctx.Panic("Missing auction tokens");
         }
 
-        long minimumBid = params.MinimumBid.Value();
+        var minimumBid = params.MinimumBid.Value();
 
         // duration in minutes
-        long duration = params.Duration.Value();
+        var duration = params.Duration.Value();
         if (duration == 0) {
             duration = DurationDefault;
         }
@@ -146,7 +145,7 @@ public class FairAuction {
             duration = DurationMax;
         }
 
-        String description = params.Description.Value();
+        var description = params.Description.Value();
         if (description == "") {
             description = "N/A";
         }
@@ -154,30 +153,30 @@ public class FairAuction {
             description = description.substring(0, MaxDescriptionLength) + "[...]";
         }
 
-        ScMutableMap state = ctx.State();
-        long ownerMargin = state.GetInt64(Consts.VarOwnerMargin).Value();
+        var state = ctx.State();
+        var ownerMargin = state.GetInt64(Consts.VarOwnerMargin).Value();
         if (ownerMargin == 0) {
             ownerMargin = OwnerMarginDefault;
         }
 
         // need at least 1 iota to run SC
-        long margin = minimumBid * ownerMargin / 1000;
+        var margin = minimumBid * ownerMargin / 1000;
         if (margin == 0) {
             margin = 1;
         }
-        long deposit = ctx.Incoming().Balance(ScColor.IOTA);
+        var deposit = ctx.Incoming().Balance(ScColor.IOTA);
         if (deposit < margin) {
             ctx.Panic("Insufficient deposit");
         }
 
-        ScMutableMap auctions = state.GetMap(Consts.VarAuctions);
-        ScMutableMap currentAuction = auctions.GetMap(color);
-        ScMutableBytes auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
+        var auctions = state.GetMap(Consts.VarAuctions);
+        var currentAuction = auctions.GetMap(color);
+        var auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
         if (auctionInfo.Exists()) {
             ctx.Panic("Auction for this token color already exists");
         }
 
-        Auction auction = new Auction();
+        var auction = new Auction();
         {
             auction.Creator = ctx.Caller();
             auction.Color = color;
@@ -193,24 +192,24 @@ public class FairAuction {
         }
         auctionInfo.SetValue(auction.toBytes());
 
-        ScMutableMap finalizeParams = new ScMutableMap();
+        var finalizeParams = new ScMutableMap();
         finalizeParams.GetColor(Consts.VarColor).SetValue(auction.Color);
         ctx.PostSelf(Consts.HFuncFinalizeAuction, finalizeParams, null, duration * 60);
         ctx.Log("New auction started");
     }
 
     public static void viewGetInfo(ScViewContext ctx, ViewGetInfoParams params) {
-        ScColor color = params.Color.Value();
-        ScImmutableMap state = ctx.State();
-        ScImmutableMap auctions = state.GetMap(Consts.VarAuctions);
-        ScImmutableMap currentAuction = auctions.GetMap(color);
-        ScImmutableBytes auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
+        var color = params.Color.Value();
+        var state = ctx.State();
+        var auctions = state.GetMap(Consts.VarAuctions);
+        var currentAuction = auctions.GetMap(color);
+        var auctionInfo = currentAuction.GetBytes(Consts.VarInfo);
         if (!auctionInfo.Exists()) {
             ctx.Panic("Missing auction info");
         }
 
-        Auction auction = new Auction(auctionInfo.Value());
-        ScMutableMap results = ctx.Results();
+        var auction = new Auction(auctionInfo.Value());
+        var results = ctx.Results();
         results.GetColor(Consts.VarColor).SetValue(auction.Color);
         results.GetAgentId(Consts.VarCreator).SetValue(auction.Creator);
         results.GetInt64(Consts.VarDeposit).SetValue(auction.Deposit);
@@ -223,7 +222,7 @@ public class FairAuction {
         results.GetInt64(Consts.VarOwnerMargin).SetValue(auction.OwnerMargin);
         results.GetInt64(Consts.VarWhenStarted).SetValue(auction.WhenStarted);
 
-        ScImmutableAgentIdArray bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
+        var bidderList = currentAuction.GetAgentIdArray(Consts.VarBidderList);
         results.GetInt64(Consts.VarBidders).SetValue(bidderList.Length());
     }
 

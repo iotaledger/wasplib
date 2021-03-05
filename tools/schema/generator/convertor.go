@@ -14,7 +14,7 @@ import (
 
 var matchCodec = regexp.MustCompile("(encode|decode)(\\w+)")
 var matchComment = regexp.MustCompile("^\\s*//")
-var matchConst = regexp.MustCompile("[^a-zA-Z_][A-Z][A-Z_0-9]+")
+var matchConst = regexp.MustCompile("[^a-zA-Z_]H?[A-Z][A-Z_0-9]+")
 var matchConstInt = regexp.MustCompile("const ([A-Z])([A-Z_0-9]+): \\w+ = ([0-9]+)")
 var matchConstStr = regexp.MustCompile("const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = (\"[^\"]+\")")
 var matchConstStr2 = regexp.MustCompile("const ([A-Z_0-9]+): &str = (\"[^\"]+\")")

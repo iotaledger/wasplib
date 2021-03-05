@@ -5,16 +5,17 @@ package org.iota.wasp.contracts.inccounter;
 
 import org.iota.wasp.contracts.inccounter.lib.*;
 import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class IncCounter {
 
-    private static boolean LocalStateMustIncrement = false;
+    static boolean LocalStateMustIncrement = false;
 
     public static void funcCallIncrement(ScFuncContext ctx, FuncCallIncrementParams params) {
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
-        long value = counter.Value();
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
+        var value = counter.Value();
         counter.SetValue(value + 1);
         if (value == 0) {
             ctx.CallSelf(Consts.HFuncCallIncrement, null, null);
@@ -22,8 +23,8 @@ public class IncCounter {
     }
 
     public static void funcCallIncrementRecurse5x(ScFuncContext ctx, FuncCallIncrementRecurse5xParams params) {
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
-        long value = counter.Value();
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
+        var value = counter.Value();
         counter.SetValue(value + 1);
         if (value < 5) {
             ctx.CallSelf(Consts.HFuncCallIncrementRecurse5x, null, null);
@@ -31,13 +32,13 @@ public class IncCounter {
     }
 
     public static void funcIncrement(ScFuncContext ctx, FuncIncrementParams params) {
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
         counter.SetValue(counter.Value() + 1);
     }
 
     public static void funcInit(ScFuncContext ctx, FuncInitParams params) {
         if (params.Counter.Exists()) {
-            long counter = params.Counter.Value();
+            var counter = params.Counter.Value();
             ctx.State().GetInt64(Consts.VarCounter).SetValue(counter);
         }
     }
@@ -46,7 +47,9 @@ public class IncCounter {
         {
             LocalStateMustIncrement = false;
         }
-        FuncWhenMustIncrementParams par = new FuncWhenMustIncrementParams();
+        var par = new FuncWhenMustIncrementParams();
+        {
+        }
         funcWhenMustIncrement(ctx, par);
         {
             LocalStateMustIncrement = true;
@@ -83,8 +86,8 @@ public class IncCounter {
     }
 
     public static void funcPostIncrement(ScFuncContext ctx, FuncPostIncrementParams params) {
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
-        long value = counter.Value();
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
+        var value = counter.Value();
         counter.SetValue(value + 1);
         if (value == 0) {
             ctx.PostSelf(Consts.HFuncPostIncrement, null, null, 0);
@@ -92,11 +95,11 @@ public class IncCounter {
     }
 
     public static void funcRepeatMany(ScFuncContext ctx, FuncRepeatManyParams params) {
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
-        long value = counter.Value();
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
+        var value = counter.Value();
         counter.SetValue(value + 1);
-        ScMutableInt64 stateRepeats = ctx.State().GetInt64(Consts.VarNumRepeats);
-        long repeats = params.NumRepeats.Value();
+        var stateRepeats = ctx.State().GetInt64(Consts.VarNumRepeats);
+        var repeats = params.NumRepeats.Value();
         if (repeats == 0) {
             repeats = stateRepeats.Value();
             if (repeats == 0) {
@@ -114,14 +117,14 @@ public class IncCounter {
                 return;
             }
         }
-        ScMutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
         counter.SetValue(counter.Value() + 1);
     }
 
     // note that get_counter mirrors the state of the 'counter' state variable
-// which means that if the state variable was not present it also will not be present in the result
+    // which means that if the state variable was not present it also will not be present in the result
     public static void viewGetCounter(ScViewContext ctx, ViewGetCounterParams params) {
-        ScImmutableInt64 counter = ctx.State().GetInt64(Consts.VarCounter);
+        var counter = ctx.State().GetInt64(Consts.VarCounter);
         if (counter.Exists()) {
             ctx.Results().GetInt64(Consts.VarCounter).SetValue(counter.Value());
         }
