@@ -7,12 +7,18 @@
 
 package org.iota.wasp.contracts.donatewithfeedback.lib;
 
+import de.mirkosertic.bytecoder.api.*;
 import org.iota.wasp.contracts.donatewithfeedback.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class DonateWithFeedbackThunk {
+    public static void main(String[] args) {
+        onLoad();
+    }
+
+    @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
         exports.AddFunc("donate", DonateWithFeedbackThunk::funcDonateThunk);

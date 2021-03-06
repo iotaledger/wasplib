@@ -7,12 +7,18 @@
 
 package org.iota.wasp.contracts.tokenregistry.lib;
 
+import de.mirkosertic.bytecoder.api.*;
 import org.iota.wasp.contracts.tokenregistry.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class TokenRegistryThunk {
+    public static void main(String[] args) {
+        onLoad();
+    }
+
+    @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
         exports.AddFunc("mintSupply", TokenRegistryThunk::funcMintSupplyThunk);

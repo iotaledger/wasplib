@@ -89,6 +89,6 @@ public class ScUtility {
 
     public long Random(long max) {
         long rnd = utility.GetInt64(Key.Random).Value();
-        return Long.remainderUnsigned(rnd, max);
+        return (rnd < 0 ? -rnd : rnd) % max;
     }
 }

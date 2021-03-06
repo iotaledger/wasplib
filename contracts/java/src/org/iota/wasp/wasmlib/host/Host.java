@@ -3,6 +3,7 @@
 
 package org.iota.wasp.wasmlib.host;
 
+import de.mirkosertic.bytecoder.api.*;
 import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
@@ -13,25 +14,17 @@ public class Host {
 
     private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0};
 
-    //TODO figure out how to specify extern hostXxxx functions for each
-    // of the functions below to call in Wasm module "waspJava"
+    @Import(module = "wasplib", name = "hostGetBytes")
+    public static native int hostGetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
-    // #[link(wasm_import_module = "wasplib")]
-    // #[no_mangle]
-    public static int hostGetBytes(int objId, int keyId, int typeId, byte[] value, int size) {
-        return 0;
-    }
+    @Import(module = "wasplib", name = "hostGetKeyId")
+    public static native int hostGetKeyId(byte[] key, int size);
 
-    public static int hostGetKeyId(byte[] key, int size) {
-        return 0;
-    }
+    @Import(module = "wasplib", name = "hostGetObjectId")
+    public static native int hostGetObjectId(int objId, int keyId, int typeId);
 
-    public static int hostGetObjectId(int objId, int keyId, int typeId) {
-        return 0;
-    }
-
-    public static void hostSetBytes(int objId, int keyId, int typeId, byte[] value, int size) {
-    }
+    @Import(module = "wasplib", name = "hostSetBytes")
+    public static native void hostSetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
     public static void Clear(int objId) {
         SetBytes(objId, Key.Length.KeyId(), ScType.TYPE_INT64, new byte[8]);

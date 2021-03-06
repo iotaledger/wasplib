@@ -178,6 +178,7 @@ func (s *Schema) GenerateJavaLib() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package org.iota.wasp.contracts.%s.lib;\n\n", s.Name)
+	fmt.Fprintf(file, "import de.mirkosertic.bytecoder.api.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.contracts.%s.*;\n", s.Name)
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.context.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.exports.*;\n")
@@ -189,7 +190,11 @@ func (s *Schema) GenerateJavaLib() error {
 	}
 
 	fmt.Fprintf(file, "public class %sThunk {\n", s.FullName)
+	fmt.Fprintf(file, "    public static void main(String[] args) {\n")
+	fmt.Fprintf(file, "        onLoad();\n")
+	fmt.Fprintf(file, "    }\n\n")
 
+	fmt.Fprintf(file, "    @Export(\"on_load\")\n")
 	fmt.Fprintf(file, "    public static void onLoad() {\n")
 	fmt.Fprintf(file, "        ScExports exports = new ScExports();\n")
 	for _, funcDef := range s.Funcs {

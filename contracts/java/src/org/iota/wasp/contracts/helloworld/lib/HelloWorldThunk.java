@@ -7,12 +7,18 @@
 
 package org.iota.wasp.contracts.helloworld.lib;
 
+import de.mirkosertic.bytecoder.api.*;
 import org.iota.wasp.contracts.helloworld.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class HelloWorldThunk {
+    public static void main(String[] args) {
+        onLoad();
+    }
+
+    @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
         exports.AddFunc("helloWorld", HelloWorldThunk::funcHelloWorldThunk);

@@ -3,6 +3,7 @@
 
 package org.iota.wasp.wasmlib.exports;
 
+import de.mirkosertic.bytecoder.api.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.keys.*;
@@ -23,7 +24,7 @@ public class ScExports {
         exports.GetString(Key.Zzzzzzz.KeyId()).SetValue("Java:KEY_ZZZZZZZ");
     }
 
-    //export on_call_entrypoint
+    @Export("on_call_entrypoint")
     static void scCallEntrypoint(int index) {
         if ((index & 0x8000) != 0) {
             views.get(index & 0x7fff).call(new ScViewContext());
