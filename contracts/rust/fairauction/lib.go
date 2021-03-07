@@ -19,7 +19,7 @@ func OnLoad() {
 }
 
 type FuncFinalizeAuctionParams struct {
-	Color wasmlib.ScImmutableColor           // color identifies the auction
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
@@ -35,7 +35,7 @@ func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncPlaceBidParams struct {
-	Color wasmlib.ScImmutableColor           // color identifies the auction
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
@@ -64,10 +64,10 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncStartAuctionParams struct {
-	Color       wasmlib.ScImmutableColor           // color of the tokens being auctioned
-	Description wasmlib.ScImmutableString          // description of the tokens being auctioned
-	Duration    wasmlib.ScImmutableInt64           // duration of auction in minutes
-	MinimumBid  wasmlib.ScImmutableInt64           // minimum required amount for any bid
+	Color       wasmlib.ScImmutableColor  // color of the tokens being auctioned
+	Description wasmlib.ScImmutableString // description of the tokens being auctioned
+	Duration    wasmlib.ScImmutableInt64  // duration of auction in minutes
+	MinimumBid  wasmlib.ScImmutableInt64  // minimum required amount for any bid
 }
 
 func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
@@ -84,7 +84,7 @@ func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor           // color identifies the auction
+	Color wasmlib.ScImmutableColor // color identifies the auction
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {

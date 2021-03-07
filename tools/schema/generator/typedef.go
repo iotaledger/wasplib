@@ -26,11 +26,11 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.bytes.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n\n")
 
-	fmt.Fprintf(file, "public class %s{\n", td.Name)
+	fmt.Fprintf(file, "public class %s {\n", td.Name)
 
 	// write struct layout
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "\t//@formatter:off\n")
+		fmt.Fprintf(file, "    //@formatter:off\n")
 	}
 	for _, field := range td.Fields {
 		fldName := capitalize(field.Name) + ";"
@@ -38,32 +38,32 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		if field.Comment != "" {
 			fldName = pad(fldName, nameLen + 1)
 		}
-		fmt.Fprintf(file, "\tpublic %s %s%s\n", fldType, fldName, field.Comment)
+		fmt.Fprintf(file, "    public %s %s%s\n", fldType, fldName, field.Comment)
 	}
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "\t//@formatter:on\n")
+		fmt.Fprintf(file, "    //@formatter:on\n")
 	}
 
 	// write default constructor
-	fmt.Fprintf(file, "\n\tpublic %s() {\n\t}\n", td.Name)
+	fmt.Fprintf(file, "\n    public %s() {\n    }\n", td.Name)
 
 	// write constructor from byte array
-	fmt.Fprintf(file, "\n\tpublic %s(byte[] bytes) {\n", td.Name)
-	fmt.Fprintf(file, "\t\tBytesDecoder decode = new BytesDecoder(bytes);\n")
+	fmt.Fprintf(file, "\n    public %s(byte[] bytes) {\n", td.Name)
+	fmt.Fprintf(file, "        BytesDecoder decode = new BytesDecoder(bytes);\n")
 	for _, field := range td.Fields {
 		name := capitalize(field.Name)
-		fmt.Fprintf(file, "\t\t%s = decode.%s();\n", name, field.Type)
+		fmt.Fprintf(file, "        %s = decode.%s();\n", name, field.Type)
 	}
-	fmt.Fprintf(file, "\t}\n")
+	fmt.Fprintf(file, "    }\n")
 
 	// write conversion to byte array
-	fmt.Fprintf(file, "\n\tpublic byte[] toBytes(){\n")
-	fmt.Fprintf(file, "\t\treturn new BytesEncoder().\n")
+	fmt.Fprintf(file, "\n    public byte[] toBytes() {\n")
+	fmt.Fprintf(file, "        return new BytesEncoder().\n")
 	for _, field := range td.Fields {
 		name := capitalize(field.Name)
-		fmt.Fprintf(file, "\t\t\t\t%s(%s).\n", field.Type, name)
+		fmt.Fprintf(file, "                %s(%s).\n", field.Type, name)
 	}
-	fmt.Fprintf(file, "\t\t\t\tData();\n\t}\n")
+	fmt.Fprintf(file, "                Data();\n    }\n")
 
 	fmt.Fprintf(file, "}\n")
 	return nil

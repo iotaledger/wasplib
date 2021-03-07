@@ -36,7 +36,10 @@ func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen
 		if nameLen < len(fldName) {
 			nameLen = len(fldName)
 		}
-		fldType := types[param.Type]
+		fldType := param.Type
+		if types != nil {
+			fldType = types[fldType]
+		}
 		if typeLen < len(fldType) {
 			typeLen = len(fldType)
 		}

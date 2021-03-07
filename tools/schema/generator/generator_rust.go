@@ -24,7 +24,7 @@ var rustTypes = StringMap{
 	"ContractId": "ScContractId",
 	"Hash":       "ScHash",
 	"Hname":      "ScHname",
-	"Int64":        "i64",
+	"Int64":      "i64",
 	"String":     "String",
 }
 

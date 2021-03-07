@@ -21,8 +21,8 @@ func OnLoad() {
 }
 
 type FuncApproveParams struct {
-	Amount     wasmlib.ScImmutableInt64             // allowance value for delegated account
-	Delegation wasmlib.ScImmutableAgentId           // delegated account
+	Amount     wasmlib.ScImmutableInt64   // allowance value for delegated account
+	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
 func funcApproveThunk(ctx wasmlib.ScFuncContext) {
@@ -37,8 +37,8 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncInitParams struct {
-	Creator wasmlib.ScImmutableAgentId           // creator/owner of the initial supply
-	Supply  wasmlib.ScImmutableInt64             // initial token supply
+	Creator wasmlib.ScImmutableAgentId // creator/owner of the initial supply
+	Supply  wasmlib.ScImmutableInt64   // initial token supply
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
@@ -53,8 +53,8 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncTransferParams struct {
-	Account wasmlib.ScImmutableAgentId           // target account
-	Amount  wasmlib.ScImmutableInt64             // amount of tokens to transfer
+	Account wasmlib.ScImmutableAgentId // target account
+	Amount  wasmlib.ScImmutableInt64   // amount of tokens to transfer
 }
 
 func funcTransferThunk(ctx wasmlib.ScFuncContext) {
@@ -69,9 +69,9 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncTransferFromParams struct {
-	Account   wasmlib.ScImmutableAgentId           // sender account
-	Amount    wasmlib.ScImmutableInt64             // amount of tokens to transfer
-	Recipient wasmlib.ScImmutableAgentId           // recipient account
+	Account   wasmlib.ScImmutableAgentId // sender account
+	Amount    wasmlib.ScImmutableInt64   // amount of tokens to transfer
+	Recipient wasmlib.ScImmutableAgentId // recipient account
 }
 
 func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
@@ -88,8 +88,8 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type ViewAllowanceParams struct {
-	Account    wasmlib.ScImmutableAgentId           // sender account
-	Delegation wasmlib.ScImmutableAgentId           // delegated account
+	Account    wasmlib.ScImmutableAgentId // sender account
+	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
 func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
@@ -104,7 +104,7 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 }
 
 type ViewBalanceOfParams struct {
-	Account wasmlib.ScImmutableAgentId           // sender account
+	Account wasmlib.ScImmutableAgentId // sender account
 }
 
 func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {

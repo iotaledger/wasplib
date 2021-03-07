@@ -251,7 +251,7 @@ func (s *Schema) GenerateGoTests() error {
 
 func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 	// calculate padding
-	nameLen, typeLen := calculatePadding(funcDef.Params, goTypes, false)
+	nameLen, typeLen := calculatePadding(funcDef.Params, nil, false)
 
 	funcName := capitalize(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])

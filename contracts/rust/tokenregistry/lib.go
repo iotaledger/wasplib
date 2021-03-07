@@ -32,7 +32,7 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncTransferOwnershipParams struct {
-	Color wasmlib.ScImmutableColor           // color of token to transfer ownership of
+	Color wasmlib.ScImmutableColor // color of token to transfer ownership of
 }
 
 func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
@@ -48,7 +48,7 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncUpdateMetadataParams struct {
-	Color wasmlib.ScImmutableColor           // color of token to update metadata for
+	Color wasmlib.ScImmutableColor // color of token to update metadata for
 }
 
 func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
@@ -64,7 +64,7 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor           // color of token to view registry info of
+	Color wasmlib.ScImmutableColor // color of token to view registry info of
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
