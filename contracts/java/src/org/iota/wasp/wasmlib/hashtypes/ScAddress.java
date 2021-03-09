@@ -13,7 +13,7 @@ public class ScAddress implements MapKey {
 
     public ScAddress(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            throw new RuntimeException("invalid address id length");
+            Host.panic("invalid address id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

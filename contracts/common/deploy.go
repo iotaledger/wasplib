@@ -21,9 +21,9 @@ import (
 )
 
 const (
-	Debug      = false
-	StackTrace = false
-	TraceHost  = false
+	Debug      = true
+	StackTrace = true
+	TraceHost  = true
 )
 
 //TODO update contracts/readme
@@ -51,21 +51,12 @@ var (
 	}
 )
 
-func StartChainAndDeployWasmContractByName(t *testing.T, scName string) *solo.Chain {
-	wasmhost.HostTracing = TraceHost
-	env := solo.New(t, Debug, StackTrace)
-	CreatorWallet = env.NewSignatureSchemeWithFunds()
-	chain := env.NewChain(CreatorWallet, "chain1")
-	ContractId = coretypes.NewContractID(chain.ChainID, coretypes.Hn(scName))
-	ContractAccount = coretypes.NewAgentIDFromContractID(ContractId)
-
+func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interface{}) error {
 	if WasmRunner == 1 {
 		wasmproc.GoWasmVM = NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(CreatorWallet, []byte("go:"+scName))
-		require.NoError(t, err)
-		err = chain.DeployContract(CreatorWallet, scName, hprog)
-		require.NoError(t, err)
-		return chain
+		if err != nil { return err }
+		return chain.DeployContract(CreatorWallet, scName, hprog, params...)
 	}
 
 	wasmproc.GoWasmVM = NewWasmTimeJavaVM()
@@ -74,7 +65,22 @@ func StartChainAndDeployWasmContractByName(t *testing.T, scName string) *solo.Ch
 	if exists {
 		wasmFile = "../pkg/" + wasmFile
 	}
-	err := chain.DeployWasmContract(CreatorWallet, scName, wasmFile)
+	return chain.DeployWasmContract(CreatorWallet, scName, wasmFile, params...)
+}
+
+func StartChain(t *testing.T, scName string) *solo.Chain {
+	wasmhost.HostTracing = TraceHost
+	env := solo.New(t, Debug, StackTrace)
+	CreatorWallet = env.NewSignatureSchemeWithFunds()
+	chain := env.NewChain(CreatorWallet, "chain1")
+	ContractId = coretypes.NewContractID(chain.ChainID, coretypes.Hn(scName))
+	ContractAccount = coretypes.NewAgentIDFromContractID(ContractId)
+	return chain
+}
+
+func StartChainAndDeployWasmContractByName(t *testing.T, scName string, params ...interface{}) *solo.Chain {
+	chain := StartChain(t, scName)
+	err := DeployWasmContractByName(chain, scName, params...)
 	require.NoError(t, err)
 	return chain
 }

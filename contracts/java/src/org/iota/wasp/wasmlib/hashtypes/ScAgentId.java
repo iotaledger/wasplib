@@ -13,7 +13,7 @@ public class ScAgentId implements MapKey {
 
     public ScAgentId(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            throw new RuntimeException("invalid agent id length");
+            Host.panic("invalid agent id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

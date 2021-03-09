@@ -25,10 +25,7 @@ public class BytesEncoder {
 
     public BytesEncoder Bytes(byte[] value) {
         Int64(value.length);
-        try {
-            data.write(value);
-        } catch (IOException e) {
-        }
+        data.writeBytes(value);
         return this;
     }
 
@@ -56,7 +53,8 @@ public class BytesEncoder {
         return Bytes(value.toBytes());
     }
 
-    public BytesEncoder Int64(long value) {
+    public BytesEncoder Int64(long val) {
+        int value = (int)val;
         for (; ; ) {
             byte b = (byte) value;
             byte s = (byte) (b & 0x40);

@@ -5,6 +5,7 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -15,11 +16,10 @@ var (
 )
 
 func deployErc20(t *testing.T) *solo.Chain {
-	env := solo.New(t, false, false)
-	chain := env.NewChain(nil, "chain1")
-	creator = env.NewSignatureSchemeWithFunds()
-	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
-	err := chain.DeployWasmContract(nil, ScName, erc20file,
+	chain := common.StartChain(t, ScName)
+	creator = common.CreatorWallet
+	creatorAgentID = coretypes.NewAgentIDFromAddress(common.CreatorWallet.Address())
+	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, solo.Saldo,
 		ParamCreator, creatorAgentID,
 	)

@@ -1,7 +1,10 @@
 package test
 
 import (
+	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address"
+	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
@@ -54,4 +57,33 @@ func testMainCallsFromViewEP(t *testing.T, w bool) {
 		sbtestsc.ParamContractCreator, userAgentID,
 	)
 	require.NoError(t, err)
+}
+
+func TestMintedSupplyOk(t *testing.T) { run2(t, testMintedSupplyOk) }
+func testMintedSupplyOk(t *testing.T, w bool) {
+	_, chain := setupChain(t, nil)
+
+	user := setupDeployer(t, chain)
+	setupTestSandboxSC(t, chain, user, w)
+
+	supply := int64(42)
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncGetMintedSupply).WithMinting(
+		map[address.Address]int64{
+			user.Address(): supply,
+		},
+	)
+	tx, ret, err := chain.PostRequestSyncTx(req, user)
+	require.NoError(t, err)
+
+	extraIota := int64(0)
+	if w {
+		extraIota = 1
+	}
+	chain.Env.AssertAddressBalance(user.Address(), balance.ColorIOTA, solo.Saldo-3-extraIota-supply)
+	chain.Env.AssertAddressBalance(user.Address(), balance.Color(tx.ID()), supply)
+
+	supplyBack, ok, err := codec.DecodeInt64(ret.MustGet(sbtestsc.VarMintedSupply))
+	require.NoError(t, err)
+	require.True(t, ok)
+	require.EqualValues(t, supply, supplyBack)
 }

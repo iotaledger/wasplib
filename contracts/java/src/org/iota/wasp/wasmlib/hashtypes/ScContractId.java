@@ -19,7 +19,7 @@ public class ScContractId implements MapKey {
 
     public ScContractId(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            throw new RuntimeException("invalid contract id length");
+            Host.panic("invalid contract id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

@@ -20,7 +20,7 @@ public class ScHname implements MapKey {
 
     public ScHname(byte[] bytes) {
         if (bytes == null || bytes.length != Integer.BYTES) {
-            throw new RuntimeException("invalid hname length");
+            Host.panic("invalid hname length");
         }
         id = (bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8) | ((bytes[2] & 0xff) << 16) | ((bytes[3] & 0xff) << 24);
     }

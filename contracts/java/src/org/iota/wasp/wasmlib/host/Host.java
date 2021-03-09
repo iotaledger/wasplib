@@ -73,8 +73,12 @@ public class Host {
         return hostGetObjectId(objId, keyId, typeId);
     }
 
+    public static void log(String text) {
+        SetBytes(1, Key.Log.KeyId(), ScType.TYPE_STRING, text.getBytes(StandardCharsets.UTF_8));
+    }
+
     public static void panic(String text) {
-        throw new RuntimeException(text);
+        SetBytes(1, Key.Panic.KeyId(), ScType.TYPE_STRING, text.getBytes(StandardCharsets.UTF_8));
     }
 
     public static void SetBytes(int objId, int keyId, int typeId, byte[] value) {
