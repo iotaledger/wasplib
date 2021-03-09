@@ -12,7 +12,6 @@ import org.iota.wasp.wasmlib.mutable.*;
 public class Dividend {
 
     public static void funcDivide(ScFuncContext ctx, FuncDivideParams params) {
-        ctx.Log("calling divide");
         var amount = ctx.Balances().Balance(ScColor.IOTA);
         if (amount == 0) {
             ctx.Panic("Nothing to divide");
@@ -43,7 +42,6 @@ public class Dividend {
     }
 
     public static void funcMember(ScFuncContext ctx, FuncMemberParams params) {
-        ctx.Log("calling member");
         var state = ctx.State();
         var members = state.GetMap(Consts.VarMembers);
         var address = params.Address.Value();
@@ -61,7 +59,6 @@ public class Dividend {
     }
 
     public static void viewGetFactor(ScViewContext ctx, ViewGetFactorParams params) {
-        ctx.Log("calling getFactor");
         var address = params.Address.Value();
         var members = ctx.State().GetMap(Consts.VarMembers);
         var factor = members.GetInt64(address).Value();

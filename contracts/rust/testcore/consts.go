@@ -35,10 +35,13 @@ const ParamStringZero = wasmlib.Key("string-0")
 
 const VarCounter = wasmlib.Key("counter")
 const VarHnameEP = wasmlib.Key("hnameEP")
+const VarMintedSupply = wasmlib.Key("mintedSupply")
 
 const FuncCallOnChain = "callOnChain"
 const FuncCheckContextFromFullEP = "checkContextFromFullEP"
 const FuncDoNothing = "doNothing"
+const FuncGetMintedSupply = "getMintedSupply"
+const FuncIncCounter = "incCounter"
 const FuncInit = "init"
 const FuncPassTypesFull = "passTypesFull"
 const FuncRunRecursion = "runRecursion"
@@ -68,6 +71,8 @@ const ViewTestSandboxCall = "testSandboxCall"
 const HFuncCallOnChain = wasmlib.ScHname(0x95a3d123)
 const HFuncCheckContextFromFullEP = wasmlib.ScHname(0xa56c24ba)
 const HFuncDoNothing = wasmlib.ScHname(0xdda4a6de)
+const HFuncGetMintedSupply = wasmlib.ScHname(0x0c2d113c)
+const HFuncIncCounter = wasmlib.ScHname(0x7b287419)
 const HFuncInit = wasmlib.ScHname(0x1f44d644)
 const HFuncPassTypesFull = wasmlib.ScHname(0x733ea0ea)
 const HFuncRunRecursion = wasmlib.ScHname(0x833425fd)

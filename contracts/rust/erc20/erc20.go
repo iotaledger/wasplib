@@ -15,8 +15,6 @@ import (
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
 func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
-	ctx.Trace("erc20.approve")
-
 	delegation := params.Delegation.Value()
 	amount := params.Amount.Value()
 	ctx.Require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter")
@@ -24,7 +22,6 @@ func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
 	// all allowances are in the map under the name of he owner
 	allowances := ctx.State().GetMap(ctx.Caller())
 	allowances.GetInt64(delegation).SetValue(amount)
-	ctx.Log("erc20.approve.success")
 }
 
 // on_init is a constructor entry point. It initializes the smart contract with the
@@ -33,8 +30,6 @@ func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
 func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
-	ctx.Trace("erc20.on_init.begin")
-
 	supply := params.Supply.Value()
 	ctx.Require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter")
 	ctx.State().GetInt64(VarSupply).SetValue(supply)
@@ -55,8 +50,6 @@ func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
 func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
-	ctx.Trace("erc20.transfer")
-
 	amount := params.Amount.Value()
 	ctx.Require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter")
 
@@ -71,7 +64,6 @@ func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
 
 	sourceBalance.SetValue(sourceBalance.Value() - amount)
 	targetBalance.SetValue(targetBalance.Value() + amount)
-	ctx.Log("erc20.transfer.success")
 }
 
 // Moves the amount of tokens from sender to recipient using the allowance mechanism.
@@ -81,8 +73,6 @@ func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
 func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams) {
-	ctx.Trace("erc20.transfer_from")
-
 	// validate parameters
 	account := params.Account.Value()
 	recipient := params.Recipient.Value()
@@ -105,8 +95,6 @@ func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams)
 	sourceBalance.SetValue(sourceBalance.Value() - amount)
 	recipientBalance.SetValue(recipientBalance.Value() + amount)
 	allowance.SetValue(allowance.Value() - amount)
-
-	ctx.Log("erc20.transfer_from.success")
 }
 
 // the view returns max number of tokens the owner PARAM_ACCOUNT of the account
@@ -117,8 +105,6 @@ func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams)
 // Output:
 // - PARAM_AMOUNT: i64
 func viewAllowance(ctx wasmlib.ScViewContext, params *ViewAllowanceParams) {
-	ctx.Trace("erc20.allowance")
-
 	// all allowances of the address 'owner' are stored in the map of the same name
 	allowances := ctx.State().GetMap(params.Account.Value())
 	allow := allowances.GetInt64(params.Delegation.Value()).Value()

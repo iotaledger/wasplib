@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class IncCounterThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -35,61 +34,83 @@ public class IncCounterThunk {
     }
 
     private static void funcCallIncrementThunk(ScFuncContext ctx) {
-        FuncCallIncrementParams params = new FuncCallIncrementParams();
+        var params = new FuncCallIncrementParams();
+        ctx.Log("inccounter.funcCallIncrement");
         IncCounter.funcCallIncrement(ctx, params);
+        ctx.Log("inccounter.funcCallIncrement ok");
     }
 
     private static void funcCallIncrementRecurse5xThunk(ScFuncContext ctx) {
-        FuncCallIncrementRecurse5xParams params = new FuncCallIncrementRecurse5xParams();
+        var params = new FuncCallIncrementRecurse5xParams();
+        ctx.Log("inccounter.funcCallIncrementRecurse5x");
         IncCounter.funcCallIncrementRecurse5x(ctx, params);
+        ctx.Log("inccounter.funcCallIncrementRecurse5x ok");
     }
 
     private static void funcIncrementThunk(ScFuncContext ctx) {
-        FuncIncrementParams params = new FuncIncrementParams();
+        var params = new FuncIncrementParams();
+        ctx.Log("inccounter.funcIncrement");
         IncCounter.funcIncrement(ctx, params);
+        ctx.Log("inccounter.funcIncrement ok");
     }
 
     private static void funcInitThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncInitParams params = new FuncInitParams();
+        var p = ctx.Params();
+        var params = new FuncInitParams();
         params.Counter = p.GetInt64(Consts.ParamCounter);
+        ctx.Log("inccounter.funcInit");
         IncCounter.funcInit(ctx, params);
+        ctx.Log("inccounter.funcInit ok");
     }
 
     private static void funcLocalStateInternalCallThunk(ScFuncContext ctx) {
-        FuncLocalStateInternalCallParams params = new FuncLocalStateInternalCallParams();
+        var params = new FuncLocalStateInternalCallParams();
+        ctx.Log("inccounter.funcLocalStateInternalCall");
         IncCounter.funcLocalStateInternalCall(ctx, params);
+        ctx.Log("inccounter.funcLocalStateInternalCall ok");
     }
 
     private static void funcLocalStatePostThunk(ScFuncContext ctx) {
-        FuncLocalStatePostParams params = new FuncLocalStatePostParams();
+        var params = new FuncLocalStatePostParams();
+        ctx.Log("inccounter.funcLocalStatePost");
         IncCounter.funcLocalStatePost(ctx, params);
+        ctx.Log("inccounter.funcLocalStatePost ok");
     }
 
     private static void funcLocalStateSandboxCallThunk(ScFuncContext ctx) {
-        FuncLocalStateSandboxCallParams params = new FuncLocalStateSandboxCallParams();
+        var params = new FuncLocalStateSandboxCallParams();
+        ctx.Log("inccounter.funcLocalStateSandboxCall");
         IncCounter.funcLocalStateSandboxCall(ctx, params);
+        ctx.Log("inccounter.funcLocalStateSandboxCall ok");
     }
 
     private static void funcPostIncrementThunk(ScFuncContext ctx) {
-        FuncPostIncrementParams params = new FuncPostIncrementParams();
+        var params = new FuncPostIncrementParams();
+        ctx.Log("inccounter.funcPostIncrement");
         IncCounter.funcPostIncrement(ctx, params);
+        ctx.Log("inccounter.funcPostIncrement ok");
     }
 
     private static void funcRepeatManyThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncRepeatManyParams params = new FuncRepeatManyParams();
+        var p = ctx.Params();
+        var params = new FuncRepeatManyParams();
         params.NumRepeats = p.GetInt64(Consts.ParamNumRepeats);
+        ctx.Log("inccounter.funcRepeatMany");
         IncCounter.funcRepeatMany(ctx, params);
+        ctx.Log("inccounter.funcRepeatMany ok");
     }
 
     private static void funcWhenMustIncrementThunk(ScFuncContext ctx) {
-        FuncWhenMustIncrementParams params = new FuncWhenMustIncrementParams();
+        var params = new FuncWhenMustIncrementParams();
+        ctx.Log("inccounter.funcWhenMustIncrement");
         IncCounter.funcWhenMustIncrement(ctx, params);
+        ctx.Log("inccounter.funcWhenMustIncrement ok");
     }
 
     private static void viewGetCounterThunk(ScViewContext ctx) {
-        ViewGetCounterParams params = new ViewGetCounterParams();
+        var params = new ViewGetCounterParams();
+        ctx.Log("inccounter.viewGetCounter");
         IncCounter.viewGetCounter(ctx, params);
+        ctx.Log("inccounter.viewGetCounter ok");
     }
 }

@@ -24,7 +24,9 @@ pub struct FuncDivideParams {}
 
 fn func_divide_thunk(ctx: &ScFuncContext) {
     let params = FuncDivideParams {};
+    ctx.log("dividend.funcDivide");
     func_divide(ctx, &params);
+    ctx.log("dividend.funcDivide ok");
 }
 
 //@formatter:off
@@ -45,7 +47,9 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.address.exists(), "missing mandatory address");
     ctx.require(params.factor.exists(), "missing mandatory factor");
+    ctx.log("dividend.funcMember");
     func_member(ctx, &params);
+    ctx.log("dividend.funcMember ok");
 }
 
 pub struct ViewGetFactorParams {
@@ -58,5 +62,7 @@ fn view_get_factor_thunk(ctx: &ScViewContext) {
         address: p.get_address(PARAM_ADDRESS),
     };
     ctx.require(params.address.exists(), "missing mandatory address");
+    ctx.log("dividend.viewGetFactor");
     view_get_factor(ctx, &params);
+    ctx.log("dividend.viewGetFactor ok");
 }

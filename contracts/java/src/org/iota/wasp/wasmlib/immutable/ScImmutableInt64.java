@@ -28,10 +28,10 @@ public class ScImmutableInt64 {
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |
-                ((bytes[3] & 0xffL) << 24) |
+                ((bytes[3] & 0xffL) << 24) /*|
                 ((bytes[4] & 0xffL) << 32) |
                 ((bytes[5] & 0xffL) << 40) |
                 ((bytes[6] & 0xffL) << 48) |
-                ((bytes[7] & 0xffL) << 56);
+                ((bytes[7] & 0xffL) << 56)*/;
     }
 }

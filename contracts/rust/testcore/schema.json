@@ -5,7 +5,8 @@
   },
   "vars": {
     "counter": "Int64",
-    "hnameEP": "Hname"
+    "hnameEP": "Hname",
+    "mintedSupply": "Int64"
   },
   "funcs": {
     "callOnChain": {
@@ -22,6 +23,10 @@
       "contractCreator": "AgentId"
     },
     "doNothing": {
+    },
+    "getMintedSupply": {
+    },
+    "incCounter": {
     },
     "init": {
     },

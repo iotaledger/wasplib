@@ -15,10 +15,6 @@ public class ScUtility {
         this.utility = utility;
     }
 
-    public static String base58Encode(byte[] bytes) {
-        return new ScFuncContext().Utility().Base58Encode(bytes);
-    }
-
     public byte[] Base58Decode(String value) {
         utility.GetString(Key.Base58String).SetValue(value);
         return utility.GetBytes(Key.Base58Bytes).Value();

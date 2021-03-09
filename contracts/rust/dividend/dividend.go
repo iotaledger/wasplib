@@ -63,5 +63,4 @@ func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
 }
 
 func viewGetFactor(ctx wasmlib.ScViewContext, params *ViewGetFactorParams) {
-	ctx.Log("calling getFactor")
 }

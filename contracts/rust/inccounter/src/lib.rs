@@ -32,21 +32,27 @@ pub struct FuncCallIncrementParams {}
 
 fn func_call_increment_thunk(ctx: &ScFuncContext) {
     let params = FuncCallIncrementParams {};
+    ctx.log("inccounter.funcCallIncrement");
     func_call_increment(ctx, &params);
+    ctx.log("inccounter.funcCallIncrement ok");
 }
 
 pub struct FuncCallIncrementRecurse5xParams {}
 
 fn func_call_increment_recurse5x_thunk(ctx: &ScFuncContext) {
     let params = FuncCallIncrementRecurse5xParams {};
+    ctx.log("inccounter.funcCallIncrementRecurse5x");
     func_call_increment_recurse5x(ctx, &params);
+    ctx.log("inccounter.funcCallIncrementRecurse5x ok");
 }
 
 pub struct FuncIncrementParams {}
 
 fn func_increment_thunk(ctx: &ScFuncContext) {
     let params = FuncIncrementParams {};
+    ctx.log("inccounter.funcIncrement");
     func_increment(ctx, &params);
+    ctx.log("inccounter.funcIncrement ok");
 }
 
 pub struct FuncInitParams {
@@ -58,35 +64,45 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     let params = FuncInitParams {
         counter: p.get_int64(PARAM_COUNTER),
     };
+    ctx.log("inccounter.funcInit");
     func_init(ctx, &params);
+    ctx.log("inccounter.funcInit ok");
 }
 
 pub struct FuncLocalStateInternalCallParams {}
 
 fn func_local_state_internal_call_thunk(ctx: &ScFuncContext) {
     let params = FuncLocalStateInternalCallParams {};
+    ctx.log("inccounter.funcLocalStateInternalCall");
     func_local_state_internal_call(ctx, &params);
+    ctx.log("inccounter.funcLocalStateInternalCall ok");
 }
 
 pub struct FuncLocalStatePostParams {}
 
 fn func_local_state_post_thunk(ctx: &ScFuncContext) {
     let params = FuncLocalStatePostParams {};
+    ctx.log("inccounter.funcLocalStatePost");
     func_local_state_post(ctx, &params);
+    ctx.log("inccounter.funcLocalStatePost ok");
 }
 
 pub struct FuncLocalStateSandboxCallParams {}
 
 fn func_local_state_sandbox_call_thunk(ctx: &ScFuncContext) {
     let params = FuncLocalStateSandboxCallParams {};
+    ctx.log("inccounter.funcLocalStateSandboxCall");
     func_local_state_sandbox_call(ctx, &params);
+    ctx.log("inccounter.funcLocalStateSandboxCall ok");
 }
 
 pub struct FuncPostIncrementParams {}
 
 fn func_post_increment_thunk(ctx: &ScFuncContext) {
     let params = FuncPostIncrementParams {};
+    ctx.log("inccounter.funcPostIncrement");
     func_post_increment(ctx, &params);
+    ctx.log("inccounter.funcPostIncrement ok");
 }
 
 pub struct FuncRepeatManyParams {
@@ -98,19 +114,25 @@ fn func_repeat_many_thunk(ctx: &ScFuncContext) {
     let params = FuncRepeatManyParams {
         num_repeats: p.get_int64(PARAM_NUM_REPEATS),
     };
+    ctx.log("inccounter.funcRepeatMany");
     func_repeat_many(ctx, &params);
+    ctx.log("inccounter.funcRepeatMany ok");
 }
 
 pub struct FuncWhenMustIncrementParams {}
 
 fn func_when_must_increment_thunk(ctx: &ScFuncContext) {
     let params = FuncWhenMustIncrementParams {};
+    ctx.log("inccounter.funcWhenMustIncrement");
     func_when_must_increment(ctx, &params);
+    ctx.log("inccounter.funcWhenMustIncrement ok");
 }
 
 pub struct ViewGetCounterParams {}
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
     let params = ViewGetCounterParams {};
+    ctx.log("inccounter.viewGetCounter");
     view_get_counter(ctx, &params);
+    ctx.log("inccounter.viewGetCounter ok");
 }

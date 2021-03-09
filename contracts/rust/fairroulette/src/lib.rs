@@ -29,7 +29,9 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncLockBetsParams {};
+    ctx.log("fairroulette.funcLockBets");
     func_lock_bets(ctx, &params);
+    ctx.log("fairroulette.funcLockBets ok");
 }
 
 pub struct FuncPayWinnersParams {}
@@ -39,7 +41,9 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncPayWinnersParams {};
+    ctx.log("fairroulette.funcPayWinners");
     func_pay_winners(ctx, &params);
+    ctx.log("fairroulette.funcPayWinners ok");
 }
 
 pub struct FuncPlaceBetParams {
@@ -52,7 +56,9 @@ fn func_place_bet_thunk(ctx: &ScFuncContext) {
         number: p.get_int64(PARAM_NUMBER),
     };
     ctx.require(params.number.exists(), "missing mandatory number");
+    ctx.log("fairroulette.funcPlaceBet");
     func_place_bet(ctx, &params);
+    ctx.log("fairroulette.funcPlaceBet ok");
 }
 
 pub struct FuncPlayPeriodParams {
@@ -68,5 +74,7 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
         play_period: p.get_int64(PARAM_PLAY_PERIOD),
     };
     ctx.require(params.play_period.exists(), "missing mandatory playPeriod");
+    ctx.log("fairroulette.funcPlayPeriod");
     func_play_period(ctx, &params);
+    ctx.log("fairroulette.funcPlayPeriod ok");
 }

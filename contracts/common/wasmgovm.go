@@ -42,7 +42,7 @@ func (vm *WasmGoVM) LoadWasm(wasmData []byte) error {
 	return nil
 }
 
-func (vm *WasmGoVM) RunFunction(functionName string) error {
+func (vm *WasmGoVM) RunFunction(functionName string, args ...interface{}) error {
 	// already ran on_load in LoadWasm, other functions are not supported
 	if functionName != "on_load" {
 		return errors.New("WasmGoVM: cannot run function: " + functionName)

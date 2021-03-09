@@ -14,16 +14,16 @@ public class Host {
 
     private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0};
 
-    @Import(module = "wasplib", name = "hostGetBytes")
+    @Import(module = "wasplib", name = "javaGetBytes")
     public static native int hostGetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
-    @Import(module = "wasplib", name = "hostGetKeyId")
+    @Import(module = "wasplib", name = "javaGetKeyId")
     public static native int hostGetKeyId(byte[] key, int size);
 
-    @Import(module = "wasplib", name = "hostGetObjectId")
+    @Import(module = "wasplib", name = "javaGetObjectId")
     public static native int hostGetObjectId(int objId, int keyId, int typeId);
 
-    @Import(module = "wasplib", name = "hostSetBytes")
+    @Import(module = "wasplib", name = "javaSetBytes")
     public static native void hostSetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
     public static void Clear(int objId) {

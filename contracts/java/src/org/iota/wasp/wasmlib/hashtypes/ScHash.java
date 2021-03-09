@@ -19,6 +19,10 @@ public class ScHash implements MapKey {
         System.arraycopy(bytes, 0, id, 0, id.length);
     }
 
+    public static String base58Encode(byte[] bytes) {
+        return new ScFuncContext().Utility().Base58Encode(bytes);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,6 +48,6 @@ public class ScHash implements MapKey {
     @Override
 
     public String toString() {
-        return ScUtility.base58Encode(id);
+        return base58Encode(id);
     }
 }

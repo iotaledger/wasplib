@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class DonateWithFeedbackThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -27,24 +26,30 @@ public class DonateWithFeedbackThunk {
     }
 
     private static void funcDonateThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncDonateParams params = new FuncDonateParams();
+        var p = ctx.Params();
+        var params = new FuncDonateParams();
         params.Feedback = p.GetString(Consts.ParamFeedback);
+        ctx.Log("donatewithfeedback.funcDonate");
         DonateWithFeedback.funcDonate(ctx, params);
+        ctx.Log("donatewithfeedback.funcDonate ok");
     }
 
     private static void funcWithdrawThunk(ScFuncContext ctx) {
         // only SC creator can withdraw donated funds
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncWithdrawParams params = new FuncWithdrawParams();
+        var p = ctx.Params();
+        var params = new FuncWithdrawParams();
         params.Amount = p.GetInt64(Consts.ParamAmount);
+        ctx.Log("donatewithfeedback.funcWithdraw");
         DonateWithFeedback.funcWithdraw(ctx, params);
+        ctx.Log("donatewithfeedback.funcWithdraw ok");
     }
 
     private static void viewDonationsThunk(ScViewContext ctx) {
-        ViewDonationsParams params = new ViewDonationsParams();
+        var params = new ViewDonationsParams();
+        ctx.Log("donatewithfeedback.viewDonations");
         DonateWithFeedback.viewDonations(ctx, params);
+        ctx.Log("donatewithfeedback.viewDonations ok");
     }
 }

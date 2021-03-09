@@ -13,8 +13,6 @@ use crate::*;
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
 pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
-    ctx.trace("erc20.approve");
-
     let delegation = params.delegation.value();
     let amount = params.amount.value();
     ctx.require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter");
@@ -22,7 +20,6 @@ pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
     // all allowances are in the map under the name of he owner
     let allowances = ctx.state().get_map(&ctx.caller());
     allowances.get_int64(&delegation).set_value(amount);
-    ctx.log("erc20.approve.success");
 }
 
 // on_init is a constructor entry point. It initializes the smart contract with the
@@ -31,8 +28,6 @@ pub fn func_approve(ctx: &ScFuncContext, params: &FuncApproveParams) {
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
 pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
-    ctx.trace("erc20.on_init.begin");
-
     let supply = params.supply.value();
     ctx.require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter");
     ctx.state().get_int64(VAR_SUPPLY).set_value(supply);
@@ -53,8 +48,6 @@ pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
 pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
-    ctx.trace("erc20.transfer");
-
     let amount = params.amount.value();
     ctx.require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter");
 
@@ -69,7 +62,6 @@ pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
 
     source_balance.set_value(source_balance.value() - amount);
     target_balance.set_value(target_balance.value() + amount);
-    ctx.log("erc20.transfer.success");
 }
 
 // Moves the amount of tokens from sender to recipient using the allowance mechanism.
@@ -79,8 +71,6 @@ pub fn func_transfer(ctx: &ScFuncContext, params: &FuncTransferParams) {
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
 pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) {
-    ctx.trace("erc20.transfer_from");
-
     // validate parameters
     let account = params.account.value();
     let recipient = params.recipient.value();
@@ -103,8 +93,6 @@ pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) 
     source_balance.set_value(source_balance.value() - amount);
     recipient_balance.set_value(recipient_balance.value() + amount);
     allowance.set_value(allowance.value() - amount);
-
-    ctx.log("erc20.transfer_from.success");
 }
 
 // the view returns max number of tokens the owner PARAM_ACCOUNT of the account
@@ -115,8 +103,6 @@ pub fn func_transfer_from(ctx: &ScFuncContext, params: &FuncTransferFromParams) 
 // Output:
 // - PARAM_AMOUNT: i64
 pub fn view_allowance(ctx: &ScViewContext, params: &ViewAllowanceParams) {
-    ctx.trace("erc20.allowance");
-
     // all allowances of the address 'owner' are stored in the map of the same name
     let allowances = ctx.state().get_map(&params.account.value());
     let allow = allowances.get_int64(&params.delegation.value()).value();

@@ -3,7 +3,6 @@
 
 package org.iota.wasp.wasmlib.hashtypes;
 
-import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.keys.*;
 
@@ -46,6 +45,6 @@ public class ScAddress implements MapKey {
     }
 
     public String toString() {
-        return ScUtility.base58Encode(id);
+        return ScHash.base58Encode(id);
     }
 }

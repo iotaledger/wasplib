@@ -353,7 +353,9 @@ func (s *Schema) GenerateRustThunk(file *os.File, funcDef *FuncDef) {
 			fmt.Fprintf(file, "    ctx.require(params.%s.exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
+	fmt.Fprintf(file, "    ctx.log(\"%s.%s\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "    %s(ctx, &params);\n", snake(funcDef.FullName))
+	fmt.Fprintf(file, "    ctx.log(\"%s.%s ok\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "}\n")
 }
 

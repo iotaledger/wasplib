@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class HelloWorldThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -26,12 +25,16 @@ public class HelloWorldThunk {
     }
 
     private static void funcHelloWorldThunk(ScFuncContext ctx) {
-        FuncHelloWorldParams params = new FuncHelloWorldParams();
+        var params = new FuncHelloWorldParams();
+        ctx.Log("helloworld.funcHelloWorld");
         HelloWorld.funcHelloWorld(ctx, params);
+        ctx.Log("helloworld.funcHelloWorld ok");
     }
 
     private static void viewGetHelloWorldThunk(ScViewContext ctx) {
-        ViewGetHelloWorldParams params = new ViewGetHelloWorldParams();
+        var params = new ViewGetHelloWorldParams();
+        ctx.Log("helloworld.viewGetHelloWorld");
         HelloWorld.viewGetHelloWorld(ctx, params);
+        ctx.Log("helloworld.viewGetHelloWorld ok");
     }
 }

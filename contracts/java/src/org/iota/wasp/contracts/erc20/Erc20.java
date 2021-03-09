@@ -19,8 +19,6 @@ public class Erc20 {
     //  - PARAM_DELEGATION: agentID
     //  - PARAM_AMOUNT: i64
     public static void funcApprove(ScFuncContext ctx, FuncApproveParams params) {
-        ctx.Trace("erc20.approve");
-
         var delegation = params.Delegation.Value();
         var amount = params.Amount.Value();
         ctx.Require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter");
@@ -28,7 +26,6 @@ public class Erc20 {
         // all allowances are in the map under the name of he owner
         var allowances = ctx.State().GetMap(ctx.Caller());
         allowances.GetInt64(delegation).SetValue(amount);
-        ctx.Log("erc20.approve.success");
     }
 
     // on_init is a constructor entry point. It initializes the smart contract with the
@@ -37,8 +34,6 @@ public class Erc20 {
     //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
     //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
     public static void funcInit(ScFuncContext ctx, FuncInitParams params) {
-        ctx.Trace("erc20.on_init.begin");
-
         var supply = params.Supply.Value();
         ctx.Require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter");
         ctx.State().GetInt64(Consts.VarSupply).SetValue(supply);
@@ -59,8 +54,6 @@ public class Erc20 {
     // - PARAM_ACCOUNT: agentID
     // - PARAM_AMOUNT: i64
     public static void funcTransfer(ScFuncContext ctx, FuncTransferParams params) {
-        ctx.Trace("erc20.transfer");
-
         var amount = params.Amount.Value();
         ctx.Require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter");
 
@@ -75,7 +68,6 @@ public class Erc20 {
 
         sourceBalance.SetValue(sourceBalance.Value() - amount);
         targetBalance.SetValue(targetBalance.Value() + amount);
-        ctx.Log("erc20.transfer.success");
     }
 
     // Moves the amount of tokens from sender to recipient using the allowance mechanism.
@@ -85,8 +77,6 @@ public class Erc20 {
     // - PARAM_RECIPIENT: agentID   the target
     // - PARAM_AMOUNT: i64
     public static void funcTransferFrom(ScFuncContext ctx, FuncTransferFromParams params) {
-        ctx.Trace("erc20.transfer_from");
-
         // validate parameters
         var account = params.Account.Value();
         var recipient = params.Recipient.Value();
@@ -109,8 +99,6 @@ public class Erc20 {
         sourceBalance.SetValue(sourceBalance.Value() - amount);
         recipientBalance.SetValue(recipientBalance.Value() + amount);
         allowance.SetValue(allowance.Value() - amount);
-
-        ctx.Log("erc20.transfer_from.success");
     }
 
     // the view returns max number of tokens the owner PARAM_ACCOUNT of the account
@@ -121,8 +109,6 @@ public class Erc20 {
     // Output:
     // - PARAM_AMOUNT: i64
     public static void viewAllowance(ScViewContext ctx, ViewAllowanceParams params) {
-        ctx.Trace("erc20.allowance");
-
         // all allowances of the address 'owner' are stored in the map of the same name
         var allowances = ctx.State().GetMap(params.Account.Value());
         var allow = allowances.GetInt64(params.Delegation.Value()).Value();

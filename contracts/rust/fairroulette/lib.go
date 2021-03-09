@@ -26,7 +26,9 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 
 	params := &FuncLockBetsParams{
 	}
+	ctx.Log("fairroulette.funcLockBets")
 	funcLockBets(ctx, params)
+	ctx.Log("fairroulette.funcLockBets ok")
 }
 
 type FuncPayWinnersParams struct {
@@ -38,7 +40,9 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 
 	params := &FuncPayWinnersParams{
 	}
+	ctx.Log("fairroulette.funcPayWinners")
 	funcPayWinners(ctx, params)
+	ctx.Log("fairroulette.funcPayWinners ok")
 }
 
 type FuncPlaceBetParams struct {
@@ -51,7 +55,9 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 		Number: p.GetInt64(ParamNumber),
 	}
 	ctx.Require(params.Number.Exists(), "missing mandatory number")
+	ctx.Log("fairroulette.funcPlaceBet")
 	funcPlaceBet(ctx, params)
+	ctx.Log("fairroulette.funcPlaceBet ok")
 }
 
 type FuncPlayPeriodParams struct {
@@ -67,5 +73,7 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 		PlayPeriod: p.GetInt64(ParamPlayPeriod),
 	}
 	ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod")
+	ctx.Log("fairroulette.funcPlayPeriod")
 	funcPlayPeriod(ctx, params)
+	ctx.Log("fairroulette.funcPlayPeriod ok")
 }

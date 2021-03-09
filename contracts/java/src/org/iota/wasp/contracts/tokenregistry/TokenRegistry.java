@@ -41,7 +41,6 @@ public class TokenRegistry {
         registry.SetValue(token.toBytes());
         var colors = state.GetColorArray(Consts.VarColorList);
         colors.GetColor(colors.Length()).SetValue(mintedColor);
-        ctx.Log("tokenregistry.mintSupply ok");
     }
 
     public static void funcTransferOwnership(ScFuncContext ctx, FuncTransferOwnershipParams params) {

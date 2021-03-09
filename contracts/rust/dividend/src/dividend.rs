@@ -6,10 +6,9 @@ use wasmlib::*;
 use crate::*;
 
 pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
-    ctx.log("calling divide");
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
-        ctx.panic("Nothing to divide");
+        ctx.panic("nothing to divide");
     }
     let state = ctx.state();
     let total = state.get_int64(VAR_TOTAL_FACTOR).value();
@@ -32,12 +31,11 @@ pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
         // there could be some small remainder left in the contract, but
         // that will be picked up in the next round as part of the balance
         let remainder = amount - parts;
-        ctx.log(&("Remainder in contract: ".to_string() + &remainder.to_string()));
+        ctx.log(&("remainder in contract: ".to_string() + &remainder.to_string()));
     }
 }
 
 pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
-    ctx.log("calling member");
     let state = ctx.state();
     let members = state.get_map(VAR_MEMBERS);
     let address = params.address.value();
@@ -55,7 +53,6 @@ pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
 }
 
 pub fn view_get_factor(ctx: &ScViewContext, params: &ViewGetFactorParams) {
-    ctx.log("calling getFactor");
     let address = params.address.value();
     let members = ctx.state().get_map(VAR_MEMBERS);
     let factor = members.get_int64(&address).value();

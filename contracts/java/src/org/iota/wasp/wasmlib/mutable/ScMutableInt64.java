@@ -24,10 +24,16 @@ public class ScMutableInt64 {
         bytes[1] = (byte) (id >> 8);
         bytes[2] = (byte) (id >> 16);
         bytes[3] = (byte) (id >> 24);
-        bytes[4] = (byte) (id >> 32);
-        bytes[5] = (byte) (id >> 40);
-        bytes[6] = (byte) (id >> 48);
-        bytes[7] = (byte) (id >> 56);
+        // bytes[4] = (byte) (id >> 32);
+        // bytes[5] = (byte) (id >> 40);
+        // bytes[6] = (byte) (id >> 48);
+        // bytes[7] = (byte) (id >> 56);
+        if (id < 0) {
+            bytes[4] = (byte) 0xff;
+            bytes[5] = (byte) 0xff;
+            bytes[6] = (byte) 0xff;
+            bytes[7] = (byte) 0xff;
+        }
         Host.SetBytes(objId, keyId, ScType.TYPE_INT64, bytes);
     }
 
@@ -41,10 +47,10 @@ public class ScMutableInt64 {
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |
-                ((bytes[3] & 0xffL) << 24) |
+                ((bytes[3] & 0xffL) << 24) /*|
                 ((bytes[4] & 0xffL) << 32) |
                 ((bytes[5] & 0xffL) << 40) |
                 ((bytes[6] & 0xffL) << 48) |
-                ((bytes[7] & 0xffL) << 56);
+                ((bytes[7] & 0xffL) << 56)*/;
     }
 }

@@ -39,7 +39,9 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.amount.exists(), "missing mandatory amount");
     ctx.require(params.delegation.exists(), "missing mandatory delegation");
+    ctx.log("erc20.funcApprove");
     func_approve(ctx, &params);
+    ctx.log("erc20.funcApprove ok");
 }
 
 //@formatter:off
@@ -57,7 +59,9 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.creator.exists(), "missing mandatory creator");
     ctx.require(params.supply.exists(), "missing mandatory supply");
+    ctx.log("erc20.funcInit");
     func_init(ctx, &params);
+    ctx.log("erc20.funcInit ok");
 }
 
 //@formatter:off
@@ -75,7 +79,9 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.amount.exists(), "missing mandatory amount");
+    ctx.log("erc20.funcTransfer");
     func_transfer(ctx, &params);
+    ctx.log("erc20.funcTransfer ok");
 }
 
 //@formatter:off
@@ -96,7 +102,9 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.amount.exists(), "missing mandatory amount");
     ctx.require(params.recipient.exists(), "missing mandatory recipient");
+    ctx.log("erc20.funcTransferFrom");
     func_transfer_from(ctx, &params);
+    ctx.log("erc20.funcTransferFrom ok");
 }
 
 //@formatter:off
@@ -114,7 +122,9 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
     };
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.delegation.exists(), "missing mandatory delegation");
+    ctx.log("erc20.viewAllowance");
     view_allowance(ctx, &params);
+    ctx.log("erc20.viewAllowance ok");
 }
 
 pub struct ViewBalanceOfParams {
@@ -127,12 +137,16 @@ fn view_balance_of_thunk(ctx: &ScViewContext) {
         account: p.get_agent_id(PARAM_ACCOUNT),
     };
     ctx.require(params.account.exists(), "missing mandatory account");
+    ctx.log("erc20.viewBalanceOf");
     view_balance_of(ctx, &params);
+    ctx.log("erc20.viewBalanceOf ok");
 }
 
 pub struct ViewTotalSupplyParams {}
 
 fn view_total_supply_thunk(ctx: &ScViewContext) {
     let params = ViewTotalSupplyParams {};
+    ctx.log("erc20.viewTotalSupply");
     view_total_supply(ctx, &params);
+    ctx.log("erc20.viewTotalSupply ok");
 }

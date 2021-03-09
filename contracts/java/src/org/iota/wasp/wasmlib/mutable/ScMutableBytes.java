@@ -3,7 +3,7 @@
 
 package org.iota.wasp.wasmlib.mutable;
 
-import org.iota.wasp.wasmlib.context.*;
+import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.host.*;
 
 public class ScMutableBytes {
@@ -25,7 +25,7 @@ public class ScMutableBytes {
 
     @Override
     public String toString() {
-        return ScUtility.base58Encode(Value());
+        return ScHash.base58Encode(Value());
     }
 
     public byte[] Value() {

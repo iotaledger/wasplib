@@ -37,10 +37,13 @@ public class Consts {
 
     public static final Key VarCounter = new Key("counter");
     public static final Key VarHnameEP = new Key("hnameEP");
+    public static final Key VarMintedSupply = new Key("mintedSupply");
 
     public static final String FuncCallOnChain = "callOnChain";
     public static final String FuncCheckContextFromFullEP = "checkContextFromFullEP";
     public static final String FuncDoNothing = "doNothing";
+    public static final String FuncGetMintedSupply = "getMintedSupply";
+    public static final String FuncIncCounter = "incCounter";
     public static final String FuncInit = "init";
     public static final String FuncPassTypesFull = "passTypesFull";
     public static final String FuncRunRecursion = "runRecursion";
@@ -70,6 +73,8 @@ public class Consts {
     public static final ScHname HFuncCallOnChain = new ScHname(0x95a3d123);
     public static final ScHname HFuncCheckContextFromFullEP = new ScHname(0xa56c24ba);
     public static final ScHname HFuncDoNothing = new ScHname(0xdda4a6de);
+    public static final ScHname HFuncGetMintedSupply = new ScHname(0x0c2d113c);
+    public static final ScHname HFuncIncCounter = new ScHname(0x7b287419);
     public static final ScHname HFuncInit = new ScHname(0x1f44d644);
     public static final ScHname HFuncPassTypesFull = new ScHname(0x733ea0ea);
     public static final ScHname HFuncRunRecursion = new ScHname(0x833425fd);

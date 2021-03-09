@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class TokenRegistryThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -28,40 +27,48 @@ public class TokenRegistryThunk {
     }
 
     private static void funcMintSupplyThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncMintSupplyParams params = new FuncMintSupplyParams();
+        var p = ctx.Params();
+        var params = new FuncMintSupplyParams();
         params.Description = p.GetString(Consts.ParamDescription);
         params.UserDefined = p.GetString(Consts.ParamUserDefined);
+        ctx.Log("tokenregistry.funcMintSupply");
         TokenRegistry.funcMintSupply(ctx, params);
+        ctx.Log("tokenregistry.funcMintSupply ok");
     }
 
     private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
         //TODO the one who can transfer token ownership
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncTransferOwnershipParams params = new FuncTransferOwnershipParams();
+        var p = ctx.Params();
+        var params = new FuncTransferOwnershipParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("tokenregistry.funcTransferOwnership");
         TokenRegistry.funcTransferOwnership(ctx, params);
+        ctx.Log("tokenregistry.funcTransferOwnership ok");
     }
 
     private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
         //TODO the one who can change the token info
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncUpdateMetadataParams params = new FuncUpdateMetadataParams();
+        var p = ctx.Params();
+        var params = new FuncUpdateMetadataParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("tokenregistry.funcUpdateMetadata");
         TokenRegistry.funcUpdateMetadata(ctx, params);
+        ctx.Log("tokenregistry.funcUpdateMetadata ok");
     }
 
     private static void viewGetInfoThunk(ScViewContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        ViewGetInfoParams params = new ViewGetInfoParams();
+        var p = ctx.Params();
+        var params = new ViewGetInfoParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("tokenregistry.viewGetInfo");
         TokenRegistry.viewGetInfo(ctx, params);
+        ctx.Log("tokenregistry.viewGetInfo ok");
     }
 }

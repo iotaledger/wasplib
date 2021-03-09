@@ -22,7 +22,9 @@ type FuncDivideParams struct {
 func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncDivideParams{
 	}
+	ctx.Log("dividend.funcDivide")
 	funcDivide(ctx, params)
+	ctx.Log("dividend.funcDivide ok")
 }
 
 type FuncMemberParams struct {
@@ -41,7 +43,9 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	}
 	ctx.Require(params.Address.Exists(), "missing mandatory address")
 	ctx.Require(params.Factor.Exists(), "missing mandatory factor")
+	ctx.Log("dividend.funcMember")
 	funcMember(ctx, params)
+	ctx.Log("dividend.funcMember ok")
 }
 
 type ViewGetFactorParams struct {
@@ -54,5 +58,7 @@ func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 		Address: p.GetAddress(ParamAddress),
 	}
 	ctx.Require(params.Address.Exists(), "missing mandatory address")
+	ctx.Log("dividend.viewGetFactor")
 	viewGetFactor(ctx, params)
+	ctx.Log("dividend.viewGetFactor ok")
 }

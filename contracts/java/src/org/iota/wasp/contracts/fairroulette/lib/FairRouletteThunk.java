@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class FairRouletteThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -31,34 +30,42 @@ public class FairRouletteThunk {
         // only SC itself can invoke this function
         ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
-        FuncLockBetsParams params = new FuncLockBetsParams();
+        var params = new FuncLockBetsParams();
+        ctx.Log("fairroulette.funcLockBets");
         FairRoulette.funcLockBets(ctx, params);
+        ctx.Log("fairroulette.funcLockBets ok");
     }
 
     private static void funcPayWinnersThunk(ScFuncContext ctx) {
         // only SC itself can invoke this function
         ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
-        FuncPayWinnersParams params = new FuncPayWinnersParams();
+        var params = new FuncPayWinnersParams();
+        ctx.Log("fairroulette.funcPayWinners");
         FairRoulette.funcPayWinners(ctx, params);
+        ctx.Log("fairroulette.funcPayWinners ok");
     }
 
     private static void funcPlaceBetThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncPlaceBetParams params = new FuncPlaceBetParams();
+        var p = ctx.Params();
+        var params = new FuncPlaceBetParams();
         params.Number = p.GetInt64(Consts.ParamNumber);
         ctx.Require(params.Number.Exists(), "missing mandatory number");
+        ctx.Log("fairroulette.funcPlaceBet");
         FairRoulette.funcPlaceBet(ctx, params);
+        ctx.Log("fairroulette.funcPlaceBet ok");
     }
 
     private static void funcPlayPeriodThunk(ScFuncContext ctx) {
         // only SC creator can update the play period
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncPlayPeriodParams params = new FuncPlayPeriodParams();
+        var p = ctx.Params();
+        var params = new FuncPlayPeriodParams();
         params.PlayPeriod = p.GetInt64(Consts.ParamPlayPeriod);
         ctx.Require(params.PlayPeriod.Exists(), "missing mandatory playPeriod");
+        ctx.Log("fairroulette.funcPlayPeriod");
         FairRoulette.funcPlayPeriod(ctx, params);
+        ctx.Log("fairroulette.funcPlayPeriod ok");
     }
 }

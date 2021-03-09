@@ -15,7 +15,6 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 public class FairAuctionThunk {
     public static void main(String[] args) {
-        onLoad();
     }
 
     @Export("on_load")
@@ -32,49 +31,59 @@ public class FairAuctionThunk {
         // only SC itself can invoke this function
         ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncFinalizeAuctionParams params = new FuncFinalizeAuctionParams();
+        var p = ctx.Params();
+        var params = new FuncFinalizeAuctionParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("fairauction.funcFinalizeAuction");
         FairAuction.funcFinalizeAuction(ctx, params);
+        ctx.Log("fairauction.funcFinalizeAuction ok");
     }
 
     private static void funcPlaceBidThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncPlaceBidParams params = new FuncPlaceBidParams();
+        var p = ctx.Params();
+        var params = new FuncPlaceBidParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("fairauction.funcPlaceBid");
         FairAuction.funcPlaceBid(ctx, params);
+        ctx.Log("fairauction.funcPlaceBid ok");
     }
 
     private static void funcSetOwnerMarginThunk(ScFuncContext ctx) {
         // only SC creator can set owner margin
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
-        ScImmutableMap p = ctx.Params();
-        FuncSetOwnerMarginParams params = new FuncSetOwnerMarginParams();
+        var p = ctx.Params();
+        var params = new FuncSetOwnerMarginParams();
         params.OwnerMargin = p.GetInt64(Consts.ParamOwnerMargin);
         ctx.Require(params.OwnerMargin.Exists(), "missing mandatory ownerMargin");
+        ctx.Log("fairauction.funcSetOwnerMargin");
         FairAuction.funcSetOwnerMargin(ctx, params);
+        ctx.Log("fairauction.funcSetOwnerMargin ok");
     }
 
     private static void funcStartAuctionThunk(ScFuncContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        FuncStartAuctionParams params = new FuncStartAuctionParams();
+        var p = ctx.Params();
+        var params = new FuncStartAuctionParams();
         params.Color = p.GetColor(Consts.ParamColor);
         params.Description = p.GetString(Consts.ParamDescription);
         params.Duration = p.GetInt64(Consts.ParamDuration);
         params.MinimumBid = p.GetInt64(Consts.ParamMinimumBid);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
         ctx.Require(params.MinimumBid.Exists(), "missing mandatory minimumBid");
+        ctx.Log("fairauction.funcStartAuction");
         FairAuction.funcStartAuction(ctx, params);
+        ctx.Log("fairauction.funcStartAuction ok");
     }
 
     private static void viewGetInfoThunk(ScViewContext ctx) {
-        ScImmutableMap p = ctx.Params();
-        ViewGetInfoParams params = new ViewGetInfoParams();
+        var p = ctx.Params();
+        var params = new ViewGetInfoParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
+        ctx.Log("fairauction.viewGetInfo");
         FairAuction.viewGetInfo(ctx, params);
+        ctx.Log("fairauction.viewGetInfo ok");
     }
 }

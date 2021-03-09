@@ -25,7 +25,9 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncDonateParams{
 		Feedback: p.GetString(ParamFeedback),
 	}
+	ctx.Log("donatewithfeedback.funcDonate")
 	funcDonate(ctx, params)
+	ctx.Log("donatewithfeedback.funcDonate ok")
 }
 
 type FuncWithdrawParams struct {
@@ -40,7 +42,9 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncWithdrawParams{
 		Amount: p.GetInt64(ParamAmount),
 	}
+	ctx.Log("donatewithfeedback.funcWithdraw")
 	funcWithdraw(ctx, params)
+	ctx.Log("donatewithfeedback.funcWithdraw ok")
 }
 
 type ViewDonationsParams struct {
@@ -49,5 +53,7 @@ type ViewDonationsParams struct {
 func viewDonationsThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewDonationsParams{
 	}
+	ctx.Log("donatewithfeedback.viewDonations")
 	viewDonations(ctx, params)
+	ctx.Log("donatewithfeedback.viewDonations ok")
 }

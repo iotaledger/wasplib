@@ -14,6 +14,8 @@ func OnLoad() {
 	exports.AddFunc(FuncCallOnChain, funcCallOnChainThunk)
 	exports.AddFunc(FuncCheckContextFromFullEP, funcCheckContextFromFullEPThunk)
 	exports.AddFunc(FuncDoNothing, funcDoNothingThunk)
+	exports.AddFunc(FuncGetMintedSupply, funcGetMintedSupplyThunk)
+	exports.AddFunc(FuncIncCounter, funcIncCounterThunk)
 	exports.AddFunc(FuncInit, funcInitThunk)
 	exports.AddFunc(FuncPassTypesFull, funcPassTypesFullThunk)
 	exports.AddFunc(FuncRunRecursion, funcRunRecursionThunk)
@@ -55,7 +57,9 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 		IntValue:      p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
+	ctx.Log("testcore.funcCallOnChain")
 	funcCallOnChain(ctx, params)
+	ctx.Log("testcore.funcCallOnChain ok")
 }
 
 type FuncCheckContextFromFullEPParams struct {
@@ -83,7 +87,9 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId")
 	ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator")
 	ctx.Require(params.ContractId.Exists(), "missing mandatory contractId")
+	ctx.Log("testcore.funcCheckContextFromFullEP")
 	funcCheckContextFromFullEP(ctx, params)
+	ctx.Log("testcore.funcCheckContextFromFullEP ok")
 }
 
 type FuncDoNothingParams struct {
@@ -92,7 +98,31 @@ type FuncDoNothingParams struct {
 func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncDoNothingParams{
 	}
+	ctx.Log("testcore.funcDoNothing")
 	funcDoNothing(ctx, params)
+	ctx.Log("testcore.funcDoNothing ok")
+}
+
+type FuncGetMintedSupplyParams struct {
+}
+
+func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
+	params := &FuncGetMintedSupplyParams{
+	}
+	ctx.Log("testcore.funcGetMintedSupply")
+	funcGetMintedSupply(ctx, params)
+	ctx.Log("testcore.funcGetMintedSupply ok")
+}
+
+type FuncIncCounterParams struct {
+}
+
+func funcIncCounterThunk(ctx wasmlib.ScFuncContext) {
+	params := &FuncIncCounterParams{
+	}
+	ctx.Log("testcore.funcIncCounter")
+	funcIncCounter(ctx, params)
+	ctx.Log("testcore.funcIncCounter ok")
 }
 
 type FuncInitParams struct {
@@ -101,7 +131,9 @@ type FuncInitParams struct {
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncInitParams{
 	}
+	ctx.Log("testcore.funcInit")
 	funcInit(ctx, params)
+	ctx.Log("testcore.funcInit ok")
 }
 
 type FuncPassTypesFullParams struct {
@@ -132,7 +164,9 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero")
 	ctx.Require(params.String.Exists(), "missing mandatory string")
 	ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero")
+	ctx.Log("testcore.funcPassTypesFull")
 	funcPassTypesFull(ctx, params)
+	ctx.Log("testcore.funcPassTypesFull ok")
 }
 
 type FuncRunRecursionParams struct {
@@ -145,7 +179,9 @@ func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 		IntValue: p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
+	ctx.Log("testcore.funcRunRecursion")
 	funcRunRecursion(ctx, params)
+	ctx.Log("testcore.funcRunRecursion ok")
 }
 
 type FuncSendToAddressParams struct {
@@ -160,7 +196,9 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 		Address: p.GetAddress(ParamAddress),
 	}
 	ctx.Require(params.Address.Exists(), "missing mandatory address")
+	ctx.Log("testcore.funcSendToAddress")
 	funcSendToAddress(ctx, params)
+	ctx.Log("testcore.funcSendToAddress ok")
 }
 
 type FuncSetIntParams struct {
@@ -176,7 +214,9 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
 	ctx.Require(params.Name.Exists(), "missing mandatory name")
+	ctx.Log("testcore.funcSetInt")
 	funcSetInt(ctx, params)
+	ctx.Log("testcore.funcSetInt ok")
 }
 
 type FuncTestCallPanicFullEPParams struct {
@@ -185,7 +225,9 @@ type FuncTestCallPanicFullEPParams struct {
 func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestCallPanicFullEPParams{
 	}
+	ctx.Log("testcore.funcTestCallPanicFullEP")
 	funcTestCallPanicFullEP(ctx, params)
+	ctx.Log("testcore.funcTestCallPanicFullEP ok")
 }
 
 type FuncTestCallPanicViewEPFromFullParams struct {
@@ -194,7 +236,9 @@ type FuncTestCallPanicViewEPFromFullParams struct {
 func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestCallPanicViewEPFromFullParams{
 	}
+	ctx.Log("testcore.funcTestCallPanicViewEPFromFull")
 	funcTestCallPanicViewEPFromFull(ctx, params)
+	ctx.Log("testcore.funcTestCallPanicViewEPFromFull ok")
 }
 
 type FuncTestChainOwnerIDFullParams struct {
@@ -203,7 +247,9 @@ type FuncTestChainOwnerIDFullParams struct {
 func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestChainOwnerIDFullParams{
 	}
+	ctx.Log("testcore.funcTestChainOwnerIDFull")
 	funcTestChainOwnerIDFull(ctx, params)
+	ctx.Log("testcore.funcTestChainOwnerIDFull ok")
 }
 
 type FuncTestContractIDFullParams struct {
@@ -212,7 +258,9 @@ type FuncTestContractIDFullParams struct {
 func funcTestContractIDFullThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestContractIDFullParams{
 	}
+	ctx.Log("testcore.funcTestContractIDFull")
 	funcTestContractIDFull(ctx, params)
+	ctx.Log("testcore.funcTestContractIDFull ok")
 }
 
 type FuncTestEventLogDeployParams struct {
@@ -221,7 +269,9 @@ type FuncTestEventLogDeployParams struct {
 func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestEventLogDeployParams{
 	}
+	ctx.Log("testcore.funcTestEventLogDeploy")
 	funcTestEventLogDeploy(ctx, params)
+	ctx.Log("testcore.funcTestEventLogDeploy ok")
 }
 
 type FuncTestEventLogEventDataParams struct {
@@ -230,7 +280,9 @@ type FuncTestEventLogEventDataParams struct {
 func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestEventLogEventDataParams{
 	}
+	ctx.Log("testcore.funcTestEventLogEventData")
 	funcTestEventLogEventData(ctx, params)
+	ctx.Log("testcore.funcTestEventLogEventData ok")
 }
 
 type FuncTestEventLogGenericDataParams struct {
@@ -243,7 +295,9 @@ func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 		Counter: p.GetInt64(ParamCounter),
 	}
 	ctx.Require(params.Counter.Exists(), "missing mandatory counter")
+	ctx.Log("testcore.funcTestEventLogGenericData")
 	funcTestEventLogGenericData(ctx, params)
+	ctx.Log("testcore.funcTestEventLogGenericData ok")
 }
 
 type FuncTestPanicFullEPParams struct {
@@ -252,7 +306,9 @@ type FuncTestPanicFullEPParams struct {
 func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	params := &FuncTestPanicFullEPParams{
 	}
+	ctx.Log("testcore.funcTestPanicFullEP")
 	funcTestPanicFullEP(ctx, params)
+	ctx.Log("testcore.funcTestPanicFullEP ok")
 }
 
 type FuncWithdrawToChainParams struct {
@@ -265,7 +321,9 @@ func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 		ChainId: p.GetChainId(ParamChainId),
 	}
 	ctx.Require(params.ChainId.Exists(), "missing mandatory chainId")
+	ctx.Log("testcore.funcWithdrawToChain")
 	funcWithdrawToChain(ctx, params)
+	ctx.Log("testcore.funcWithdrawToChain ok")
 }
 
 type ViewCheckContextFromViewEPParams struct {
@@ -290,7 +348,9 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId")
 	ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator")
 	ctx.Require(params.ContractId.Exists(), "missing mandatory contractId")
+	ctx.Log("testcore.viewCheckContextFromViewEP")
 	viewCheckContextFromViewEP(ctx, params)
+	ctx.Log("testcore.viewCheckContextFromViewEP ok")
 }
 
 type ViewFibonacciParams struct {
@@ -303,7 +363,9 @@ func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 		IntValue: p.GetInt64(ParamIntValue),
 	}
 	ctx.Require(params.IntValue.Exists(), "missing mandatory intValue")
+	ctx.Log("testcore.viewFibonacci")
 	viewFibonacci(ctx, params)
+	ctx.Log("testcore.viewFibonacci ok")
 }
 
 type ViewGetCounterParams struct {
@@ -312,7 +374,9 @@ type ViewGetCounterParams struct {
 func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewGetCounterParams{
 	}
+	ctx.Log("testcore.viewGetCounter")
 	viewGetCounter(ctx, params)
+	ctx.Log("testcore.viewGetCounter ok")
 }
 
 type ViewGetIntParams struct {
@@ -325,7 +389,9 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 		Name: p.GetString(ParamName),
 	}
 	ctx.Require(params.Name.Exists(), "missing mandatory name")
+	ctx.Log("testcore.viewGetInt")
 	viewGetInt(ctx, params)
+	ctx.Log("testcore.viewGetInt ok")
 }
 
 type ViewJustViewParams struct {
@@ -334,7 +400,9 @@ type ViewJustViewParams struct {
 func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewJustViewParams{
 	}
+	ctx.Log("testcore.viewJustView")
 	viewJustView(ctx, params)
+	ctx.Log("testcore.viewJustView ok")
 }
 
 type ViewPassTypesViewParams struct {
@@ -365,7 +433,9 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Require(params.Int64Zero.Exists(), "missing mandatory int64Zero")
 	ctx.Require(params.String.Exists(), "missing mandatory string")
 	ctx.Require(params.StringZero.Exists(), "missing mandatory stringZero")
+	ctx.Log("testcore.viewPassTypesView")
 	viewPassTypesView(ctx, params)
+	ctx.Log("testcore.viewPassTypesView ok")
 }
 
 type ViewTestCallPanicViewEPFromViewParams struct {
@@ -374,7 +444,9 @@ type ViewTestCallPanicViewEPFromViewParams struct {
 func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestCallPanicViewEPFromViewParams{
 	}
+	ctx.Log("testcore.viewTestCallPanicViewEPFromView")
 	viewTestCallPanicViewEPFromView(ctx, params)
+	ctx.Log("testcore.viewTestCallPanicViewEPFromView ok")
 }
 
 type ViewTestChainOwnerIDViewParams struct {
@@ -383,7 +455,9 @@ type ViewTestChainOwnerIDViewParams struct {
 func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestChainOwnerIDViewParams{
 	}
+	ctx.Log("testcore.viewTestChainOwnerIDView")
 	viewTestChainOwnerIDView(ctx, params)
+	ctx.Log("testcore.viewTestChainOwnerIDView ok")
 }
 
 type ViewTestContractIDViewParams struct {
@@ -392,7 +466,9 @@ type ViewTestContractIDViewParams struct {
 func viewTestContractIDViewThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestContractIDViewParams{
 	}
+	ctx.Log("testcore.viewTestContractIDView")
 	viewTestContractIDView(ctx, params)
+	ctx.Log("testcore.viewTestContractIDView ok")
 }
 
 type ViewTestPanicViewEPParams struct {
@@ -401,7 +477,9 @@ type ViewTestPanicViewEPParams struct {
 func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestPanicViewEPParams{
 	}
+	ctx.Log("testcore.viewTestPanicViewEP")
 	viewTestPanicViewEP(ctx, params)
+	ctx.Log("testcore.viewTestPanicViewEP ok")
 }
 
 type ViewTestSandboxCallParams struct {
@@ -410,5 +488,7 @@ type ViewTestSandboxCallParams struct {
 func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 	params := &ViewTestSandboxCallParams{
 	}
+	ctx.Log("testcore.viewTestSandboxCall")
 	viewTestSandboxCall(ctx, params)
+	ctx.Log("testcore.viewTestSandboxCall ok")
 }

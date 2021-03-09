@@ -23,12 +23,16 @@ pub struct FuncHelloWorldParams {}
 
 fn func_hello_world_thunk(ctx: &ScFuncContext) {
     let params = FuncHelloWorldParams {};
+    ctx.log("helloworld.funcHelloWorld");
     func_hello_world(ctx, &params);
+    ctx.log("helloworld.funcHelloWorld ok");
 }
 
 pub struct ViewGetHelloWorldParams {}
 
 fn view_get_hello_world_thunk(ctx: &ScViewContext) {
     let params = ViewGetHelloWorldParams {};
+    ctx.log("helloworld.viewGetHelloWorld");
     view_get_hello_world(ctx, &params);
+    ctx.log("helloworld.viewGetHelloWorld ok");
 }

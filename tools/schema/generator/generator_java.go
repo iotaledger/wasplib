@@ -191,7 +191,6 @@ func (s *Schema) GenerateJavaLib() error {
 
 	fmt.Fprintf(file, "public class %sThunk {\n", s.FullName)
 	fmt.Fprintf(file, "    public static void main(String[] args) {\n")
-	fmt.Fprintf(file, "        onLoad();\n")
 	fmt.Fprintf(file, "    }\n\n")
 
 	fmt.Fprintf(file, "    @Export(\"on_load\")\n")
@@ -335,9 +334,9 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}
 	if len(funcDef.Params) != 0 {
-		fmt.Fprintf(file, "        ScImmutableMap p = ctx.Params();\n")
+		fmt.Fprintf(file, "        var p = ctx.Params();\n")
 	}
-	fmt.Fprintf(file, "        %sParams params = new %sParams();\n", funcName, funcName)
+	fmt.Fprintf(file, "        var params = new %sParams();\n", funcName)
 	for _, param := range funcDef.Params {
 		name := capitalize(param.Name)
 		fmt.Fprintf(file, "        params.%s = p.Get%s(Consts.Param%s);\n", name, param.Type, name)
@@ -348,7 +347,9 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fmt.Fprintf(file, "        ctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "    }\n")
 }
 

@@ -33,7 +33,6 @@ pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
     registry.set_value(&token.to_bytes());
     let colors = state.get_color_array(VAR_COLOR_LIST);
     colors.get_color(colors.length()).set_value(&minted_color);
-    ctx.log("tokenregistry.mintSupply ok");
 }
 
 pub fn func_transfer_ownership(_ctx: &ScFuncContext, _params: &FuncTransferOwnershipParams) {

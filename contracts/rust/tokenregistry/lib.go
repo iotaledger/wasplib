@@ -28,7 +28,9 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 		Description: p.GetString(ParamDescription),
 		UserDefined: p.GetString(ParamUserDefined),
 	}
+	ctx.Log("tokenregistry.funcMintSupply")
 	funcMintSupply(ctx, params)
+	ctx.Log("tokenregistry.funcMintSupply ok")
 }
 
 type FuncTransferOwnershipParams struct {
@@ -44,7 +46,9 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	ctx.Log("tokenregistry.funcTransferOwnership")
 	funcTransferOwnership(ctx, params)
+	ctx.Log("tokenregistry.funcTransferOwnership ok")
 }
 
 type FuncUpdateMetadataParams struct {
@@ -60,7 +64,9 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	ctx.Log("tokenregistry.funcUpdateMetadata")
 	funcUpdateMetadata(ctx, params)
+	ctx.Log("tokenregistry.funcUpdateMetadata ok")
 }
 
 type ViewGetInfoParams struct {
@@ -73,5 +79,7 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
+	ctx.Log("tokenregistry.viewGetInfo")
 	viewGetInfo(ctx, params)
+	ctx.Log("tokenregistry.viewGetInfo ok")
 }

@@ -303,7 +303,9 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 			fmt.Fprintf(file, "\tctx.Require(params.%s.Exists(), \"missing mandatory %s\")\n", name, param.Name)
 		}
 	}
+	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "\t%s(ctx, params)\n", funcDef.FullName)
+	fmt.Fprintf(file, "\tctx.Log(\"%s.%s ok\")\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "}\n")
 }
 

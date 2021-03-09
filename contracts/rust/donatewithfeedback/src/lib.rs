@@ -30,7 +30,9 @@ fn func_donate_thunk(ctx: &ScFuncContext) {
     let params = FuncDonateParams {
         feedback: p.get_string(PARAM_FEEDBACK),
     };
+    ctx.log("donatewithfeedback.funcDonate");
     func_donate(ctx, &params);
+    ctx.log("donatewithfeedback.funcDonate ok");
 }
 
 pub struct FuncWithdrawParams {
@@ -45,12 +47,16 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
     let params = FuncWithdrawParams {
         amount: p.get_int64(PARAM_AMOUNT),
     };
+    ctx.log("donatewithfeedback.funcWithdraw");
     func_withdraw(ctx, &params);
+    ctx.log("donatewithfeedback.funcWithdraw ok");
 }
 
 pub struct ViewDonationsParams {}
 
 fn view_donations_thunk(ctx: &ScViewContext) {
     let params = ViewDonationsParams {};
+    ctx.log("donatewithfeedback.viewDonations");
     view_donations(ctx, &params);
+    ctx.log("donatewithfeedback.viewDonations ok");
 }

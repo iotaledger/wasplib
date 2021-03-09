@@ -12,8 +12,6 @@ const MsgFullPanic = "========== panic FULL ENTRY POINT ========="
 const MsgViewPanic = "========== panic VIEW ========="
 
 func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
-	ctx.Log("calling callOnChain")
-
 	paramInt := params.IntValue.Value()
 
 	targetContract := ctx.ContractId().Hname()
@@ -45,8 +43,6 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 }
 
 func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, params *FuncCheckContextFromFullEPParams) {
-	ctx.Log("calling checkContextFromFullEP")
-
 	ctx.Require(params.ChainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
 	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
 	ctx.Require(params.Caller.Value() == ctx.Caller(), "fail: caller")
@@ -56,16 +52,22 @@ func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, params *FuncCheckCont
 }
 
 func funcDoNothing(ctx wasmlib.ScFuncContext, params *FuncDoNothingParams) {
-	ctx.Log("calling doNothing")
+	ctx.Log("doing nothing...")
+}
+
+func funcGetMintedSupply(ctx wasmlib.ScFuncContext, params *FuncGetMintedSupplyParams) {
+	ctx.Results().GetInt64(VarMintedSupply).SetValue(ctx.MintedSupply())
+}
+
+func funcIncCounter(ctx wasmlib.ScFuncContext, params *FuncIncCounterParams) {
+	ctx.State().GetInt64(VarCounter).SetValue(ctx.State().GetInt64(VarCounter).Value() + 1)
 }
 
 func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
-	ctx.Log("calling init")
+	ctx.Log("doing nothing...")
 }
 
 func funcPassTypesFull(ctx wasmlib.ScFuncContext, params *FuncPassTypesFullParams) {
-	ctx.Log("calling passTypesFull")
-
 	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
 	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
 	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
@@ -77,8 +79,6 @@ func funcPassTypesFull(ctx wasmlib.ScFuncContext, params *FuncPassTypesFullParam
 }
 
 func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams) {
-	ctx.Log("calling runRecursion")
-
 	depth := params.IntValue.Value()
 	if depth <= 0 {
 		return
@@ -93,38 +93,31 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams)
 }
 
 func funcSendToAddress(ctx wasmlib.ScFuncContext, params *FuncSendToAddressParams) {
-	ctx.Log("calling sendToAddress")
 	balances := wasmlib.NewScTransfersFromBalances(ctx.Balances())
 	ctx.TransferToAddress(params.Address.Value(), balances)
 }
 
 func funcSetInt(ctx wasmlib.ScFuncContext, params *FuncSetIntParams) {
-	ctx.Log("calling setInt")
 	ctx.State().GetInt64(wasmlib.Key(params.Name.Value())).SetValue(params.IntValue.Value())
 }
 
 func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestCallPanicFullEPParams) {
-	ctx.Log("calling testCallPanicFullEP")
 	ctx.CallSelf(HFuncTestPanicFullEP, nil, nil)
 }
 
 func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, params *FuncTestCallPanicViewEPFromFullParams) {
-	ctx.Log("calling testCallPanicViewEPFromFull")
 	ctx.CallSelf(HViewTestPanicViewEP, nil, nil)
 }
 
 func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, params *FuncTestChainOwnerIDFullParams) {
-	ctx.Log("calling testChainOwnerIDFull")
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
 }
 
 func funcTestContractIDFull(ctx wasmlib.ScFuncContext, params *FuncTestContractIDFullParams) {
-	ctx.Log("calling testContractIDFull")
 	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
 func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, params *FuncTestEventLogDeployParams) {
-	ctx.Log("calling testEventLogDeploy")
 	//Deploy the same contract with another name
 	programHash := ctx.Utility().HashBlake2b([]byte("test_sandbox"))
 	ctx.Deploy(programHash, string(ContractNameDeployed),
@@ -132,24 +125,19 @@ func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, params *FuncTestEventLogD
 }
 
 func funcTestEventLogEventData(ctx wasmlib.ScFuncContext, params *FuncTestEventLogEventDataParams) {
-	ctx.Log("calling testEventLogEventData")
 	ctx.Event("[Event] - Testing Event...")
 }
 
 func funcTestEventLogGenericData(ctx wasmlib.ScFuncContext, params *FuncTestEventLogGenericDataParams) {
-	ctx.Log("calling testEventLogGenericData")
 	event := "[GenericData] Counter Number: " + params.Counter.String()
 	ctx.Event(event)
 }
 
 func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestPanicFullEPParams) {
-	ctx.Log("calling testPanicFullEP")
 	ctx.Panic(MsgFullPanic)
 }
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainParams) {
-	ctx.Log("calling withdrawToChain")
-
 	//Deploy the same contract with another name
 	targetContractId := wasmlib.NewScContractId(params.ChainId.Value(), wasmlib.CoreAccounts)
 	transfers := wasmlib.NewScTransfer(wasmlib.IOTA, 2)
@@ -159,8 +147,6 @@ func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainP
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckContextFromViewEPParams) {
-	ctx.Log("calling checkContextFromViewEP")
-
 	ctx.Require(params.ChainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
 	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
 	ctx.Require(params.ContractId.Value() == ctx.ContractId(), "fail: contractID")
@@ -169,8 +155,6 @@ func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckCont
 }
 
 func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
-	ctx.Log("calling fibonacci")
-
 	n := params.IntValue.Value()
 	if n == 0 || n == 1 {
 		ctx.Results().GetInt64(ParamIntValue).SetValue(n)
@@ -190,14 +174,11 @@ func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
 }
 
 func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
-	ctx.Log("calling getCounter")
 	counter := ctx.State().GetInt64(VarCounter)
 	ctx.Results().GetInt64(VarCounter).SetValue(counter.Value())
 }
 
 func viewGetInt(ctx wasmlib.ScViewContext, params *ViewGetIntParams) {
-	ctx.Log("calling getInt")
-
 	name := params.Name.Value()
 	value := ctx.State().GetInt64(wasmlib.Key(name))
 	ctx.Require(value.Exists(), "param 'value' not found")
@@ -205,12 +186,10 @@ func viewGetInt(ctx wasmlib.ScViewContext, params *ViewGetIntParams) {
 }
 
 func viewJustView(ctx wasmlib.ScViewContext, params *ViewJustViewParams) {
-	ctx.Log("calling justView")
+	ctx.Log("doing nothing...")
 }
 
 func viewPassTypesView(ctx wasmlib.ScViewContext, params *ViewPassTypesViewParams) {
-	ctx.Log("calling passTypesView")
-
 	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
 	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
 	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
@@ -222,27 +201,22 @@ func viewPassTypesView(ctx wasmlib.ScViewContext, params *ViewPassTypesViewParam
 }
 
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, params *ViewTestCallPanicViewEPFromViewParams) {
-	ctx.Log("calling testCallPanicViewEPFromView")
 	ctx.CallSelf(HViewTestPanicViewEP, nil)
 }
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, params *ViewTestChainOwnerIDViewParams) {
-	ctx.Log("calling testChainOwnerIDView")
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
 }
 
 func viewTestContractIDView(ctx wasmlib.ScViewContext, params *ViewTestContractIDViewParams) {
-	ctx.Log("calling testContractIDView")
 	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
 func viewTestPanicViewEP(ctx wasmlib.ScViewContext, params *ViewTestPanicViewEPParams) {
-	ctx.Log("calling testPanicViewEP")
 	ctx.Panic(MsgViewPanic)
 }
 
 func viewTestSandboxCall(ctx wasmlib.ScViewContext, params *ViewTestSandboxCallParams) {
-	ctx.Log("calling testSandboxCall")
 	ret := ctx.Call(wasmlib.CoreRoot, wasmlib.CoreRootViewGetChainInfo, nil)
 	desc := ret.GetString(wasmlib.Key("d")).Value()
 	ctx.Results().GetString(wasmlib.Key("sandboxCall")).SetValue(desc)

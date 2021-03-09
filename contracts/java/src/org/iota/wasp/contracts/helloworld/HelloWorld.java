@@ -16,7 +16,6 @@ public class HelloWorld {
     }
 
     public static void viewGetHelloWorld(ScViewContext ctx, ViewGetHelloWorldParams params) {
-        ctx.Log("Get Hello world!");
         ctx.Results().GetString(Consts.VarHelloWorld).SetValue("Hello, world!");
     }
 }

@@ -35,10 +35,13 @@ pub const PARAM_STRING_ZERO: &str = "string-0";
 
 pub const VAR_COUNTER: &str = "counter";
 pub const VAR_HNAME_EP: &str = "hnameEP";
+pub const VAR_MINTED_SUPPLY: &str = "mintedSupply";
 
 pub const FUNC_CALL_ON_CHAIN: &str = "callOnChain";
 pub const FUNC_CHECK_CONTEXT_FROM_FULL_EP: &str = "checkContextFromFullEP";
 pub const FUNC_DO_NOTHING: &str = "doNothing";
+pub const FUNC_GET_MINTED_SUPPLY: &str = "getMintedSupply";
+pub const FUNC_INC_COUNTER: &str = "incCounter";
 pub const FUNC_INIT: &str = "init";
 pub const FUNC_PASS_TYPES_FULL: &str = "passTypesFull";
 pub const FUNC_RUN_RECURSION: &str = "runRecursion";
@@ -68,6 +71,8 @@ pub const VIEW_TEST_SANDBOX_CALL: &str = "testSandboxCall";
 pub const HFUNC_CALL_ON_CHAIN: ScHname = ScHname(0x95a3d123);
 pub const HFUNC_CHECK_CONTEXT_FROM_FULL_EP: ScHname = ScHname(0xa56c24ba);
 pub const HFUNC_DO_NOTHING: ScHname = ScHname(0xdda4a6de);
+pub const HFUNC_GET_MINTED_SUPPLY: ScHname = ScHname(0x0c2d113c);
+pub const HFUNC_INC_COUNTER: ScHname = ScHname(0x7b287419);
 pub const HFUNC_INIT: ScHname = ScHname(0x1f44d644);
 pub const HFUNC_PASS_TYPES_FULL: ScHname = ScHname(0x733ea0ea);
 pub const HFUNC_RUN_RECURSION: ScHname = ScHname(0x833425fd);
