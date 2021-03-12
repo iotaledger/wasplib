@@ -27,7 +27,7 @@ public class BytesDecoder {
     public byte[] Bytes() {
         int size = (int) Int64();
         if (data.length < size) {
-            Host.panic("Cannot decode bytes");
+            Host.Panic("cannot decode bytes");
         }
         byte[] value = Arrays.copyOfRange(data, 0, size);
         data = Arrays.copyOfRange(data, size, data.length);
@@ -63,7 +63,7 @@ public class BytesDecoder {
             val |= ((long) (b & 0x7f)) << s;
             if ((b & 0x80) == 0) {
                 if (((byte) (val >> s) & 0x7f) != (b & 0x7f)) {
-                    Host.panic("integer too large");
+                    Host.Panic("integer too large");
                     return 0;
                 }
                 // positive value?
@@ -76,7 +76,7 @@ public class BytesDecoder {
             }
             s += 7;
             if (s >= 64) {
-                Host.panic("integer representation too long");
+                Host.Panic("integer representation too long");
                 return 0;
             }
         }

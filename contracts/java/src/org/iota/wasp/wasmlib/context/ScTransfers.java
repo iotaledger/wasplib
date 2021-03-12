@@ -11,7 +11,7 @@ public class ScTransfers {
     }
 
     public ScTransfers(ScColor color, long amount) {
-        Add(color, amount);
+        Set(color, amount);
     }
 
     public ScTransfers(ScBalances balances) {
@@ -19,11 +19,11 @@ public class ScTransfers {
         int length = colors.Length();
         for (int i = 0; i < length; i++) {
             ScColor color = colors.GetColor(i).Value();
-            Add(color, balances.Balance(color));
+            Set(color, balances.Balance(color));
         }
     }
 
-    public void Add(ScColor color, long amount) {
+    public void Set(ScColor color, long amount) {
         transfers.GetInt64(color).SetValue(amount);
     }
 

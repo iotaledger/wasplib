@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+// standard value types used by the ISCP
+
 use std::convert::TryInto;
 
 use crate::context::*;
@@ -9,7 +11,7 @@ use crate::keys::*;
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 33-byte Tangle address ids
+// value object for 33-byte Tangle address ids
 #[derive(PartialEq, Clone)]
 pub struct ScAddress {
     id: [u8; 33],
@@ -39,7 +41,7 @@ impl ScAddress {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScAddress {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -48,7 +50,7 @@ impl MapKey for ScAddress {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 37-byte agent ids
+// value object for 37-byte agent ids
 #[derive(PartialEq, Clone)]
 pub struct ScAgentId {
     id: [u8; 37],
@@ -83,7 +85,7 @@ impl ScAgentId {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScAgentId {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -92,7 +94,7 @@ impl MapKey for ScAgentId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 33-byte chain ids
+// value object for 33-byte chain ids
 #[derive(PartialEq, Clone)]
 pub struct ScChainId {
     id: [u8; 33],
@@ -115,7 +117,7 @@ impl ScChainId {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScChainId {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -124,7 +126,7 @@ impl MapKey for ScChainId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 32-byte token color
+// value object for 32-byte token color
 #[derive(PartialEq, Clone)]
 pub struct ScColor {
     id: [u8; 32],
@@ -140,6 +142,7 @@ impl ScColor {
         ScColor { id: bytes.try_into().expect("invalid color id length") }
     }
 
+    // construct from request id, this will return newly minted color
     pub fn from_request_id(request_id: &ScRequestId) -> ScColor {
         let mut color = ScColor { id: [0x00; 32] };
         color.id[..].copy_from_slice(&request_id.id[..]);
@@ -157,7 +160,7 @@ impl ScColor {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScColor {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -166,7 +169,7 @@ impl MapKey for ScColor {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 37-byte contract ids
+// value object for 37-byte contract ids
 #[derive(PartialEq, Clone)]
 pub struct ScContractId {
     id: [u8; 37],
@@ -216,7 +219,7 @@ impl ScContractId {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScContractId {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -225,7 +228,7 @@ impl MapKey for ScContractId {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 32-byte hash value
+// value object for 32-byte hash value
 #[derive(PartialEq, Clone)]
 pub struct ScHash {
     id: [u8; 32],
@@ -248,7 +251,7 @@ impl ScHash {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScHash {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
@@ -257,7 +260,7 @@ impl MapKey for ScHash {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 4-byte name hash
+// value object for 4-byte name hash
 #[derive(PartialEq, Clone)]
 pub struct ScHname(pub u32);
 
@@ -284,7 +287,7 @@ impl ScHname {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScHname {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(&self.0.to_le_bytes())
@@ -293,7 +296,7 @@ impl MapKey for ScHname {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// container object for 34-byte transaction request ids
+// value object for 34-byte transaction request ids
 #[derive(PartialEq, Clone)]
 pub struct ScRequestId {
     id: [u8; 34],
@@ -316,7 +319,7 @@ impl ScRequestId {
     }
 }
 
-// allow to be used as key in maps
+// can be used as key in maps
 impl MapKey for ScRequestId {
     fn get_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())

@@ -5,6 +5,7 @@
 
 use crate::bytes::*;
 use crate::hashtypes::*;
+use crate::host::*;
 use crate::immutable::*;
 use crate::keys::*;
 use crate::mutable::*;
@@ -14,7 +15,7 @@ pub(crate) static ROOT: ScMutableMap = ScMutableMap { obj_id: 1 };
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// used to retrieve any information that is related to colored token balances
+// retrieves any information that is related to colored token balances
 pub struct ScBalances {
     balances: ScImmutableMap,
 }
@@ -25,7 +26,7 @@ impl ScBalances {
         self.balances.get_int64(color).value()
     }
 
-    // retrieve a list of all token colors that have a non-zero balance
+    // retrieve an array of all token colors that have a non-zero balance
     pub fn colors(&self) -> ScImmutableColorArray {
         self.balances.get_color_array(&KEY_COLOR)
     }
@@ -33,7 +34,7 @@ impl ScBalances {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// used to pass token transfer information to a function call
+// passes token transfer information to a function call
 pub struct ScTransfers {
     transfers: ScMutableMap,
 }
@@ -42,7 +43,7 @@ impl ScTransfers {
     // create a new transfers object and initialize it with the specified token transfer
     pub fn new(color: &ScColor, amount: i64) -> ScTransfers {
         let transfer = ScTransfers::new_transfers();
-        transfer.add(color, amount);
+        transfer.set(color, amount);
         transfer
     }
 
@@ -51,26 +52,26 @@ impl ScTransfers {
         ScTransfers { transfers: ScMutableMap::new() }
     }
 
-    // create a new transfer object ready to add token transfers
+    // create a new transfer object from a balances object
     pub fn new_transfers_from_balances(balances: ScBalances) -> ScTransfers {
         let transfers = ScTransfers::new_transfers();
         let colors = balances.colors();
         for i in 0..colors.length() {
             let color = colors.get_color(i).value();
-            transfers.add(&color, balances.balance(&color));
+            transfers.set(&color, balances.balance(&color));
         }
         transfers
     }
 
     // add the specified token transfer to the transfer object
-    pub fn add(&self, color: &ScColor, amount: i64) {
+    pub fn set(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int64(color).set_value(amount);
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// provide access to utility functions that are handled by the host
+// provides access to utility functions that are handled by the host
 pub struct ScUtility {
     utility: ScMutableMap,
 }
@@ -88,7 +89,6 @@ impl ScUtility {
         self.utility.get_string(&KEY_BASE58_STRING).value()
     }
 
-    // retrieves the address for the specified ED25519 public key
     // retrieves the address for the specified BLS public key
     pub fn bls_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
         self.utility.get_bytes(&KEY_BLS_ADDRESS).set_value(pub_key);
@@ -123,6 +123,7 @@ impl ScUtility {
         self.utility.get_int64(&KEY_VALID).value() != 0
     }
 
+    // retrieves the address for the specified ED25519 public key
     pub fn ed25519_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
         self.utility.get_bytes(&KEY_ED25519_ADDRESS).set_value(pub_key);
         self.utility.get_address(&KEY_ADDRESS).value()
@@ -138,14 +139,14 @@ impl ScUtility {
         self.utility.get_int64(&KEY_VALID).value() != 0
     }
 
-    // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
+    // hashes the specified value bytes using BLAKE2b hashing and returns the resulting 32-byte hash
     pub fn hash_blake2b(&self, value: &[u8]) -> ScHash {
         let hash = self.utility.get_bytes(&KEY_HASH_BLAKE2B);
         hash.set_value(value);
         ScHash::from_bytes(&hash.value())
     }
 
-    // hashes the specified value bytes using sha3 hashing and returns the resulting 32-byte hash
+    // hashes the specified value bytes using SHA3 hashing and returns the resulting 32-byte hash
     pub fn hash_sha3(&self, value: &[u8]) -> ScHash {
         let hash = self.utility.get_bytes(&KEY_HASH_SHA3);
         hash.set_value(value);
@@ -194,14 +195,14 @@ pub trait ScBaseContext {
         ROOT.get_contract_id(&KEY_CONTRACT_ID).value()
     }
 
-    // logs informational text message
+    // logs informational text message in the log on the host
     fn log(&self, text: &str) {
-        ROOT.get_string(&KEY_LOG).set_value(text)
+        log(text);
     }
 
-    // logs error text message and then panics
+    // logs error text message in the log on the host and then panics
     fn panic(&self, text: &str) {
-        ROOT.get_string(&KEY_PANIC).set_value(text)
+        panic(text);
     }
 
     // retrieve parameters that were passed to the smart contract function
@@ -212,7 +213,7 @@ pub trait ScBaseContext {
     // panics with specified message if specified condition is not satisfied
     fn require(&self, cond: bool, msg: &str) {
         if !cond {
-            self.panic(msg)
+            panic(msg);
         }
     }
 
@@ -226,12 +227,13 @@ pub trait ScBaseContext {
         ROOT.get_int64(&KEY_TIMESTAMP).value()
     }
 
-    // logs debugging trace text message
+    // logs debugging trace text message in the log on the host
+    // similar to log() except this will only show in the log in a special debug mode
     fn trace(&self, text: &str) {
-        ROOT.get_string(&KEY_TRACE).set_value(text)
+        trace(text);
     }
 
-    // access diverse utility functions
+    // access diverse utility functions provided by the host
     fn utility(&self) -> ScUtility {
         ScUtility { utility: ROOT.get_map(&KEY_UTILITY) }
     }
@@ -242,7 +244,7 @@ pub trait ScBaseContext {
 // smart contract interface with mutable access to state
 pub struct ScFuncContext {}
 
-// shared part of interface
+// reuse shared part of interface
 impl ScBaseContext for ScFuncContext {}
 
 impl ScFuncContext {
@@ -266,13 +268,13 @@ impl ScFuncContext {
         ROOT.get_map(&KEY_RETURN).immutable()
     }
 
-    // retrieve the agent id of the caller of the smart contract
-    pub fn caller(&self) -> ScAgentId { ROOT.get_agent_id(&KEY_CALLER).value() }
-
-    // shorthand to synchronously call a smart contract function on the current contract
+    // shorthand to synchronously call a smart contract function of the current contract
     pub fn call_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfers: Option<ScTransfers>) -> ScImmutableMap {
         self.call(self.contract_id().hname(), hfunction, params, transfers)
     }
+
+    // retrieve the agent id of the caller of the smart contract
+    pub fn caller(&self) -> ScAgentId { ROOT.get_agent_id(&KEY_CALLER).value() }
 
     // deploys a new instance of the specified smart contract on the current chain
     // the provided parameters are passed to the smart contract "init" function
@@ -289,9 +291,9 @@ impl ScFuncContext {
         ROOT.get_bytes(&KEY_DEPLOY).set_value(&encode.data());
     }
 
-    // signals an event on the node that external entities can subscribe to
+    // signals an event on the host that external entities can subscribe to
     pub fn event(&self, text: &str) {
-        ROOT.get_string(&KEY_EVENT).set_value(text)
+        ROOT.get_string(&KEY_EVENT).set_value(text);
     }
 
     // access the incoming balances for all token colors
@@ -309,6 +311,7 @@ impl ScFuncContext {
 
     // asynchronously calls the specified smart contract function,
     // passing the provided parameters and token transfers to it
+    // it is possible to schedule the call for a later execution by specifying a delay
     pub fn post(&self, contract_id: &ScContractId, function: ScHname, params: Option<ScMutableMap>, transfer: Option<ScTransfers>, delay: i64) {
         let mut encode = BytesEncoder::new();
         encode.contract_id(contract_id);
@@ -327,7 +330,7 @@ impl ScFuncContext {
         ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
     }
 
-    // shorthand to asynchronously call a smart contract function on the current contract
+    // shorthand to asynchronously call a smart contract function of the current contract
     pub fn post_self(&self, function: ScHname, params: Option<ScMutableMap>, transfer: Option<ScTransfers>, delay: i64) {
         self.post(&self.contract_id(), function, params, transfer, delay);
     }
@@ -337,7 +340,7 @@ impl ScFuncContext {
         ROOT.get_request_id(&KEY_REQUEST_ID).value()
     }
 
-    // access to mutable state storage
+    // access mutable state storage on the host
     pub fn state(&self) -> ScMutableMap {
         ROOT.get_map(&KEY_STATE)
     }
@@ -353,10 +356,10 @@ impl ScFuncContext {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// smart contract interface with immutable access to state
+// smart contract view interface which has only immutable access to state
 pub struct ScViewContext {}
 
-// shared part of interface
+// reuse shared part of interface
 impl ScBaseContext for ScViewContext {}
 
 impl ScViewContext {
@@ -376,12 +379,12 @@ impl ScViewContext {
         ROOT.get_map(&KEY_RETURN).immutable()
     }
 
-    // shorthand to synchronously call a smart contract view on the current contract
+    // shorthand to synchronously call a smart contract view of the current contract
     pub fn call_self(&self, function: ScHname, params: Option<ScMutableMap>) -> ScImmutableMap {
         self.call(self.contract_id().hname(), function, params)
     }
 
-    // access to immutable state storage
+    // access immutable state storage on the host
     pub fn state(&self) -> ScImmutableMap {
         ROOT.get_map(&KEY_STATE).immutable()
     }

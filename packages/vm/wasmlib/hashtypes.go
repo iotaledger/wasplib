@@ -17,7 +17,7 @@ type ScAddress struct {
 func NewScAddressFromBytes(bytes []byte) ScAddress {
 	o := ScAddress{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid address id length")
+		Panic("invalid address id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -51,7 +51,7 @@ type ScAgentId struct {
 func NewScAgentIdFromBytes(bytes []byte) ScAgentId {
 	o := ScAgentId{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid agent id length")
+		Panic("invalid agent id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -88,7 +88,7 @@ type ScChainId struct {
 func NewScChainIdFromBytes(bytes []byte) ScChainId {
 	o := ScChainId{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid chain id length")
+		Panic("invalid chain id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -124,7 +124,7 @@ func init() {
 func NewScColorFromBytes(bytes []byte) ScColor {
 	o := ScColor{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid color id length")
+		Panic("invalid color id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -164,7 +164,7 @@ func NewScContractId(chainId ScChainId, hContract ScHname) ScContractId {
 func NewScContractIdFromBytes(bytes []byte) ScContractId {
 	o := ScContractId{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid contract id length")
+		Panic("invalid contract id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -207,7 +207,7 @@ type ScHash struct {
 func NewScHashFromBytes(bytes []byte) ScHash {
 	o := ScHash{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid hash id length")
+		Panic("invalid hash id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -260,7 +260,7 @@ type ScRequestId struct {
 func NewScRequestIdFromBytes(bytes []byte) ScRequestId {
 	o := ScRequestId{}
 	if len(bytes) != len(o.id) {
-		logPanic("invalid request id length")
+		Panic("invalid request id length")
 	}
 	copy(o.id[:], bytes)
 	return o
@@ -276,10 +276,4 @@ func (o ScRequestId) KeyId() Key32 {
 
 func (o ScRequestId) String() string {
 	return base58Encode(o.id[:])
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-func logPanic(text string) {
-	ScBaseContext{}.Panic(text)
 }

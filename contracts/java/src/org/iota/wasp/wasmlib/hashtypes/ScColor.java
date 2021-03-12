@@ -16,7 +16,7 @@ public class ScColor implements MapKey {
 
     public ScColor(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            Host.panic("invalid color id length");
+            Host.Panic("invalid color id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

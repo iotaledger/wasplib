@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+// interface to the VM host
+
 use std::convert::TryInto;
 
 use crate::keys::*;
@@ -26,7 +28,7 @@ const TYPE_SIZES: &[usize] = &[0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0];
 // any host function that gets called once the current request has
 // entered an error state will immediately return without action.
 // Any return value will be zero or empty string in that case
-#[link(wasm_import_module = "wasplib")]
+#[link(wasm_import_module = "WasmLib")]
 extern {
     pub fn hostGetBytes(obj_id: i32, key_id: i32, type_id: i32, value: *mut u8, len: i32) -> i32;
     pub fn hostGetKeyId(key: *const u8, len: i32) -> i32;
@@ -88,8 +90,20 @@ pub fn get_object_id(obj_id: i32, key_id: Key32, type_id: i32) -> i32 {
     }
 }
 
+pub fn log(text: &str) {
+    set_bytes(1, KEY_LOG, TYPE_STRING, text.as_bytes())
+}
+
+pub fn panic(text: &str) {
+    set_bytes(1, KEY_PANIC, TYPE_STRING, text.as_bytes())
+}
+
 pub fn set_bytes(obj_id: i32, key_id: Key32, type_id: i32, value: &[u8]) {
     unsafe {
         hostSetBytes(obj_id, key_id.0, type_id, value.as_ptr(), value.len() as i32)
     }
+}
+
+pub fn trace(text: &str) {
+    set_bytes(1, KEY_TRACE, TYPE_STRING, text.as_bytes())
 }

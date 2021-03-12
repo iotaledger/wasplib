@@ -13,7 +13,7 @@ public class ScChainId implements MapKey {
 
     public ScChainId(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            Host.panic("invalid chain id length");
+            Host.Panic("invalid chain id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

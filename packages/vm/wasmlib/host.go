@@ -77,6 +77,18 @@ func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
 	return host.GetObjectId(objId, int32(keyId), typeId)
 }
 
+func Log(text string) {
+	SetBytes(1, KeyLog, TYPE_STRING, []byte(text))
+}
+
+func Panic(text string) {
+	SetBytes(1, KeyPanic, TYPE_STRING, []byte(text))
+}
+
 func SetBytes(objId int32, keyId Key32, typeId int32, value []byte) {
 	host.SetBytes(objId, int32(keyId), typeId, value)
+}
+
+func Trace(text string) {
+	SetBytes(1, KeyTrace, TYPE_STRING, []byte(text))
 }

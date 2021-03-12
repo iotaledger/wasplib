@@ -18,7 +18,7 @@ var (
 func deployErc20(t *testing.T) *solo.Chain {
 	chain := common.StartChain(t, ScName)
 	creator = common.CreatorWallet
-	creatorAgentID = coretypes.NewAgentIDFromAddress(common.CreatorWallet.Address())
+	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, solo.Saldo,
 		ParamCreator, creatorAgentID,

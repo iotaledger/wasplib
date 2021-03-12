@@ -13,7 +13,7 @@ public class ScRequestId implements MapKey {
 
     public ScRequestId(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            Host.panic("invalid request id length");
+            Host.Panic("invalid request id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

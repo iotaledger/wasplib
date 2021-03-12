@@ -1,6 +1,8 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+// constants use to access the core contracts in the chain
+
 use crate::hashtypes::*;
 
 pub const CORE_ACCOUNTS: ScHname = ScHname(0x3c4b5e02);

@@ -30,11 +30,11 @@ public class ScBaseContext {
     }
 
     public void Log(String text) {
-        Host.root.GetString(Key.Log).SetValue(text);
+        Host.Log(text);
     }
 
     public void Panic(String text) {
-        Host.root.GetString(Key.Panic).SetValue(text);
+        Host.Panic(text);
     }
 
     public ScImmutableMap Params() {
@@ -44,7 +44,7 @@ public class ScBaseContext {
     // panics with specified message if specified condition is not satisfied
     public void Require(boolean cond, String msg) {
         if (!cond) {
-            Panic(msg);
+            Host.Panic(msg);
         }
     }
 
@@ -57,7 +57,7 @@ public class ScBaseContext {
     }
 
     public void Trace(String text) {
-        Host.root.GetString(Key.Trace).SetValue(text);
+        Host.Trace(text);
     }
 
     public ScUtility Utility() {

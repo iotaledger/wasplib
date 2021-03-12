@@ -153,16 +153,16 @@ func TestLeb128(t *testing.T) {
 	req := solo.NewCallParams(ScName, inccounter.FuncTestLeb128)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
-	res,err := chain.CallView(
+	res, err := chain.CallView(
 		ScName, wasmproc.ViewCopyAllState,
-		)
+	)
 	require.NoError(t, err)
 	keys := make([]string, 0)
 	for key := range res {
 		keys = append(keys, string(key))
 	}
 	sort.Strings(keys)
-	for _,key:= range keys {
+	for _, key := range keys {
 		fmt.Printf("%s: %v\n", key, res[kv.Key(key)])
 	}
 }

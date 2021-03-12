@@ -14,7 +14,7 @@ public class ScHash implements MapKey {
 
     public ScHash(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
-            Host.panic("invalid hash id length");
+            Host.Panic("invalid hash id length");
         }
         System.arraycopy(bytes, 0, id, 0, id.length);
     }

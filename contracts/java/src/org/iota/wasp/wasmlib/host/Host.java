@@ -14,16 +14,16 @@ public class Host {
 
     private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0};
 
-    @Import(module = "wasplib", name = "javaGetBytes")
+    @Import(module = "WasmLib", name = "javaGetBytes")
     public static native int hostGetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
-    @Import(module = "wasplib", name = "javaGetKeyId")
+    @Import(module = "WasmLib", name = "javaGetKeyId")
     public static native int hostGetKeyId(byte[] key, int size);
 
-    @Import(module = "wasplib", name = "javaGetObjectId")
+    @Import(module = "WasmLib", name = "javaGetObjectId")
     public static native int hostGetObjectId(int objId, int keyId, int typeId);
 
-    @Import(module = "wasplib", name = "javaSetBytes")
+    @Import(module = "WasmLib", name = "javaSetBytes")
     public static native void hostSetBytes(int objId, int keyId, int typeId, byte[] value, int size);
 
     public static void Clear(int objId) {
@@ -73,15 +73,19 @@ public class Host {
         return hostGetObjectId(objId, keyId, typeId);
     }
 
-    public static void log(String text) {
+    public static void Log(String text) {
         SetBytes(1, Key.Log.KeyId(), ScType.TYPE_STRING, text.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static void panic(String text) {
+    public static void Panic(String text) {
         SetBytes(1, Key.Panic.KeyId(), ScType.TYPE_STRING, text.getBytes(StandardCharsets.UTF_8));
     }
 
     public static void SetBytes(int objId, int keyId, int typeId, byte[] value) {
         hostSetBytes(objId, keyId, typeId, value, value.length);
+    }
+
+    public static void Trace(String text) {
+        SetBytes(1, Key.Log.KeyId(), ScType.TYPE_STRING, text.getBytes(StandardCharsets.UTF_8));
     }
 }

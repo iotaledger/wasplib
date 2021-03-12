@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::hashtypes::*;
+use crate::host::*;
 
 // decodes separate entities from a byte buffer
 pub struct BytesDecoder<'a> {
@@ -28,7 +29,7 @@ impl BytesDecoder<'_> {
     pub fn bytes(&mut self) -> &[u8] {
         let size = self.int64() as usize;
         if self.data.len() < size {
-            panic!("Cannot decode bytes");
+            panic("cannot decode bytes");
         }
         let value = &self.data[..size];
         self.data = &self.data[size..];
@@ -61,7 +62,7 @@ impl BytesDecoder<'_> {
     }
 
     // decodes an int64 from the byte buffer
-    // note that ints are encoded using leb128 encoding
+    // note that these are encoded using leb128 encoding to conserve space
     pub fn int64(&mut self) -> i64 {
         // leb128 decoder
         let mut val = 0_i64;
@@ -70,20 +71,22 @@ impl BytesDecoder<'_> {
             let mut b = self.data[0] as i8;
             self.data = &self.data[1..];
             val |= ((b & 0x7f) as i64) << s;
+
+            // termination bit set?
             if (b & -0x80) == 0 {
                 if ((val >> s) as i8) & 0x7f != b & 0x7f {
-                    panic!("Integer too large");
+                    panic("integer too large");
                 }
+
                 // extend int7 sign to int8
-                if (b & 0x40) != 0 {
-                    b |= -0x80
-                }
+                b |= (b & 0x40) << 1;
+
                 // extend int8 sign to int64
                 return val | ((b as i64) << s);
             }
             s += 7;
             if s >= 64 {
-                panic!("integer representation too long");
+                panic("integer representation too long");
             }
         }
     }
@@ -167,7 +170,7 @@ impl BytesEncoder {
     }
 
     // encodes an int64 into the byte buffer
-    // note that ints are encoded using leb128 encoding
+    // note that these are encoded using leb128 encoding to conserve space
     pub fn int64(&mut self, mut val: i64) -> &BytesEncoder {
         // leb128 encoder
         loop {

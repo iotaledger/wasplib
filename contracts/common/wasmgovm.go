@@ -51,7 +51,7 @@ func (vm *WasmGoVM) RunFunction(functionName string, args ...interface{}) error 
 }
 
 func (vm *WasmGoVM) RunScFunction(index int32) error {
-	wasmlib.ScCallEntrypoint(index)
+	wasmlib.OnCall(index)
 	return nil
 }
 

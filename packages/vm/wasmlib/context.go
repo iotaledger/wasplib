@@ -33,7 +33,7 @@ type ScTransfers struct {
 // special constructor for simplifying single transfers
 func NewScTransfer(color ScColor, amount int64) ScTransfers {
 	transfer := NewScTransfers()
-	transfer.Add(color, amount)
+	transfer.Set(color, amount)
 	return transfer
 }
 
@@ -47,13 +47,13 @@ func NewScTransfersFromBalances(balances ScBalances) ScTransfers {
 	length := colors.Length()
 	for i := int32(0); i < length; i++ {
 		color := colors.GetColor(i).Value()
-		transfers.Add(color, balances.Balance(color))
+		transfers.Set(color, balances.Balance(color))
 	}
 	return transfers
 }
 
 // transfers the specified amount of tokens of the specified color
-func (ctx ScTransfers) Add(color ScColor, amount int64) {
+func (ctx ScTransfers) Set(color ScColor, amount int64) {
 	ctx.transfers.GetInt64(color).SetValue(amount)
 }
 
@@ -177,12 +177,12 @@ func (ctx ScBaseContext) ContractId() ScContractId {
 
 // logs informational text message
 func (ctx ScBaseContext) Log(text string) {
-	Root.GetString(KeyLog).SetValue(text)
+	Log(text)
 }
 
 // logs error text message and then panics
 func (ctx ScBaseContext) Panic(text string) {
-	Root.GetString(KeyPanic).SetValue(text)
+	Panic(text)
 }
 
 // retrieve parameters passed to the smart contract function that was called
@@ -193,7 +193,7 @@ func (ctx ScBaseContext) Params() ScImmutableMap {
 // panics if condition is not satisfied
 func (ctx ScBaseContext) Require(cond bool, msg string) {
 	if !cond {
-		ctx.Panic(msg)
+		Panic(msg)
 	}
 }
 
@@ -209,7 +209,7 @@ func (ctx ScBaseContext) Timestamp() int64 {
 
 // logs debugging trace text message
 func (ctx ScBaseContext) Trace(text string) {
-	Root.GetString(KeyTrace).SetValue(text)
+	Trace(text)
 }
 
 // access diverse utility functions

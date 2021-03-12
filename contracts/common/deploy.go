@@ -55,7 +55,9 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 	if WasmRunner == 1 {
 		wasmproc.GoWasmVM = NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(CreatorWallet, []byte("go:"+scName))
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		return chain.DeployContract(CreatorWallet, scName, hprog, params...)
 	}
 

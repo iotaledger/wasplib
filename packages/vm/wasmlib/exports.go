@@ -8,8 +8,8 @@ var (
 	views []func(ctx ScViewContext)
 )
 
-//export on_call_entrypoint
-func ScCallEntrypoint(index int32) {
+//export on_call
+func OnCall(index int32) {
 	if (index & 0x8000) != 0 {
 		views[index&0x7fff](ScViewContext{})
 		return

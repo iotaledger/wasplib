@@ -22,7 +22,7 @@ func (d *BytesDecoder) AgentId() ScAgentId {
 func (d *BytesDecoder) Bytes() []byte {
 	size := d.Int64()
 	if len(d.data) < int(size) {
-		panic("Cannot decode bytes")
+		panic("cannot decode bytes")
 	}
 	value := d.data[:size]
 	d.data = d.data[size:]
@@ -59,12 +59,12 @@ func (d *BytesDecoder) Int64() int64 {
 		val |= int64(b&0x7f) << s
 		if (b & -0x80) == 0 {
 			if int8(val>>s)&0x7f != b&0x7f {
-				panic("Integer too large")
+				panic("integer too large")
 			}
+
 			// extend int7 sign to int8
-			if (b & 0x40) != 0 {
-				b |= -0x80
-			}
+			b |= (b & 0x40) << 1
+
 			// extend int8 sign to int64
 			return val | (int64(b) << s)
 		}
