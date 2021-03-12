@@ -20,19 +20,20 @@ public class DividendThunk {
     @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
-        exports.AddFunc("divide", DividendThunk::funcDivideThunk);
-        exports.AddFunc("member", DividendThunk::funcMemberThunk);
-        exports.AddView("getFactor", DividendThunk::viewGetFactorThunk);
+        exports.AddFunc(Consts.FuncDivide, DividendThunk::funcDivideThunk);
+        exports.AddFunc(Consts.FuncMember, DividendThunk::funcMemberThunk);
+        exports.AddView(Consts.ViewGetFactor, DividendThunk::viewGetFactorThunk);
     }
 
     private static void funcDivideThunk(ScFuncContext ctx) {
-        var params = new FuncDivideParams();
         ctx.Log("dividend.funcDivide");
+        var params = new FuncDivideParams();
         Dividend.funcDivide(ctx, params);
         ctx.Log("dividend.funcDivide ok");
     }
 
     private static void funcMemberThunk(ScFuncContext ctx) {
+        ctx.Log("dividend.funcMember");
         // only creator can add members
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
@@ -42,17 +43,16 @@ public class DividendThunk {
         params.Factor = p.GetInt64(Consts.ParamFactor);
         ctx.Require(params.Address.Exists(), "missing mandatory address");
         ctx.Require(params.Factor.Exists(), "missing mandatory factor");
-        ctx.Log("dividend.funcMember");
         Dividend.funcMember(ctx, params);
         ctx.Log("dividend.funcMember ok");
     }
 
     private static void viewGetFactorThunk(ScViewContext ctx) {
+        ctx.Log("dividend.viewGetFactor");
         var p = ctx.Params();
         var params = new ViewGetFactorParams();
         params.Address = p.GetAddress(Consts.ParamAddress);
         ctx.Require(params.Address.Exists(), "missing mandatory address");
-        ctx.Log("dividend.viewGetFactor");
         Dividend.viewGetFactor(ctx, params);
         ctx.Log("dividend.viewGetFactor ok");
     }

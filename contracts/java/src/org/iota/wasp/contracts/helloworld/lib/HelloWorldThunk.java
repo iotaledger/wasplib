@@ -20,20 +20,20 @@ public class HelloWorldThunk {
     @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
-        exports.AddFunc("helloWorld", HelloWorldThunk::funcHelloWorldThunk);
-        exports.AddView("getHelloWorld", HelloWorldThunk::viewGetHelloWorldThunk);
+        exports.AddFunc(Consts.FuncHelloWorld, HelloWorldThunk::funcHelloWorldThunk);
+        exports.AddView(Consts.ViewGetHelloWorld, HelloWorldThunk::viewGetHelloWorldThunk);
     }
 
     private static void funcHelloWorldThunk(ScFuncContext ctx) {
-        var params = new FuncHelloWorldParams();
         ctx.Log("helloworld.funcHelloWorld");
+        var params = new FuncHelloWorldParams();
         HelloWorld.funcHelloWorld(ctx, params);
         ctx.Log("helloworld.funcHelloWorld ok");
     }
 
     private static void viewGetHelloWorldThunk(ScViewContext ctx) {
-        var params = new ViewGetHelloWorldParams();
         ctx.Log("helloworld.viewGetHelloWorld");
+        var params = new ViewGetHelloWorldParams();
         HelloWorld.viewGetHelloWorld(ctx, params);
         ctx.Log("helloworld.viewGetHelloWorld ok");
     }

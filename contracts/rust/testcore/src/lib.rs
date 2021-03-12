@@ -56,6 +56,7 @@ pub struct FuncCallOnChainParams {
 //@formatter:on
 
 fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcCallOnChain");
     let p = ctx.params();
     let params = FuncCallOnChainParams {
         hname_contract: p.get_hname(PARAM_HNAME_CONTRACT),
@@ -63,7 +64,6 @@ fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
         int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
-    ctx.log("testcore.funcCallOnChain");
     func_call_on_chain(ctx, &params);
     ctx.log("testcore.funcCallOnChain ok");
 }
@@ -80,6 +80,7 @@ pub struct FuncCheckContextFromFullEPParams {
 //@formatter:on
 
 fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcCheckContextFromFullEP");
     let p = ctx.params();
     let params = FuncCheckContextFromFullEPParams {
         agent_id: p.get_agent_id(PARAM_AGENT_ID),
@@ -95,7 +96,6 @@ fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.require(params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
     ctx.require(params.contract_creator.exists(), "missing mandatory contractCreator");
     ctx.require(params.contract_id.exists(), "missing mandatory contractId");
-    ctx.log("testcore.funcCheckContextFromFullEP");
     func_check_context_from_full_ep(ctx, &params);
     ctx.log("testcore.funcCheckContextFromFullEP ok");
 }
@@ -103,8 +103,8 @@ fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
 pub struct FuncDoNothingParams {}
 
 fn func_do_nothing_thunk(ctx: &ScFuncContext) {
-    let params = FuncDoNothingParams {};
     ctx.log("testcore.funcDoNothing");
+    let params = FuncDoNothingParams {};
     func_do_nothing(ctx, &params);
     ctx.log("testcore.funcDoNothing ok");
 }
@@ -112,8 +112,8 @@ fn func_do_nothing_thunk(ctx: &ScFuncContext) {
 pub struct FuncGetMintedSupplyParams {}
 
 fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
-    let params = FuncGetMintedSupplyParams {};
     ctx.log("testcore.funcGetMintedSupply");
+    let params = FuncGetMintedSupplyParams {};
     func_get_minted_supply(ctx, &params);
     ctx.log("testcore.funcGetMintedSupply ok");
 }
@@ -121,8 +121,8 @@ fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
 pub struct FuncIncCounterParams {}
 
 fn func_inc_counter_thunk(ctx: &ScFuncContext) {
-    let params = FuncIncCounterParams {};
     ctx.log("testcore.funcIncCounter");
+    let params = FuncIncCounterParams {};
     func_inc_counter(ctx, &params);
     ctx.log("testcore.funcIncCounter ok");
 }
@@ -130,8 +130,8 @@ fn func_inc_counter_thunk(ctx: &ScFuncContext) {
 pub struct FuncInitParams {}
 
 fn func_init_thunk(ctx: &ScFuncContext) {
-    let params = FuncInitParams {};
     ctx.log("testcore.funcInit");
+    let params = FuncInitParams {};
     func_init(ctx, &params);
     ctx.log("testcore.funcInit ok");
 }
@@ -149,6 +149,7 @@ pub struct FuncPassTypesFullParams {
 //@formatter:on
 
 fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcPassTypesFull");
     let p = ctx.params();
     let params = FuncPassTypesFullParams {
         hash: p.get_hash(PARAM_HASH),
@@ -166,7 +167,6 @@ fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
     ctx.require(params.int64_zero.exists(), "missing mandatory int64Zero");
     ctx.require(params.string.exists(), "missing mandatory string");
     ctx.require(params.string_zero.exists(), "missing mandatory stringZero");
-    ctx.log("testcore.funcPassTypesFull");
     func_pass_types_full(ctx, &params);
     ctx.log("testcore.funcPassTypesFull ok");
 }
@@ -176,12 +176,12 @@ pub struct FuncRunRecursionParams {
 }
 
 fn func_run_recursion_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcRunRecursion");
     let p = ctx.params();
     let params = FuncRunRecursionParams {
         int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
-    ctx.log("testcore.funcRunRecursion");
     func_run_recursion(ctx, &params);
     ctx.log("testcore.funcRunRecursion ok");
 }
@@ -191,6 +191,7 @@ pub struct FuncSendToAddressParams {
 }
 
 fn func_send_to_address_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcSendToAddress");
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
     let p = ctx.params();
@@ -198,7 +199,6 @@ fn func_send_to_address_thunk(ctx: &ScFuncContext) {
         address: p.get_address(PARAM_ADDRESS),
     };
     ctx.require(params.address.exists(), "missing mandatory address");
-    ctx.log("testcore.funcSendToAddress");
     func_send_to_address(ctx, &params);
     ctx.log("testcore.funcSendToAddress ok");
 }
@@ -211,6 +211,7 @@ pub struct FuncSetIntParams {
 //@formatter:on
 
 fn func_set_int_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcSetInt");
     let p = ctx.params();
     let params = FuncSetIntParams {
         int_value: p.get_int64(PARAM_INT_VALUE),
@@ -218,7 +219,6 @@ fn func_set_int_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
     ctx.require(params.name.exists(), "missing mandatory name");
-    ctx.log("testcore.funcSetInt");
     func_set_int(ctx, &params);
     ctx.log("testcore.funcSetInt ok");
 }
@@ -226,8 +226,8 @@ fn func_set_int_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestCallPanicFullEPParams {}
 
 fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestCallPanicFullEPParams {};
     ctx.log("testcore.funcTestCallPanicFullEP");
+    let params = FuncTestCallPanicFullEPParams {};
     func_test_call_panic_full_ep(ctx, &params);
     ctx.log("testcore.funcTestCallPanicFullEP ok");
 }
@@ -235,8 +235,8 @@ fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestCallPanicViewEPFromFullParams {}
 
 fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestCallPanicViewEPFromFullParams {};
     ctx.log("testcore.funcTestCallPanicViewEPFromFull");
+    let params = FuncTestCallPanicViewEPFromFullParams {};
     func_test_call_panic_view_ep_from_full(ctx, &params);
     ctx.log("testcore.funcTestCallPanicViewEPFromFull ok");
 }
@@ -244,8 +244,8 @@ fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestChainOwnerIDFullParams {}
 
 fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestChainOwnerIDFullParams {};
     ctx.log("testcore.funcTestChainOwnerIDFull");
+    let params = FuncTestChainOwnerIDFullParams {};
     func_test_chain_owner_id_full(ctx, &params);
     ctx.log("testcore.funcTestChainOwnerIDFull ok");
 }
@@ -253,8 +253,8 @@ fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestContractIDFullParams {}
 
 fn func_test_contract_id_full_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestContractIDFullParams {};
     ctx.log("testcore.funcTestContractIDFull");
+    let params = FuncTestContractIDFullParams {};
     func_test_contract_id_full(ctx, &params);
     ctx.log("testcore.funcTestContractIDFull ok");
 }
@@ -262,8 +262,8 @@ fn func_test_contract_id_full_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestEventLogDeployParams {}
 
 fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestEventLogDeployParams {};
     ctx.log("testcore.funcTestEventLogDeploy");
+    let params = FuncTestEventLogDeployParams {};
     func_test_event_log_deploy(ctx, &params);
     ctx.log("testcore.funcTestEventLogDeploy ok");
 }
@@ -271,8 +271,8 @@ fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestEventLogEventDataParams {}
 
 fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestEventLogEventDataParams {};
     ctx.log("testcore.funcTestEventLogEventData");
+    let params = FuncTestEventLogEventDataParams {};
     func_test_event_log_event_data(ctx, &params);
     ctx.log("testcore.funcTestEventLogEventData ok");
 }
@@ -282,12 +282,12 @@ pub struct FuncTestEventLogGenericDataParams {
 }
 
 fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcTestEventLogGenericData");
     let p = ctx.params();
     let params = FuncTestEventLogGenericDataParams {
         counter: p.get_int64(PARAM_COUNTER),
     };
     ctx.require(params.counter.exists(), "missing mandatory counter");
-    ctx.log("testcore.funcTestEventLogGenericData");
     func_test_event_log_generic_data(ctx, &params);
     ctx.log("testcore.funcTestEventLogGenericData ok");
 }
@@ -295,8 +295,8 @@ fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
 pub struct FuncTestPanicFullEPParams {}
 
 fn func_test_panic_full_ep_thunk(ctx: &ScFuncContext) {
-    let params = FuncTestPanicFullEPParams {};
     ctx.log("testcore.funcTestPanicFullEP");
+    let params = FuncTestPanicFullEPParams {};
     func_test_panic_full_ep(ctx, &params);
     ctx.log("testcore.funcTestPanicFullEP ok");
 }
@@ -306,12 +306,12 @@ pub struct FuncWithdrawToChainParams {
 }
 
 fn func_withdraw_to_chain_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcWithdrawToChain");
     let p = ctx.params();
     let params = FuncWithdrawToChainParams {
         chain_id: p.get_chain_id(PARAM_CHAIN_ID),
     };
     ctx.require(params.chain_id.exists(), "missing mandatory chainId");
-    ctx.log("testcore.funcWithdrawToChain");
     func_withdraw_to_chain(ctx, &params);
     ctx.log("testcore.funcWithdrawToChain ok");
 }
@@ -327,6 +327,7 @@ pub struct ViewCheckContextFromViewEPParams {
 //@formatter:on
 
 fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
+    ctx.log("testcore.viewCheckContextFromViewEP");
     let p = ctx.params();
     let params = ViewCheckContextFromViewEPParams {
         agent_id: p.get_agent_id(PARAM_AGENT_ID),
@@ -340,7 +341,6 @@ fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
     ctx.require(params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
     ctx.require(params.contract_creator.exists(), "missing mandatory contractCreator");
     ctx.require(params.contract_id.exists(), "missing mandatory contractId");
-    ctx.log("testcore.viewCheckContextFromViewEP");
     view_check_context_from_view_ep(ctx, &params);
     ctx.log("testcore.viewCheckContextFromViewEP ok");
 }
@@ -350,12 +350,12 @@ pub struct ViewFibonacciParams {
 }
 
 fn view_fibonacci_thunk(ctx: &ScViewContext) {
+    ctx.log("testcore.viewFibonacci");
     let p = ctx.params();
     let params = ViewFibonacciParams {
         int_value: p.get_int64(PARAM_INT_VALUE),
     };
     ctx.require(params.int_value.exists(), "missing mandatory intValue");
-    ctx.log("testcore.viewFibonacci");
     view_fibonacci(ctx, &params);
     ctx.log("testcore.viewFibonacci ok");
 }
@@ -363,8 +363,8 @@ fn view_fibonacci_thunk(ctx: &ScViewContext) {
 pub struct ViewGetCounterParams {}
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
-    let params = ViewGetCounterParams {};
     ctx.log("testcore.viewGetCounter");
+    let params = ViewGetCounterParams {};
     view_get_counter(ctx, &params);
     ctx.log("testcore.viewGetCounter ok");
 }
@@ -374,12 +374,12 @@ pub struct ViewGetIntParams {
 }
 
 fn view_get_int_thunk(ctx: &ScViewContext) {
+    ctx.log("testcore.viewGetInt");
     let p = ctx.params();
     let params = ViewGetIntParams {
         name: p.get_string(PARAM_NAME),
     };
     ctx.require(params.name.exists(), "missing mandatory name");
-    ctx.log("testcore.viewGetInt");
     view_get_int(ctx, &params);
     ctx.log("testcore.viewGetInt ok");
 }
@@ -387,8 +387,8 @@ fn view_get_int_thunk(ctx: &ScViewContext) {
 pub struct ViewJustViewParams {}
 
 fn view_just_view_thunk(ctx: &ScViewContext) {
-    let params = ViewJustViewParams {};
     ctx.log("testcore.viewJustView");
+    let params = ViewJustViewParams {};
     view_just_view(ctx, &params);
     ctx.log("testcore.viewJustView ok");
 }
@@ -406,6 +406,7 @@ pub struct ViewPassTypesViewParams {
 //@formatter:on
 
 fn view_pass_types_view_thunk(ctx: &ScViewContext) {
+    ctx.log("testcore.viewPassTypesView");
     let p = ctx.params();
     let params = ViewPassTypesViewParams {
         hash: p.get_hash(PARAM_HASH),
@@ -423,7 +424,6 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
     ctx.require(params.int64_zero.exists(), "missing mandatory int64Zero");
     ctx.require(params.string.exists(), "missing mandatory string");
     ctx.require(params.string_zero.exists(), "missing mandatory stringZero");
-    ctx.log("testcore.viewPassTypesView");
     view_pass_types_view(ctx, &params);
     ctx.log("testcore.viewPassTypesView ok");
 }
@@ -431,8 +431,8 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
 pub struct ViewTestCallPanicViewEPFromViewParams {}
 
 fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
-    let params = ViewTestCallPanicViewEPFromViewParams {};
     ctx.log("testcore.viewTestCallPanicViewEPFromView");
+    let params = ViewTestCallPanicViewEPFromViewParams {};
     view_test_call_panic_view_ep_from_view(ctx, &params);
     ctx.log("testcore.viewTestCallPanicViewEPFromView ok");
 }
@@ -440,8 +440,8 @@ fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
 pub struct ViewTestChainOwnerIDViewParams {}
 
 fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
-    let params = ViewTestChainOwnerIDViewParams {};
     ctx.log("testcore.viewTestChainOwnerIDView");
+    let params = ViewTestChainOwnerIDViewParams {};
     view_test_chain_owner_id_view(ctx, &params);
     ctx.log("testcore.viewTestChainOwnerIDView ok");
 }
@@ -449,8 +449,8 @@ fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
 pub struct ViewTestContractIDViewParams {}
 
 fn view_test_contract_id_view_thunk(ctx: &ScViewContext) {
-    let params = ViewTestContractIDViewParams {};
     ctx.log("testcore.viewTestContractIDView");
+    let params = ViewTestContractIDViewParams {};
     view_test_contract_id_view(ctx, &params);
     ctx.log("testcore.viewTestContractIDView ok");
 }
@@ -458,8 +458,8 @@ fn view_test_contract_id_view_thunk(ctx: &ScViewContext) {
 pub struct ViewTestPanicViewEPParams {}
 
 fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
-    let params = ViewTestPanicViewEPParams {};
     ctx.log("testcore.viewTestPanicViewEP");
+    let params = ViewTestPanicViewEPParams {};
     view_test_panic_view_ep(ctx, &params);
     ctx.log("testcore.viewTestPanicViewEP ok");
 }
@@ -467,8 +467,8 @@ fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
 pub struct ViewTestSandboxCallParams {}
 
 fn view_test_sandbox_call_thunk(ctx: &ScViewContext) {
-    let params = ViewTestSandboxCallParams {};
     ctx.log("testcore.viewTestSandboxCall");
+    let params = ViewTestSandboxCallParams {};
     view_test_sandbox_call(ctx, &params);
     ctx.log("testcore.viewTestSandboxCall ok");
 }

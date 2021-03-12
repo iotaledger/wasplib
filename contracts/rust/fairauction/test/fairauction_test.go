@@ -64,6 +64,10 @@ func TestFaStartAuction(t *testing.T) {
 	// 1 used for request was sent back to auctioneer's account on chain
 	account := coretypes.NewAgentIDFromSigScheme(auctioneer)
 	chain.AssertAccountBalance(account, balance.ColorIOTA, 1)
+
+	// remove delayed finalize_auction from backlog
+	chain.Env.AdvanceClockBy(61 * time.Minute)
+	chain.WaitForEmptyBacklog()
 }
 
 func TestFaAuctionInfo(t *testing.T) {
@@ -77,6 +81,10 @@ func TestFaAuctionInfo(t *testing.T) {
 	account := coretypes.NewAgentIDFromSigScheme(auctioneer)
 	requireAgent(t, res, VarCreator, account)
 	requireInt64(t, res, VarBidders, 0)
+
+	// remove delayed finalize_auction from backlog
+	chain.Env.AdvanceClockBy(61 * time.Minute)
+	chain.WaitForEmptyBacklog()
 }
 
 func TestFaNoBids(t *testing.T) {

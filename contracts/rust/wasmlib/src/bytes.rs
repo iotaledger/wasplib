@@ -70,7 +70,7 @@ impl BytesDecoder<'_> {
             let mut b = self.data[0] as i8;
             self.data = &self.data[1..];
             val |= ((b & 0x7f) as i64) << s;
-            if b >= 0 {
+            if (b & -0x80) == 0 {
                 if ((val >> s) as i8) & 0x7f != b & 0x7f {
                     panic!("Integer too large");
                 }

@@ -30,12 +30,12 @@ pub struct FuncMintSupplyParams {
 //@formatter:on
 
 fn func_mint_supply_thunk(ctx: &ScFuncContext) {
+    ctx.log("tokenregistry.funcMintSupply");
     let p = ctx.params();
     let params = FuncMintSupplyParams {
         description: p.get_string(PARAM_DESCRIPTION),
         user_defined: p.get_string(PARAM_USER_DEFINED),
     };
-    ctx.log("tokenregistry.funcMintSupply");
     func_mint_supply(ctx, &params);
     ctx.log("tokenregistry.funcMintSupply ok");
 }
@@ -45,6 +45,7 @@ pub struct FuncTransferOwnershipParams {
 }
 
 fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
+    ctx.log("tokenregistry.funcTransferOwnership");
     //TODO the one who can transfer token ownership
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -53,7 +54,6 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("tokenregistry.funcTransferOwnership");
     func_transfer_ownership(ctx, &params);
     ctx.log("tokenregistry.funcTransferOwnership ok");
 }
@@ -63,6 +63,7 @@ pub struct FuncUpdateMetadataParams {
 }
 
 fn func_update_metadata_thunk(ctx: &ScFuncContext) {
+    ctx.log("tokenregistry.funcUpdateMetadata");
     //TODO the one who can change the token info
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -71,7 +72,6 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("tokenregistry.funcUpdateMetadata");
     func_update_metadata(ctx, &params);
     ctx.log("tokenregistry.funcUpdateMetadata ok");
 }
@@ -81,12 +81,12 @@ pub struct ViewGetInfoParams {
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
+    ctx.log("tokenregistry.viewGetInfo");
     let p = ctx.params();
     let params = ViewGetInfoParams {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("tokenregistry.viewGetInfo");
     view_get_info(ctx, &params);
     ctx.log("tokenregistry.viewGetInfo ok");
 }

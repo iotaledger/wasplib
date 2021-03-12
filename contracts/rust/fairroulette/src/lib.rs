@@ -20,16 +20,17 @@ fn on_load() {
     exports.add_func(FUNC_PAY_WINNERS, func_pay_winners_thunk);
     exports.add_func(FUNC_PLACE_BET, func_place_bet_thunk);
     exports.add_func(FUNC_PLAY_PERIOD, func_play_period_thunk);
+    exports.add_view(VIEW_LAST_WINNING_NUMBER, view_last_winning_number_thunk);
 }
 
 pub struct FuncLockBetsParams {}
 
 fn func_lock_bets_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairroulette.funcLockBets");
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncLockBetsParams {};
-    ctx.log("fairroulette.funcLockBets");
     func_lock_bets(ctx, &params);
     ctx.log("fairroulette.funcLockBets ok");
 }
@@ -37,11 +38,11 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
 pub struct FuncPayWinnersParams {}
 
 fn func_pay_winners_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairroulette.funcPayWinners");
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
     let params = FuncPayWinnersParams {};
-    ctx.log("fairroulette.funcPayWinners");
     func_pay_winners(ctx, &params);
     ctx.log("fairroulette.funcPayWinners ok");
 }
@@ -51,12 +52,12 @@ pub struct FuncPlaceBetParams {
 }
 
 fn func_place_bet_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairroulette.funcPlaceBet");
     let p = ctx.params();
     let params = FuncPlaceBetParams {
         number: p.get_int64(PARAM_NUMBER),
     };
     ctx.require(params.number.exists(), "missing mandatory number");
-    ctx.log("fairroulette.funcPlaceBet");
     func_place_bet(ctx, &params);
     ctx.log("fairroulette.funcPlaceBet ok");
 }
@@ -66,6 +67,7 @@ pub struct FuncPlayPeriodParams {
 }
 
 fn func_play_period_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairroulette.funcPlayPeriod");
     // only SC creator can update the play period
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -74,7 +76,15 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
         play_period: p.get_int64(PARAM_PLAY_PERIOD),
     };
     ctx.require(params.play_period.exists(), "missing mandatory playPeriod");
-    ctx.log("fairroulette.funcPlayPeriod");
     func_play_period(ctx, &params);
     ctx.log("fairroulette.funcPlayPeriod ok");
+}
+
+pub struct ViewLastWinningNumberParams {}
+
+fn view_last_winning_number_thunk(ctx: &ScViewContext) {
+    ctx.log("fairroulette.viewLastWinningNumber");
+    let params = ViewLastWinningNumberParams {};
+    view_last_winning_number(ctx, &params);
+    ctx.log("fairroulette.viewLastWinningNumber ok");
 }

@@ -123,3 +123,34 @@ func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
 		ctx.Results().GetInt64(VarCounter).SetValue(counter.Value())
 	}
 }
+
+func funcTestLeb128(ctx wasmlib.ScFuncContext, params *FuncTestLeb128Params) {
+	save(ctx, "v-1", -1)
+	save(ctx, "v-2", -2)
+	save(ctx, "v-126", -126)
+	save(ctx, "v-127", -127)
+	save(ctx, "v-128", -128)
+	save(ctx, "v-129", -129)
+	save(ctx, "v0", 0)
+	save(ctx, "v+1", 1)
+	save(ctx, "v+2", 2)
+	save(ctx, "v+126", 126)
+	save(ctx, "v+127", 127)
+	save(ctx, "v+128", 128)
+	save(ctx, "v+129", 129)
+}
+
+func save(ctx wasmlib.ScFuncContext, name string, value int64) {
+	encoder := wasmlib.NewBytesEncoder()
+	encoder.Int64(value)
+	spot := ctx.State().GetBytes(wasmlib.Key(name))
+	spot.SetValue(encoder.Data())
+
+	bytes := spot.Value()
+	decoder := wasmlib.NewBytesDecoder(bytes)
+	retrieved := decoder.Int64()
+	if retrieved != value {
+		ctx.Log(name + " in : " + ctx.Utility().String(value))
+		ctx.Log(name + " out: " + ctx.Utility().String(retrieved))
+	}
+}

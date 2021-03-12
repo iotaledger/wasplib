@@ -19,9 +19,9 @@ type FuncHelloWorldParams struct {
 }
 
 func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("helloworld.funcHelloWorld")
 	params := &FuncHelloWorldParams{
 	}
-	ctx.Log("helloworld.funcHelloWorld")
 	funcHelloWorld(ctx, params)
 	ctx.Log("helloworld.funcHelloWorld ok")
 }
@@ -30,9 +30,9 @@ type ViewGetHelloWorldParams struct {
 }
 
 func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("helloworld.viewGetHelloWorld")
 	params := &ViewGetHelloWorldParams{
 	}
-	ctx.Log("helloworld.viewGetHelloWorld")
 	viewGetHelloWorld(ctx, params)
 	ctx.Log("helloworld.viewGetHelloWorld ok")
 }

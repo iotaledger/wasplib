@@ -31,6 +31,7 @@ const FuncLocalStatePost = "localStatePost"
 const FuncLocalStateSandboxCall = "localStateSandboxCall"
 const FuncPostIncrement = "postIncrement"
 const FuncRepeatMany = "repeatMany"
+const FuncTestLeb128 = "testLeb128"
 const FuncWhenMustIncrement = "whenMustIncrement"
 const ViewGetCounter = "getCounter"
 
@@ -43,5 +44,6 @@ const HFuncLocalStatePost = wasmlib.ScHname(0x3fd54d13)
 const HFuncLocalStateSandboxCall = wasmlib.ScHname(0x7bd22c53)
 const HFuncPostIncrement = wasmlib.ScHname(0x81c772f5)
 const HFuncRepeatMany = wasmlib.ScHname(0x4ff450d3)
+const HFuncTestLeb128 = wasmlib.ScHname(0xd8364cb9)
 const HFuncWhenMustIncrement = wasmlib.ScHname(0xb4c3e7a6)
 const HViewGetCounter = wasmlib.ScHname(0xb423e607)

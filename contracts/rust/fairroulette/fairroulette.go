@@ -109,9 +109,23 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, params *FuncPlaceBetParams) {
 
 func funcPlayPeriod(ctx wasmlib.ScFuncContext, params *FuncPlayPeriodParams) {
 	playPeriod := params.PlayPeriod.Value()
-	if playPeriod < 10 {
-		ctx.Panic("Invalid play period...")
-	}
-
+	ctx.Require(playPeriod >= 10, "invalid play period")
 	ctx.State().GetInt64(VarPlayPeriod).SetValue(playPeriod)
+}
+
+func viewLastWinningNumber(ctx wasmlib.ScViewContext, params *ViewLastWinningNumberParams) {
+	// Create an ScImmutableMap proxy to the state storage map on the host.
+	state := ctx.State()
+
+	// Get the 'lastWinningNumber' int64 value from state storage through
+	// an ScImmutableInt64 proxy.
+	lastWinningNumber := state.GetInt64(VarLastWinningNumber).Value()
+
+	// Create an ScMutableMap proxy to the map on the host that will store the
+	// key/value pairs that we want to return from this View function
+	results := ctx.Results()
+
+	// Set the value associated with the 'lastWinningNumber' key to the value
+	// we got from state storage
+	results.GetInt64(VarLastWinningNumber).SetValue(lastWinningNumber)
 }

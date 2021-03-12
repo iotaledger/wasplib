@@ -31,6 +31,7 @@ pub const FUNC_LOCAL_STATE_POST: &str = "localStatePost";
 pub const FUNC_LOCAL_STATE_SANDBOX_CALL: &str = "localStateSandboxCall";
 pub const FUNC_POST_INCREMENT: &str = "postIncrement";
 pub const FUNC_REPEAT_MANY: &str = "repeatMany";
+pub const FUNC_TEST_LEB128: &str = "testLeb128";
 pub const FUNC_WHEN_MUST_INCREMENT: &str = "whenMustIncrement";
 pub const VIEW_GET_COUNTER: &str = "getCounter";
 
@@ -43,5 +44,6 @@ pub const HFUNC_LOCAL_STATE_POST: ScHname = ScHname(0x3fd54d13);
 pub const HFUNC_LOCAL_STATE_SANDBOX_CALL: ScHname = ScHname(0x7bd22c53);
 pub const HFUNC_POST_INCREMENT: ScHname = ScHname(0x81c772f5);
 pub const HFUNC_REPEAT_MANY: ScHname = ScHname(0x4ff450d3);
+pub const HFUNC_TEST_LEB128: ScHname = ScHname(0xd8364cb9);
 pub const HFUNC_WHEN_MUST_INCREMENT: ScHname = ScHname(0xb4c3e7a6);
 pub const HVIEW_GET_COUNTER: ScHname = ScHname(0xb423e607);

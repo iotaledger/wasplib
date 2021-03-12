@@ -20,23 +20,24 @@ public class TokenRegistryThunk {
     @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
-        exports.AddFunc("mintSupply", TokenRegistryThunk::funcMintSupplyThunk);
-        exports.AddFunc("transferOwnership", TokenRegistryThunk::funcTransferOwnershipThunk);
-        exports.AddFunc("updateMetadata", TokenRegistryThunk::funcUpdateMetadataThunk);
-        exports.AddView("getInfo", TokenRegistryThunk::viewGetInfoThunk);
+        exports.AddFunc(Consts.FuncMintSupply, TokenRegistryThunk::funcMintSupplyThunk);
+        exports.AddFunc(Consts.FuncTransferOwnership, TokenRegistryThunk::funcTransferOwnershipThunk);
+        exports.AddFunc(Consts.FuncUpdateMetadata, TokenRegistryThunk::funcUpdateMetadataThunk);
+        exports.AddView(Consts.ViewGetInfo, TokenRegistryThunk::viewGetInfoThunk);
     }
 
     private static void funcMintSupplyThunk(ScFuncContext ctx) {
+        ctx.Log("tokenregistry.funcMintSupply");
         var p = ctx.Params();
         var params = new FuncMintSupplyParams();
         params.Description = p.GetString(Consts.ParamDescription);
         params.UserDefined = p.GetString(Consts.ParamUserDefined);
-        ctx.Log("tokenregistry.funcMintSupply");
         TokenRegistry.funcMintSupply(ctx, params);
         ctx.Log("tokenregistry.funcMintSupply ok");
     }
 
     private static void funcTransferOwnershipThunk(ScFuncContext ctx) {
+        ctx.Log("tokenregistry.funcTransferOwnership");
         //TODO the one who can transfer token ownership
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
@@ -44,12 +45,12 @@ public class TokenRegistryThunk {
         var params = new FuncTransferOwnershipParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
-        ctx.Log("tokenregistry.funcTransferOwnership");
         TokenRegistry.funcTransferOwnership(ctx, params);
         ctx.Log("tokenregistry.funcTransferOwnership ok");
     }
 
     private static void funcUpdateMetadataThunk(ScFuncContext ctx) {
+        ctx.Log("tokenregistry.funcUpdateMetadata");
         //TODO the one who can change the token info
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
@@ -57,17 +58,16 @@ public class TokenRegistryThunk {
         var params = new FuncUpdateMetadataParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
-        ctx.Log("tokenregistry.funcUpdateMetadata");
         TokenRegistry.funcUpdateMetadata(ctx, params);
         ctx.Log("tokenregistry.funcUpdateMetadata ok");
     }
 
     private static void viewGetInfoThunk(ScViewContext ctx) {
+        ctx.Log("tokenregistry.viewGetInfo");
         var p = ctx.Params();
         var params = new ViewGetInfoParams();
         params.Color = p.GetColor(Consts.ParamColor);
         ctx.Require(params.Color.Exists(), "missing mandatory color");
-        ctx.Log("tokenregistry.viewGetInfo");
         TokenRegistry.viewGetInfo(ctx, params);
         ctx.Log("tokenregistry.viewGetInfo ok");
     }

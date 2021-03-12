@@ -12,8 +12,7 @@ import (
 
 func Test2Chains(t *testing.T) { run2(t, test2Chains) }
 func test2Chains(t *testing.T, w bool) {
-	env := solo.New(t, false, false)
-	chain1 := env.NewChain(nil, "ch1")
+	env, chain1 := setupChain(t, nil)
 	chain2 := env.NewChain(nil, "ch2")
 	chain1.CheckAccountLedger()
 	chain2.CheckAccountLedger()

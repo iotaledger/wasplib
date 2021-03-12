@@ -54,7 +54,8 @@ public class BytesEncoder {
     }
 
     public BytesEncoder Int64(long val) {
-        int value = (int)val;
+        //TODO fix this so it handles long properly
+        int value = (int) val;
         for (; ; ) {
             byte b = (byte) value;
             byte s = (byte) (b & 0x40);

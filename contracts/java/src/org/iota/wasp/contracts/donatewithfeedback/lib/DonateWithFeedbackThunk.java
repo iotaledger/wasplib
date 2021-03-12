@@ -20,35 +20,35 @@ public class DonateWithFeedbackThunk {
     @Export("on_load")
     public static void onLoad() {
         ScExports exports = new ScExports();
-        exports.AddFunc("donate", DonateWithFeedbackThunk::funcDonateThunk);
-        exports.AddFunc("withdraw", DonateWithFeedbackThunk::funcWithdrawThunk);
-        exports.AddView("donations", DonateWithFeedbackThunk::viewDonationsThunk);
+        exports.AddFunc(Consts.FuncDonate, DonateWithFeedbackThunk::funcDonateThunk);
+        exports.AddFunc(Consts.FuncWithdraw, DonateWithFeedbackThunk::funcWithdrawThunk);
+        exports.AddView(Consts.ViewDonations, DonateWithFeedbackThunk::viewDonationsThunk);
     }
 
     private static void funcDonateThunk(ScFuncContext ctx) {
+        ctx.Log("donatewithfeedback.funcDonate");
         var p = ctx.Params();
         var params = new FuncDonateParams();
         params.Feedback = p.GetString(Consts.ParamFeedback);
-        ctx.Log("donatewithfeedback.funcDonate");
         DonateWithFeedback.funcDonate(ctx, params);
         ctx.Log("donatewithfeedback.funcDonate ok");
     }
 
     private static void funcWithdrawThunk(ScFuncContext ctx) {
+        ctx.Log("donatewithfeedback.funcWithdraw");
         // only SC creator can withdraw donated funds
         ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
 
         var p = ctx.Params();
         var params = new FuncWithdrawParams();
         params.Amount = p.GetInt64(Consts.ParamAmount);
-        ctx.Log("donatewithfeedback.funcWithdraw");
         DonateWithFeedback.funcWithdraw(ctx, params);
         ctx.Log("donatewithfeedback.funcWithdraw ok");
     }
 
     private static void viewDonationsThunk(ScViewContext ctx) {
-        var params = new ViewDonationsParams();
         ctx.Log("donatewithfeedback.viewDonations");
+        var params = new ViewDonationsParams();
         DonateWithFeedback.viewDonations(ctx, params);
         ctx.Log("donatewithfeedback.viewDonations ok");
     }

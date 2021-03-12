@@ -8,10 +8,13 @@ import (
 	"fmt"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
+	"regexp"
 	"strings"
 )
 
 const generateJavaThunk = true
+
+var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
 
 var javaTypes = StringMap{
 	"Address":    "ScAddress",
@@ -76,14 +79,13 @@ func (s *Schema) GenerateJava() error {
 func (s *Schema) GenerateJavaFunc(file *os.File, funcDef *FuncDef) error {
 	funcName := funcDef.FullName
 	funcKind := capitalize(funcDef.FullName[:4])
-	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, params *%sParams) {\n", funcName, funcKind, capitalize(funcName))
-	fmt.Fprintf(file, "\tctx.Log(\"calling %s\")\n", funcDef.Name)
+	fmt.Fprintf(file, "\npublic static void %s(Sc%sContext ctx, %sParams params) {\n", funcName, funcKind, capitalize(funcName))
 	fmt.Fprintf(file, "}\n")
 	return nil
 }
 
 func (s *Schema) GenerateJavaFuncs() error {
-	scFileName := s.Name + ".go"
+	scFileName := s.Name + ".java"
 	file, err := os.Open(scFileName)
 	if err != nil {
 		return s.GenerateJavaFuncsNew(scFileName)
@@ -130,7 +132,7 @@ func (s *Schema) GenerateJavaFuncScanner(file *os.File) ([]string, StringMap, er
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		matches := goFuncRegexp.FindStringSubmatch(line)
+		matches := javaFuncRegexp.FindStringSubmatch(line)
 		if matches != nil {
 			existing[matches[1]] = line
 		}
@@ -152,15 +154,22 @@ func (s *Schema) GenerateJavaFuncsNew(scFileName string) error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(false))
-	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintln(file, importWasmLib)
+	fmt.Fprintln(file, copyright(true))
+	fmt.Fprintf(file, "package org.iota.wasp.contracts.%s;\n\n", s.Name)
+	fmt.Fprintf(file, "import org.iota.wasp.contracts.%s.lib.*;\n", s.Name)
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.context.*;\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.immutable.*;\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.mutable.*;\n\n")
 
+	fmt.Fprintf(file, "public class %s {\n", s.FullName)
 	for _, funcDef := range s.Funcs {
 		err = s.GenerateJavaFunc(file, funcDef)
 		if err != nil {
 			return err
 		}
 	}
+	fmt.Fprintf(file, "}\n")
 	return nil
 }
 
@@ -197,9 +206,9 @@ func (s *Schema) GenerateJavaLib() error {
 	fmt.Fprintf(file, "    public static void onLoad() {\n")
 	fmt.Fprintf(file, "        ScExports exports = new ScExports();\n")
 	for _, funcDef := range s.Funcs {
-		name := funcDef.FullName
+		name := capitalize(funcDef.FullName)
 		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "        exports.Add%s(\"%s\", %s%s::%s%s);\n", kind, funcDef.Name, s.FullName, thunk, name, thunk)
+		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %s%s::%s%s);\n", kind, name, s.FullName, thunk, funcDef.FullName, thunk)
 	}
 	fmt.Fprintf(file, "    }\n")
 
@@ -312,6 +321,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 	}
 
 	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FullName)
 	grant := funcDef.Annotations["#grant"]
 	if grant != "" {
 		index := strings.Index(grant, "//")
@@ -347,7 +357,6 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fmt.Fprintf(file, "        ctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "    }\n")

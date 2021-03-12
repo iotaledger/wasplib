@@ -23,8 +23,8 @@ fn on_load() {
 pub struct FuncDivideParams {}
 
 fn func_divide_thunk(ctx: &ScFuncContext) {
-    let params = FuncDivideParams {};
     ctx.log("dividend.funcDivide");
+    let params = FuncDivideParams {};
     func_divide(ctx, &params);
     ctx.log("dividend.funcDivide ok");
 }
@@ -37,6 +37,7 @@ pub struct FuncMemberParams {
 //@formatter:on
 
 fn func_member_thunk(ctx: &ScFuncContext) {
+    ctx.log("dividend.funcMember");
     // only creator can add members
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -47,7 +48,6 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.address.exists(), "missing mandatory address");
     ctx.require(params.factor.exists(), "missing mandatory factor");
-    ctx.log("dividend.funcMember");
     func_member(ctx, &params);
     ctx.log("dividend.funcMember ok");
 }
@@ -57,12 +57,12 @@ pub struct ViewGetFactorParams {
 }
 
 fn view_get_factor_thunk(ctx: &ScViewContext) {
+    ctx.log("dividend.viewGetFactor");
     let p = ctx.params();
     let params = ViewGetFactorParams {
         address: p.get_address(PARAM_ADDRESS),
     };
     ctx.require(params.address.exists(), "missing mandatory address");
-    ctx.log("dividend.viewGetFactor");
     view_get_factor(ctx, &params);
     ctx.log("dividend.viewGetFactor ok");
 }

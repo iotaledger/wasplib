@@ -4,9 +4,11 @@
 package org.iota.wasp.contracts.inccounter;
 
 import org.iota.wasp.contracts.inccounter.lib.*;
+import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
 import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
 
 public class IncCounter {
@@ -127,6 +129,37 @@ public class IncCounter {
         var counter = ctx.State().GetInt64(Consts.VarCounter);
         if (counter.Exists()) {
             ctx.Results().GetInt64(Consts.VarCounter).SetValue(counter.Value());
+        }
+    }
+
+    public static void funcTestLeb128(ScFuncContext ctx, FuncTestLeb128Params params) {
+        save(ctx, "v-1", -1);
+        save(ctx, "v-2", -2);
+        save(ctx, "v-126", -126);
+        save(ctx, "v-127", -127);
+        save(ctx, "v-128", -128);
+        save(ctx, "v-129", -129);
+        save(ctx, "v0", 0);
+        save(ctx, "v+1", 1);
+        save(ctx, "v+2", 2);
+        save(ctx, "v+126", 126);
+        save(ctx, "v+127", 127);
+        save(ctx, "v+128", 128);
+        save(ctx, "v+129", 129);
+    }
+
+    private static void save(ScFuncContext ctx, String name, long value) {
+        var encoder = new BytesEncoder();
+        encoder.Int64(value);
+        var spot = ctx.State().GetBytes(new Key(name));
+        spot.SetValue(encoder.Data());
+
+        var bytes = spot.Value();
+        var decoder = new BytesDecoder(bytes);
+        var retrieved = decoder.Int64();
+        if (retrieved != value) {
+            ctx.Log(name + " in : " + value);
+            ctx.Log(name + " out: " + retrieved);
         }
     }
 }

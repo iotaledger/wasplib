@@ -20,6 +20,7 @@ func OnLoad() {
 	exports.AddFunc(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
 	exports.AddFunc(FuncPostIncrement, funcPostIncrementThunk)
 	exports.AddFunc(FuncRepeatMany, funcRepeatManyThunk)
+	exports.AddFunc(FuncTestLeb128, funcTestLeb128Thunk)
 	exports.AddFunc(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
 	exports.AddView(ViewGetCounter, viewGetCounterThunk)
 }
@@ -28,9 +29,9 @@ type FuncCallIncrementParams struct {
 }
 
 func funcCallIncrementThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcCallIncrement")
 	params := &FuncCallIncrementParams{
 	}
-	ctx.Log("inccounter.funcCallIncrement")
 	funcCallIncrement(ctx, params)
 	ctx.Log("inccounter.funcCallIncrement ok")
 }
@@ -39,9 +40,9 @@ type FuncCallIncrementRecurse5xParams struct {
 }
 
 func funcCallIncrementRecurse5xThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcCallIncrementRecurse5x")
 	params := &FuncCallIncrementRecurse5xParams{
 	}
-	ctx.Log("inccounter.funcCallIncrementRecurse5x")
 	funcCallIncrementRecurse5x(ctx, params)
 	ctx.Log("inccounter.funcCallIncrementRecurse5x ok")
 }
@@ -50,9 +51,9 @@ type FuncIncrementParams struct {
 }
 
 func funcIncrementThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcIncrement")
 	params := &FuncIncrementParams{
 	}
-	ctx.Log("inccounter.funcIncrement")
 	funcIncrement(ctx, params)
 	ctx.Log("inccounter.funcIncrement ok")
 }
@@ -62,11 +63,11 @@ type FuncInitParams struct {
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcInit")
 	p := ctx.Params()
 	params := &FuncInitParams{
 		Counter: p.GetInt64(ParamCounter),
 	}
-	ctx.Log("inccounter.funcInit")
 	funcInit(ctx, params)
 	ctx.Log("inccounter.funcInit ok")
 }
@@ -75,9 +76,9 @@ type FuncLocalStateInternalCallParams struct {
 }
 
 func funcLocalStateInternalCallThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcLocalStateInternalCall")
 	params := &FuncLocalStateInternalCallParams{
 	}
-	ctx.Log("inccounter.funcLocalStateInternalCall")
 	funcLocalStateInternalCall(ctx, params)
 	ctx.Log("inccounter.funcLocalStateInternalCall ok")
 }
@@ -86,9 +87,9 @@ type FuncLocalStatePostParams struct {
 }
 
 func funcLocalStatePostThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcLocalStatePost")
 	params := &FuncLocalStatePostParams{
 	}
-	ctx.Log("inccounter.funcLocalStatePost")
 	funcLocalStatePost(ctx, params)
 	ctx.Log("inccounter.funcLocalStatePost ok")
 }
@@ -97,9 +98,9 @@ type FuncLocalStateSandboxCallParams struct {
 }
 
 func funcLocalStateSandboxCallThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcLocalStateSandboxCall")
 	params := &FuncLocalStateSandboxCallParams{
 	}
-	ctx.Log("inccounter.funcLocalStateSandboxCall")
 	funcLocalStateSandboxCall(ctx, params)
 	ctx.Log("inccounter.funcLocalStateSandboxCall ok")
 }
@@ -108,9 +109,9 @@ type FuncPostIncrementParams struct {
 }
 
 func funcPostIncrementThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcPostIncrement")
 	params := &FuncPostIncrementParams{
 	}
-	ctx.Log("inccounter.funcPostIncrement")
 	funcPostIncrement(ctx, params)
 	ctx.Log("inccounter.funcPostIncrement ok")
 }
@@ -120,22 +121,33 @@ type FuncRepeatManyParams struct {
 }
 
 func funcRepeatManyThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcRepeatMany")
 	p := ctx.Params()
 	params := &FuncRepeatManyParams{
 		NumRepeats: p.GetInt64(ParamNumRepeats),
 	}
-	ctx.Log("inccounter.funcRepeatMany")
 	funcRepeatMany(ctx, params)
 	ctx.Log("inccounter.funcRepeatMany ok")
+}
+
+type FuncTestLeb128Params struct {
+}
+
+func funcTestLeb128Thunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcTestLeb128")
+	params := &FuncTestLeb128Params{
+	}
+	funcTestLeb128(ctx, params)
+	ctx.Log("inccounter.funcTestLeb128 ok")
 }
 
 type FuncWhenMustIncrementParams struct {
 }
 
 func funcWhenMustIncrementThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcWhenMustIncrement")
 	params := &FuncWhenMustIncrementParams{
 	}
-	ctx.Log("inccounter.funcWhenMustIncrement")
 	funcWhenMustIncrement(ctx, params)
 	ctx.Log("inccounter.funcWhenMustIncrement ok")
 }
@@ -144,9 +156,9 @@ type ViewGetCounterParams struct {
 }
 
 func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("inccounter.viewGetCounter")
 	params := &ViewGetCounterParams{
 	}
-	ctx.Log("inccounter.viewGetCounter")
 	viewGetCounter(ctx, params)
 	ctx.Log("inccounter.viewGetCounter ok")
 }

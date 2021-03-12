@@ -24,8 +24,10 @@ const FuncLockBets = "lockBets"
 const FuncPayWinners = "payWinners"
 const FuncPlaceBet = "placeBet"
 const FuncPlayPeriod = "playPeriod"
+const ViewLastWinningNumber = "lastWinningNumber"
 
 const HFuncLockBets = wasmlib.ScHname(0xe163b43c)
 const HFuncPayWinners = wasmlib.ScHname(0xfb2b0144)
 const HFuncPlaceBet = wasmlib.ScHname(0xdfba7d1b)
 const HFuncPlayPeriod = wasmlib.ScHname(0xcb94b293)
+const HViewLastWinningNumber = wasmlib.ScHname(0x2f5f09fe)

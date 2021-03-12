@@ -32,6 +32,7 @@ pub struct FuncApproveParams {
 //@formatter:on
 
 fn func_approve_thunk(ctx: &ScFuncContext) {
+    ctx.log("erc20.funcApprove");
     let p = ctx.params();
     let params = FuncApproveParams {
         amount: p.get_int64(PARAM_AMOUNT),
@@ -39,7 +40,6 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.amount.exists(), "missing mandatory amount");
     ctx.require(params.delegation.exists(), "missing mandatory delegation");
-    ctx.log("erc20.funcApprove");
     func_approve(ctx, &params);
     ctx.log("erc20.funcApprove ok");
 }
@@ -52,6 +52,7 @@ pub struct FuncInitParams {
 //@formatter:on
 
 fn func_init_thunk(ctx: &ScFuncContext) {
+    ctx.log("erc20.funcInit");
     let p = ctx.params();
     let params = FuncInitParams {
         creator: p.get_agent_id(PARAM_CREATOR),
@@ -59,7 +60,6 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.creator.exists(), "missing mandatory creator");
     ctx.require(params.supply.exists(), "missing mandatory supply");
-    ctx.log("erc20.funcInit");
     func_init(ctx, &params);
     ctx.log("erc20.funcInit ok");
 }
@@ -72,6 +72,7 @@ pub struct FuncTransferParams {
 //@formatter:on
 
 fn func_transfer_thunk(ctx: &ScFuncContext) {
+    ctx.log("erc20.funcTransfer");
     let p = ctx.params();
     let params = FuncTransferParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
@@ -79,7 +80,6 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.amount.exists(), "missing mandatory amount");
-    ctx.log("erc20.funcTransfer");
     func_transfer(ctx, &params);
     ctx.log("erc20.funcTransfer ok");
 }
@@ -93,6 +93,7 @@ pub struct FuncTransferFromParams {
 //@formatter:on
 
 fn func_transfer_from_thunk(ctx: &ScFuncContext) {
+    ctx.log("erc20.funcTransferFrom");
     let p = ctx.params();
     let params = FuncTransferFromParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
@@ -102,7 +103,6 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.amount.exists(), "missing mandatory amount");
     ctx.require(params.recipient.exists(), "missing mandatory recipient");
-    ctx.log("erc20.funcTransferFrom");
     func_transfer_from(ctx, &params);
     ctx.log("erc20.funcTransferFrom ok");
 }
@@ -115,6 +115,7 @@ pub struct ViewAllowanceParams {
 //@formatter:on
 
 fn view_allowance_thunk(ctx: &ScViewContext) {
+    ctx.log("erc20.viewAllowance");
     let p = ctx.params();
     let params = ViewAllowanceParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
@@ -122,7 +123,6 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
     };
     ctx.require(params.account.exists(), "missing mandatory account");
     ctx.require(params.delegation.exists(), "missing mandatory delegation");
-    ctx.log("erc20.viewAllowance");
     view_allowance(ctx, &params);
     ctx.log("erc20.viewAllowance ok");
 }
@@ -132,12 +132,12 @@ pub struct ViewBalanceOfParams {
 }
 
 fn view_balance_of_thunk(ctx: &ScViewContext) {
+    ctx.log("erc20.viewBalanceOf");
     let p = ctx.params();
     let params = ViewBalanceOfParams {
         account: p.get_agent_id(PARAM_ACCOUNT),
     };
     ctx.require(params.account.exists(), "missing mandatory account");
-    ctx.log("erc20.viewBalanceOf");
     view_balance_of(ctx, &params);
     ctx.log("erc20.viewBalanceOf ok");
 }
@@ -145,8 +145,8 @@ fn view_balance_of_thunk(ctx: &ScViewContext) {
 pub struct ViewTotalSupplyParams {}
 
 fn view_total_supply_thunk(ctx: &ScViewContext) {
-    let params = ViewTotalSupplyParams {};
     ctx.log("erc20.viewTotalSupply");
+    let params = ViewTotalSupplyParams {};
     view_total_supply(ctx, &params);
     ctx.log("erc20.viewTotalSupply ok");
 }

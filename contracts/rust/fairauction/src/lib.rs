@@ -28,6 +28,7 @@ pub struct FuncFinalizeAuctionParams {
 }
 
 fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairauction.funcFinalizeAuction");
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
 
@@ -36,7 +37,6 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("fairauction.funcFinalizeAuction");
     func_finalize_auction(ctx, &params);
     ctx.log("fairauction.funcFinalizeAuction ok");
 }
@@ -46,12 +46,12 @@ pub struct FuncPlaceBidParams {
 }
 
 fn func_place_bid_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairauction.funcPlaceBid");
     let p = ctx.params();
     let params = FuncPlaceBidParams {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("fairauction.funcPlaceBid");
     func_place_bid(ctx, &params);
     ctx.log("fairauction.funcPlaceBid ok");
 }
@@ -61,6 +61,7 @@ pub struct FuncSetOwnerMarginParams {
 }
 
 fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairauction.funcSetOwnerMargin");
     // only SC creator can set owner margin
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
@@ -69,7 +70,6 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
         owner_margin: p.get_int64(PARAM_OWNER_MARGIN),
     };
     ctx.require(params.owner_margin.exists(), "missing mandatory ownerMargin");
-    ctx.log("fairauction.funcSetOwnerMargin");
     func_set_owner_margin(ctx, &params);
     ctx.log("fairauction.funcSetOwnerMargin ok");
 }
@@ -84,6 +84,7 @@ pub struct FuncStartAuctionParams {
 //@formatter:on
 
 fn func_start_auction_thunk(ctx: &ScFuncContext) {
+    ctx.log("fairauction.funcStartAuction");
     let p = ctx.params();
     let params = FuncStartAuctionParams {
         color: p.get_color(PARAM_COLOR),
@@ -93,7 +94,6 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
     };
     ctx.require(params.color.exists(), "missing mandatory color");
     ctx.require(params.minimum_bid.exists(), "missing mandatory minimumBid");
-    ctx.log("fairauction.funcStartAuction");
     func_start_auction(ctx, &params);
     ctx.log("fairauction.funcStartAuction ok");
 }
@@ -103,12 +103,12 @@ pub struct ViewGetInfoParams {
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
+    ctx.log("fairauction.viewGetInfo");
     let p = ctx.params();
     let params = ViewGetInfoParams {
         color: p.get_color(PARAM_COLOR),
     };
     ctx.require(params.color.exists(), "missing mandatory color");
-    ctx.log("fairauction.viewGetInfo");
     view_get_info(ctx, &params);
     ctx.log("fairauction.viewGetInfo ok");
 }

@@ -121,3 +121,34 @@ pub fn view_get_counter(ctx: &ScViewContext, _params: &ViewGetCounterParams) {
         ctx.results().get_int64(VAR_COUNTER).set_value(counter.value());
     }
 }
+
+pub fn func_test_leb128(ctx: &ScFuncContext, _params: &FuncTestLeb128Params) {
+    save(ctx, "v-1", -1);
+    save(ctx, "v-2", -2);
+    save(ctx, "v-126", -126);
+    save(ctx, "v-127", -127);
+    save(ctx, "v-128", -128);
+    save(ctx, "v-129", -129);
+    save(ctx, "v0", 0);
+    save(ctx, "v+1", 1);
+    save(ctx, "v+2", 2);
+    save(ctx, "v+126", 126);
+    save(ctx, "v+127", 127);
+    save(ctx, "v+128", 128);
+    save(ctx, "v+129", 129);
+}
+
+fn save(ctx: &ScFuncContext, name: &str, value: i64) {
+    let mut encoder = BytesEncoder::new();
+    encoder.int64(value);
+    let spot = ctx.state().get_bytes(name);
+    spot.set_value(&encoder.data());
+
+    let bytes = spot.value();
+    let mut decoder = BytesDecoder::new(&bytes);
+    let retrieved = decoder.int64();
+    if retrieved != value {
+        ctx.log(&(name.to_string() + " in : " + &value.to_string()));
+        ctx.log(&(name.to_string() + " out: " + &retrieved.to_string()));
+    }
+}

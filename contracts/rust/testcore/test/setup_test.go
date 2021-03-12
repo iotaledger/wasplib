@@ -10,6 +10,7 @@ import (
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/contracts/testenv"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -31,6 +32,7 @@ var WasmFileErc20 = util.LocateFile("erc20_bg.wasm", "erc20/pkg")
 var SandboxSCName = "test_sandbox"
 
 func setupChain(t *testing.T, sigSchemeChain signaturescheme.SignatureScheme) (*solo.Solo, *solo.Chain) {
+	wasmhost.HostTracing = DEBUG
 	env := solo.New(t, DEBUG, false)
 	chain := env.NewChain(sigSchemeChain, "ch1")
 	return env, chain

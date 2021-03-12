@@ -26,9 +26,11 @@ public class Consts {
     public static final String FuncPayWinners = "payWinners";
     public static final String FuncPlaceBet = "placeBet";
     public static final String FuncPlayPeriod = "playPeriod";
+    public static final String ViewLastWinningNumber = "lastWinningNumber";
 
     public static final ScHname HFuncLockBets = new ScHname(0xe163b43c);
     public static final ScHname HFuncPayWinners = new ScHname(0xfb2b0144);
     public static final ScHname HFuncPlaceBet = new ScHname(0xdfba7d1b);
     public static final ScHname HFuncPlayPeriod = new ScHname(0xcb94b293);
+    public static final ScHname HViewLastWinningNumber = new ScHname(0x2f5f09fe);
 }

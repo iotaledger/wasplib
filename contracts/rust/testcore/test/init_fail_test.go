@@ -1,30 +1,26 @@
 package test
 
 import (
-	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestSuccess(t *testing.T) {
-	env := solo.New(t, false, false)
-	chain := env.NewChain(nil, "chain1")
+	_, chain := setupChain(t, nil)
 	err := chain.DeployContract(nil, sbtestsc.Name, sbtestsc.Interface.ProgramHash)
 	require.NoError(t, err)
 }
 
 func TestFail(t *testing.T) {
-	env := solo.New(t, false, false)
-	chain := env.NewChain(nil, "chain1")
+	_, chain := setupChain(t, nil)
 	err := chain.DeployContract(nil, sbtestsc.Name, sbtestsc.Interface.ProgramHash,
 		sbtestsc.ParamFail, 1)
 	require.Error(t, err)
 }
 
 func TestFailRepeat(t *testing.T) {
-	env := solo.New(t, false, false)
-	chain := env.NewChain(nil, "chain1")
+	_, chain := setupChain(t, nil)
 	err := chain.DeployContract(nil, sbtestsc.Name, sbtestsc.Interface.ProgramHash,
 		sbtestsc.ParamFail, 1)
 	require.Error(t, err)

@@ -29,6 +29,6 @@ public class ScMutableHname {
     }
 
     public ScHname Value() {
-        return new ScHname(Host.GetBytes(objId, ScType.TYPE_HNAME, keyId));
+        return new ScHname(Host.GetBytes(objId, keyId, ScType.TYPE_HNAME));
     }
 }

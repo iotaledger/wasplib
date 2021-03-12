@@ -26,6 +26,7 @@ type FuncApproveParams struct {
 }
 
 func funcApproveThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("erc20.funcApprove")
 	p := ctx.Params()
 	params := &FuncApproveParams{
 		Amount:     p.GetInt64(ParamAmount),
@@ -33,7 +34,6 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	}
 	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
 	ctx.Require(params.Delegation.Exists(), "missing mandatory delegation")
-	ctx.Log("erc20.funcApprove")
 	funcApprove(ctx, params)
 	ctx.Log("erc20.funcApprove ok")
 }
@@ -44,6 +44,7 @@ type FuncInitParams struct {
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("erc20.funcInit")
 	p := ctx.Params()
 	params := &FuncInitParams{
 		Creator: p.GetAgentId(ParamCreator),
@@ -51,7 +52,6 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	}
 	ctx.Require(params.Creator.Exists(), "missing mandatory creator")
 	ctx.Require(params.Supply.Exists(), "missing mandatory supply")
-	ctx.Log("erc20.funcInit")
 	funcInit(ctx, params)
 	ctx.Log("erc20.funcInit ok")
 }
@@ -62,6 +62,7 @@ type FuncTransferParams struct {
 }
 
 func funcTransferThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("erc20.funcTransfer")
 	p := ctx.Params()
 	params := &FuncTransferParams{
 		Account: p.GetAgentId(ParamAccount),
@@ -69,7 +70,6 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	}
 	ctx.Require(params.Account.Exists(), "missing mandatory account")
 	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
-	ctx.Log("erc20.funcTransfer")
 	funcTransfer(ctx, params)
 	ctx.Log("erc20.funcTransfer ok")
 }
@@ -81,6 +81,7 @@ type FuncTransferFromParams struct {
 }
 
 func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("erc20.funcTransferFrom")
 	p := ctx.Params()
 	params := &FuncTransferFromParams{
 		Account:   p.GetAgentId(ParamAccount),
@@ -90,7 +91,6 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(params.Account.Exists(), "missing mandatory account")
 	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
 	ctx.Require(params.Recipient.Exists(), "missing mandatory recipient")
-	ctx.Log("erc20.funcTransferFrom")
 	funcTransferFrom(ctx, params)
 	ctx.Log("erc20.funcTransferFrom ok")
 }
@@ -101,6 +101,7 @@ type ViewAllowanceParams struct {
 }
 
 func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("erc20.viewAllowance")
 	p := ctx.Params()
 	params := &ViewAllowanceParams{
 		Account:    p.GetAgentId(ParamAccount),
@@ -108,7 +109,6 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	}
 	ctx.Require(params.Account.Exists(), "missing mandatory account")
 	ctx.Require(params.Delegation.Exists(), "missing mandatory delegation")
-	ctx.Log("erc20.viewAllowance")
 	viewAllowance(ctx, params)
 	ctx.Log("erc20.viewAllowance ok")
 }
@@ -118,12 +118,12 @@ type ViewBalanceOfParams struct {
 }
 
 func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("erc20.viewBalanceOf")
 	p := ctx.Params()
 	params := &ViewBalanceOfParams{
 		Account: p.GetAgentId(ParamAccount),
 	}
 	ctx.Require(params.Account.Exists(), "missing mandatory account")
-	ctx.Log("erc20.viewBalanceOf")
 	viewBalanceOf(ctx, params)
 	ctx.Log("erc20.viewBalanceOf ok")
 }
@@ -132,9 +132,9 @@ type ViewTotalSupplyParams struct {
 }
 
 func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("erc20.viewTotalSupply")
 	params := &ViewTotalSupplyParams{
 	}
-	ctx.Log("erc20.viewTotalSupply")
 	viewTotalSupply(ctx, params)
 	ctx.Log("erc20.viewTotalSupply ok")
 }

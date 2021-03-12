@@ -57,7 +57,7 @@ func (d *BytesDecoder) Int64() int64 {
 		b := int8(d.data[0])
 		d.data = d.data[1:]
 		val |= int64(b&0x7f) << s
-		if b >= 0 {
+		if (b & -0x80) == 0 {
 			if int8(val>>s)&0x7f != b&0x7f {
 				panic("Integer too large")
 			}

@@ -22,7 +22,7 @@ import (
 
 const (
 	Debug      = true
-	StackTrace = true
+	StackTrace = false
 	TraceHost  = true
 )
 
@@ -70,6 +70,7 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 
 func StartChain(t *testing.T, scName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
+	//wasmhost.ExtendedHostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
 	CreatorWallet = env.NewSignatureSchemeWithFunds()
 	chain := env.NewChain(CreatorWallet, "chain1")

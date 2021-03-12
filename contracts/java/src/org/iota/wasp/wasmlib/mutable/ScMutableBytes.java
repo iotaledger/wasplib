@@ -29,6 +29,6 @@ public class ScMutableBytes {
     }
 
     public byte[] Value() {
-        return Host.GetBytes(objId, ScType.TYPE_BYTES, keyId);
+        return Host.GetBytes(objId, keyId, ScType.TYPE_BYTES);
     }
 }

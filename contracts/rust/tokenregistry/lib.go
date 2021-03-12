@@ -23,12 +23,12 @@ type FuncMintSupplyParams struct {
 }
 
 func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("tokenregistry.funcMintSupply")
 	p := ctx.Params()
 	params := &FuncMintSupplyParams{
 		Description: p.GetString(ParamDescription),
 		UserDefined: p.GetString(ParamUserDefined),
 	}
-	ctx.Log("tokenregistry.funcMintSupply")
 	funcMintSupply(ctx, params)
 	ctx.Log("tokenregistry.funcMintSupply ok")
 }
@@ -38,6 +38,7 @@ type FuncTransferOwnershipParams struct {
 }
 
 func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("tokenregistry.funcTransferOwnership")
 	//TODO the one who can transfer token ownership
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
@@ -46,7 +47,6 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	ctx.Log("tokenregistry.funcTransferOwnership")
 	funcTransferOwnership(ctx, params)
 	ctx.Log("tokenregistry.funcTransferOwnership ok")
 }
@@ -56,6 +56,7 @@ type FuncUpdateMetadataParams struct {
 }
 
 func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("tokenregistry.funcUpdateMetadata")
 	//TODO the one who can change the token info
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
@@ -64,7 +65,6 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	ctx.Log("tokenregistry.funcUpdateMetadata")
 	funcUpdateMetadata(ctx, params)
 	ctx.Log("tokenregistry.funcUpdateMetadata ok")
 }
@@ -74,12 +74,12 @@ type ViewGetInfoParams struct {
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("tokenregistry.viewGetInfo")
 	p := ctx.Params()
 	params := &ViewGetInfoParams{
 		Color: p.GetColor(ParamColor),
 	}
 	ctx.Require(params.Color.Exists(), "missing mandatory color")
-	ctx.Log("tokenregistry.viewGetInfo")
 	viewGetInfo(ctx, params)
 	ctx.Log("tokenregistry.viewGetInfo ok")
 }

@@ -68,7 +68,6 @@ func (s *Schema) GenerateGoFunc(file *os.File, funcDef *FuncDef) error {
 	funcName := funcDef.FullName
 	funcKind := capitalize(funcDef.FullName[:4])
 	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, params *%sParams) {\n", funcName, funcKind, capitalize(funcName))
-	fmt.Fprintf(file, "\tctx.Log(\"calling %s\")\n", funcDef.Name)
 	fmt.Fprintf(file, "}\n")
 	return nil
 }
@@ -266,6 +265,7 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 	}
 	fmt.Fprintf(file, "}\n")
 	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", funcDef.FullName, funcKind)
+	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, funcDef.FullName)
 	grant := funcDef.Annotations["#grant"]
 	if grant != "" {
 		index := strings.Index(grant, "//")
@@ -303,7 +303,6 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 			fmt.Fprintf(file, "\tctx.Require(params.%s.Exists(), \"missing mandatory %s\")\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "\t%s(ctx, params)\n", funcDef.FullName)
 	fmt.Fprintf(file, "\tctx.Log(\"%s.%s ok\")\n", s.Name, funcDef.FullName)
 	fmt.Fprintf(file, "}\n")

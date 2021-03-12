@@ -117,10 +117,25 @@ public class FairRoulette {
 
     public static void funcPlayPeriod(ScFuncContext ctx, FuncPlayPeriodParams params) {
         var playPeriod = params.PlayPeriod.Value();
-        if (playPeriod < 10) {
-            ctx.Panic("Invalid play period...");
-        }
-
+        ctx.Require(playPeriod >= 10, "invalid play period");
         ctx.State().GetInt64(Consts.VarPlayPeriod).SetValue(playPeriod);
+    }
+
+    public static void viewLastWinningNumber(ScViewContext ctx, ViewLastWinningNumberParams params) {
+        // Create an ScImmutableMap proxy to the state storage map on the host.
+        var state = ctx.State();
+
+        // Get the 'lastWinningNumber' int64 value from state storage through
+        // an ScImmutableInt64 proxy.
+        var lastWinningNumber = state.GetInt64(Consts.VarLastWinningNumber).Value();
+
+        // Create an ScMutableMap proxy to the map on the host that will store the
+        // key/value pairs that we want to return from this View function
+        var results = ctx.Results();
+
+        // Set the value associated with the 'lastWinningNumber' key to the value
+        // we got from state storage
+        results.GetInt64(Consts.VarLastWinningNumber).SetValue(lastWinningNumber);
+
     }
 }

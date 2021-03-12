@@ -61,17 +61,18 @@ public class BytesDecoder {
             byte b = data[0];
             data = Arrays.copyOfRange(data, 1, data.length);
             val |= ((long) (b & 0x7f)) << s;
-            if (b >= 0) {
+            if ((b & 0x80) == 0) {
                 if (((byte) (val >> s) & 0x7f) != (b & 0x7f)) {
                     Host.panic("integer too large");
                     return 0;
                 }
-                // extend int7 sign to int8
-                if ((b & 0x40) != 0) {
-                    b |= 0x80;
+                // positive value?
+                if ((b & 0x40) == 0) {
+                    // extend positive sign to int64
+                    return val | (((long) b) << s);
                 }
-                // extend int8 sign to int64
-                return val | ((long) b << s);
+                // extend negative sign to int64
+                return val | ((0xffffffffffffff80L | b) << s);
             }
             s += 7;
             if (s >= 64) {

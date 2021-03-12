@@ -4,11 +4,16 @@
 package test
 
 import (
+	"fmt"
 	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
+	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/contracts/common"
+	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/stretchr/testify/require"
+	"sort"
 	"testing"
 )
 
@@ -140,6 +145,26 @@ func TestIncrementLocalStatePost(t *testing.T) {
 	}
 
 	checkStateCounter(t, chain, 1)
+}
+
+func TestLeb128(t *testing.T) {
+	chain := setupTest(t)
+
+	req := solo.NewCallParams(ScName, inccounter.FuncTestLeb128)
+	_, err := chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+	res,err := chain.CallView(
+		ScName, wasmproc.ViewCopyAllState,
+		)
+	require.NoError(t, err)
+	keys := make([]string, 0)
+	for key := range res {
+		keys = append(keys, string(key))
+	}
+	sort.Strings(keys)
+	for _,key:= range keys {
+		fmt.Printf("%s: %v\n", key, res[kv.Key(key)])
+	}
 }
 
 func checkStateCounter(t *testing.T, chain *solo.Chain, expected interface{}) {

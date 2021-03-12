@@ -29,5 +29,7 @@
     }
   },
   "views": {
+    "lastWinningNumber": {
+    }
   }
 }

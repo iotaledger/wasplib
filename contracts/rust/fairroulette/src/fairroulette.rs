@@ -108,9 +108,24 @@ pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
 
 pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
     let play_period = params.play_period.value();
-    if play_period < 10 {
-        ctx.panic("Invalid play period...");
-    }
-
+    ctx.require(play_period >= 10, "invalid play period");
     ctx.state().get_int64(VAR_PLAY_PERIOD).set_value(play_period);
+}
+
+pub fn view_last_winning_number(ctx: &ScViewContext, _params: &ViewLastWinningNumberParams) {
+
+    // Create an ScImmutableMap proxy to the state storage map on the host.
+    let state = ctx.state();
+
+    // Get the 'lastWinningNumber' int64 value from state storage through
+    // an ScImmutableInt64 proxy.
+    let last_winning_number = state.get_int64(VAR_LAST_WINNING_NUMBER).value();
+
+    // Create an ScMutableMap proxy to the map on the host that will store the
+    // key/value pairs that we want to return from this View function
+    let results = ctx.results();
+
+    // Set the value associated with the 'lastWinningNumber' key to the value
+    // we got from state storage
+    results.get_int64(VAR_LAST_WINNING_NUMBER).set_value(last_winning_number);
 }
