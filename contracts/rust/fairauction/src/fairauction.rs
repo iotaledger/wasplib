@@ -26,7 +26,7 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionPa
         ctx.log(&("No one bid on ".to_string() + &color.to_string()));
         let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
         if owner_fee == 0 {
-            owner_fee = 1
+            owner_fee = 1;
         }
         // finalizeAuction request token was probably not confirmed yet
         transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
@@ -140,7 +140,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
 
     let mut description = params.description.value();
     if description == "" {
-        description = "N/A".to_string()
+        description = "N/A".to_string();
     }
     if description.len() > MAX_DESCRIPTION_LENGTH {
         let ss: String = description.chars().take(MAX_DESCRIPTION_LENGTH).collect();

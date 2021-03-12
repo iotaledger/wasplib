@@ -10,57 +10,53 @@ import (
 func funcDivide(ctx wasmlib.ScFuncContext, params *FuncDivideParams) {
 	amount := ctx.Balances().Balance(wasmlib.IOTA)
 	if amount == 0 {
-		ctx.Panic("Nothing to divide")
+		ctx.Panic("nothing to divide")
 	}
 	state := ctx.State()
-	totalFactor := state.GetInt64(VarTotalFactor)
-	total := totalFactor.Value()
-	members := state.GetBytesArray(VarMembers)
+	total := state.GetInt64(VarTotalFactor).Value()
+	members := state.GetMap(VarMembers)
+	memberList := state.GetAddressArray(VarMemberList)
+	size := memberList.Length()
 	parts := int64(0)
-	size := members.Length()
 	for i := int32(0); i < size; i++ {
-		m := NewMemberFromBytes(members.GetBytes(i).Value())
-		part := amount * m.Factor / total
-		if part != 0 {
-			parts += part
-			ctx.TransferToAddress(m.Address, wasmlib.NewScTransfer(wasmlib.IOTA, part))
+		address := memberList.GetAddress(i).Value()
+		factor := members.GetInt64(address).Value()
+		share := amount * factor / total
+		if share != 0 {
+			parts += share
+			transfers := wasmlib.NewScTransfer(wasmlib.IOTA, share)
+			ctx.TransferToAddress(address, transfers)
 		}
 	}
 	if parts != amount {
 		// note we truncated the calculations down to the nearest integer
 		// there could be some small remainder left in the contract, but
 		// that will be picked up in the next round as part of the balance
-		remainder := amount - parts
-		ctx.Log("Remainder in contract: " + ctx.Utility().String(remainder))
+		remainder := ctx.Utility().String(amount - parts)
+		ctx.Log("remainder in contract: " + remainder)
 	}
 }
 
 func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
-	member := &Member{
-		Address: params.Address.Value(),
-		Factor:  params.Factor.Value(),
-	}
 	state := ctx.State()
-	totalFactor := state.GetInt64(VarTotalFactor)
-	total := totalFactor.Value()
-	members := state.GetBytesArray(VarMembers)
-	size := members.Length()
-	for i := int32(0); i < size; i++ {
-		m := NewMemberFromBytes(members.GetBytes(i).Value())
-		if m.Address == member.Address {
-			total -= m.Factor
-			total += member.Factor
-			totalFactor.SetValue(total)
-			members.GetBytes(i).SetValue(member.Bytes())
-			ctx.Log("Updated: " + member.Address.String())
-			return
-		}
+	members := state.GetMap(VarMembers)
+	address := params.Address.Value()
+	currentFactor := members.GetInt64(address)
+	if !currentFactor.Exists() {
+		// add new address to member list
+		memberList := state.GetAddressArray(VarMemberList)
+		memberList.GetAddress(memberList.Length()).SetValue(address)
 	}
-	total += member.Factor
-	totalFactor.SetValue(total)
-	members.GetBytes(size).SetValue(member.Bytes())
-	ctx.Log("Appended: " + member.Address.String())
+	factor := params.Factor.Value()
+	totalFactor := state.GetInt64(VarTotalFactor)
+	newTotalFactor := totalFactor.Value() - currentFactor.Value() + factor
+	totalFactor.SetValue(newTotalFactor)
+	currentFactor.SetValue(factor)
 }
 
 func viewGetFactor(ctx wasmlib.ScViewContext, params *ViewGetFactorParams) {
+	address := params.Address.Value()
+	members := ctx.State().GetMap(VarMembers)
+	factor := members.GetInt64(address).Value()
+	ctx.Results().GetInt64(VarFactor).SetValue(factor)
 }

@@ -131,7 +131,8 @@ public class TestCore {
     }
 
     public static void funcTestEventLogGenericData(ScFuncContext ctx, FuncTestEventLogGenericDataParams params) {
-        ctx.Event("[GenericData] Counter Number: " + params.Counter);
+        var event = "[GenericData] Counter Number: " + params.Counter;
+        ctx.Event(event);
     }
 
     public static void funcTestPanicFullEP(ScFuncContext ctx, FuncTestPanicFullEPParams params) {

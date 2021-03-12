@@ -14,7 +14,7 @@ public class Dividend {
     public static void funcDivide(ScFuncContext ctx, FuncDivideParams params) {
         var amount = ctx.Balances().Balance(ScColor.IOTA);
         if (amount == 0) {
-            ctx.Panic("Nothing to divide");
+            ctx.Panic("nothing to divide");
         }
         var state = ctx.State();
         var total = state.GetInt64(Consts.VarTotalFactor).Value();
@@ -37,7 +37,7 @@ public class Dividend {
             // there could be some small remainder left in the contract, but
             // that will be picked up in the next round as part of the balance
             var remainder = amount - parts;
-            ctx.Log("Remainder in contract: " + remainder);
+            ctx.Log("remainder in contract: " + remainder);
         }
     }
 
