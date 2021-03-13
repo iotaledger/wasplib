@@ -11,7 +11,6 @@ import (
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/contracts/common"
-	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/stretchr/testify/require"
 	"sort"
 	"testing"
@@ -150,7 +149,7 @@ func TestIncrementLocalStatePost(t *testing.T) {
 func TestLeb128(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, inccounter.FuncTestLeb128)
+	req := solo.NewCallParams(ScName, FuncTestLeb128)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	res, err := chain.CallView(

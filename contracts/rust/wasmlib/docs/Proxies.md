@@ -47,10 +47,10 @@ name is subsequently followed by Array.
 
 Examples:
 
-- ScMutableInt - proxy to mutable int value
-- ScImmutableString - proxy to immutable string value
-- ScImmutableColorArray - proxy to immutable array of immutable color values
-- ScMutableMap - proxy to mutable map
-- ScImmutableMapArray - proxy to immutable array of immutable map
+- `ScMutableInt` - proxy to mutable int value
+- `ScImmutableString` - proxy to immutable string value
+- `ScImmutableColorArray` - proxy to immutable array of immutable color values
+- `ScMutableMap` - proxy to mutable map
+- `ScImmutableMapArray` - proxy to immutable array of immutable map
 
 Next: [Function Call Context](Context.md)

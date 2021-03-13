@@ -43,7 +43,7 @@ impl ScAddress {
 
 // can be used as key in maps
 impl MapKey for ScAddress {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -87,7 +87,7 @@ impl ScAgentId {
 
 // can be used as key in maps
 impl MapKey for ScAgentId {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -119,7 +119,7 @@ impl ScChainId {
 
 // can be used as key in maps
 impl MapKey for ScChainId {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -162,7 +162,7 @@ impl ScColor {
 
 // can be used as key in maps
 impl MapKey for ScColor {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -221,7 +221,7 @@ impl ScContractId {
 
 // can be used as key in maps
 impl MapKey for ScContractId {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -253,7 +253,7 @@ impl ScHash {
 
 // can be used as key in maps
 impl MapKey for ScHash {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
@@ -289,7 +289,7 @@ impl ScHname {
 
 // can be used as key in maps
 impl MapKey for ScHname {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(&self.0.to_le_bytes())
     }
 }
@@ -321,8 +321,7 @@ impl ScRequestId {
 
 // can be used as key in maps
 impl MapKey for ScRequestId {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
 }
-

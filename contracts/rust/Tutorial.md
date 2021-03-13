@@ -66,3 +66,5 @@ Here is a list of topics this tutorial will cover:
 * [Smart Contract State](wasmlib/docs/State.md)
 * [Incoming Token Transfers](wasmlib/docs/Incoming.md)
 * [Limiting Access](wasmlib/docs/Access.md)
+* [View-Only Functions](wasmlib/docs/Views.md)
+* [Calling Functions](wasmlib/docs/Views.md)

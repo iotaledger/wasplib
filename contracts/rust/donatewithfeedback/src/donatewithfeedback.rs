@@ -15,7 +15,7 @@ pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
         timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
-        donation.error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)".to_string();
+        donation.error = "error: empty feedback or donated amount = 0".to_string();
         if donation.amount > 0 {
             ctx.transfer_to_address(&donation.donator.address(), ScTransfers::new(&ScColor::IOTA, donation.amount));
             donation.amount = 0;
@@ -40,7 +40,7 @@ pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
         amount = balance;
     }
     if amount == 0 {
-        ctx.log("DonateWithFeedback: nothing to withdraw");
+        ctx.log("dwf.withdraw: nothing to withdraw");
         return;
     }
 

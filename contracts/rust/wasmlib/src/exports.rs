@@ -14,7 +14,7 @@ use crate::mutable::*;
 // There are only 2 symbols the ISCP host will actually look for
 // in the export table:
 // on_load (which must be defined by the SC code) and
-// on_call (which is defined here as part of WasmLib)
+// on_call_entrypoint (which is defined here as part of WasmLib)
 
 static mut FUNCS: Vec<fn(&ScFuncContext)> = vec![];
 static mut VIEWS: Vec<fn(&ScViewContext)> = vec![];

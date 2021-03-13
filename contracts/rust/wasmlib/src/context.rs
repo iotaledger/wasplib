@@ -63,7 +63,8 @@ impl ScTransfers {
         transfers
     }
 
-    // add the specified token transfer to the transfer object
+    // set the specified colored token transfer in the transfer object
+    // note that this will overwrite any previous amount for the specified color
     pub fn set(&self, color: &ScColor, amount: i64) {
         self.transfers.get_int64(color).set_value(amount);
     }

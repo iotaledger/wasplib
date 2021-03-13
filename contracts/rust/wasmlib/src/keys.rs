@@ -3,32 +3,39 @@
 
 use crate::host::*;
 
+// conversion of data bytes to key id
 pub trait MapKey {
-    fn get_id(&self) -> Key32;
+    fn get_key_id(&self) -> Key32;
 }
 
+// implementations for both flavors of Rust string
 impl MapKey for str {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_string(self)
     }
 }
 
 impl MapKey for String {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         get_key_id_from_string(self)
     }
 }
 
+// special type for predefined key ids
 #[derive(Clone, Copy)]
 pub struct Key32(pub i32);
 
+// implementation for predefined key ids
 impl MapKey for Key32 {
-    fn get_id(&self) -> Key32 {
+    fn get_key_id(&self) -> Key32 {
         *self
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// all predefined key id values should exactly match their counterpart values on the host!
+// note that predefined key ids are negative values to distinguish them from indexes
 
 // @formatter:off
 pub const KEY_ADDRESS          : Key32 = Key32(-1);

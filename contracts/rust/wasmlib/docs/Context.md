@@ -16,8 +16,8 @@ contract functions in the ISCP:
 To support this function type distinction, Func and View each receive a
 separate, different function call context, and only the functionality that is
 necessary for their implementation is provided through their respective contexts
-ScFuncContext and ScViewContext. ScViewContext only provides a limited,
-immutable subset of the functionality provided by ScFuncContext. Again, the
+`ScFuncContext` and `ScViewContext`. `ScViewContext` only provides a limited,
+immutable subset of the functionality provided by `ScFuncContext`. Again, the
 compiler will prevent the programmer from using the wrong functionality in the
 wrong context.
 
@@ -52,9 +52,9 @@ fn on_load() {
 }
 ```
 
-As you can see this on_load() function first creates the required ScExports
+As you can see this on_load() function first creates the required `ScExports`
 context and then proceeds to define two Funcs named "divide" and "member" by
-calling the add_func() method of the ScExports object and then one View named
+calling the add_func() method of the `ScExports` object and then one View named
 "getFactor" by calling its add_view() method. The second parameter to these
 methods is the smart contract function associated with the name specified. These
 methods will also automatically assign unique identifiers and then send it all

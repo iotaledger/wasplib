@@ -9,6 +9,7 @@ import (
 
 func TestDeployErc20(t *testing.T) {
 	chain := common.StartChain(t, ScName)
+	creator = common.CreatorWallet
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, 1000000,
@@ -51,6 +52,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 
 func TestDeployErc20Fail3(t *testing.T) {
 	chain := common.StartChain(t, ScName)
+	creator = common.CreatorWallet
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,
@@ -62,6 +64,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
 	chain := common.StartChain(t, ScName)
+	creator = common.CreatorWallet
 	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,

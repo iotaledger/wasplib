@@ -111,7 +111,6 @@ pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginPar
         owner_margin = OWNER_MARGIN_MAX;
     }
     ctx.state().get_int64(VAR_OWNER_MARGIN).set_value(owner_margin);
-    ctx.log("Updated owner margin");
 }
 
 pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
@@ -188,7 +187,6 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
     let finalize_params = ScMutableMap::new();
     finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
     ctx.post_self(HFUNC_FINALIZE_AUCTION, Some(finalize_params), None, duration * 60);
-    ctx.log("New auction started");
 }
 
 pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {

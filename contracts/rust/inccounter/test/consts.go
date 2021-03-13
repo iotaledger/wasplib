@@ -8,8 +8,7 @@ import (
 )
 
 const ScName = "inccounter"
-const ScHname = coretypes.Hname(0xaf2438e9)
-
+const HScName = coretypes.Hname(0xaf2438e9)
 const ParamCounter = "counter"
 const ParamNumRepeats = "numRepeats"
 
@@ -29,12 +28,9 @@ const FuncLocalStatePost = "localStatePost"
 const FuncLocalStateSandboxCall = "localStateSandboxCall"
 const FuncPostIncrement = "postIncrement"
 const FuncRepeatMany = "repeatMany"
-const FuncResultsTest = "resultsTest"
-const FuncStateTest = "stateTest"
+const FuncTestLeb128 = "testLeb128"
 const FuncWhenMustIncrement = "whenMustIncrement"
 const ViewGetCounter = "getCounter"
-const ViewResultsCheck = "resultsCheck"
-const ViewStateCheck = "stateCheck"
 
 const HFuncCallIncrement = coretypes.Hname(0xeb5dcacd)
 const HFuncCallIncrementRecurse5x = coretypes.Hname(0x8749fbff)
@@ -45,9 +41,6 @@ const HFuncLocalStatePost = coretypes.Hname(0x3fd54d13)
 const HFuncLocalStateSandboxCall = coretypes.Hname(0x7bd22c53)
 const HFuncPostIncrement = coretypes.Hname(0x81c772f5)
 const HFuncRepeatMany = coretypes.Hname(0x4ff450d3)
-const HFuncResultsTest = coretypes.Hname(0xd0544634)
-const HFuncStateTest = coretypes.Hname(0x41830d59)
+const HFuncTestLeb128 = coretypes.Hname(0xd8364cb9)
 const HFuncWhenMustIncrement = coretypes.Hname(0xb4c3e7a6)
 const HViewGetCounter = coretypes.Hname(0xb423e607)
-const HViewResultsCheck = coretypes.Hname(0xa39ac571)
-const HViewStateCheck = coretypes.Hname(0xaafeb10a)
