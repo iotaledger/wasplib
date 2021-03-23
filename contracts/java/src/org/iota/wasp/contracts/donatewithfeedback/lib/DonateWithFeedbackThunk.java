@@ -12,6 +12,7 @@ import org.iota.wasp.contracts.donatewithfeedback.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class DonateWithFeedbackThunk {
     public static void main(String[] args) {

@@ -323,7 +323,7 @@ func (s *Schema) GenerateRustThunk(file *os.File, funcDef *FuncDef) {
 		switch grant {
 		case "self":
 			grant = "ctx.contract_id().as_agent_id()"
-		case "owner":
+		case "chain":
 			grant = "ctx.chain_owner_id()"
 		case "creator":
 			grant = "ctx.contract_creator()"

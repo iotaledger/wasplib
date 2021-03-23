@@ -16,17 +16,23 @@ public class Consts {
 
     public static final Key ParamAddress = new Key("address");
     public static final Key ParamFactor = new Key("factor");
+    public static final Key ParamOwner = new Key("owner");
 
     public static final Key VarFactor = new Key("factor");
     public static final Key VarMemberList = new Key("memberList");
     public static final Key VarMembers = new Key("members");
+    public static final Key VarOwner = new Key("owner");
     public static final Key VarTotalFactor = new Key("totalFactor");
 
     public static final String FuncDivide = "divide";
+    public static final String FuncInit = "init";
     public static final String FuncMember = "member";
+    public static final String FuncSetOwner = "setOwner";
     public static final String ViewGetFactor = "getFactor";
 
     public static final ScHname HFuncDivide = new ScHname(0xc7878107);
+    public static final ScHname HFuncInit = new ScHname(0x1f44d644);
     public static final ScHname HFuncMember = new ScHname(0xc07da2cb);
+    public static final ScHname HFuncSetOwner = new ScHname(0x2a15fe7b);
     public static final ScHname HViewGetFactor = new ScHname(0x0ee668fe);
 }

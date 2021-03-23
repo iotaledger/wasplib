@@ -7,6 +7,7 @@ import org.iota.wasp.contracts.inccounter.lib.*;
 import org.iota.wasp.wasmlib.bytes.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
+import org.iota.wasp.wasmlib.host.*;
 import org.iota.wasp.wasmlib.immutable.*;
 import org.iota.wasp.wasmlib.keys.*;
 import org.iota.wasp.wasmlib.mutable.*;
@@ -133,6 +134,11 @@ public class IncCounter {
     }
 
     public static void funcTestLeb128(ScFuncContext ctx, FuncTestLeb128Params params) {
+        //TODO this returns 304084046 instead of 1524157875019052100. Long implementation is broken
+        long x = 1234567890L;
+        x = x*x;
+        Host.Log("Square is " + x);
+
         save(ctx, "v-1", -1);
         save(ctx, "v-2", -2);
         save(ctx, "v-126", -126);

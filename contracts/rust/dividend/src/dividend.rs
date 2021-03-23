@@ -5,6 +5,14 @@ use wasmlib::*;
 
 use crate::*;
 
+pub fn func_init(ctx: &ScFuncContext, params: &FuncInitParams) {
+    let mut owner = ctx.contract_creator();
+     if params.owner.exists() {
+        owner = params.owner.value();
+    }
+    ctx.state().get_agent_id(VAR_OWNER).set_value(&owner);
+}
+
 pub fn func_divide(ctx: &ScFuncContext, _params: &FuncDivideParams) {
     let amount = ctx.balances().balance(&ScColor::IOTA);
     if amount == 0 {
@@ -50,6 +58,10 @@ pub fn func_member(ctx: &ScFuncContext, params: &FuncMemberParams) {
     let new_total_factor = total_factor.value() - current_factor.value() + factor;
     total_factor.set_value(new_total_factor);
     current_factor.set_value(factor);
+}
+
+pub fn func_set_owner(ctx: &ScFuncContext, params: &FuncSetOwnerParams) {
+    ctx.state().get_agent_id(VAR_OWNER).set_value(&params.owner.value());
 }
 
 pub fn view_get_factor(ctx: &ScViewContext, params: &ViewGetFactorParams) {

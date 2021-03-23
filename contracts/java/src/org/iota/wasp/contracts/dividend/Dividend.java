@@ -11,6 +11,14 @@ import org.iota.wasp.wasmlib.mutable.*;
 
 public class Dividend {
 
+    public static void funcInit(ScFuncContext ctx, FuncInitParams params) {
+        var owner = ctx.ContractCreator();
+        if (params.Owner.Exists()) {
+            owner = params.Owner.Value();
+        }
+        ctx.State().GetAgentId(Consts.VarOwner).SetValue(owner);
+    }
+
     public static void funcDivide(ScFuncContext ctx, FuncDivideParams params) {
         var amount = ctx.Balances().Balance(ScColor.IOTA);
         if (amount == 0) {
@@ -56,6 +64,10 @@ public class Dividend {
         var newTotalFactor = totalFactor.Value() - currentFactor.Value() + factor;
         totalFactor.SetValue(newTotalFactor);
         currentFactor.SetValue(factor);
+    }
+
+    public static void funcSetOwner(ScFuncContext ctx, FuncSetOwnerParams params) {
+	    ctx.State().GetAgentId(Consts.VarOwner).SetValue(params.Owner.Value());
     }
 
     public static void viewGetFactor(ScViewContext ctx, ViewGetFactorParams params) {

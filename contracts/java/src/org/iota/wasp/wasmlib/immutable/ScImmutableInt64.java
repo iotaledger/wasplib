@@ -25,6 +25,7 @@ public class ScImmutableInt64 {
 
     public long Value() {
         byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT64);
+        //TODO fix this so it handles long properly
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |

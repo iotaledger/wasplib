@@ -7,6 +7,14 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
+func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
+	owner := ctx.ContractCreator()
+	if params.Owner.Exists() {
+		owner = params.Owner.Value()
+	}
+	ctx.State().GetAgentId(VarOwner).SetValue(owner)
+}
+
 func funcDivide(ctx wasmlib.ScFuncContext, params *FuncDivideParams) {
 	amount := ctx.Balances().Balance(wasmlib.IOTA)
 	if amount == 0 {
@@ -52,6 +60,10 @@ func funcMember(ctx wasmlib.ScFuncContext, params *FuncMemberParams) {
 	newTotalFactor := totalFactor.Value() - currentFactor.Value() + factor
 	totalFactor.SetValue(newTotalFactor)
 	currentFactor.SetValue(factor)
+}
+
+func funcSetOwner(ctx wasmlib.ScFuncContext, params *FuncSetOwnerParams) {
+	ctx.State().GetAgentId(VarOwner).SetValue(params.Owner.Value())
 }
 
 func viewGetFactor(ctx wasmlib.ScViewContext, params *ViewGetFactorParams) {

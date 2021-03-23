@@ -12,7 +12,9 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncDivide, funcDivideThunk)
+	exports.AddFunc(FuncInit, funcInitThunk)
 	exports.AddFunc(FuncMember, funcMemberThunk)
+	exports.AddFunc(FuncSetOwner, funcSetOwnerThunk)
 	exports.AddView(ViewGetFactor, viewGetFactorThunk)
 }
 
@@ -27,6 +29,20 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide ok")
 }
 
+type FuncInitParams struct {
+	Owner wasmlib.ScImmutableAgentId // optional owner, defaults to contract creator
+}
+
+func funcInitThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("dividend.funcInit")
+	p := ctx.Params()
+	params := &FuncInitParams{
+		Owner: p.GetAgentId(ParamOwner),
+	}
+	funcInit(ctx, params)
+	ctx.Log("dividend.funcInit ok")
+}
+
 type FuncMemberParams struct {
 	Address wasmlib.ScImmutableAddress // address of dividend recipient
 	Factor  wasmlib.ScImmutableInt64   // relative division factor
@@ -34,8 +50,10 @@ type FuncMemberParams struct {
 
 func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcMember")
-	// only creator can add members
-	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
+	// only defined owner can add members
+	grantee := ctx.State().GetAgentId(wasmlib.Key("owner"))
+	ctx.Require(grantee.Exists(), "grantee not set: owner")
+	ctx.Require(ctx.Caller() == grantee.Value(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncMemberParams{
@@ -46,6 +64,26 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(params.Factor.Exists(), "missing mandatory factor")
 	funcMember(ctx, params)
 	ctx.Log("dividend.funcMember ok")
+}
+
+type FuncSetOwnerParams struct {
+	Owner wasmlib.ScImmutableAgentId // new owner of smart contract
+}
+
+func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("dividend.funcSetOwner")
+	// only defined owner can change owner
+	grantee := ctx.State().GetAgentId(wasmlib.Key("owner"))
+	ctx.Require(grantee.Exists(), "grantee not set: owner")
+	ctx.Require(ctx.Caller() == grantee.Value(), "no permission")
+
+	p := ctx.Params()
+	params := &FuncSetOwnerParams{
+		Owner: p.GetAgentId(ParamOwner),
+	}
+	ctx.Require(params.Owner.Exists(), "missing mandatory owner")
+	funcSetOwner(ctx, params)
+	ctx.Log("dividend.funcSetOwner ok")
 }
 
 type ViewGetFactorParams struct {

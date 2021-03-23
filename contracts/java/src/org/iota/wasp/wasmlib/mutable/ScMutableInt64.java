@@ -20,6 +20,7 @@ public class ScMutableInt64 {
 
     public void SetValue(long id) {
         byte[] bytes = new byte[8];
+        //TODO fix this so it handles long properly
         bytes[0] = (byte) id;
         bytes[1] = (byte) (id >> 8);
         bytes[2] = (byte) (id >> 16);
@@ -44,6 +45,7 @@ public class ScMutableInt64 {
 
     public long Value() {
         byte[] bytes = Host.GetBytes(objId, keyId, ScType.TYPE_INT64);
+        //TODO fix this so it handles long properly
         return (bytes[0] & 0xffL) |
                 ((bytes[1] & 0xffL) << 8) |
                 ((bytes[2] & 0xffL) << 16) |

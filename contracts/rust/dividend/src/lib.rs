@@ -16,7 +16,9 @@ mod dividend;
 fn on_load() {
     let exports = ScExports::new();
     exports.add_func(FUNC_DIVIDE, func_divide_thunk);
+    exports.add_func(FUNC_INIT, func_init_thunk);
     exports.add_func(FUNC_MEMBER, func_member_thunk);
+    exports.add_func(FUNC_SET_OWNER, func_set_owner_thunk);
     exports.add_view(VIEW_GET_FACTOR, view_get_factor_thunk);
 }
 
@@ -29,6 +31,20 @@ fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide ok");
 }
 
+pub struct FuncInitParams {
+    pub owner: ScImmutableAgentId,   // optional owner, defaults to contract creator
+}
+
+fn func_init_thunk(ctx: &ScFuncContext) {
+    ctx.log("dividend.funcInit");
+    let p = ctx.params();
+    let params = FuncInitParams {
+        owner: p.get_agent_id(PARAM_OWNER),
+    };
+    func_init(ctx, &params);
+    ctx.log("dividend.funcInit ok");
+}
+
 //@formatter:off
 pub struct FuncMemberParams {
     pub address: ScImmutableAddress,   // address of dividend recipient
@@ -38,8 +54,10 @@ pub struct FuncMemberParams {
 
 fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcMember");
-    // only creator can add members
-    ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
+    // only defined owner can add members
+    let grantee = ctx.state().get_agent_id("owner");
+    ctx.require(grantee.exists(), "grantee not set: owner");
+    ctx.require(ctx.caller() == grantee.value(), "no permission");
 
     let p = ctx.params();
     let params = FuncMemberParams {
@@ -50,6 +68,26 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.require(params.factor.exists(), "missing mandatory factor");
     func_member(ctx, &params);
     ctx.log("dividend.funcMember ok");
+}
+
+pub struct FuncSetOwnerParams {
+    pub owner: ScImmutableAgentId,   // new owner of smart contract
+}
+
+fn func_set_owner_thunk(ctx: &ScFuncContext) {
+    ctx.log("dividend.funcSetOwner");
+    // only defined owner can change owner
+    let grantee = ctx.state().get_agent_id("owner");
+    ctx.require(grantee.exists(), "grantee not set: owner");
+    ctx.require(ctx.caller() == grantee.value(), "no permission");
+
+    let p = ctx.params();
+    let params = FuncSetOwnerParams {
+        owner: p.get_agent_id(PARAM_OWNER),
+    };
+    ctx.require(params.owner.exists(), "missing mandatory owner");
+    func_set_owner(ctx, &params);
+    ctx.log("dividend.funcSetOwner ok");
 }
 
 pub struct ViewGetFactorParams {

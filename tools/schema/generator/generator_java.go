@@ -191,7 +191,8 @@ func (s *Schema) GenerateJavaLib() error {
 	fmt.Fprintf(file, "import org.iota.wasp.contracts.%s.*;\n", s.Name)
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.context.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.exports.*;\n")
-	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.immutable.*;\n\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.immutable.*;\n")
+	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.keys.*;\n\n")
 
 	thunk := ""
 	if generateJavaThunk {
@@ -332,12 +333,12 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		switch grant {
 		case "self":
 			grant = "ctx.ContractId().AsAgentId()"
-		case "owner":
+		case "chain":
 			grant = "ctx.ChainOwnerId()"
 		case "creator":
 			grant = "ctx.ContractCreator()"
 		default:
-			fmt.Fprintf(file, "        ScAgentId grantee := ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
+			fmt.Fprintf(file, "        var grantee = ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
 			fmt.Fprintf(file, "        ctx.Require(grantee.Exists(), \"grantee not set: %s\");\n", grant)
 			grant = fmt.Sprintf("grantee.Value()")
 		}

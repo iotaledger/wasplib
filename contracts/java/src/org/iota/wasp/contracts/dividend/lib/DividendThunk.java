@@ -12,6 +12,7 @@ import org.iota.wasp.contracts.dividend.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class DividendThunk {
     public static void main(String[] args) {
@@ -21,7 +22,9 @@ public class DividendThunk {
     public static void onLoad() {
         ScExports exports = new ScExports();
         exports.AddFunc(Consts.FuncDivide, DividendThunk::funcDivideThunk);
+        exports.AddFunc(Consts.FuncInit, DividendThunk::funcInitThunk);
         exports.AddFunc(Consts.FuncMember, DividendThunk::funcMemberThunk);
+        exports.AddFunc(Consts.FuncSetOwner, DividendThunk::funcSetOwnerThunk);
         exports.AddView(Consts.ViewGetFactor, DividendThunk::viewGetFactorThunk);
     }
 
@@ -32,10 +35,21 @@ public class DividendThunk {
         ctx.Log("dividend.funcDivide ok");
     }
 
+    private static void funcInitThunk(ScFuncContext ctx) {
+        ctx.Log("dividend.funcInit");
+        var p = ctx.Params();
+        var params = new FuncInitParams();
+        params.Owner = p.GetAgentId(Consts.ParamOwner);
+        Dividend.funcInit(ctx, params);
+        ctx.Log("dividend.funcInit ok");
+    }
+
     private static void funcMemberThunk(ScFuncContext ctx) {
         ctx.Log("dividend.funcMember");
-        // only creator can add members
-        ctx.Require(ctx.Caller().equals(ctx.ContractCreator()), "no permission");
+        // only defined owner can add members
+        var grantee = ctx.State().GetAgentId(new Key("owner"));
+        ctx.Require(grantee.Exists(), "grantee not set: owner");
+        ctx.Require(ctx.Caller().equals(grantee.Value()), "no permission");
 
         var p = ctx.Params();
         var params = new FuncMemberParams();
@@ -45,6 +59,21 @@ public class DividendThunk {
         ctx.Require(params.Factor.Exists(), "missing mandatory factor");
         Dividend.funcMember(ctx, params);
         ctx.Log("dividend.funcMember ok");
+    }
+
+    private static void funcSetOwnerThunk(ScFuncContext ctx) {
+        ctx.Log("dividend.funcSetOwner");
+        // only defined owner can change owner
+        var grantee = ctx.State().GetAgentId(new Key("owner"));
+        ctx.Require(grantee.Exists(), "grantee not set: owner");
+        ctx.Require(ctx.Caller().equals(grantee.Value()), "no permission");
+
+        var p = ctx.Params();
+        var params = new FuncSetOwnerParams();
+        params.Owner = p.GetAgentId(Consts.ParamOwner);
+        ctx.Require(params.Owner.Exists(), "missing mandatory owner");
+        Dividend.funcSetOwner(ctx, params);
+        ctx.Log("dividend.funcSetOwner ok");
     }
 
     private static void viewGetFactorThunk(ScViewContext ctx) {

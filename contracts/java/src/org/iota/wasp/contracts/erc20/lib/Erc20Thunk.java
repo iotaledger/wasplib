@@ -12,6 +12,7 @@ import org.iota.wasp.contracts.erc20.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.exports.*;
 import org.iota.wasp.wasmlib.immutable.*;
+import org.iota.wasp.wasmlib.keys.*;
 
 public class Erc20Thunk {
     public static void main(String[] args) {
