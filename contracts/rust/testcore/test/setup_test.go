@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	DEBUG        = true
+	DEBUG        = false
 	ERC20_NAME   = "erc20"
 	ERC20_SUPPLY = 100000
 
@@ -63,10 +63,10 @@ func filterKeys(params ...interface{}) []interface{} {
 }
 
 func setupChain(t *testing.T, keyPairOriginator *ed25519.KeyPair) (*solo.Solo, *solo.Chain) {
-	core.PrintWellKnownHnames()
 	wasmhost.HostTracing = DEBUG
 	wasmhost.ExtendedHostTracing = DEBUG
-	env := solo.New(t, DEBUG, true)
+	core.PrintWellKnownHnames()
+	env := solo.New(t, DEBUG, false)
 	chain := env.NewChain(keyPairOriginator, "ch1")
 	return env, chain
 }

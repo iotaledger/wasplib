@@ -360,12 +360,12 @@ github.com/hydrogen18/memlistener v0.0.0-20141126152155-54553eb933fb/go.mod h1:q
 github.com/imkira/go-interpol v1.1.0/go.mod h1:z0h2/2T3XF8kyEPpRgJ3kmNv+C43p+I/CoI+jC3w2iA=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/influxdata/influxdb1-client v0.0.0-20191209144304-8bf82d3c094d/go.mod h1:qj24IKcXYK6Iy9ceXlo3Tc+vtHo9lIhSX5JddghvEPo=
-github.com/iotaledger/goshimmer v0.5.3-0.20210326083146-0b1540b9bb7f h1:YTNX+w5r9TNW9zlrbEej8TiV69RGCXwK5emVBL3MRY0=
-github.com/iotaledger/goshimmer v0.5.3-0.20210326083146-0b1540b9bb7f/go.mod h1:OsBicfHUa/5s3ekf6z8SVWMQ+S93jPh35baU4ojGLLA=
+github.com/iotaledger/goshimmer v0.5.3-0.20210327153407-64386b2be44d h1:A4UK6piu/ACWzDF4jfVlzIx+CPSf6ogFhz6UfK9EAC4=
+github.com/iotaledger/goshimmer v0.5.3-0.20210327153407-64386b2be44d/go.mod h1:OsBicfHUa/5s3ekf6z8SVWMQ+S93jPh35baU4ojGLLA=
 github.com/iotaledger/hive.go v0.0.0-20210317185122-1ac328c4054f h1:+hbQVRGodH7rBJS/cPG9qgdz37L54WRshFZYf6Cdv2o=
 github.com/iotaledger/hive.go v0.0.0-20210317185122-1ac328c4054f/go.mod h1:K/0FfpFpR4elUAvRFMn8UNfmiQmKD7EcZdWngRLi2hw=
-github.com/iotaledger/wasp v0.1.1-0.20210326233134-7d4760d9b830 h1:7CQXdXABB/532VORmr/yfI1XZMfgD+I9OXgyP2NYGMU=
-github.com/iotaledger/wasp v0.1.1-0.20210326233134-7d4760d9b830/go.mod h1:v59VTCMB9yX16a7gXm4e1Yop7n4sT4pmKBvLKJB1I9c=
+github.com/iotaledger/wasp v0.1.1-0.20210327192041-89c8d9eccf9c h1:16ndeEO3V3PMGZY8MKhOwfKNeFIO7Ghf+PS6AGdzCZQ=
+github.com/iotaledger/wasp v0.1.1-0.20210327192041-89c8d9eccf9c/go.mod h1:njKOwHGLM1U4hh9REU/xNJiTPwErejUp3G+F+GBsAQ8=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
