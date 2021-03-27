@@ -28,7 +28,7 @@ pub struct FuncLockBetsParams {}
 fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcLockBets");
     // only SC itself can invoke this function
-    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+    ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
     let params = FuncLockBetsParams {};
     func_lock_bets(ctx, &params);
@@ -40,7 +40,7 @@ pub struct FuncPayWinnersParams {}
 fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPayWinners");
     // only SC itself can invoke this function
-    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+    ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
     let params = FuncPayWinnersParams {};
     func_pay_winners(ctx, &params);

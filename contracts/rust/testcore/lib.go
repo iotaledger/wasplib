@@ -24,7 +24,6 @@ func OnLoad() {
 	exports.AddFunc(FuncTestCallPanicFullEP, funcTestCallPanicFullEPThunk)
 	exports.AddFunc(FuncTestCallPanicViewEPFromFull, funcTestCallPanicViewEPFromFullThunk)
 	exports.AddFunc(FuncTestChainOwnerIDFull, funcTestChainOwnerIDFullThunk)
-	exports.AddFunc(FuncTestContractIDFull, funcTestContractIDFullThunk)
 	exports.AddFunc(FuncTestEventLogDeploy, funcTestEventLogDeployThunk)
 	exports.AddFunc(FuncTestEventLogEventData, funcTestEventLogEventDataThunk)
 	exports.AddFunc(FuncTestEventLogGenericData, funcTestEventLogGenericDataThunk)
@@ -38,7 +37,6 @@ func OnLoad() {
 	exports.AddView(ViewPassTypesView, viewPassTypesViewThunk)
 	exports.AddView(ViewTestCallPanicViewEPFromView, viewTestCallPanicViewEPFromViewThunk)
 	exports.AddView(ViewTestChainOwnerIDView, viewTestChainOwnerIDViewThunk)
-	exports.AddView(ViewTestContractIDView, viewTestContractIDViewThunk)
 	exports.AddView(ViewTestPanicViewEP, viewTestPanicViewEPThunk)
 	exports.AddView(ViewTestSandboxCall, viewTestSandboxCallThunk)
 }
@@ -68,7 +66,6 @@ type FuncCheckContextFromFullEPParams struct {
 	ChainId         wasmlib.ScImmutableChainId
 	ChainOwnerId    wasmlib.ScImmutableAgentId
 	ContractCreator wasmlib.ScImmutableAgentId
-	ContractId      wasmlib.ScImmutableContractId
 }
 
 func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
@@ -80,14 +77,12 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 		ChainId:         p.GetChainId(ParamChainId),
 		ChainOwnerId:    p.GetAgentId(ParamChainOwnerId),
 		ContractCreator: p.GetAgentId(ParamContractCreator),
-		ContractId:      p.GetContractId(ParamContractId),
 	}
 	ctx.Require(params.AgentId.Exists(), "missing mandatory agentId")
 	ctx.Require(params.Caller.Exists(), "missing mandatory caller")
 	ctx.Require(params.ChainId.Exists(), "missing mandatory chainId")
 	ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId")
 	ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator")
-	ctx.Require(params.ContractId.Exists(), "missing mandatory contractId")
 	funcCheckContextFromFullEP(ctx, params)
 	ctx.Log("testcore.funcCheckContextFromFullEP ok")
 }
@@ -252,17 +247,6 @@ func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestChainOwnerIDFull ok")
 }
 
-type FuncTestContractIDFullParams struct {
-}
-
-func funcTestContractIDFullThunk(ctx wasmlib.ScFuncContext) {
-	ctx.Log("testcore.funcTestContractIDFull")
-	params := &FuncTestContractIDFullParams{
-	}
-	funcTestContractIDFull(ctx, params)
-	ctx.Log("testcore.funcTestContractIDFull ok")
-}
-
 type FuncTestEventLogDeployParams struct {
 }
 
@@ -331,7 +315,6 @@ type ViewCheckContextFromViewEPParams struct {
 	ChainId         wasmlib.ScImmutableChainId
 	ChainOwnerId    wasmlib.ScImmutableAgentId
 	ContractCreator wasmlib.ScImmutableAgentId
-	ContractId      wasmlib.ScImmutableContractId
 }
 
 func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
@@ -342,13 +325,11 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 		ChainId:         p.GetChainId(ParamChainId),
 		ChainOwnerId:    p.GetAgentId(ParamChainOwnerId),
 		ContractCreator: p.GetAgentId(ParamContractCreator),
-		ContractId:      p.GetContractId(ParamContractId),
 	}
 	ctx.Require(params.AgentId.Exists(), "missing mandatory agentId")
 	ctx.Require(params.ChainId.Exists(), "missing mandatory chainId")
 	ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId")
 	ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator")
-	ctx.Require(params.ContractId.Exists(), "missing mandatory contractId")
 	viewCheckContextFromViewEP(ctx, params)
 	ctx.Log("testcore.viewCheckContextFromViewEP ok")
 }
@@ -458,17 +439,6 @@ func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	}
 	viewTestChainOwnerIDView(ctx, params)
 	ctx.Log("testcore.viewTestChainOwnerIDView ok")
-}
-
-type ViewTestContractIDViewParams struct {
-}
-
-func viewTestContractIDViewThunk(ctx wasmlib.ScViewContext) {
-	ctx.Log("testcore.viewTestContractIDView")
-	params := &ViewTestContractIDViewParams{
-	}
-	viewTestContractIDView(ctx, params)
-	ctx.Log("testcore.viewTestContractIDView ok")
 }
 
 type ViewTestPanicViewEPParams struct {

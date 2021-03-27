@@ -79,7 +79,7 @@ pub fn func_divide(ctx: &ScFuncContext) {
     }
 ```
 
-Now that we know we have determined that we have a non-zero amount of iota 
+Now that we know we have determined that we have a non-zero amount of iota
 tokens available to send to the members we can start transferring them:
 
 ```rust

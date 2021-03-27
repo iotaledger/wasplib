@@ -13,8 +13,7 @@ public class Core {
 
     public static final ScHname Accounts = new ScHname(0x3c4b5e02);
     public static final ScHname AccountsFuncDeposit = new ScHname(0xbdc9102d);
-    public static final ScHname AccountsFuncWithdrawToAddress = new ScHname(0x26608cb5);
-    public static final ScHname AccountsFuncWithdrawToChain = new ScHname(0x437bc026);
+    public static final ScHname AccountsFuncWithdraw = new ScHname(0x9dcc0f41);
     public static final ScHname AccountsViewAccounts = new ScHname(0x3c4b5e02);
     public static final ScHname AccountsViewBalance = new ScHname(0x84168cb4);
     public static final ScHname AccountsViewTotalAssets = new ScHname(0xfab0f8d2);

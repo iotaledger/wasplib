@@ -8,9 +8,9 @@ import (
 )
 
 func funcHelloWorld(ctx wasmlib.ScFuncContext, params *FuncHelloWorldParams) {
-	ctx.Log("Hello, world!")
+    ctx.Log("Hello, world!")
 }
 
 func viewGetHelloWorld(ctx wasmlib.ScViewContext, params *ViewGetHelloWorldParams) {
-	ctx.Results().GetString(VarHelloWorld).SetValue("Hello, world!")
+    ctx.Results().GetString(VarHelloWorld).SetValue("Hello, world!")
 }

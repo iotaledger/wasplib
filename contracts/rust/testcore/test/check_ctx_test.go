@@ -1,8 +1,8 @@
 package test
 
 import (
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address"
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
+	"github.com/iotaledger/goshimmer/packages/ledgerstate"
+	"github.com/iotaledger/goshimmer/packages/ledgerstate/utxoutil"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -15,23 +15,17 @@ func TestMainCallsFromFullEP(t *testing.T) { run2(t, testMainCallsFromFullEP) }
 func testMainCallsFromFullEP(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 
-	user := setupDeployer(t, chain)
-	userAddress := user.Address()
-	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
+	user, _, userAgentID := setupDeployer(t, chain)
 
 	setupTestSandboxSC(t, chain, user, w)
 
-	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(sbtestsc.Interface.Name))
-	agentID := coretypes.NewAgentIDFromContractID(contractID)
-
 	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCheckContextFromFullEP,
 		sbtestsc.ParamChainID, chain.ChainID,
-		sbtestsc.ParamAgentID, agentID,
+		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), sbtestsc.Interface.Hname()),
 		sbtestsc.ParamCaller, userAgentID,
 		sbtestsc.ParamChainOwnerID, chain.OriginatorAgentID,
-		sbtestsc.ParamContractID, contractID,
 		sbtestsc.ParamContractCreator, userAgentID,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 }
@@ -40,20 +34,14 @@ func TestMainCallsFromViewEP(t *testing.T) { run2(t, testMainCallsFromViewEP) }
 func testMainCallsFromViewEP(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 
-	user := setupDeployer(t, chain)
-	userAddress := user.Address()
-	userAgentID := coretypes.NewAgentIDFromAddress(userAddress)
+	user, _, userAgentID := setupDeployer(t, chain)
 
 	setupTestSandboxSC(t, chain, user, w)
 
-	contractID := coretypes.NewContractID(chain.ChainID, coretypes.Hn(sbtestsc.Interface.Name))
-	agentID := coretypes.NewAgentIDFromContractID(contractID)
-
 	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncCheckContextFromViewEP,
 		sbtestsc.ParamChainID, chain.ChainID,
-		sbtestsc.ParamAgentID, agentID,
+		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), sbtestsc.Interface.Hname()),
 		sbtestsc.ParamChainOwnerID, chain.OriginatorAgentID,
-		sbtestsc.ParamContractID, contractID,
 		sbtestsc.ParamContractCreator, userAgentID,
 	)
 	require.NoError(t, err)
@@ -63,27 +51,42 @@ func TestMintedSupplyOk(t *testing.T) { run2(t, testMintedSupplyOk) }
 func testMintedSupplyOk(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 
-	user := setupDeployer(t, chain)
+	user, userAddress, _ := setupDeployer(t, chain)
 	setupTestSandboxSC(t, chain, user, w)
 
-	supply := int64(42)
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncGetMintedSupply).WithMinting(
-		map[address.Address]int64{
-			user.Address(): supply,
-		},
-	)
+	newSupply := uint64(42)
+	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncGetMintedSupply).
+		WithIotas(1).
+		WithMint(userAddress, newSupply)
 	tx, ret, err := chain.PostRequestSyncTx(req, user)
 	require.NoError(t, err)
 
-	extraIota := int64(0)
+	mintedAmounts := utxoutil.GetMintedAmounts(tx)
+	t.Logf("minting request tx: %s", tx.ID().Base58())
+
+	require.Len(t, mintedAmounts, 1)
+	var color ledgerstate.Color
+	for col := range mintedAmounts {
+		color = col
+		break
+	}
+	t.Logf("Minted: amount = %d color = %s", newSupply, color.Base58())
+
+	extraIota := uint64(0)
 	if w {
 		extraIota = 1
 	}
-	chain.Env.AssertAddressBalance(user.Address(), balance.ColorIOTA, solo.Saldo-3-extraIota-supply)
-	chain.Env.AssertAddressBalance(user.Address(), balance.Color(tx.ID()), supply)
+	chain.Env.AssertAddressIotas(userAddress, solo.Saldo-3-extraIota-newSupply)
+	chain.Env.AssertAddressBalance(userAddress, color, newSupply)
 
-	supplyBack, ok, err := codec.DecodeInt64(ret.MustGet(sbtestsc.VarMintedSupply))
+	colorBack, ok, err := codec.DecodeColor(ret.MustGet(sbtestsc.VarMintedColor))
 	require.NoError(t, err)
 	require.True(t, ok)
-	require.EqualValues(t, supply, supplyBack)
+	t.Logf("color back: %s", colorBack.Base58())
+	require.EqualValues(t, color, colorBack)
+	supplyBack, ok, err := codec.DecodeUint64(ret.MustGet(sbtestsc.VarMintedSupply))
+	require.NoError(t, err)
+	require.True(t, ok)
+	t.Logf("supply back: %d", supplyBack)
+	require.EqualValues(t, int(newSupply), int(supplyBack))
 }

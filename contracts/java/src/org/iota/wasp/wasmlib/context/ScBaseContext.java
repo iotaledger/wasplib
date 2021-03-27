@@ -13,20 +13,28 @@ public class ScBaseContext {
     protected ScBaseContext() {
     }
 
+    public ScAgentId AccountId() {
+        return Host.root.GetAgentId(Key.AccountId).Value();
+    }
+
     public ScBalances Balances() {
         return new ScBalances(Host.root.GetMap(Key.Balances).Immutable());
+    }
+
+    public ScChainId ChainId() {
+        return Host.root.GetChainId(Key.ChainId).Value();
     }
 
     public ScAgentId ChainOwnerId() {
         return Host.root.GetAgentId(Key.ChainOwnerId).Value();
     }
 
-    public ScAgentId ContractCreator() {
-        return Host.root.GetAgentId(Key.ContractCreator).Value();
+    public ScHname Contract() {
+        return Host.root.GetHname(Key.Contract).Value();
     }
 
-    public ScContractId ContractId() {
-        return Host.root.GetContractId(Key.ContractId).Value();
+    public ScAgentId ContractCreator() {
+        return Host.root.GetAgentId(Key.ContractCreator).Value();
     }
 
     public void Log(String text) {

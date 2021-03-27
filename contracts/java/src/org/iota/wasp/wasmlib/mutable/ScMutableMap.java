@@ -68,15 +68,6 @@ public class ScMutableMap {
         return new ScMutableColorArray(arrId);
     }
 
-    public ScMutableContractId GetContractId(MapKey key) {
-        return new ScMutableContractId(objId, key.KeyId());
-    }
-
-    public ScMutableContractIdArray GetContractIdArray(MapKey key) {
-        int arrId = Host.GetObjectId(objId, key.KeyId(), ScType.TYPE_CONTRACT_ID | ScType.TYPE_ARRAY);
-        return new ScMutableContractIdArray(arrId);
-    }
-
     public ScMutableHash GetHash(MapKey key) {
         return new ScMutableHash(objId, key.KeyId());
     }

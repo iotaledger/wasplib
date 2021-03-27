@@ -24,9 +24,9 @@ func testTypesFull(t *testing.T, w bool) {
 		"Hname-0", coretypes.Hname(0),
 		"ContractID", cID,
 		"ChainID", chain.ChainID,
-		"Address", chain.ChainAddress,
+		"Address", chain.ChainID.AsAddress(),
 		"AgentID", chain.OriginatorAgentID,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
@@ -46,7 +46,7 @@ func testTypesView(t *testing.T, w bool) {
 		"Hname-0", coretypes.Hname(0),
 		"ContractID", cID,
 		"ChainID", chain.ChainID,
-		"Address", chain.ChainAddress,
+		"Address", chain.ChainID.AsAddress(),
 		"AgentID", chain.OriginatorAgentID,
 	)
 	require.NoError(t, err)

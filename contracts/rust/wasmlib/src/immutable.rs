@@ -230,50 +230,6 @@ impl ScImmutableColorArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// value proxy for immutable ScContractId in host container
-pub struct ScImmutableContractId {
-    obj_id: i32,
-    key_id: Key32,
-}
-
-impl ScImmutableContractId {
-    // check if value exists in host container
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_CONTRACT_ID)
-    }
-
-    // human-readable string representation
-    pub fn to_string(&self) -> String {
-        self.value().to_string()
-    }
-
-    // get value from host container
-    pub fn value(&self) -> ScContractId {
-        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT_ID))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-// array proxy for immutable array of ScContractId
-pub struct ScImmutableContractIdArray {
-    pub(crate) obj_id: i32
-}
-
-impl ScImmutableContractIdArray {
-    // get value proxy for item at index, index can be 0..length()-1
-    pub fn get_contract_id(&self, index: i32) -> ScImmutableContractId {
-        ScImmutableContractId { obj_id: self.obj_id, key_id: Key32(index) }
-    }
-
-    // number of items in array
-    pub fn length(&self) -> i32 {
-        get_length(self.obj_id)
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 // value proxy for immutable ScHash in host container
 pub struct ScImmutableHash {
     obj_id: i32,
@@ -466,17 +422,6 @@ impl ScImmutableMap {
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_COLOR | TYPE_ARRAY);
         ScImmutableColorArray { obj_id: arr_id }
-    }
-
-    // get value proxy for immutable ScContractId field specified by key
-    pub fn get_contract_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableContractId {
-        ScImmutableContractId { obj_id: self.obj_id, key_id: key.get_key_id() }
-    }
-
-    // get array proxy for ScImmutableContractIdArray specified by key
-    pub fn get_contract_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableContractIdArray {
-        let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_CONTRACT_ID | TYPE_ARRAY);
-        ScImmutableContractIdArray { obj_id: arr_id }
     }
 
     // get value proxy for immutable ScHash field specified by key

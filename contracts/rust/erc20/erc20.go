@@ -41,7 +41,7 @@ func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 	ctx.State().GetMap(VarBalances).GetInt64(creator).SetValue(supply)
 
 	t := "erc20.on_init.success. Supply: " + params.Supply.String() +
-		", creator:" + params.Creator.String()
+		", creator:" + creator.String()
 	ctx.Log(t)
 }
 

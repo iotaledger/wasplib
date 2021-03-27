@@ -14,14 +14,14 @@ import java.nio.charset.*;
 
 public class TestCore {
 
-    private static final String ContractNameDeployed = "exampleDeployTR";
-    private static final String MsgFullPanic = "========== panic FULL ENTRY POINT =========";
-    private static final String MsgViewPanic = "========== panic VIEW =========";
+    static String ContractNameDeployed = "exampleDeployTR";
+    static String MsgFullPanic = "========== panic FULL ENTRY POINT =========";
+    static String MsgViewPanic = "========== panic VIEW =========";
 
     public static void funcCallOnChain(ScFuncContext ctx, FuncCallOnChainParams params) {
         var paramInt = params.IntValue.Value();
 
-        var targetContract = ctx.ContractId().Hname();
+        var targetContract = ctx.Contract();
         if (params.HnameContract.Exists()) {
             targetContract = params.HnameContract.Value();
         }
@@ -35,7 +35,10 @@ public class TestCore {
         var counter = varCounter.Value();
         varCounter.SetValue(counter + 1);
 
-        ctx.Log("call depth = " + paramInt + " hnameContract = " + targetContract + " hnameEP = " + targetEp + " counter = " + counter);
+        ctx.Log("call depth = " + paramInt +
+                " hnameContract = " + targetContract +
+                " hnameEP = " + targetEp +
+                " counter = " + counter);
 
         var parms = new ScMutableMap();
         parms.GetInt64(Consts.ParamIntValue).SetValue(paramInt);
@@ -46,11 +49,10 @@ public class TestCore {
     }
 
     public static void funcCheckContextFromFullEP(ScFuncContext ctx, FuncCheckContextFromFullEPParams params) {
-        ctx.Require(params.ChainId.Value().equals(ctx.ContractId().ChainId()), "fail: chainID");
-        ctx.Require(params.ChainOwnerId.Value().equals(ctx.ChainOwnerId()), "fail: chainOwnerID");
+        ctx.Require(params.AgentId.Value().equals(ctx.AccountId()), "fail: agentID");
         ctx.Require(params.Caller.Value().equals(ctx.Caller()), "fail: caller");
-        ctx.Require(params.ContractId.Value().equals(ctx.ContractId()), "fail: contractID");
-        ctx.Require(params.AgentId.Value().equals(ctx.ContractId().AsAgentId()), "fail: agentID");
+        ctx.Require(params.ChainId.Value().equals(ctx.ChainId()), "fail: chainID");
+        ctx.Require(params.ChainOwnerId.Value().equals(ctx.ChainOwnerId()), "fail: chainOwnerID");
         ctx.Require(params.ContractCreator.Value().equals(ctx.ContractCreator()), "fail: contractCreator");
     }
 
@@ -59,7 +61,13 @@ public class TestCore {
     }
 
     public static void funcGetMintedSupply(ScFuncContext ctx, FuncGetMintedSupplyParams params) {
-        ctx.Results().GetInt64(Consts.VarMintedSupply).SetValue(ctx.MintedSupply());
+        var minted = ctx.Minted();
+        var mintedColors = minted.Colors();
+        ctx.Require(mintedColors.Length() == 1, "test only supports one minted color");
+        var color = mintedColors.GetColor(0).Value();
+        var amount = minted.Balance(color);
+        ctx.Results().GetInt64(Consts.VarMintedSupply).SetValue(amount);
+        ctx.Results().GetColor(Consts.VarMintedColor).SetValue(color);
     }
 
     public static void funcIncCounter(ScFuncContext ctx, FuncIncCounterParams params) {
@@ -116,10 +124,6 @@ public class TestCore {
         ctx.Results().GetAgentId(Consts.ParamChainOwnerId).SetValue(ctx.ChainOwnerId());
     }
 
-    public static void funcTestContractIDFull(ScFuncContext ctx, FuncTestContractIDFullParams params) {
-        ctx.Results().GetContractId(Consts.ParamContractId).SetValue(ctx.ContractId());
-    }
-
     public static void funcTestEventLogDeploy(ScFuncContext ctx, FuncTestEventLogDeployParams params) {
         //Deploy the same contract with another name
         var programHash = ctx.Utility().HashBlake2b("test_sandbox".getBytes(StandardCharsets.UTF_8));
@@ -140,19 +144,15 @@ public class TestCore {
     }
 
     public static void funcWithdrawToChain(ScFuncContext ctx, FuncWithdrawToChainParams params) {
-        //Deploy the same contract with another name
-        var targetContractId = new ScContractId(params.ChainId.Value(), Core.Accounts);
-        var transfers = new ScTransfers(ScColor.IOTA, 2);
-        ctx.Post(targetContractId, Core.AccountsFuncWithdrawToChain, null, transfers, 0);
+        var transfer = ScTransfers.iotas(1);
+        ctx.Post(params.ChainId.Value(), Core.Accounts, Core.AccountsFuncWithdraw, null, transfer, 0);
         ctx.Log("====  success ====");
-        // TODO how to check if post was successful
     }
 
     public static void viewCheckContextFromViewEP(ScViewContext ctx, ViewCheckContextFromViewEPParams params) {
-        ctx.Require(params.ChainId.Value().equals(ctx.ContractId().ChainId()), "fail: chainID");
+        ctx.Require(params.AgentId.Value().equals(ctx.AccountId()), "fail: agentID");
+        ctx.Require(params.ChainId.Value().equals(ctx.ChainId()), "fail: chainID");
         ctx.Require(params.ChainOwnerId.Value().equals(ctx.ChainOwnerId()), "fail: chainOwnerID");
-        ctx.Require(params.ContractId.Value().equals(ctx.ContractId()), "fail: contractID");
-        ctx.Require(params.AgentId.Value().equals(ctx.ContractId().AsAgentId()), "fail: agentID");
         ctx.Require(params.ContractCreator.Value().equals(ctx.ContractCreator()), "fail: contractCreator");
     }
 
@@ -208,10 +208,6 @@ public class TestCore {
 
     public static void viewTestChainOwnerIDView(ScViewContext ctx, ViewTestChainOwnerIDViewParams params) {
         ctx.Results().GetAgentId(Consts.ParamChainOwnerId).SetValue(ctx.ChainOwnerId());
-    }
-
-    public static void viewTestContractIDView(ScViewContext ctx, ViewTestContractIDViewParams params) {
-        ctx.Results().GetContractId(Consts.ParamContractId).SetValue(ctx.ContractId());
     }
 
     public static void viewTestPanicViewEP(ScViewContext ctx, ViewTestPanicViewEPParams params) {

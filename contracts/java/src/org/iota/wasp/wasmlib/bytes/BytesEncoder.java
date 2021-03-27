@@ -37,10 +37,6 @@ public class BytesEncoder {
         return Bytes(value.toBytes());
     }
 
-    public BytesEncoder ContractId(ScContractId value) {
-        return Bytes(value.toBytes());
-    }
-
     public byte[] Data() {
         return data.toByteArray();
     }

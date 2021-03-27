@@ -12,11 +12,11 @@ after the first time the contract has been deployed to the VM. Note that this is
 a one-time initialization call, meant to be performed by the contract deployment
 mechanism. ISCP will prevent anyone else from calling this function ever again.
 So if you need to be able to reconfigure the contract later on, then you will
-need to provide a separate configuration function, and guard it from being 
+need to provide a separate configuration function, and guard it from being
 accessed by anyone else than properly authorized entities.
 
 To show how creating a smart contract with WasmLib works we will slowly start
-fleshing out the smart contract functions of the `dividend` example in this 
+fleshing out the smart contract functions of the `dividend` example in this
 tutorial. Here is the first part of the Rust code that implements it, which
 contains the 'init' function:
 

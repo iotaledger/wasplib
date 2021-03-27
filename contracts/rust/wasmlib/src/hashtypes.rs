@@ -57,6 +57,14 @@ pub struct ScAgentId {
 }
 
 impl ScAgentId {
+    // construct from chain id and contract name hash
+    pub fn new(chain_id: &ScChainId, hname: &ScHname) -> ScAgentId {
+        let mut agent_id = ScAgentId { id: [0; 37] };
+        agent_id.id[..33].copy_from_slice(&chain_id.to_bytes());
+        agent_id.id[33..].copy_from_slice(&hname.to_bytes());
+        agent_id
+    }
+
     // construct from byte array
     pub fn from_bytes(bytes: &[u8]) -> ScAgentId {
         ScAgentId { id: bytes.try_into().expect("invalid agent id lengths") }
@@ -67,6 +75,11 @@ impl ScAgentId {
         let mut address = ScAddress { id: [0; 33] };
         address.id[..33].copy_from_slice(&self.id[..33]);
         address
+    }
+
+    // get contract name hash for this agent
+    pub fn hname(&self) -> ScHname {
+        ScHname::from_bytes(&self.id[33..])
     }
 
     // checks to see if agent id represents a Tangle address
@@ -162,65 +175,6 @@ impl ScColor {
 
 // can be used as key in maps
 impl MapKey for ScColor {
-    fn get_key_id(&self) -> Key32 {
-        get_key_id_from_bytes(self.to_bytes())
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-// value object for 37-byte contract ids
-#[derive(PartialEq, Clone)]
-pub struct ScContractId {
-    id: [u8; 37],
-}
-
-impl ScContractId {
-    // construct from chain id and contract name hash
-    pub fn new(chain_id: &ScChainId, hname: &ScHname) -> ScContractId {
-        let mut contract_id = ScContractId { id: [0; 37] };
-        contract_id.id[..33].copy_from_slice(&chain_id.to_bytes());
-        contract_id.id[33..].copy_from_slice(&hname.to_bytes());
-        contract_id
-    }
-
-    // construct from byte array
-    pub fn from_bytes(bytes: &[u8]) -> ScContractId {
-        ScContractId { id: bytes.try_into().expect("invalid contract id length") }
-    }
-
-    // get agent id representation of contract id
-    pub fn as_agent_id(&self) -> ScAgentId {
-        let mut agent_id = ScAgentId { id: [0x00; 37] };
-        agent_id.id[..].copy_from_slice(&self.id[..]);
-        agent_id
-    }
-
-    // get chain id of chain that contract is on
-    pub fn chain_id(&self) -> ScChainId {
-        let mut chain_id = ScChainId { id: [0; 33] };
-        chain_id.id[..33].copy_from_slice(&self.id[..33]);
-        chain_id
-    }
-
-    // get contract name hash for this contract
-    pub fn hname(&self) -> ScHname {
-        ScHname::from_bytes(&self.id[33..])
-    }
-
-    // convert to byte array representation
-    pub fn to_bytes(&self) -> &[u8] {
-        &self.id
-    }
-
-    // human-readable string representation
-    pub fn to_string(&self) -> String {
-        base58_encode(&self.id)
-    }
-}
-
-// can be used as key in maps
-impl MapKey for ScContractId {
     fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }

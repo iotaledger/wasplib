@@ -31,7 +31,7 @@ public class FairAuctionThunk {
     private static void funcFinalizeAuctionThunk(ScFuncContext ctx) {
         ctx.Log("fairauction.funcFinalizeAuction");
         // only SC itself can invoke this function
-        ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+        ctx.Require(ctx.Caller().equals(ctx.AccountId()), "no permission");
 
         var p = ctx.Params();
         var params = new FuncFinalizeAuctionParams();

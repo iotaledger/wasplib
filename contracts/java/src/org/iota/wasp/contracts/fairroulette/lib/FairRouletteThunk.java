@@ -31,7 +31,7 @@ public class FairRouletteThunk {
     private static void funcLockBetsThunk(ScFuncContext ctx) {
         ctx.Log("fairroulette.funcLockBets");
         // only SC itself can invoke this function
-        ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+        ctx.Require(ctx.Caller().equals(ctx.AccountId()), "no permission");
 
         var params = new FuncLockBetsParams();
         FairRoulette.funcLockBets(ctx, params);
@@ -41,7 +41,7 @@ public class FairRouletteThunk {
     private static void funcPayWinnersThunk(ScFuncContext ctx) {
         ctx.Log("fairroulette.funcPayWinners");
         // only SC itself can invoke this function
-        ctx.Require(ctx.Caller().equals(ctx.ContractId().AsAgentId()), "no permission");
+        ctx.Require(ctx.Caller().equals(ctx.AccountId()), "no permission");
 
         var params = new FuncPayWinnersParams();
         FairRoulette.funcPayWinners(ctx, params);

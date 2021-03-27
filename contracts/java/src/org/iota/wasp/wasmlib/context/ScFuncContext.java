@@ -37,7 +37,7 @@ public class ScFuncContext extends ScBaseContext {
     }
 
     public ScImmutableMap CallSelf(ScHname hFunction, ScMutableMap params, ScTransfers transfer) {
-        return Call(ContractId().Hname(), hFunction, params, transfer);
+        return Call(Contract(), hFunction, params, transfer);
     }
 
     public void Deploy(ScHash programHash, String name, String description, ScMutableMap params) {
@@ -61,34 +61,27 @@ public class ScFuncContext extends ScBaseContext {
         return new ScBalances(Host.root.GetMap(Key.Incoming).Immutable());
     }
 
-    public ScColor MintedColor() {
-        return new ScColor(RequestId());
+    public ScBalances Minted() {
+        return new ScBalances(Host.root.GetMap(Key.Minted).Immutable());
     }
 
-    public long MintedSupply() {
-        return Host.root.GetInt64(Key.Minted).Value();
-    }
-
-    public void Post(ScContractId contractId, ScHname function, ScMutableMap params, ScTransfers transfer, long delay) {
+    public void Post(ScChainId chainId, ScHname hContract, ScHname hFunction, ScMutableMap params, ScTransfers transfer, long delay) {
         BytesEncoder encode = new BytesEncoder();
-        encode.ContractId(contractId);
-        encode.Hname(function);
+        encode.ChainId(chainId);
+        encode.Hname(hContract);
+        encode.Hname(hFunction);
         if (params != null) {
             encode.Int64(params.mapId());
         } else {
             encode.Int64(0);
         }
-        if (transfer != null) {
-            encode.Int64(transfer.mapId());
-        } else {
-            encode.Int64(0);
-        }
+        encode.Int64(transfer.mapId());
         encode.Int64(delay);
         Host.root.GetBytes(Key.Post).SetValue(encode.Data());
     }
 
-    public void PostSelf(ScHname function, ScMutableMap params, ScTransfers transfer, long delay) {
-        Post(ContractId(), function, params, transfer, delay);
+    public void PostSelf(ScHname hFunction, ScMutableMap params, ScTransfers transfer, long delay) {
+        Post(ChainId(), Contract(), hFunction, params, transfer, delay);
     }
 
     public ScRequestId RequestId() {

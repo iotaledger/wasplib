@@ -52,7 +52,7 @@ public class FairAuction {
         var size = bidderList.Length();
         for (var i = 0; i < size; i++) {
             var bidder = bidderList.GetAgentId(i).Value();
-            if (bidder != auction.HighestBidder) {
+            if (!bidder.equals(auction.HighestBidder)) {
                 var loser = bidders.GetBytes(bidder);
                 var bid = new Bid(loser.Value());
                 transfer(ctx, bidder, ScColor.IOTA, bid.Amount);
@@ -118,7 +118,6 @@ public class FairAuction {
             ownerMargin = OwnerMarginMax;
         }
         ctx.State().GetInt64(Consts.VarOwnerMargin).SetValue(ownerMargin);
-        ctx.Log("Updated owner margin");
     }
 
     public static void funcStartAuction(ScFuncContext ctx, FuncStartAuctionParams params) {
@@ -146,11 +145,12 @@ public class FairAuction {
         }
 
         var description = params.Description.Value();
-        if (description == "") {
+        if (description.equals("")) {
             description = "N/A";
         }
         if (description.length() > MaxDescriptionLength) {
-            description = description.substring(0, MaxDescriptionLength) + "[...]";
+            var ss = description.substring(0, MaxDescriptionLength);
+            description = ss + "[...]";
         }
 
         var state = ctx.State();
@@ -194,8 +194,8 @@ public class FairAuction {
 
         var finalizeParams = new ScMutableMap();
         finalizeParams.GetColor(Consts.VarColor).SetValue(auction.Color);
-        ctx.PostSelf(Consts.HFuncFinalizeAuction, finalizeParams, null, duration * 60);
-        ctx.Log("New auction started");
+        var transfer = ScTransfers.iotas(1);
+        ctx.PostSelf(Consts.HFuncFinalizeAuction, finalizeParams, transfer, duration * 60);
     }
 
     public static void viewGetInfo(ScViewContext ctx, ViewGetInfoParams params) {

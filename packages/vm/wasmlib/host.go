@@ -9,21 +9,20 @@ const (
 	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20
 
-	TYPE_ADDRESS     int32 = 1
-	TYPE_AGENT_ID    int32 = 2
-	TYPE_BYTES       int32 = 3
-	TYPE_CHAIN_ID    int32 = 4
-	TYPE_COLOR       int32 = 5
-	TYPE_CONTRACT_ID int32 = 6
-	TYPE_HASH        int32 = 7
-	TYPE_HNAME       int32 = 8
-	TYPE_INT64       int32 = 9
-	TYPE_MAP         int32 = 10
-	TYPE_REQUEST_ID  int32 = 11
-	TYPE_STRING      int32 = 12
+	TYPE_ADDRESS    int32 = 1
+	TYPE_AGENT_ID   int32 = 2
+	TYPE_BYTES      int32 = 3
+	TYPE_CHAIN_ID   int32 = 4
+	TYPE_COLOR      int32 = 5
+	TYPE_HASH       int32 = 6
+	TYPE_HNAME      int32 = 7
+	TYPE_INT64      int32 = 8
+	TYPE_MAP        int32 = 9
+	TYPE_REQUEST_ID int32 = 10
+	TYPE_STRING     int32 = 11
 )
 
-var typeSizes = [...]int{0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0}
+var typeSizes = [...]int{0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0}
 
 type ScHost interface {
 	Exists(objId int32, keyId int32, typeId int32) bool

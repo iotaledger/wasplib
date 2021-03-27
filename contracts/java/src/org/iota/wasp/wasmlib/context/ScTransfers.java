@@ -7,6 +7,10 @@ import org.iota.wasp.wasmlib.mutable.*;
 public class ScTransfers {
     final ScMutableMap transfers = new ScMutableMap();
 
+    public static ScTransfers iotas(long amount) {
+        return new ScTransfers(ScColor.IOTA, amount);
+    }
+
     public ScTransfers() {
     }
 

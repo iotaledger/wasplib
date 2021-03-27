@@ -3,14 +3,13 @@
 View-only functions, or Views for short are smart contract functions that only
 allow you to *retrieve* state information about the smart contract. They have a
 special, limited function context that does not allow access to functionality
-that could result in changes to the smart contract state. That means that 
-all access to the state storage will be through immutable proxies. It also 
-means that they cannot receive or transfer tokens, because changes to the 
-smart contract account are by definition state changes as well.
+that could result in changes to the smart contract state. That means that all
+access to the state storage will be through immutable proxies. It also means
+that they cannot receive or transfer tokens, because changes to the smart
+contract account are by definition state changes as well.
 
-Views are allowed to call other views on the same chain, but they cannot 
-call any non-view smart contract function, nor can they post cross-chain 
-requests.
+Views are allowed to call other views on the same chain, but they cannot call
+any non-view smart contract function, nor can they post cross-chain requests.
 
 View functions will always return some data to their caller. It would be silly
 not to return data from a View because by definition it cannot have any other
@@ -85,10 +84,10 @@ that it is not possible to modify the state in any way.
 
 Return values are passed to the caller through the predefined results() map
 associated with the function context. Again, this works the same way as with
-normal functions, although normal functions do not necessarily always return 
+normal functions, although normal functions do not necessarily always return
 values to the caller.
 
-In the next section we will go deeper into how to limit access to smart 
-contract functions.
+In the next section we will go deeper into how to limit access to smart contract
+functions.
 
 Next: [Limiting Access](Access.md)

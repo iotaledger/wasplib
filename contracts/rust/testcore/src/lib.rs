@@ -28,7 +28,6 @@ fn on_load() {
     exports.add_func(FUNC_TEST_CALL_PANIC_FULL_EP, func_test_call_panic_full_ep_thunk);
     exports.add_func(FUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL, func_test_call_panic_view_ep_from_full_thunk);
     exports.add_func(FUNC_TEST_CHAIN_OWNER_ID_FULL, func_test_chain_owner_id_full_thunk);
-    exports.add_func(FUNC_TEST_CONTRACT_ID_FULL, func_test_contract_id_full_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_DEPLOY, func_test_event_log_deploy_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_EVENT_DATA, func_test_event_log_event_data_thunk);
     exports.add_func(FUNC_TEST_EVENT_LOG_GENERIC_DATA, func_test_event_log_generic_data_thunk);
@@ -42,7 +41,6 @@ fn on_load() {
     exports.add_view(VIEW_PASS_TYPES_VIEW, view_pass_types_view_thunk);
     exports.add_view(VIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, view_test_call_panic_view_ep_from_view_thunk);
     exports.add_view(VIEW_TEST_CHAIN_OWNER_ID_VIEW, view_test_chain_owner_id_view_thunk);
-    exports.add_view(VIEW_TEST_CONTRACT_ID_VIEW, view_test_contract_id_view_thunk);
     exports.add_view(VIEW_TEST_PANIC_VIEW_EP, view_test_panic_view_ep_thunk);
     exports.add_view(VIEW_TEST_SANDBOX_CALL, view_test_sandbox_call_thunk);
 }
@@ -75,7 +73,6 @@ pub struct FuncCheckContextFromFullEPParams {
     pub chain_id:         ScImmutableChainId,
     pub chain_owner_id:   ScImmutableAgentId,
     pub contract_creator: ScImmutableAgentId,
-    pub contract_id:      ScImmutableContractId,
 }
 //@formatter:on
 
@@ -88,14 +85,12 @@ fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
         chain_id: p.get_chain_id(PARAM_CHAIN_ID),
         chain_owner_id: p.get_agent_id(PARAM_CHAIN_OWNER_ID),
         contract_creator: p.get_agent_id(PARAM_CONTRACT_CREATOR),
-        contract_id: p.get_contract_id(PARAM_CONTRACT_ID),
     };
     ctx.require(params.agent_id.exists(), "missing mandatory agentId");
     ctx.require(params.caller.exists(), "missing mandatory caller");
     ctx.require(params.chain_id.exists(), "missing mandatory chainId");
     ctx.require(params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
     ctx.require(params.contract_creator.exists(), "missing mandatory contractCreator");
-    ctx.require(params.contract_id.exists(), "missing mandatory contractId");
     func_check_context_from_full_ep(ctx, &params);
     ctx.log("testcore.funcCheckContextFromFullEP ok");
 }
@@ -250,15 +245,6 @@ fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestChainOwnerIDFull ok");
 }
 
-pub struct FuncTestContractIDFullParams {}
-
-fn func_test_contract_id_full_thunk(ctx: &ScFuncContext) {
-    ctx.log("testcore.funcTestContractIDFull");
-    let params = FuncTestContractIDFullParams {};
-    func_test_contract_id_full(ctx, &params);
-    ctx.log("testcore.funcTestContractIDFull ok");
-}
-
 pub struct FuncTestEventLogDeployParams {}
 
 fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
@@ -322,7 +308,6 @@ pub struct ViewCheckContextFromViewEPParams {
     pub chain_id:         ScImmutableChainId,
     pub chain_owner_id:   ScImmutableAgentId,
     pub contract_creator: ScImmutableAgentId,
-    pub contract_id:      ScImmutableContractId,
 }
 //@formatter:on
 
@@ -334,13 +319,11 @@ fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
         chain_id: p.get_chain_id(PARAM_CHAIN_ID),
         chain_owner_id: p.get_agent_id(PARAM_CHAIN_OWNER_ID),
         contract_creator: p.get_agent_id(PARAM_CONTRACT_CREATOR),
-        contract_id: p.get_contract_id(PARAM_CONTRACT_ID),
     };
     ctx.require(params.agent_id.exists(), "missing mandatory agentId");
     ctx.require(params.chain_id.exists(), "missing mandatory chainId");
     ctx.require(params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
     ctx.require(params.contract_creator.exists(), "missing mandatory contractCreator");
-    ctx.require(params.contract_id.exists(), "missing mandatory contractId");
     view_check_context_from_view_ep(ctx, &params);
     ctx.log("testcore.viewCheckContextFromViewEP ok");
 }
@@ -444,15 +427,6 @@ fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     let params = ViewTestChainOwnerIDViewParams {};
     view_test_chain_owner_id_view(ctx, &params);
     ctx.log("testcore.viewTestChainOwnerIDView ok");
-}
-
-pub struct ViewTestContractIDViewParams {}
-
-fn view_test_contract_id_view_thunk(ctx: &ScViewContext) {
-    ctx.log("testcore.viewTestContractIDView");
-    let params = ViewTestContractIDViewParams {};
-    view_test_contract_id_view(ctx, &params);
-    ctx.log("testcore.viewTestContractIDView ok");
 }
 
 pub struct ViewTestPanicViewEPParams {}

@@ -173,39 +173,6 @@ func (o ScImmutableColorArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScImmutableContractId struct {
-	objId int32
-	keyId Key32
-}
-
-func (o ScImmutableContractId) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_CONTRACT_ID)
-}
-
-func (o ScImmutableContractId) String() string {
-	return o.Value().String()
-}
-
-func (o ScImmutableContractId) Value() ScContractId {
-	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScImmutableContractIdArray struct {
-	objId int32
-}
-
-func (o ScImmutableContractIdArray) GetContractId(index int32) ScImmutableContractId {
-	return ScImmutableContractId{objId: o.objId, keyId: Key32(index)}
-}
-
-func (o ScImmutableContractIdArray) Length() int32 {
-	return GetLength(o.objId)
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScImmutableHash struct {
 	objId int32
 	keyId Key32
@@ -353,15 +320,6 @@ func (o ScImmutableMap) GetColor(key MapKey) ScImmutableColor {
 func (o ScImmutableMap) GetColorArray(key MapKey) ScImmutableColorArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_COLOR|TYPE_ARRAY)
 	return ScImmutableColorArray{objId: arrId}
-}
-
-func (o ScImmutableMap) GetContractId(key MapKey) ScImmutableContractId {
-	return ScImmutableContractId{objId: o.objId, keyId: key.KeyId()}
-}
-
-func (o ScImmutableMap) GetContractIdArray(key MapKey) ScImmutableContractIdArray {
-	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_CONTRACT_ID|TYPE_ARRAY)
-	return ScImmutableContractIdArray{objId: arrId}
 }
 
 func (o ScImmutableMap) GetHash(key MapKey) ScImmutableHash {

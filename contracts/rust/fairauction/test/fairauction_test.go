@@ -4,32 +4,32 @@
 package test
 
 import (
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
+	"github.com/iotaledger/goshimmer/packages/ledgerstate"
+	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/dict"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
-	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 )
 
-var auctioneer signaturescheme.SignatureScheme
-var tokenColor balance.Color
+var auctioneer *ed25519.KeyPair
+var auctioneerAddr  ledgerstate.Address
+var tokenColor ledgerstate.Color
 
 func setupTest(t *testing.T) *solo.Chain {
 	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
 
 	// set up auctioneer account and mint some tokens to auction off
-	auctioneer = chain.Env.NewSignatureSchemeWithFunds()
+	auctioneer,auctioneerAddr = chain.Env.NewKeyPairWithFunds()
 	newColor, err := chain.Env.MintTokens(auctioneer, 10)
 	require.NoError(t, err)
-	chain.Env.AssertAddressBalance(auctioneer.Address(), balance.ColorIOTA, solo.Saldo-10)
-	chain.Env.AssertAddressBalance(auctioneer.Address(), newColor, 10)
+	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-10)
+	chain.Env.AssertAddressBalance(auctioneerAddr, newColor, 10)
 	tokenColor = newColor
 
 	// start auction
@@ -37,8 +37,8 @@ func setupTest(t *testing.T) *solo.Chain {
 		ParamColor, tokenColor,
 		ParamMinimumBid, 500,
 		ParamDescription, "Cool tokens for sale!",
-	).WithTransfers(map[balance.Color]int64{
-		balance.ColorIOTA: 25, // deposit, must be >=minimum*margin
+	).WithTransfers(map[ledgerstate.Color]uint64{
+		ledgerstate.ColorIOTA: 25, // deposit, must be >=minimum*margin
 		tokenColor:        10, // the tokens to auction
 	})
 	_, err = chain.PostRequestSync(req, auctioneer)
@@ -56,14 +56,14 @@ func TestFaStartAuction(t *testing.T) {
 	chain := setupTest(t)
 
 	// note 1 iota should be stuck in the delayed finalize_auction
-	chain.AssertAccountBalance(common.ContractAccount, balance.ColorIOTA, 25-1)
-	chain.AssertAccountBalance(common.ContractAccount, tokenColor, 10)
+	chain.AssertAccountBalance(chain.ContractAgentID(ScName), ledgerstate.ColorIOTA, 25-1)
+	chain.AssertAccountBalance(chain.ContractAgentID(ScName), tokenColor, 10)
 
 	// auctioneer sent 25 deposit + 10 tokenColor + used 1 for request
-	chain.Env.AssertAddressBalance(auctioneer.Address(), balance.ColorIOTA, solo.Saldo-35-1)
+	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-35)
 	// 1 used for request was sent back to auctioneer's account on chain
-	account := coretypes.NewAgentIDFromSigScheme(auctioneer)
-	chain.AssertAccountBalance(account, balance.ColorIOTA, 1)
+	account := coretypes.NewAgentID(auctioneerAddr, 0)
+	chain.AssertAccountBalance(account, ledgerstate.ColorIOTA, 0)
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)
@@ -78,8 +78,8 @@ func TestFaAuctionInfo(t *testing.T) {
 		ParamColor, tokenColor,
 	)
 	require.NoError(t, err)
-	account := coretypes.NewAgentIDFromSigScheme(auctioneer)
-	requireAgent(t, res, VarCreator, account)
+	account := coretypes.NewAgentID(auctioneerAddr, 0)
+	requireAgent(t, res, VarCreator, *account)
 	requireInt64(t, res, VarBidders, 0)
 
 	// remove delayed finalize_auction from backlog
@@ -107,7 +107,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 
 	req := solo.NewCallParams(ScName, FuncPlaceBid,
 		ParamColor, tokenColor,
-	).WithTransfer(balance.ColorIOTA, 100)
+	).WithIotas(100)
 	_, err := chain.PostRequestSync(req, auctioneer)
 	require.Error(t, err)
 
@@ -127,10 +127,10 @@ func TestFaOneBidTooLow(t *testing.T) {
 func TestFaOneBid(t *testing.T) {
 	chain := setupTest(t)
 
-	bidder := chain.Env.NewSignatureSchemeWithFunds()
+	bidder, bidderAddr := chain.Env.NewKeyPairWithFunds()
 	req := solo.NewCallParams(ScName, FuncPlaceBid,
 		ParamColor, tokenColor,
-	).WithTransfer(balance.ColorIOTA, 500)
+	).WithIotas(500)
 	_, err := chain.PostRequestSync(req, bidder)
 	require.NoError(t, err)
 
@@ -145,24 +145,24 @@ func TestFaOneBid(t *testing.T) {
 	require.NoError(t, err)
 	requireInt64(t, res, VarBidders, 1)
 	requireInt64(t, res, VarHighestBid, 500)
-	requireAgent(t, res, VarHighestBidder, coretypes.NewAgentIDFromSigScheme(bidder))
+	requireAgent(t, res, VarHighestBidder, *coretypes.NewAgentID(bidderAddr, 0))
 }
 
-func requireAgent(t *testing.T, res dict.Dict, key wasmlib.Key, expected coretypes.AgentID) {
+func requireAgent(t *testing.T, res dict.Dict, key string, expected coretypes.AgentID) {
 	actual, exists, err := codec.DecodeAgentID(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)
 	require.EqualValues(t, expected, actual)
 }
 
-func requireInt64(t *testing.T, res dict.Dict, key wasmlib.Key, expected int64) {
+func requireInt64(t *testing.T, res dict.Dict, key string, expected int64) {
 	actual, exists, err := codec.DecodeInt64(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)
 	require.EqualValues(t, expected, actual)
 }
 
-func requireString(t *testing.T, res dict.Dict, key wasmlib.Key, expected string) {
+func requireString(t *testing.T, res dict.Dict, key string, expected string) {
 	actual, exists, err := codec.DecodeString(res.MustGet(kv.Key(key)))
 	require.NoError(t, err)
 	require.True(t, exists)

@@ -23,12 +23,13 @@ public class ScViewContext extends ScBaseContext {
         } else {
             encode.Int64(0);
         }
+        encode.Int64(0);
         Host.root.GetBytes(Key.Call).SetValue(encode.Data());
         return Host.root.GetMap(Key.Return).Immutable();
     }
 
     public ScImmutableMap CallSelf(ScHname hFunction, ScMutableMap params) {
-        return Call(ContractId().Hname(), hFunction, params);
+        return Call(Contract(), hFunction, params);
     }
 
     public ScImmutableMap State() {

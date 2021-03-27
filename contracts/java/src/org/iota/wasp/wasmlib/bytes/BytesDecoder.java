@@ -42,10 +42,6 @@ public class BytesDecoder {
         return new ScColor(Bytes());
     }
 
-    public ScContractId ContractId() {
-        return new ScContractId(Bytes());
-    }
-
     public ScHash Hash() {
         return new ScHash(Bytes());
     }

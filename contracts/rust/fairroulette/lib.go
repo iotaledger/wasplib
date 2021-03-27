@@ -24,7 +24,7 @@ type FuncLockBetsParams struct {
 func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcLockBets")
 	// only SC itself can invoke this function
-	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
+	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
 	params := &FuncLockBetsParams{
 	}
@@ -38,7 +38,7 @@ type FuncPayWinnersParams struct {
 func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPayWinners")
 	// only SC itself can invoke this function
-	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
+	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
 	params := &FuncPayWinnersParams{
 	}

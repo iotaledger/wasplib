@@ -58,11 +58,11 @@ func GenerateJavaCoreContractsSchema(coreSchemas []*Schema) error {
 	for _, schema := range coreSchemas {
 		scName := capitalize(schema.Name)
 		scHname := coretypes.Hn(schema.Name)
-		fmt.Fprintf(file, "\n\tpublic static final ScHname %s = new ScHname(0x%s);\n", scName, scHname.String())
+		fmt.Fprintf(file, "\n    public static final ScHname %s = new ScHname(0x%s);\n", scName, scHname.String())
 		for _, funcDef := range schema.Funcs {
 			funcHname := coretypes.Hn(funcDef.Name)
 			funcName := capitalize(funcDef.FullName)
-			fmt.Fprintf(file, "\tpublic static final ScHname %s%s = new ScHname(0x%s);\n", scName, funcName, funcHname.String())
+			fmt.Fprintf(file, "    public static final ScHname %s%s = new ScHname(0x%s);\n", scName, funcName, funcHname.String())
 		}
 
 		if len(schema.Params) != 0 {
@@ -70,7 +70,7 @@ func GenerateJavaCoreContractsSchema(coreSchemas []*Schema) error {
 			for _, name := range sortedFields(schema.Params) {
 				param := schema.Params[name]
 				name = capitalize(param.Name)
-				fmt.Fprintf(file, "\tpublic static final Key %sParam%s = new Key(\"%s\");\n", scName, name, param.Alias)
+				fmt.Fprintf(file, "    public static final Key %sParam%s = new Key(\"%s\");\n", scName, name, param.Alias)
 			}
 		}
 	}

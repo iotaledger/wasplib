@@ -5,7 +5,6 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
-	"github.com/iotaledger/wasplib/contracts/testenv"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -18,7 +17,7 @@ func testGetSet(t *testing.T, w bool) {
 	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncSetInt,
 		sbtestsc.ParamIntParamName, "ppp",
 		sbtestsc.ParamIntParamValue, 314,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -32,9 +31,7 @@ func testGetSet(t *testing.T, w bool) {
 	require.EqualValues(t, 314, retInt)
 }
 
-func TestCallRecursive(t *testing.T) {
-	run2(t, testCallRecursive, testenv.WasmRunner == testenv.WasmRunnerGo)
-}
+func TestCallRecursive(t *testing.T) { run2(t, testCallRecursive) }
 func testCallRecursive(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
@@ -43,7 +40,7 @@ func testCallRecursive(t *testing.T, w bool) {
 		sbtestsc.ParamIntParamValue, 31,
 		sbtestsc.ParamHnameContract, cID.Hname(),
 		sbtestsc.ParamHnameEP, coretypes.Hn(sbtestsc.FuncRunRecursion),
-	)
+	).WithIotas(1)
 	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -89,7 +86,7 @@ func testCallFibonacciIndirect(t *testing.T, w bool) {
 		sbtestsc.ParamIntParamValue, n,
 		sbtestsc.ParamHnameContract, cID.Hname(),
 		sbtestsc.ParamHnameEP, coretypes.Hn(sbtestsc.FuncGetFibonacci),
-	)
+	).WithIotas(1)
 	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	r, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.ParamIntParamValue))

@@ -6,9 +6,7 @@
       "deposit": {
         "agentID=a": "AgentId"
       },
-      "withdrawToAddress": {
-      },
-      "withdrawToChain": {
+      "withdraw": {
       }
     },
     "views": {

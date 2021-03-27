@@ -186,7 +186,8 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
 
     let finalize_params = ScMutableMap::new();
     finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
-    ctx.post_self(HFUNC_FINALIZE_AUCTION, Some(finalize_params), None, duration * 60);
+    let transfer = ScTransfers::iotas(1);
+    ctx.post_self(HFUNC_FINALIZE_AUCTION, Some(finalize_params), transfer, duration * 60);
 }
 
 pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {

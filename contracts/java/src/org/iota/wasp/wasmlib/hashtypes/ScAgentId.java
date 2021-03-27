@@ -11,6 +11,12 @@ import java.util.*;
 public class ScAgentId implements MapKey {
     final byte[] id = new byte[37];
 
+    public ScAgentId(ScChainId chainId, ScHname hContract) {
+        System.arraycopy(chainId.id, 0, id, 0, chainId.id.length);
+        byte[] bytes = hContract.toBytes();
+        System.arraycopy(bytes, 0, id, chainId.id.length, bytes.length);
+    }
+
     public ScAgentId(byte[] bytes) {
         if (bytes == null || bytes.length != id.length) {
             Host.Panic("invalid agent id length");
@@ -38,6 +44,10 @@ public class ScAgentId implements MapKey {
     @Override
     public int hashCode() {
         return Arrays.hashCode(id);
+    }
+
+    public ScHname Hname() {
+        return new ScHname(Arrays.copyOfRange(id, 33, 37));
     }
 
     public boolean IsAddress() {

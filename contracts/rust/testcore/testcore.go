@@ -14,7 +14,7 @@ const MsgViewPanic = "========== panic VIEW ========="
 func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 	paramInt := params.IntValue.Value()
 
-	targetContract := ctx.ContractId().Hname()
+	targetContract := ctx.Contract()
 	if params.HnameContract.Exists() {
 		targetContract = params.HnameContract.Value()
 	}
@@ -28,11 +28,10 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 	counter := varCounter.Value()
 	varCounter.SetValue(counter + 1)
 
-	msg := "call depth = " + params.IntValue.String() +
+	ctx.Log("call depth = " + params.IntValue.String() +
 		" hnameContract = " + targetContract.String() +
 		" hnameEP = " + targetEp.String() +
-		" counter = " + ctx.Utility().String(counter)
-	ctx.Log(msg)
+		" counter = " + ctx.Utility().String(counter))
 
 	parms := wasmlib.NewScMutableMap()
 	parms.GetInt64(ParamIntValue).SetValue(paramInt)
@@ -43,11 +42,10 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
 }
 
 func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, params *FuncCheckContextFromFullEPParams) {
-	ctx.Require(params.ChainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
-	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
+	ctx.Require(params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
 	ctx.Require(params.Caller.Value() == ctx.Caller(), "fail: caller")
-	ctx.Require(params.ContractId.Value() == ctx.ContractId(), "fail: contractID")
-	ctx.Require(params.AgentId.Value() == ctx.ContractId().AsAgentId(), "fail: agentID")
+	ctx.Require(params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
+	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
 	ctx.Require(params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
@@ -56,7 +54,13 @@ func funcDoNothing(ctx wasmlib.ScFuncContext, params *FuncDoNothingParams) {
 }
 
 func funcGetMintedSupply(ctx wasmlib.ScFuncContext, params *FuncGetMintedSupplyParams) {
-	ctx.Results().GetInt64(VarMintedSupply).SetValue(ctx.MintedSupply())
+	minted := ctx.Minted()
+	mintedColors := minted.Colors()
+	ctx.Require(mintedColors.Length() == 1, "test only supports one minted color")
+	color := mintedColors.GetColor(0).Value()
+	amount := minted.Balance(color)
+	ctx.Results().GetInt64(VarMintedSupply).SetValue(amount)
+	ctx.Results().GetColor(VarMintedColor).SetValue(color)
 }
 
 func funcIncCounter(ctx wasmlib.ScFuncContext, params *FuncIncCounterParams) {
@@ -113,15 +117,10 @@ func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, params *FuncTestChainOw
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
 }
 
-func funcTestContractIDFull(ctx wasmlib.ScFuncContext, params *FuncTestContractIDFullParams) {
-	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
-}
-
 func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, params *FuncTestEventLogDeployParams) {
 	//Deploy the same contract with another name
 	programHash := ctx.Utility().HashBlake2b([]byte("test_sandbox"))
-	ctx.Deploy(programHash, string(ContractNameDeployed),
-		"test contract deploy log", nil)
+	ctx.Deploy(programHash, ContractNameDeployed, "test contract deploy log", nil)
 }
 
 func funcTestEventLogEventData(ctx wasmlib.ScFuncContext, params *FuncTestEventLogEventDataParams) {
@@ -138,19 +137,15 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestPanicFullEPP
 }
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainParams) {
-	//Deploy the same contract with another name
-	targetContractId := wasmlib.NewScContractId(params.ChainId.Value(), wasmlib.CoreAccounts)
-	transfers := wasmlib.NewScTransfer(wasmlib.IOTA, 2)
-	ctx.Post(targetContractId, wasmlib.CoreAccountsFuncWithdrawToChain, nil, &transfers, 0)
+	transfers := wasmlib.NewScTransferIotas(1)
+	ctx.Post(params.ChainId.Value(), wasmlib.CoreAccounts, wasmlib.CoreAccountsFuncWithdraw, nil, transfers, 0)
 	ctx.Log("====  success ====")
-	// TODO how to check if post was successful
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckContextFromViewEPParams) {
-	ctx.Require(params.ChainId.Value() == ctx.ContractId().ChainId(), "fail: chainID")
+	ctx.Require(params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
+	ctx.Require(params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
 	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
-	ctx.Require(params.ContractId.Value() == ctx.ContractId(), "fail: contractID")
-	ctx.Require(params.AgentId.Value() == ctx.ContractId().AsAgentId(), "fail: agentID")
 	ctx.Require(params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
@@ -206,10 +201,6 @@ func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, params *ViewTest
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, params *ViewTestChainOwnerIDViewParams) {
 	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
-}
-
-func viewTestContractIDView(ctx wasmlib.ScViewContext, params *ViewTestContractIDViewParams) {
-	ctx.Results().GetContractId(ParamContractId).SetValue(ctx.ContractId())
 }
 
 func viewTestPanicViewEP(ctx wasmlib.ScViewContext, params *ViewTestPanicViewEPParams) {

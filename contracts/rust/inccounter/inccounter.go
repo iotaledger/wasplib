@@ -43,13 +43,13 @@ func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, params *FuncLocalStat
 	{
 		LocalStateMustIncrement = false
 	}
-	par := FuncWhenMustIncrementParams{}
-	funcWhenMustIncrement(ctx, &par)
+	par := &FuncWhenMustIncrementParams{}
+	funcWhenMustIncrement(ctx, par)
 	{
 		LocalStateMustIncrement = true
 	}
-	funcWhenMustIncrement(ctx, &par)
-	funcWhenMustIncrement(ctx, &par)
+	funcWhenMustIncrement(ctx, par)
+	funcWhenMustIncrement(ctx, par)
 	// counter ends up as 2
 }
 
@@ -57,13 +57,21 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, params *FuncLocalStatePostPar
 	{
 		LocalStateMustIncrement = false
 	}
-	ctx.PostSelf(HFuncWhenMustIncrement, nil, nil, 0)
+	// prevent multiple identical posts, need a dummy param to differentiate them
+	localStatePost(ctx, 1)
 	{
 		LocalStateMustIncrement = true
 	}
-	ctx.PostSelf(HFuncWhenMustIncrement, nil, nil, 0)
-	ctx.PostSelf(HFuncWhenMustIncrement, nil, nil, 0)
+	localStatePost(ctx, 2)
+	localStatePost(ctx, 3)
 	// counter ends up as 0
+}
+
+func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
+	params := wasmlib.NewScMutableMap()
+	params.GetInt64(VarInt1).SetValue(nr)
+	transfer := wasmlib.NewScTransferIotas(1)
+	ctx.PostSelf(HFuncWhenMustIncrement, params, transfer, 0)
 }
 
 func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, params *FuncLocalStateSandboxCallParams) {
@@ -84,7 +92,8 @@ func funcPostIncrement(ctx wasmlib.ScFuncContext, params *FuncPostIncrementParam
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		ctx.PostSelf(HFuncPostIncrement, nil, nil, 0)
+		transfer := wasmlib.NewScTransferIotas(1)
+		ctx.PostSelf(HFuncPostIncrement, nil, transfer, 0)
 	}
 }
 
@@ -101,7 +110,8 @@ func funcRepeatMany(ctx wasmlib.ScFuncContext, params *FuncRepeatManyParams) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	ctx.PostSelf(HFuncRepeatMany, nil, nil, 0)
+	transfer := wasmlib.NewScTransferIotas(1)
+	ctx.PostSelf(HFuncRepeatMany, nil, transfer, 0)
 }
 
 func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, params *FuncWhenMustIncrementParams) {

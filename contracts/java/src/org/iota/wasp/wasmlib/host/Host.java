@@ -12,7 +12,7 @@ import java.nio.charset.*;
 public class Host {
     public static final ScMutableMap root = new ScMutableMap(1);
 
-    private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 37, 32, 4, 8, 0, 34, 0};
+    private static final byte[] TYPE_SIZES = {0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0};
 
     @Import(module = "WasmLib", name = "javaGetBytes")
     public static native int hostGetBytes(int objId, int keyId, int typeId, byte[] value, int size);
@@ -40,7 +40,7 @@ public class Host {
     public static byte[] GetBytes(int objId, int keyId, int typeId) {
         // first query length of bytes array
         int size = hostGetBytes(objId, keyId, typeId, null, 0);
-        if (size <= 0) {
+        if (size < 0) {
             return new byte[TYPE_SIZES[typeId]];
         }
 

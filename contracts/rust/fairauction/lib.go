@@ -25,7 +25,7 @@ type FuncFinalizeAuctionParams struct {
 func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcFinalizeAuction")
 	// only SC itself can invoke this function
-	ctx.Require(ctx.Caller() == ctx.ContractId().AsAgentId(), "no permission")
+	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
 	p := ctx.Params()
 	params := &FuncFinalizeAuctionParams{

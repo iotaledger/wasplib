@@ -30,7 +30,7 @@ pub struct FuncFinalizeAuctionParams {
 fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcFinalizeAuction");
     // only SC itself can invoke this function
-    ctx.require(ctx.caller() == ctx.contract_id().as_agent_id(), "no permission");
+    ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
     let p = ctx.params();
     let params = FuncFinalizeAuctionParams {

@@ -237,51 +237,6 @@ func (o ScMutableColorArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScMutableContractId struct {
-	objId int32
-	keyId Key32
-}
-
-func (o ScMutableContractId) Exists() bool {
-	return Exists(o.objId, o.keyId, TYPE_CONTRACT_ID)
-}
-
-func (o ScMutableContractId) SetValue(value ScContractId) {
-	SetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID, value.Bytes())
-}
-
-func (o ScMutableContractId) String() string {
-	return o.Value().String()
-}
-
-func (o ScMutableContractId) Value() ScContractId {
-	return NewScContractIdFromBytes(GetBytes(o.objId, o.keyId, TYPE_CONTRACT_ID))
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScMutableContractIdArray struct {
-	objId int32
-}
-
-func (o ScMutableContractIdArray) Clear() {
-	Clear(o.objId)
-}
-
-func (o ScMutableContractIdArray) GetContractId(index int32) ScMutableContractId {
-	return ScMutableContractId{objId: o.objId, keyId: Key32(index)}
-}
-
-func (o ScMutableContractIdArray) Immutable() ScImmutableContractIdArray {
-	return ScImmutableContractIdArray{objId: o.objId}
-}
-
-func (o ScMutableContractIdArray) Length() int32 {
-	return GetLength(o.objId)
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 type ScMutableHash struct {
 	objId int32
 	keyId Key32
@@ -476,15 +431,6 @@ func (o ScMutableMap) GetColor(key MapKey) ScMutableColor {
 func (o ScMutableMap) GetColorArray(key MapKey) ScMutableColorArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_COLOR|TYPE_ARRAY)
 	return ScMutableColorArray{objId: arrId}
-}
-
-func (o ScMutableMap) GetContractId(key MapKey) ScMutableContractId {
-	return ScMutableContractId{objId: o.objId, keyId: key.KeyId()}
-}
-
-func (o ScMutableMap) GetContractIdArray(key MapKey) ScMutableContractIdArray {
-	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_CONTRACT_ID|TYPE_ARRAY)
-	return ScMutableContractIdArray{objId: arrId}
 }
 
 func (o ScMutableMap) GetHash(key MapKey) ScMutableHash {

@@ -24,7 +24,8 @@ func TestDeploy(t *testing.T) {
 func TestFuncHelloWorld(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncHelloWorld)
+	req := solo.NewCallParams(ScName, FuncHelloWorld,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }

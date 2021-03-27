@@ -55,13 +55,21 @@ pub fn func_local_state_post(ctx: &ScFuncContext, _params: &FuncLocalStatePostPa
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
-    ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, None, None, 0);
+    // prevent multiple identical posts, need a dummy param to differentiate them
+    local_state_post(ctx, 1);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, None, None, 0);
-    ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, None, None, 0);
+    local_state_post(ctx, 2);
+    local_state_post(ctx, 3);
     // counter ends up as 0
+}
+
+fn local_state_post(ctx: &ScFuncContext, nr: i64) {
+    let params = ScMutableMap::new();
+    params.get_int64(VAR_INT1).set_value(nr);
+    let transfer = ScTransfers::iotas(1);
+    ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, Some(params), transfer, 0);
 }
 
 pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _params: &FuncLocalStateSandboxCallParams) {
@@ -82,7 +90,8 @@ pub fn func_post_increment(ctx: &ScFuncContext, _params: &FuncPostIncrementParam
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        ctx.post_self(HFUNC_POST_INCREMENT, None, None, 0);
+        let transfer = ScTransfers::iotas(1);
+        ctx.post_self(HFUNC_POST_INCREMENT, None, transfer, 0);
     }
 }
 
@@ -99,7 +108,8 @@ pub fn func_repeat_many(ctx: &ScFuncContext, params: &FuncRepeatManyParams) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    ctx.post_self(HFUNC_REPEAT_MANY, None, None, 0);
+    let transfer = ScTransfers::iotas(1);
+    ctx.post_self(HFUNC_REPEAT_MANY, None, transfer, 0);
 }
 
 pub fn func_when_must_increment(ctx: &ScFuncContext, _params: &FuncWhenMustIncrementParams) {

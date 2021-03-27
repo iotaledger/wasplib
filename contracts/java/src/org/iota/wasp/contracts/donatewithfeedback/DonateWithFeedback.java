@@ -7,8 +7,6 @@ import org.iota.wasp.contracts.donatewithfeedback.lib.*;
 import org.iota.wasp.contracts.donatewithfeedback.types.*;
 import org.iota.wasp.wasmlib.context.*;
 import org.iota.wasp.wasmlib.hashtypes.*;
-import org.iota.wasp.wasmlib.immutable.*;
-import org.iota.wasp.wasmlib.mutable.*;
 
 public class DonateWithFeedback {
 
@@ -22,9 +20,9 @@ public class DonateWithFeedback {
             donation.Timestamp = ctx.Timestamp();
         }
         if (donation.Amount == 0 || donation.Feedback.length() == 0) {
-            donation.Error = "error: empty feedback or donated amount = 0. The donated amount has been returned (if any)";
+            donation.Error = "error: empty feedback or donated amount = 0";
             if (donation.Amount > 0) {
-                ctx.TransferToAddress(donation.Donator.Address(), new ScTransfers(ScColor.IOTA, donation.Amount));
+                ctx.TransferToAddress(donation.Donator.Address(), ScTransfers.iotas(donation.Amount));
                 donation.Amount = 0;
             }
         }
@@ -47,12 +45,12 @@ public class DonateWithFeedback {
             amount = balance;
         }
         if (amount == 0) {
-            ctx.Log("DonateWithFeedback: nothing to withdraw");
+            ctx.Log("dwf.withdraw: nothing to withdraw");
             return;
         }
 
         var scCreator = ctx.ContractCreator().Address();
-        ctx.TransferToAddress(scCreator, new ScTransfers(ScColor.IOTA, amount));
+        ctx.TransferToAddress(scCreator, ScTransfers.iotas(amount));
     }
 
     public static void viewDonations(ScViewContext ctx, ViewDonationsParams params) {

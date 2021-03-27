@@ -12,7 +12,7 @@ const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
 pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
     let param_int = params.int_value.value();
 
-    let mut target_contract = ctx.contract_id().hname();
+    let mut target_contract = ctx.contract();
     if params.hname_contract.exists() {
         target_contract = params.hname_contract.value();
     }
@@ -38,11 +38,10 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, params: &FuncCallOnChainParams) {
 }
 
 pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, params: &FuncCheckContextFromFullEPParams) {
-    ctx.require(params.chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
-    ctx.require(params.chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
+    ctx.require(params.agent_id.value() == ctx.account_id(), "fail: agentID");
     ctx.require(params.caller.value() == ctx.caller(), "fail: caller");
-    ctx.require(params.contract_id.value() == ctx.contract_id(), "fail: contractID");
-    ctx.require(params.agent_id.value() == ctx.contract_id().as_agent_id(), "fail: agentID");
+    ctx.require(params.chain_id.value() == ctx.chain_id(), "fail: chainID");
+    ctx.require(params.chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
     ctx.require(params.contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
@@ -51,7 +50,13 @@ pub fn func_do_nothing(ctx: &ScFuncContext, _params: &FuncDoNothingParams) {
 }
 
 pub fn func_get_minted_supply(ctx: &ScFuncContext, _params: &FuncGetMintedSupplyParams) {
-    ctx.results().get_int64(VAR_MINTED_SUPPLY).set_value(ctx.minted_supply());
+    let minted = ctx.minted();
+    let minted_colors = minted.colors();
+    ctx.require(minted_colors.length() == 1, "test only supports one minted color");
+    let color = minted_colors.get_color(0).value();
+    let amount = minted.balance(&color);
+    ctx.results().get_int64(VAR_MINTED_SUPPLY).set_value(amount);
+    ctx.results().get_color(VAR_MINTED_COLOR).set_value(&color);
 }
 
 pub fn func_inc_counter(ctx: &ScFuncContext, _params: &FuncIncCounterParams) {
@@ -108,10 +113,6 @@ pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, _params: &FuncTestChai
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id());
 }
 
-pub fn func_test_contract_id_full(ctx: &ScFuncContext, _params: &FuncTestContractIDFullParams) {
-    ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
-}
-
 pub fn func_test_event_log_deploy(ctx: &ScFuncContext, _params: &FuncTestEventLogDeployParams) {
     //Deploy the same contract with another name
     let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
@@ -132,19 +133,15 @@ pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _params: &FuncTestPanicFullE
 }
 
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainParams) {
-    //Deploy the same contract with another name
-    let target_contract_id = ScContractId::new(&params.chain_id.value(), &CORE_ACCOUNTS);
-    let transfers = ScTransfers::new(&ScColor::IOTA, 2);
-    ctx.post(&target_contract_id, CORE_ACCOUNTS_FUNC_WITHDRAW_TO_CHAIN, None, Some(transfers), 0);
+    let transfer = ScTransfers::iotas(1);
+    ctx.post(&params.chain_id.value(), CORE_ACCOUNTS, CORE_ACCOUNTS_FUNC_WITHDRAW, None, transfer, 0);
     ctx.log("====  success ====");
-    // TODO how to check if post was successful
 }
 
 pub fn view_check_context_from_view_ep(ctx: &ScViewContext, params: &ViewCheckContextFromViewEPParams) {
-    ctx.require(params.chain_id.value() == ctx.contract_id().chain_id(), "fail: chainID");
+    ctx.require(params.agent_id.value() == ctx.account_id(), "fail: agentID");
+    ctx.require(params.chain_id.value() == ctx.chain_id(), "fail: chainID");
     ctx.require(params.chain_owner_id.value() == ctx.chain_owner_id(), "fail: chainOwnerID");
-    ctx.require(params.contract_id.value() == ctx.contract_id(), "fail: contractID");
-    ctx.require(params.agent_id.value() == ctx.contract_id().as_agent_id(), "fail: agentID");
     ctx.require(params.contract_creator.value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
@@ -200,10 +197,6 @@ pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _params: &Vie
 
 pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, _params: &ViewTestChainOwnerIDViewParams) {
     ctx.results().get_agent_id(PARAM_CHAIN_OWNER_ID).set_value(&ctx.chain_owner_id());
-}
-
-pub fn view_test_contract_id_view(ctx: &ScViewContext, _params: &ViewTestContractIDViewParams) {
-    ctx.results().get_contract_id(PARAM_CONTRACT_ID).set_value(&ctx.contract_id());
 }
 
 pub fn view_test_panic_view_ep(ctx: &ScViewContext, _params: &ViewTestPanicViewEPParams) {

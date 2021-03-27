@@ -46,11 +46,6 @@ impl BytesDecoder<'_> {
         ScColor::from_bytes(self.bytes())
     }
 
-    // decodes an ScContractId from the byte buffer
-    pub fn contract_id(&mut self) -> ScContractId {
-        ScContractId::from_bytes(self.bytes())
-    }
-
     // decodes an ScHash from the byte buffer
     pub fn hash(&mut self) -> ScHash {
         ScHash::from_bytes(self.bytes())
@@ -142,12 +137,6 @@ impl BytesEncoder {
 
     // encodes an ScColor into the byte buffer
     pub fn color(&mut self, value: &ScColor) -> &BytesEncoder {
-        self.bytes(value.to_bytes());
-        self
-    }
-
-    // encodes an ScContractId into the byte buffer
-    pub fn contract_id(&mut self, value: &ScContractId) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }

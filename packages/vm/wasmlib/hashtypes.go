@@ -48,6 +48,13 @@ type ScAgentId struct {
 	id [37]byte
 }
 
+func NewScAgentId(chainId ScChainId, hContract ScHname) ScAgentId {
+	o := ScAgentId{}
+	copy(o.id[:], chainId.Bytes())
+	copy(o.id[33:], hContract.Bytes())
+	return o
+}
+
 func NewScAgentIdFromBytes(bytes []byte) ScAgentId {
 	o := ScAgentId{}
 	if len(bytes) != len(o.id) {
@@ -65,6 +72,10 @@ func (o ScAgentId) Address() ScAddress {
 
 func (o ScAgentId) Bytes() []byte {
 	return o.id[:]
+}
+
+func (o ScAgentId) Hname() ScHname {
+	return NewScHnameFromBytes(o.id[33:])
 }
 
 func (o ScAgentId) KeyId() Key32 {
@@ -145,56 +156,6 @@ func (o ScColor) KeyId() Key32 {
 }
 
 func (o ScColor) String() string {
-	return base58Encode(o.id[:])
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-type ScContractId struct {
-	id [37]byte
-}
-
-func NewScContractId(chainId ScChainId, hContract ScHname) ScContractId {
-	o := ScContractId{}
-	copy(o.id[:], chainId.Bytes())
-	copy(o.id[33:], hContract.Bytes())
-	return o
-}
-
-func NewScContractIdFromBytes(bytes []byte) ScContractId {
-	o := ScContractId{}
-	if len(bytes) != len(o.id) {
-		Panic("invalid contract id length")
-	}
-	copy(o.id[:], bytes)
-	return o
-}
-
-func (o ScContractId) AsAgentId() ScAgentId {
-	a := ScAgentId{}
-	copy(a.id[:], o.id[:])
-	return a
-}
-
-func (o ScContractId) Bytes() []byte {
-	return o.id[:]
-}
-
-func (o ScContractId) ChainId() ScChainId {
-	c := ScChainId{}
-	copy(c.id[:], o.id[:])
-	return c
-}
-
-func (o ScContractId) Hname() ScHname {
-	return NewScHnameFromBytes(o.id[33:])
-}
-
-func (o ScContractId) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
-}
-
-func (o ScContractId) String() string {
 	return base58Encode(o.id[:])
 }
 

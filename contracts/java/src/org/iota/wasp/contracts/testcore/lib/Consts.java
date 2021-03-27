@@ -18,10 +18,9 @@ public class Consts {
     public static final Key ParamAddress = new Key("address");
     public static final Key ParamAgentId = new Key("agentID");
     public static final Key ParamCaller = new Key("caller");
-    public static final Key ParamChainId = new Key("chainid");
+    public static final Key ParamChainId = new Key("chainID");
     public static final Key ParamChainOwnerId = new Key("chainOwnerID");
     public static final Key ParamContractCreator = new Key("contractCreator");
-    public static final Key ParamContractId = new Key("contractID");
     public static final Key ParamCounter = new Key("counter");
     public static final Key ParamHash = new Key("Hash");
     public static final Key ParamHname = new Key("Hname");
@@ -37,6 +36,7 @@ public class Consts {
 
     public static final Key VarCounter = new Key("counter");
     public static final Key VarHnameEP = new Key("hnameEP");
+    public static final Key VarMintedColor = new Key("mintedColor");
     public static final Key VarMintedSupply = new Key("mintedSupply");
 
     public static final String FuncCallOnChain = "callOnChain";
@@ -52,7 +52,6 @@ public class Consts {
     public static final String FuncTestCallPanicFullEP = "testCallPanicFullEP";
     public static final String FuncTestCallPanicViewEPFromFull = "testCallPanicViewEPFromFull";
     public static final String FuncTestChainOwnerIDFull = "testChainOwnerIDFull";
-    public static final String FuncTestContractIDFull = "testContractIDFull";
     public static final String FuncTestEventLogDeploy = "testEventLogDeploy";
     public static final String FuncTestEventLogEventData = "testEventLogEventData";
     public static final String FuncTestEventLogGenericData = "testEventLogGenericData";
@@ -66,7 +65,6 @@ public class Consts {
     public static final String ViewPassTypesView = "passTypesView";
     public static final String ViewTestCallPanicViewEPFromView = "testCallPanicViewEPFromView";
     public static final String ViewTestChainOwnerIDView = "testChainOwnerIDView";
-    public static final String ViewTestContractIDView = "testContractIDView";
     public static final String ViewTestPanicViewEP = "testPanicViewEP";
     public static final String ViewTestSandboxCall = "testSandboxCall";
 
@@ -83,7 +81,6 @@ public class Consts {
     public static final ScHname HFuncTestCallPanicFullEP = new ScHname(0x4c878834);
     public static final ScHname HFuncTestCallPanicViewEPFromFull = new ScHname(0xfd7e8c1d);
     public static final ScHname HFuncTestChainOwnerIDFull = new ScHname(0x2aff1167);
-    public static final ScHname HFuncTestContractIDFull = new ScHname(0x95934282);
     public static final ScHname HFuncTestEventLogDeploy = new ScHname(0x96ff760a);
     public static final ScHname HFuncTestEventLogEventData = new ScHname(0x0efcf939);
     public static final ScHname HFuncTestEventLogGenericData = new ScHname(0x6a16629d);
@@ -97,7 +94,6 @@ public class Consts {
     public static final ScHname HViewPassTypesView = new ScHname(0x1a5b87ea);
     public static final ScHname HViewTestCallPanicViewEPFromView = new ScHname(0x91b10c99);
     public static final ScHname HViewTestChainOwnerIDView = new ScHname(0x26586c33);
-    public static final ScHname HViewTestContractIDView = new ScHname(0x28a02913);
     public static final ScHname HViewTestPanicViewEP = new ScHname(0x22bc4d72);
     public static final ScHname HViewTestSandboxCall = new ScHname(0x42d72b63);
 }

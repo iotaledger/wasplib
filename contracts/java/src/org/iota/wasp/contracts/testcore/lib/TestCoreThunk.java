@@ -34,7 +34,6 @@ public class TestCoreThunk {
         exports.AddFunc(Consts.FuncTestCallPanicFullEP, TestCoreThunk::funcTestCallPanicFullEPThunk);
         exports.AddFunc(Consts.FuncTestCallPanicViewEPFromFull, TestCoreThunk::funcTestCallPanicViewEPFromFullThunk);
         exports.AddFunc(Consts.FuncTestChainOwnerIDFull, TestCoreThunk::funcTestChainOwnerIDFullThunk);
-        exports.AddFunc(Consts.FuncTestContractIDFull, TestCoreThunk::funcTestContractIDFullThunk);
         exports.AddFunc(Consts.FuncTestEventLogDeploy, TestCoreThunk::funcTestEventLogDeployThunk);
         exports.AddFunc(Consts.FuncTestEventLogEventData, TestCoreThunk::funcTestEventLogEventDataThunk);
         exports.AddFunc(Consts.FuncTestEventLogGenericData, TestCoreThunk::funcTestEventLogGenericDataThunk);
@@ -48,7 +47,6 @@ public class TestCoreThunk {
         exports.AddView(Consts.ViewPassTypesView, TestCoreThunk::viewPassTypesViewThunk);
         exports.AddView(Consts.ViewTestCallPanicViewEPFromView, TestCoreThunk::viewTestCallPanicViewEPFromViewThunk);
         exports.AddView(Consts.ViewTestChainOwnerIDView, TestCoreThunk::viewTestChainOwnerIDViewThunk);
-        exports.AddView(Consts.ViewTestContractIDView, TestCoreThunk::viewTestContractIDViewThunk);
         exports.AddView(Consts.ViewTestPanicViewEP, TestCoreThunk::viewTestPanicViewEPThunk);
         exports.AddView(Consts.ViewTestSandboxCall, TestCoreThunk::viewTestSandboxCallThunk);
     }
@@ -74,13 +72,11 @@ public class TestCoreThunk {
         params.ChainId = p.GetChainId(Consts.ParamChainId);
         params.ChainOwnerId = p.GetAgentId(Consts.ParamChainOwnerId);
         params.ContractCreator = p.GetAgentId(Consts.ParamContractCreator);
-        params.ContractId = p.GetContractId(Consts.ParamContractId);
         ctx.Require(params.AgentId.Exists(), "missing mandatory agentId");
         ctx.Require(params.Caller.Exists(), "missing mandatory caller");
         ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
         ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
         ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
-        ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
         TestCore.funcCheckContextFromFullEP(ctx, params);
         ctx.Log("testcore.funcCheckContextFromFullEP ok");
     }
@@ -190,13 +186,6 @@ public class TestCoreThunk {
         ctx.Log("testcore.funcTestChainOwnerIDFull ok");
     }
 
-    private static void funcTestContractIDFullThunk(ScFuncContext ctx) {
-        ctx.Log("testcore.funcTestContractIDFull");
-        var params = new FuncTestContractIDFullParams();
-        TestCore.funcTestContractIDFull(ctx, params);
-        ctx.Log("testcore.funcTestContractIDFull ok");
-    }
-
     private static void funcTestEventLogDeployThunk(ScFuncContext ctx) {
         ctx.Log("testcore.funcTestEventLogDeploy");
         var params = new FuncTestEventLogDeployParams();
@@ -246,12 +235,10 @@ public class TestCoreThunk {
         params.ChainId = p.GetChainId(Consts.ParamChainId);
         params.ChainOwnerId = p.GetAgentId(Consts.ParamChainOwnerId);
         params.ContractCreator = p.GetAgentId(Consts.ParamContractCreator);
-        params.ContractId = p.GetContractId(Consts.ParamContractId);
         ctx.Require(params.AgentId.Exists(), "missing mandatory agentId");
         ctx.Require(params.ChainId.Exists(), "missing mandatory chainId");
         ctx.Require(params.ChainOwnerId.Exists(), "missing mandatory chainOwnerId");
         ctx.Require(params.ContractCreator.Exists(), "missing mandatory contractCreator");
-        ctx.Require(params.ContractId.Exists(), "missing mandatory contractId");
         TestCore.viewCheckContextFromViewEP(ctx, params);
         ctx.Log("testcore.viewCheckContextFromViewEP ok");
     }
@@ -324,13 +311,6 @@ public class TestCoreThunk {
         var params = new ViewTestChainOwnerIDViewParams();
         TestCore.viewTestChainOwnerIDView(ctx, params);
         ctx.Log("testcore.viewTestChainOwnerIDView ok");
-    }
-
-    private static void viewTestContractIDViewThunk(ScViewContext ctx) {
-        ctx.Log("testcore.viewTestContractIDView");
-        var params = new ViewTestContractIDViewParams();
-        TestCore.viewTestContractIDView(ctx, params);
-        ctx.Log("testcore.viewTestContractIDView ok");
     }
 
     private static void viewTestPanicViewEPThunk(ScViewContext ctx) {

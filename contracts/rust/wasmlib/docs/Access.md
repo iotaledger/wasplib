@@ -58,6 +58,7 @@ It is very important to thoroughly think access limitation and other security
 measures through before deploying a smart contract on a chain.
 
 For completeness here is the 'setOwner' function of the dividend smart contract:
+
 ```rust
 
 // 'setOwner' is used to change the owner of the smart contract.

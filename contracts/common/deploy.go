@@ -1,8 +1,6 @@
 package common
 
 import (
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
-	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
@@ -30,35 +28,29 @@ const (
 //TODO figure out how to interrupt wasmtime VM
 
 // set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
-const WasmRunner = 0
+const WasmRunner = 1
 
-var (
-	ContractAccount coretypes.AgentID
-	ContractId      coretypes.ContractID
-	CreatorWallet   signaturescheme.SignatureScheme
-
-	//TODO remove hardcoded dependency
-	ScForGoVM = map[string]func(){
-		"dividend":           dividend.OnLoad,
-		"donatewithfeedback": donatewithfeedback.OnLoad,
-		"erc20":              erc20.OnLoad,
-		"fairauction":        fairauction.OnLoad,
-		"fairroulette":       fairroulette.OnLoad,
-		"helloworld":         helloworld.OnLoad,
-		"inccounter":         inccounter.OnLoad,
-		"testcore":           testcore.OnLoad,
-		"tokenregistry":      tokenregistry.OnLoad,
-	}
-)
+//TODO remove hardcoded dependency
+var ScForGoVM = map[string]func(){
+	"dividend":           dividend.OnLoad,
+	"donatewithfeedback": donatewithfeedback.OnLoad,
+	"erc20":              erc20.OnLoad,
+	"fairauction":        fairauction.OnLoad,
+	"fairroulette":       fairroulette.OnLoad,
+	"helloworld":         helloworld.OnLoad,
+	"inccounter":         inccounter.OnLoad,
+	"testcore":           testcore.OnLoad,
+	"tokenregistry":      tokenregistry.OnLoad,
+}
 
 func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interface{}) error {
 	if WasmRunner == 1 {
 		wasmproc.GoWasmVM = NewWasmGoVM(ScForGoVM)
-		hprog, err := chain.UploadWasm(CreatorWallet, []byte("go:"+scName))
+		hprog, err := chain.UploadWasm(nil, []byte("go:"+scName))
 		if err != nil {
 			return err
 		}
-		return chain.DeployContract(CreatorWallet, scName, hprog, params...)
+		return chain.DeployContract(nil, scName, hprog, params...)
 	}
 
 	wasmproc.GoWasmVM = NewWasmTimeJavaVM()
@@ -67,17 +59,14 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 	if exists {
 		wasmFile = "../pkg/" + wasmFile
 	}
-	return chain.DeployWasmContract(CreatorWallet, scName, wasmFile, params...)
+	return chain.DeployWasmContract(nil, scName, wasmFile, params...)
 }
 
 func StartChain(t *testing.T, scName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
 	//wasmhost.ExtendedHostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
-	CreatorWallet = env.NewSignatureSchemeWithFunds()
-	chain := env.NewChain(CreatorWallet, "chain1")
-	ContractId = coretypes.NewContractID(chain.ChainID, coretypes.Hn(scName))
-	ContractAccount = coretypes.NewAgentIDFromContractID(ContractId)
+	chain := env.NewChain(nil, "chain1")
 	return chain
 }
 

@@ -11,11 +11,10 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 //@formatter:off
 public class FuncCheckContextFromFullEPParams {
-    public ScImmutableAgentId      AgentId;
-    public ScImmutableAgentId      Caller;
-    public ScImmutableChainId      ChainId;
-    public ScImmutableAgentId      ChainOwnerId;
-    public ScImmutableAgentId      ContractCreator;
-    public ScImmutableContractId   ContractId;
+    public ScImmutableAgentId   AgentId;
+    public ScImmutableAgentId   Caller;
+    public ScImmutableChainId   ChainId;
+    public ScImmutableAgentId   ChainOwnerId;
+    public ScImmutableAgentId   ContractCreator;
 }
 //@formatter:on

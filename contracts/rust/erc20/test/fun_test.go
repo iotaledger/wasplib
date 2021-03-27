@@ -1,7 +1,8 @@
 package test
 
 import (
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/address/signaturescheme"
+	"github.com/iotaledger/goshimmer/packages/ledgerstate"
+	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -11,21 +12,22 @@ import (
 )
 
 var (
-	creator        signaturescheme.SignatureScheme
-	creatorAgentID coretypes.AgentID
+	creator        *ed25519.KeyPair
+	creatorAddr    ledgerstate.Address
+	creatorAgentID *coretypes.AgentID
 )
 
 func deployErc20(t *testing.T) *solo.Chain {
 	chain := common.StartChain(t, ScName)
-	creator = common.CreatorWallet
-	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
+	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
+	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, solo.Saldo,
 		ParamCreator, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 6, len(rec))
 
 	res, err := chain.CallView(ScName, ViewTotalSupply)
 	require.NoError(t, err)
@@ -38,7 +40,7 @@ func deployErc20(t *testing.T) *solo.Chain {
 	return chain
 }
 
-func checkErc20Balance(e *solo.Chain, account coretypes.AgentID, amount int64) {
+func checkErc20Balance(e *solo.Chain, account *coretypes.AgentID, amount uint64) {
 	res, err := e.CallView(ScName, ViewBalanceOf,
 		ParamAccount, account,
 	)
@@ -49,7 +51,7 @@ func checkErc20Balance(e *solo.Chain, account coretypes.AgentID, amount int64) {
 	require.EqualValues(e.Env.T, sup, amount)
 }
 
-func checkErc20Allowance(e *solo.Chain, account coretypes.AgentID, delegation coretypes.AgentID, amount int64) {
+func checkErc20Allowance(e *solo.Chain, account *coretypes.AgentID, delegation *coretypes.AgentID, amount int64) {
 	res, err := e.CallView(ScName, ViewAllowance,
 		ParamAccount, account,
 		ParamDelegation, delegation,
@@ -68,14 +70,14 @@ func TestInitial(t *testing.T) {
 func TestTransferOk1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
-	amount := int64(42)
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	amount := uint64(42)
 
 	req := solo.NewCallParams(ScName, FuncTransfer,
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -86,14 +88,14 @@ func TestTransferOk1(t *testing.T) {
 func TestTransferOk2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
-	amount := int64(42)
+	user, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	amount := uint64(42)
 
 	req := solo.NewCallParams(ScName, FuncTransfer,
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -103,7 +105,7 @@ func TestTransferOk2(t *testing.T) {
 	req = solo.NewCallParams(ScName, FuncTransfer,
 		ParamAccount, creatorAgentID,
 		ParamAmount, amount,
-	)
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 
@@ -114,8 +116,8 @@ func TestTransferOk2(t *testing.T) {
 func TestTransferNotEnoughFunds1(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 	amount := int64(1338)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -124,7 +126,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncTransfer,
 		ParamAccount, userAgentID,
 		ParamAmount, amount,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.Error(t, err)
 
@@ -135,8 +137,8 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 func TestTransferNotEnoughFunds2(t *testing.T) {
 	chain := deployErc20(t)
 
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	user, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 	amount := int64(1338)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -145,7 +147,7 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 	req := solo.NewCallParams(ScName, FuncTransfer,
 		ParamAccount, creatorAgentID,
 		ParamAmount, amount,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, user)
 	require.Error(t, err)
 
@@ -155,20 +157,20 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 
 func TestNoAllowance(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
 }
 
 func TestApprove(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -179,13 +181,13 @@ func TestApprove(t *testing.T) {
 
 func TestTransferFromOk1(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -197,7 +199,7 @@ func TestTransferFromOk1(t *testing.T) {
 		ParamAccount, creatorAgentID,
 		ParamRecipient, userAgentID,
 		ParamAmount, 50,
-	)
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -208,13 +210,13 @@ func TestTransferFromOk1(t *testing.T) {
 
 func TestTransferFromOk2(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -226,7 +228,7 @@ func TestTransferFromOk2(t *testing.T) {
 		ParamAccount, creatorAgentID,
 		ParamRecipient, userAgentID,
 		ParamAmount, 100,
-	)
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -237,13 +239,13 @@ func TestTransferFromOk2(t *testing.T) {
 
 func TestTransferFromFail(t *testing.T) {
 	chain := deployErc20(t)
-	user := chain.Env.NewSignatureSchemeWithFunds()
-	userAgentID := coretypes.NewAgentIDFromAddress(user.Address())
+	_, userAddr := chain.Env.NewKeyPairWithFunds()
+	userAgentID := coretypes.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
 		ParamAmount, 100,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, creator)
 	require.NoError(t, err)
 
@@ -255,7 +257,7 @@ func TestTransferFromFail(t *testing.T) {
 		ParamAccount, creatorAgentID,
 		ParamRecipient, userAgentID,
 		ParamAmount, 101,
-	)
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, creator)
 	require.Error(t, err)
 

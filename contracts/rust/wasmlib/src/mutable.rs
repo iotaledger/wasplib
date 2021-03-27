@@ -313,66 +313,6 @@ impl ScMutableColorArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// value proxy for mutable ScContractId in host container
-pub struct ScMutableContractId {
-    obj_id: i32,
-    key_id: Key32,
-}
-
-impl ScMutableContractId {
-    // check if value exists in host container
-    pub fn exists(&self) -> bool {
-        exists(self.obj_id, self.key_id, TYPE_CONTRACT_ID)
-    }
-
-    // set value in host container
-    pub fn set_value(&self, val: &ScContractId) {
-        set_bytes(self.obj_id, self.key_id, TYPE_CONTRACT_ID, val.to_bytes());
-    }
-
-    // human-readable string representation
-    pub fn to_string(&self) -> String {
-        self.value().to_string()
-    }
-
-    // retrieve value from host container
-    pub fn value(&self) -> ScContractId {
-        ScContractId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CONTRACT_ID))
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
-// array proxy for mutable array of ScContractId
-pub struct ScMutableContractIdArray {
-    pub(crate) obj_id: i32
-}
-
-impl ScMutableContractIdArray {
-    // empty the array
-    pub fn clear(&self) {
-        clear(self.obj_id);
-    }
-
-    // get value proxy for item at index, index can be 0..length()
-    // when index equals length() a new item is appended
-    pub fn get_contract_id(&self, index: i32) -> ScMutableContractId {
-        ScMutableContractId { obj_id: self.obj_id, key_id: Key32(index) }
-    }
-
-    // get immutable version of array proxy
-    pub fn immutable(&self) -> ScImmutableContractIdArray {
-        ScImmutableContractIdArray { obj_id: self.obj_id }
-    }
-
-    // number of items in array
-    pub fn length(&self) -> i32 {
-        get_length(self.obj_id)
-    }
-}
-
-// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 // value proxy for mutable ScHash in host container
 pub struct ScMutableHash {
     obj_id: i32,
@@ -624,17 +564,6 @@ impl ScMutableMap {
     pub fn get_color_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableColorArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_COLOR | TYPE_ARRAY);
         ScMutableColorArray { obj_id: arr_id }
-    }
-
-    // get value proxy for mutable ScContractId field specified by key
-    pub fn get_contract_id<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableContractId {
-        ScMutableContractId { obj_id: self.obj_id, key_id: key.get_key_id() }
-    }
-
-    // get array proxy for ScMutableContractIdArray specified by key
-    pub fn get_contract_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScMutableContractIdArray {
-        let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_CONTRACT_ID | TYPE_ARRAY);
-        ScMutableContractIdArray { obj_id: arr_id }
     }
 
     // get value proxy for mutable ScHash field specified by key

@@ -14,11 +14,10 @@ import org.iota.wasp.wasmlib.mutable.*;
 public class TokenRegistry {
 
     public static void funcMintSupply(ScFuncContext ctx, FuncMintSupplyParams params) {
-        var mintedSupply = ctx.MintedSupply();
-        if (mintedSupply == 0) {
-            ctx.Panic("TokenRegistry: No newly minted tokens found");
-        }
-        var mintedColor = ctx.MintedColor();
+        var minted = ctx.Minted();
+        var mintedColors = minted.Colors();
+        ctx.Require(mintedColors.Length() == 1, "need single minted color");
+        var mintedColor = mintedColors.GetColor(0).Value();
         var state = ctx.State();
         var registry = state.GetMap(Consts.VarRegistry).GetBytes(mintedColor);
         if (registry.Exists()) {
@@ -27,7 +26,7 @@ public class TokenRegistry {
         }
         var token = new Token();
         {
-            token.Supply = mintedSupply;
+            token.Supply = minted.Balance(mintedColor);
             token.MintedBy = ctx.Caller();
             token.Owner = ctx.Caller();
             token.Created = ctx.Timestamp();

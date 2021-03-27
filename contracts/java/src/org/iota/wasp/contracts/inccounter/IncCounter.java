@@ -66,13 +66,21 @@ public class IncCounter {
         {
             LocalStateMustIncrement = false;
         }
-        ctx.PostSelf(Consts.HFuncWhenMustIncrement, null, null, 0);
+        // prevent multiple identical posts, need a dummy param to differentiate them
+        localStatePost(ctx, 1);
         {
             LocalStateMustIncrement = true;
         }
-        ctx.PostSelf(Consts.HFuncWhenMustIncrement, null, null, 0);
-        ctx.PostSelf(Consts.HFuncWhenMustIncrement, null, null, 0);
+        localStatePost(ctx, 2);
+        localStatePost(ctx, 3);
         // counter ends up as 0
+    }
+
+    private static void localStatePost(ScFuncContext ctx, long nr) {
+        var params = new ScMutableMap();
+        params.GetInt64(Consts.VarInt1).SetValue(nr);
+        var transfer = ScTransfers.iotas(1);
+        ctx.PostSelf(Consts.HFuncWhenMustIncrement, params, transfer, 0);
     }
 
     public static void funcLocalStateSandboxCall(ScFuncContext ctx, FuncLocalStateSandboxCallParams params) {
@@ -93,7 +101,8 @@ public class IncCounter {
         var value = counter.Value();
         counter.SetValue(value + 1);
         if (value == 0) {
-            ctx.PostSelf(Consts.HFuncPostIncrement, null, null, 0);
+            var transfer = ScTransfers.iotas(1);
+            ctx.PostSelf(Consts.HFuncPostIncrement, null, transfer, 0);
         }
     }
 
@@ -110,7 +119,8 @@ public class IncCounter {
             }
         }
         stateRepeats.SetValue(repeats - 1);
-        ctx.PostSelf(Consts.HFuncRepeatMany, null, null, 0);
+        var transfer = ScTransfers.iotas(1);
+        ctx.PostSelf(Consts.HFuncRepeatMany, null, transfer, 0);
     }
 
     public static void funcWhenMustIncrement(ScFuncContext ctx, FuncWhenMustIncrementParams params) {
@@ -134,11 +144,6 @@ public class IncCounter {
     }
 
     public static void funcTestLeb128(ScFuncContext ctx, FuncTestLeb128Params params) {
-        //TODO this returns 304084046 instead of 1524157875019052100. Long implementation is broken
-        long x = 1234567890L;
-        x = x*x;
-        Host.Log("Square is " + x);
-
         save(ctx, "v-1", -1);
         save(ctx, "v-2", -2);
         save(ctx, "v-126", -126);
@@ -154,18 +159,18 @@ public class IncCounter {
         save(ctx, "v+129", 129);
     }
 
-    private static void save(ScFuncContext ctx, String name, long value) {
-        var encoder = new BytesEncoder();
-        encoder.Int64(value);
+    public static void save(ScFuncContext ctx, String name, long value) {
+        var encode = new BytesEncoder();
+        encode.Int64(value);
         var spot = ctx.State().GetBytes(new Key(name));
-        spot.SetValue(encoder.Data());
+        spot.SetValue(encode.Data());
 
         var bytes = spot.Value();
-        var decoder = new BytesDecoder(bytes);
-        var retrieved = decoder.Int64();
+        var decode = new BytesDecoder(bytes);
+        var retrieved = decode.Int64();
         if (retrieved != value) {
-            ctx.Log(name + " in : " + value);
-            ctx.Log(name + " out: " + retrieved);
+            ctx.Log((name.toString() + " in : " + value));
+            ctx.Log((name.toString() + " out: " + retrieved));
         }
     }
 }

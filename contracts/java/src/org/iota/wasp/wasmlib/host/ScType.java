@@ -12,11 +12,10 @@ public class ScType {
     public static int TYPE_BYTES = 3;
     public static int TYPE_CHAIN_ID = 4;
     public static int TYPE_COLOR = 5;
-    public static int TYPE_CONTRACT_ID = 6;
-    public static int TYPE_HASH = 7;
-    public static int TYPE_HNAME = 8;
-    public static int TYPE_INT64 = 9;
-    public static int TYPE_MAP = 10;
-    public static int TYPE_REQUEST_ID = 11;
-    public static int TYPE_STRING = 12;
+    public static int TYPE_HASH = 6;
+    public static int TYPE_HNAME = 7;
+    public static int TYPE_INT64 = 8;
+    public static int TYPE_MAP = 9;
+    public static int TYPE_REQUEST_ID = 10;
+    public static int TYPE_STRING = 11;
 }

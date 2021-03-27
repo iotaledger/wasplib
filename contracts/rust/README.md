@@ -66,7 +66,7 @@ Prerequisites:
   selection.
 * install Wasm-pack, which can be
   [downloaded here](https://rustwasm.github.io/wasm-pack/).
-  
+
 Building a Rust smart contract is very simple when using the Rust plugin in any
 IntelliJ based development environment. Open the _contracts/rust_ sub folder in
 your IntelliJ, which then provides you with the Rust workspace.

@@ -7,11 +7,10 @@ use crate::*;
 use crate::types::*;
 
 pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
-    let minted_supply = ctx.minted_supply();
-    if minted_supply == 0 {
-        ctx.panic("TokenRegistry: No newly minted tokens found");
-    }
-    let minted_color = ctx.minted_color();
+    let minted = ctx.minted();
+    let minted_colors = minted.colors();
+    ctx.require(minted_colors.length() == 1, "need single minted color");
+    let minted_color = minted_colors.get_color(0).value();
     let state = ctx.state();
     let registry = state.get_map(VAR_REGISTRY).get_bytes(&minted_color);
     if registry.exists() {
@@ -19,7 +18,7 @@ pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
         ctx.panic("TokenRegistry: registry for color already exists");
     }
     let mut token = Token {
-        supply: minted_supply,
+        supply: minted.balance(&minted_color),
         minted_by: ctx.caller(),
         owner: ctx.caller(),
         created: ctx.timestamp(),

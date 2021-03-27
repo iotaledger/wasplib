@@ -9,15 +9,15 @@ import (
 
 func TestDeployErc20(t *testing.T) {
 	chain := common.StartChain(t, ScName)
-	creator = common.CreatorWallet
-	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
+	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
+	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, 1000000,
 		ParamCreator, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 6, len(rec))
 
 	_, err = chain.FindContract(ScName)
 	require.NoError(t, err)
@@ -28,16 +28,16 @@ func TestDeployErc20(t *testing.T) {
 		ParamCreator, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, rec = chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	_, _, rec = chain.GetInfo()
+	require.EqualValues(t, 6, len(rec))
 }
 
 func TestDeployErc20Fail1(t *testing.T) {
 	chain := common.StartChain(t, ScName)
 	err := common.DeployWasmContractByName(chain, ScName)
 	require.Error(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 4, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 5, len(rec))
 }
 
 func TestDeployErc20Fail2(t *testing.T) {
@@ -46,32 +46,32 @@ func TestDeployErc20Fail2(t *testing.T) {
 		ParamSupply, 1000000,
 	)
 	require.Error(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 4, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 5, len(rec))
 }
 
 func TestDeployErc20Fail3(t *testing.T) {
 	chain := common.StartChain(t, ScName)
-	creator = common.CreatorWallet
-	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
+	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
+	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 4, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 5, len(rec))
 }
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
 	chain := common.StartChain(t, ScName)
-	creator = common.CreatorWallet
-	creatorAgentID = coretypes.NewAgentIDFromAddress(creator.Address())
+	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
+	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,
 	)
 	require.Error(t, err)
-	_, rec := chain.GetInfo()
-	require.EqualValues(t, 4, len(rec))
+	_, _, rec := chain.GetInfo()
+	require.EqualValues(t, 5, len(rec))
 
 	// repeat after failure
 	err = common.DeployWasmContractByName(chain, ScName,
@@ -79,8 +79,8 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 		ParamCreator, creatorAgentID,
 	)
 	require.NoError(t, err)
-	_, rec = chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	_, _, rec = chain.GetInfo()
+	require.EqualValues(t, 6, len(rec))
 
 	_, err = chain.FindContract(ScName)
 	require.NoError(t, err)

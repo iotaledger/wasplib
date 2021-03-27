@@ -6,6 +6,7 @@
   "vars": {
     "counter": "Int64",
     "hnameEP": "Hname",
+    "mintedColor": "Color",
     "mintedSupply": "Int64"
   },
   "funcs": {
@@ -15,11 +16,10 @@
       "hnameEP": "?Hname"
     },
     "checkContextFromFullEP": {
-      "chainId=chainid": "ChainId",
-      "chainOwnerId=chainOwnerID": "AgentId",
-      "caller": "AgentId",
-      "contractId=contractID": "ContractId",
       "agentId=agentID": "AgentId",
+      "caller": "AgentId",
+      "chainId=chainID": "ChainId",
+      "chainOwnerId=chainOwnerID": "AgentId",
       "contractCreator": "AgentId"
     },
     "doNothing": {
@@ -56,8 +56,6 @@
     },
     "testChainOwnerIDFull": {
     },
-    "testContractIDFull": {
-    },
     "testEventLogDeploy": {
     },
     "testEventLogEventData": {
@@ -68,15 +66,14 @@
     "testPanicFullEP": {
     },
     "withdrawToChain": {
-      "chainId=chainid": "ChainId"
+      "chainId=chainID": "ChainId"
     }
   },
   "views": {
     "checkContextFromViewEP": {
-      "chainId=chainid": "ChainId",
-      "chainOwnerId=chainOwnerID": "AgentId",
-      "contractId=contractID": "ContractId",
       "agentId=agentID": "AgentId",
+      "chainId=chainID": "ChainId",
+      "chainOwnerId=chainOwnerID": "AgentId",
       "contractCreator": "AgentId"
     },
     "fibonacci": {
@@ -101,8 +98,6 @@
     "testCallPanicViewEPFromView": {
     },
     "testChainOwnerIDView": {
-    },
-    "testContractIDView": {
     },
     "testPanicViewEP": {
     },

@@ -332,7 +332,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		}
 		switch grant {
 		case "self":
-			grant = "ctx.ContractId().AsAgentId()"
+			grant = "ctx.AccountId()"
 		case "chain":
 			grant = "ctx.ChainOwnerId()"
 		case "creator":

@@ -14,10 +14,11 @@ var javaReplacements = []string{
 	"None", "null",
 	"ScColor::Iota", "ScColor.IOTA",
 	"ScColor::Mint", "ScColor.MINT",
-	"ScContractId::new", "new ScContractId",
+	"ScAgentId::new", "new ScAgentId",
 	"ScHname::new", "new ScHname",
 	"ScMutableMap::new", "new ScMutableMap",
 	"ScTransfers::new", "new ScTransfers",
+	"ScTransfers::iotas", "ScTransfers.iotas",
 	" str = \"", " = \"",
 	"String::new()", "\"\"",
 

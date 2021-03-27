@@ -23,7 +23,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 	for i := 1; i < 6; i++ {
 		req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncEventLogGenericData,
 			sbtestsc.VarCounter, i,
-		)
+		).WithIotas(1)
 		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
@@ -49,7 +49,7 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 		req := solo.NewCallParams(SandboxSCName,
 			sbtestsc.FuncEventLogGenericData,
 			sbtestsc.VarCounter, i,
-		)
+		).WithIotas(1)
 		_, err = chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
 	}
@@ -73,7 +73,7 @@ func testEventLogEventData(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogEventData,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -104,7 +104,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 		req := solo.NewCallParams(sbtestsc.Interface.Name,
 			sbtestsc.FuncEventLogEventData,
 			sbtestsc.VarCounter, count,
-		)
+		).WithIotas(1)
 		count++
 		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
@@ -114,7 +114,7 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 		req := solo.NewCallParams(sbtestsc.Interface.Name,
 			sbtestsc.FuncEventLogGenericData,
 			sbtestsc.VarCounter, count,
-		)
+		).WithIotas(1)
 		count++
 		_, err := chain.PostRequestSync(req, nil)
 		require.NoError(t, err)
@@ -145,7 +145,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 	req := solo.NewCallParams(SandboxSCName,
 		sbtestsc.FuncEventLogGenericData,
 		sbtestsc.VarCounter, solo.Saldo,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -167,7 +167,7 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 	require.EqualValues(t, 2, strings.Count(str, "[req]"))
 	require.EqualValues(t, 1, strings.Count(str, "[GenericData]"))
 	require.EqualValues(t, 0, strings.Count(str, "[Event]"))
-	require.EqualValues(t, 1, strings.Count(str, strconv.FormatInt(solo.Saldo, 10)))
+	require.EqualValues(t, 1, strings.Count(str, strconv.FormatUint(solo.Saldo, 10)))
 }
 
 func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy) }
@@ -177,7 +177,7 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogDeploy,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -205,14 +205,14 @@ func testChainLogMultiple(t *testing.T, w bool) {
 
 	req := solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogEventData,
-	)
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
 	req = solo.NewCallParams(sbtestsc.Interface.Name,
 		sbtestsc.FuncEventLogGenericData,
 		sbtestsc.VarCounter, 33333,
-	)
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 

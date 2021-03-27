@@ -65,8 +65,8 @@ current function.
 
 #### Final word
 
-This concludes this tutorial. Please see the documentation provided with the 
-source code of WasmLib for a complete list of all functionality that WasmLib 
+This concludes this tutorial. Please see the documentation provided with the
+source code of WasmLib for a complete list of all functionality that WasmLib
 offers through the ISCP sandbox API.
 
 Back to top: [ISCP Tutorial](../../Tutorial.md)

@@ -13,10 +13,10 @@ var goReplacements = []string{
 	"None", "nil",
 	"ScColor::Iota", "wasmlib.IOTA",
 	"ScColor::Mint", "wasmlib.MINT",
-	"ScContractId::new", "wasmlib.NewScContractId",
 	"ScHname::new", "wasmlib.NewScHname",
 	"ScMutableMap::new", "wasmlib.NewScMutableMap",
 	"ScTransfers::new", "wasmlib.NewScTransfer",
+	"ScTransfers::iotas", "wasmlib.NewScTransferIotas",
 	" str = \"", " = \"",
 	"String::new()", "\"\"",
 

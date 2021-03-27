@@ -4,7 +4,7 @@
 package test
 
 import (
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
+	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -43,10 +43,10 @@ func TestStateAfterDeploy(t *testing.T) {
 func TestDonateOnce(t *testing.T) {
 	chain := setupTest(t)
 
-	donator1 := chain.Env.NewSignatureSchemeWithFunds()
+	donator1, donator1Addr := chain.Env.NewKeyPairWithFunds()
 	req := solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Nice work!",
-	).WithTransfer(balance.ColorIOTA, 42)
+	).WithIotas(42)
 	_, err := chain.PostRequestSync(req, donator1)
 	require.NoError(t, err)
 
@@ -63,29 +63,29 @@ func TestDonateOnce(t *testing.T) {
 	require.NoError(t, err)
 	require.EqualValues(t, 42, tot)
 
-	// 42 iota transferred from wallet to contract plus 1 used for transaction
-	chain.Env.AssertAddressBalance(donator1.Address(), balance.ColorIOTA, solo.Saldo-42-1)
+	// 42 iota transferred from wallet to contract
+	chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
 	// 42 iota transferred to contract
-	chain.AssertAccountBalance(common.ContractAccount, balance.ColorIOTA, 42)
+	chain.AssertAccountBalance(chain.ContractAgentID(ScName), ledgerstate.ColorIOTA, 42)
 	// returned 1 used for transaction to wallet account
-	account1 := coretypes.NewAgentIDFromSigScheme(donator1)
-	chain.AssertAccountBalance(account1, balance.ColorIOTA, 1)
+	account1 := coretypes.NewAgentID(donator1Addr, 0)
+	chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
 }
 
 func TestDonateTwice(t *testing.T) {
 	chain := setupTest(t)
 
-	donator1 := chain.Env.NewSignatureSchemeWithFunds()
+	donator1, donator1Addr := chain.Env.NewKeyPairWithFunds()
 	req := solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Nice work!",
-	).WithTransfer(balance.ColorIOTA, 42)
+	).WithIotas(42)
 	_, err := chain.PostRequestSync(req, donator1)
 	require.NoError(t, err)
 
-	donator2 := chain.Env.NewSignatureSchemeWithFunds()
+	donator2, donator2Addr := chain.Env.NewKeyPairWithFunds()
 	req = solo.NewCallParams(ScName, FuncDonate,
 		ParamFeedback, "Exactly what I needed!",
-	).WithTransfer(balance.ColorIOTA, 69)
+	).WithIotas(69)
 	_, err = chain.PostRequestSync(req, donator2)
 	require.NoError(t, err)
 
@@ -103,14 +103,14 @@ func TestDonateTwice(t *testing.T) {
 	require.EqualValues(t, 42+69, tot)
 
 	// 42 iota transferred from wallet to contract plus 1 used for transaction
-	chain.Env.AssertAddressBalance(donator1.Address(), balance.ColorIOTA, solo.Saldo-42-1)
+	chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
 	// 69 iota transferred from wallet to contract plus 1 used for transaction
-	chain.Env.AssertAddressBalance(donator2.Address(), balance.ColorIOTA, solo.Saldo-69-1)
+	chain.Env.AssertAddressBalance(donator2Addr, ledgerstate.ColorIOTA, solo.Saldo-69)
 	// 42+69 iota transferred to contract
-	chain.AssertAccountBalance(common.ContractAccount, balance.ColorIOTA, 42+69)
+	chain.AssertAccountBalance(chain.ContractAgentID(ScName), ledgerstate.ColorIOTA, 42+69)
 	// returned 1 used for transaction to wallet accounts
-	account1 := coretypes.NewAgentIDFromSigScheme(donator1)
-	chain.AssertAccountBalance(account1, balance.ColorIOTA, 1)
-	account2 := coretypes.NewAgentIDFromSigScheme(donator2)
-	chain.AssertAccountBalance(account2, balance.ColorIOTA, 1)
+	account1 := coretypes.NewAgentID(donator1Addr, 0)
+	chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
+	account2 := coretypes.NewAgentID(donator2Addr, 0)
+	chain.AssertAccountBalance(account2, ledgerstate.ColorIOTA, 0)
 }

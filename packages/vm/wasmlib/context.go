@@ -30,6 +30,11 @@ type ScTransfers struct {
 	transfers ScMutableMap
 }
 
+// special constructor for simplifying iota transfers
+func NewScTransferIotas(amount int64) ScTransfers {
+	return NewScTransfer(IOTA, amount)
+}
+
 // special constructor for simplifying single transfers
 func NewScTransfer(color ScColor, amount int64) ScTransfers {
 	transfer := NewScTransfers()
@@ -155,9 +160,19 @@ func base58Encode(bytes []byte) string {
 type ScBaseContext struct {
 }
 
+// retrieve the agent id of this contract account
+func (ctx ScBaseContext) AccountId() ScAgentId {
+	return Root.GetAgentId(KeyAccountId).Value()
+}
+
 // access the current balances for all token colors
 func (ctx ScBaseContext) Balances() ScBalances {
 	return ScBalances{Root.GetMap(KeyBalances).Immutable()}
+}
+
+// retrieve the chain id of the chain this contract lives on
+func (ctx ScBaseContext) ChainId() ScChainId {
+	return Root.GetChainId(KeyChainId).Value()
 }
 
 // retrieve the agent id of the owner of the chain this contract lives on
@@ -165,14 +180,14 @@ func (ctx ScBaseContext) ChainOwnerId() ScAgentId {
 	return Root.GetAgentId(KeyChainOwnerId).Value()
 }
 
+// retrieve the hname of this contract
+func (ctx ScBaseContext) Contract() ScHname {
+	return Root.GetHname(KeyContract).Value()
+}
+
 // retrieve the agent id of the creator of this contract
 func (ctx ScBaseContext) ContractCreator() ScAgentId {
 	return Root.GetAgentId(KeyContractCreator).Value()
-}
-
-// retrieve the id of this contract
-func (ctx ScBaseContext) ContractId() ScContractId {
-	return Root.GetContractId(KeyContractId).Value()
 }
 
 // logs informational text message
@@ -250,7 +265,7 @@ func (ctx ScFuncContext) Caller() ScAgentId {
 
 // calls a smart contract function on the current contract
 func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
-	return ctx.Call(ctx.ContractId().Hname(), hFunction, params, transfer)
+	return ctx.Call(ctx.Contract(), hFunction, params, transfer)
 }
 
 // deploys a smart contract
@@ -277,37 +292,29 @@ func (ctx ScFuncContext) Incoming() ScBalances {
 	return ScBalances{Root.GetMap(KeyIncoming).Immutable()}
 }
 
-// retrieve the color of the tokens that were minted in this transaction
-func (ctx ScFuncContext) MintedColor() ScColor {
-	return NewScColorFromRequestId(ctx.RequestId())
-}
-
-// retrieve the amount of tokens that were minted in this transaction
-func (ctx ScFuncContext) MintedSupply() int64 {
-	return Root.GetInt64(KeyMinted).Value()
+// retrieve the tokens that were minted in this transaction
+func (ctx ScFuncContext) Minted() ScBalances {
+	return ScBalances{Root.GetMap(KeyMinted).Immutable()}
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(contractId ScContractId, function ScHname, params *ScMutableMap, transfer *ScTransfers, delay int64) {
+func (ctx ScFuncContext) Post(chainId ScChainId, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int64) {
 	encode := NewBytesEncoder()
-	encode.ContractId(contractId)
-	encode.Hname(function)
+	encode.ChainId(chainId)
+	encode.Hname(hContract)
+	encode.Hname(hFunction)
 	if params != nil {
 		encode.Int64(int64(params.objId))
 	} else {
 		encode.Int64(0)
 	}
-	if transfer != nil {
-		encode.Int64(int64(transfer.transfers.objId))
-	} else {
-		encode.Int64(0)
-	}
+	encode.Int64(int64(transfer.transfers.objId))
 	encode.Int64(delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 
-func (ctx ScFuncContext) PostSelf(function ScHname, params *ScMutableMap, transfer *ScTransfers, delay int64) {
-	ctx.Post(ctx.ContractId(), function, params, transfer, delay)
+func (ctx ScFuncContext) PostSelf(hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int64) {
+	ctx.Post(ctx.ChainId(), ctx.Contract(), hFunction, params, transfer, delay)
 }
 
 // retrieve the request id of this transaction
@@ -352,7 +359,7 @@ func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMuta
 
 // calls a smart contract function on the current contract
 func (ctx ScViewContext) CallSelf(function ScHname, params *ScMutableMap) ScImmutableMap {
-	return ctx.Call(ctx.ContractId().Hname(), function, params)
+	return ctx.Call(ctx.Contract(), function, params)
 }
 
 // access to immutable state storage

@@ -11,10 +11,9 @@ import org.iota.wasp.wasmlib.immutable.*;
 
 //@formatter:off
 public class ViewCheckContextFromViewEPParams {
-    public ScImmutableAgentId      AgentId;
-    public ScImmutableChainId      ChainId;
-    public ScImmutableAgentId      ChainOwnerId;
-    public ScImmutableAgentId      ContractCreator;
-    public ScImmutableContractId   ContractId;
+    public ScImmutableAgentId   AgentId;
+    public ScImmutableChainId   ChainId;
+    public ScImmutableAgentId   ChainOwnerId;
+    public ScImmutableAgentId   ContractCreator;
 }
 //@formatter:on

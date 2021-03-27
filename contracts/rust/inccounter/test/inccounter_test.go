@@ -5,7 +5,6 @@ package test
 
 import (
 	"fmt"
-	"github.com/iotaledger/goshimmer/dapps/valuetransfers/packages/balance"
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -35,7 +34,8 @@ func TestStateAfterDeploy(t *testing.T) {
 func TestIncrementOnce(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncIncrement)
+	req := solo.NewCallParams(ScName, FuncIncrement,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -45,11 +45,13 @@ func TestIncrementOnce(t *testing.T) {
 func TestIncrementTwice(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncIncrement)
+	req := solo.NewCallParams(ScName, FuncIncrement,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	req = solo.NewCallParams(ScName, FuncIncrement)
+	req = solo.NewCallParams(ScName, FuncIncrement,
+	).WithIotas(1)
 	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -61,7 +63,7 @@ func TestIncrementRepeatThrice(t *testing.T) {
 
 	req := solo.NewCallParams(ScName, FuncRepeatMany,
 		ParamNumRepeats, 3,
-	).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -73,7 +75,8 @@ func TestIncrementRepeatThrice(t *testing.T) {
 func TestIncrementCallIncrement(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncCallIncrement)
+	req := solo.NewCallParams(ScName, FuncCallIncrement,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -83,7 +86,8 @@ func TestIncrementCallIncrement(t *testing.T) {
 func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncCallIncrementRecurse5x)
+	req := solo.NewCallParams(ScName, FuncCallIncrementRecurse5x,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -93,7 +97,8 @@ func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 func TestIncrementPostIncrement(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncPostIncrement).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
+	req := solo.NewCallParams(ScName, FuncPostIncrement,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -105,7 +110,8 @@ func TestIncrementPostIncrement(t *testing.T) {
 func TestIncrementLocalStateInternalCall(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncLocalStateInternalCall)
+	req := solo.NewCallParams(ScName, FuncLocalStateInternalCall,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -115,7 +121,8 @@ func TestIncrementLocalStateInternalCall(t *testing.T) {
 func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncLocalStateSandboxCall)
+	req := solo.NewCallParams(ScName, FuncLocalStateSandboxCall,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -131,7 +138,8 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 func TestIncrementLocalStatePost(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncLocalStatePost).WithTransfer(balance.ColorIOTA, 1) // !!! posts to self
+	req := solo.NewCallParams(ScName, FuncLocalStatePost,
+	).WithIotas(3)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -149,7 +157,8 @@ func TestIncrementLocalStatePost(t *testing.T) {
 func TestLeb128(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncTestLeb128)
+	req := solo.NewCallParams(ScName, FuncTestLeb128,
+	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 	res, err := chain.CallView(

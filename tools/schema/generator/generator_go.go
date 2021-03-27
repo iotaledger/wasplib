@@ -275,7 +275,7 @@ func (s *Schema) GenerateGoThunk(file *os.File, funcDef *FuncDef) {
 		}
 		switch grant {
 		case "self":
-			grant = "ctx.ContractId().AsAgentId()"
+			grant = "ctx.AccountId()"
 		case "chain":
 			grant = "ctx.ChainOwnerId()"
 		case "creator":

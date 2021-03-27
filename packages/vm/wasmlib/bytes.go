@@ -37,10 +37,6 @@ func (d *BytesDecoder) Color() ScColor {
 	return NewScColorFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) ContractId() ScContractId {
-	return NewScContractIdFromBytes(d.Bytes())
-}
-
 func (d *BytesDecoder) Hash() ScHash {
 	return NewScHashFromBytes(d.Bytes())
 }
@@ -112,10 +108,6 @@ func (e *BytesEncoder) ChainId(value ScChainId) *BytesEncoder {
 }
 
 func (e *BytesEncoder) Color(value ScColor) *BytesEncoder {
-	return e.Bytes(value.Bytes())
-}
-
-func (e *BytesEncoder) ContractId(value ScContractId) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
