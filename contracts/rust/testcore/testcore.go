@@ -139,7 +139,6 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestPanicFullEPP
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainParams) {
 	transfers := wasmlib.NewScTransferIotas(1)
 	ctx.Post(params.ChainId.Value(), wasmlib.CoreAccounts, wasmlib.CoreAccountsFuncWithdraw, nil, transfers, 0)
-	ctx.Log("====  success ====")
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckContextFromViewEPParams) {

@@ -180,6 +180,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "testwasmlib"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "wasm-bindgen-test",
+ "wasmlib",
+ "wee_alloc",
+]
+
+[[package]]
 name = "tokenregistry"
 version = "0.1.0"
 dependencies = [

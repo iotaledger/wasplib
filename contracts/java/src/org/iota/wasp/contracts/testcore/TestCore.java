@@ -146,7 +146,6 @@ public class TestCore {
     public static void funcWithdrawToChain(ScFuncContext ctx, FuncWithdrawToChainParams params) {
         var transfer = ScTransfers.iotas(1);
         ctx.Post(params.ChainId.Value(), Core.Accounts, Core.AccountsFuncWithdraw, null, transfer, 0);
-        ctx.Log("====  success ====");
     }
 
     public static void viewCheckContextFromViewEP(ScViewContext ctx, ViewCheckContextFromViewEPParams params) {

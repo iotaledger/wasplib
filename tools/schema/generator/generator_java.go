@@ -17,15 +17,15 @@ const generateJavaThunk = true
 var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
 
 var javaTypes = StringMap{
-	"Address":    "ScAddress",
-	"AgentId":    "ScAgentId",
-	"ChainId":    "ScChainId",
-	"Color":      "ScColor",
-	"ContractId": "ScContractId",
-	"Hash":       "ScHash",
-	"Hname":      "Hname",
-	"Int64":      "long",
-	"String":     "String",
+	"Address":   "ScAddress",
+	"AgentId":   "ScAgentId",
+	"ChainId":   "ScChainId",
+	"Color":     "ScColor",
+	"Hash":      "ScHash",
+	"Hname":     "Hname",
+	"Int64":     "long",
+	"RequestId": "ScRequestId",
+	"String":    "String",
 }
 
 func (s *Schema) GenerateJava() error {

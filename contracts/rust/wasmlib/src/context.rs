@@ -346,7 +346,7 @@ impl ScFuncContext {
     }
 
     // retrieve the request id of this transaction
-    fn request_id(&self) -> ScRequestId {
+    pub fn request_id(&self) -> ScRequestId {
         ROOT.get_request_id(&KEY_REQUEST_ID).value()
     }
 

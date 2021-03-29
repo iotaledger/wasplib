@@ -135,7 +135,6 @@ pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _params: &FuncTestPanicFullE
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, params: &FuncWithdrawToChainParams) {
     let transfer = ScTransfers::iotas(1);
     ctx.post(&params.chain_id.value(), CORE_ACCOUNTS, CORE_ACCOUNTS_FUNC_WITHDRAW, None, transfer, 0);
-    ctx.log("====  success ====");
 }
 
 pub fn view_check_context_from_view_ep(ctx: &ScViewContext, params: &ViewCheckContextFromViewEPParams) {

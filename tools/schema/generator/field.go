@@ -15,15 +15,16 @@ var fldAliasRegexp = regexp.MustCompile("^[a-zA-Z0-9_$#@*%\\-]+$")
 var fldTypeRegexp = regexp.MustCompile("^[A-Z][a-zA-Z0-9]+$")
 
 var FieldTypes = map[string]int32{
-	"Address": wasmlib.TYPE_ADDRESS,
-	"AgentId": wasmlib.TYPE_AGENT_ID,
-	"Bytes":   wasmlib.TYPE_BYTES,
-	"ChainId": wasmlib.TYPE_CHAIN_ID,
-	"Color":   wasmlib.TYPE_COLOR,
-	"Hash":    wasmlib.TYPE_HASH,
-	"Hname":   wasmlib.TYPE_HNAME,
-	"Int64":   wasmlib.TYPE_INT64,
-	"String":  wasmlib.TYPE_STRING,
+	"Address":   wasmlib.TYPE_ADDRESS,
+	"AgentId":   wasmlib.TYPE_AGENT_ID,
+	"Bytes":     wasmlib.TYPE_BYTES,
+	"ChainId":   wasmlib.TYPE_CHAIN_ID,
+	"Color":     wasmlib.TYPE_COLOR,
+	"Hash":      wasmlib.TYPE_HASH,
+	"Hname":     wasmlib.TYPE_HNAME,
+	"Int64":     wasmlib.TYPE_INT64,
+	"RequestId": wasmlib.TYPE_REQUEST_ID,
+	"String":    wasmlib.TYPE_STRING,
 }
 
 type Field struct {

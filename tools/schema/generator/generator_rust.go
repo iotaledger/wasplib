@@ -17,15 +17,15 @@ var generateRustThunk = true
 var rustFuncRegexp = regexp.MustCompile("^pub fn (\\w+).+$")
 
 var rustTypes = StringMap{
-	"Address":    "ScAddress",
-	"AgentId":    "ScAgentId",
-	"ChainId":    "ScChainId",
-	"Color":      "ScColor",
-	"ContractId": "ScContractId",
-	"Hash":       "ScHash",
-	"Hname":      "ScHname",
-	"Int64":      "i64",
-	"String":     "String",
+	"Address":   "ScAddress",
+	"AgentId":   "ScAgentId",
+	"ChainId":   "ScChainId",
+	"Color":     "ScColor",
+	"Hash":      "ScHash",
+	"Hname":     "ScHname",
+	"Int64":     "i64",
+	"RequestId": "ScRequestId",
+	"String":    "String",
 }
 
 func (s *Schema) GenerateRust() error {

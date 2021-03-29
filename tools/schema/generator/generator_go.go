@@ -20,15 +20,15 @@ const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/was
 var goFuncRegexp = regexp.MustCompile("^func (\\w+).+$")
 
 var goTypes = StringMap{
-	"Address":    "wasmlib.ScAddress",
-	"AgentId":    "wasmlib.ScAgentId",
-	"ChainId":    "wasmlib.ScChainId",
-	"Color":      "wasmlib.ScColor",
-	"ContractId": "wasmlib.ScContractId",
-	"Hash":       "wasmlib.ScHash",
-	"Hname":      "wasmlib.ScHname",
-	"Int64":      "int64",
-	"String":     "string",
+	"Address":   "wasmlib.ScAddress",
+	"AgentId":   "wasmlib.ScAgentId",
+	"ChainId":   "wasmlib.ScChainId",
+	"Color":     "wasmlib.ScColor",
+	"Hash":      "wasmlib.ScHash",
+	"Hname":     "wasmlib.ScHname",
+	"Int64":     "int64",
+	"RequestId": "wasmlib.ScRequestId",
+	"String":    "string",
 }
 
 func (s *Schema) GenerateGo() error {

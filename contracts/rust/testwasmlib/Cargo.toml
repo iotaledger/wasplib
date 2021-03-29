@@ -1,0 +1,26 @@
+# Copyright 2020 IOTA Stiftung
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "testwasmlib"
+description = "Exercise all aspects of WasmLib"
+license = "Apache-2.0"
+version = "0.1.0"
+authors = ["Eric Hop <eric@iota.org>"]
+edition = "2018"
+repository = "https://github.com/iotaledger/wasplib"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+wasmlib = { path = "../wasmlib" }
+#wasmlib = { git = "https://github.com/iotaledger/wasp", branch = "develop" }
+console_error_panic_hook = { version = "0.1.6", optional = true }
+wee_alloc = { version = "0.4.5", optional = true }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.13"
