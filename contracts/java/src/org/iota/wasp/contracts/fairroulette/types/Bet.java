@@ -25,6 +25,7 @@ public class Bet {
         Amount = decode.Int64();
         Better = decode.AgentId();
         Number = decode.Int64();
+        decode.Close();
     }
 
     public byte[] toBytes() {

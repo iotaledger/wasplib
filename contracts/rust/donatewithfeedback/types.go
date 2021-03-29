@@ -25,6 +25,7 @@ func NewDonationFromBytes(bytes []byte) *Donation {
 	data.Error = decode.String()
 	data.Feedback = decode.String()
 	data.Timestamp = decode.Int64()
+	decode.Close()
 	return data
 }
 

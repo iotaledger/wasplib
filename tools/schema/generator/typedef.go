@@ -54,6 +54,7 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		name := capitalize(field.Name)
 		fmt.Fprintf(file, "        %s = decode.%s();\n", name, field.Type)
 	}
+	fmt.Fprintf(file, "        decode.Close();\n")
 	fmt.Fprintf(file, "    }\n")
 
 	// write conversion to byte array

@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.dividend.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncSetOwnerParams {
-    public ScImmutableAgentId   Owner; // new owner of smart contract
+    public ScImmutableAgentId Owner; // new owner of smart contract
 }

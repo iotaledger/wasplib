@@ -22,7 +22,7 @@ func (d *BytesDecoder) AgentId() ScAgentId {
 func (d *BytesDecoder) Bytes() []byte {
 	size := d.Int64()
 	if len(d.data) < int(size) {
-		panic("cannot decode bytes")
+		panic("insufficient bytes")
 	}
 	value := d.data[:size]
 	d.data = d.data[size:]
@@ -35,6 +35,12 @@ func (d *BytesDecoder) ChainId() ScChainId {
 
 func (d *BytesDecoder) Color() ScColor {
 	return NewScColorFromBytes(d.Bytes())
+}
+
+func (d *BytesDecoder) Close() {
+	if len(d.data) != 0 {
+		panic("extra bytes")
+	}
 }
 
 func (d *BytesDecoder) Hash() ScHash {
@@ -50,6 +56,9 @@ func (d *BytesDecoder) Int64() int64 {
 	val := int64(0)
 	s := 0
 	for {
+		if len(d.data) == 0 {
+			panic("insufficient bytes")
+		}
 		b := int8(d.data[0])
 		d.data = d.data[1:]
 		val |= int64(b&0x7f) << s

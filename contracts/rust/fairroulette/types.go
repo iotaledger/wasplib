@@ -21,6 +21,7 @@ func NewBetFromBytes(bytes []byte) *Bet {
 	data.Amount = decode.Int64()
 	data.Better = decode.AgentId()
 	data.Number = decode.Int64()
+	decode.Close()
 	return data
 }
 

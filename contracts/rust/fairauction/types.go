@@ -37,6 +37,7 @@ func NewAuctionFromBytes(bytes []byte) *Auction {
 	data.NumTokens = decode.Int64()
 	data.OwnerMargin = decode.Int64()
 	data.WhenStarted = decode.Int64()
+	decode.Close()
 	return data
 }
 
@@ -68,6 +69,7 @@ func NewBidFromBytes(bytes []byte) *Bid {
 	data.Amount = decode.Int64()
 	data.Index = decode.Int64()
 	data.Timestamp = decode.Int64()
+	decode.Close()
 	return data
 }
 

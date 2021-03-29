@@ -25,6 +25,7 @@ public class Bid {
         Amount = decode.Int64();
         Index = decode.Int64();
         Timestamp = decode.Int64();
+        decode.Close();
     }
 
     public byte[] toBytes() {

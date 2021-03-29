@@ -29,6 +29,7 @@ func NewTokenFromBytes(bytes []byte) *Token {
 	data.Supply = decode.Int64()
 	data.Updated = decode.Int64()
 	data.UserDefined = decode.String()
+	decode.Close()
 	return data
 }
 

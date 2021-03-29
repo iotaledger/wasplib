@@ -33,6 +33,7 @@ public class Token {
         Supply = decode.Int64();
         Updated = decode.Int64();
         UserDefined = decode.String();
+        decode.Close();
     }
 
     public byte[] toBytes() {

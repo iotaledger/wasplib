@@ -13,6 +13,7 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/helloworld"
 	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
+	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -40,6 +41,7 @@ var ScForGoVM = map[string]func(){
 	"helloworld":         helloworld.OnLoad,
 	"inccounter":         inccounter.OnLoad,
 	"testcore":           testcore.OnLoad,
+	"testwasmlib":        testwasmlib.OnLoad,
 	"tokenregistry":      tokenregistry.OnLoad,
 }
 

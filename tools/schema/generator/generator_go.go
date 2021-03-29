@@ -342,11 +342,13 @@ func (s *Schema) GenerateGoTypes() error {
 
 		// write encoder and decoder for struct
 		fmt.Fprintf(file, "\nfunc New%sFromBytes(bytes []byte) *%s {\n", typeDef.Name, typeDef.Name)
-		fmt.Fprintf(file, "\tdecode := wasmlib.NewBytesDecoder(bytes)\n\tdata := &%s{}\n", typeDef.Name)
+		fmt.Fprintf(file, "\tdecode := wasmlib.NewBytesDecoder(bytes)\n")
+		fmt.Fprintf(file, "\tdata := &%s{}\n", typeDef.Name)
 		for _, field := range typeDef.Fields {
 			name := capitalize(field.Name)
 			fmt.Fprintf(file, "\tdata.%s = decode.%s()\n", name, field.Type)
 		}
+		fmt.Fprintf(file, "\tdecode.Close()\n")
 		fmt.Fprintf(file, "\treturn data\n}\n")
 
 		fmt.Fprintf(file, "\nfunc (o *%s) Bytes() []byte {\n", typeDef.Name)

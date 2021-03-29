@@ -29,6 +29,7 @@ public class Donation {
         Error = decode.String();
         Feedback = decode.String();
         Timestamp = decode.Int64();
+        decode.Close();
     }
 
     public byte[] toBytes() {

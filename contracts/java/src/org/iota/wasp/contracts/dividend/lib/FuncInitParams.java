@@ -10,5 +10,5 @@ package org.iota.wasp.contracts.dividend.lib;
 import org.iota.wasp.wasmlib.immutable.*;
 
 public class FuncInitParams {
-    public ScImmutableAgentId   Owner; // optional owner, defaults to contract creator
+    public ScImmutableAgentId Owner; // optional owner, defaults to contract creator
 }

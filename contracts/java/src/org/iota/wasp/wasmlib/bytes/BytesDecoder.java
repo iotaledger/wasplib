@@ -27,7 +27,7 @@ public class BytesDecoder {
     public byte[] Bytes() {
         int size = (int) Int64();
         if (data.length < size) {
-            Host.Panic("cannot decode bytes");
+            Host.Panic("insufficient bytes");
         }
         byte[] value = Arrays.copyOfRange(data, 0, size);
         data = Arrays.copyOfRange(data, size, data.length);
@@ -42,6 +42,12 @@ public class BytesDecoder {
         return new ScColor(Bytes());
     }
 
+    public void Close() {
+        if (data.length != 0) {
+            Host.Panic("extra bytes");
+        }
+    }
+
     public ScHash Hash() {
         return new ScHash(Bytes());
     }
@@ -54,6 +60,9 @@ public class BytesDecoder {
         long val = 0;
         int s = 0;
         for (; ; ) {
+            if (data.length == 0) {
+                Host.Panic("insufficient bytes");
+            }
             byte b = data[0];
             data = Arrays.copyOfRange(data, 1, data.length);
             val |= ((long) (b & 0x7f)) << s;

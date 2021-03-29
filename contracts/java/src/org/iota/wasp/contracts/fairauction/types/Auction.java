@@ -41,6 +41,7 @@ public class Auction {
         NumTokens = decode.Int64();
         OwnerMargin = decode.Int64();
         WhenStarted = decode.Int64();
+        decode.Close();
     }
 
     public byte[] toBytes() {

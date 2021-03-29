@@ -34,7 +34,7 @@ var (
 		ParamInt64,
 		ParamRequestId,
 	}
-	allLengths = []int{33, 37, 33, 32, 32, 4, 8, 34 }
+	allLengths = []int{33, 37, 33, 32, 32, 4, 8, 34}
 )
 
 func setupTest(t *testing.T) *solo.Chain {
@@ -56,7 +56,7 @@ func TestNoParams(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestCorrectParams(t *testing.T) {
+func TestValidParams(t *testing.T) {
 	chain := setupTest(t)
 
 	chainId := chain.ChainID
@@ -85,9 +85,9 @@ func TestCorrectParams(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestValidLengthParams(t *testing.T) {
-	for index,param := range allParams {
-		t.Run("ZeroLength " + param, func(t *testing.T) {
+func TestValidSizeParams(t *testing.T) {
+	for index, param := range allParams {
+		t.Run("ValidSize "+param, func(t *testing.T) {
 			chain := setupTest(t)
 
 			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
@@ -95,14 +95,14 @@ func TestValidLengthParams(t *testing.T) {
 			).WithIotas(1)
 			_, err := chain.PostRequestSync(req, nil)
 			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "mismatch: "))
+			require.True(t, strings.Contains(err.Error(), "mismatch: ") || strings.Contains(err.Error(), "invalid "))
 		})
 	}
 }
 
-func TestInvalidLengthParams(t *testing.T) {
-	for index,param := range allParams {
-		t.Run("ZeroLength " + param, func(t *testing.T) {
+func TestInvalidSizeParams(t *testing.T) {
+	for index, param := range allParams {
+		t.Run("InvalidSize "+param, func(t *testing.T) {
 			chain := setupTest(t)
 
 			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
@@ -110,21 +110,51 @@ func TestInvalidLengthParams(t *testing.T) {
 			).WithIotas(1)
 			_, err := chain.PostRequestSync(req, nil)
 			require.Error(t, err)
-			require.True(t, strings.HasSuffix(err.Error(), "Invalid type size"))
+			require.True(t, strings.HasSuffix(err.Error(), "invalid type size"))
 
 			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				param, make([]byte, allLengths[index] - 1),
+				param, make([]byte, allLengths[index]-1),
 			).WithIotas(1)
 			_, err = chain.PostRequestSync(req, nil)
 			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "Invalid type size"))
+			require.True(t, strings.Contains(err.Error(), "invalid type size"))
 
 			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				param, make([]byte, allLengths[index] + 1),
+				param, make([]byte, allLengths[index]+1),
 			).WithIotas(1)
 			_, err = chain.PostRequestSync(req, nil)
 			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "Invalid type size"))
+			require.True(t, strings.Contains(err.Error(), "invalid type size"))
 		})
 	}
+}
+
+func TestInvalidTypeParams(t *testing.T) {
+	chain := setupTest(t)
+
+	//blsAddress := ledgerstate.NewBLSAddress()
+	chainId := chain.ChainID
+	address := chainId.AsAddress()
+	hname := coretypes.Hn(testwasmlib.ScName)
+	agentId := coretypes.NewAgentID(address, hname)
+	color, _, err := ledgerstate.ColorFromBytes([]byte("RedGreenBlueYellowCyanBlackWhite"))
+	require.NoError(t, err)
+	hash, err := hashing.HashValueFromBytes([]byte("0123456789abcdeffedcba9876543210"))
+	require.NoError(t, err)
+	//requestId,_,err := ledgerstate.OutputIDFromBytes([]byte("abcdefghijklmnopqrstuvwxyz12345678"))
+	//require.NoError(t, err)
+	req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+		ParamAddress, address,
+		ParamAgentId, agentId,
+		ParamBytes, []byte("these are bytes"),
+		ParamChainId, chainId,
+		ParamColor, color,
+		ParamHash, hash,
+		ParamHname, hname,
+		ParamInt64, int64(1234567890123456789),
+		//ParamRequestId, coretypes.RequestID(requestId),
+		ParamString, "this is a string",
+	).WithIotas(1)
+	_, err = chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
 }

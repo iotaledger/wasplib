@@ -29,7 +29,7 @@ impl BytesDecoder<'_> {
     pub fn bytes(&mut self) -> &[u8] {
         let size = self.int64() as usize;
         if self.data.len() < size {
-            panic("cannot decode bytes");
+            panic("insufficient bytes");
         }
         let value = &self.data[..size];
         self.data = &self.data[size..];
@@ -63,6 +63,9 @@ impl BytesDecoder<'_> {
         let mut val = 0_i64;
         let mut s = 0;
         loop {
+            if self.data.len() == 0 {
+                panic("insufficient bytes");
+            }
             let mut b = self.data[0] as i8;
             self.data = &self.data[1..];
             val |= ((b & 0x7f) as i64) << s;
@@ -94,6 +97,14 @@ impl BytesDecoder<'_> {
     // decodes an UTF-8 text string from the byte buffer
     pub fn string(&mut self) -> String {
         String::from_utf8_lossy(self.bytes()).to_string()
+    }
+}
+
+impl Drop for BytesDecoder<'_> {
+    fn drop(&mut self) {
+        if self.data.len() != 0 {
+            panic("extra bytes");
+        }
     }
 }
 
