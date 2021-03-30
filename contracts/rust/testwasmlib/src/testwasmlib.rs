@@ -34,7 +34,7 @@ pub fn func_param_types(ctx: &ScFuncContext, params: &FuncParamTypesParams) {
         ctx.require(params.int64.value() == 1234567890123456789, "mismatch: Int64");
     }
     if params.request_id.exists() {
-        let request_id = ScRequestId::from_bytes("abcdefghijklmnopqrstuvwxyz12345678".as_bytes());
+        let request_id = ScRequestId::from_bytes("abcdefghijklmnopqrstuvwxyz123456\x00\x00".as_bytes());
         ctx.require(params.request_id.value() == request_id, "mismatch: RequestId");
     }
     if params.string.exists() {
