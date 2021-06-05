@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use wasmlib::*;
+use wasmlib::host::*;
 
 //@formatter:off
 pub struct Auction {
@@ -60,6 +61,40 @@ impl Auction {
     }
 }
 
+pub struct ImmutableAuction {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl ImmutableAuction {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn value(&self) -> Auction {
+        Auction::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
+pub struct MutableAuction {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl MutableAuction {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn set_value(&self, value: &Auction) {
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, &value.to_bytes());
+    }
+
+    pub fn value(&self) -> Auction {
+        Auction::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
 //@formatter:off
 pub struct Bid {
     pub amount:    i64, // cumulative amount of bids from same bidder
@@ -84,5 +119,39 @@ impl Bid {
         encode.int64(self.index);
         encode.int64(self.timestamp);
         return encode.data();
+    }
+}
+
+pub struct ImmutableBid {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl ImmutableBid {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn value(&self) -> Bid {
+        Bid::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
+pub struct MutableBid {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl MutableBid {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn set_value(&self, value: &Bid) {
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, &value.to_bytes());
+    }
+
+    pub fn value(&self) -> Bid {
+        Bid::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }

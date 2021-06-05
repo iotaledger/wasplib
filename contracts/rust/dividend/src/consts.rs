@@ -10,11 +10,14 @@
 use wasmlib::*;
 
 pub const SC_NAME: &str = "dividend";
+pub const SC_DESCRIPTION: &str = "Simple dividend smart contract";
 pub const HSC_NAME: ScHname = ScHname(0xcce2e239);
 
 pub const PARAM_ADDRESS: &str = "address";
 pub const PARAM_FACTOR: &str = "factor";
 pub const PARAM_OWNER: &str = "owner";
+
+pub const RESULT_FACTOR: &str = "factor";
 
 pub const VAR_FACTOR: &str = "factor";
 pub const VAR_MEMBER_LIST: &str = "memberList";

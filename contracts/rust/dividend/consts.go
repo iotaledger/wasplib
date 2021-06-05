@@ -10,11 +10,14 @@ package dividend
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const ScName = "dividend"
+const ScDescription = "Simple dividend smart contract"
 const HScName = wasmlib.ScHname(0xcce2e239)
 
 const ParamAddress = wasmlib.Key("address")
 const ParamFactor = wasmlib.Key("factor")
 const ParamOwner = wasmlib.Key("owner")
+
+const ResultFactor = wasmlib.Key("factor")
 
 const VarFactor = wasmlib.Key("factor")
 const VarMemberList = wasmlib.Key("memberList")

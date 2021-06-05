@@ -29,13 +29,13 @@ func test2Chains(t *testing.T, w bool) {
 
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 0)
-	chain1.AssertOwnersIotas(2+extraToken1)
-	chain1.AssertTotalIotas(3+extraToken1)
+	chain1.AssertOwnersIotas(2 + extraToken1)
+	chain1.AssertTotalIotas(3 + extraToken1)
 
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 1)
-	chain2.AssertOwnersIotas(2+extraToken2)
-	chain2.AssertTotalIotas(3+extraToken2)
+	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertTotalIotas(3 + extraToken2)
 
 	req := solo.NewCallParams(accounts.Interface.Name, accounts.FuncDeposit,
 		accounts.ParamAgentID, contractAgentID2,
@@ -48,14 +48,14 @@ func test2Chains(t *testing.T, w bool) {
 	chain1.AssertIotas(userAgentID, 0)
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 42)
-	chain1.AssertOwnersIotas(2+extraToken1)
-	chain1.AssertTotalIotas(45+extraToken1)
+	chain1.AssertOwnersIotas(2 + extraToken1)
+	chain1.AssertTotalIotas(45 + extraToken1)
 
 	chain2.AssertIotas(userAgentID, 0)
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 1)
-	chain2.AssertOwnersIotas(2+extraToken2)
-	chain2.AssertTotalIotas(3+extraToken2)
+	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertTotalIotas(3 + extraToken2)
 
 	req = solo.NewCallParams(sbtestsc.Name, sbtestsc.FuncWithdrawToChain,
 		sbtestsc.ParamChainID, chain1.ChainID,
@@ -72,12 +72,12 @@ func test2Chains(t *testing.T, w bool) {
 	chain1.AssertIotas(userAgentID, 0)
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 0)
-	chain1.AssertOwnersIotas(3+extraToken1)
-	chain1.AssertTotalIotas(4+extraToken1)
+	chain1.AssertOwnersIotas(3 + extraToken1)
+	chain1.AssertTotalIotas(4 + extraToken1)
 
 	chain2.AssertIotas(userAgentID, 0)
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 43)
-	chain2.AssertOwnersIotas(2+extraToken2)
-	chain2.AssertTotalIotas(45+extraToken2)
+	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertTotalIotas(45 + extraToken2)
 }

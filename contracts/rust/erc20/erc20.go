@@ -14,13 +14,13 @@ import (
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
-	delegation := params.Delegation.Value()
-	amount := params.Amount.Value()
+func funcApprove(ctx wasmlib.ScFuncContext, f *FuncApproveContext) {
+	delegation := f.Params.Delegation.Value()
+	amount := f.Params.Amount.Value()
 	ctx.Require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter")
 
 	// all allowances are in the map under the name of he owner
-	allowances := ctx.State().GetMap(ctx.Caller())
+	allowances := f.State.AllAllowances().GetAllowancesForAgent(ctx.Caller())
 	allowances.GetInt64(delegation).SetValue(amount)
 }
 
@@ -29,18 +29,18 @@ func funcApprove(ctx wasmlib.ScFuncContext, params *FuncApproveParams) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
-	supply := params.Supply.Value()
+func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
+	supply := f.Params.Supply.Value()
 	ctx.Require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter")
-	ctx.State().GetInt64(VarSupply).SetValue(supply)
+	f.State.Supply().SetValue(supply)
 
 	// we cannot use 'caller' here because on_init is always called from the 'root'
 	// so, owner of the initial supply must be provided as a parameter PARAM_CREATOR to constructor (on_init)
 	// assign the whole supply to creator
-	creator := params.Creator.Value()
-	ctx.State().GetMap(VarBalances).GetInt64(creator).SetValue(supply)
+	creator := f.Params.Creator.Value()
+	f.State.Balances().GetInt64(creator).SetValue(supply)
 
-	t := "erc20.on_init.success. Supply: " + params.Supply.String() +
+	t := "erc20.on_init.success. Supply: " + f.Params.Supply.String() +
 		", creator:" + creator.String()
 	ctx.Log(t)
 }
@@ -49,15 +49,15 @@ func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
-	amount := params.Amount.Value()
+func funcTransfer(ctx wasmlib.ScFuncContext, f *FuncTransferContext) {
+	amount := f.Params.Amount.Value()
 	ctx.Require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter")
 
-	balances := ctx.State().GetMap(VarBalances)
+	balances := f.State.Balances()
 	sourceBalance := balances.GetInt64(ctx.Caller())
 	ctx.Require(sourceBalance.Value() >= amount, "erc20.transfer.fail: not enough funds")
 
-	targetAddr := params.Account.Value()
+	targetAddr := f.Params.Account.Value()
 	targetBalance := balances.GetInt64(targetAddr)
 	result := targetBalance.Value() + amount
 	ctx.Require(result > 0, "erc20.transfer.fail: overflow")
@@ -72,19 +72,19 @@ func funcTransfer(ctx wasmlib.ScFuncContext, params *FuncTransferParams) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams) {
+func funcTransferFrom(ctx wasmlib.ScFuncContext, f *FuncTransferFromContext) {
 	// validate parameters
-	account := params.Account.Value()
-	recipient := params.Recipient.Value()
-	amount := params.Amount.Value()
+	account := f.Params.Account.Value()
+	recipient := f.Params.Recipient.Value()
+	amount := f.Params.Amount.Value()
 	ctx.Require(amount > 0, "erc20.transfer_from.fail: wrong 'amount' parameter")
 
 	// allowances are in the map under the name of the account
-	allowances := ctx.State().GetMap(account)
+	allowances := f.State.AllAllowances().GetAllowancesForAgent(account)
 	allowance := allowances.GetInt64(recipient)
 	ctx.Require(allowance.Value() >= amount, "erc20.transfer_from.fail: not enough allowance")
 
-	balances := ctx.State().GetMap(VarBalances)
+	balances := f.State.Balances()
 	sourceBalance := balances.GetInt64(account)
 	ctx.Require(sourceBalance.Value() >= amount, "erc20.transfer_from.fail: not enough funds")
 
@@ -104,26 +104,25 @@ func funcTransferFrom(ctx wasmlib.ScFuncContext, params *FuncTransferFromParams)
 // - PARAM_DELEGATION: agentID
 // Output:
 // - PARAM_AMOUNT: i64
-func viewAllowance(ctx wasmlib.ScViewContext, params *ViewAllowanceParams) {
+func viewAllowance(ctx wasmlib.ScViewContext, f *ViewAllowanceContext) {
 	// all allowances of the address 'owner' are stored in the map of the same name
-	allowances := ctx.State().GetMap(params.Account.Value())
-	allow := allowances.GetInt64(params.Delegation.Value()).Value()
-	ctx.Results().GetInt64(ParamAmount).SetValue(allow)
+	allowances := f.State.AllAllowances().GetAllowancesForAgent(f.Params.Account.Value())
+	allow := allowances.GetInt64(f.Params.Delegation.Value()).Value()
+	f.Results.Amount.SetValue(allow)
 }
 
 // the view returns balance of the token held in the account
 // Input:
 // - PARAM_ACCOUNT: agentID
-func viewBalanceOf(ctx wasmlib.ScViewContext, params *ViewBalanceOfParams) {
-	balances := ctx.State().GetMap(VarBalances)
-	balance := balances.GetInt64(params.Account.Value()).Value()
-	ctx.Results().GetInt64(ParamAmount).SetValue(balance)
+func viewBalanceOf(ctx wasmlib.ScViewContext, f *ViewBalanceOfContext) {
+	balances := f.State.Balances()
+	balance := balances.GetInt64(f.Params.Account.Value())
+	f.Results.Amount.SetValue(balance.Value())
 }
 
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
-func viewTotalSupply(ctx wasmlib.ScViewContext, params *ViewTotalSupplyParams) {
-	supply := ctx.State().GetInt64(VarSupply).Value()
-	ctx.Results().GetInt64(ParamSupply).SetValue(supply)
+func viewTotalSupply(ctx wasmlib.ScViewContext, f *ViewTotalSupplyContext) {
+	f.Results.Supply.SetValue(f.State.Supply().Value())
 }

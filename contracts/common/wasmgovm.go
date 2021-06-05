@@ -16,10 +16,17 @@ type WasmGoVM struct {
 	onLoad   map[string]func()
 }
 
+var _ wasmhost.WasmVM = &WasmGoVM{}
+
 func NewWasmGoVM(onLoad map[string]func()) *WasmGoVM {
 	vm := &WasmGoVM{}
 	vm.onLoad = onLoad
 	return vm
+}
+
+func (vm *WasmGoVM) Interrupt() {
+	// disabled for now
+	//panic("implement me")
 }
 
 func (vm *WasmGoVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error {
@@ -51,8 +58,10 @@ func (vm *WasmGoVM) RunFunction(functionName string, args ...interface{}) error 
 }
 
 func (vm *WasmGoVM) RunScFunction(index int32) error {
-	wasmlib.OnCall(index)
-	return nil
+	return vm.Run(func() error {
+		wasmlib.OnCall(index)
+		return nil
+	})
 }
 
 func (vm *WasmGoVM) UnsafeMemory() []byte {

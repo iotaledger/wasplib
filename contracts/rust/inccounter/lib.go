@@ -18,6 +18,7 @@ func OnLoad() {
 	exports.AddFunc(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
 	exports.AddFunc(FuncLocalStatePost, funcLocalStatePostThunk)
 	exports.AddFunc(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
+	exports.AddFunc(FuncLoop, funcLoopThunk)
 	exports.AddFunc(FuncPostIncrement, funcPostIncrementThunk)
 	exports.AddFunc(FuncRepeatMany, funcRepeatManyThunk)
 	exports.AddFunc(FuncTestLeb128, funcTestLeb128Thunk)
@@ -25,36 +26,48 @@ func OnLoad() {
 	exports.AddView(ViewGetCounter, viewGetCounterThunk)
 }
 
-type FuncCallIncrementParams struct {
+type FuncCallIncrementContext struct {
+	State IncCounterFuncState
 }
 
 func funcCallIncrementThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcCallIncrement")
-	params := &FuncCallIncrementParams{
+	f := &FuncCallIncrementContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcCallIncrement(ctx, params)
+	funcCallIncrement(ctx, f)
 	ctx.Log("inccounter.funcCallIncrement ok")
 }
 
-type FuncCallIncrementRecurse5xParams struct {
+type FuncCallIncrementRecurse5xContext struct {
+	State IncCounterFuncState
 }
 
 func funcCallIncrementRecurse5xThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcCallIncrementRecurse5x")
-	params := &FuncCallIncrementRecurse5xParams{
+	f := &FuncCallIncrementRecurse5xContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcCallIncrementRecurse5x(ctx, params)
+	funcCallIncrementRecurse5x(ctx, f)
 	ctx.Log("inccounter.funcCallIncrementRecurse5x ok")
 }
 
-type FuncIncrementParams struct {
+type FuncIncrementContext struct {
+	State IncCounterFuncState
 }
 
 func funcIncrementThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcIncrement")
-	params := &FuncIncrementParams{
+	f := &FuncIncrementContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcIncrement(ctx, params)
+	funcIncrement(ctx, f)
 	ctx.Log("inccounter.funcIncrement ok")
 }
 
@@ -62,57 +75,98 @@ type FuncInitParams struct {
 	Counter wasmlib.ScImmutableInt64 // value to initialize state counter with
 }
 
+type FuncInitContext struct {
+	Params FuncInitParams
+	State  IncCounterFuncState
+}
+
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcInit")
-	p := ctx.Params()
-	params := &FuncInitParams{
-		Counter: p.GetInt64(ParamCounter),
+	p := ctx.Params().MapId()
+	f := &FuncInitContext{
+		Params: FuncInitParams{
+			Counter: wasmlib.NewScImmutableInt64(p, ParamCounter.KeyId()),
+		},
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcInit(ctx, params)
+	funcInit(ctx, f)
 	ctx.Log("inccounter.funcInit ok")
 }
 
-type FuncLocalStateInternalCallParams struct {
+type FuncLocalStateInternalCallContext struct {
+	State IncCounterFuncState
 }
 
 func funcLocalStateInternalCallThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcLocalStateInternalCall")
-	params := &FuncLocalStateInternalCallParams{
+	f := &FuncLocalStateInternalCallContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcLocalStateInternalCall(ctx, params)
+	funcLocalStateInternalCall(ctx, f)
 	ctx.Log("inccounter.funcLocalStateInternalCall ok")
 }
 
-type FuncLocalStatePostParams struct {
+type FuncLocalStatePostContext struct {
+	State IncCounterFuncState
 }
 
 func funcLocalStatePostThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcLocalStatePost")
-	params := &FuncLocalStatePostParams{
+	f := &FuncLocalStatePostContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcLocalStatePost(ctx, params)
+	funcLocalStatePost(ctx, f)
 	ctx.Log("inccounter.funcLocalStatePost ok")
 }
 
-type FuncLocalStateSandboxCallParams struct {
+type FuncLocalStateSandboxCallContext struct {
+	State IncCounterFuncState
 }
 
 func funcLocalStateSandboxCallThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcLocalStateSandboxCall")
-	params := &FuncLocalStateSandboxCallParams{
+	f := &FuncLocalStateSandboxCallContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcLocalStateSandboxCall(ctx, params)
+	funcLocalStateSandboxCall(ctx, f)
 	ctx.Log("inccounter.funcLocalStateSandboxCall ok")
 }
 
-type FuncPostIncrementParams struct {
+type FuncLoopContext struct {
+	State IncCounterFuncState
+}
+
+func funcLoopThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcLoop")
+	f := &FuncLoopContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
+	}
+	funcLoop(ctx, f)
+	ctx.Log("inccounter.funcLoop ok")
+}
+
+type FuncPostIncrementContext struct {
+	State IncCounterFuncState
 }
 
 func funcPostIncrementThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcPostIncrement")
-	params := &FuncPostIncrementParams{
+	f := &FuncPostIncrementContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcPostIncrement(ctx, params)
+	funcPostIncrement(ctx, f)
 	ctx.Log("inccounter.funcPostIncrement ok")
 }
 
@@ -120,45 +174,76 @@ type FuncRepeatManyParams struct {
 	NumRepeats wasmlib.ScImmutableInt64 // number of times to recursively call myself
 }
 
+type FuncRepeatManyContext struct {
+	Params FuncRepeatManyParams
+	State  IncCounterFuncState
+}
+
 func funcRepeatManyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcRepeatMany")
-	p := ctx.Params()
-	params := &FuncRepeatManyParams{
-		NumRepeats: p.GetInt64(ParamNumRepeats),
+	p := ctx.Params().MapId()
+	f := &FuncRepeatManyContext{
+		Params: FuncRepeatManyParams{
+			NumRepeats: wasmlib.NewScImmutableInt64(p, ParamNumRepeats.KeyId()),
+		},
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcRepeatMany(ctx, params)
+	funcRepeatMany(ctx, f)
 	ctx.Log("inccounter.funcRepeatMany ok")
 }
 
-type FuncTestLeb128Params struct {
+type FuncTestLeb128Context struct {
+	State IncCounterFuncState
 }
 
 func funcTestLeb128Thunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcTestLeb128")
-	params := &FuncTestLeb128Params{
+	f := &FuncTestLeb128Context{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcTestLeb128(ctx, params)
+	funcTestLeb128(ctx, f)
 	ctx.Log("inccounter.funcTestLeb128 ok")
 }
 
-type FuncWhenMustIncrementParams struct {
+type FuncWhenMustIncrementContext struct {
+	State IncCounterFuncState
 }
 
 func funcWhenMustIncrementThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcWhenMustIncrement")
-	params := &FuncWhenMustIncrementParams{
+	f := &FuncWhenMustIncrementContext{
+		State: IncCounterFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcWhenMustIncrement(ctx, params)
+	funcWhenMustIncrement(ctx, f)
 	ctx.Log("inccounter.funcWhenMustIncrement ok")
 }
 
-type ViewGetCounterParams struct {
+type ViewGetCounterResults struct {
+	Counter wasmlib.ScMutableInt64
+}
+
+type ViewGetCounterContext struct {
+	Results ViewGetCounterResults
+	State   IncCounterViewState
 }
 
 func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("inccounter.viewGetCounter")
-	params := &ViewGetCounterParams{
+	r := ctx.Results().MapId()
+	f := &ViewGetCounterContext{
+		Results: ViewGetCounterResults{
+			Counter: wasmlib.NewScMutableInt64(r, ResultCounter.KeyId()),
+		},
+		State: IncCounterViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	viewGetCounter(ctx, params)
+	viewGetCounter(ctx, f)
 	ctx.Log("inccounter.viewGetCounter ok")
 }

@@ -31,6 +31,7 @@ public class Consts {
     public static final String FuncLocalStateInternalCall = "localStateInternalCall";
     public static final String FuncLocalStatePost = "localStatePost";
     public static final String FuncLocalStateSandboxCall = "localStateSandboxCall";
+    public static final String FuncLoop = "loop";
     public static final String FuncPostIncrement = "postIncrement";
     public static final String FuncRepeatMany = "repeatMany";
     public static final String FuncTestLeb128 = "testLeb128";
@@ -44,6 +45,7 @@ public class Consts {
     public static final ScHname HFuncLocalStateInternalCall = new ScHname(0xecfc5d33);
     public static final ScHname HFuncLocalStatePost = new ScHname(0x3fd54d13);
     public static final ScHname HFuncLocalStateSandboxCall = new ScHname(0x7bd22c53);
+    public static final ScHname HFuncLoop = new ScHname(0xa9a20fa9);
     public static final ScHname HFuncPostIncrement = new ScHname(0x81c772f5);
     public static final ScHname HFuncRepeatMany = new ScHname(0x4ff450d3);
     public static final ScHname HFuncTestLeb128 = new ScHname(0xd8364cb9);

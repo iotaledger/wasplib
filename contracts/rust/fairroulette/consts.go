@@ -15,6 +15,8 @@ const HScName = wasmlib.ScHname(0xdf79d138)
 const ParamNumber = wasmlib.Key("number")
 const ParamPlayPeriod = wasmlib.Key("playPeriod")
 
+const ResultLastWinningNumber = wasmlib.Key("lastWinningNumber")
+
 const VarBets = wasmlib.Key("bets")
 const VarLastWinningNumber = wasmlib.Key("lastWinningNumber")
 const VarLockedBets = wasmlib.Key("lockedBets")

@@ -15,12 +15,10 @@ pub const HSC_NAME: ScHname = ScHname(0xaf2438e9);
 pub const PARAM_COUNTER: &str = "counter";
 pub const PARAM_NUM_REPEATS: &str = "numRepeats";
 
+pub const RESULT_COUNTER: &str = "counter";
+
 pub const VAR_COUNTER: &str = "counter";
-pub const VAR_INT1: &str = "int1";
-pub const VAR_INT_ARRAY1: &str = "intArray1";
 pub const VAR_NUM_REPEATS: &str = "numRepeats";
-pub const VAR_STRING1: &str = "string1";
-pub const VAR_STRING_ARRAY1: &str = "stringArray1";
 
 pub const FUNC_CALL_INCREMENT: &str = "callIncrement";
 pub const FUNC_CALL_INCREMENT_RECURSE5X: &str = "callIncrementRecurse5x";
@@ -29,6 +27,7 @@ pub const FUNC_INIT: &str = "init";
 pub const FUNC_LOCAL_STATE_INTERNAL_CALL: &str = "localStateInternalCall";
 pub const FUNC_LOCAL_STATE_POST: &str = "localStatePost";
 pub const FUNC_LOCAL_STATE_SANDBOX_CALL: &str = "localStateSandboxCall";
+pub const FUNC_LOOP: &str = "loop";
 pub const FUNC_POST_INCREMENT: &str = "postIncrement";
 pub const FUNC_REPEAT_MANY: &str = "repeatMany";
 pub const FUNC_TEST_LEB128: &str = "testLeb128";
@@ -42,6 +41,7 @@ pub const HFUNC_INIT: ScHname = ScHname(0x1f44d644);
 pub const HFUNC_LOCAL_STATE_INTERNAL_CALL: ScHname = ScHname(0xecfc5d33);
 pub const HFUNC_LOCAL_STATE_POST: ScHname = ScHname(0x3fd54d13);
 pub const HFUNC_LOCAL_STATE_SANDBOX_CALL: ScHname = ScHname(0x7bd22c53);
+pub const HFUNC_LOOP: ScHname = ScHname(0xa9a20fa9);
 pub const HFUNC_POST_INCREMENT: ScHname = ScHname(0x81c772f5);
 pub const HFUNC_REPEAT_MANY: ScHname = ScHname(0x4ff450d3);
 pub const HFUNC_TEST_LEB128: ScHname = ScHname(0xd8364cb9);

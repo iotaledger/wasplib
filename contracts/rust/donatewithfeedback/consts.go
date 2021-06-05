@@ -14,21 +14,27 @@ const HScName = wasmlib.ScHname(0x696d7f66)
 
 const ParamAmount = wasmlib.Key("amount")
 const ParamFeedback = wasmlib.Key("feedback")
+const ParamNr = wasmlib.Key("nr")
 
-const VarAmount = wasmlib.Key("amount")
-const VarDonations = wasmlib.Key("donations")
-const VarDonator = wasmlib.Key("donator")
-const VarError = wasmlib.Key("error")
-const VarFeedback = wasmlib.Key("feedback")
+const ResultAmount = wasmlib.Key("amount")
+const ResultCount = wasmlib.Key("count")
+const ResultDonator = wasmlib.Key("donator")
+const ResultError = wasmlib.Key("error")
+const ResultFeedback = wasmlib.Key("feedback")
+const ResultMaxDonation = wasmlib.Key("maxDonation")
+const ResultTimestamp = wasmlib.Key("timestamp")
+const ResultTotalDonation = wasmlib.Key("totalDonation")
+
 const VarLog = wasmlib.Key("log")
 const VarMaxDonation = wasmlib.Key("maxDonation")
-const VarTimestamp = wasmlib.Key("timestamp")
 const VarTotalDonation = wasmlib.Key("totalDonation")
 
 const FuncDonate = "donate"
 const FuncWithdraw = "withdraw"
-const ViewDonations = "donations"
+const ViewDonation = "donation"
+const ViewDonationInfo = "donationInfo"
 
 const HFuncDonate = wasmlib.ScHname(0xdc9b133a)
 const HFuncWithdraw = wasmlib.ScHname(0x9dcc0f41)
-const HViewDonations = wasmlib.ScHname(0x45686a15)
+const HViewDonation = wasmlib.ScHname(0xbdb245ba)
+const HViewDonationInfo = wasmlib.ScHname(0xc8f7c726)

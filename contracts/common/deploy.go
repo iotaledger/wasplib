@@ -22,7 +22,7 @@ import (
 const (
 	Debug      = true
 	StackTrace = false
-	TraceHost  = true
+	TraceHost  = false
 )
 
 //TODO update contracts/readme
@@ -55,7 +55,8 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 		return chain.DeployContract(nil, scName, hprog, params...)
 	}
 
-	wasmproc.GoWasmVM = NewWasmTimeJavaVM()
+	//wasmproc.GoWasmVM = NewWasmTimeJavaVM()
+	//wasmproc.GoWasmVM = NewWartVM()
 	wasmFile := scName + "_bg.wasm"
 	exists, _ := util.ExistsFilePath("../pkg/" + wasmFile)
 	if exists {
@@ -68,8 +69,7 @@ func StartChain(t *testing.T, scName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
 	//wasmhost.ExtendedHostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
-	chain := env.NewChain(nil, "chain1")
-	return chain
+	return env.NewChain(nil, "chain1")
 }
 
 func StartChainAndDeployWasmContractByName(t *testing.T, scName string, params ...interface{}) *solo.Chain {

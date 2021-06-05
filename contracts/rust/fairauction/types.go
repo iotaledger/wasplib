@@ -57,6 +57,36 @@ func (o *Auction) Bytes() []byte {
 		Data()
 }
 
+type ImmutableAuction struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o ImmutableAuction) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o ImmutableAuction) Value() *Auction {
+	return NewAuctionFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
+type MutableAuction struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o MutableAuction) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o MutableAuction) SetValue(value *Auction) {
+	wasmlib.SetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES, value.Bytes())
+}
+
+func (o MutableAuction) Value() *Auction {
+	return NewAuctionFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
 type Bid struct {
 	Amount    int64 // cumulative amount of bids from same bidder
 	Index     int64 // index of bidder in bidder list
@@ -79,4 +109,34 @@ func (o *Bid) Bytes() []byte {
 		Int64(o.Index).
 		Int64(o.Timestamp).
 		Data()
+}
+
+type ImmutableBid struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o ImmutableBid) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o ImmutableBid) Value() *Bid {
+	return NewBidFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
+type MutableBid struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o MutableBid) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o MutableBid) SetValue(value *Bid) {
+	wasmlib.SetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES, value.Bytes())
+}
+
+func (o MutableBid) Value() *Bid {
+	return NewBidFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
 }

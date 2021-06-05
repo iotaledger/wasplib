@@ -18,21 +18,23 @@ pub const PARAM_DURATION: &str = "duration";
 pub const PARAM_MINIMUM_BID: &str = "minimumBid";
 pub const PARAM_OWNER_MARGIN: &str = "ownerMargin";
 
+pub const RESULT_BIDDERS: &str = "bidders";
+pub const RESULT_COLOR: &str = "color";
+pub const RESULT_CREATOR: &str = "creator";
+pub const RESULT_DEPOSIT: &str = "deposit";
+pub const RESULT_DESCRIPTION: &str = "description";
+pub const RESULT_DURATION: &str = "duration";
+pub const RESULT_HIGHEST_BID: &str = "highestBid";
+pub const RESULT_HIGHEST_BIDDER: &str = "highestBidder";
+pub const RESULT_MINIMUM_BID: &str = "minimumBid";
+pub const RESULT_NUM_TOKENS: &str = "numTokens";
+pub const RESULT_OWNER_MARGIN: &str = "ownerMargin";
+pub const RESULT_WHEN_STARTED: &str = "whenStarted";
+
 pub const VAR_AUCTIONS: &str = "auctions";
 pub const VAR_BIDDER_LIST: &str = "bidderList";
-pub const VAR_BIDDERS: &str = "bidders";
-pub const VAR_COLOR: &str = "color";
-pub const VAR_CREATOR: &str = "creator";
-pub const VAR_DEPOSIT: &str = "deposit";
-pub const VAR_DESCRIPTION: &str = "description";
-pub const VAR_DURATION: &str = "duration";
-pub const VAR_HIGHEST_BID: &str = "highestBid";
-pub const VAR_HIGHEST_BIDDER: &str = "highestBidder";
-pub const VAR_INFO: &str = "info";
-pub const VAR_MINIMUM_BID: &str = "minimumBid";
-pub const VAR_NUM_TOKENS: &str = "numTokens";
+pub const VAR_BIDS: &str = "bids";
 pub const VAR_OWNER_MARGIN: &str = "ownerMargin";
-pub const VAR_WHEN_STARTED: &str = "whenStarted";
 
 pub const FUNC_FINALIZE_AUCTION: &str = "finalizeAuction";
 pub const FUNC_PLACE_BID: &str = "placeBid";

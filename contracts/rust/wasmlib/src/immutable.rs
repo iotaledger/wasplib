@@ -17,6 +17,10 @@ pub struct ScImmutableAddress {
 }
 
 impl ScImmutableAddress {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableAddress {
+        ScImmutableAddress { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_ADDRESS)
@@ -37,7 +41,7 @@ impl ScImmutableAddress {
 
 // array proxy for immutable array of ScAddress
 pub struct ScImmutableAddressArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableAddressArray {
@@ -61,6 +65,10 @@ pub struct ScImmutableAgentId {
 }
 
 impl ScImmutableAgentId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableAgentId {
+        ScImmutableAgentId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_AGENT_ID)
@@ -81,7 +89,7 @@ impl ScImmutableAgentId {
 
 // array proxy for immutable array of ScAgentId
 pub struct ScImmutableAgentIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableAgentIdArray {
@@ -105,6 +113,10 @@ pub struct ScImmutableBytes {
 }
 
 impl ScImmutableBytes {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableBytes {
+        ScImmutableBytes { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_BYTES)
@@ -125,7 +137,7 @@ impl ScImmutableBytes {
 
 // array proxy for immutable array of byte array
 pub struct ScImmutableBytesArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableBytesArray {
@@ -149,6 +161,10 @@ pub struct ScImmutableChainId {
 }
 
 impl ScImmutableChainId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableChainId {
+        ScImmutableChainId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_CHAIN_ID)
@@ -169,7 +185,7 @@ impl ScImmutableChainId {
 
 // array proxy for immutable array of ScChainId
 pub struct ScImmutableChainIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableChainIdArray {
@@ -193,6 +209,10 @@ pub struct ScImmutableColor {
 }
 
 impl ScImmutableColor {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableColor {
+        ScImmutableColor { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_COLOR)
@@ -213,7 +233,7 @@ impl ScImmutableColor {
 
 // array proxy for immutable array of ScColor
 pub struct ScImmutableColorArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableColorArray {
@@ -237,6 +257,10 @@ pub struct ScImmutableHash {
 }
 
 impl ScImmutableHash {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableHash {
+        ScImmutableHash { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_HASH)
@@ -257,7 +281,7 @@ impl ScImmutableHash {
 
 // array proxy for immutable array of ScHash
 pub struct ScImmutableHashArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableHashArray {
@@ -281,6 +305,10 @@ pub struct ScImmutableHname {
 }
 
 impl ScImmutableHname {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableHname {
+        ScImmutableHname { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_HNAME)
@@ -301,7 +329,7 @@ impl ScImmutableHname {
 
 // array proxy for immutable array of ScHname
 pub struct ScImmutableHnameArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableHnameArray {
@@ -325,6 +353,10 @@ pub struct ScImmutableInt64 {
 }
 
 impl ScImmutableInt64 {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableInt64 {
+        ScImmutableInt64 { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_INT64)
@@ -346,7 +378,7 @@ impl ScImmutableInt64 {
 
 // array proxy for immutable array of int64
 pub struct ScImmutableInt64Array {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableInt64Array {
@@ -365,7 +397,7 @@ impl ScImmutableInt64Array {
 
 // map proxy for immutable map
 pub struct ScImmutableMap {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableMap {
@@ -490,13 +522,17 @@ impl ScImmutableMap {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_STRING | TYPE_ARRAY);
         ScImmutableStringArray { obj_id: arr_id }
     }
+
+    pub fn map_id(&self) -> i32 {
+        self.obj_id
+    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // array proxy for immutable array of maps
 pub struct ScImmutableMapArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableMapArray {
@@ -519,6 +555,10 @@ pub struct ScImmutableRequestId {
 }
 
 impl ScImmutableRequestId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableRequestId {
+        ScImmutableRequestId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_REQUEST_ID)
@@ -539,7 +579,7 @@ impl ScImmutableRequestId {
 
 // array proxy for immutable array of ScRequestId
 pub struct ScImmutableRequestIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableRequestIdArray {
@@ -563,6 +603,10 @@ pub struct ScImmutableString {
 }
 
 impl ScImmutableString {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableString {
+        ScImmutableString { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_STRING)
@@ -584,7 +628,7 @@ impl ScImmutableString {
 
 // array proxy for immutable array of UTF-8 text string
 pub struct ScImmutableStringArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScImmutableStringArray {

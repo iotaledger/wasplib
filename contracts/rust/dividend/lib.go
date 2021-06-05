@@ -18,14 +18,18 @@ func OnLoad() {
 	exports.AddView(ViewGetFactor, viewGetFactorThunk)
 }
 
-type FuncDivideParams struct {
+type FuncDivideContext struct {
+	State DividendFuncState
 }
 
 func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide")
-	params := &FuncDivideParams{
+	f := &FuncDivideContext{
+		State: DividendFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcDivide(ctx, params)
+	funcDivide(ctx, f)
 	ctx.Log("dividend.funcDivide ok")
 }
 
@@ -33,13 +37,23 @@ type FuncInitParams struct {
 	Owner wasmlib.ScImmutableAgentId // optional owner, defaults to contract creator
 }
 
+type FuncInitContext struct {
+	Params FuncInitParams
+	State  DividendFuncState
+}
+
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcInit")
-	p := ctx.Params()
-	params := &FuncInitParams{
-		Owner: p.GetAgentId(ParamOwner),
+	p := ctx.Params().MapId()
+	f := &FuncInitContext{
+		Params: FuncInitParams{
+			Owner: wasmlib.NewScImmutableAgentId(p, ParamOwner.KeyId()),
+		},
+		State: DividendFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcInit(ctx, params)
+	funcInit(ctx, f)
 	ctx.Log("dividend.funcInit ok")
 }
 
@@ -48,21 +62,31 @@ type FuncMemberParams struct {
 	Factor  wasmlib.ScImmutableInt64   // relative division factor
 }
 
+type FuncMemberContext struct {
+	Params FuncMemberParams
+	State  DividendFuncState
+}
+
 func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcMember")
 	// only defined owner can add members
-	grantee := ctx.State().GetAgentId(wasmlib.Key("owner"))
-	ctx.Require(grantee.Exists(), "grantee not set: owner")
-	ctx.Require(ctx.Caller() == grantee.Value(), "no permission")
+	access := ctx.State().GetAgentId(wasmlib.Key("owner"))
+	ctx.Require(access.Exists(), "access not set: owner")
+	ctx.Require(ctx.Caller() == access.Value(), "no permission")
 
-	p := ctx.Params()
-	params := &FuncMemberParams{
-		Address: p.GetAddress(ParamAddress),
-		Factor:  p.GetInt64(ParamFactor),
+	p := ctx.Params().MapId()
+	f := &FuncMemberContext{
+		Params: FuncMemberParams{
+			Address: wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
+			Factor:  wasmlib.NewScImmutableInt64(p, ParamFactor.KeyId()),
+		},
+		State: DividendFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Address.Exists(), "missing mandatory address")
-	ctx.Require(params.Factor.Exists(), "missing mandatory factor")
-	funcMember(ctx, params)
+	ctx.Require(f.Params.Address.Exists(), "missing mandatory address")
+	ctx.Require(f.Params.Factor.Exists(), "missing mandatory factor")
+	funcMember(ctx, f)
 	ctx.Log("dividend.funcMember ok")
 }
 
@@ -70,19 +94,29 @@ type FuncSetOwnerParams struct {
 	Owner wasmlib.ScImmutableAgentId // new owner of smart contract
 }
 
+type FuncSetOwnerContext struct {
+	Params FuncSetOwnerParams
+	State  DividendFuncState
+}
+
 func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcSetOwner")
 	// only defined owner can change owner
-	grantee := ctx.State().GetAgentId(wasmlib.Key("owner"))
-	ctx.Require(grantee.Exists(), "grantee not set: owner")
-	ctx.Require(ctx.Caller() == grantee.Value(), "no permission")
+	access := ctx.State().GetAgentId(wasmlib.Key("owner"))
+	ctx.Require(access.Exists(), "access not set: owner")
+	ctx.Require(ctx.Caller() == access.Value(), "no permission")
 
-	p := ctx.Params()
-	params := &FuncSetOwnerParams{
-		Owner: p.GetAgentId(ParamOwner),
+	p := ctx.Params().MapId()
+	f := &FuncSetOwnerContext{
+		Params: FuncSetOwnerParams{
+			Owner: wasmlib.NewScImmutableAgentId(p, ParamOwner.KeyId()),
+		},
+		State: DividendFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Owner.Exists(), "missing mandatory owner")
-	funcSetOwner(ctx, params)
+	ctx.Require(f.Params.Owner.Exists(), "missing mandatory owner")
+	funcSetOwner(ctx, f)
 	ctx.Log("dividend.funcSetOwner ok")
 }
 
@@ -90,13 +124,32 @@ type ViewGetFactorParams struct {
 	Address wasmlib.ScImmutableAddress // address of dividend recipient
 }
 
+type ViewGetFactorResults struct {
+	Factor wasmlib.ScMutableInt64 // relative division factor
+}
+
+type ViewGetFactorContext struct {
+	Params  ViewGetFactorParams
+	Results ViewGetFactorResults
+	State   DividendViewState
+}
+
 func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("dividend.viewGetFactor")
-	p := ctx.Params()
-	params := &ViewGetFactorParams{
-		Address: p.GetAddress(ParamAddress),
+	p := ctx.Params().MapId()
+	r := ctx.Results().MapId()
+	f := &ViewGetFactorContext{
+		Params: ViewGetFactorParams{
+			Address: wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
+		},
+		Results: ViewGetFactorResults{
+			Factor: wasmlib.NewScMutableInt64(r, ResultFactor.KeyId()),
+		},
+		State: DividendViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Address.Exists(), "missing mandatory address")
-	viewGetFactor(ctx, params)
+	ctx.Require(f.Params.Address.Exists(), "missing mandatory address")
+	viewGetFactor(ctx, f)
 	ctx.Log("dividend.viewGetFactor ok")
 }

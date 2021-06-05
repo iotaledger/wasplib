@@ -7,7 +7,7 @@
       "number": "Int64"
     }
   },
-  "vars": {
+  "state": {
     "bets": "[]Bet",
     "lastWinningNumber": "Int64",
     "lockedBets": "[]Bet",
@@ -15,21 +15,28 @@
   },
   "funcs": {
     "placeBet": {
-      "number": "Int64 // the number a better bets on"
+      "params": {
+        "number": "Int64 // the number a better bets on"
+      }
     },
     "lockBets": {
-      "#grant": "self // only SC itself can invoke this function"
+      "access": "self // only SC itself can invoke this function"
     },
     "payWinners": {
-      "#grant": "self // only SC itself can invoke this function"
+      "access": "self // only SC itself can invoke this function"
     },
     "playPeriod": {
-      "#grant": "creator // only SC creator can update the play period",
-      "playPeriod": "Int64 // number of minutes in one playing round"
+      "access": "creator // only SC creator can update the play period",
+      "params": {
+        "playPeriod": "Int64 // number of minutes in one playing round"
+      }
     }
   },
   "views": {
     "lastWinningNumber": {
+      "results": {
+        "lastWinningNumber": "Int64"
+      }
     }
   }
 }

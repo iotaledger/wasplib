@@ -27,21 +27,31 @@ type FuncParamTypesParams struct {
 	String    wasmlib.ScImmutableString
 }
 
+type FuncParamTypesContext struct {
+	Params FuncParamTypesParams
+	State  TestWasmLibFuncState
+}
+
 func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testwasmlib.funcParamTypes")
-	p := ctx.Params()
-	params := &FuncParamTypesParams{
-		Address:   p.GetAddress(ParamAddress),
-		AgentId:   p.GetAgentId(ParamAgentId),
-		Bytes:     p.GetBytes(ParamBytes),
-		ChainId:   p.GetChainId(ParamChainId),
-		Color:     p.GetColor(ParamColor),
-		Hash:      p.GetHash(ParamHash),
-		Hname:     p.GetHname(ParamHname),
-		Int64:     p.GetInt64(ParamInt64),
-		RequestId: p.GetRequestId(ParamRequestId),
-		String:    p.GetString(ParamString),
+	p := ctx.Params().MapId()
+	f := &FuncParamTypesContext{
+		Params: FuncParamTypesParams{
+			Address:   wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
+			AgentId:   wasmlib.NewScImmutableAgentId(p, ParamAgentId.KeyId()),
+			Bytes:     wasmlib.NewScImmutableBytes(p, ParamBytes.KeyId()),
+			ChainId:   wasmlib.NewScImmutableChainId(p, ParamChainId.KeyId()),
+			Color:     wasmlib.NewScImmutableColor(p, ParamColor.KeyId()),
+			Hash:      wasmlib.NewScImmutableHash(p, ParamHash.KeyId()),
+			Hname:     wasmlib.NewScImmutableHname(p, ParamHname.KeyId()),
+			Int64:     wasmlib.NewScImmutableInt64(p, ParamInt64.KeyId()),
+			RequestId: wasmlib.NewScImmutableRequestId(p, ParamRequestId.KeyId()),
+			String:    wasmlib.NewScImmutableString(p, ParamString.KeyId()),
+		},
+		State: TestWasmLibFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcParamTypes(ctx, params)
+	funcParamTypes(ctx, f)
 	ctx.Log("testwasmlib.funcParamTypes ok")
 }

@@ -5,11 +5,17 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use consts::*;
+#![allow(dead_code)]
+
 use testwasmlib::*;
 use wasmlib::*;
+use wasmlib::host::*;
+
+use crate::consts::*;
+use crate::state::*;
 
 mod consts;
+mod state;
 mod testwasmlib;
 
 #[no_mangle]
@@ -33,21 +39,35 @@ pub struct FuncParamTypesParams {
 }
 //@formatter:on
 
+//@formatter:off
+pub struct FuncParamTypesContext {
+    params: FuncParamTypesParams,
+    state:  TestWasmLibFuncState,
+}
+//@formatter:on
+
 fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes");
-    let p = ctx.params();
-    let params = FuncParamTypesParams {
-        address: p.get_address(PARAM_ADDRESS),
-        agent_id: p.get_agent_id(PARAM_AGENT_ID),
-        bytes: p.get_bytes(PARAM_BYTES),
-        chain_id: p.get_chain_id(PARAM_CHAIN_ID),
-        color: p.get_color(PARAM_COLOR),
-        hash: p.get_hash(PARAM_HASH),
-        hname: p.get_hname(PARAM_HNAME),
-        int64: p.get_int64(PARAM_INT64),
-        request_id: p.get_request_id(PARAM_REQUEST_ID),
-        string: p.get_string(PARAM_STRING),
+    let p = ctx.params().map_id();
+//@formatter:off
+    let f = FuncParamTypesContext {
+        params: FuncParamTypesParams {
+            address:    ScImmutableAddress::new(p, PARAM_ADDRESS.get_key_id()),
+            agent_id:   ScImmutableAgentId::new(p, PARAM_AGENT_ID.get_key_id()),
+            bytes:      ScImmutableBytes::new(p, PARAM_BYTES.get_key_id()),
+            chain_id:   ScImmutableChainId::new(p, PARAM_CHAIN_ID.get_key_id()),
+            color:      ScImmutableColor::new(p, PARAM_COLOR.get_key_id()),
+            hash:       ScImmutableHash::new(p, PARAM_HASH.get_key_id()),
+            hname:      ScImmutableHname::new(p, PARAM_HNAME.get_key_id()),
+            int64:      ScImmutableInt64::new(p, PARAM_INT64.get_key_id()),
+            request_id: ScImmutableRequestId::new(p, PARAM_REQUEST_ID.get_key_id()),
+            string:     ScImmutableString::new(p, PARAM_STRING.get_key_id()),
+        },
+        state: TestWasmLibFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
     };
-    func_param_types(ctx, &params);
+//@formatter:on
+    func_param_types(ctx, &f);
     ctx.log("testwasmlib.funcParamTypes ok");
 }

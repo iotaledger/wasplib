@@ -13,12 +13,15 @@ import (
 type WasmTimeJavaVM struct {
 	wasmhost.WasmVmBase
 	instance   *wasmtime.Instance
+	interrupt  *wasmtime.InterruptHandle
 	isJavaWasm bool
 	linker     *wasmtime.Linker
 	memory     *wasmtime.Memory
 	module     *wasmtime.Module
 	store      *wasmtime.Store
 }
+
+var _ wasmhost.WasmVM = &WasmTimeJavaVM{}
 
 var javaTypes = []string{
 	"ii:i",
@@ -76,13 +79,21 @@ var javaImports = []string{
 
 func NewWasmTimeJavaVM() *WasmTimeJavaVM {
 	vm := &WasmTimeJavaVM{}
-	vm.store = wasmtime.NewStore(wasmtime.NewEngine())
+	config := wasmtime.NewConfig()
+	config.SetInterruptable(true)
+	vm.store = wasmtime.NewStore(wasmtime.NewEngineWithConfig(config))
+	vm.interrupt, _ = vm.store.InterruptHandle()
 	vm.linker = wasmtime.NewLinker(vm.store)
 	return vm
 }
 
+func (vm *WasmTimeJavaVM) Interrupt() {
+	vm.interrupt.Interrupt()
+}
+
 func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error {
-	vm.WasmVmBase.LinkHost(impl, host)
+	_ = vm.WasmVmBase.LinkHost(impl, host)
+
 	err := vm.linker.DefineFunc("WasmLib", "hostGetBytes",
 		func(objId int32, keyId int32, typeId int32, stringRef int32, size int32) int32 {
 			return vm.HostGetBytes(objId, keyId, typeId, stringRef, size)
@@ -112,7 +123,7 @@ func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost
 		return err
 	}
 
-	// go implementation uses this one to write panic message
+	// TinyGo Wasm implementation uses this one to write panic message to console
 	err = vm.linker.DefineFunc("wasi_unstable", "fd_write",
 		func(fd int32, iovs int32, size int32, written int32) int32 {
 			return vm.HostFdWrite(fd, iovs, size, written)
@@ -218,12 +229,16 @@ func (vm *WasmTimeJavaVM) RunFunction(functionName string, args ...interface{}) 
 		return errors.New("unknown export function: '" + functionName + "'")
 	}
 	if vm.isJavaWasm && functionName == "on_load" {
-		// insert dummy zero first argument
-		_, err := export.Func().Call(0)
-		return err
+		return vm.Run(func() (err error) {
+			// insert dummy zero first argument
+			_, err = export.Func().Call(0)
+			return
+		})
 	}
-	_, err := export.Func().Call(args...)
-	return err
+	return vm.Run(func() (err error) {
+		_, err = export.Func().Call(args...)
+		return
+	})
 }
 
 func (vm *WasmTimeJavaVM) RunScFunction(index int32) error {
@@ -233,14 +248,20 @@ func (vm *WasmTimeJavaVM) RunScFunction(index int32) error {
 	}
 	if vm.isJavaWasm {
 		frame := vm.PreCall()
-		// insert dummy zero first argument
-		_, err := export.Func().Call(0, index)
+		err := vm.Run(func() (err error) {
+			// insert dummy zero first argument
+			_, err = export.Func().Call(0)
+			return
+		})
 		vm.PostCall(frame)
 		return err
 	}
 
 	frame := vm.PreCall()
-	_, err := export.Func().Call(index)
+	err := vm.Run(func() (err error) {
+		_, err = export.Func().Call(index)
+		return
+	})
 	vm.PostCall(frame)
 	return err
 }

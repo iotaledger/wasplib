@@ -13,6 +13,10 @@ type ScImmutableAddress struct {
 	keyId Key32
 }
 
+func NewScImmutableAddress(objId int32, keyId Key32) ScImmutableAddress {
+	return ScImmutableAddress{objId: objId, keyId: keyId}
+}
+
 func (o ScImmutableAddress) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_ADDRESS)
 }
@@ -44,6 +48,10 @@ func (o ScImmutableAddressArray) Length() int32 {
 type ScImmutableAgentId struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableAgentId(objId int32, keyId Key32) ScImmutableAgentId {
+	return ScImmutableAgentId{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableAgentId) Exists() bool {
@@ -79,6 +87,10 @@ type ScImmutableBytes struct {
 	keyId Key32
 }
 
+func NewScImmutableBytes(objId int32, keyId Key32) ScImmutableBytes {
+	return ScImmutableBytes{objId: objId, keyId: keyId}
+}
+
 func (o ScImmutableBytes) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_BYTES)
 }
@@ -110,6 +122,10 @@ func (o ScImmutableBytesArray) Length() int32 {
 type ScImmutableChainId struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableChainId(objId int32, keyId Key32) ScImmutableChainId {
+	return ScImmutableChainId{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableChainId) Exists() bool {
@@ -145,6 +161,10 @@ type ScImmutableColor struct {
 	keyId Key32
 }
 
+func NewScImmutableColor(objId int32, keyId Key32) ScImmutableColor {
+	return ScImmutableColor{objId: objId, keyId: keyId}
+}
+
 func (o ScImmutableColor) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_COLOR)
 }
@@ -176,6 +196,10 @@ func (o ScImmutableColorArray) Length() int32 {
 type ScImmutableHash struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableHash(objId int32, keyId Key32) ScImmutableHash {
+	return ScImmutableHash{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableHash) Exists() bool {
@@ -211,6 +235,10 @@ type ScImmutableHname struct {
 	keyId Key32
 }
 
+func NewScImmutableHname(objId int32, keyId Key32) ScImmutableHname {
+	return ScImmutableHname{objId: objId, keyId: keyId}
+}
+
 func (o ScImmutableHname) Exists() bool {
 	return Exists(o.objId, o.keyId, TYPE_HNAME)
 }
@@ -242,6 +270,10 @@ func (o ScImmutableHnameArray) Length() int32 {
 type ScImmutableInt64 struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableInt64(objId int32, keyId Key32) ScImmutableInt64 {
+	return ScImmutableInt64{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableInt64) Exists() bool {
@@ -377,6 +409,10 @@ func (o ScImmutableMap) GetStringArray(key MapKey) ScImmutableStringArray {
 	return ScImmutableStringArray{objId: arrId}
 }
 
+func (o ScImmutableMap) MapId() int32 {
+	return o.objId
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScImmutableMapArray struct {
@@ -397,6 +433,10 @@ func (o ScImmutableMapArray) Length() int32 {
 type ScImmutableRequestId struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableRequestId(objId int32, keyId Key32) ScImmutableRequestId {
+	return ScImmutableRequestId{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableRequestId) Exists() bool {
@@ -430,6 +470,10 @@ func (o ScImmutableRequestIdArray) Length() int32 {
 type ScImmutableString struct {
 	objId int32
 	keyId Key32
+}
+
+func NewScImmutableString(objId int32, keyId Key32) ScImmutableString {
+	return ScImmutableString{objId: objId, keyId: keyId}
 }
 
 func (o ScImmutableString) Exists() bool {

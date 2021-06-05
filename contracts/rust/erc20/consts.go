@@ -20,6 +20,10 @@ const ParamDelegation = wasmlib.Key("d")
 const ParamRecipient = wasmlib.Key("r")
 const ParamSupply = wasmlib.Key("s")
 
+const ResultAmount = wasmlib.Key("am")
+const ResultSupply = wasmlib.Key("s")
+
+const VarAllAllowances = wasmlib.Key("a")
 const VarBalances = wasmlib.Key("b")
 const VarSupply = wasmlib.Key("s")
 

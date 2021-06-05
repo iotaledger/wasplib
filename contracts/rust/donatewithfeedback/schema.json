@@ -9,28 +9,43 @@
       "timestamp": "Int64 // when the donation took place"
     }
   },
-  "vars": {
-    "amount": "Int64",
-    "donations": "[]String",
-    "donator": "AgentId",
-    "error": "String",
-    "feedback": "String",
+  "state": {
     "log": "[]Donation",
     "maxDonation": "Int64",
-    "timestamp": "Int64",
     "totalDonation": "Int64"
   },
   "funcs": {
     "donate": {
-      "feedback": "?String // feedback for the person you donate to"
+      "params": {
+        "feedback": "?String // feedback for the person you donate to"
+      }
     },
     "withdraw": {
-      "#grant": "creator // only SC creator can withdraw donated funds",
-      "amount": "?Int64 // amount to withdraw"
+      "access": "creator // only SC creator can withdraw donated funds",
+      "params": {
+        "amount": "?Int64 // amount to withdraw"
+      }
     }
   },
   "views": {
-    "donations": {
+    "donation": {
+      "params": {
+        "nr": "Int64"
+      },
+      "results": {
+        "amount": "Int64 // amount donated",
+        "donator": "AgentId // who donated",
+        "error": "String // error to be reported to donator if anything goes wrong",
+        "feedback": "String // the feedback for the person donated to",
+        "timestamp": "Int64 // when the donation took place"
+      }
+    },
+    "donationInfo": {
+      "results": {
+        "count": "Int64",
+        "maxDonation": "Int64",
+        "totalDonation": "Int64"
+      }
     }
   }
 }

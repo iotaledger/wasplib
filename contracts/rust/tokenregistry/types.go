@@ -44,3 +44,33 @@ func (o *Token) Bytes() []byte {
 		String(o.UserDefined).
 		Data()
 }
+
+type ImmutableToken struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o ImmutableToken) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o ImmutableToken) Value() *Token {
+	return NewTokenFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
+type MutableToken struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o MutableToken) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o MutableToken) SetValue(value *Token) {
+	wasmlib.SetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES, value.Bytes())
+}
+
+func (o MutableToken) Value() *Token {
+	return NewTokenFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}

@@ -42,7 +42,8 @@ public class TestWasmLib {
             ctx.Require(params.Int64.Value() == 1234567890123456789L, "mismatch: Int64");
         }
         if (params.RequestId.Exists()) {
-            var requestId = new ScRequestId("abcdefghijklmnopqrstuvwxyz12345678".getBytes(StandardCharsets.UTF_8));
+            var bytes = "abcdefghijklmnopqrstuvwxyz123456".getBytes(StandardCharsets.UTF_8);
+            var requestId = new ScRequestId(Arrays.copyOf(bytes, 34));
             ctx.Require(params.RequestId.Value().equals(requestId), "mismatch: RequestId");
         }
         if (params.String.Exists()) {

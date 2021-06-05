@@ -24,6 +24,8 @@ const ParamInt64 = wasmlib.Key("int64")
 const ParamRequestId = wasmlib.Key("requestId")
 const ParamString = wasmlib.Key("string")
 
+const VarDummy = wasmlib.Key("dummy")
+
 const FuncParamTypes = "paramTypes"
 
 const HFuncParamTypes = wasmlib.ScHname(0x6921c4cd)

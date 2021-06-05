@@ -3,38 +3,63 @@
   "description": "ERC-20 PoC for IOTA Smart Contracts",
   "types": {
   },
-  "vars": {
-    "supply=s": "Int64 // total supply of the token",
-    "balances=b": "[]Int64 // balances per account"
+  "subtypes": {
+    "AllowancesForAgent": "[AgentId]Int64"
+  },
+  "state": {
+    "allAllowances=a": "[AgentId]AllowancesForAgent",
+    "balances=b": "[AgentId]Int64 // balances per account",
+    "supply=s": "Int64 // total supply of the token"
   },
   "funcs": {
     "approve": {
-      "delegation=d": "AgentId // delegated account",
-      "amount=am": "Int64 // allowance value for delegated account"
+      "params": {
+        "delegation=d": "AgentId // delegated account",
+        "amount=am": "Int64 // allowance value for delegated account"
+      }
     },
     "init": {
-      "supply=s": "Int64 // initial token supply",
-      "creator=c": "AgentId // creator/owner of the initial supply"
+      "params": {
+        "supply=s": "Int64 // initial token supply",
+        "creator=c": "AgentId // creator/owner of the initial supply"
+      }
     },
     "transfer": {
-      "account=ac": "AgentId // target account",
-      "amount=am": "Int64 // amount of tokens to transfer"
+      "params": {
+        "account=ac": "AgentId // target account",
+        "amount=am": "Int64 // amount of tokens to transfer"
+      }
     },
     "transferFrom": {
-      "account=ac": "AgentId // sender account",
-      "recipient=r": "AgentId // recipient account",
-      "amount=am": "Int64 // amount of tokens to transfer"
+      "params": {
+        "account=ac": "AgentId // sender account",
+        "recipient=r": "AgentId // recipient account",
+        "amount=am": "Int64 // amount of tokens to transfer"
+      }
     }
   },
   "views": {
     "allowance": {
-      "account=ac": "AgentId // sender account",
-      "delegation=d": "AgentId // delegated account"
+      "params": {
+        "account=ac": "AgentId // sender account",
+        "delegation=d": "AgentId // delegated account"
+      },
+      "results": {
+        "amount=am": "Int64"
+      }
     },
     "balanceOf": {
-      "account=ac": "AgentId // sender account"
+      "params": {
+        "account=ac": "AgentId // sender account"
+      },
+      "results": {
+        "amount=am": "Int64"
+      }
     },
     "totalSupply": {
+      "results": {
+        "supply=s": "Int64"
+      }
     }
   }
 }

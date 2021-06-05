@@ -5,11 +5,17 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use consts::*;
+#![allow(dead_code)]
+
 use helloworld::*;
 use wasmlib::*;
+use wasmlib::host::*;
+
+use crate::consts::*;
+use crate::state::*;
 
 mod consts;
+mod state;
 mod helloworld;
 
 #[no_mangle]
@@ -19,20 +25,47 @@ fn on_load() {
     exports.add_view(VIEW_GET_HELLO_WORLD, view_get_hello_world_thunk);
 }
 
-pub struct FuncHelloWorldParams {}
+pub struct FuncHelloWorldContext {
+    state: HelloWorldFuncState,
+}
 
 fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld");
-    let params = FuncHelloWorldParams {};
-    func_hello_world(ctx, &params);
+//@formatter:off
+    let f = FuncHelloWorldContext {
+        state: HelloWorldFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    func_hello_world(ctx, &f);
     ctx.log("helloworld.funcHelloWorld ok");
 }
 
-pub struct ViewGetHelloWorldParams {}
+pub struct ViewGetHelloWorldResults {
+    pub hello_world: ScMutableString,
+}
+
+//@formatter:off
+pub struct ViewGetHelloWorldContext {
+    results: ViewGetHelloWorldResults,
+    state:   HelloWorldViewState,
+}
+//@formatter:on
 
 fn view_get_hello_world_thunk(ctx: &ScViewContext) {
     ctx.log("helloworld.viewGetHelloWorld");
-    let params = ViewGetHelloWorldParams {};
-    view_get_hello_world(ctx, &params);
+    let r = ctx.results().map_id();
+//@formatter:off
+    let f = ViewGetHelloWorldContext {
+        results: ViewGetHelloWorldResults {
+            hello_world: ScMutableString::new(r, RESULT_HELLO_WORLD.get_key_id()),
+        },
+        state: HelloWorldViewState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    view_get_hello_world(ctx, &f);
     ctx.log("helloworld.viewGetHelloWorld ok");
 }

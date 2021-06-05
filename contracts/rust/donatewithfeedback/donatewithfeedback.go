@@ -7,65 +7,59 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcDonate(ctx wasmlib.ScFuncContext, params *FuncDonateParams) {
-    donation := &Donation {
-        Amount: ctx.Incoming().Balance(wasmlib.IOTA),
-        Donator: ctx.Caller(),
-        Error: "",
-        Feedback: params.Feedback.Value(),
-        Timestamp: ctx.Timestamp(),
-    }
-    if donation.Amount == 0 || len(donation.Feedback) == 0 {
-        donation.Error = "error: empty feedback or donated amount = 0"
-        if donation.Amount > 0 {
-            ctx.TransferToAddress(donation.Donator.Address(), wasmlib.NewScTransferIotas(donation.Amount))
-            donation.Amount = 0
-        }
-    }
-    state := ctx.State()
-    log := state.GetBytesArray(VarLog)
-    log.GetBytes(log.Length()).SetValue(donation.Bytes())
+func funcDonate(ctx wasmlib.ScFuncContext, f *FuncDonateContext) {
+	donation := &Donation{
+		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
+		Donator:   ctx.Caller(),
+		Error:     "",
+		Feedback:  f.Params.Feedback.Value(),
+		Timestamp: ctx.Timestamp(),
+	}
+	if donation.Amount == 0 || len(donation.Feedback) == 0 {
+		donation.Error = "error: empty feedback or donated amount = 0"
+		if donation.Amount > 0 {
+			ctx.TransferToAddress(donation.Donator.Address(), wasmlib.NewScTransferIotas(donation.Amount))
+			donation.Amount = 0
+		}
+	}
+	log := f.State.Log()
+	log.GetDonation(log.Length()).SetValue(donation)
 
-    largestDonation := state.GetInt64(VarMaxDonation)
-    totalDonated := state.GetInt64(VarTotalDonation)
-    if donation.Amount > largestDonation.Value() {
-        largestDonation.SetValue(donation.Amount)
-    }
-    totalDonated.SetValue(totalDonated.Value() + donation.Amount)
+	largestDonation := f.State.MaxDonation()
+	totalDonated := f.State.TotalDonation()
+	if donation.Amount > largestDonation.Value() {
+		largestDonation.SetValue(donation.Amount)
+	}
+	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func funcWithdraw(ctx wasmlib.ScFuncContext, params *FuncWithdrawParams) {
-    balance := ctx.Balances().Balance(wasmlib.IOTA)
-    amount := params.Amount.Value()
-    if amount == 0 || amount > balance {
-        amount = balance
-    }
-    if amount == 0 {
-        ctx.Log("dwf.withdraw: nothing to withdraw")
-        return
-    }
+func funcWithdraw(ctx wasmlib.ScFuncContext, f *FuncWithdrawContext) {
+	balance := ctx.Balances().Balance(wasmlib.IOTA)
+	amount := f.Params.Amount.Value()
+	if amount == 0 || amount > balance {
+		amount = balance
+	}
+	if amount == 0 {
+		ctx.Log("dwf.withdraw: nothing to withdraw")
+		return
+	}
 
-    scCreator := ctx.ContractCreator().Address()
-    ctx.TransferToAddress(scCreator, wasmlib.NewScTransferIotas(amount))
+	scCreator := ctx.ContractCreator().Address()
+	ctx.TransferToAddress(scCreator, wasmlib.NewScTransferIotas(amount))
 }
 
-func viewDonations(ctx wasmlib.ScViewContext, params *ViewDonationsParams) {
-    state := ctx.State()
-    largestDonation := state.GetInt64(VarMaxDonation)
-    totalDonated := state.GetInt64(VarTotalDonation)
-    log := state.GetBytesArray(VarLog)
-    results := ctx.Results()
-    results.GetInt64(VarMaxDonation).SetValue(largestDonation.Value())
-    results.GetInt64(VarTotalDonation).SetValue(totalDonated.Value())
-    donations := results.GetMapArray(VarDonations)
-    size := log.Length()
-    for i := int32(0); i < size; i++ {
-        di := NewDonationFromBytes(log.GetBytes(i).Value())
-        donation := donations.GetMap(i)
-        donation.GetInt64(VarAmount).SetValue(di.Amount)
-        donation.GetString(VarDonator).SetValue(di.Donator.String())
-        donation.GetString(VarError).SetValue(di.Error)
-        donation.GetString(VarFeedback).SetValue(di.Feedback)
-        donation.GetInt64(VarTimestamp).SetValue(di.Timestamp)
-    }
+func viewDonation(ctx wasmlib.ScViewContext, f *ViewDonationContext) {
+	nr := int32(f.Params.Nr.Value())
+	donation := f.State.Log().GetDonation(nr).Value()
+	f.Results.Amount.SetValue(donation.Amount)
+	f.Results.Donator.SetValue(donation.Donator)
+	f.Results.Error.SetValue(donation.Error)
+	f.Results.Feedback.SetValue(donation.Feedback)
+	f.Results.Timestamp.SetValue(donation.Timestamp)
+}
+
+func viewDonationInfo(ctx wasmlib.ScViewContext, f *ViewDonationInfoContext) {
+	f.Results.MaxDonation.SetValue(f.State.MaxDonation().Value())
+	f.Results.TotalDonation.SetValue(f.State.TotalDonation().Value())
+	f.Results.Count.SetValue(int64(f.State.Log().Length()))
 }

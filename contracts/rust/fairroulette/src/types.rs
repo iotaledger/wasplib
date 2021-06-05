@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use wasmlib::*;
+use wasmlib::host::*;
 
 //@formatter:off
 pub struct Bet {
@@ -33,5 +34,39 @@ impl Bet {
         encode.agent_id(&self.better);
         encode.int64(self.number);
         return encode.data();
+    }
+}
+
+pub struct ImmutableBet {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl ImmutableBet {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn value(&self) -> Bet {
+        Bet::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
+pub struct MutableBet {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl MutableBet {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn set_value(&self, value: &Bet) {
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, &value.to_bytes());
+    }
+
+    pub fn value(&self) -> Bet {
+        Bet::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }

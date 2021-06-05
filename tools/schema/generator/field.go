@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var fldNameRegexp = regexp.MustCompile("^[a-z][a-zA-Z0-9]*$")
+var fldNameRegexp = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*$")
 var fldAliasRegexp = regexp.MustCompile("^[a-zA-Z0-9_$#@*%\\-]+$")
 var fldTypeRegexp = regexp.MustCompile("^[A-Z][a-zA-Z0-9]+$")
 
@@ -32,6 +32,7 @@ type Field struct {
 	Comment  string
 	Name     string // external name for this field
 	Array    bool
+	MapKey   string
 	Optional bool
 	Type     string
 	TypeId   int32
@@ -58,9 +59,18 @@ func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
 		f.Optional = true
 		fldType = strings.TrimSpace(fldType[1:])
 	}
-	if strings.HasPrefix(fldType, "[]") {
-		f.Array = true
-		fldType = strings.TrimSpace(fldType[2:])
+	if strings.HasPrefix(fldType, "[") {
+		index = strings.Index(fldType, "]")
+		if index > 0 {
+			f.Array = index == 1
+			if !f.Array {
+				f.MapKey = strings.TrimSpace(fldType[1:index])
+				if !fldTypeRegexp.MatchString(f.MapKey) {
+					return fmt.Errorf("invalid key field type: %s", f.MapKey)
+				}
+			}
+			fldType = strings.TrimSpace(fldType[index+1:])
+		}
 	}
 	index = strings.Index(fldType, "//")
 	if index >= 0 {
@@ -78,6 +88,11 @@ func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
 	}
 	for _, typeDef := range schema.Types {
 		if f.Type == typeDef.Name {
+			return nil
+		}
+	}
+	for _, subtype := range schema.Subtypes {
+		if f.Type == subtype.Name {
 			return nil
 		}
 	}

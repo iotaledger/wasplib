@@ -3,20 +3,23 @@
   "description": "Exercise all aspects of WasmLib",
   "types": {
   },
-  "vars": {
+  "state": {
+    "dummy": "AgentId"
   },
   "funcs": {
     "paramTypes": {
-      "address": "?Address",
-      "agentId": "?AgentId",
-      "bytes": "?Bytes",
-      "chainId": "?ChainId",
-      "color": "?Color",
-      "hash": "?Hash",
-      "hname": "?Hname",
-      "int64": "?Int64",
-      "requestId": "?RequestId",
-      "string": "?String"
+      "params": {
+        "address": "?Address",
+        "agentId": "?AgentId",
+        "bytes": "?Bytes",
+        "chainId": "?ChainId",
+        "color": "?Color",
+        "hash": "?Hash",
+        "hname": "?Hname",
+        "int64": "?Int64",
+        "requestId": "?RequestId",
+        "string": "?String"
+      }
     }
   },
   "views": {

@@ -27,15 +27,19 @@ func TestStateAfterDeploy(t *testing.T) {
 	chain := setupTest(t)
 
 	ret, err := chain.CallView(
-		ScName, ViewDonations,
+		ScName, ViewDonationInfo,
 	)
 	require.NoError(t, err)
 
-	max, _, err := codec.DecodeInt64(ret[VarMaxDonation])
+	count, _, err := codec.DecodeInt64(ret[ResultCount])
+	require.NoError(t, err)
+	require.EqualValues(t, 0, count)
+
+	max, _, err := codec.DecodeInt64(ret[ResultMaxDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 0, max)
 
-	tot, _, err := codec.DecodeInt64(ret[VarTotalDonation])
+	tot, _, err := codec.DecodeInt64(ret[ResultTotalDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 0, tot)
 }
@@ -51,9 +55,13 @@ func TestDonateOnce(t *testing.T) {
 	require.NoError(t, err)
 
 	ret, err := chain.CallView(
-		ScName, ViewDonations,
+		ScName, ViewDonationInfo,
 	)
 	require.NoError(t, err)
+
+	count, _, err := codec.DecodeInt64(ret[ResultCount])
+	require.NoError(t, err)
+	require.EqualValues(t, 1, count)
 
 	max, _, err := codec.DecodeInt64(ret[VarMaxDonation])
 	require.NoError(t, err)
@@ -90,9 +98,13 @@ func TestDonateTwice(t *testing.T) {
 	require.NoError(t, err)
 
 	ret, err := chain.CallView(
-		ScName, ViewDonations,
+		ScName, ViewDonationInfo,
 	)
 	require.NoError(t, err)
+
+	count, _, err := codec.DecodeInt64(ret[ResultCount])
+	require.NoError(t, err)
+	require.EqualValues(t, 2, count)
 
 	max, _, err := codec.DecodeInt64(ret[VarMaxDonation])
 	require.NoError(t, err)

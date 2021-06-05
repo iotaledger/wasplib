@@ -26,12 +26,12 @@ const DEFAULT_PLAY_PERIOD: i64 = 120;
 // The 'placeBet' function takes 1 mandatory parameter:
 // - 'number', which must be s an Int64 number from 1 to MAX_NUMBER
 // The 'member' function will save the number together with the address of the better and
-// the amount of incoming iotas as the bet amount in its state.
-pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
+// the amount of incoming iotas as the bet amount in its f.state.
+pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
 
     // Since we are sure that the 'number' parameter actually exists we can
     // retrieve its actual value into an i64.
-    let number: i64 = params.number.value();
+    let number: i64 = f.params.number.value();
     // require that the number is a valid number to bet on, otherwise panic out.
     ctx.require(number >= 1 && number <= MAX_NUMBER, "invalid number");
 
@@ -56,10 +56,9 @@ pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
     };
 
     // Create an ScMutableMap proxy to the state storage map on the host.
-    let state: ScMutableMap = ctx.state();
 
     // Create an ScMutableBytesArray proxy to a bytes array named "bets" in the state storage.
-    let bets: ScMutableBytesArray = state.get_bytes_array(VAR_BETS);
+    let bets: ArrayOfMutableBet = f.state.bets();
 
     // Determine what the next bet number is by retrieving the length of the bets array.
     let bet_nr: i32 = bets.length();
@@ -67,13 +66,13 @@ pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
     // Append the bet data to the bets array. We get an ScBytes proxy to the bytes stored
     // using the bet number as index. Then we set the bytes value in the best array on the
     // host to the result of serializing the bet data into a bytes representation.
-    bets.get_bytes(bet_nr).set_value(&bet.to_bytes());
+    bets.get_bet(bet_nr).set_value(&bet);
 
     // Was this the first bet of this round?
     if bet_nr == 0 {
         // Yes it was, query the state for the length of the playing period in seconds by
         // retrieving the "playPeriod" from state storage
-        let mut play_period: i64 = state.get_int64(VAR_PLAY_PERIOD).value();
+        let mut play_period: i64 = f.state.play_period().value();
 
         // if the play period is less than 10 seconds we override it with the default duration.
         // Note that this will also happen when the play period was not set yet because in that
@@ -100,16 +99,15 @@ pub fn func_place_bet(ctx: &ScFuncContext, params: &FuncPlaceBetParams) {
 // second state storage array called "lockedBets", after which it will request the 'payWinners'
 // function to be run. Note that any bets coming in after that moment will start the cycle from
 // scratch, with the first incoming bet triggering a new delayed execution of 'lockBets'.
-pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
+pub fn func_lock_bets(ctx: &ScFuncContext, f: &FuncLockBetsContext) {
 
     // Create an ScMutableMap proxy to the state storage map on the host.
-    let state: ScMutableMap = ctx.state();
 
     // Create an ScMutableBytesArray proxy to the bytes array named 'bets' in state storage.
-    let bets: ScMutableBytesArray = state.get_bytes_array(VAR_BETS);
+    let bets: ArrayOfMutableBet = f.state.bets();
 
     // Create an ScMutableBytesArray proxy to a bytes array named 'lockedBets' in state storage.
-    let locked_bets: ScMutableBytesArray = state.get_bytes_array(VAR_LOCKED_BETS);
+    let locked_bets: ArrayOfMutableBet = f.state.locked_bets();
 
     // Determine the amount of bets in the 'bets' array.
     let nr_bets: i32 = bets.length();
@@ -119,10 +117,8 @@ pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
     for i in 0..nr_bets {
 
         // Get the bytes stored at the next index in the 'bets' array.
-        let bytes: Vec<u8> = bets.get_bytes(i).value();
-
         // Save the bytes at the next index in the 'lockedBets' array.
-        locked_bets.get_bytes(i).set_value(&bytes);
+        locked_bets.get_bet(i).set_value(&bets.get_bet(i).value());
     }
 
     // Now that we have a copy of all bets it is safe to clear the 'bets' array
@@ -146,7 +142,7 @@ pub fn func_lock_bets(ctx: &ScFuncContext, _params: &FuncLockBetsParams) {
 // a deterministic source of entropy for the random number generator. In this way every node in
 // the committee will be using the same pseudo-random value sequence, which in turn makes sure
 // that all nodes can agree on the outcome.
-pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
+pub fn func_pay_winners(ctx: &ScFuncContext, f: &FuncPayWinnersContext) {
 
     // Use the built-in random number generator which has been automatically initialized by
     // using the transaction hash as initial entropy data. Note that the pseudo-random number
@@ -156,14 +152,13 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     let winning_number: i64 = ctx.utility().random(5) + 1;
 
     // Create an ScMutableMap proxy to the state storage map on the host.
-    let state: ScMutableMap = ctx.state();
 
     // Save the last winning number in state storage under 'lastWinningNumber' so that there is
     // (limited) time for people to call the 'getLastWinningNumber' View to verify the last winning
     // number if they wish. Note that this is just a silly example. We could log much more extensive
     // statistics information about each playing round in state storage and make that data available
     // through views for anyone to see.
-    state.get_int64(VAR_LAST_WINNING_NUMBER).set_value(winning_number);
+    f.state.last_winning_number().set_value(winning_number);
 
     // Gather all winners and calculate some totals at the same time.
     // Keep track of the total bet amount, the total win amount, and all the winners
@@ -172,7 +167,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     let mut winners: Vec<Bet> = Vec::new();
 
     // Create an ScMutableBytesArray proxy to the 'lockedBets' bytes array in state storage.
-    let locked_bets: ScMutableBytesArray = state.get_bytes_array(VAR_LOCKED_BETS);
+    let locked_bets: ArrayOfMutableBet = f.state.locked_bets();
 
     // Determine the amount of bets in the 'lockedBets' array.
     let nr_bets: i32 = locked_bets.length();
@@ -180,10 +175,8 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
     // Loop through all indexes of the 'lockedBets' array.
     for i in 0..nr_bets {
         // Retrieve the bytes stored at the next index
-        let bytes: Vec<u8> = locked_bets.get_bytes(i).value();
-
         // Deserialize the bytes into the original Bet structure
-        let bet: Bet = Bet::from_bytes(&bytes);
+        let bet: Bet = locked_bets.get_bet(i).value();
 
         // Add this bet amount to the running total bet ammount
         total_bet_amount += bet.amount;
@@ -262,11 +255,11 @@ pub fn func_pay_winners(ctx: &ScFuncContext, _params: &FuncPayWinnersParams) {
 
 // 'playPeriod' can be used by the contract creator to set the length of a betting round
 // to a different value than the default value, which is 120 seconds..
-pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
+pub fn func_play_period(ctx: &ScFuncContext, f: &FuncPlayPeriodContext) {
 
     // Since we are sure that the 'playPeriod' parameter actually exists we can
     // retrieve its actual value into an i64 value.
-    let play_period: i64 = params.play_period.value();
+    let play_period: i64 = f.params.play_period.value();
 
     // Require that the play period (in seconds) is not ridiculously low.
     // Otherwise panic out with an error message.
@@ -274,23 +267,21 @@ pub fn func_play_period(ctx: &ScFuncContext, params: &FuncPlayPeriodParams) {
 
     // Now we set the corresponding state variable 'playPeriod' through the state
     // map proxy to the value we just got.
-    ctx.state().get_int64(VAR_PLAY_PERIOD).set_value(play_period);
+    f.state.play_period().set_value(play_period);
 }
 
-pub fn view_last_winning_number(ctx: &ScViewContext, _params: &ViewLastWinningNumberParams) {
+pub fn view_last_winning_number(_ctx: &ScViewContext, f: &ViewLastWinningNumberContext) {
 
     // Create an ScImmutableMap proxy to the state storage map on the host.
-    let state: ScImmutableMap = ctx.state();
 
     // Get the 'lastWinningNumber' int64 value from state storage through
     // an ScImmutableInt64 proxy.
-    let last_winning_number: i64 = state.get_int64(VAR_LAST_WINNING_NUMBER).value();
+    let last_winning_number: i64 = f.state.last_winning_number().value();
 
     // Create an ScMutableMap proxy to the map on the host that will store the
     // key/value pairs that we want to return from this View function
-    let results: ScMutableMap = ctx.results();
 
     // Set the value associated with the 'lastWinningNumber' key to the value
     // we got from state storage
-    results.get_int64(VAR_LAST_WINNING_NUMBER).set_value(last_winning_number);
+    f.results.last_winning_number.set_value(last_winning_number);
 }

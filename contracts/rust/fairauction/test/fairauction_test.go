@@ -18,14 +18,14 @@ import (
 )
 
 var auctioneer *ed25519.KeyPair
-var auctioneerAddr  ledgerstate.Address
+var auctioneerAddr ledgerstate.Address
 var tokenColor ledgerstate.Color
 
 func setupTest(t *testing.T) *solo.Chain {
 	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
 
 	// set up auctioneer account and mint some tokens to auction off
-	auctioneer,auctioneerAddr = chain.Env.NewKeyPairWithFunds()
+	auctioneer, auctioneerAddr = chain.Env.NewKeyPairWithFunds()
 	newColor, err := chain.Env.MintTokens(auctioneer, 10)
 	require.NoError(t, err)
 	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-10)
@@ -39,7 +39,7 @@ func setupTest(t *testing.T) *solo.Chain {
 		ParamDescription, "Cool tokens for sale!",
 	).WithTransfers(map[ledgerstate.Color]uint64{
 		ledgerstate.ColorIOTA: 25, // deposit, must be >=minimum*margin
-		tokenColor:        10, // the tokens to auction
+		tokenColor:            10, // the tokens to auction
 	})
 	_, err = chain.PostRequestSync(req, auctioneer)
 	require.NoError(t, err)
@@ -79,8 +79,8 @@ func TestFaAuctionInfo(t *testing.T) {
 	)
 	require.NoError(t, err)
 	account := coretypes.NewAgentID(auctioneerAddr, 0)
-	requireAgent(t, res, VarCreator, *account)
-	requireInt64(t, res, VarBidders, 0)
+	requireAgent(t, res, ResultCreator, *account)
+	requireInt64(t, res, ResultBidders, 0)
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)
@@ -99,7 +99,7 @@ func TestFaNoBids(t *testing.T) {
 		ParamColor, tokenColor,
 	)
 	require.NoError(t, err)
-	requireInt64(t, res, VarBidders, 0)
+	requireInt64(t, res, ResultBidders, 0)
 }
 
 func TestFaOneBidTooLow(t *testing.T) {
@@ -120,8 +120,8 @@ func TestFaOneBidTooLow(t *testing.T) {
 		ParamColor, tokenColor,
 	)
 	require.NoError(t, err)
-	requireInt64(t, res, VarHighestBid, -1)
-	requireInt64(t, res, VarBidders, 0)
+	requireInt64(t, res, ResultHighestBid, -1)
+	requireInt64(t, res, ResultBidders, 0)
 }
 
 func TestFaOneBid(t *testing.T) {
@@ -143,9 +143,9 @@ func TestFaOneBid(t *testing.T) {
 		ParamColor, tokenColor,
 	)
 	require.NoError(t, err)
-	requireInt64(t, res, VarBidders, 1)
-	requireInt64(t, res, VarHighestBid, 500)
-	requireAgent(t, res, VarHighestBidder, *coretypes.NewAgentID(bidderAddr, 0))
+	requireInt64(t, res, ResultBidders, 1)
+	requireInt64(t, res, ResultHighestBid, 500)
+	requireAgent(t, res, ResultHighestBidder, *coretypes.NewAgentID(bidderAddr, 0))
 }
 
 func requireAgent(t *testing.T, res dict.Dict, key string, expected coretypes.AgentID) {

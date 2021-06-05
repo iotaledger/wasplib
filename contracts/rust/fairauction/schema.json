@@ -20,45 +20,62 @@
       "timestamp": "Int64 // timestamp of most recent bid"
     }
   },
-  "vars": {
-    "auctions": "[]Auction",
-    "bidderList": "[]Bid",
-    "bidders": "[]Bid",
-    "color": "Color",
-    "creator": "AgentId",
-    "deposit": "Int64",
-    "description": "String",
-    "duration": "Int64",
-    "highestBid": "Int64",
-    "highestBidder": "AgentId",
-    "info": "String",
-    "minimumBid": "Int64",
-    "numTokens": "Int64",
-    "ownerMargin": "Int64",
-    "whenStarted": "Int64"
+  "subtypes": {
+    "BidderList": "[]AgentId",
+    "Bids": "[AgentId]Bid"
+  },
+  "state": {
+    "auctions": "[Color]Auction",
+    "bidderList": "[Color]BidderList",
+    "bids": "[Color]Bids",
+    "ownerMargin": "Int64 // default auction owner's margin in promilles"
   },
   "funcs": {
     "startAuction": {
-      "color": "Color // color of the tokens being auctioned",
-      "description": "?String // description of the tokens being auctioned",
-      "duration": "?Int64 // duration of auction in minutes",
-      "minimumBid": "Int64 // minimum required amount for any bid"
+      "params": {
+        "color": "Color // color of the tokens being auctioned",
+        "description": "?String // description of the tokens being auctioned",
+        "duration": "?Int64 // duration of auction in minutes",
+        "minimumBid": "Int64 // minimum required amount for any bid"
+      }
     },
     "finalizeAuction": {
-      "#grant": "self // only SC itself can invoke this function",
-      "color": "Color // color identifies the auction"
+      "access": "self // only SC itself can invoke this function",
+      "params": {
+        "color": "Color // color identifies the auction"
+      }
     },
     "placeBid": {
-      "color": "Color // color identifies the auction"
+      "params": {
+        "color": "Color // color identifies the auction"
+      }
     },
     "setOwnerMargin": {
-      "#grant": "creator // only SC creator can set owner margin",
-      "ownerMargin": "Int64 // new SC owner margin in promilles"
+      "access": "creator // only SC creator can set owner margin",
+      "params": {
+        "ownerMargin": "Int64 // new SC owner margin in promilles"
+      }
     }
   },
   "views": {
     "getInfo": {
-      "color": "Color // color identifies the auction"
+      "params": {
+        "color": "Color // color identifies the auction"
+      },
+      "results": {
+        "color": "Color // color of tokens for sale",
+        "creator": "AgentId // issuer of start_auction transaction",
+        "deposit": "Int64 // deposit by auction owner to cover the SC fees",
+        "description": "String // auction description",
+        "duration": "Int64 // auction duration in minutes",
+        "highestBid": "Int64 // the current highest bid amount",
+        "highestBidder": "AgentId // the current highest bidder",
+        "minimumBid": "Int64 // minimum bid amount",
+        "numTokens": "Int64 // number of tokens for sale",
+        "ownerMargin": "Int64 // auction owner's margin in promilles",
+        "whenStarted": "Int64 // timestamp when auction started",
+        "bidders": "Int64 // nr of bidders"
+      }
     }
   }
 }

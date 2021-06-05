@@ -2,6 +2,7 @@ package test
 
 import (
 	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -17,7 +18,7 @@ func TestDeployErc20(t *testing.T) {
 	)
 	require.NoError(t, err)
 	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, 6, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
 
 	_, err = chain.FindContract(ScName)
 	require.NoError(t, err)
@@ -29,7 +30,7 @@ func TestDeployErc20(t *testing.T) {
 	)
 	require.Error(t, err)
 	_, _, rec = chain.GetInfo()
-	require.EqualValues(t, 6, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
 }
 
 func TestDeployErc20Fail1(t *testing.T) {
@@ -37,7 +38,7 @@ func TestDeployErc20Fail1(t *testing.T) {
 	err := common.DeployWasmContractByName(chain, ScName)
 	require.Error(t, err)
 	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
 }
 
 func TestDeployErc20Fail2(t *testing.T) {
@@ -47,7 +48,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 	)
 	require.Error(t, err)
 	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
 }
 
 func TestDeployErc20Fail3(t *testing.T) {
@@ -59,7 +60,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 	)
 	require.Error(t, err)
 	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
 }
 
 func TestDeployErc20Fail3Repeat(t *testing.T) {
@@ -71,7 +72,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	)
 	require.Error(t, err)
 	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, 5, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
 
 	// repeat after failure
 	err = common.DeployWasmContractByName(chain, ScName,
@@ -80,7 +81,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	)
 	require.NoError(t, err)
 	_, _, rec = chain.GetInfo()
-	require.EqualValues(t, 6, len(rec))
+	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
 
 	_, err = chain.FindContract(ScName)
 	require.NoError(t, err)

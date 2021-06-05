@@ -28,6 +28,7 @@ public class IncCounterThunk {
         exports.AddFunc(Consts.FuncLocalStateInternalCall, IncCounterThunk::funcLocalStateInternalCallThunk);
         exports.AddFunc(Consts.FuncLocalStatePost, IncCounterThunk::funcLocalStatePostThunk);
         exports.AddFunc(Consts.FuncLocalStateSandboxCall, IncCounterThunk::funcLocalStateSandboxCallThunk);
+        exports.AddFunc(Consts.FuncLoop, IncCounterThunk::funcLoopThunk);
         exports.AddFunc(Consts.FuncPostIncrement, IncCounterThunk::funcPostIncrementThunk);
         exports.AddFunc(Consts.FuncRepeatMany, IncCounterThunk::funcRepeatManyThunk);
         exports.AddFunc(Consts.FuncTestLeb128, IncCounterThunk::funcTestLeb128Thunk);
@@ -84,6 +85,13 @@ public class IncCounterThunk {
         var params = new FuncLocalStateSandboxCallParams();
         IncCounter.funcLocalStateSandboxCall(ctx, params);
         ctx.Log("inccounter.funcLocalStateSandboxCall ok");
+    }
+
+    private static void funcLoopThunk(ScFuncContext ctx) {
+        ctx.Log("inccounter.funcLoop");
+        var params = new FuncLoopParams();
+        IncCounter.funcLoop(ctx, params);
+        ctx.Log("inccounter.funcLoop ok");
     }
 
     private static void funcPostIncrementThunk(ScFuncContext ctx) {

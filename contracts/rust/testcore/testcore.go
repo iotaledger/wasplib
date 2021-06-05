@@ -11,79 +11,79 @@ const ContractNameDeployed = "exampleDeployTR"
 const MsgFullPanic = "========== panic FULL ENTRY POINT ========="
 const MsgViewPanic = "========== panic VIEW ========="
 
-func funcCallOnChain(ctx wasmlib.ScFuncContext, params *FuncCallOnChainParams) {
-	paramInt := params.IntValue.Value()
+func funcCallOnChain(ctx wasmlib.ScFuncContext, f *FuncCallOnChainContext) {
+	paramInt := f.Params.IntValue.Value()
 
 	targetContract := ctx.Contract()
-	if params.HnameContract.Exists() {
-		targetContract = params.HnameContract.Value()
+	if f.Params.HnameContract.Exists() {
+		targetContract = f.Params.HnameContract.Value()
 	}
 
 	targetEp := HFuncCallOnChain
-	if params.HnameEP.Exists() {
-		targetEp = params.HnameEP.Value()
+	if f.Params.HnameEP.Exists() {
+		targetEp = f.Params.HnameEP.Value()
 	}
 
-	varCounter := ctx.State().GetInt64(VarCounter)
-	counter := varCounter.Value()
-	varCounter.SetValue(counter + 1)
+	varCounter := f.State.Counter()
 
-	ctx.Log("call depth = " + params.IntValue.String() +
-		" hnameContract = " + targetContract.String() +
-		" hnameEP = " + targetEp.String() +
-		" counter = " + ctx.Utility().String(counter))
+	ctx.Log("call depth = " + f.Params.IntValue.String() +
+		", hnameContract = " + targetContract.String() +
+		", hnameEP = " + targetEp.String() +
+		", counter = " + varCounter.String())
 
-	parms := wasmlib.NewScMutableMap()
-	parms.GetInt64(ParamIntValue).SetValue(paramInt)
-	ret := ctx.Call(targetContract, targetEp, parms, nil)
+	varCounter.SetValue(varCounter.Value() + 1)
 
+	params := wasmlib.NewScMutableMap()
+	params.GetInt64(ParamIntValue).SetValue(paramInt)
+	ret := ctx.Call(targetContract, targetEp, params, nil)
 	retVal := ret.GetInt64(ParamIntValue)
-	ctx.Results().GetInt64(ParamIntValue).SetValue(retVal.Value())
+	f.Results.IntValue.SetValue(retVal.Value())
 }
 
-func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, params *FuncCheckContextFromFullEPParams) {
-	ctx.Require(params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
-	ctx.Require(params.Caller.Value() == ctx.Caller(), "fail: caller")
-	ctx.Require(params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
-	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
-	ctx.Require(params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
+func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, f *FuncCheckContextFromFullEPContext) {
+	ctx.Require(f.Params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
+	ctx.Require(f.Params.Caller.Value() == ctx.Caller(), "fail: caller")
+	ctx.Require(f.Params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
+	ctx.Require(f.Params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
+	ctx.Require(f.Params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
-func funcDoNothing(ctx wasmlib.ScFuncContext, params *FuncDoNothingParams) {
+func funcDoNothing(ctx wasmlib.ScFuncContext, f *FuncDoNothingContext) {
 	ctx.Log("doing nothing...")
 }
 
-func funcGetMintedSupply(ctx wasmlib.ScFuncContext, params *FuncGetMintedSupplyParams) {
+func funcGetMintedSupply(ctx wasmlib.ScFuncContext, f *FuncGetMintedSupplyContext) {
 	minted := ctx.Minted()
 	mintedColors := minted.Colors()
 	ctx.Require(mintedColors.Length() == 1, "test only supports one minted color")
 	color := mintedColors.GetColor(0).Value()
 	amount := minted.Balance(color)
-	ctx.Results().GetInt64(VarMintedSupply).SetValue(amount)
-	ctx.Results().GetColor(VarMintedColor).SetValue(color)
+	f.Results.MintedColor.SetValue(color)
+	f.Results.MintedSupply.SetValue(amount)
 }
 
-func funcIncCounter(ctx wasmlib.ScFuncContext, params *FuncIncCounterParams) {
-	ctx.State().GetInt64(VarCounter).SetValue(ctx.State().GetInt64(VarCounter).Value() + 1)
+func funcIncCounter(ctx wasmlib.ScFuncContext, f *FuncIncCounterContext) {
+	counter := f.State.Counter()
+	counter.SetValue(counter.Value() + 1)
 }
 
-func funcInit(ctx wasmlib.ScFuncContext, params *FuncInitParams) {
+func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
 	ctx.Log("doing nothing...")
 }
 
-func funcPassTypesFull(ctx wasmlib.ScFuncContext, params *FuncPassTypesFullParams) {
+func funcPassTypesFull(ctx wasmlib.ScFuncContext, f *FuncPassTypesFullContext) {
 	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
-	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
-	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
-	ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
-	ctx.Require(params.String.Value() == string(ParamString), "string wrong")
-	ctx.Require(params.StringZero.Value() == "", "string-0 wrong")
-	ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
-	ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
+	ctx.Require(f.Params.Hash.Value() == hash, "Hash wrong")
+	ctx.Require(f.Params.Int64.Value() == 42, "int64 wrong")
+	ctx.Require(f.Params.Int64Zero.Value() == 0, "int64-0 wrong")
+	ctx.Require(f.Params.String.Value() == string(ParamString), "string wrong")
+	ctx.Require(f.Params.StringZero.Value() == "", "string-0 wrong")
+	ctx.Require(f.Params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
+	ctx.Require(f.Params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }
 
-func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams) {
-	depth := params.IntValue.Value()
+func funcRunRecursion(ctx wasmlib.ScFuncContext, f *FuncRunRecursionContext) {
+	depth := f.Params.IntValue.Value()
 	if depth <= 0 {
 		return
 	}
@@ -93,65 +93,65 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, params *FuncRunRecursionParams)
 	parms.GetHname(ParamHnameEP).SetValue(HFuncRunRecursion)
 	ctx.CallSelf(HFuncCallOnChain, parms, nil)
 	// TODO how would I return result of the call ???
-	ctx.Results().GetInt64(ParamIntValue).SetValue(depth - 1)
+	f.Results.IntValue.SetValue(depth - 1)
 }
 
-func funcSendToAddress(ctx wasmlib.ScFuncContext, params *FuncSendToAddressParams) {
+func funcSendToAddress(ctx wasmlib.ScFuncContext, f *FuncSendToAddressContext) {
 	balances := wasmlib.NewScTransfersFromBalances(ctx.Balances())
-	ctx.TransferToAddress(params.Address.Value(), balances)
+	ctx.TransferToAddress(f.Params.Address.Value(), balances)
 }
 
-func funcSetInt(ctx wasmlib.ScFuncContext, params *FuncSetIntParams) {
-	ctx.State().GetInt64(wasmlib.Key(params.Name.Value())).SetValue(params.IntValue.Value())
+func funcSetInt(ctx wasmlib.ScFuncContext, f *FuncSetIntContext) {
+	ctx.State().GetInt64(wasmlib.Key(f.Params.Name.Value())).SetValue(f.Params.IntValue.Value())
 }
 
-func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestCallPanicFullEPParams) {
+func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, f *FuncTestCallPanicFullEPContext) {
 	ctx.CallSelf(HFuncTestPanicFullEP, nil, nil)
 }
 
-func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, params *FuncTestCallPanicViewEPFromFullParams) {
+func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, f *FuncTestCallPanicViewEPFromFullContext) {
 	ctx.CallSelf(HViewTestPanicViewEP, nil, nil)
 }
 
-func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, params *FuncTestChainOwnerIDFullParams) {
-	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
+func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *FuncTestChainOwnerIDFullContext) {
+	f.Results.ChainOwnerId.SetValue(ctx.ChainOwnerId())
 }
 
-func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, params *FuncTestEventLogDeployParams) {
-	//Deploy the same contract with another name
+func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, f *FuncTestEventLogDeployContext) {
+	// deploy the same contract with another name
 	programHash := ctx.Utility().HashBlake2b([]byte("test_sandbox"))
 	ctx.Deploy(programHash, ContractNameDeployed, "test contract deploy log", nil)
 }
 
-func funcTestEventLogEventData(ctx wasmlib.ScFuncContext, params *FuncTestEventLogEventDataParams) {
+func funcTestEventLogEventData(ctx wasmlib.ScFuncContext, f *FuncTestEventLogEventDataContext) {
 	ctx.Event("[Event] - Testing Event...")
 }
 
-func funcTestEventLogGenericData(ctx wasmlib.ScFuncContext, params *FuncTestEventLogGenericDataParams) {
-	event := "[GenericData] Counter Number: " + params.Counter.String()
+func funcTestEventLogGenericData(ctx wasmlib.ScFuncContext, f *FuncTestEventLogGenericDataContext) {
+	event := "[GenericData] Counter Number: " + f.Params.Counter.String()
 	ctx.Event(event)
 }
 
-func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, params *FuncTestPanicFullEPParams) {
+func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, f *FuncTestPanicFullEPContext) {
 	ctx.Panic(MsgFullPanic)
 }
 
-func funcWithdrawToChain(ctx wasmlib.ScFuncContext, params *FuncWithdrawToChainParams) {
+func funcWithdrawToChain(ctx wasmlib.ScFuncContext, f *FuncWithdrawToChainContext) {
 	transfers := wasmlib.NewScTransferIotas(1)
-	ctx.Post(params.ChainId.Value(), wasmlib.CoreAccounts, wasmlib.CoreAccountsFuncWithdraw, nil, transfers, 0)
+	ctx.Post(f.Params.ChainId.Value(), wasmlib.CoreAccounts, wasmlib.CoreAccountsFuncWithdraw, nil, transfers, 0)
 }
 
-func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, params *ViewCheckContextFromViewEPParams) {
-	ctx.Require(params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
-	ctx.Require(params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
-	ctx.Require(params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
-	ctx.Require(params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
+func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, f *ViewCheckContextFromViewEPContext) {
+	ctx.Require(f.Params.AgentId.Value() == ctx.AccountId(), "fail: agentID")
+	ctx.Require(f.Params.ChainId.Value() == ctx.ChainId(), "fail: chainID")
+	ctx.Require(f.Params.ChainOwnerId.Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
+	ctx.Require(f.Params.ContractCreator.Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
-func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
-	n := params.IntValue.Value()
+func viewFibonacci(ctx wasmlib.ScViewContext, f *ViewFibonacciContext) {
+	n := f.Params.IntValue.Value()
 	if n == 0 || n == 1 {
-		ctx.Results().GetInt64(ParamIntValue).SetValue(n)
+		f.Results.IntValue.SetValue(n)
 		return
 	}
 	parms1 := wasmlib.NewScMutableMap()
@@ -164,50 +164,49 @@ func viewFibonacci(ctx wasmlib.ScViewContext, params *ViewFibonacciParams) {
 	results2 := ctx.CallSelf(HViewFibonacci, parms2)
 	n2 := results2.GetInt64(ParamIntValue).Value()
 
-	ctx.Results().GetInt64(ParamIntValue).SetValue(n1 + n2)
+	f.Results.IntValue.SetValue(n1 + n2)
 }
 
-func viewGetCounter(ctx wasmlib.ScViewContext, params *ViewGetCounterParams) {
-	counter := ctx.State().GetInt64(VarCounter)
-	ctx.Results().GetInt64(VarCounter).SetValue(counter.Value())
+func viewGetCounter(ctx wasmlib.ScViewContext, f *ViewGetCounterContext) {
+	f.Results.Counter.SetValue(f.State.Counter().Value())
 }
 
-func viewGetInt(ctx wasmlib.ScViewContext, params *ViewGetIntParams) {
-	name := params.Name.Value()
+func viewGetInt(ctx wasmlib.ScViewContext, f *ViewGetIntContext) {
+	name := f.Params.Name.Value()
 	value := ctx.State().GetInt64(wasmlib.Key(name))
 	ctx.Require(value.Exists(), "param 'value' not found")
 	ctx.Results().GetInt64(wasmlib.Key(name)).SetValue(value.Value())
 }
 
-func viewJustView(ctx wasmlib.ScViewContext, params *ViewJustViewParams) {
+func viewJustView(ctx wasmlib.ScViewContext, f *ViewJustViewContext) {
 	ctx.Log("doing nothing...")
 }
 
-func viewPassTypesView(ctx wasmlib.ScViewContext, params *ViewPassTypesViewParams) {
+func viewPassTypesView(ctx wasmlib.ScViewContext, f *ViewPassTypesViewContext) {
 	hash := ctx.Utility().HashBlake2b([]byte(ParamHash))
-	ctx.Require(params.Hash.Value() == hash, "Hash wrong")
-	ctx.Require(params.Int64.Value() == 42, "int64 wrong")
-	ctx.Require(params.Int64Zero.Value() == 0, "int64-0 wrong")
-	ctx.Require(params.String.Value() == string(ParamString), "string wrong")
-	ctx.Require(params.StringZero.Value() == "", "string-0 wrong")
-	ctx.Require(params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
-	ctx.Require(params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
+	ctx.Require(f.Params.Hash.Value() == hash, "Hash wrong")
+	ctx.Require(f.Params.Int64.Value() == 42, "int64 wrong")
+	ctx.Require(f.Params.Int64Zero.Value() == 0, "int64-0 wrong")
+	ctx.Require(f.Params.String.Value() == string(ParamString), "string wrong")
+	ctx.Require(f.Params.StringZero.Value() == "", "string-0 wrong")
+	ctx.Require(f.Params.Hname.Value() == wasmlib.NewScHname(string(ParamHname)), "Hname wrong")
+	ctx.Require(f.Params.HnameZero.Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }
 
-func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, params *ViewTestCallPanicViewEPFromViewParams) {
+func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *ViewTestCallPanicViewEPFromViewContext) {
 	ctx.CallSelf(HViewTestPanicViewEP, nil)
 }
 
-func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, params *ViewTestChainOwnerIDViewParams) {
-	ctx.Results().GetAgentId(ParamChainOwnerId).SetValue(ctx.ChainOwnerId())
+func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *ViewTestChainOwnerIDViewContext) {
+	f.Results.ChainOwnerId.SetValue(ctx.ChainOwnerId())
 }
 
-func viewTestPanicViewEP(ctx wasmlib.ScViewContext, params *ViewTestPanicViewEPParams) {
+func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *ViewTestPanicViewEPContext) {
 	ctx.Panic(MsgViewPanic)
 }
 
-func viewTestSandboxCall(ctx wasmlib.ScViewContext, params *ViewTestSandboxCallParams) {
+func viewTestSandboxCall(ctx wasmlib.ScViewContext, f *ViewTestSandboxCallContext) {
 	ret := ctx.Call(wasmlib.CoreRoot, wasmlib.CoreRootViewGetChainInfo, nil)
 	desc := ret.GetString(wasmlib.Key("d")).Value()
-	ctx.Results().GetString(wasmlib.Key("sandboxCall")).SetValue(desc)
+	f.Results.SandboxCall.SetValue(desc)
 }

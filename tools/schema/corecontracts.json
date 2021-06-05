@@ -41,7 +41,7 @@
   {
     "name": "eventlog",
     "description": "Event log Contract",
-    "vars": {
+    "state": {
       "numRecords": "Int64",
       "records": "[]Bytes"
     },

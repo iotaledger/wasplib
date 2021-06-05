@@ -67,10 +67,10 @@ func generateSchema(file *os.File) error {
 	if err != nil {
 		return err
 	}
-	err = schema.GenerateJava()
-	if err != nil {
-		return err
-	}
+	//err = schema.GenerateJava()
+	//if err != nil {
+	//	return err
+	//}
 	err = schema.GenerateRust()
 	if err != nil {
 		return err

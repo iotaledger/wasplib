@@ -260,9 +260,9 @@ func (s *Schema) GenerateJavaConsts() error {
 		}
 	}
 
-	if len(s.Vars) != 0 {
+	if len(s.StateVars) != 0 {
 		fmt.Fprintln(file)
-		for _, field := range s.Vars {
+		for _, field := range s.StateVars {
 			name := capitalize(field.Name)
 			fmt.Fprintf(file, "    public static final Key Var%s = new Key(\"%s\");\n", name, field.Alias)
 		}
@@ -323,7 +323,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 
 	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FullName)
-	grant := funcDef.Annotations["#grant"]
+	grant := funcDef.Access
 	if grant != "" {
 		index := strings.Index(grant, "//")
 		if index >= 0 {
@@ -338,9 +338,9 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		case "creator":
 			grant = "ctx.ContractCreator()"
 		default:
-			fmt.Fprintf(file, "        var grantee = ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
-			fmt.Fprintf(file, "        ctx.Require(grantee.Exists(), \"grantee not set: %s\");\n", grant)
-			grant = fmt.Sprintf("grantee.Value()")
+			fmt.Fprintf(file, "        var access = ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
+			fmt.Fprintf(file, "        ctx.Require(access.Exists(), \"access not set: %s\");\n", grant)
+			grant = fmt.Sprintf("access.Value()")
 		}
 		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}

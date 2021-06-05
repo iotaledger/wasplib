@@ -32,3 +32,33 @@ func (o *Bet) Bytes() []byte {
 		Int64(o.Number).
 		Data()
 }
+
+type ImmutableBet struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o ImmutableBet) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o ImmutableBet) Value() *Bet {
+	return NewBetFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
+type MutableBet struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o MutableBet) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o MutableBet) SetValue(value *Bet) {
+	wasmlib.SetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES, value.Bytes())
+}
+
+func (o MutableBet) Value() *Bet {
+	return NewBetFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}

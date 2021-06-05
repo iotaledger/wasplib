@@ -15,6 +15,8 @@ pub const HSC_NAME: ScHname = ScHname(0xdf79d138);
 pub const PARAM_NUMBER: &str = "number";
 pub const PARAM_PLAY_PERIOD: &str = "playPeriod";
 
+pub const RESULT_LAST_WINNING_NUMBER: &str = "lastWinningNumber";
+
 pub const VAR_BETS: &str = "bets";
 pub const VAR_LAST_WINNING_NUMBER: &str = "lastWinningNumber";
 pub const VAR_LOCKED_BETS: &str = "lockedBets";

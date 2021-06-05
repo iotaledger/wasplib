@@ -4,7 +4,10 @@
 package generator
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"regexp"
 	"strings"
 )
 
@@ -14,36 +17,49 @@ type FieldMapMap map[string]FieldMap
 type StringMap map[string]string
 type StringMapMap map[string]StringMap
 
+type FuncDesc struct {
+	Access  string    `json:"access"`
+	Params  StringMap `json:"params"`
+	Results StringMap `json:"results"`
+}
+type FuncDescMap map[string]*FuncDesc
+
 type JsonSchema struct {
-	Description string       `json:"description"`
-	Funcs       StringMapMap `json:"funcs"`
 	Name        string       `json:"name"`
+	Description string       `json:"description"`
 	Types       StringMapMap `json:"types"`
-	Vars        StringMap    `json:"vars"`
-	Views       StringMapMap `json:"views"`
+	Subtypes    StringMap    `json:"subtypes"`
+	State       StringMap    `json:"state"`
+	Funcs       FuncDescMap  `json:"funcs"`
+	Views       FuncDescMap  `json:"views"`
 }
 
 type FuncDef struct {
-	Name        string
-	FullName    string
-	Annotations StringMap
-	Params      []*Field
+	Name     string
+	FullName string
+	Access   string
+	Params   []*Field
+	Results  []*Field
 }
 
 type Schema struct {
+	Name        string
+	FullName    string
 	Description string
 	Funcs       []*FuncDef
-	FullName    string
-	Name        string
+	NewTypes    map[string]bool
 	Params      FieldMap
+	Results     FieldMap
+	StateVars   []*Field
+	Subtypes    []*Field
 	Types       []*TypeDef
-	Vars        []*Field
 	Views       []*FuncDef
 }
 
 func NewSchema() *Schema {
 	s := &Schema{}
 	s.Params = make(FieldMap)
+	s.Results = make(FieldMap)
 	return s
 }
 
@@ -59,6 +75,10 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 	if err != nil {
 		return err
 	}
+	err = s.compileSubtypes(jsonSchema)
+	if err != nil {
+		return err
+	}
 	err = s.compileFuncs(jsonSchema, false)
 	if err != nil {
 		return err
@@ -67,7 +87,7 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 	if err != nil {
 		return err
 	}
-	return s.compileVars(jsonSchema)
+	return s.compileStateVars(jsonSchema)
 }
 
 func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
@@ -79,7 +99,7 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 	return field, nil
 }
 
-func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
+func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) (err error) {
 	//TODO check for clashing Hnames
 
 	prefix := "func"
@@ -88,49 +108,102 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) error {
 		prefix = "view"
 		jsonFuncs = jsonSchema.Views
 	}
-	for _, funcName := range sortedMaps(jsonFuncs) {
+	for _, funcName := range sortedFuncDescs(jsonFuncs) {
 		if views && jsonSchema.Funcs[funcName] != nil {
 			return fmt.Errorf("duplicate func/view name")
 		}
-		paramMap := jsonFuncs[funcName]
+		funcDesc := jsonFuncs[funcName]
 		funcDef := &FuncDef{}
 		funcDef.Name = funcName
 		funcDef.FullName = prefix + capitalize(funcDef.Name)
-		funcDef.Annotations = make(StringMap)
-		fieldNames := make(StringMap)
-		fieldAliases := make(StringMap)
-		for _, fldName := range sortedKeys(paramMap) {
-			fldType := paramMap[fldName]
-			if strings.HasPrefix(fldName, "#") {
-				funcDef.Annotations[fldName] = strings.TrimSpace(fldType)
-				continue
-			}
-			param, err := s.CompileField(fldName, fldType)
-			if err != nil {
-				return err
-			}
-			if _, ok := fieldNames[param.Name]; ok {
-				return fmt.Errorf("duplicate param name")
-			}
-			fieldNames[param.Name] = param.Name
-			if _, ok := fieldAliases[param.Alias]; ok {
-				return fmt.Errorf("duplicate param alias")
-			}
-			fieldAliases[param.Alias] = param.Alias
-			existing, ok := s.Params[param.Name]
-			if !ok {
-				s.Params[param.Name] = param
-				existing = param
-			}
-			if existing.Alias != param.Alias {
-				return fmt.Errorf("redefined param alias")
-			}
-			if existing.Type != param.Type {
-				return fmt.Errorf("redefined param type")
-			}
-			funcDef.Params = append(funcDef.Params, param)
+		funcDef.Access = funcDesc.Access
+		funcDef.Params, err = s.compileFuncFields(funcDesc.Params, &s.Params, "param")
+		if err != nil {
+			return err
+		}
+		funcDef.Results, err = s.compileFuncFields(funcDesc.Results, &s.Results, "result")
+		if err != nil {
+			return err
 		}
 		s.Funcs = append(s.Funcs, funcDef)
+	}
+	return nil
+}
+
+func (s *Schema) compileFuncFields(fieldMap StringMap, allFieldMap *FieldMap, what string) ([]*Field, error) {
+	fields := make([]*Field, 0, len(fieldMap))
+	fieldNames := make(StringMap)
+	fieldAliases := make(StringMap)
+	for _, fldName := range sortedKeys(fieldMap) {
+		fldType := fieldMap[fldName]
+		field, err := s.CompileField(fldName, fldType)
+		if err != nil {
+			return nil, err
+		}
+		if _, ok := fieldNames[field.Name]; ok {
+			return nil, fmt.Errorf("duplicate %s name", what)
+		}
+		fieldNames[field.Name] = field.Name
+		if _, ok := fieldAliases[field.Alias]; ok {
+			return nil, fmt.Errorf("duplicate %s alias", what)
+		}
+		fieldAliases[field.Alias] = field.Alias
+		existing, ok := (*allFieldMap)[field.Name]
+		if !ok {
+			(*allFieldMap)[field.Name] = field
+			existing = field
+		}
+		if existing.Alias != field.Alias {
+			return nil, fmt.Errorf("redefined %s alias", what)
+		}
+		if existing.Type != field.Type {
+			return nil, fmt.Errorf("redefined %s type", what)
+		}
+		fields = append(fields, field)
+	}
+	return fields, nil
+}
+
+func (s *Schema) compileStateVars(jsonSchema *JsonSchema) error {
+	varNames := make(StringMap)
+	varAliases := make(StringMap)
+	for _, varName := range sortedKeys(jsonSchema.State) {
+		varType := jsonSchema.State[varName]
+		varDef, err := s.CompileField(varName, varType)
+		if err != nil {
+			return err
+		}
+		if _, ok := varNames[varDef.Name]; ok {
+			return fmt.Errorf("duplicate var name")
+		}
+		varNames[varDef.Name] = varDef.Name
+		if _, ok := varAliases[varDef.Alias]; ok {
+			return fmt.Errorf("duplicate var alias")
+		}
+		varAliases[varDef.Alias] = varDef.Alias
+		s.StateVars = append(s.StateVars, varDef)
+	}
+	return nil
+}
+
+func (s *Schema) compileSubtypes(jsonSchema *JsonSchema) error {
+	varNames := make(StringMap)
+	varAliases := make(StringMap)
+	for _, varName := range sortedKeys(jsonSchema.Subtypes) {
+		varType := jsonSchema.Subtypes[varName]
+		varDef, err := s.CompileField(varName, varType)
+		if err != nil {
+			return err
+		}
+		if _, ok := varNames[varDef.Name]; ok {
+			return fmt.Errorf("duplicate sybtype name")
+		}
+		varNames[varDef.Name] = varDef.Name
+		if _, ok := varAliases[varDef.Alias]; ok {
+			return fmt.Errorf("duplicate subtype alias")
+		}
+		varAliases[varDef.Alias] = varDef.Alias
+		s.Subtypes = append(s.Subtypes, varDef)
 	}
 	return nil
 }
@@ -166,24 +239,22 @@ func (s *Schema) compileTypes(jsonSchema *JsonSchema) error {
 	return nil
 }
 
-func (s *Schema) compileVars(jsonSchema *JsonSchema) error {
-	varNames := make(StringMap)
-	varAliases := make(StringMap)
-	for _, varName := range sortedKeys(jsonSchema.Vars) {
-		varType := jsonSchema.Vars[varName]
-		varDef, err := s.CompileField(varName, varType)
-		if err != nil {
-			return err
+func (s *Schema) scanExistingCode(file *os.File, funcRegexp *regexp.Regexp) ([]string, StringMap, error) {
+	defer file.Close()
+	existing := make(StringMap)
+	lines := make([]string, 0)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		matches := funcRegexp.FindStringSubmatch(line)
+		if matches != nil {
+			existing[matches[1]] = line
 		}
-		if _, ok := varNames[varDef.Name]; ok {
-			return fmt.Errorf("duplicate var name")
-		}
-		varNames[varDef.Name] = varDef.Name
-		if _, ok := varAliases[varDef.Alias]; ok {
-			return fmt.Errorf("duplicate var alias")
-		}
-		varAliases[varDef.Alias] = varDef.Alias
-		s.Vars = append(s.Vars, varDef)
+		lines = append(lines, line)
 	}
-	return nil
+	err := scanner.Err()
+	if err != nil {
+		return nil, nil, err
+	}
+	return lines, existing, nil
 }

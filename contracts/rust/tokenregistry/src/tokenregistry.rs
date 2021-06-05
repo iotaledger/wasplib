@@ -6,14 +6,13 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
+pub fn func_mint_supply(ctx: &ScFuncContext, f: &FuncMintSupplyContext) {
     let minted = ctx.minted();
     let minted_colors = minted.colors();
     ctx.require(minted_colors.length() == 1, "need single minted color");
     let minted_color = minted_colors.get_color(0).value();
-    let state = ctx.state();
-    let registry = state.get_map(VAR_REGISTRY).get_bytes(&minted_color);
-    if registry.exists() {
+    let current_token = f.state.registry().get_token(&minted_color);
+    if current_token.exists() {
         // should never happen, because transaction id is unique
         ctx.panic("TokenRegistry: registry for color already exists");
     }
@@ -23,25 +22,25 @@ pub fn func_mint_supply(ctx: &ScFuncContext, params: &FuncMintSupplyParams) {
         owner: ctx.caller(),
         created: ctx.timestamp(),
         updated: ctx.timestamp(),
-        description: params.description.value(),
-        user_defined: params.user_defined.value(),
+        description: f.params.description.value(),
+        user_defined: f.params.user_defined.value(),
     };
     if token.description.is_empty() {
         token.description += "no dscr";
     }
-    registry.set_value(&token.to_bytes());
-    let colors = state.get_color_array(VAR_COLOR_LIST);
-    colors.get_color(colors.length()).set_value(&minted_color);
+    current_token.set_value(&token);
+    let color_list = f.state.color_list();
+    color_list.get_color(color_list.length()).set_value(&minted_color);
 }
 
-pub fn func_transfer_ownership(_ctx: &ScFuncContext, _params: &FuncTransferOwnershipParams) {
+pub fn func_transfer_ownership(_ctx: &ScFuncContext, _f: &FuncTransferOwnershipContext) {
     //TODO
 }
 
-pub fn func_update_metadata(_ctx: &ScFuncContext, _params: &FuncUpdateMetadataParams) {
+pub fn func_update_metadata(_ctx: &ScFuncContext, _f: &FuncUpdateMetadataContext) {
     //TODO
 }
 
-pub fn view_get_info(_ctx: &ScViewContext, _params: &ViewGetInfoParams) {
+pub fn view_get_info(_ctx: &ScViewContext, _f: &ViewGetInfoContext) {
     //TODO
 }

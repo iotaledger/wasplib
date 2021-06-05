@@ -70,6 +70,14 @@ func copyright(noChange bool) string {
 	return text
 }
 
+func formatter(file *os.File, on bool) (int, error) {
+	onOff := "off"
+	if on {
+		onOff = "on"
+	}
+	return fmt.Fprintf(file, "//@formatter:%s\n", onOff)
+}
+
 // convert to lower case
 func lower(name string) string {
 	return strings.ToLower(name)
@@ -147,6 +155,15 @@ func sortedFields(dict FieldMap) []string {
 }
 
 func sortedKeys(dict StringMap) []string {
+	keys := make([]string, 0)
+	for key := range dict {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+func sortedFuncDescs(dict FuncDescMap) []string {
 	keys := make([]string, 0)
 	for key := range dict {
 		keys = append(keys, key)

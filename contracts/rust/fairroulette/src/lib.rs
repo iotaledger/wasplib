@@ -5,11 +5,17 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use consts::*;
+#![allow(dead_code)]
+
 use fairroulette::*;
 use wasmlib::*;
+use wasmlib::host::*;
+
+use crate::consts::*;
+use crate::state::*;
 
 mod consts;
+mod state;
 mod types;
 mod fairroulette;
 
@@ -23,27 +29,43 @@ fn on_load() {
     exports.add_view(VIEW_LAST_WINNING_NUMBER, view_last_winning_number_thunk);
 }
 
-pub struct FuncLockBetsParams {}
+pub struct FuncLockBetsContext {
+    state: FairRouletteFuncState,
+}
 
 fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcLockBets");
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let params = FuncLockBetsParams {};
-    func_lock_bets(ctx, &params);
+//@formatter:off
+    let f = FuncLockBetsContext {
+        state: FairRouletteFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    func_lock_bets(ctx, &f);
     ctx.log("fairroulette.funcLockBets ok");
 }
 
-pub struct FuncPayWinnersParams {}
+pub struct FuncPayWinnersContext {
+    state: FairRouletteFuncState,
+}
 
 fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPayWinners");
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let params = FuncPayWinnersParams {};
-    func_pay_winners(ctx, &params);
+//@formatter:off
+    let f = FuncPayWinnersContext {
+        state: FairRouletteFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    func_pay_winners(ctx, &f);
     ctx.log("fairroulette.funcPayWinners ok");
 }
 
@@ -51,14 +73,28 @@ pub struct FuncPlaceBetParams {
     pub number: ScImmutableInt64, // the number a better bets on
 }
 
+//@formatter:off
+pub struct FuncPlaceBetContext {
+    params: FuncPlaceBetParams,
+    state:  FairRouletteFuncState,
+}
+//@formatter:on
+
 fn func_place_bet_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlaceBet");
-    let p = ctx.params();
-    let params = FuncPlaceBetParams {
-        number: p.get_int64(PARAM_NUMBER),
+    let p = ctx.params().map_id();
+//@formatter:off
+    let f = FuncPlaceBetContext {
+        params: FuncPlaceBetParams {
+            number: ScImmutableInt64::new(p, PARAM_NUMBER.get_key_id()),
+        },
+        state: FairRouletteFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
     };
-    ctx.require(params.number.exists(), "missing mandatory number");
-    func_place_bet(ctx, &params);
+//@formatter:on
+    ctx.require(f.params.number.exists(), "missing mandatory number");
+    func_place_bet(ctx, &f);
     ctx.log("fairroulette.funcPlaceBet ok");
 }
 
@@ -66,25 +102,58 @@ pub struct FuncPlayPeriodParams {
     pub play_period: ScImmutableInt64, // number of minutes in one playing round
 }
 
+//@formatter:off
+pub struct FuncPlayPeriodContext {
+    params: FuncPlayPeriodParams,
+    state:  FairRouletteFuncState,
+}
+//@formatter:on
+
 fn func_play_period_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlayPeriod");
     // only SC creator can update the play period
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params();
-    let params = FuncPlayPeriodParams {
-        play_period: p.get_int64(PARAM_PLAY_PERIOD),
+    let p = ctx.params().map_id();
+//@formatter:off
+    let f = FuncPlayPeriodContext {
+        params: FuncPlayPeriodParams {
+            play_period: ScImmutableInt64::new(p, PARAM_PLAY_PERIOD.get_key_id()),
+        },
+        state: FairRouletteFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
     };
-    ctx.require(params.play_period.exists(), "missing mandatory playPeriod");
-    func_play_period(ctx, &params);
+//@formatter:on
+    ctx.require(f.params.play_period.exists(), "missing mandatory playPeriod");
+    func_play_period(ctx, &f);
     ctx.log("fairroulette.funcPlayPeriod ok");
 }
 
-pub struct ViewLastWinningNumberParams {}
+pub struct ViewLastWinningNumberResults {
+    pub last_winning_number: ScMutableInt64,
+}
+
+//@formatter:off
+pub struct ViewLastWinningNumberContext {
+    results: ViewLastWinningNumberResults,
+    state:   FairRouletteViewState,
+}
+//@formatter:on
 
 fn view_last_winning_number_thunk(ctx: &ScViewContext) {
     ctx.log("fairroulette.viewLastWinningNumber");
-    let params = ViewLastWinningNumberParams {};
-    view_last_winning_number(ctx, &params);
+    let r = ctx.results().map_id();
+//@formatter:off
+    let f = ViewLastWinningNumberContext {
+        results: ViewLastWinningNumberResults {
+            last_winning_number: ScMutableInt64::new(r, RESULT_LAST_WINNING_NUMBER.get_key_id()),
+        },
+        state: FairRouletteViewState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    view_last_winning_number(ctx, &f);
     ctx.log("fairroulette.viewLastWinningNumber ok");
 }

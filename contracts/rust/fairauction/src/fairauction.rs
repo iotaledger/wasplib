@@ -1,10 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+use types::*;
 use wasmlib::*;
 
 use crate::*;
-use crate::types::*;
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
@@ -14,14 +14,11 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionParams) {
-    let color = params.color.value();
-    let state = ctx.state();
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    ctx.require(auction_info.exists(), "Missing auction info");
-    let auction = Auction::from_bytes(&auction_info.value());
+pub fn func_finalize_auction(ctx: &ScFuncContext, f: &FuncFinalizeAuctionContext) {
+    let color = f.params.color.value();
+    let current_auction = f.state.auctions().get_auction(&color);
+    ctx.require(current_auction.exists(), "Missing auction info");
+    let auction = current_auction.value();
     if auction.highest_bid < 0 {
         ctx.log(&("No one bid on ".to_string() + &color.to_string()));
         let mut owner_fee = auction.minimum_bid * auction.owner_margin / 1000;
@@ -29,9 +26,9 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionPa
             owner_fee = 1;
         }
         // finalizeAuction request token was probably not confirmed yet
-        transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
-        transfer(ctx, &auction.creator, &auction.color, auction.num_tokens);
-        transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
+        transfer_tokens(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+        transfer_tokens(ctx, &auction.creator, &auction.color, auction.num_tokens);
+        transfer_tokens(ctx, &auction.creator, &ScColor::IOTA, auction.deposit - owner_fee);
         return;
     }
 
@@ -41,47 +38,43 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, params: &FuncFinalizeAuctionPa
     }
 
     // return staked bids to losers
-    let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
+    let bids = f.state.bids().get_bids(&color);
+    let bidder_list = f.state.bidder_list().get_bidder_list(&color);
     let size = bidder_list.length();
     for i in 0..size {
-        let bidder = bidder_list.get_agent_id(i).value();
-        if bidder != auction.highest_bidder {
-            let loser = bidders.get_bytes(&bidder);
-            let bid = Bid::from_bytes(&loser.value());
-            transfer(ctx, &bidder, &ScColor::IOTA, bid.amount);
+        let loser = bidder_list.get_agent_id(i).value();
+        if loser != auction.highest_bidder {
+            let bid = bids.get_bid(&loser).value();
+            transfer_tokens(ctx, &loser, &ScColor::IOTA, bid.amount);
         }
     }
 
     // finalizeAuction request token was probably not confirmed yet
-    transfer(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
-    transfer(ctx, &auction.highest_bidder, &auction.color, auction.num_tokens);
-    transfer(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
+    transfer_tokens(ctx, &ctx.contract_creator(), &ScColor::IOTA, owner_fee - 1);
+    transfer_tokens(ctx, &auction.highest_bidder, &auction.color, auction.num_tokens);
+    transfer_tokens(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
+pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
     let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
     ctx.require(bid_amount > 0, "Missing bid amount");
 
-    let color = params.color.value();
-    let state = ctx.state();
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    ctx.require(auction_info.exists(), "Missing auction info");
+    let color = f.params.color.value();
+    let current_auction = f.state.auctions().get_auction(&color);
+    ctx.require(current_auction.exists(), "Missing auction info");
 
-    let mut auction = Auction::from_bytes(&auction_info.value());
-    let bidders = current_auction.get_map(VAR_BIDDERS);
-    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
+    let mut auction = current_auction.value();
+    let bids = f.state.bids().get_bids(&color);
+    let bidder_list = f.state.bidder_list().get_bidder_list(&color);
     let caller = ctx.caller();
-    let bidder = bidders.get_bytes(&caller);
-    if bidder.exists() {
+    let current_bid = bids.get_bid(&caller);
+    if current_bid.exists() {
         ctx.log(&("Upped bid from: ".to_string() + &caller.to_string()));
-        let mut bid = Bid::from_bytes(&bidder.value());
+        let mut bid = current_bid.value();
         bid_amount += bid.amount;
         bid.amount = bid_amount;
         bid.timestamp = ctx.timestamp();
-        bidder.set_value(&bid.to_bytes());
+        current_bid.set_value(&bid);
     } else {
         ctx.require(bid_amount >= auction.minimum_bid, "Insufficient bid amount");
         ctx.log(&("New bid from: ".to_string() + &caller.to_string()));
@@ -92,29 +85,29 @@ pub fn func_place_bid(ctx: &ScFuncContext, params: &FuncPlaceBidParams) {
             amount: bid_amount,
             timestamp: ctx.timestamp(),
         };
-        bidder.set_value(&bid.to_bytes());
+        current_bid.set_value(&bid);
     }
     if bid_amount > auction.highest_bid {
         ctx.log("New highest bidder");
         auction.highest_bid = bid_amount;
         auction.highest_bidder = caller;
-        auction_info.set_value(&auction.to_bytes());
+        current_auction.set_value(&auction);
     }
 }
 
-pub fn func_set_owner_margin(ctx: &ScFuncContext, params: &FuncSetOwnerMarginParams) {
-    let mut owner_margin = params.owner_margin.value();
+pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &FuncSetOwnerMarginContext) {
+    let mut owner_margin = f.params.owner_margin.value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
     }
     if owner_margin > OWNER_MARGIN_MAX {
         owner_margin = OWNER_MARGIN_MAX;
     }
-    ctx.state().get_int64(VAR_OWNER_MARGIN).set_value(owner_margin);
+    f.state.owner_margin().set_value(owner_margin);
 }
 
-pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) {
-    let color = params.color.value();
+pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
+    let color = f.params.color.value();
     if color == ScColor::IOTA || color == ScColor::MINT {
         ctx.panic("Reserved auction token color");
     }
@@ -123,10 +116,10 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         ctx.panic("Missing auction tokens");
     }
 
-    let minimum_bid = params.minimum_bid.value();
+    let minimum_bid = f.params.minimum_bid.value();
 
     // duration in minutes
-    let mut duration = params.duration.value();
+    let mut duration = f.params.duration.value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -137,7 +130,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         duration = DURATION_MAX;
     }
 
-    let mut description = params.description.value();
+    let mut description = f.params.description.value();
     if description == "" {
         description = "N/A".to_string();
     }
@@ -146,8 +139,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         description = ss + "[...]";
     }
 
-    let state = ctx.state();
-    let mut owner_margin = state.get_int64(VAR_OWNER_MARGIN).value();
+    let mut owner_margin = f.state.owner_margin().value();
     if owner_margin == 0 {
         owner_margin = OWNER_MARGIN_DEFAULT;
     }
@@ -162,10 +154,8 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         ctx.panic("Insufficient deposit");
     }
 
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    if auction_info.exists() {
+    let current_auction = f.state.auctions().get_auction(&color);
+    if current_auction.exists() {
         ctx.panic("Auction for this token color already exists");
     }
 
@@ -182,43 +172,39 @@ pub fn func_start_auction(ctx: &ScFuncContext, params: &FuncStartAuctionParams) 
         owner_margin: owner_margin,
         when_started: ctx.timestamp(),
     };
-    auction_info.set_value(&auction.to_bytes());
+    current_auction.set_value(&auction);
 
     let finalize_params = ScMutableMap::new();
-    finalize_params.get_color(VAR_COLOR).set_value(&auction.color);
+    finalize_params.get_color(PARAM_COLOR).set_value(&auction.color);
     let transfer = ScTransfers::iotas(1);
     ctx.post_self(HFUNC_FINALIZE_AUCTION, Some(finalize_params), transfer, duration * 60);
 }
 
-pub fn view_get_info(ctx: &ScViewContext, params: &ViewGetInfoParams) {
-    let color = params.color.value();
-    let state = ctx.state();
-    let auctions = state.get_map(VAR_AUCTIONS);
-    let current_auction = auctions.get_map(&color);
-    let auction_info = current_auction.get_bytes(VAR_INFO);
-    if !auction_info.exists() {
+pub fn view_get_info(ctx: &ScViewContext, f: &ViewGetInfoContext) {
+    let color = f.params.color.value();
+    let current_auction = f.state.auctions().get_auction(&color);
+    if !current_auction.exists() {
         ctx.panic("Missing auction info");
     }
 
-    let auction = Auction::from_bytes(&auction_info.value());
-    let results = ctx.results();
-    results.get_color(VAR_COLOR).set_value(&auction.color);
-    results.get_agent_id(VAR_CREATOR).set_value(&auction.creator);
-    results.get_int64(VAR_DEPOSIT).set_value(auction.deposit);
-    results.get_string(VAR_DESCRIPTION).set_value(&auction.description);
-    results.get_int64(VAR_DURATION).set_value(auction.duration);
-    results.get_int64(VAR_HIGHEST_BID).set_value(auction.highest_bid);
-    results.get_agent_id(VAR_HIGHEST_BIDDER).set_value(&auction.highest_bidder);
-    results.get_int64(VAR_MINIMUM_BID).set_value(auction.minimum_bid);
-    results.get_int64(VAR_NUM_TOKENS).set_value(auction.num_tokens);
-    results.get_int64(VAR_OWNER_MARGIN).set_value(auction.owner_margin);
-    results.get_int64(VAR_WHEN_STARTED).set_value(auction.when_started);
+    let auction = current_auction.value();
+    f.results.color.set_value(&auction.color);
+    f.results.creator.set_value(&auction.creator);
+    f.results.deposit.set_value(auction.deposit);
+    f.results.description.set_value(&auction.description);
+    f.results.duration.set_value(auction.duration);
+    f.results.highest_bid.set_value(auction.highest_bid);
+    f.results.highest_bidder.set_value(&auction.highest_bidder);
+    f.results.minimum_bid.set_value(auction.minimum_bid);
+    f.results.num_tokens.set_value(auction.num_tokens);
+    f.results.owner_margin.set_value(auction.owner_margin);
+    f.results.when_started.set_value(auction.when_started);
 
-    let bidder_list = current_auction.get_agent_id_array(VAR_BIDDER_LIST);
-    results.get_int64(VAR_BIDDERS).set_value(bidder_list.length() as i64);
+    let bidder_list = f.state.bidder_list().get_bidder_list(&color);
+    f.results.bidders.set_value(bidder_list.length() as i64);
 }
 
-fn transfer(ctx: &ScFuncContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
+fn transfer_tokens(ctx: &ScFuncContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
     if agent.is_address() {
         // send back to original Tangle address
         ctx.transfer_to_address(&agent.address(), ScTransfers::new(color, amount));

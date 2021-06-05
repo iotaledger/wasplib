@@ -2,17 +2,15 @@
   "name": "IncCounter",
   "types": {
   },
-  "vars": {
+  "state": {
     "counter": "Int64",
-    "numRepeats": "Int64",
-    "int1": "Int64",
-    "string1": "String",
-    "intArray1": "[]Int64",
-    "stringArray1": "[]String"
+    "numRepeats": "Int64"
   },
   "funcs": {
     "init": {
-      "counter": "?Int64 // value to initialize state counter with"
+      "params": {
+        "counter": "?Int64 // value to initialize state counter with"
+      }
     },
     "increment": {
     },
@@ -23,7 +21,9 @@
     "postIncrement": {
     },
     "repeatMany": {
-      "numRepeats": "?Int64 // number of times to recursively call myself"
+      "params": {
+        "numRepeats": "?Int64 // number of times to recursively call myself"
+      }
     },
     "whenMustIncrement": {
     },
@@ -33,11 +33,16 @@
     },
     "localStatePost": {
     },
+    "loop": {
+    },
     "testLeb128": {
     }
   },
   "views": {
     "getCounter": {
+      "results": {
+        "counter": "Int64"
+      }
     }
   }
 }

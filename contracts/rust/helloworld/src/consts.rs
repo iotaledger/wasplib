@@ -13,7 +13,9 @@ pub const SC_NAME: &str = "helloworld";
 pub const SC_DESCRIPTION: &str = "The ubiquitous hello world demo";
 pub const HSC_NAME: ScHname = ScHname(0x0683223c);
 
-pub const VAR_HELLO_WORLD: &str = "helloWorld";
+pub const RESULT_HELLO_WORLD: &str = "helloWorld";
+
+pub const VAR_DUMMY: &str = "dummy";
 
 pub const FUNC_HELLO_WORLD: &str = "helloWorld";
 pub const VIEW_GET_HELLO_WORLD: &str = "getHelloWorld";

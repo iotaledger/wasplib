@@ -25,16 +25,26 @@ type FuncApproveParams struct {
 	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
+type FuncApproveContext struct {
+	Params FuncApproveParams
+	State  Erc20FuncState
+}
+
 func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcApprove")
-	p := ctx.Params()
-	params := &FuncApproveParams{
-		Amount:     p.GetInt64(ParamAmount),
-		Delegation: p.GetAgentId(ParamDelegation),
+	p := ctx.Params().MapId()
+	f := &FuncApproveContext{
+		Params: FuncApproveParams{
+			Amount:     wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+			Delegation: wasmlib.NewScImmutableAgentId(p, ParamDelegation.KeyId()),
+		},
+		State: Erc20FuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
-	ctx.Require(params.Delegation.Exists(), "missing mandatory delegation")
-	funcApprove(ctx, params)
+	ctx.Require(f.Params.Amount.Exists(), "missing mandatory amount")
+	ctx.Require(f.Params.Delegation.Exists(), "missing mandatory delegation")
+	funcApprove(ctx, f)
 	ctx.Log("erc20.funcApprove ok")
 }
 
@@ -43,16 +53,26 @@ type FuncInitParams struct {
 	Supply  wasmlib.ScImmutableInt64   // initial token supply
 }
 
+type FuncInitContext struct {
+	Params FuncInitParams
+	State  Erc20FuncState
+}
+
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcInit")
-	p := ctx.Params()
-	params := &FuncInitParams{
-		Creator: p.GetAgentId(ParamCreator),
-		Supply:  p.GetInt64(ParamSupply),
+	p := ctx.Params().MapId()
+	f := &FuncInitContext{
+		Params: FuncInitParams{
+			Creator: wasmlib.NewScImmutableAgentId(p, ParamCreator.KeyId()),
+			Supply:  wasmlib.NewScImmutableInt64(p, ParamSupply.KeyId()),
+		},
+		State: Erc20FuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Creator.Exists(), "missing mandatory creator")
-	ctx.Require(params.Supply.Exists(), "missing mandatory supply")
-	funcInit(ctx, params)
+	ctx.Require(f.Params.Creator.Exists(), "missing mandatory creator")
+	ctx.Require(f.Params.Supply.Exists(), "missing mandatory supply")
+	funcInit(ctx, f)
 	ctx.Log("erc20.funcInit ok")
 }
 
@@ -61,16 +81,26 @@ type FuncTransferParams struct {
 	Amount  wasmlib.ScImmutableInt64   // amount of tokens to transfer
 }
 
+type FuncTransferContext struct {
+	Params FuncTransferParams
+	State  Erc20FuncState
+}
+
 func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransfer")
-	p := ctx.Params()
-	params := &FuncTransferParams{
-		Account: p.GetAgentId(ParamAccount),
-		Amount:  p.GetInt64(ParamAmount),
+	p := ctx.Params().MapId()
+	f := &FuncTransferContext{
+		Params: FuncTransferParams{
+			Account: wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
+			Amount:  wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+		},
+		State: Erc20FuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Account.Exists(), "missing mandatory account")
-	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
-	funcTransfer(ctx, params)
+	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
+	ctx.Require(f.Params.Amount.Exists(), "missing mandatory amount")
+	funcTransfer(ctx, f)
 	ctx.Log("erc20.funcTransfer ok")
 }
 
@@ -80,18 +110,28 @@ type FuncTransferFromParams struct {
 	Recipient wasmlib.ScImmutableAgentId // recipient account
 }
 
+type FuncTransferFromContext struct {
+	Params FuncTransferFromParams
+	State  Erc20FuncState
+}
+
 func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransferFrom")
-	p := ctx.Params()
-	params := &FuncTransferFromParams{
-		Account:   p.GetAgentId(ParamAccount),
-		Amount:    p.GetInt64(ParamAmount),
-		Recipient: p.GetAgentId(ParamRecipient),
+	p := ctx.Params().MapId()
+	f := &FuncTransferFromContext{
+		Params: FuncTransferFromParams{
+			Account:   wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
+			Amount:    wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+			Recipient: wasmlib.NewScImmutableAgentId(p, ParamRecipient.KeyId()),
+		},
+		State: Erc20FuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Account.Exists(), "missing mandatory account")
-	ctx.Require(params.Amount.Exists(), "missing mandatory amount")
-	ctx.Require(params.Recipient.Exists(), "missing mandatory recipient")
-	funcTransferFrom(ctx, params)
+	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
+	ctx.Require(f.Params.Amount.Exists(), "missing mandatory amount")
+	ctx.Require(f.Params.Recipient.Exists(), "missing mandatory recipient")
+	funcTransferFrom(ctx, f)
 	ctx.Log("erc20.funcTransferFrom ok")
 }
 
@@ -100,16 +140,35 @@ type ViewAllowanceParams struct {
 	Delegation wasmlib.ScImmutableAgentId // delegated account
 }
 
+type ViewAllowanceResults struct {
+	Amount wasmlib.ScMutableInt64
+}
+
+type ViewAllowanceContext struct {
+	Params  ViewAllowanceParams
+	Results ViewAllowanceResults
+	State   Erc20ViewState
+}
+
 func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewAllowance")
-	p := ctx.Params()
-	params := &ViewAllowanceParams{
-		Account:    p.GetAgentId(ParamAccount),
-		Delegation: p.GetAgentId(ParamDelegation),
+	p := ctx.Params().MapId()
+	r := ctx.Results().MapId()
+	f := &ViewAllowanceContext{
+		Params: ViewAllowanceParams{
+			Account:    wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
+			Delegation: wasmlib.NewScImmutableAgentId(p, ParamDelegation.KeyId()),
+		},
+		Results: ViewAllowanceResults{
+			Amount: wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
+		},
+		State: Erc20ViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Account.Exists(), "missing mandatory account")
-	ctx.Require(params.Delegation.Exists(), "missing mandatory delegation")
-	viewAllowance(ctx, params)
+	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
+	ctx.Require(f.Params.Delegation.Exists(), "missing mandatory delegation")
+	viewAllowance(ctx, f)
 	ctx.Log("erc20.viewAllowance ok")
 }
 
@@ -117,24 +176,56 @@ type ViewBalanceOfParams struct {
 	Account wasmlib.ScImmutableAgentId // sender account
 }
 
+type ViewBalanceOfResults struct {
+	Amount wasmlib.ScMutableInt64
+}
+
+type ViewBalanceOfContext struct {
+	Params  ViewBalanceOfParams
+	Results ViewBalanceOfResults
+	State   Erc20ViewState
+}
+
 func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewBalanceOf")
-	p := ctx.Params()
-	params := &ViewBalanceOfParams{
-		Account: p.GetAgentId(ParamAccount),
+	p := ctx.Params().MapId()
+	r := ctx.Results().MapId()
+	f := &ViewBalanceOfContext{
+		Params: ViewBalanceOfParams{
+			Account: wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
+		},
+		Results: ViewBalanceOfResults{
+			Amount: wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
+		},
+		State: Erc20ViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	ctx.Require(params.Account.Exists(), "missing mandatory account")
-	viewBalanceOf(ctx, params)
+	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
+	viewBalanceOf(ctx, f)
 	ctx.Log("erc20.viewBalanceOf ok")
 }
 
-type ViewTotalSupplyParams struct {
+type ViewTotalSupplyResults struct {
+	Supply wasmlib.ScMutableInt64
+}
+
+type ViewTotalSupplyContext struct {
+	Results ViewTotalSupplyResults
+	State   Erc20ViewState
 }
 
 func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewTotalSupply")
-	params := &ViewTotalSupplyParams{
+	r := ctx.Results().MapId()
+	f := &ViewTotalSupplyContext{
+		Results: ViewTotalSupplyResults{
+			Supply: wasmlib.NewScMutableInt64(r, ResultSupply.KeyId()),
+		},
+		State: Erc20ViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	viewTotalSupply(ctx, params)
+	viewTotalSupply(ctx, f)
 	ctx.Log("erc20.viewTotalSupply ok")
 }

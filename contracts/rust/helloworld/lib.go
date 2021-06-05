@@ -15,24 +15,41 @@ func OnLoad() {
 	exports.AddView(ViewGetHelloWorld, viewGetHelloWorldThunk)
 }
 
-type FuncHelloWorldParams struct {
+type FuncHelloWorldContext struct {
+	State HelloWorldFuncState
 }
 
 func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("helloworld.funcHelloWorld")
-	params := &FuncHelloWorldParams{
+	f := &FuncHelloWorldContext{
+		State: HelloWorldFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcHelloWorld(ctx, params)
+	funcHelloWorld(ctx, f)
 	ctx.Log("helloworld.funcHelloWorld ok")
 }
 
-type ViewGetHelloWorldParams struct {
+type ViewGetHelloWorldResults struct {
+	HelloWorld wasmlib.ScMutableString
+}
+
+type ViewGetHelloWorldContext struct {
+	Results ViewGetHelloWorldResults
+	State   HelloWorldViewState
 }
 
 func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("helloworld.viewGetHelloWorld")
-	params := &ViewGetHelloWorldParams{
+	r := ctx.Results().MapId()
+	f := &ViewGetHelloWorldContext{
+		Results: ViewGetHelloWorldResults{
+			HelloWorld: wasmlib.NewScMutableString(r, ResultHelloWorld.KeyId()),
+		},
+		State: HelloWorldViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	viewGetHelloWorld(ctx, params)
+	viewGetHelloWorld(ctx, f)
 	ctx.Log("helloworld.viewGetHelloWorld ok")
 }

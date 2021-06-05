@@ -13,7 +13,9 @@ const ScName = "helloworld"
 const ScDescription = "The ubiquitous hello world demo"
 const HScName = wasmlib.ScHname(0x0683223c)
 
-const VarHelloWorld = wasmlib.Key("helloWorld")
+const ResultHelloWorld = wasmlib.Key("helloWorld")
+
+const VarDummy = wasmlib.Key("dummy")
 
 const FuncHelloWorld = "helloWorld"
 const ViewGetHelloWorld = "getHelloWorld"

@@ -20,6 +20,10 @@ pub struct ScMutableAddress {
 }
 
 impl ScMutableAddress {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableAddress {
+        ScMutableAddress { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_ADDRESS)
@@ -45,7 +49,7 @@ impl ScMutableAddress {
 
 // array proxy for mutable array of ScAddress
 pub struct ScMutableAddressArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableAddressArray {
@@ -80,6 +84,10 @@ pub struct ScMutableAgentId {
 }
 
 impl ScMutableAgentId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableAgentId {
+        ScMutableAgentId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_AGENT_ID)
@@ -105,7 +113,7 @@ impl ScMutableAgentId {
 
 // array proxy for mutable array of ScAgentId
 pub struct ScMutableAgentIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableAgentIdArray {
@@ -140,6 +148,10 @@ pub struct ScMutableBytes {
 }
 
 impl ScMutableBytes {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableBytes {
+        ScMutableBytes { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_BYTES)
@@ -165,7 +177,7 @@ impl ScMutableBytes {
 
 // array proxy for mutable array of byte array
 pub struct ScMutableBytesArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableBytesArray {
@@ -200,6 +212,10 @@ pub struct ScMutableChainId {
 }
 
 impl ScMutableChainId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableChainId {
+        ScMutableChainId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_CHAIN_ID)
@@ -225,7 +241,7 @@ impl ScMutableChainId {
 
 // array proxy for mutable array of ScChainId
 pub struct ScMutableChainIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableChainIdArray {
@@ -260,6 +276,10 @@ pub struct ScMutableColor {
 }
 
 impl ScMutableColor {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableColor {
+        ScMutableColor { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_COLOR)
@@ -285,7 +305,7 @@ impl ScMutableColor {
 
 // array proxy for mutable array of ScColor
 pub struct ScMutableColorArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableColorArray {
@@ -320,6 +340,10 @@ pub struct ScMutableHash {
 }
 
 impl ScMutableHash {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableHash {
+        ScMutableHash { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_HASH)
@@ -345,7 +369,7 @@ impl ScMutableHash {
 
 // array proxy for mutable array of ScHash
 pub struct ScMutableHashArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableHashArray {
@@ -380,6 +404,10 @@ pub struct ScMutableHname {
 }
 
 impl ScMutableHname {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableHname {
+        ScMutableHname { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_HNAME)
@@ -405,7 +433,7 @@ impl ScMutableHname {
 
 // array proxy for mutable array of ScHname
 pub struct ScMutableHnameArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableHnameArray {
@@ -440,6 +468,10 @@ pub struct ScMutableInt64 {
 }
 
 impl ScMutableInt64 {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableInt64 {
+        ScMutableInt64 { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_INT64)
@@ -466,7 +498,7 @@ impl ScMutableInt64 {
 
 // array proxy for mutable array of int64
 pub struct ScMutableInt64Array {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableInt64Array {
@@ -496,7 +528,7 @@ impl ScMutableInt64Array {
 
 // map proxy for mutable map
 pub struct ScMutableMap {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableMap {
@@ -637,13 +669,17 @@ impl ScMutableMap {
     pub fn immutable(&self) -> ScImmutableMap {
         ScImmutableMap { obj_id: self.obj_id }
     }
+
+    pub fn map_id(&self) -> i32 {
+        self.obj_id
+    }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // array proxy for mutable array of maps
 pub struct ScMutableMapArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableMapArray {
@@ -679,6 +715,10 @@ pub struct ScMutableRequestId {
 }
 
 impl ScMutableRequestId {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableRequestId {
+        ScMutableRequestId { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_REQUEST_ID)
@@ -704,7 +744,7 @@ impl ScMutableRequestId {
 
 // array proxy for mutable array of ScRequestId
 pub struct ScMutableRequestIdArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableRequestIdArray {
@@ -739,6 +779,10 @@ pub struct ScMutableString {
 }
 
 impl ScMutableString {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScMutableString {
+        ScMutableString { obj_id, key_id }
+    }
+
     // check if value exists in host container
     pub fn exists(&self) -> bool {
         exists(self.obj_id, self.key_id, TYPE_STRING)
@@ -765,7 +809,7 @@ impl ScMutableString {
 
 // array proxy for mutable array of UTF-8 text string
 pub struct ScMutableStringArray {
-    pub(crate) obj_id: i32
+    pub(crate) obj_id: i32,
 }
 
 impl ScMutableStringArray {

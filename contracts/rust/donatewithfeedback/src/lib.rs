@@ -5,11 +5,17 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
-use consts::*;
+#![allow(dead_code)]
+
 use donatewithfeedback::*;
 use wasmlib::*;
+use wasmlib::host::*;
+
+use crate::consts::*;
+use crate::state::*;
 
 mod consts;
+mod state;
 mod types;
 mod donatewithfeedback;
 
@@ -18,20 +24,35 @@ fn on_load() {
     let exports = ScExports::new();
     exports.add_func(FUNC_DONATE, func_donate_thunk);
     exports.add_func(FUNC_WITHDRAW, func_withdraw_thunk);
-    exports.add_view(VIEW_DONATIONS, view_donations_thunk);
+    exports.add_view(VIEW_DONATION, view_donation_thunk);
+    exports.add_view(VIEW_DONATION_INFO, view_donation_info_thunk);
 }
 
 pub struct FuncDonateParams {
     pub feedback: ScImmutableString, // feedback for the person you donate to
 }
 
+//@formatter:off
+pub struct FuncDonateContext {
+    params: FuncDonateParams,
+    state:  DonateWithFeedbackFuncState,
+}
+//@formatter:on
+
 fn func_donate_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcDonate");
-    let p = ctx.params();
-    let params = FuncDonateParams {
-        feedback: p.get_string(PARAM_FEEDBACK),
+    let p = ctx.params().map_id();
+//@formatter:off
+    let f = FuncDonateContext {
+        params: FuncDonateParams {
+            feedback: ScImmutableString::new(p, PARAM_FEEDBACK.get_key_id()),
+        },
+        state: DonateWithFeedbackFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
     };
-    func_donate(ctx, &params);
+//@formatter:on
+    func_donate(ctx, &f);
     ctx.log("donatewithfeedback.funcDonate ok");
 }
 
@@ -39,24 +60,111 @@ pub struct FuncWithdrawParams {
     pub amount: ScImmutableInt64, // amount to withdraw
 }
 
+//@formatter:off
+pub struct FuncWithdrawContext {
+    params: FuncWithdrawParams,
+    state:  DonateWithFeedbackFuncState,
+}
+//@formatter:on
+
 fn func_withdraw_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcWithdraw");
     // only SC creator can withdraw donated funds
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params();
-    let params = FuncWithdrawParams {
-        amount: p.get_int64(PARAM_AMOUNT),
+    let p = ctx.params().map_id();
+//@formatter:off
+    let f = FuncWithdrawContext {
+        params: FuncWithdrawParams {
+            amount: ScImmutableInt64::new(p, PARAM_AMOUNT.get_key_id()),
+        },
+        state: DonateWithFeedbackFuncState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
     };
-    func_withdraw(ctx, &params);
+//@formatter:on
+    func_withdraw(ctx, &f);
     ctx.log("donatewithfeedback.funcWithdraw ok");
 }
 
-pub struct ViewDonationsParams {}
+pub struct ViewDonationParams {
+    pub nr: ScImmutableInt64,
+}
 
-fn view_donations_thunk(ctx: &ScViewContext) {
-    ctx.log("donatewithfeedback.viewDonations");
-    let params = ViewDonationsParams {};
-    view_donations(ctx, &params);
-    ctx.log("donatewithfeedback.viewDonations ok");
+//@formatter:off
+pub struct ViewDonationResults {
+    pub amount:    ScMutableInt64,   // amount donated
+    pub donator:   ScMutableAgentId, // who donated
+    pub error:     ScMutableString,  // error to be reported to donator if anything goes wrong
+    pub feedback:  ScMutableString,  // the feedback for the person donated to
+    pub timestamp: ScMutableInt64,   // when the donation took place
+}
+//@formatter:on
+
+//@formatter:off
+pub struct ViewDonationContext {
+    params:  ViewDonationParams,
+    results: ViewDonationResults,
+    state:   DonateWithFeedbackViewState,
+}
+//@formatter:on
+
+fn view_donation_thunk(ctx: &ScViewContext) {
+    ctx.log("donatewithfeedback.viewDonation");
+    let p = ctx.params().map_id();
+    let r = ctx.results().map_id();
+//@formatter:off
+    let f = ViewDonationContext {
+        params: ViewDonationParams {
+            nr: ScImmutableInt64::new(p, PARAM_NR.get_key_id()),
+        },
+        results: ViewDonationResults {
+            amount:    ScMutableInt64::new(r, RESULT_AMOUNT.get_key_id()),
+            donator:   ScMutableAgentId::new(r, RESULT_DONATOR.get_key_id()),
+            error:     ScMutableString::new(r, RESULT_ERROR.get_key_id()),
+            feedback:  ScMutableString::new(r, RESULT_FEEDBACK.get_key_id()),
+            timestamp: ScMutableInt64::new(r, RESULT_TIMESTAMP.get_key_id()),
+        },
+        state: DonateWithFeedbackViewState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    ctx.require(f.params.nr.exists(), "missing mandatory nr");
+    view_donation(ctx, &f);
+    ctx.log("donatewithfeedback.viewDonation ok");
+}
+
+//@formatter:off
+pub struct ViewDonationInfoResults {
+    pub count:          ScMutableInt64,
+    pub max_donation:   ScMutableInt64,
+    pub total_donation: ScMutableInt64,
+}
+//@formatter:on
+
+//@formatter:off
+pub struct ViewDonationInfoContext {
+    results: ViewDonationInfoResults,
+    state:   DonateWithFeedbackViewState,
+}
+//@formatter:on
+
+fn view_donation_info_thunk(ctx: &ScViewContext) {
+    ctx.log("donatewithfeedback.viewDonationInfo");
+    let r = ctx.results().map_id();
+//@formatter:off
+    let f = ViewDonationInfoContext {
+        results: ViewDonationInfoResults {
+            count:          ScMutableInt64::new(r, RESULT_COUNT.get_key_id()),
+            max_donation:   ScMutableInt64::new(r, RESULT_MAX_DONATION.get_key_id()),
+            total_donation: ScMutableInt64::new(r, RESULT_TOTAL_DONATION.get_key_id()),
+        },
+        state: DonateWithFeedbackViewState {
+            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+        },
+    };
+//@formatter:on
+    view_donation_info(ctx, &f);
+    ctx.log("donatewithfeedback.viewDonationInfo ok");
 }

@@ -8,11 +8,14 @@ import (
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
 	"sort"
+	"strings"
 	"testing"
+	"time"
 )
 
 func setupTest(t *testing.T) *solo.Chain {
@@ -151,7 +154,9 @@ func TestIncrementLocalStatePost(t *testing.T) {
 		return
 	}
 
-	checkStateCounter(t, chain, 1)
+	// when using WasmGoVM the 3 posts are run only after
+	// the LocalStateMustIncrement has been set to true
+	checkStateCounter(t, chain, 3)
 }
 
 func TestLeb128(t *testing.T) {
@@ -173,6 +178,31 @@ func TestLeb128(t *testing.T) {
 	for _, key := range keys {
 		fmt.Printf("%s: %v\n", key, res[kv.Key(key)])
 	}
+}
+
+func TestLoop(t *testing.T) {
+	if common.WasmRunner != 0 {
+		// no timeout possible with WasmGoVM
+		// because goroutines cannot be killed
+		t.SkipNow()
+	}
+
+	chain := setupTest(t)
+
+	wasmhost.WasmTimeout = 1 * time.Second
+	req := solo.NewCallParams(ScName, FuncLoop,
+	).WithIotas(1)
+	_, err := chain.PostRequestSync(req, nil)
+	require.Error(t, err)
+	errText := err.Error()
+	require.True(t, strings.Contains(errText, "interrupt"))
+
+	req = solo.NewCallParams(ScName, FuncIncrement,
+	).WithIotas(1)
+	_, err = chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+
+	checkStateCounter(t, chain, 1)
 }
 
 func checkStateCounter(t *testing.T, chain *solo.Chain, expected interface{}) {

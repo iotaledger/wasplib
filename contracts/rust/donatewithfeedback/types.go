@@ -38,3 +38,33 @@ func (o *Donation) Bytes() []byte {
 		Int64(o.Timestamp).
 		Data()
 }
+
+type ImmutableDonation struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o ImmutableDonation) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o ImmutableDonation) Value() *Donation {
+	return NewDonationFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}
+
+type MutableDonation struct {
+	objId int32
+	keyId wasmlib.Key32
+}
+
+func (o MutableDonation) Exists() bool {
+	return wasmlib.Exists(o.objId, o.keyId, wasmlib.TYPE_BYTES)
+}
+
+func (o MutableDonation) SetValue(value *Donation) {
+	wasmlib.SetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES, value.Bytes())
+}
+
+func (o MutableDonation) Value() *Donation {
+	return NewDonationFromBytes(wasmlib.GetBytes(o.objId, o.keyId, wasmlib.TYPE_BYTES))
+}

@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use wasmlib::*;
+use wasmlib::host::*;
 
 //@formatter:off
 pub struct Donation {
@@ -39,5 +40,39 @@ impl Donation {
         encode.string(&self.feedback);
         encode.int64(self.timestamp);
         return encode.data();
+    }
+}
+
+pub struct ImmutableDonation {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl ImmutableDonation {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn value(&self) -> Donation {
+        Donation::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
+pub struct MutableDonation {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl MutableDonation {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn set_value(&self, value: &Donation) {
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, &value.to_bytes());
+    }
+
+    pub fn value(&self) -> Donation {
+        Donation::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }

@@ -32,6 +32,13 @@ pub const PARAM_NAME: &str = "intParamName";
 pub const PARAM_STRING: &str = "string";
 pub const PARAM_STRING_ZERO: &str = "string-0";
 
+pub const RESULT_CHAIN_OWNER_ID: &str = "chainOwnerID";
+pub const RESULT_COUNTER: &str = "counter";
+pub const RESULT_INT_VALUE: &str = "intParamValue";
+pub const RESULT_MINTED_COLOR: &str = "mintedColor";
+pub const RESULT_MINTED_SUPPLY: &str = "mintedSupply";
+pub const RESULT_SANDBOX_CALL: &str = "sandboxCall";
+
 pub const VAR_COUNTER: &str = "counter";
 pub const VAR_HNAME_EP: &str = "hnameEP";
 pub const VAR_MINTED_COLOR: &str = "mintedColor";

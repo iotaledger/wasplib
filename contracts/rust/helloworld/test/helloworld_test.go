@@ -37,7 +37,7 @@ func TestViewGetHelloWorld(t *testing.T) {
 		ScName, ViewGetHelloWorld,
 	)
 	require.NoError(t, err)
-	hw, _, err := codec.DecodeString(res[VarHelloWorld])
+	hw, _, err := codec.DecodeString(res[ResultHelloWorld])
 	require.NoError(t, err)
 	require.EqualValues(t, "Hello, world!", hw)
 }

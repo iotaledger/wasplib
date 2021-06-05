@@ -5,10 +5,10 @@ use wasmlib::*;
 
 use crate::*;
 
-pub fn func_hello_world(ctx: &ScFuncContext, _params: &FuncHelloWorldParams) {
+pub fn func_hello_world(ctx: &ScFuncContext, _f: &FuncHelloWorldContext) {
     ctx.log("Hello, world!");
 }
 
-pub fn view_get_hello_world(ctx: &ScViewContext, _params: &ViewGetHelloWorldParams) {
-    ctx.results().get_string(VAR_HELLO_WORLD).set_value("Hello, world!");
+pub fn view_get_hello_world(_ctx: &ScViewContext, f: &ViewGetHelloWorldContext) {
+    f.results.hello_world.set_value("Hello, world!");
 }

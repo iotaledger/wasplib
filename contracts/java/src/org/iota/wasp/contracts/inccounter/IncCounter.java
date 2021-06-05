@@ -96,6 +96,11 @@ public class IncCounter {
         // counter ends up as 0
     }
 
+    public static void funcLoop(ScFuncContext ctx, FuncLoopParams params) {
+        while (true) {
+        }
+    }
+
     public static void funcPostIncrement(ScFuncContext ctx, FuncPostIncrementParams params) {
         var counter = ctx.State().GetInt64(Consts.VarCounter);
         var value = counter.Value();

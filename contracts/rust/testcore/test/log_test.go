@@ -34,7 +34,7 @@ func testEventlogGetLast3(t *testing.T, w bool) {
 	)
 	require.NoError(t, err)
 
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
 	require.EqualValues(t, 3, array.MustLen())
 }
 
@@ -56,13 +56,13 @@ func testEventlogGetBetweenTs(t *testing.T, w bool) {
 
 	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamFromTs, 0,
-		eventlog.ParamToTs, chain.State.Timestamp()-int64(1500*time.Millisecond),
+		eventlog.ParamToTs, chain.State.Timestamp().UnixNano()-int64(1500*time.Millisecond),
 		eventlog.ParamMaxLastRecords, 2,
 		eventlog.ParamContractHname, sbtestsc.Interface.Hname(),
 	)
 	require.NoError(t, err)
 
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
 	require.EqualValues(t, 2, array.MustLen())
 }
 
@@ -83,9 +83,9 @@ func testEventLogEventData(t *testing.T, w bool) {
 		eventlog.ParamContractHname, sbtestsc.Interface.Hname(),
 	)
 	require.NoError(t, err)
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
 
-	require.EqualValues(t, 3, array.MustLen())
+	require.EqualValues(t, 1, array.MustLen())
 
 	str, err := chain.GetEventLogRecordsString(sbtestsc.Interface.Name)
 	require.NoError(t, err)
@@ -125,16 +125,25 @@ func testEventLogDifferentCalls(t *testing.T, w bool) {
 		eventlog.ParamContractHname, sbtestsc.Interface.Hname(),
 	)
 	require.NoError(t, err)
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
-	require.EqualValues(t, 11, array.MustLen())
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
+	require.EqualValues(t, 5, array.MustLen())
 
 	str, err := chain.GetEventLogRecordsString(sbtestsc.Interface.Name)
 	require.NoError(t, err)
 	t.Log(str)
 
-	require.EqualValues(t, 6, strings.Count(str, "[req]"))
+	require.EqualValues(t, 0, strings.Count(str, "[req]"))
 	require.EqualValues(t, 2, strings.Count(str, "[GenericData]"))
 	require.EqualValues(t, 3, strings.Count(str, "[Event]"))
+
+	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	str = strings.Join(recStr, "\n")
+	t.Logf("\n%s", str)
+	extra := 0
+	if w {
+		extra = 1
+	}
+	require.EqualValues(t, 8+extra, strings.Count(str, "req/tx"))
 }
 
 func TestChainLogGetNumRecords(t *testing.T) { run2(t, testChainLogGetNumRecords) }
@@ -158,16 +167,25 @@ func testChainLogGetNumRecords(t *testing.T, w bool) {
 
 	require.NoError(t, err)
 	require.True(t, ok)
-	require.EqualValues(t, 3, v)
+	require.EqualValues(t, 1, v)
 
 	str, err := chain.GetEventLogRecordsString(SandboxSCName)
 	require.NoError(t, err)
 	t.Log(str)
 
-	require.EqualValues(t, 2, strings.Count(str, "[req]"))
+	require.EqualValues(t, 0, strings.Count(str, "[req]"))
 	require.EqualValues(t, 1, strings.Count(str, "[GenericData]"))
 	require.EqualValues(t, 0, strings.Count(str, "[Event]"))
 	require.EqualValues(t, 1, strings.Count(str, strconv.FormatUint(solo.Saldo, 10)))
+
+	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	str = strings.Join(recStr, "\n")
+	t.Logf("\n%s", str)
+	extra := 0
+	if w {
+		extra = 1
+	}
+	require.EqualValues(t, 4+extra, strings.Count(str, "req/tx"))
 }
 
 func TestChainLogSandboxDeploy(t *testing.T) { run2(t, testChainLogSandboxDeploy) }
@@ -186,16 +204,25 @@ func testChainLogSandboxDeploy(t *testing.T, w bool) {
 		eventlog.ParamContractHname, root.Interface.Hname(),
 	)
 	require.NoError(t, err)
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
 
-	require.EqualValues(t, 4, array.MustLen())
+	require.EqualValues(t, 2, array.MustLen())
 
 	str, err := chain.GetEventLogRecordsString(root.Interface.Name)
 	require.NoError(t, err)
 	t.Log(str)
 
 	require.EqualValues(t, 2, strings.Count(str, "[deploy]"))
-	require.EqualValues(t, 2, strings.Count(str, "[req]"))
+	require.EqualValues(t, 0, strings.Count(str, "[req]"))
+
+	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	str = strings.Join(recStr, "\n")
+	t.Logf("\n%s", str)
+	extra := 0
+	if w {
+		extra = 1
+	}
+	require.EqualValues(t, 4+extra, strings.Count(str, "req/tx"))
 }
 
 func TestChainLogMultiple(t *testing.T) { run2(t, testChainLogMultiple) }
@@ -221,21 +248,30 @@ func testChainLogMultiple(t *testing.T, w bool) {
 		eventlog.ParamContractHname, sbtestsc.Interface.Hname(),
 	)
 	require.NoError(t, err)
-	array := collections.NewArrayReadOnly(res, eventlog.ParamRecords)
-	require.EqualValues(t, 5, array.MustLen())
+	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
+	require.EqualValues(t, 2, array.MustLen())
 	//////////////////////////////////////
 
 	strRoot, err := chain.GetEventLogRecordsString(root.Interface.Name)
 	require.NoError(t, err)
 	t.Log(strRoot)
-	require.EqualValues(t, 2, strings.Count(strRoot, "[req]"))
+	require.EqualValues(t, 0, strings.Count(strRoot, "[req]"))
 	require.EqualValues(t, 1, strings.Count(strRoot, "[deploy]"))
 
 	strTest, err := chain.GetEventLogRecordsString(sbtestsc.Interface.Name)
 	require.NoError(t, err)
 	t.Log(strTest)
-	require.EqualValues(t, 3, strings.Count(strTest, "[req]"))
+	require.EqualValues(t, 0, strings.Count(strTest, "[req]"))
 	require.EqualValues(t, 1, strings.Count(strTest, "[GenericData]"))
 	require.EqualValues(t, 1, strings.Count(strTest, "[Event]"))
 	require.EqualValues(t, 1, strings.Count(strTest, "33333"))
+
+	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	str := strings.Join(recStr, "\n")
+	t.Logf("\n%s", str)
+	extra := 0
+	if w {
+		extra = 1
+	}
+	require.EqualValues(t, 5+extra, strings.Count(str, "req/tx"))
 }

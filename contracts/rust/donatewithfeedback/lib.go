@@ -13,20 +13,31 @@ func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncDonate, funcDonateThunk)
 	exports.AddFunc(FuncWithdraw, funcWithdrawThunk)
-	exports.AddView(ViewDonations, viewDonationsThunk)
+	exports.AddView(ViewDonation, viewDonationThunk)
+	exports.AddView(ViewDonationInfo, viewDonationInfoThunk)
 }
 
 type FuncDonateParams struct {
 	Feedback wasmlib.ScImmutableString // feedback for the person you donate to
 }
 
+type FuncDonateContext struct {
+	Params FuncDonateParams
+	State  DonateWithFeedbackFuncState
+}
+
 func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcDonate")
-	p := ctx.Params()
-	params := &FuncDonateParams{
-		Feedback: p.GetString(ParamFeedback),
+	p := ctx.Params().MapId()
+	f := &FuncDonateContext{
+		Params: FuncDonateParams{
+			Feedback: wasmlib.NewScImmutableString(p, ParamFeedback.KeyId()),
+		},
+		State: DonateWithFeedbackFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcDonate(ctx, params)
+	funcDonate(ctx, f)
 	ctx.Log("donatewithfeedback.funcDonate ok")
 }
 
@@ -34,26 +45,95 @@ type FuncWithdrawParams struct {
 	Amount wasmlib.ScImmutableInt64 // amount to withdraw
 }
 
+type FuncWithdrawContext struct {
+	Params FuncWithdrawParams
+	State  DonateWithFeedbackFuncState
+}
+
 func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcWithdraw")
 	// only SC creator can withdraw donated funds
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	p := ctx.Params()
-	params := &FuncWithdrawParams{
-		Amount: p.GetInt64(ParamAmount),
+	p := ctx.Params().MapId()
+	f := &FuncWithdrawContext{
+		Params: FuncWithdrawParams{
+			Amount: wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+		},
+		State: DonateWithFeedbackFuncState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	funcWithdraw(ctx, params)
+	funcWithdraw(ctx, f)
 	ctx.Log("donatewithfeedback.funcWithdraw ok")
 }
 
-type ViewDonationsParams struct {
+type ViewDonationParams struct {
+	Nr wasmlib.ScImmutableInt64
 }
 
-func viewDonationsThunk(ctx wasmlib.ScViewContext) {
-	ctx.Log("donatewithfeedback.viewDonations")
-	params := &ViewDonationsParams{
+type ViewDonationResults struct {
+	Amount    wasmlib.ScMutableInt64   // amount donated
+	Donator   wasmlib.ScMutableAgentId // who donated
+	Error     wasmlib.ScMutableString  // error to be reported to donator if anything goes wrong
+	Feedback  wasmlib.ScMutableString  // the feedback for the person donated to
+	Timestamp wasmlib.ScMutableInt64   // when the donation took place
+}
+
+type ViewDonationContext struct {
+	Params  ViewDonationParams
+	Results ViewDonationResults
+	State   DonateWithFeedbackViewState
+}
+
+func viewDonationThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("donatewithfeedback.viewDonation")
+	p := ctx.Params().MapId()
+	r := ctx.Results().MapId()
+	f := &ViewDonationContext{
+		Params: ViewDonationParams{
+			Nr: wasmlib.NewScImmutableInt64(p, ParamNr.KeyId()),
+		},
+		Results: ViewDonationResults{
+			Amount:    wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
+			Donator:   wasmlib.NewScMutableAgentId(r, ResultDonator.KeyId()),
+			Error:     wasmlib.NewScMutableString(r, ResultError.KeyId()),
+			Feedback:  wasmlib.NewScMutableString(r, ResultFeedback.KeyId()),
+			Timestamp: wasmlib.NewScMutableInt64(r, ResultTimestamp.KeyId()),
+		},
+		State: DonateWithFeedbackViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
 	}
-	viewDonations(ctx, params)
-	ctx.Log("donatewithfeedback.viewDonations ok")
+	ctx.Require(f.Params.Nr.Exists(), "missing mandatory nr")
+	viewDonation(ctx, f)
+	ctx.Log("donatewithfeedback.viewDonation ok")
+}
+
+type ViewDonationInfoResults struct {
+	Count         wasmlib.ScMutableInt64
+	MaxDonation   wasmlib.ScMutableInt64
+	TotalDonation wasmlib.ScMutableInt64
+}
+
+type ViewDonationInfoContext struct {
+	Results ViewDonationInfoResults
+	State   DonateWithFeedbackViewState
+}
+
+func viewDonationInfoThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("donatewithfeedback.viewDonationInfo")
+	r := ctx.Results().MapId()
+	f := &ViewDonationInfoContext{
+		Results: ViewDonationInfoResults{
+			Count:         wasmlib.NewScMutableInt64(r, ResultCount.KeyId()),
+			MaxDonation:   wasmlib.NewScMutableInt64(r, ResultMaxDonation.KeyId()),
+			TotalDonation: wasmlib.NewScMutableInt64(r, ResultTotalDonation.KeyId()),
+		},
+		State: DonateWithFeedbackViewState{
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+		},
+	}
+	viewDonationInfo(ctx, f)
+	ctx.Log("donatewithfeedback.viewDonationInfo ok")
 }

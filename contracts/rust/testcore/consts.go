@@ -32,6 +32,13 @@ const ParamName = wasmlib.Key("intParamName")
 const ParamString = wasmlib.Key("string")
 const ParamStringZero = wasmlib.Key("string-0")
 
+const ResultChainOwnerId = wasmlib.Key("chainOwnerID")
+const ResultCounter = wasmlib.Key("counter")
+const ResultIntValue = wasmlib.Key("intParamValue")
+const ResultMintedColor = wasmlib.Key("mintedColor")
+const ResultMintedSupply = wasmlib.Key("mintedSupply")
+const ResultSandboxCall = wasmlib.Key("sandboxCall")
+
 const VarCounter = wasmlib.Key("counter")
 const VarHnameEP = wasmlib.Key("hnameEP")
 const VarMintedColor = wasmlib.Key("mintedColor")

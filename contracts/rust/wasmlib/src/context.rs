@@ -271,12 +271,12 @@ impl ScFuncContext {
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = params {
-            encode.int64(params.obj_id as i64);
+            encode.int64(params.map_id() as i64);
         } else {
             encode.int64(0);
         }
         if let Some(transfer) = transfer {
-            encode.int64(transfer.transfers.obj_id as i64);
+            encode.int64(transfer.transfers.map_id() as i64);
         } else {
             encode.int64(0);
         }
@@ -300,7 +300,7 @@ impl ScFuncContext {
         encode.string(name);
         encode.string(description);
         if let Some(params) = params {
-            encode.int64(params.obj_id as i64);
+            encode.int64(params.map_id() as i64);
         } else {
             encode.int64(0);
         }
@@ -331,11 +331,11 @@ impl ScFuncContext {
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = &params {
-            encode.int64(params.obj_id as i64);
+            encode.int64(params.map_id() as i64);
         } else {
             encode.int64(0);
         }
-        encode.int64(transfer.transfers.obj_id as i64);
+        encode.int64(transfer.transfers.map_id() as i64);
         encode.int64(delay);
         ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
     }
@@ -360,7 +360,7 @@ impl ScFuncContext {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let tx = transfers.get_map(transfers.length());
         tx.get_address(&KEY_ADDRESS).set_value(address);
-        tx.get_int64(&KEY_BALANCES).set_value(transfer.transfers.obj_id as i64);
+        tx.get_int64(&KEY_BALANCES).set_value(transfer.transfers.map_id() as i64);
     }
 }
 
@@ -380,7 +380,7 @@ impl ScViewContext {
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = params {
-            encode.int64(params.obj_id as i64);
+            encode.int64(params.map_id() as i64);
         } else {
             encode.int64(0);
         }

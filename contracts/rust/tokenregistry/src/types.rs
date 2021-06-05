@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use wasmlib::*;
+use wasmlib::host::*;
 
 //@formatter:off
 pub struct Token {
@@ -45,5 +46,39 @@ impl Token {
         encode.int64(self.updated);
         encode.string(&self.user_defined);
         return encode.data();
+    }
+}
+
+pub struct ImmutableToken {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl ImmutableToken {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn value(&self) -> Token {
+        Token::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
+    }
+}
+
+pub struct MutableToken {
+    pub(crate) obj_id: i32,
+    pub(crate) key_id: Key32,
+}
+
+impl MutableToken {
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_BYTES)
+    }
+
+    pub fn set_value(&self, value: &Token) {
+        set_bytes(self.obj_id, self.key_id, TYPE_BYTES, &value.to_bytes());
+    }
+
+    pub fn value(&self) -> Token {
+        Token::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }

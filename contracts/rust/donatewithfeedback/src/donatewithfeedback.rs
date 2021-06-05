@@ -6,12 +6,12 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
+pub fn func_donate(ctx: &ScFuncContext, f: &FuncDonateContext) {
     let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
         error: String::new(),
-        feedback: params.feedback.value(),
+        feedback: f.params.feedback.value(),
         timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
@@ -21,21 +21,20 @@ pub fn func_donate(ctx: &ScFuncContext, params: &FuncDonateParams) {
             donation.amount = 0;
         }
     }
-    let state = ctx.state();
-    let log = state.get_bytes_array(VAR_LOG);
-    log.get_bytes(log.length()).set_value(&donation.to_bytes());
+    let log = f.state.log();
+    log.get_donation(log.length()).set_value(&donation);
 
-    let largest_donation = state.get_int64(VAR_MAX_DONATION);
-    let total_donated = state.get_int64(VAR_TOTAL_DONATION);
+    let largest_donation = f.state.max_donation();
+    let total_donated = f.state.total_donation();
     if donation.amount > largest_donation.value() {
         largest_donation.set_value(donation.amount);
     }
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
+pub fn func_withdraw(ctx: &ScFuncContext, f: &FuncWithdrawContext) {
     let balance = ctx.balances().balance(&ScColor::IOTA);
-    let mut amount = params.amount.value();
+    let mut amount = f.params.amount.value();
     if amount == 0 || amount > balance {
         amount = balance;
     }
@@ -48,23 +47,18 @@ pub fn func_withdraw(ctx: &ScFuncContext, params: &FuncWithdrawParams) {
     ctx.transfer_to_address(&sc_creator, ScTransfers::iotas(amount));
 }
 
-pub fn view_donations(ctx: &ScViewContext, _params: &ViewDonationsParams) {
-    let state = ctx.state();
-    let largest_donation = state.get_int64(VAR_MAX_DONATION);
-    let total_donated = state.get_int64(VAR_TOTAL_DONATION);
-    let log = state.get_bytes_array(VAR_LOG);
-    let results = ctx.results();
-    results.get_int64(VAR_MAX_DONATION).set_value(largest_donation.value());
-    results.get_int64(VAR_TOTAL_DONATION).set_value(total_donated.value());
-    let donations = results.get_map_array(VAR_DONATIONS);
-    let size = log.length();
-    for i in 0..size {
-        let di = Donation::from_bytes(&log.get_bytes(i).value());
-        let donation = donations.get_map(i);
-        donation.get_int64(VAR_AMOUNT).set_value(di.amount);
-        donation.get_string(VAR_DONATOR).set_value(&di.donator.to_string());
-        donation.get_string(VAR_ERROR).set_value(&di.error);
-        donation.get_string(VAR_FEEDBACK).set_value(&di.feedback);
-        donation.get_int64(VAR_TIMESTAMP).set_value(di.timestamp);
-    }
+pub fn view_donation(_ctx: &ScViewContext, f: &ViewDonationContext) {
+    let nr = (f.params.nr.value()) as i32;
+    let donation = f.state.log().get_donation(nr).value();
+    f.results.amount.set_value(donation.amount);
+    f.results.donator.set_value(&donation.donator);
+    f.results.error.set_value(&donation.error);
+    f.results.feedback.set_value(&donation.feedback);
+    f.results.timestamp.set_value(donation.timestamp);
+}
+
+pub fn view_donation_info(_ctx: &ScViewContext, f: &ViewDonationInfoContext) {
+    f.results.max_donation.set_value(f.state.max_donation().value());
+    f.results.total_donation.set_value(f.state.total_donation().value());
+    f.results.count.set_value(f.state.log().length() as i64);
 }
