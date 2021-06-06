@@ -42,12 +42,12 @@ type TokenRegistryFuncState struct {
 }
 
 func (s TokenRegistryFuncState) ColorList() ArrayOfMutableColor {
-	arrId := wasmlib.GetObjectId(s.stateId, VarColorList.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
 	return ArrayOfMutableColor{objId: arrId}
 }
 
 func (s TokenRegistryFuncState) Registry() MapColorToMutableToken {
-	mapId := wasmlib.GetObjectId(s.stateId, VarRegistry.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarRegistry], wasmlib.TYPE_MAP)
 	return MapColorToMutableToken{objId: mapId}
 }
 
@@ -76,11 +76,11 @@ type TokenRegistryViewState struct {
 }
 
 func (s TokenRegistryViewState) ColorList() ArrayOfImmutableColor {
-	arrId := wasmlib.GetObjectId(s.stateId, VarColorList.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
 	return ArrayOfImmutableColor{objId: arrId}
 }
 
 func (s TokenRegistryViewState) Registry() MapColorToImmutableToken {
-	mapId := wasmlib.GetObjectId(s.stateId, VarRegistry.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarRegistry], wasmlib.TYPE_MAP)
 	return MapColorToImmutableToken{objId: mapId}
 }

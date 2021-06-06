@@ -13,6 +13,10 @@ func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncHelloWorld, funcHelloWorldThunk)
 	exports.AddView(ViewGetHelloWorld, viewGetHelloWorldThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncHelloWorldContext struct {
@@ -44,7 +48,7 @@ func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewGetHelloWorldContext{
 		Results: ViewGetHelloWorldResults{
-			HelloWorld: wasmlib.NewScMutableString(r, ResultHelloWorld.KeyId()),
+			HelloWorld: wasmlib.NewScMutableString(r, idxMap[IdxResultHelloWorld]),
 		},
 		State: HelloWorldViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

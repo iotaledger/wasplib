@@ -18,6 +18,10 @@ func OnLoad() {
 	exports.AddView(ViewAllowance, viewAllowanceThunk)
 	exports.AddView(ViewBalanceOf, viewBalanceOfThunk)
 	exports.AddView(ViewTotalSupply, viewTotalSupplyThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncApproveParams struct {
@@ -35,8 +39,8 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncApproveContext{
 		Params: FuncApproveParams{
-			Amount:     wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
-			Delegation: wasmlib.NewScImmutableAgentId(p, ParamDelegation.KeyId()),
+			Amount:     wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
+			Delegation: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamDelegation]),
 		},
 		State: Erc20FuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -63,8 +67,8 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncInitContext{
 		Params: FuncInitParams{
-			Creator: wasmlib.NewScImmutableAgentId(p, ParamCreator.KeyId()),
-			Supply:  wasmlib.NewScImmutableInt64(p, ParamSupply.KeyId()),
+			Creator: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamCreator]),
+			Supply:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamSupply]),
 		},
 		State: Erc20FuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -91,8 +95,8 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncTransferContext{
 		Params: FuncTransferParams{
-			Account: wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
-			Amount:  wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+			Account: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAccount]),
+			Amount:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
 		},
 		State: Erc20FuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -120,9 +124,9 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncTransferFromContext{
 		Params: FuncTransferFromParams{
-			Account:   wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
-			Amount:    wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
-			Recipient: wasmlib.NewScImmutableAgentId(p, ParamRecipient.KeyId()),
+			Account:   wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAccount]),
+			Amount:    wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
+			Recipient: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamRecipient]),
 		},
 		State: Erc20FuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -156,11 +160,11 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewAllowanceContext{
 		Params: ViewAllowanceParams{
-			Account:    wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
-			Delegation: wasmlib.NewScImmutableAgentId(p, ParamDelegation.KeyId()),
+			Account:    wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAccount]),
+			Delegation: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamDelegation]),
 		},
 		Results: ViewAllowanceResults{
-			Amount: wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
+			Amount: wasmlib.NewScMutableInt64(r, idxMap[IdxResultAmount]),
 		},
 		State: Erc20ViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -192,10 +196,10 @@ func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewBalanceOfContext{
 		Params: ViewBalanceOfParams{
-			Account: wasmlib.NewScImmutableAgentId(p, ParamAccount.KeyId()),
+			Account: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAccount]),
 		},
 		Results: ViewBalanceOfResults{
-			Amount: wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
+			Amount: wasmlib.NewScMutableInt64(r, idxMap[IdxResultAmount]),
 		},
 		State: Erc20ViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -220,7 +224,7 @@ func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewTotalSupplyContext{
 		Results: ViewTotalSupplyResults{
-			Supply: wasmlib.NewScMutableInt64(r, ResultSupply.KeyId()),
+			Supply: wasmlib.NewScMutableInt64(r, idxMap[IdxResultSupply]),
 		},
 		State: Erc20ViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 
 pub struct TestWasmLibFuncState {
     pub(crate) state_id: i32,
@@ -19,7 +20,7 @@ pub struct TestWasmLibFuncState {
 
 impl TestWasmLibFuncState {
     pub fn dummy(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.state_id, VAR_DUMMY.get_key_id())
+        ScMutableAgentId::new(self.state_id, idx_map(IDX_VAR_DUMMY))
     }
 }
 
@@ -29,6 +30,6 @@ pub struct TestWasmLibViewState {
 
 impl TestWasmLibViewState {
     pub fn dummy(&self) -> ScImmutableAgentId {
-        ScImmutableAgentId::new(self.state_id, VAR_DUMMY.get_key_id())
+        ScImmutableAgentId::new(self.state_id, idx_map(IDX_VAR_DUMMY))
     }
 }

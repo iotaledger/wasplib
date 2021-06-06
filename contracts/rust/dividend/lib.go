@@ -16,6 +16,10 @@ func OnLoad() {
 	exports.AddFunc(FuncMember, funcMemberThunk)
 	exports.AddFunc(FuncSetOwner, funcSetOwnerThunk)
 	exports.AddView(ViewGetFactor, viewGetFactorThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncDivideContext struct {
@@ -47,7 +51,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncInitContext{
 		Params: FuncInitParams{
-			Owner: wasmlib.NewScImmutableAgentId(p, ParamOwner.KeyId()),
+			Owner: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamOwner]),
 		},
 		State: DividendFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -77,8 +81,8 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncMemberContext{
 		Params: FuncMemberParams{
-			Address: wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
-			Factor:  wasmlib.NewScImmutableInt64(p, ParamFactor.KeyId()),
+			Address: wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
+			Factor:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamFactor]),
 		},
 		State: DividendFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -109,7 +113,7 @@ func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncSetOwnerContext{
 		Params: FuncSetOwnerParams{
-			Owner: wasmlib.NewScImmutableAgentId(p, ParamOwner.KeyId()),
+			Owner: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamOwner]),
 		},
 		State: DividendFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -140,10 +144,10 @@ func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewGetFactorContext{
 		Params: ViewGetFactorParams{
-			Address: wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
+			Address: wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
 		},
 		Results: ViewGetFactorResults{
-			Factor: wasmlib.NewScMutableInt64(r, ResultFactor.KeyId()),
+			Factor: wasmlib.NewScMutableInt64(r, idxMap[IdxResultFactor]),
 		},
 		State: DividendViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

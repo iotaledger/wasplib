@@ -10,13 +10,11 @@
 use wasmlib::*;
 use wasmlib::host::*;
 
-//@formatter:off
 pub struct Bet {
     pub amount: i64,
     pub better: ScAgentId,
     pub number: i64,
 }
-//@formatter:on
 
 impl Bet {
     pub fn from_bytes(bytes: &[u8]) -> Bet {

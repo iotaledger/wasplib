@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 use crate::subtypes::*;
 
 pub struct MapAgentIdToMutableAllowancesForAgent {
@@ -35,17 +36,17 @@ pub struct Erc20FuncState {
 
 impl Erc20FuncState {
     pub fn all_allowances(&self) -> MapAgentIdToMutableAllowancesForAgent {
-        let map_id = get_object_id(self.state_id, VAR_ALL_ALLOWANCES.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_ALL_ALLOWANCES), TYPE_MAP);
         MapAgentIdToMutableAllowancesForAgent { obj_id: map_id }
     }
 
     pub fn balances(&self) -> MapAgentIdToMutableInt64 {
-        let map_id = get_object_id(self.state_id, VAR_BALANCES.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BALANCES), TYPE_MAP);
         MapAgentIdToMutableInt64 { obj_id: map_id }
     }
 
     pub fn supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_SUPPLY.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_SUPPLY))
     }
 }
 
@@ -66,16 +67,16 @@ pub struct Erc20ViewState {
 
 impl Erc20ViewState {
     pub fn all_allowances(&self) -> MapAgentIdToImmutableAllowancesForAgent {
-        let map_id = get_object_id(self.state_id, VAR_ALL_ALLOWANCES.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_ALL_ALLOWANCES), TYPE_MAP);
         MapAgentIdToImmutableAllowancesForAgent { obj_id: map_id }
     }
 
     pub fn balances(&self) -> MapAgentIdToImmutableInt64 {
-        let map_id = get_object_id(self.state_id, VAR_BALANCES.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BALANCES), TYPE_MAP);
         MapAgentIdToImmutableInt64 { obj_id: map_id }
     }
 
     pub fn supply(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_SUPPLY.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_SUPPLY))
     }
 }

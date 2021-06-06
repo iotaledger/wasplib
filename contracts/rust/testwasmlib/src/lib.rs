@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use testwasmlib::*;
@@ -12,9 +14,11 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::consts::*;
+use crate::keys::*;
 use crate::state::*;
 
 mod consts;
+mod keys;
 mod state;
 mod testwasmlib;
 
@@ -22,9 +26,13 @@ mod testwasmlib;
 fn on_load() {
     let exports = ScExports::new();
     exports.add_func(FUNC_PARAM_TYPES, func_param_types_thunk);
+    unsafe {
+        for i in 0..KEY_MAP_LEN {
+            IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);
+        }
+    }
 }
 
-//@formatter:off
 pub struct FuncParamTypesParams {
     pub address:    ScImmutableAddress,
     pub agent_id:   ScImmutableAgentId,
@@ -37,37 +45,34 @@ pub struct FuncParamTypesParams {
     pub request_id: ScImmutableRequestId,
     pub string:     ScImmutableString,
 }
-//@formatter:on
 
-//@formatter:off
 pub struct FuncParamTypesContext {
     params: FuncParamTypesParams,
     state:  TestWasmLibFuncState,
 }
-//@formatter:on
 
 fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncParamTypesContext {
         params: FuncParamTypesParams {
-            address:    ScImmutableAddress::new(p, PARAM_ADDRESS.get_key_id()),
-            agent_id:   ScImmutableAgentId::new(p, PARAM_AGENT_ID.get_key_id()),
-            bytes:      ScImmutableBytes::new(p, PARAM_BYTES.get_key_id()),
-            chain_id:   ScImmutableChainId::new(p, PARAM_CHAIN_ID.get_key_id()),
-            color:      ScImmutableColor::new(p, PARAM_COLOR.get_key_id()),
-            hash:       ScImmutableHash::new(p, PARAM_HASH.get_key_id()),
-            hname:      ScImmutableHname::new(p, PARAM_HNAME.get_key_id()),
-            int64:      ScImmutableInt64::new(p, PARAM_INT64.get_key_id()),
-            request_id: ScImmutableRequestId::new(p, PARAM_REQUEST_ID.get_key_id()),
-            string:     ScImmutableString::new(p, PARAM_STRING.get_key_id()),
+            address:    ScImmutableAddress::new(p, idx_map(IDX_PARAM_ADDRESS)),
+            agent_id:   ScImmutableAgentId::new(p, idx_map(IDX_PARAM_AGENT_ID)),
+            bytes:      ScImmutableBytes::new(p, idx_map(IDX_PARAM_BYTES)),
+            chain_id:   ScImmutableChainId::new(p, idx_map(IDX_PARAM_CHAIN_ID)),
+            color:      ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+            hash:       ScImmutableHash::new(p, idx_map(IDX_PARAM_HASH)),
+            hname:      ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME)),
+            int64:      ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64)),
+            request_id: ScImmutableRequestId::new(p, idx_map(IDX_PARAM_REQUEST_ID)),
+            string:     ScImmutableString::new(p, idx_map(IDX_PARAM_STRING)),
         },
         state: TestWasmLibFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_param_types(ctx, &f);
     ctx.log("testwasmlib.funcParamTypes ok");
 }
+
+//@formatter:on

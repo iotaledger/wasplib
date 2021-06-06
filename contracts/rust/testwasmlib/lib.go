@@ -12,6 +12,10 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncParamTypes, funcParamTypesThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncParamTypesParams struct {
@@ -37,16 +41,16 @@ func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncParamTypesContext{
 		Params: FuncParamTypesParams{
-			Address:   wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
-			AgentId:   wasmlib.NewScImmutableAgentId(p, ParamAgentId.KeyId()),
-			Bytes:     wasmlib.NewScImmutableBytes(p, ParamBytes.KeyId()),
-			ChainId:   wasmlib.NewScImmutableChainId(p, ParamChainId.KeyId()),
-			Color:     wasmlib.NewScImmutableColor(p, ParamColor.KeyId()),
-			Hash:      wasmlib.NewScImmutableHash(p, ParamHash.KeyId()),
-			Hname:     wasmlib.NewScImmutableHname(p, ParamHname.KeyId()),
-			Int64:     wasmlib.NewScImmutableInt64(p, ParamInt64.KeyId()),
-			RequestId: wasmlib.NewScImmutableRequestId(p, ParamRequestId.KeyId()),
-			String:    wasmlib.NewScImmutableString(p, ParamString.KeyId()),
+			Address:   wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
+			AgentId:   wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAgentId]),
+			Bytes:     wasmlib.NewScImmutableBytes(p, idxMap[IdxParamBytes]),
+			ChainId:   wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
+			Color:     wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
+			Hash:      wasmlib.NewScImmutableHash(p, idxMap[IdxParamHash]),
+			Hname:     wasmlib.NewScImmutableHname(p, idxMap[IdxParamHname]),
+			Int64:     wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64]),
+			RequestId: wasmlib.NewScImmutableRequestId(p, idxMap[IdxParamRequestId]),
+			String:    wasmlib.NewScImmutableString(p, idxMap[IdxParamString]),
 		},
 		State: TestWasmLibFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

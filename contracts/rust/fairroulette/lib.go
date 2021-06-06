@@ -16,6 +16,10 @@ func OnLoad() {
 	exports.AddFunc(FuncPlaceBet, funcPlaceBetThunk)
 	exports.AddFunc(FuncPlayPeriod, funcPlayPeriodThunk)
 	exports.AddView(ViewLastWinningNumber, viewLastWinningNumberThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncLockBetsContext struct {
@@ -68,7 +72,7 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncPlaceBetContext{
 		Params: FuncPlaceBetParams{
-			Number: wasmlib.NewScImmutableInt64(p, ParamNumber.KeyId()),
+			Number: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamNumber]),
 		},
 		State: FairRouletteFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -96,7 +100,7 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncPlayPeriodContext{
 		Params: FuncPlayPeriodParams{
-			PlayPeriod: wasmlib.NewScImmutableInt64(p, ParamPlayPeriod.KeyId()),
+			PlayPeriod: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamPlayPeriod]),
 		},
 		State: FairRouletteFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -121,7 +125,7 @@ func viewLastWinningNumberThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewLastWinningNumberContext{
 		Results: ViewLastWinningNumberResults{
-			LastWinningNumber: wasmlib.NewScMutableInt64(r, ResultLastWinningNumber.KeyId()),
+			LastWinningNumber: wasmlib.NewScMutableInt64(r, idxMap[IdxResultLastWinningNumber]),
 		},
 		State: FairRouletteViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

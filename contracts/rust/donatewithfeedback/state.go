@@ -30,16 +30,16 @@ type DonateWithFeedbackFuncState struct {
 }
 
 func (s DonateWithFeedbackFuncState) Log() ArrayOfMutableDonation {
-	arrId := wasmlib.GetObjectId(s.stateId, VarLog.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableDonation{objId: arrId}
 }
 
 func (s DonateWithFeedbackFuncState) MaxDonation() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarMaxDonation.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarMaxDonation])
 }
 
 func (s DonateWithFeedbackFuncState) TotalDonation() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarTotalDonation.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarTotalDonation])
 }
 
 type ArrayOfImmutableDonation struct {
@@ -59,14 +59,14 @@ type DonateWithFeedbackViewState struct {
 }
 
 func (s DonateWithFeedbackViewState) Log() ArrayOfImmutableDonation {
-	arrId := wasmlib.GetObjectId(s.stateId, VarLog.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableDonation{objId: arrId}
 }
 
 func (s DonateWithFeedbackViewState) MaxDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarMaxDonation.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarMaxDonation])
 }
 
 func (s DonateWithFeedbackViewState) TotalDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarTotalDonation.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarTotalDonation])
 }

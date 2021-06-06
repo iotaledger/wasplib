@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 use crate::types::*;
 
 pub struct ArrayOfMutableColor {
@@ -52,12 +53,12 @@ pub struct TokenRegistryFuncState {
 
 impl TokenRegistryFuncState {
     pub fn color_list(&self) -> ArrayOfMutableColor {
-        let arr_id = get_object_id(self.state_id, VAR_COLOR_LIST.get_key_id(), TYPE_ARRAY | TYPE_COLOR);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_COLOR_LIST), TYPE_ARRAY | TYPE_COLOR);
         ArrayOfMutableColor { obj_id: arr_id }
     }
 
     pub fn registry(&self) -> MapColorToMutableToken {
-        let map_id = get_object_id(self.state_id, VAR_REGISTRY.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_REGISTRY), TYPE_MAP);
         MapColorToMutableToken { obj_id: map_id }
     }
 }
@@ -92,12 +93,12 @@ pub struct TokenRegistryViewState {
 
 impl TokenRegistryViewState {
     pub fn color_list(&self) -> ArrayOfImmutableColor {
-        let arr_id = get_object_id(self.state_id, VAR_COLOR_LIST.get_key_id(), TYPE_ARRAY | TYPE_COLOR);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_COLOR_LIST), TYPE_ARRAY | TYPE_COLOR);
         ArrayOfImmutableColor { obj_id: arr_id }
     }
 
     pub fn registry(&self) -> MapColorToImmutableToken {
-        let map_id = get_object_id(self.state_id, VAR_REGISTRY.get_key_id(), TYPE_MAP);
+        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_REGISTRY), TYPE_MAP);
         MapColorToImmutableToken { obj_id: map_id }
     }
 }

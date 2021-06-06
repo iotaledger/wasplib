@@ -15,6 +15,10 @@ func OnLoad() {
 	exports.AddFunc(FuncTransferOwnership, funcTransferOwnershipThunk)
 	exports.AddFunc(FuncUpdateMetadata, funcUpdateMetadataThunk)
 	exports.AddView(ViewGetInfo, viewGetInfoThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncMintSupplyParams struct {
@@ -32,8 +36,8 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncMintSupplyContext{
 		Params: FuncMintSupplyParams{
-			Description: wasmlib.NewScImmutableString(p, ParamDescription.KeyId()),
-			UserDefined: wasmlib.NewScImmutableString(p, ParamUserDefined.KeyId()),
+			Description: wasmlib.NewScImmutableString(p, idxMap[IdxParamDescription]),
+			UserDefined: wasmlib.NewScImmutableString(p, idxMap[IdxParamUserDefined]),
 		},
 		State: TokenRegistryFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -60,7 +64,7 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncTransferOwnershipContext{
 		Params: FuncTransferOwnershipParams{
-			Color: wasmlib.NewScImmutableColor(p, ParamColor.KeyId()),
+			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -88,7 +92,7 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncUpdateMetadataContext{
 		Params: FuncUpdateMetadataParams{
-			Color: wasmlib.NewScImmutableColor(p, ParamColor.KeyId()),
+			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -113,7 +117,7 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params().MapId()
 	f := &ViewGetInfoContext{
 		Params: ViewGetInfoParams{
-			Color: wasmlib.NewScImmutableColor(p, ParamColor.KeyId()),
+			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

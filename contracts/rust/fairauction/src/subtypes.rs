@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
@@ -75,3 +77,5 @@ impl MapAgentIdToMutableBid {
         MutableBid { obj_id: self.obj_id, key_id: key.get_key_id() }
     }
 }
+
+//@formatter:on

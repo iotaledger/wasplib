@@ -12,29 +12,29 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const ScName = "fairauction"
 const HScName = wasmlib.ScHname(0x1b5c43b1)
 
-const ParamColor = wasmlib.Key("color")
-const ParamDescription = wasmlib.Key("description")
-const ParamDuration = wasmlib.Key("duration")
-const ParamMinimumBid = wasmlib.Key("minimumBid")
-const ParamOwnerMargin = wasmlib.Key("ownerMargin")
+const ParamColor = "color"
+const ParamDescription = "description"
+const ParamDuration = "duration"
+const ParamMinimumBid = "minimumBid"
+const ParamOwnerMargin = "ownerMargin"
 
-const ResultBidders = wasmlib.Key("bidders")
-const ResultColor = wasmlib.Key("color")
-const ResultCreator = wasmlib.Key("creator")
-const ResultDeposit = wasmlib.Key("deposit")
-const ResultDescription = wasmlib.Key("description")
-const ResultDuration = wasmlib.Key("duration")
-const ResultHighestBid = wasmlib.Key("highestBid")
-const ResultHighestBidder = wasmlib.Key("highestBidder")
-const ResultMinimumBid = wasmlib.Key("minimumBid")
-const ResultNumTokens = wasmlib.Key("numTokens")
-const ResultOwnerMargin = wasmlib.Key("ownerMargin")
-const ResultWhenStarted = wasmlib.Key("whenStarted")
+const ResultBidders = "bidders"
+const ResultColor = "color"
+const ResultCreator = "creator"
+const ResultDeposit = "deposit"
+const ResultDescription = "description"
+const ResultDuration = "duration"
+const ResultHighestBid = "highestBid"
+const ResultHighestBidder = "highestBidder"
+const ResultMinimumBid = "minimumBid"
+const ResultNumTokens = "numTokens"
+const ResultOwnerMargin = "ownerMargin"
+const ResultWhenStarted = "whenStarted"
 
-const VarAuctions = wasmlib.Key("auctions")
-const VarBidderList = wasmlib.Key("bidderList")
-const VarBids = wasmlib.Key("bids")
-const VarOwnerMargin = wasmlib.Key("ownerMargin")
+const VarAuctions = "auctions"
+const VarBidderList = "bidderList"
+const VarBids = "bids"
+const VarOwnerMargin = "ownerMargin"
 
 const FuncFinalizeAuction = "finalizeAuction"
 const FuncPlaceBid = "placeBid"

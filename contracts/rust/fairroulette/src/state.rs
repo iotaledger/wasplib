@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 use crate::types::*;
 
 pub struct ArrayOfMutableBet {
@@ -38,21 +39,21 @@ pub struct FairRouletteFuncState {
 
 impl FairRouletteFuncState {
     pub fn bets(&self) -> ArrayOfMutableBet {
-        let arr_id = get_object_id(self.state_id, VAR_BETS.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_BETS), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableBet { obj_id: arr_id }
     }
 
     pub fn last_winning_number(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_LAST_WINNING_NUMBER.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_LAST_WINNING_NUMBER))
     }
 
     pub fn locked_bets(&self) -> ArrayOfMutableBet {
-        let arr_id = get_object_id(self.state_id, VAR_LOCKED_BETS.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOCKED_BETS), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableBet { obj_id: arr_id }
     }
 
     pub fn play_period(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_PLAY_PERIOD.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_PLAY_PERIOD))
     }
 }
 
@@ -76,20 +77,20 @@ pub struct FairRouletteViewState {
 
 impl FairRouletteViewState {
     pub fn bets(&self) -> ArrayOfImmutableBet {
-        let arr_id = get_object_id(self.state_id, VAR_BETS.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_BETS), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableBet { obj_id: arr_id }
     }
 
     pub fn last_winning_number(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_LAST_WINNING_NUMBER.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_LAST_WINNING_NUMBER))
     }
 
     pub fn locked_bets(&self) -> ArrayOfImmutableBet {
-        let arr_id = get_object_id(self.state_id, VAR_LOCKED_BETS.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOCKED_BETS), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableBet { obj_id: arr_id }
     }
 
     pub fn play_period(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_PLAY_PERIOD.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_PLAY_PERIOD))
     }
 }

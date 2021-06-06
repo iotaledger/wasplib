@@ -10,17 +10,21 @@
 use wasmlib::*;
 use wasmlib::host::*;
 
-//@formatter:off
 pub struct Token {
-    pub created:      i64,       // creation timestamp
-    pub description:  String,    // description what minted token represents
-    pub minted_by:    ScAgentId, // original minter
-    pub owner:        ScAgentId, // current owner
-    pub supply:       i64,       // amount of tokens originally minted
-    pub updated:      i64,       // last update timestamp
+    pub created: i64,
+    // creation timestamp
+    pub description: String,
+    // description what minted token represents
+    pub minted_by: ScAgentId,
+    // original minter
+    pub owner: ScAgentId,
+    // current owner
+    pub supply: i64,
+    // amount of tokens originally minted
+    pub updated: i64,
+    // last update timestamp
     pub user_defined: String,    // any user defined text
 }
-//@formatter:on
 
 impl Token {
     pub fn from_bytes(bytes: &[u8]) -> Token {

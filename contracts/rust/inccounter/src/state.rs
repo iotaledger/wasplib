@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 
 pub struct IncCounterFuncState {
     pub(crate) state_id: i32,
@@ -19,11 +20,11 @@ pub struct IncCounterFuncState {
 
 impl IncCounterFuncState {
     pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_COUNTER.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
     }
 
     pub fn num_repeats(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_NUM_REPEATS.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_NUM_REPEATS))
     }
 }
 
@@ -33,10 +34,10 @@ pub struct IncCounterViewState {
 
 impl IncCounterViewState {
     pub fn counter(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_COUNTER.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
     }
 
     pub fn num_repeats(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_NUM_REPEATS.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_NUM_REPEATS))
     }
 }

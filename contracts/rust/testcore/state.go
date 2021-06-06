@@ -14,19 +14,19 @@ type TestCoreFuncState struct {
 }
 
 func (s TestCoreFuncState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarCounter.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarCounter])
 }
 
 func (s TestCoreFuncState) HnameEP() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.stateId, VarHnameEP.KeyId())
+	return wasmlib.NewScMutableHname(s.stateId, idxMap[IdxVarHnameEP])
 }
 
 func (s TestCoreFuncState) MintedColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.stateId, VarMintedColor.KeyId())
+	return wasmlib.NewScMutableColor(s.stateId, idxMap[IdxVarMintedColor])
 }
 
 func (s TestCoreFuncState) MintedSupply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarMintedSupply.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarMintedSupply])
 }
 
 type TestCoreViewState struct {
@@ -34,17 +34,17 @@ type TestCoreViewState struct {
 }
 
 func (s TestCoreViewState) Counter() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarCounter.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarCounter])
 }
 
 func (s TestCoreViewState) HnameEP() wasmlib.ScImmutableHname {
-	return wasmlib.NewScImmutableHname(s.stateId, VarHnameEP.KeyId())
+	return wasmlib.NewScImmutableHname(s.stateId, idxMap[IdxVarHnameEP])
 }
 
 func (s TestCoreViewState) MintedColor() wasmlib.ScImmutableColor {
-	return wasmlib.NewScImmutableColor(s.stateId, VarMintedColor.KeyId())
+	return wasmlib.NewScImmutableColor(s.stateId, idxMap[IdxVarMintedColor])
 }
 
 func (s TestCoreViewState) MintedSupply() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarMintedSupply.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarMintedSupply])
 }

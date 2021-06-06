@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 use crate::types::*;
 
 pub struct ArrayOfMutableDonation {
@@ -38,16 +39,16 @@ pub struct DonateWithFeedbackFuncState {
 
 impl DonateWithFeedbackFuncState {
     pub fn log(&self) -> ArrayOfMutableDonation {
-        let arr_id = get_object_id(self.state_id, VAR_LOG.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOG), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableDonation { obj_id: arr_id }
     }
 
     pub fn max_donation(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_MAX_DONATION.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_MAX_DONATION))
     }
 
     pub fn total_donation(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_TOTAL_DONATION.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_TOTAL_DONATION))
     }
 }
 
@@ -71,15 +72,15 @@ pub struct DonateWithFeedbackViewState {
 
 impl DonateWithFeedbackViewState {
     pub fn log(&self) -> ArrayOfImmutableDonation {
-        let arr_id = get_object_id(self.state_id, VAR_LOG.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOG), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableDonation { obj_id: arr_id }
     }
 
     pub fn max_donation(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_MAX_DONATION.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_MAX_DONATION))
     }
 
     pub fn total_donation(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_TOTAL_DONATION.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_TOTAL_DONATION))
     }
 }

@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 
 pub struct HelloWorldFuncState {
     pub(crate) state_id: i32,
@@ -19,7 +20,7 @@ pub struct HelloWorldFuncState {
 
 impl HelloWorldFuncState {
     pub fn dummy(&self) -> ScMutableString {
-        ScMutableString::new(self.state_id, VAR_DUMMY.get_key_id())
+        ScMutableString::new(self.state_id, idx_map(IDX_VAR_DUMMY))
     }
 }
 
@@ -29,6 +30,6 @@ pub struct HelloWorldViewState {
 
 impl HelloWorldViewState {
     pub fn dummy(&self) -> ScImmutableString {
-        ScImmutableString::new(self.state_id, VAR_DUMMY.get_key_id())
+        ScImmutableString::new(self.state_id, idx_map(IDX_VAR_DUMMY))
     }
 }

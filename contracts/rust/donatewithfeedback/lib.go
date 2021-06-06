@@ -15,6 +15,10 @@ func OnLoad() {
 	exports.AddFunc(FuncWithdraw, funcWithdrawThunk)
 	exports.AddView(ViewDonation, viewDonationThunk)
 	exports.AddView(ViewDonationInfo, viewDonationInfoThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncDonateParams struct {
@@ -31,7 +35,7 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncDonateContext{
 		Params: FuncDonateParams{
-			Feedback: wasmlib.NewScImmutableString(p, ParamFeedback.KeyId()),
+			Feedback: wasmlib.NewScImmutableString(p, idxMap[IdxParamFeedback]),
 		},
 		State: DonateWithFeedbackFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -58,7 +62,7 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncWithdrawContext{
 		Params: FuncWithdrawParams{
-			Amount: wasmlib.NewScImmutableInt64(p, ParamAmount.KeyId()),
+			Amount: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
 		},
 		State: DonateWithFeedbackFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -92,14 +96,14 @@ func viewDonationThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewDonationContext{
 		Params: ViewDonationParams{
-			Nr: wasmlib.NewScImmutableInt64(p, ParamNr.KeyId()),
+			Nr: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamNr]),
 		},
 		Results: ViewDonationResults{
-			Amount:    wasmlib.NewScMutableInt64(r, ResultAmount.KeyId()),
-			Donator:   wasmlib.NewScMutableAgentId(r, ResultDonator.KeyId()),
-			Error:     wasmlib.NewScMutableString(r, ResultError.KeyId()),
-			Feedback:  wasmlib.NewScMutableString(r, ResultFeedback.KeyId()),
-			Timestamp: wasmlib.NewScMutableInt64(r, ResultTimestamp.KeyId()),
+			Amount:    wasmlib.NewScMutableInt64(r, idxMap[IdxResultAmount]),
+			Donator:   wasmlib.NewScMutableAgentId(r, idxMap[IdxResultDonator]),
+			Error:     wasmlib.NewScMutableString(r, idxMap[IdxResultError]),
+			Feedback:  wasmlib.NewScMutableString(r, idxMap[IdxResultFeedback]),
+			Timestamp: wasmlib.NewScMutableInt64(r, idxMap[IdxResultTimestamp]),
 		},
 		State: DonateWithFeedbackViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -126,9 +130,9 @@ func viewDonationInfoThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewDonationInfoContext{
 		Results: ViewDonationInfoResults{
-			Count:         wasmlib.NewScMutableInt64(r, ResultCount.KeyId()),
-			MaxDonation:   wasmlib.NewScMutableInt64(r, ResultMaxDonation.KeyId()),
-			TotalDonation: wasmlib.NewScMutableInt64(r, ResultTotalDonation.KeyId()),
+			Count:         wasmlib.NewScMutableInt64(r, idxMap[IdxResultCount]),
+			MaxDonation:   wasmlib.NewScMutableInt64(r, idxMap[IdxResultMaxDonation]),
+			TotalDonation: wasmlib.NewScMutableInt64(r, idxMap[IdxResultTotalDonation]),
 		},
 		State: DonateWithFeedbackViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

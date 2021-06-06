@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use erc20::*;
@@ -12,9 +14,11 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::consts::*;
+use crate::keys::*;
 use crate::state::*;
 
 mod consts;
+mod keys;
 mod state;
 mod subtypes;
 mod erc20;
@@ -29,140 +33,121 @@ fn on_load() {
     exports.add_view(VIEW_ALLOWANCE, view_allowance_thunk);
     exports.add_view(VIEW_BALANCE_OF, view_balance_of_thunk);
     exports.add_view(VIEW_TOTAL_SUPPLY, view_total_supply_thunk);
+    unsafe {
+        for i in 0..KEY_MAP_LEN {
+            IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);
+        }
+    }
 }
 
-//@formatter:off
 pub struct FuncApproveParams {
     pub amount:     ScImmutableInt64,   // allowance value for delegated account
     pub delegation: ScImmutableAgentId, // delegated account
 }
-//@formatter:on
 
-//@formatter:off
 pub struct FuncApproveContext {
     params: FuncApproveParams,
     state:  Erc20FuncState,
 }
-//@formatter:on
 
 fn func_approve_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcApprove");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncApproveContext {
         params: FuncApproveParams {
-            amount:     ScImmutableInt64::new(p, PARAM_AMOUNT.get_key_id()),
-            delegation: ScImmutableAgentId::new(p, PARAM_DELEGATION.get_key_id()),
+            amount:     ScImmutableInt64::new(p, idx_map(IDX_PARAM_AMOUNT)),
+            delegation: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_DELEGATION)),
         },
         state: Erc20FuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.amount.exists(), "missing mandatory amount");
     ctx.require(f.params.delegation.exists(), "missing mandatory delegation");
     func_approve(ctx, &f);
     ctx.log("erc20.funcApprove ok");
 }
 
-//@formatter:off
 pub struct FuncInitParams {
     pub creator: ScImmutableAgentId, // creator/owner of the initial supply
     pub supply:  ScImmutableInt64,   // initial token supply
 }
-//@formatter:on
 
-//@formatter:off
 pub struct FuncInitContext {
     params: FuncInitParams,
     state:  Erc20FuncState,
 }
-//@formatter:on
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcInit");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncInitContext {
         params: FuncInitParams {
-            creator: ScImmutableAgentId::new(p, PARAM_CREATOR.get_key_id()),
-            supply:  ScImmutableInt64::new(p, PARAM_SUPPLY.get_key_id()),
+            creator: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CREATOR)),
+            supply:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_SUPPLY)),
         },
         state: Erc20FuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.creator.exists(), "missing mandatory creator");
     ctx.require(f.params.supply.exists(), "missing mandatory supply");
     func_init(ctx, &f);
     ctx.log("erc20.funcInit ok");
 }
 
-//@formatter:off
 pub struct FuncTransferParams {
     pub account: ScImmutableAgentId, // target account
     pub amount:  ScImmutableInt64,   // amount of tokens to transfer
 }
-//@formatter:on
 
-//@formatter:off
 pub struct FuncTransferContext {
     params: FuncTransferParams,
     state:  Erc20FuncState,
 }
-//@formatter:on
 
 fn func_transfer_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransfer");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncTransferContext {
         params: FuncTransferParams {
-            account: ScImmutableAgentId::new(p, PARAM_ACCOUNT.get_key_id()),
-            amount:  ScImmutableInt64::new(p, PARAM_AMOUNT.get_key_id()),
+            account: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_ACCOUNT)),
+            amount:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_AMOUNT)),
         },
         state: Erc20FuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.account.exists(), "missing mandatory account");
     ctx.require(f.params.amount.exists(), "missing mandatory amount");
     func_transfer(ctx, &f);
     ctx.log("erc20.funcTransfer ok");
 }
 
-//@formatter:off
 pub struct FuncTransferFromParams {
     pub account:   ScImmutableAgentId, // sender account
     pub amount:    ScImmutableInt64,   // amount of tokens to transfer
     pub recipient: ScImmutableAgentId, // recipient account
 }
-//@formatter:on
 
-//@formatter:off
 pub struct FuncTransferFromContext {
     params: FuncTransferFromParams,
     state:  Erc20FuncState,
 }
-//@formatter:on
 
 fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransferFrom");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncTransferFromContext {
         params: FuncTransferFromParams {
-            account:   ScImmutableAgentId::new(p, PARAM_ACCOUNT.get_key_id()),
-            amount:    ScImmutableInt64::new(p, PARAM_AMOUNT.get_key_id()),
-            recipient: ScImmutableAgentId::new(p, PARAM_RECIPIENT.get_key_id()),
+            account:   ScImmutableAgentId::new(p, idx_map(IDX_PARAM_ACCOUNT)),
+            amount:    ScImmutableInt64::new(p, idx_map(IDX_PARAM_AMOUNT)),
+            recipient: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_RECIPIENT)),
         },
         state: Erc20FuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.account.exists(), "missing mandatory account");
     ctx.require(f.params.amount.exists(), "missing mandatory amount");
     ctx.require(f.params.recipient.exists(), "missing mandatory recipient");
@@ -170,43 +155,37 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransferFrom ok");
 }
 
-//@formatter:off
 pub struct ViewAllowanceParams {
     pub account:    ScImmutableAgentId, // sender account
     pub delegation: ScImmutableAgentId, // delegated account
 }
-//@formatter:on
 
 pub struct ViewAllowanceResults {
     pub amount: ScMutableInt64,
 }
 
-//@formatter:off
 pub struct ViewAllowanceContext {
     params:  ViewAllowanceParams,
     results: ViewAllowanceResults,
     state:   Erc20ViewState,
 }
-//@formatter:on
 
 fn view_allowance_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewAllowance");
     let p = ctx.params().map_id();
     let r = ctx.results().map_id();
-//@formatter:off
     let f = ViewAllowanceContext {
         params: ViewAllowanceParams {
-            account:    ScImmutableAgentId::new(p, PARAM_ACCOUNT.get_key_id()),
-            delegation: ScImmutableAgentId::new(p, PARAM_DELEGATION.get_key_id()),
+            account:    ScImmutableAgentId::new(p, idx_map(IDX_PARAM_ACCOUNT)),
+            delegation: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_DELEGATION)),
         },
         results: ViewAllowanceResults {
-            amount: ScMutableInt64::new(r, RESULT_AMOUNT.get_key_id()),
+            amount: ScMutableInt64::new(r, idx_map(IDX_RESULT_AMOUNT)),
         },
         state: Erc20ViewState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.account.exists(), "missing mandatory account");
     ctx.require(f.params.delegation.exists(), "missing mandatory delegation");
     view_allowance(ctx, &f);
@@ -221,31 +200,27 @@ pub struct ViewBalanceOfResults {
     pub amount: ScMutableInt64,
 }
 
-//@formatter:off
 pub struct ViewBalanceOfContext {
     params:  ViewBalanceOfParams,
     results: ViewBalanceOfResults,
     state:   Erc20ViewState,
 }
-//@formatter:on
 
 fn view_balance_of_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewBalanceOf");
     let p = ctx.params().map_id();
     let r = ctx.results().map_id();
-//@formatter:off
     let f = ViewBalanceOfContext {
         params: ViewBalanceOfParams {
-            account: ScImmutableAgentId::new(p, PARAM_ACCOUNT.get_key_id()),
+            account: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_ACCOUNT)),
         },
         results: ViewBalanceOfResults {
-            amount: ScMutableInt64::new(r, RESULT_AMOUNT.get_key_id()),
+            amount: ScMutableInt64::new(r, idx_map(IDX_RESULT_AMOUNT)),
         },
         state: Erc20ViewState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     ctx.require(f.params.account.exists(), "missing mandatory account");
     view_balance_of(ctx, &f);
     ctx.log("erc20.viewBalanceOf ok");
@@ -255,26 +230,24 @@ pub struct ViewTotalSupplyResults {
     pub supply: ScMutableInt64,
 }
 
-//@formatter:off
 pub struct ViewTotalSupplyContext {
     results: ViewTotalSupplyResults,
     state:   Erc20ViewState,
 }
-//@formatter:on
 
 fn view_total_supply_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewTotalSupply");
     let r = ctx.results().map_id();
-//@formatter:off
     let f = ViewTotalSupplyContext {
         results: ViewTotalSupplyResults {
-            supply: ScMutableInt64::new(r, RESULT_SUPPLY.get_key_id()),
+            supply: ScMutableInt64::new(r, idx_map(IDX_RESULT_SUPPLY)),
         },
         state: Erc20ViewState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     view_total_supply(ctx, &f);
     ctx.log("erc20.viewTotalSupply ok");
 }
+
+//@formatter:on

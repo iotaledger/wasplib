@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use inccounter::*;
@@ -12,9 +14,11 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::consts::*;
+use crate::keys::*;
 use crate::state::*;
 
 mod consts;
+mod keys;
 mod state;
 mod inccounter;
 
@@ -34,6 +38,11 @@ fn on_load() {
     exports.add_func(FUNC_TEST_LEB128, func_test_leb128_thunk);
     exports.add_func(FUNC_WHEN_MUST_INCREMENT, func_when_must_increment_thunk);
     exports.add_view(VIEW_GET_COUNTER, view_get_counter_thunk);
+    unsafe {
+        for i in 0..KEY_MAP_LEN {
+            IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);
+        }
+    }
 }
 
 pub struct FuncCallIncrementContext {
@@ -42,13 +51,11 @@ pub struct FuncCallIncrementContext {
 
 fn func_call_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrement");
-//@formatter:off
     let f = FuncCallIncrementContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_call_increment(ctx, &f);
     ctx.log("inccounter.funcCallIncrement ok");
 }
@@ -59,13 +66,11 @@ pub struct FuncCallIncrementRecurse5xContext {
 
 fn func_call_increment_recurse5x_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrementRecurse5x");
-//@formatter:off
     let f = FuncCallIncrementRecurse5xContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_call_increment_recurse5x(ctx, &f);
     ctx.log("inccounter.funcCallIncrementRecurse5x ok");
 }
@@ -76,13 +81,11 @@ pub struct FuncIncrementContext {
 
 fn func_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcIncrement");
-//@formatter:off
     let f = FuncIncrementContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_increment(ctx, &f);
     ctx.log("inccounter.funcIncrement ok");
 }
@@ -91,26 +94,22 @@ pub struct FuncInitParams {
     pub counter: ScImmutableInt64, // value to initialize state counter with
 }
 
-//@formatter:off
 pub struct FuncInitContext {
     params: FuncInitParams,
     state:  IncCounterFuncState,
 }
-//@formatter:on
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcInit");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncInitContext {
         params: FuncInitParams {
-            counter: ScImmutableInt64::new(p, PARAM_COUNTER.get_key_id()),
+            counter: ScImmutableInt64::new(p, idx_map(IDX_PARAM_COUNTER)),
         },
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_init(ctx, &f);
     ctx.log("inccounter.funcInit ok");
 }
@@ -121,13 +120,11 @@ pub struct FuncLocalStateInternalCallContext {
 
 fn func_local_state_internal_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateInternalCall");
-//@formatter:off
     let f = FuncLocalStateInternalCallContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_local_state_internal_call(ctx, &f);
     ctx.log("inccounter.funcLocalStateInternalCall ok");
 }
@@ -138,13 +135,11 @@ pub struct FuncLocalStatePostContext {
 
 fn func_local_state_post_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStatePost");
-//@formatter:off
     let f = FuncLocalStatePostContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_local_state_post(ctx, &f);
     ctx.log("inccounter.funcLocalStatePost ok");
 }
@@ -155,13 +150,11 @@ pub struct FuncLocalStateSandboxCallContext {
 
 fn func_local_state_sandbox_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateSandboxCall");
-//@formatter:off
     let f = FuncLocalStateSandboxCallContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_local_state_sandbox_call(ctx, &f);
     ctx.log("inccounter.funcLocalStateSandboxCall ok");
 }
@@ -172,13 +165,11 @@ pub struct FuncLoopContext {
 
 fn func_loop_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLoop");
-//@formatter:off
     let f = FuncLoopContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_loop(ctx, &f);
     ctx.log("inccounter.funcLoop ok");
 }
@@ -189,13 +180,11 @@ pub struct FuncPostIncrementContext {
 
 fn func_post_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcPostIncrement");
-//@formatter:off
     let f = FuncPostIncrementContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_post_increment(ctx, &f);
     ctx.log("inccounter.funcPostIncrement ok");
 }
@@ -204,26 +193,22 @@ pub struct FuncRepeatManyParams {
     pub num_repeats: ScImmutableInt64, // number of times to recursively call myself
 }
 
-//@formatter:off
 pub struct FuncRepeatManyContext {
     params: FuncRepeatManyParams,
     state:  IncCounterFuncState,
 }
-//@formatter:on
 
 fn func_repeat_many_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcRepeatMany");
     let p = ctx.params().map_id();
-//@formatter:off
     let f = FuncRepeatManyContext {
         params: FuncRepeatManyParams {
-            num_repeats: ScImmutableInt64::new(p, PARAM_NUM_REPEATS.get_key_id()),
+            num_repeats: ScImmutableInt64::new(p, idx_map(IDX_PARAM_NUM_REPEATS)),
         },
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_repeat_many(ctx, &f);
     ctx.log("inccounter.funcRepeatMany ok");
 }
@@ -234,13 +219,11 @@ pub struct FuncTestLeb128Context {
 
 fn func_test_leb128_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcTestLeb128");
-//@formatter:off
     let f = FuncTestLeb128Context {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_test_leb128(ctx, &f);
     ctx.log("inccounter.funcTestLeb128 ok");
 }
@@ -251,13 +234,11 @@ pub struct FuncWhenMustIncrementContext {
 
 fn func_when_must_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcWhenMustIncrement");
-//@formatter:off
     let f = FuncWhenMustIncrementContext {
         state: IncCounterFuncState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     func_when_must_increment(ctx, &f);
     ctx.log("inccounter.funcWhenMustIncrement ok");
 }
@@ -266,26 +247,24 @@ pub struct ViewGetCounterResults {
     pub counter: ScMutableInt64,
 }
 
-//@formatter:off
 pub struct ViewGetCounterContext {
     results: ViewGetCounterResults,
     state:   IncCounterViewState,
 }
-//@formatter:on
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("inccounter.viewGetCounter");
     let r = ctx.results().map_id();
-//@formatter:off
     let f = ViewGetCounterContext {
         results: ViewGetCounterResults {
-            counter: ScMutableInt64::new(r, RESULT_COUNTER.get_key_id()),
+            counter: ScMutableInt64::new(r, idx_map(IDX_RESULT_COUNTER)),
         },
         state: IncCounterViewState {
             state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
         },
     };
-//@formatter:on
     view_get_counter(ctx, &f);
     ctx.log("inccounter.viewGetCounter ok");
 }
+
+//@formatter:on

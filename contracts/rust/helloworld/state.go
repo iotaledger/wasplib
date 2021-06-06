@@ -14,7 +14,7 @@ type HelloWorldFuncState struct {
 }
 
 func (s HelloWorldFuncState) Dummy() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.stateId, VarDummy.KeyId())
+	return wasmlib.NewScMutableString(s.stateId, idxMap[IdxVarDummy])
 }
 
 type HelloWorldViewState struct {
@@ -22,5 +22,5 @@ type HelloWorldViewState struct {
 }
 
 func (s HelloWorldViewState) Dummy() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.stateId, VarDummy.KeyId())
+	return wasmlib.NewScImmutableString(s.stateId, idxMap[IdxVarDummy])
 }

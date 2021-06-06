@@ -39,6 +39,10 @@ func OnLoad() {
 	exports.AddView(ViewTestChainOwnerIDView, viewTestChainOwnerIDViewThunk)
 	exports.AddView(ViewTestPanicViewEP, viewTestPanicViewEPThunk)
 	exports.AddView(ViewTestSandboxCall, viewTestSandboxCallThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncCallOnChainParams struct {
@@ -63,12 +67,12 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	r := ctx.Results().MapId()
 	f := &FuncCallOnChainContext{
 		Params: FuncCallOnChainParams{
-			HnameContract: wasmlib.NewScImmutableHname(p, ParamHnameContract.KeyId()),
-			HnameEP:       wasmlib.NewScImmutableHname(p, ParamHnameEP.KeyId()),
-			IntValue:      wasmlib.NewScImmutableInt64(p, ParamIntValue.KeyId()),
+			HnameContract: wasmlib.NewScImmutableHname(p, idxMap[IdxParamHnameContract]),
+			HnameEP:       wasmlib.NewScImmutableHname(p, idxMap[IdxParamHnameEP]),
+			IntValue:      wasmlib.NewScImmutableInt64(p, idxMap[IdxParamIntValue]),
 		},
 		Results: FuncCallOnChainResults{
-			IntValue: wasmlib.NewScMutableInt64(r, ResultIntValue.KeyId()),
+			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -97,11 +101,11 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncCheckContextFromFullEPContext{
 		Params: FuncCheckContextFromFullEPParams{
-			AgentId:         wasmlib.NewScImmutableAgentId(p, ParamAgentId.KeyId()),
-			Caller:          wasmlib.NewScImmutableAgentId(p, ParamCaller.KeyId()),
-			ChainId:         wasmlib.NewScImmutableChainId(p, ParamChainId.KeyId()),
-			ChainOwnerId:    wasmlib.NewScImmutableAgentId(p, ParamChainOwnerId.KeyId()),
-			ContractCreator: wasmlib.NewScImmutableAgentId(p, ParamContractCreator.KeyId()),
+			AgentId:         wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAgentId]),
+			Caller:          wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamCaller]),
+			ChainId:         wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
+			ChainOwnerId:    wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamChainOwnerId]),
+			ContractCreator: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamContractCreator]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -146,8 +150,8 @@ func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
 	r := ctx.Results().MapId()
 	f := &FuncGetMintedSupplyContext{
 		Results: FuncGetMintedSupplyResults{
-			MintedColor:  wasmlib.NewScMutableColor(r, ResultMintedColor.KeyId()),
-			MintedSupply: wasmlib.NewScMutableInt64(r, ResultMintedSupply.KeyId()),
+			MintedColor:  wasmlib.NewScMutableColor(r, idxMap[IdxResultMintedColor]),
+			MintedSupply: wasmlib.NewScMutableInt64(r, idxMap[IdxResultMintedSupply]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -207,13 +211,13 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncPassTypesFullContext{
 		Params: FuncPassTypesFullParams{
-			Hash:       wasmlib.NewScImmutableHash(p, ParamHash.KeyId()),
-			Hname:      wasmlib.NewScImmutableHname(p, ParamHname.KeyId()),
-			HnameZero:  wasmlib.NewScImmutableHname(p, ParamHnameZero.KeyId()),
-			Int64:      wasmlib.NewScImmutableInt64(p, ParamInt64.KeyId()),
-			Int64Zero:  wasmlib.NewScImmutableInt64(p, ParamInt64Zero.KeyId()),
-			String:     wasmlib.NewScImmutableString(p, ParamString.KeyId()),
-			StringZero: wasmlib.NewScImmutableString(p, ParamStringZero.KeyId()),
+			Hash:       wasmlib.NewScImmutableHash(p, idxMap[IdxParamHash]),
+			Hname:      wasmlib.NewScImmutableHname(p, idxMap[IdxParamHname]),
+			HnameZero:  wasmlib.NewScImmutableHname(p, idxMap[IdxParamHnameZero]),
+			Int64:      wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64]),
+			Int64Zero:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64Zero]),
+			String:     wasmlib.NewScImmutableString(p, idxMap[IdxParamString]),
+			StringZero: wasmlib.NewScImmutableString(p, idxMap[IdxParamStringZero]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -250,10 +254,10 @@ func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	r := ctx.Results().MapId()
 	f := &FuncRunRecursionContext{
 		Params: FuncRunRecursionParams{
-			IntValue: wasmlib.NewScImmutableInt64(p, ParamIntValue.KeyId()),
+			IntValue: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamIntValue]),
 		},
 		Results: FuncRunRecursionResults{
-			IntValue: wasmlib.NewScMutableInt64(r, ResultIntValue.KeyId()),
+			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -280,7 +284,7 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncSendToAddressContext{
 		Params: FuncSendToAddressParams{
-			Address: wasmlib.NewScImmutableAddress(p, ParamAddress.KeyId()),
+			Address: wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -306,8 +310,8 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncSetIntContext{
 		Params: FuncSetIntParams{
-			IntValue: wasmlib.NewScImmutableInt64(p, ParamIntValue.KeyId()),
-			Name:     wasmlib.NewScImmutableString(p, ParamName.KeyId()),
+			IntValue: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamIntValue]),
+			Name:     wasmlib.NewScImmutableString(p, idxMap[IdxParamName]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -363,7 +367,7 @@ func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	r := ctx.Results().MapId()
 	f := &FuncTestChainOwnerIDFullContext{
 		Results: FuncTestChainOwnerIDFullResults{
-			ChainOwnerId: wasmlib.NewScMutableAgentId(r, ResultChainOwnerId.KeyId()),
+			ChainOwnerId: wasmlib.NewScMutableAgentId(r, idxMap[IdxResultChainOwnerId]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -417,7 +421,7 @@ func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncTestEventLogGenericDataContext{
 		Params: FuncTestEventLogGenericDataParams{
-			Counter: wasmlib.NewScImmutableInt64(p, ParamCounter.KeyId()),
+			Counter: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamCounter]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -457,7 +461,7 @@ func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncWithdrawToChainContext{
 		Params: FuncWithdrawToChainParams{
-			ChainId: wasmlib.NewScImmutableChainId(p, ParamChainId.KeyId()),
+			ChainId: wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
 		},
 		State: TestCoreFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -485,10 +489,10 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params().MapId()
 	f := &ViewCheckContextFromViewEPContext{
 		Params: ViewCheckContextFromViewEPParams{
-			AgentId:         wasmlib.NewScImmutableAgentId(p, ParamAgentId.KeyId()),
-			ChainId:         wasmlib.NewScImmutableChainId(p, ParamChainId.KeyId()),
-			ChainOwnerId:    wasmlib.NewScImmutableAgentId(p, ParamChainOwnerId.KeyId()),
-			ContractCreator: wasmlib.NewScImmutableAgentId(p, ParamContractCreator.KeyId()),
+			AgentId:         wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAgentId]),
+			ChainId:         wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
+			ChainOwnerId:    wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamChainOwnerId]),
+			ContractCreator: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamContractCreator]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -522,10 +526,10 @@ func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewFibonacciContext{
 		Params: ViewFibonacciParams{
-			IntValue: wasmlib.NewScImmutableInt64(p, ParamIntValue.KeyId()),
+			IntValue: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamIntValue]),
 		},
 		Results: ViewFibonacciResults{
-			IntValue: wasmlib.NewScMutableInt64(r, ResultIntValue.KeyId()),
+			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -550,7 +554,7 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewGetCounterContext{
 		Results: ViewGetCounterResults{
-			Counter: wasmlib.NewScMutableInt64(r, ResultCounter.KeyId()),
+			Counter: wasmlib.NewScMutableInt64(r, idxMap[IdxResultCounter]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -574,7 +578,7 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params().MapId()
 	f := &ViewGetIntContext{
 		Params: ViewGetIntParams{
-			Name: wasmlib.NewScImmutableString(p, ParamName.KeyId()),
+			Name: wasmlib.NewScImmutableString(p, idxMap[IdxParamName]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -620,13 +624,13 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	p := ctx.Params().MapId()
 	f := &ViewPassTypesViewContext{
 		Params: ViewPassTypesViewParams{
-			Hash:       wasmlib.NewScImmutableHash(p, ParamHash.KeyId()),
-			Hname:      wasmlib.NewScImmutableHname(p, ParamHname.KeyId()),
-			HnameZero:  wasmlib.NewScImmutableHname(p, ParamHnameZero.KeyId()),
-			Int64:      wasmlib.NewScImmutableInt64(p, ParamInt64.KeyId()),
-			Int64Zero:  wasmlib.NewScImmutableInt64(p, ParamInt64Zero.KeyId()),
-			String:     wasmlib.NewScImmutableString(p, ParamString.KeyId()),
-			StringZero: wasmlib.NewScImmutableString(p, ParamStringZero.KeyId()),
+			Hash:       wasmlib.NewScImmutableHash(p, idxMap[IdxParamHash]),
+			Hname:      wasmlib.NewScImmutableHname(p, idxMap[IdxParamHname]),
+			HnameZero:  wasmlib.NewScImmutableHname(p, idxMap[IdxParamHnameZero]),
+			Int64:      wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64]),
+			Int64Zero:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64Zero]),
+			String:     wasmlib.NewScImmutableString(p, idxMap[IdxParamString]),
+			StringZero: wasmlib.NewScImmutableString(p, idxMap[IdxParamStringZero]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -672,7 +676,7 @@ func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewTestChainOwnerIDViewContext{
 		Results: ViewTestChainOwnerIDViewResults{
-			ChainOwnerId: wasmlib.NewScMutableAgentId(r, ResultChainOwnerId.KeyId()),
+			ChainOwnerId: wasmlib.NewScMutableAgentId(r, idxMap[IdxResultChainOwnerId]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -711,7 +715,7 @@ func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewTestSandboxCallContext{
 		Results: ViewTestSandboxCallResults{
-			SandboxCall: wasmlib.NewScMutableString(r, ResultSandboxCall.KeyId()),
+			SandboxCall: wasmlib.NewScMutableString(r, idxMap[IdxResultSandboxCall]),
 		},
 		State: TestCoreViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

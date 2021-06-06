@@ -12,6 +12,7 @@ use wasmlib::*;
 use wasmlib::host::*;
 
 use crate::*;
+use crate::keys::*;
 
 pub struct TestCoreFuncState {
     pub(crate) state_id: i32,
@@ -19,19 +20,19 @@ pub struct TestCoreFuncState {
 
 impl TestCoreFuncState {
     pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_COUNTER.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
     }
 
     pub fn hname_ep(&self) -> ScMutableHname {
-        ScMutableHname::new(self.state_id, VAR_HNAME_EP.get_key_id())
+        ScMutableHname::new(self.state_id, idx_map(IDX_VAR_HNAME_EP))
     }
 
     pub fn minted_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.state_id, VAR_MINTED_COLOR.get_key_id())
+        ScMutableColor::new(self.state_id, idx_map(IDX_VAR_MINTED_COLOR))
     }
 
     pub fn minted_supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, VAR_MINTED_SUPPLY.get_key_id())
+        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_MINTED_SUPPLY))
     }
 }
 
@@ -41,18 +42,18 @@ pub struct TestCoreViewState {
 
 impl TestCoreViewState {
     pub fn counter(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_COUNTER.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
     }
 
     pub fn hname_ep(&self) -> ScImmutableHname {
-        ScImmutableHname::new(self.state_id, VAR_HNAME_EP.get_key_id())
+        ScImmutableHname::new(self.state_id, idx_map(IDX_VAR_HNAME_EP))
     }
 
     pub fn minted_color(&self) -> ScImmutableColor {
-        ScImmutableColor::new(self.state_id, VAR_MINTED_COLOR.get_key_id())
+        ScImmutableColor::new(self.state_id, idx_map(IDX_VAR_MINTED_COLOR))
     }
 
     pub fn minted_supply(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, VAR_MINTED_SUPPLY.get_key_id())
+        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_MINTED_SUPPLY))
     }
 }

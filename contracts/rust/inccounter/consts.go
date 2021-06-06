@@ -12,13 +12,13 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const ScName = "inccounter"
 const HScName = wasmlib.ScHname(0xaf2438e9)
 
-const ParamCounter = wasmlib.Key("counter")
-const ParamNumRepeats = wasmlib.Key("numRepeats")
+const ParamCounter = "counter"
+const ParamNumRepeats = "numRepeats"
 
-const ResultCounter = wasmlib.Key("counter")
+const ResultCounter = "counter"
 
-const VarCounter = wasmlib.Key("counter")
-const VarNumRepeats = wasmlib.Key("numRepeats")
+const VarCounter = "counter"
+const VarNumRepeats = "numRepeats"
 
 const FuncCallIncrement = "callIncrement"
 const FuncCallIncrementRecurse5x = "callIncrementRecurse5x"

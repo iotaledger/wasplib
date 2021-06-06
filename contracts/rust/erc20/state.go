@@ -27,17 +27,17 @@ type Erc20FuncState struct {
 }
 
 func (s Erc20FuncState) AllAllowances() MapAgentIdToMutableAllowancesForAgent {
-	mapId := wasmlib.GetObjectId(s.stateId, VarAllAllowances.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarAllAllowances], wasmlib.TYPE_MAP)
 	return MapAgentIdToMutableAllowancesForAgent{objId: mapId}
 }
 
 func (s Erc20FuncState) Balances() MapAgentIdToMutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, VarBalances.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBalances], wasmlib.TYPE_MAP)
 	return MapAgentIdToMutableInt64{objId: mapId}
 }
 
 func (s Erc20FuncState) Supply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarSupply.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarSupply])
 }
 
 type MapAgentIdToImmutableAllowancesForAgent struct {
@@ -54,15 +54,15 @@ type Erc20ViewState struct {
 }
 
 func (s Erc20ViewState) AllAllowances() MapAgentIdToImmutableAllowancesForAgent {
-	mapId := wasmlib.GetObjectId(s.stateId, VarAllAllowances.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarAllAllowances], wasmlib.TYPE_MAP)
 	return MapAgentIdToImmutableAllowancesForAgent{objId: mapId}
 }
 
 func (s Erc20ViewState) Balances() MapAgentIdToImmutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, VarBalances.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBalances], wasmlib.TYPE_MAP)
 	return MapAgentIdToImmutableInt64{objId: mapId}
 }
 
 func (s Erc20ViewState) Supply() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarSupply.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarSupply])
 }

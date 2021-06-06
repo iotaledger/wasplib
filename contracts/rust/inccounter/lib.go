@@ -24,6 +24,10 @@ func OnLoad() {
 	exports.AddFunc(FuncTestLeb128, funcTestLeb128Thunk)
 	exports.AddFunc(FuncWhenMustIncrement, funcWhenMustIncrementThunk)
 	exports.AddView(ViewGetCounter, viewGetCounterThunk)
+
+	for i, key := range keyMap {
+		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+	}
 }
 
 type FuncCallIncrementContext struct {
@@ -85,7 +89,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncInitContext{
 		Params: FuncInitParams{
-			Counter: wasmlib.NewScImmutableInt64(p, ParamCounter.KeyId()),
+			Counter: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamCounter]),
 		},
 		State: IncCounterFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -184,7 +188,7 @@ func funcRepeatManyThunk(ctx wasmlib.ScFuncContext) {
 	p := ctx.Params().MapId()
 	f := &FuncRepeatManyContext{
 		Params: FuncRepeatManyParams{
-			NumRepeats: wasmlib.NewScImmutableInt64(p, ParamNumRepeats.KeyId()),
+			NumRepeats: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamNumRepeats]),
 		},
 		State: IncCounterFuncState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
@@ -238,7 +242,7 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	r := ctx.Results().MapId()
 	f := &ViewGetCounterContext{
 		Results: ViewGetCounterResults{
-			Counter: wasmlib.NewScMutableInt64(r, ResultCounter.KeyId()),
+			Counter: wasmlib.NewScMutableInt64(r, idxMap[IdxResultCounter]),
 		},
 		State: IncCounterViewState{
 			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),

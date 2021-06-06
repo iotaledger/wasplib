@@ -14,11 +14,11 @@ type IncCounterFuncState struct {
 }
 
 func (s IncCounterFuncState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarCounter.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarCounter])
 }
 
 func (s IncCounterFuncState) NumRepeats() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarNumRepeats.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarNumRepeats])
 }
 
 type IncCounterViewState struct {
@@ -26,9 +26,9 @@ type IncCounterViewState struct {
 }
 
 func (s IncCounterViewState) Counter() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarCounter.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarCounter])
 }
 
 func (s IncCounterViewState) NumRepeats() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarNumRepeats.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarNumRepeats])
 }

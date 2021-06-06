@@ -14,7 +14,7 @@ type TestWasmLibFuncState struct {
 }
 
 func (s TestWasmLibFuncState) Dummy() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.stateId, VarDummy.KeyId())
+	return wasmlib.NewScMutableAgentId(s.stateId, idxMap[IdxVarDummy])
 }
 
 type TestWasmLibViewState struct {
@@ -22,5 +22,5 @@ type TestWasmLibViewState struct {
 }
 
 func (s TestWasmLibViewState) Dummy() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.stateId, VarDummy.KeyId())
+	return wasmlib.NewScImmutableAgentId(s.stateId, idxMap[IdxVarDummy])
 }

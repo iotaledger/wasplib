@@ -42,25 +42,25 @@ type DividendFuncState struct {
 }
 
 func (s DividendFuncState) Factor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarFactor.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarFactor])
 }
 
 func (s DividendFuncState) MemberList() ArrayOfMutableAddress {
-	arrId := wasmlib.GetObjectId(s.stateId, VarMemberList.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
 	return ArrayOfMutableAddress{objId: arrId}
 }
 
 func (s DividendFuncState) Members() MapAddressToMutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, VarMembers.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMembers], wasmlib.TYPE_MAP)
 	return MapAddressToMutableInt64{objId: mapId}
 }
 
 func (s DividendFuncState) Owner() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.stateId, VarOwner.KeyId())
+	return wasmlib.NewScMutableAgentId(s.stateId, idxMap[IdxVarOwner])
 }
 
 func (s DividendFuncState) TotalFactor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, VarTotalFactor.KeyId())
+	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarTotalFactor])
 }
 
 type ArrayOfImmutableAddress struct {
@@ -88,23 +88,23 @@ type DividendViewState struct {
 }
 
 func (s DividendViewState) Factor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarFactor.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarFactor])
 }
 
 func (s DividendViewState) MemberList() ArrayOfImmutableAddress {
-	arrId := wasmlib.GetObjectId(s.stateId, VarMemberList.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
+	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
 	return ArrayOfImmutableAddress{objId: arrId}
 }
 
 func (s DividendViewState) Members() MapAddressToImmutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, VarMembers.KeyId(), wasmlib.TYPE_MAP)
+	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMembers], wasmlib.TYPE_MAP)
 	return MapAddressToImmutableInt64{objId: mapId}
 }
 
 func (s DividendViewState) Owner() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.stateId, VarOwner.KeyId())
+	return wasmlib.NewScImmutableAgentId(s.stateId, idxMap[IdxVarOwner])
 }
 
 func (s DividendViewState) TotalFactor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, VarTotalFactor.KeyId())
+	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarTotalFactor])
 }
