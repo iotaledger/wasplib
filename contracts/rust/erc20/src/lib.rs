@@ -59,7 +59,7 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
             delegation: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_DELEGATION)),
         },
         state: Erc20FuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.amount.exists(), "missing mandatory amount");
@@ -87,7 +87,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
             supply:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_SUPPLY)),
         },
         state: Erc20FuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.creator.exists(), "missing mandatory creator");
@@ -115,7 +115,7 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
             amount:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_AMOUNT)),
         },
         state: Erc20FuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.account.exists(), "missing mandatory account");
@@ -145,7 +145,7 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
             recipient: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_RECIPIENT)),
         },
         state: Erc20FuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.account.exists(), "missing mandatory account");
@@ -183,7 +183,7 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
             amount: ScMutableInt64::new(r, idx_map(IDX_RESULT_AMOUNT)),
         },
         state: Erc20ViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.account.exists(), "missing mandatory account");
@@ -218,7 +218,7 @@ fn view_balance_of_thunk(ctx: &ScViewContext) {
             amount: ScMutableInt64::new(r, idx_map(IDX_RESULT_AMOUNT)),
         },
         state: Erc20ViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.account.exists(), "missing mandatory account");
@@ -243,7 +243,7 @@ fn view_total_supply_thunk(ctx: &ScViewContext) {
             supply: ScMutableInt64::new(r, idx_map(IDX_RESULT_SUPPLY)),
         },
         state: Erc20ViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_total_supply(ctx, &f);

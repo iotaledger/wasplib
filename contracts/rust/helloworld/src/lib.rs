@@ -42,7 +42,7 @@ fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld");
     let f = FuncHelloWorldContext {
         state: HelloWorldFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_hello_world(ctx, &f);
@@ -66,7 +66,7 @@ fn view_get_hello_world_thunk(ctx: &ScViewContext) {
             hello_world: ScMutableString::new(r, idx_map(IDX_RESULT_HELLO_WORLD)),
         },
         state: HelloWorldViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_get_hello_world(ctx, &f);

@@ -54,7 +54,7 @@ fn func_donate_thunk(ctx: &ScFuncContext) {
             feedback: ScImmutableString::new(p, idx_map(IDX_PARAM_FEEDBACK)),
         },
         state: DonateWithFeedbackFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_donate(ctx, &f);
@@ -81,7 +81,7 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
             amount: ScImmutableInt64::new(p, idx_map(IDX_PARAM_AMOUNT)),
         },
         state: DonateWithFeedbackFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_withdraw(ctx, &f);
@@ -122,7 +122,7 @@ fn view_donation_thunk(ctx: &ScViewContext) {
             timestamp: ScMutableInt64::new(r, idx_map(IDX_RESULT_TIMESTAMP)),
         },
         state: DonateWithFeedbackViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.nr.exists(), "missing mandatory nr");
@@ -151,7 +151,7 @@ fn view_donation_info_thunk(ctx: &ScViewContext) {
             total_donation: ScMutableInt64::new(r, idx_map(IDX_RESULT_TOTAL_DONATION)),
         },
         state: DonateWithFeedbackViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_donation_info(ctx, &f);

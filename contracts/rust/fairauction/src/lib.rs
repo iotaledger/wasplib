@@ -59,7 +59,7 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
             color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
         },
         state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.color.exists(), "missing mandatory color");
@@ -84,7 +84,7 @@ fn func_place_bid_thunk(ctx: &ScFuncContext) {
             color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
         },
         state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.color.exists(), "missing mandatory color");
@@ -112,7 +112,7 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
             owner_margin: ScImmutableInt64::new(p, idx_map(IDX_PARAM_OWNER_MARGIN)),
         },
         state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.owner_margin.exists(), "missing mandatory ownerMargin");
@@ -143,7 +143,7 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
             minimum_bid: ScImmutableInt64::new(p, idx_map(IDX_PARAM_MINIMUM_BID)),
         },
         state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.color.exists(), "missing mandatory color");
@@ -200,7 +200,7 @@ fn view_get_info_thunk(ctx: &ScViewContext) {
             when_started:   ScMutableInt64::new(r, idx_map(IDX_RESULT_WHEN_STARTED)),
         },
         state: FairAuctionViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.color.exists(), "missing mandatory color");

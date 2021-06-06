@@ -49,7 +49,7 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
 
     let f = FuncLockBetsContext {
         state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_lock_bets(ctx, &f);
@@ -67,7 +67,7 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
 
     let f = FuncPayWinnersContext {
         state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_pay_winners(ctx, &f);
@@ -91,7 +91,7 @@ fn func_place_bet_thunk(ctx: &ScFuncContext) {
             number: ScImmutableInt64::new(p, idx_map(IDX_PARAM_NUMBER)),
         },
         state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.number.exists(), "missing mandatory number");
@@ -119,7 +119,7 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
             play_period: ScImmutableInt64::new(p, idx_map(IDX_PARAM_PLAY_PERIOD)),
         },
         state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.play_period.exists(), "missing mandatory playPeriod");
@@ -144,7 +144,7 @@ fn view_last_winning_number_thunk(ctx: &ScViewContext) {
             last_winning_number: ScMutableInt64::new(r, idx_map(IDX_RESULT_LAST_WINNING_NUMBER)),
         },
         state: FairRouletteViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_last_winning_number(ctx, &f);

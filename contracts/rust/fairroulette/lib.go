@@ -33,7 +33,7 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &FuncLockBetsContext{
 		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcLockBets(ctx, f)
@@ -51,7 +51,7 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &FuncPayWinnersContext{
 		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcPayWinners(ctx, f)
@@ -75,7 +75,7 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 			Number: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamNumber]),
 		},
 		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Number.Exists(), "missing mandatory number")
@@ -103,7 +103,7 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 			PlayPeriod: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamPlayPeriod]),
 		},
 		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.PlayPeriod.Exists(), "missing mandatory playPeriod")
@@ -128,7 +128,7 @@ func viewLastWinningNumberThunk(ctx wasmlib.ScViewContext) {
 			LastWinningNumber: wasmlib.NewScMutableInt64(r, idxMap[IdxResultLastWinningNumber]),
 		},
 		State: FairRouletteViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewLastWinningNumber(ctx, f)

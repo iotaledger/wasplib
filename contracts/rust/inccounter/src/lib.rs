@@ -53,7 +53,7 @@ fn func_call_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrement");
     let f = FuncCallIncrementContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_call_increment(ctx, &f);
@@ -68,7 +68,7 @@ fn func_call_increment_recurse5x_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrementRecurse5x");
     let f = FuncCallIncrementRecurse5xContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_call_increment_recurse5x(ctx, &f);
@@ -83,7 +83,7 @@ fn func_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcIncrement");
     let f = FuncIncrementContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_increment(ctx, &f);
@@ -107,7 +107,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
             counter: ScImmutableInt64::new(p, idx_map(IDX_PARAM_COUNTER)),
         },
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_init(ctx, &f);
@@ -122,7 +122,7 @@ fn func_local_state_internal_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateInternalCall");
     let f = FuncLocalStateInternalCallContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_local_state_internal_call(ctx, &f);
@@ -137,7 +137,7 @@ fn func_local_state_post_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStatePost");
     let f = FuncLocalStatePostContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_local_state_post(ctx, &f);
@@ -152,7 +152,7 @@ fn func_local_state_sandbox_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateSandboxCall");
     let f = FuncLocalStateSandboxCallContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_local_state_sandbox_call(ctx, &f);
@@ -167,7 +167,7 @@ fn func_loop_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLoop");
     let f = FuncLoopContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_loop(ctx, &f);
@@ -182,7 +182,7 @@ fn func_post_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcPostIncrement");
     let f = FuncPostIncrementContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_post_increment(ctx, &f);
@@ -206,7 +206,7 @@ fn func_repeat_many_thunk(ctx: &ScFuncContext) {
             num_repeats: ScImmutableInt64::new(p, idx_map(IDX_PARAM_NUM_REPEATS)),
         },
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_repeat_many(ctx, &f);
@@ -221,7 +221,7 @@ fn func_test_leb128_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcTestLeb128");
     let f = FuncTestLeb128Context {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_leb128(ctx, &f);
@@ -236,7 +236,7 @@ fn func_when_must_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcWhenMustIncrement");
     let f = FuncWhenMustIncrementContext {
         state: IncCounterFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_when_must_increment(ctx, &f);
@@ -260,7 +260,7 @@ fn view_get_counter_thunk(ctx: &ScViewContext) {
             counter: ScMutableInt64::new(r, idx_map(IDX_RESULT_COUNTER)),
         },
         state: IncCounterViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_get_counter(ctx, &f);

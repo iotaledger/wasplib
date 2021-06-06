@@ -45,7 +45,7 @@ fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide");
     let f = FuncDivideContext {
         state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_divide(ctx, &f);
@@ -69,7 +69,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
             owner: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_OWNER)),
         },
         state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_init(ctx, &f);
@@ -100,7 +100,7 @@ fn func_member_thunk(ctx: &ScFuncContext) {
             factor:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_FACTOR)),
         },
         state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.address.exists(), "missing mandatory address");
@@ -131,7 +131,7 @@ fn func_set_owner_thunk(ctx: &ScFuncContext) {
             owner: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_OWNER)),
         },
         state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.owner.exists(), "missing mandatory owner");
@@ -165,7 +165,7 @@ fn view_get_factor_thunk(ctx: &ScViewContext) {
             factor: ScMutableInt64::new(r, idx_map(IDX_RESULT_FACTOR)),
         },
         state: DividendViewState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     ctx.require(f.params.address.exists(), "missing mandatory address");

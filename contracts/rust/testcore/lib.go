@@ -75,7 +75,7 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.IntValue.Exists(), "missing mandatory intValue")
@@ -108,7 +108,7 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 			ContractCreator: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamContractCreator]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.AgentId.Exists(), "missing mandatory agentId")
@@ -128,7 +128,7 @@ func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcDoNothing")
 	f := &FuncDoNothingContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcDoNothing(ctx, f)
@@ -154,7 +154,7 @@ func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
 			MintedSupply: wasmlib.NewScMutableInt64(r, idxMap[IdxResultMintedSupply]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcGetMintedSupply(ctx, f)
@@ -169,7 +169,7 @@ func funcIncCounterThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcIncCounter")
 	f := &FuncIncCounterContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcIncCounter(ctx, f)
@@ -184,7 +184,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcInit")
 	f := &FuncInitContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcInit(ctx, f)
@@ -220,7 +220,7 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 			StringZero: wasmlib.NewScImmutableString(p, idxMap[IdxParamStringZero]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Hash.Exists(), "missing mandatory hash")
@@ -260,7 +260,7 @@ func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.IntValue.Exists(), "missing mandatory intValue")
@@ -287,7 +287,7 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 			Address: wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Address.Exists(), "missing mandatory address")
@@ -314,7 +314,7 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 			Name:     wasmlib.NewScImmutableString(p, idxMap[IdxParamName]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.IntValue.Exists(), "missing mandatory intValue")
@@ -331,7 +331,7 @@ func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicFullEP")
 	f := &FuncTestCallPanicFullEPContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestCallPanicFullEP(ctx, f)
@@ -346,7 +346,7 @@ func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicViewEPFromFull")
 	f := &FuncTestCallPanicViewEPFromFullContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestCallPanicViewEPFromFull(ctx, f)
@@ -370,7 +370,7 @@ func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 			ChainOwnerId: wasmlib.NewScMutableAgentId(r, idxMap[IdxResultChainOwnerId]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestChainOwnerIDFull(ctx, f)
@@ -385,7 +385,7 @@ func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogDeploy")
 	f := &FuncTestEventLogDeployContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestEventLogDeploy(ctx, f)
@@ -400,7 +400,7 @@ func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogEventData")
 	f := &FuncTestEventLogEventDataContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestEventLogEventData(ctx, f)
@@ -424,7 +424,7 @@ func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 			Counter: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamCounter]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Counter.Exists(), "missing mandatory counter")
@@ -440,7 +440,7 @@ func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestPanicFullEP")
 	f := &FuncTestPanicFullEPContext{
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcTestPanicFullEP(ctx, f)
@@ -464,7 +464,7 @@ func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 			ChainId: wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
 		},
 		State: TestCoreFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.ChainId.Exists(), "missing mandatory chainId")
@@ -495,7 +495,7 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 			ContractCreator: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamContractCreator]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.AgentId.Exists(), "missing mandatory agentId")
@@ -532,7 +532,7 @@ func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 			IntValue: wasmlib.NewScMutableInt64(r, idxMap[IdxResultIntValue]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.IntValue.Exists(), "missing mandatory intValue")
@@ -557,7 +557,7 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 			Counter: wasmlib.NewScMutableInt64(r, idxMap[IdxResultCounter]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewGetCounter(ctx, f)
@@ -581,7 +581,7 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 			Name: wasmlib.NewScImmutableString(p, idxMap[IdxParamName]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Name.Exists(), "missing mandatory name")
@@ -597,7 +597,7 @@ func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewJustView")
 	f := &ViewJustViewContext{
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewJustView(ctx, f)
@@ -633,7 +633,7 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 			StringZero: wasmlib.NewScImmutableString(p, idxMap[IdxParamStringZero]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Hash.Exists(), "missing mandatory hash")
@@ -655,7 +655,7 @@ func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestCallPanicViewEPFromView")
 	f := &ViewTestCallPanicViewEPFromViewContext{
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewTestCallPanicViewEPFromView(ctx, f)
@@ -679,7 +679,7 @@ func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 			ChainOwnerId: wasmlib.NewScMutableAgentId(r, idxMap[IdxResultChainOwnerId]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewTestChainOwnerIDView(ctx, f)
@@ -694,7 +694,7 @@ func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestPanicViewEP")
 	f := &ViewTestPanicViewEPContext{
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewTestPanicViewEP(ctx, f)
@@ -718,7 +718,7 @@ func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 			SandboxCall: wasmlib.NewScMutableString(r, idxMap[IdxResultSandboxCall]),
 		},
 		State: TestCoreViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewTestSandboxCall(ctx, f)

@@ -30,7 +30,7 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide")
 	f := &FuncDivideContext{
 		State: DividendFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcDivide(ctx, f)
@@ -54,7 +54,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 			Owner: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamOwner]),
 		},
 		State: DividendFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcInit(ctx, f)
@@ -85,7 +85,7 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 			Factor:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamFactor]),
 		},
 		State: DividendFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Address.Exists(), "missing mandatory address")
@@ -116,7 +116,7 @@ func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 			Owner: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamOwner]),
 		},
 		State: DividendFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Owner.Exists(), "missing mandatory owner")
@@ -150,7 +150,7 @@ func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 			Factor: wasmlib.NewScMutableInt64(r, idxMap[IdxResultFactor]),
 		},
 		State: DividendViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Address.Exists(), "missing mandatory address")

@@ -27,7 +27,7 @@ func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("helloworld.funcHelloWorld")
 	f := &FuncHelloWorldContext{
 		State: HelloWorldFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcHelloWorld(ctx, f)
@@ -51,7 +51,7 @@ func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
 			HelloWorld: wasmlib.NewScMutableString(r, idxMap[IdxResultHelloWorld]),
 		},
 		State: HelloWorldViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewGetHelloWorld(ctx, f)

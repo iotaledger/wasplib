@@ -12,8 +12,6 @@ import (
 	"strings"
 )
 
-const generateJavaThunk = true
-
 var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
 
 var javaTypes = StringMap{
@@ -194,11 +192,6 @@ func (s *Schema) GenerateJavaLib() error {
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.immutable.*;\n")
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.keys.*;\n\n")
 
-	thunk := ""
-	if generateJavaThunk {
-		thunk = "Thunk"
-	}
-
 	fmt.Fprintf(file, "public class %sThunk {\n", s.FullName)
 	fmt.Fprintf(file, "    public static void main(String[] args) {\n")
 	fmt.Fprintf(file, "    }\n\n")
@@ -209,21 +202,19 @@ func (s *Schema) GenerateJavaLib() error {
 	for _, funcDef := range s.Funcs {
 		name := capitalize(funcDef.FullName)
 		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %s%s::%s%s);\n", kind, name, s.FullName, thunk, funcDef.FullName, thunk)
+		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %sThunk::%sThunk);\n", kind, name, s.FullName, funcDef.FullName)
 	}
 	fmt.Fprintf(file, "    }\n")
 
-	if generateJavaThunk {
-		// generate parameter structs and thunks to set up and check parameters
-		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FullName)
-			params, err := os.Create("lib/" + name + "Params.java")
-			if err != nil {
-				return err
-			}
-			defer params.Close()
-			s.GenerateJavaThunk(file, params, funcDef)
+	// generate parameter structs and thunks to set up and check parameters
+	for _, funcDef := range s.Funcs {
+		name := capitalize(funcDef.FullName)
+		params, err := os.Create("lib/" + name + "Params.java")
+		if err != nil {
+			return err
 		}
+		defer params.Close()
+		s.GenerateJavaThunk(file, params, funcDef)
 	}
 
 	fmt.Fprintf(file, "}\n")
@@ -253,9 +244,8 @@ func (s *Schema) GenerateJavaConsts() error {
 
 	if len(s.Params) != 0 {
 		fmt.Fprintln(file)
-		for _, name := range sortedFields(s.Params) {
-			param := s.Params[name]
-			name = capitalize(param.Name)
+		for _, param := range s.Params {
+			name := capitalize(param.Name)
 			fmt.Fprintf(file, "    public static final Key Param%s = new Key(\"%s\");\n", name, param.Alias)
 		}
 	}

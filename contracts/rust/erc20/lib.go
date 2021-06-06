@@ -43,7 +43,7 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 			Delegation: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamDelegation]),
 		},
 		State: Erc20FuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Amount.Exists(), "missing mandatory amount")
@@ -71,7 +71,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 			Supply:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamSupply]),
 		},
 		State: Erc20FuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Creator.Exists(), "missing mandatory creator")
@@ -99,7 +99,7 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 			Amount:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
 		},
 		State: Erc20FuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
@@ -129,7 +129,7 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 			Recipient: wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamRecipient]),
 		},
 		State: Erc20FuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
@@ -167,7 +167,7 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 			Amount: wasmlib.NewScMutableInt64(r, idxMap[IdxResultAmount]),
 		},
 		State: Erc20ViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
@@ -202,7 +202,7 @@ func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 			Amount: wasmlib.NewScMutableInt64(r, idxMap[IdxResultAmount]),
 		},
 		State: Erc20ViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Account.Exists(), "missing mandatory account")
@@ -227,7 +227,7 @@ func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 			Supply: wasmlib.NewScMutableInt64(r, idxMap[IdxResultSupply]),
 		},
 		State: Erc20ViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewTotalSupply(ctx, f)

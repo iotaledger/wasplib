@@ -53,7 +53,7 @@ func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 			String:    wasmlib.NewScImmutableString(p, idxMap[IdxParamString]),
 		},
 		State: TestWasmLibFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcParamTypes(ctx, f)

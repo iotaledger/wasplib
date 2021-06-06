@@ -70,12 +70,12 @@ func copyright(noChange bool) string {
 	return text
 }
 
-func formatter(file *os.File, on bool) (int, error) {
-	onOff := "off"
+func formatter(file *os.File, on bool) {
 	if on {
-		onOff = "on"
+		fmt.Fprintf(file, "\n//@formatter:%s\n", "on")
+		return
 	}
-	return fmt.Fprintf(file, "//@formatter:%s\n", onOff)
+	fmt.Fprintf(file, "//@formatter:%s\n\n", "off")
 }
 
 // convert to lower case

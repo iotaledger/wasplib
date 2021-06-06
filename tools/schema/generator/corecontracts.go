@@ -32,9 +32,8 @@ func GenerateGoCoreContractsSchema(coreSchemas []*Schema) error {
 
 		if len(schema.Params) != 0 {
 			fmt.Fprintln(file)
-			for _, name := range sortedFields(schema.Params) {
-				param := schema.Params[name]
-				name = capitalize(param.Name)
+			for _, param := range schema.Params {
+				name := capitalize(param.Name)
 				fmt.Fprintf(file, "const Core%sParam%s = Key(\"%s\")\n", scName, name, param.Alias)
 			}
 		}
@@ -67,9 +66,8 @@ func GenerateJavaCoreContractsSchema(coreSchemas []*Schema) error {
 
 		if len(schema.Params) != 0 {
 			fmt.Fprintln(file)
-			for _, name := range sortedFields(schema.Params) {
-				param := schema.Params[name]
-				name = capitalize(param.Name)
+			for _, param := range schema.Params {
+				name := capitalize(param.Name)
 				fmt.Fprintf(file, "    public static final Key %sParam%s = new Key(\"%s\");\n", scName, name, param.Alias)
 			}
 		}
@@ -102,9 +100,8 @@ func GenerateRustCoreContractsSchema(coreSchemas []*Schema) error {
 
 		if len(schema.Params) != 0 {
 			fmt.Fprintln(file)
-			for _, name := range sortedFields(schema.Params) {
-				param := schema.Params[name]
-				name = upper(snake(name))
+			for _, param := range schema.Params {
+				name := upper(snake(param.Name))
 				fmt.Fprintf(file, "pub const CORE_%s_PARAM_%s: &str = \"%s\";\n", scName, name, param.Alias)
 			}
 		}

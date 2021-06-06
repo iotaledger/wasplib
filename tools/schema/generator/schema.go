@@ -46,10 +46,11 @@ type Schema struct {
 	Name        string
 	FullName    string
 	Description string
+	KeyId       int32
 	Funcs       []*FuncDef
 	NewTypes    map[string]bool
-	Params      FieldMap
-	Results     FieldMap
+	Params      []*Field
+	Results     []*Field
 	StateVars   []*Field
 	Subtypes    []*Field
 	Types       []*TypeDef
@@ -57,10 +58,7 @@ type Schema struct {
 }
 
 func NewSchema() *Schema {
-	s := &Schema{}
-	s.Params = make(FieldMap)
-	s.Results = make(FieldMap)
-	return s
+	return &Schema{}
 }
 
 func (s *Schema) Compile(jsonSchema *JsonSchema) error {
@@ -79,13 +77,21 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 	if err != nil {
 		return err
 	}
-	err = s.compileFuncs(jsonSchema, false)
+	params := make(FieldMap)
+	results := make(FieldMap)
+	err = s.compileFuncs(jsonSchema, &params, &results, false)
 	if err != nil {
 		return err
 	}
-	err = s.compileFuncs(jsonSchema, true)
+	err = s.compileFuncs(jsonSchema, &params, &results, true)
 	if err != nil {
 		return err
+	}
+	for _, name := range sortedFields(params) {
+		s.Params = append(s.Params, params[name])
+	}
+	for _, name := range sortedFields(results) {
+		s.Results = append(s.Results, results[name])
 	}
 	return s.compileStateVars(jsonSchema)
 }
@@ -99,7 +105,7 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 	return field, nil
 }
 
-func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) (err error) {
+func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results *FieldMap, views bool) (err error) {
 	//TODO check for clashing Hnames
 
 	prefix := "func"
@@ -117,11 +123,11 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, views bool) (err error) {
 		funcDef.Name = funcName
 		funcDef.FullName = prefix + capitalize(funcDef.Name)
 		funcDef.Access = funcDesc.Access
-		funcDef.Params, err = s.compileFuncFields(funcDesc.Params, &s.Params, "param")
+		funcDef.Params, err = s.compileFuncFields(funcDesc.Params, params, "param")
 		if err != nil {
 			return err
 		}
-		funcDef.Results, err = s.compileFuncFields(funcDesc.Results, &s.Results, "result")
+		funcDef.Results, err = s.compileFuncFields(funcDesc.Results, results, "result")
 		if err != nil {
 			return err
 		}

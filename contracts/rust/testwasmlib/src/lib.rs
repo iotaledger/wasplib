@@ -68,7 +68,7 @@ fn func_param_types_thunk(ctx: &ScFuncContext) {
             string:     ScImmutableString::new(p, idx_map(IDX_PARAM_STRING)),
         },
         state: TestWasmLibFuncState {
-            state_id: get_object_id(1, KEY_STATE.get_key_id(), TYPE_MAP),
+            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_param_types(ctx, &f);

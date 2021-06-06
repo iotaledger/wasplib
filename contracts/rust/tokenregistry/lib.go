@@ -40,7 +40,7 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 			UserDefined: wasmlib.NewScImmutableString(p, idxMap[IdxParamUserDefined]),
 		},
 		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcMintSupply(ctx, f)
@@ -67,7 +67,7 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
@@ -95,7 +95,7 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
@@ -120,7 +120,7 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: TokenRegistryViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")

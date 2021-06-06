@@ -38,7 +38,7 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 			Feedback: wasmlib.NewScImmutableString(p, idxMap[IdxParamFeedback]),
 		},
 		State: DonateWithFeedbackFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcDonate(ctx, f)
@@ -65,7 +65,7 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 			Amount: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamAmount]),
 		},
 		State: DonateWithFeedbackFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcWithdraw(ctx, f)
@@ -106,7 +106,7 @@ func viewDonationThunk(ctx wasmlib.ScViewContext) {
 			Timestamp: wasmlib.NewScMutableInt64(r, idxMap[IdxResultTimestamp]),
 		},
 		State: DonateWithFeedbackViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Nr.Exists(), "missing mandatory nr")
@@ -135,7 +135,7 @@ func viewDonationInfoThunk(ctx wasmlib.ScViewContext) {
 			TotalDonation: wasmlib.NewScMutableInt64(r, idxMap[IdxResultTotalDonation]),
 		},
 		State: DonateWithFeedbackViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewDonationInfo(ctx, f)

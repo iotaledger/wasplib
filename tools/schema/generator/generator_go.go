@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-const generateGoThunk = true
-
 const importWasmLib = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
 const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/wasmclient\"\n"
 
@@ -45,24 +43,11 @@ var goTypeIds = StringMap{
 func (s *Schema) GenerateGo() error {
 	s.NewTypes = make(map[string]bool)
 
-	err := os.MkdirAll("test", 0755)
+	err := s.generateGoConsts()
 	if err != nil {
 		return err
 	}
-	err = os.MkdirAll("wasmmain", 0755)
-	if err != nil {
-		return err
-	}
-
-	err = s.generateGoWasmMain()
-	if err != nil {
-		return err
-	}
-	err = s.generateGoLib()
-	if err != nil {
-		return err
-	}
-	err = s.generateGoConsts()
+	err = s.generateGoKeys()
 	if err != nil {
 		return err
 	}
@@ -78,7 +63,17 @@ func (s *Schema) GenerateGo() error {
 	if err != nil {
 		return err
 	}
+	err = s.generateGoLib()
+	if err != nil {
+		return err
+	}
 	err = s.generateGoFuncs()
+	if err != nil {
+		return err
+	}
+
+	// go-specific stuff
+	err = s.generateGoWasmMain()
 	if err != nil {
 		return err
 	}
@@ -104,26 +99,9 @@ func (s *Schema) generateGoConsts() error {
 	hName := coretypes.Hn(s.Name)
 	fmt.Fprintf(file, "const HScName = wasmlib.ScHname(0x%s)\n", hName.String())
 
-	if len(s.Params) != 0 {
-		fmt.Fprintln(file)
-		for _, name := range sortedFields(s.Params) {
-			s.generateGoFieldConst(file, s.Params[name], "Param")
-		}
-	}
-
-	if len(s.Results) != 0 {
-		fmt.Fprintln(file)
-		for _, name := range sortedFields(s.Results) {
-			s.generateGoFieldConst(file, s.Results[name], "Result")
-		}
-	}
-
-	if len(s.StateVars) != 0 {
-		fmt.Fprintln(file)
-		for _, stateVar := range s.StateVars {
-			s.generateGoFieldConst(file, stateVar, "Var")
-		}
-	}
+	s.generateGoConstsFields(file, s.Params, "Param")
+	s.generateGoConstsFields(file, s.Results, "Result")
+	s.generateGoConstsFields(file, s.StateVars, "Var")
 
 	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
@@ -142,9 +120,14 @@ func (s *Schema) generateGoConsts() error {
 	return nil
 }
 
-func (s *Schema) generateGoFieldConst(file *os.File, field *Field, prefix string) {
-	name := prefix + capitalize(field.Name)
-	fmt.Fprintf(file, "const %s = wasmlib.Key(\"%s\")\n", name, field.Alias)
+func (s *Schema) generateGoConstsFields(file *os.File, fields []*Field, prefix string) {
+	if len(fields) != 0 {
+		fmt.Fprintln(file)
+		for _, field := range fields {
+			name := prefix + capitalize(field.Name)
+			fmt.Fprintf(file, "const %s = \"%s\"\n", name, field.Alias)
+		}
+	}
 }
 
 func (s *Schema) generateGoFuncs() error {
@@ -214,6 +197,50 @@ func (s *Schema) generateGoFuncsNew(scFileName string) error {
 	return nil
 }
 
+func (s *Schema) generateGoKeys() error {
+	file, err := os.Create("keys.go")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintln(file, copyright(true))
+	fmt.Fprintf(file, "package %s\n\n", s.Name)
+	fmt.Fprintln(file, importWasmLib)
+
+	s.KeyId = 0
+	s.generateGoKeysIndexes(file, s.Params, "Param")
+	s.generateGoKeysIndexes(file, s.Results, "Result")
+	s.generateGoKeysIndexes(file, s.StateVars, "Var")
+
+	size := len(s.Params) + len(s.Results) + len(s.StateVars)
+	fmt.Fprintf(file, "\nvar keyMap = [%d]string {\n", size)
+	s.generateGoKeysArray(file, s.Params, "Param")
+	s.generateGoKeysArray(file, s.Results, "Result")
+	s.generateGoKeysArray(file, s.StateVars, "Var")
+	fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\nvar idxMap [%d]wasmlib.Key32\n", size)
+	return nil
+}
+
+func (s *Schema) generateGoKeysArray(file *os.File, fields []*Field, prefix string) {
+	for _, field := range fields {
+		name := prefix + capitalize(field.Name)
+		fmt.Fprintf(file, "\t%s,\n", name)
+		s.KeyId++
+	}
+}
+
+func (s *Schema) generateGoKeysIndexes(file *os.File, fields []*Field, prefix string) {
+	for _, field := range fields {
+		name := "Idx" + prefix + capitalize(field.Name)
+		field.KeyId = s.KeyId
+		fmt.Fprintf(file, "const %s = %d\n", name, field.KeyId)
+		s.KeyId++
+	}
+}
+
 func (s *Schema) generateGoLib() error {
 	file, err := os.Create("lib.go")
 	if err != nil {
@@ -226,25 +253,23 @@ func (s *Schema) generateGoLib() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintln(file, importWasmLib)
 
-	thunk := ""
-	if generateGoThunk {
-		thunk = "Thunk"
-	}
-
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "\texports := wasmlib.NewScExports()\n")
 	for _, funcDef := range s.Funcs {
 		name := capitalize(funcDef.FullName)
 		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "\texports.Add%s(%s, %s%s)\n", kind, name, funcDef.FullName, thunk)
+		fmt.Fprintf(file, "\texports.Add%s(%s, %sThunk)\n", kind, name, funcDef.FullName)
 	}
+
+	fmt.Fprintf(file, "\n\tfor i,key := range keyMap {\n")
+	fmt.Fprintf(file, "\t\tidxMap[i] = wasmlib.GetKeyIdFromString(key)\n")
+	fmt.Fprintf(file, "\t}\n")
+
 	fmt.Fprintf(file, "}\n")
 
-	if generateGoThunk {
-		// generate parameter structs and thunks to set up and check parameters
-		for _, funcDef := range s.Funcs {
-			s.generateGoThunk(file, funcDef)
-		}
+	// generate parameter structs and thunks to set up and check parameters
+	for _, funcDef := range s.Funcs {
+		s.generateGoThunk(file, funcDef)
 	}
 	return nil
 }
@@ -386,6 +411,7 @@ func (s *Schema) generateGoStateStruct(file *os.File, kind string, mutability st
 
 	for _, stateVar := range s.StateVars {
 		varName := capitalize(stateVar.Name)
+		varId := "idxMap[IdxVar" + varName + "]"
 		varType := goTypeIds[stateVar.Type]
 		if len(varType) == 0 {
 			varType = "wasmlib.TYPE_BYTES"
@@ -394,7 +420,7 @@ func (s *Schema) generateGoStateStruct(file *os.File, kind string, mutability st
 			varType = "wasmlib.TYPE_ARRAY|" + varType
 			arrayType := "ArrayOf" + mutability + stateVar.Type
 			fmt.Fprintf(file, "\nfunc (s %s) %s() %s {\n", x, varName, arrayType)
-			fmt.Fprintf(file, "\tarrId := wasmlib.GetObjectId(s.stateId, Var%s.KeyId(), %s)\n", varName, varType)
+			fmt.Fprintf(file, "\tarrId := wasmlib.GetObjectId(s.stateId, %s, %s)\n", varId, varType)
 			fmt.Fprintf(file, "\treturn %s{objId: arrId}\n", arrayType)
 			fmt.Fprintf(file, "}\n")
 			continue
@@ -403,7 +429,7 @@ func (s *Schema) generateGoStateStruct(file *os.File, kind string, mutability st
 			varType = "wasmlib.TYPE_MAP"
 			mapType := "Map" + stateVar.MapKey + "To" + mutability + stateVar.Type
 			fmt.Fprintf(file, "\nfunc (s %s) %s() %s {\n", x, varName, mapType)
-			fmt.Fprintf(file, "\tmapId := wasmlib.GetObjectId(s.stateId, Var%s.KeyId(), %s)\n", varName, varType)
+			fmt.Fprintf(file, "\tmapId := wasmlib.GetObjectId(s.stateId, %s, %s)\n", varId, varType)
 			fmt.Fprintf(file, "\treturn %s{objId: mapId}\n", mapType)
 			fmt.Fprintf(file, "}\n")
 			continue
@@ -411,7 +437,7 @@ func (s *Schema) generateGoStateStruct(file *os.File, kind string, mutability st
 
 		proxyType := mutability + stateVar.Type
 		fmt.Fprintf(file, "\nfunc (s %s) %s() wasmlib.Sc%s {\n", x, varName, proxyType)
-		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(s.stateId, Var%s.KeyId())\n", proxyType, varName)
+		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(s.stateId, %s)\n", proxyType, varId)
 		fmt.Fprintf(file, "}\n")
 	}
 }
@@ -440,6 +466,10 @@ func (s *Schema) generateGoSubtypes() error {
 }
 
 func (s *Schema) generateGoTests() error {
+	err := os.MkdirAll("test", 0755)
+	if err != nil {
+		return err
+	}
 	//TODO
 	return nil
 }
@@ -508,7 +538,7 @@ func (s *Schema) generateGoThunk(file *os.File, funcDef *FuncDef) {
 	}
 
 	fmt.Fprintf(file, "\t\tState: %s%sState{\n", s.FullName, funcKind)
-	fmt.Fprintf(file, "\t\t\tstateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),\n")
+	fmt.Fprintf(file, "\t\t\tstateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),\n")
 	fmt.Fprintf(file, "\t\t},\n")
 
 	fmt.Fprintf(file, "\t}\n")
@@ -544,9 +574,10 @@ func (s *Schema) generateGoThunkStructInit(file *os.File, funcName string, mutab
 	nameLen, _ := calculatePadding(fields, nil, false)
 	fmt.Fprintf(file, "\t\t%ss: %s%ss{\n", kind, funcName, kind)
 	for _, field := range fields {
-		fldId := capitalize(field.Name)
-		fldName := pad(fldId+":", nameLen+1)
-		fmt.Fprintf(file, "\t\t\t%s wasmlib.NewSc%s%s(%s, %s%s.KeyId()),\n", fldName, mutability, field.Type, mapId, kind, fldId)
+		name := capitalize(field.Name)
+		fldName := pad(name+":", nameLen+1)
+		fldId := "idxMap[Idx" + kind + name + "]"
+		fmt.Fprintf(file, "\t\t\t%s wasmlib.NewSc%s%s(%s, %s),\n", fldName, mutability, field.Type, mapId, fldId)
 	}
 	fmt.Fprintf(file, "\t\t},\n")
 }
@@ -637,6 +668,11 @@ func (s *Schema) generateGoTypeProxy(file *os.File, typeDef *TypeDef, mutable bo
 }
 
 func (s *Schema) generateGoWasmMain() error {
+	err := os.MkdirAll("wasmmain", 0755)
+	if err != nil {
+		return err
+	}
+
 	file, err := os.Create("wasmmain/" + s.Name + ".go")
 	if err != nil {
 		return err

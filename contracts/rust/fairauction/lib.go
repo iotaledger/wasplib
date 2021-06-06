@@ -42,7 +42,7 @@ func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: FairAuctionFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
@@ -67,7 +67,7 @@ func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
 		},
 		State: FairAuctionFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
@@ -95,7 +95,7 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 			OwnerMargin: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamOwnerMargin]),
 		},
 		State: FairAuctionFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.OwnerMargin.Exists(), "missing mandatory ownerMargin")
@@ -126,7 +126,7 @@ func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 			MinimumBid:  wasmlib.NewScImmutableInt64(p, idxMap[IdxParamMinimumBid]),
 		},
 		State: FairAuctionFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
@@ -183,7 +183,7 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 			WhenStarted:   wasmlib.NewScMutableInt64(r, idxMap[IdxResultWhenStarted]),
 		},
 		State: FairAuctionViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState.KeyId(), wasmlib.TYPE_MAP),
+			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")

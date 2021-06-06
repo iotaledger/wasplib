@@ -28,10 +28,11 @@ var FieldTypes = map[string]int32{
 }
 
 type Field struct {
-	Alias    string // internal name alias, can be different from Name
-	Comment  string
 	Name     string // external name for this field
+	Alias    string // internal name alias, can be different from Name
 	Array    bool
+	Comment  string
+	KeyId    int32
 	MapKey   string
 	Optional bool
 	Type     string
