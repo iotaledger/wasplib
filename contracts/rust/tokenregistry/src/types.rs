@@ -5,24 +5,20 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 use wasmlib::host::*;
 
 pub struct Token {
-    pub created: i64,
-    // creation timestamp
-    pub description: String,
-    // description what minted token represents
-    pub minted_by: ScAgentId,
-    // original minter
-    pub owner: ScAgentId,
-    // current owner
-    pub supply: i64,
-    // amount of tokens originally minted
-    pub updated: i64,
-    // last update timestamp
+    pub created:      i64,       // creation timestamp
+    pub description:  String,    // description what minted token represents
+    pub minted_by:    ScAgentId, // original minter
+    pub owner:        ScAgentId, // current owner
+    pub supply:       i64,       // amount of tokens originally minted
+    pub updated:      i64,       // last update timestamp
     pub user_defined: String,    // any user defined text
 }
 
@@ -86,3 +82,5 @@ impl MutableToken {
         Token::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }
+
+//@formatter:on

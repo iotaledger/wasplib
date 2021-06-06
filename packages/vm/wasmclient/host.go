@@ -25,8 +25,10 @@ func hostSetBytes(objId int32, keyId int32, typeId int32, value *byte, size int3
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// implements wasmlib.ScHost interface
 type WasmVmHost struct{}
+
+// implements wasmlib.ScHost interface
+var _ wasmlib.ScHost = &WasmVmHost{}
 
 func ConnectWasmHost() {
 	wasmlib.ConnectHost(WasmVmHost{})
@@ -40,14 +42,20 @@ func (w WasmVmHost) Exists(objId int32, keyId int32, typeId int32) bool {
 }
 
 func (w WasmVmHost) GetBytes(objId int32, keyId int32, typeId int32) []byte {
-	// first query expected length of bytes array
-	size := hostGetBytes(objId, keyId, typeId, nil, 0)
-	if size <= 0 {
-		return []byte(nil)
+	size := int32(wasmlib.TypeSizes[typeId])
+	if size == 0 {
+		// variable-sized type, first query expected length of bytes array
+		// (pass zero-length buffer)
+		size = hostGetBytes(objId, keyId, typeId, nil, 0)
+
+		// -1 means non-existent, so return default value for type
+		if size <= 0 {
+			return []byte(nil)
+		}
 	}
 
-	// allocate a byte array in Wasm memory and
-	// copy the actual data bytes to Wasm byte array
+	// allocate a sufficient length byte array in Wasm memory
+	// and let the host copy the actual data bytes into this Wasm byte array
 	bytes := make([]byte, size)
 	hostGetBytes(objId, keyId, typeId, &bytes[0], size)
 	return bytes

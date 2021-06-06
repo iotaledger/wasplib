@@ -700,6 +700,7 @@ func (s *Schema) generateRustTypes() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
+	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
 	fmt.Fprint(file, useWasmLib)
 	fmt.Fprint(file, useWasmLibHost)
@@ -708,6 +709,8 @@ func (s *Schema) generateRustTypes() error {
 	for _, typeDef := range s.Types {
 		s.generateRustType(file, typeDef)
 	}
+
+	formatter(file, true)
 	return nil
 }
 

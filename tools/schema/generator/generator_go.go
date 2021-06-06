@@ -215,7 +215,7 @@ func (s *Schema) generateGoKeys() error {
 	s.generateGoKeysIndexes(file, s.StateVars, "Var")
 
 	size := len(s.Params) + len(s.Results) + len(s.StateVars)
-	fmt.Fprintf(file, "\nvar keyMap = [%d]string {\n", size)
+	fmt.Fprintf(file, "\nvar keyMap = [%d]string{\n", size)
 	s.generateGoKeysArray(file, s.Params, "Param")
 	s.generateGoKeysArray(file, s.Results, "Result")
 	s.generateGoKeysArray(file, s.StateVars, "Var")
@@ -261,7 +261,7 @@ func (s *Schema) generateGoLib() error {
 		fmt.Fprintf(file, "\texports.Add%s(%s, %sThunk)\n", kind, name, funcDef.FullName)
 	}
 
-	fmt.Fprintf(file, "\n\tfor i,key := range keyMap {\n")
+	fmt.Fprintf(file, "\n\tfor i, key := range keyMap {\n")
 	fmt.Fprintf(file, "\t\tidxMap[i] = wasmlib.GetKeyIdFromString(key)\n")
 	fmt.Fprintf(file, "\t}\n")
 

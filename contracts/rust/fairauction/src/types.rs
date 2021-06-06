@@ -5,33 +5,25 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 use wasmlib::host::*;
 
 pub struct Auction {
-    pub color: ScColor,
-    // color of tokens for sale
-    pub creator: ScAgentId,
-    // issuer of start_auction transaction
-    pub deposit: i64,
-    // deposit by auction owner to cover the SC fees
-    pub description: String,
-    // auction description
-    pub duration: i64,
-    // auction duration in minutes
-    pub highest_bid: i64,
-    // the current highest bid amount
-    pub highest_bidder: ScAgentId,
-    // the current highest bidder
-    pub minimum_bid: i64,
-    // minimum bid amount
-    pub num_tokens: i64,
-    // number of tokens for sale
-    pub owner_margin: i64,
-    // auction owner's margin in promilles
-    pub when_started: i64,       // timestamp when auction started
+    pub color:          ScColor,   // color of tokens for sale
+    pub creator:        ScAgentId, // issuer of start_auction transaction
+    pub deposit:        i64,       // deposit by auction owner to cover the SC fees
+    pub description:    String,    // auction description
+    pub duration:       i64,       // auction duration in minutes
+    pub highest_bid:    i64,       // the current highest bid amount
+    pub highest_bidder: ScAgentId, // the current highest bidder
+    pub minimum_bid:    i64,       // minimum bid amount
+    pub num_tokens:     i64,       // number of tokens for sale
+    pub owner_margin:   i64,       // auction owner's margin in promilles
+    pub when_started:   i64,       // timestamp when auction started
 }
 
 impl Auction {
@@ -104,10 +96,8 @@ impl MutableAuction {
 }
 
 pub struct Bid {
-    pub amount: i64,
-    // cumulative amount of bids from same bidder
-    pub index: i64,
-    // index of bidder in bidder list
+    pub amount:    i64, // cumulative amount of bids from same bidder
+    pub index:     i64, // index of bidder in bidder list
     pub timestamp: i64, // timestamp of most recent bid
 }
 
@@ -163,3 +153,5 @@ impl MutableBid {
         Bid::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }
+
+//@formatter:on

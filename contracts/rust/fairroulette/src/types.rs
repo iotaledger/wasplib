@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
@@ -68,3 +70,5 @@ impl MutableBet {
         Bet::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }
+
+//@formatter:on

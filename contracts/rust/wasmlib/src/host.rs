@@ -23,7 +23,7 @@ pub const TYPE_REQUEST_ID: i32 = 10;
 pub const TYPE_STRING: i32 = 11;
 
 // size in bytes of predefined types, indexed by the TYPE_* consts
-const TYPE_SIZES: &[usize] = &[0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0];
+const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0];
 
 // These 4 external functions are funneling the entire WasmLib functionality
 // to their counterparts on the host.
@@ -70,11 +70,15 @@ pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
 // return the default value for the specified type.
 pub fn get_bytes(obj_id: i32, key_id: Key32, type_id: i32) -> Vec<u8> {
     unsafe {
-        // first query host for length of bytes array (pass zero-length buffer)
-        let size = hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), 0);
+        let mut size = TYPE_SIZES[type_id as usize] as i32;
+        if size == 0 {
+            // variable-sized type, first query expected length of bytes array
+            // (pass zero-length buffer)
+            size = hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), 0);
 
-        // -1 means non-existent, so return default value for type
-        if size < 0 { return vec![0_u8; TYPE_SIZES[type_id as usize]]; }
+            // -1 means non-existent, so return default value for type
+            if size < 0 { return vec![0_u8; 0]; }
+        }
 
         // allocate a sufficient length byte array in Wasm memory
         // and let the host copy the actual data bytes into this Wasm byte array

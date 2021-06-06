@@ -5,20 +5,18 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 use wasmlib::host::*;
 
 pub struct Donation {
-    pub amount: i64,
-    // amount donated
-    pub donator: ScAgentId,
-    // who donated
-    pub error: String,
-    // error to be reported to donator if anything goes wrong
-    pub feedback: String,
-    // the feedback for the person donated to
+    pub amount:    i64,       // amount donated
+    pub donator:   ScAgentId, // who donated
+    pub error:     String,    // error to be reported to donator if anything goes wrong
+    pub feedback:  String,    // the feedback for the person donated to
     pub timestamp: i64,       // when the donation took place
 }
 
@@ -78,3 +76,5 @@ impl MutableDonation {
         Donation::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_BYTES))
     }
 }
+
+//@formatter:on
