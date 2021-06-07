@@ -41,30 +41,18 @@ Here is the full matrix of WasmLib types (excluding array proxies):
 
 | ISCP type  | WasmLib type | Mutable proxy type  | Immutable proxy type  |
 | ---------- | ------------ | ------------------- | --------------------- |
-| Address    | Sc**Address**    | ScMutable**Address**    | ScImmutable**
-Address**    |
-| AgentId    | Sc**AgentId**    | ScMutable**AgentId**    | ScImmutable**
-AgentId**    |
-| Bytes      | *byte array*     | ScMutable**Bytes**      | ScImmutable**
-Bytes**      |
-| ChainId    | Sc**ChainId**    | ScMutable**ChainId**    | ScImmutable**
-ChainId**    |
-| Color      | Sc**Color**      | ScMutable**Color**      | ScImmutable**
-Color**      |
-| ContractId | Sc**ContractId** | ScMutable**ContractId** | ScImmutable**
-ContractId** |
-| HName      | Sc**HName**      | ScMutable**HName**      | ScImmutable**
-HName**      |
-| Hash       | Sc**Hash**       | ScMutable**Hash**       | ScImmutable**
-Hash**       |
-| Int64      | *64-bit integer* | ScMutable**Int64**      | ScImmutable**
-Int64**      |
-| Map        | Sc**Map**        | ScMutable**Map**        | ScImmutable**
-Map**        |
-| RequestId  | Sc**RequestId**  | ScMutable**RequestId**  | ScImmutable**
-RequestId**  |
-| String     | *UTF-8 string*   | ScMutable**String**     | ScImmutable**
-String**     |
+| Address    | Sc**Address**    | ScMutable**Address**    | ScImmutable**Address**    |
+| AgentId    | Sc**AgentId**    | ScMutable**AgentId**    | ScImmutable**AgentId**    |
+| Bytes      | *byte array*     | ScMutable**Bytes**      | ScImmutable**Bytes**      |
+| ChainId    | Sc**ChainId**    | ScMutable**ChainId**    | ScImmutable**ChainId**    |
+| Color      | Sc**Color**      | ScMutable**Color**      | ScImmutable**Color**      |
+| ContractId | Sc**ContractId** | ScMutable**ContractId** | ScImmutable**ContractId** |
+| HName      | Sc**HName**      | ScMutable**HName**      | ScImmutable**HName**      |
+| Hash       | Sc**Hash**       | ScMutable**Hash**       | ScImmutable**Hash**       |
+| Int64      | *64-bit integer* | ScMutable**Int64**      | ScImmutable**Int64**      |
+| Map        | Sc**Map**        | ScMutable**Map**        | ScImmutable**Map**        |
+| RequestId  | Sc**RequestId**  | ScMutable**RequestId**  | ScImmutable**RequestId**  |
+| String     | *UTF-8 string*   | ScMutable**String**     | ScImmutable**String**     |
 
 Note how consistent naming makes it easy to remember the type names and how
 Bytes, Int64, and String are the odd ones out in that regard as they are
@@ -90,7 +78,7 @@ Here is the full matrix of WasmLib types for array proxies:
 
 Again, consistency in naming makes them easy to remember.
 
-In the next section we will show how the WasmLib types are used in smart
+In the next section we will show how the WasmLib types are used in smart 
 contract code.
 
 Next: [Function Call Context](Context.md)

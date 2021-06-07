@@ -41,8 +41,8 @@ impl MapKey for Key32 {
 pub const KEY_ACCOUNT_ID       : Key32 = Key32(-1);
 pub const KEY_ADDRESS          : Key32 = Key32(-2);
 pub const KEY_BALANCES         : Key32 = Key32(-3);
-pub const KEY_BASE58_BYTES     : Key32 = Key32(-4);
-pub const KEY_BASE58_STRING    : Key32 = Key32(-5);
+pub const KEY_BASE58_DECODE    : Key32 = Key32(-4);
+pub const KEY_BASE58_ENCODE    : Key32 = Key32(-5);
 pub const KEY_BLS_ADDRESS      : Key32 = Key32(-6);
 pub const KEY_BLS_AGGREGATE    : Key32 = Key32(-7);
 pub const KEY_BLS_VALID        : Key32 = Key32(-8);

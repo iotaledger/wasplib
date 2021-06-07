@@ -416,6 +416,10 @@ func NewScMutableMap() *ScMutableMap {
 	return &ScMutableMap{objId: maps.GetMap(maps.Length()).objId}
 }
 
+func (o ScMutableMap) CallFunc(keyId Key32, params []byte) []byte {
+	return CallFunc(o.objId, keyId, params)
+}
+
 func (o ScMutableMap) Clear() {
 	Clear(o.objId)
 }

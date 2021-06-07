@@ -3,6 +3,8 @@
 
 // encapsulates standard host entities into a simple interface
 
+use std::convert::TryInto;
+
 use crate::bytes::*;
 use crate::hashtypes::*;
 use crate::host::*;
@@ -85,20 +87,19 @@ pub struct ScUtility {
 impl ScUtility {
     // decodes the specified base58-encoded string value to its original bytes
     pub fn base58_decode(&self, value: &str) -> Vec<u8> {
-        self.utility.get_string(&KEY_BASE58_STRING).set_value(value);
-        self.utility.get_bytes(&KEY_BASE58_BYTES).value()
+        self.utility.call_func(KEY_BASE58_DECODE, value.as_bytes())
     }
 
     // encodes the specified bytes to a base-58-encoded string
     pub fn base58_encode(&self, value: &[u8]) -> String {
-        self.utility.get_bytes(&KEY_BASE58_BYTES).set_value(value);
-        self.utility.get_string(&KEY_BASE58_STRING).value()
+        let result = self.utility.call_func(KEY_BASE58_ENCODE, value);
+        unsafe { String::from_utf8_unchecked(result) }
     }
 
     // retrieves the address for the specified BLS public key
     pub fn bls_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
-        self.utility.get_bytes(&KEY_BLS_ADDRESS).set_value(pub_key);
-        self.utility.get_address(&KEY_ADDRESS).value()
+        let result = self.utility.call_func(KEY_BLS_ADDRESS, pub_key);
+        ScAddress::from_bytes(&result)
     }
 
     // aggregates the specified multiple BLS signatures and public keys into a single one
@@ -112,10 +113,8 @@ impl ScUtility {
         for sig in sigs_bin {
             encode.bytes(sig);
         }
-        let aggregator = self.utility.get_bytes(&KEY_BLS_AGGREGATE);
-        aggregator.set_value(&encode.data());
-        let aggregated = aggregator.value();
-        let mut decode = BytesDecoder::new(&aggregated);
+        let result = self.utility.call_func(KEY_BLS_AGGREGATE, &encode.data());
+        let mut decode = BytesDecoder::new(&result);
         return (decode.bytes().to_vec(), decode.bytes().to_vec());
     }
 
@@ -125,14 +124,14 @@ impl ScUtility {
         encode.bytes(data);
         encode.bytes(pub_key);
         encode.bytes(signature);
-        self.utility.get_bytes(&KEY_BLS_VALID).set_value(&encode.data());
-        self.utility.get_int64(&KEY_VALID).value() != 0
+        let result = self.utility.call_func(KEY_BLS_VALID, &encode.data());
+        (result[0] & 0x01) != 0
     }
 
     // retrieves the address for the specified ED25519 public key
     pub fn ed25519_address_from_pubkey(&self, pub_key: &[u8]) -> ScAddress {
-        self.utility.get_bytes(&KEY_ED25519_ADDRESS).set_value(pub_key);
-        self.utility.get_address(&KEY_ADDRESS).value()
+        let result = self.utility.call_func(KEY_ED25519_ADDRESS, pub_key);
+        ScAddress::from_bytes(&result)
     }
 
     // checks if the specified ED25519 signature is valid
@@ -141,33 +140,32 @@ impl ScUtility {
         encode.bytes(data);
         encode.bytes(pub_key);
         encode.bytes(signature);
-        self.utility.get_bytes(&KEY_ED25519_VALID).set_value(&encode.data());
-        self.utility.get_int64(&KEY_VALID).value() != 0
+        let result = self.utility.call_func(KEY_ED25519_VALID, &encode.data());
+        (result[0] & 0x01) != 0
     }
 
     // hashes the specified value bytes using BLAKE2b hashing and returns the resulting 32-byte hash
     pub fn hash_blake2b(&self, value: &[u8]) -> ScHash {
-        let hash = self.utility.get_bytes(&KEY_HASH_BLAKE2B);
-        hash.set_value(value);
-        ScHash::from_bytes(&hash.value())
+        let hash = self.utility.call_func(KEY_HASH_BLAKE2B, value);
+        ScHash::from_bytes(&hash)
     }
 
     // hashes the specified value bytes using SHA3 hashing and returns the resulting 32-byte hash
     pub fn hash_sha3(&self, value: &[u8]) -> ScHash {
-        let hash = self.utility.get_bytes(&KEY_HASH_SHA3);
-        hash.set_value(value);
-        ScHash::from_bytes(&hash.value())
+        let hash = self.utility.call_func(KEY_HASH_SHA3, value);
+        ScHash::from_bytes(&hash)
     }
 
     // calculates 32-bit hash for the specified name string
     pub fn hname(&self, value: &str) -> ScHname {
-        self.utility.get_string(&KEY_NAME).set_value(value);
-        ScHname::from_bytes(&self.utility.get_bytes(&KEY_HNAME).value())
+        let result = self.utility.call_func(KEY_HNAME, value.as_bytes());
+        ScHname::from_bytes(&result)
     }
 
     // generates a random value from 0 to max (exclusive max) using a deterministic RNG
     pub fn random(&self, max: i64) -> i64 {
-        let rnd = self.utility.get_int64(&KEY_RANDOM).value();
+        let result = self.utility.call_func(KEY_RANDOM, &vec![0_u8; 0]);
+        let rnd = i64::from_le_bytes(result.try_into().expect("invalid i64 length"));
         (rnd as u64 % max as u64) as i64
     }
 }

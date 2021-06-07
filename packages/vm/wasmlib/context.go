@@ -6,6 +6,7 @@
 package wasmlib
 
 import (
+	"encoding/binary"
 	"strconv"
 )
 
@@ -70,19 +71,17 @@ type ScUtility struct {
 
 // decodes the specified base58-encoded string value to its original bytes
 func (ctx ScUtility) Base58Decode(value string) []byte {
-	ctx.utility.GetString(KeyBase58String).SetValue(value)
-	return ctx.utility.GetBytes(KeyBase58Bytes).Value()
+	return ctx.utility.CallFunc(KeyBase58Decode, []byte(value))
 }
 
 // encodes the specified bytes to a base-58-encoded string
 func (ctx ScUtility) Base58Encode(value []byte) string {
-	ctx.utility.GetBytes(KeyBase58Bytes).SetValue(value)
-	return ctx.utility.GetString(KeyBase58String).Value()
+	return string(ctx.utility.CallFunc(KeyBase58Encode, value))
 }
 
 func (ctx ScUtility) BlsAddressFromPubKey(pubKey []byte) ScAddress {
-	ctx.utility.GetBytes(KeyBlsAddress).SetValue(pubKey)
-	return ctx.utility.GetAddress(KeyAddress).Value()
+	result := ctx.utility.CallFunc(KeyBlsAddress, pubKey)
+	return NewScAddressFromBytes(result)
 }
 
 func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
@@ -95,53 +94,51 @@ func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]
 	for _, sig := range sigs {
 		encode.Bytes(sig)
 	}
-	aggregator := ctx.utility.GetBytes(KeyBlsAggregate)
-	aggregator.SetValue(encode.Data())
-	decode := NewBytesDecoder(aggregator.Value())
+	result := ctx.utility.CallFunc(KeyBlsAggregate, encode.Data())
+	decode := NewBytesDecoder(result)
 	return decode.Bytes(), decode.Bytes()
 }
 
 func (ctx ScUtility) BlsValidSignature(data []byte, pubKey []byte, signature []byte) bool {
-	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
-	ctx.utility.GetBytes(KeyBlsValid).SetValue(bytes)
-	return ctx.utility.GetInt64(KeyValid).Value() != 0
+	encode := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature)
+	result := ctx.utility.CallFunc(KeyBlsValid, encode.Data())
+	return len(result) != 0
 }
 
 func (ctx ScUtility) Ed25519AddressFromPubKey(pubKey []byte) ScAddress {
-	ctx.utility.GetBytes(KeyEd25519Address).SetValue(pubKey)
-	return ctx.utility.GetAddress(KeyAddress).Value()
+	result := ctx.utility.CallFunc(KeyEd25519Address, pubKey)
+	return NewScAddressFromBytes(result)
 }
 
 func (ctx ScUtility) Ed25519ValidSignature(data []byte, pubKey []byte, signature []byte) bool {
-	bytes := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature).Data()
-	ctx.utility.GetBytes(KeyEd25519Valid).SetValue(bytes)
-	return ctx.utility.GetInt64(KeyValid).Value() != 0
+	encode := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature)
+	result := ctx.utility.CallFunc(KeyEd25519Valid, encode.Data())
+	return len(result) != 0
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
 func (ctx ScUtility) HashBlake2b(value []byte) ScHash {
-	hash := ctx.utility.GetBytes(KeyHashBlake2b)
-	hash.SetValue(value)
-	return NewScHashFromBytes(hash.Value())
+	result := ctx.utility.CallFunc(KeyHashBlake2b, value)
+	return NewScHashFromBytes(result)
 }
 
 // hashes the specified value bytes using sha3 hashing and returns the resulting 32-byte hash
 func (ctx ScUtility) HashSha3(value []byte) ScHash {
-	hash := ctx.utility.GetBytes(KeyHashSha3)
-	hash.SetValue(value)
-	return NewScHashFromBytes(hash.Value())
+	result := ctx.utility.CallFunc(KeyHashSha3, value)
+	return NewScHashFromBytes(result)
 }
 
 // hashes the specified value bytes using blake2b hashing and returns the resulting 32-byte hash
 func (ctx ScUtility) Hname(value string) ScHname {
-	ctx.utility.GetString(KeyName).SetValue(value)
-	return ctx.utility.GetHname(KeyHname).Value()
+	result := ctx.utility.CallFunc(KeyHname, []byte(value))
+	return NewScHnameFromBytes(result)
 }
 
 // generates a random value from 0 to max (exclusive max) using a deterministic RNG
 func (ctx ScUtility) Random(max int64) int64 {
-	rnd := ctx.utility.GetInt64(KeyRandom).Value()
-	return int64(uint64(rnd) % uint64(max))
+	result := ctx.utility.CallFunc(KeyRandom, nil)
+	rnd := binary.LittleEndian.Uint64(result)
+	return int64(rnd % uint64(max))
 }
 
 // converts an integer to its string representation

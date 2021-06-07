@@ -532,6 +532,10 @@ pub struct ScMutableMap {
 }
 
 impl ScMutableMap {
+    pub fn call_func(&self, key_id: Key32, params: &[u8]) -> Vec<u8> {
+        call_func(self.obj_id, key_id, params)
+    }
+
     // construct a new map on the host and return a map proxy for it
     pub fn new() -> ScMutableMap {
         let maps = ROOT.get_map_array(&KEY_MAPS);

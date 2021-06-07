@@ -309,6 +309,10 @@ type ScImmutableMap struct {
 	objId int32
 }
 
+func (o ScImmutableMap) CallFunc(keyId Key32, params []byte) []byte {
+	return CallFunc(o.objId, keyId, params)
+}
+
 func (o ScImmutableMap) GetAddress(key MapKey) ScImmutableAddress {
 	return ScImmutableAddress{objId: o.objId, keyId: key.KeyId()}
 }

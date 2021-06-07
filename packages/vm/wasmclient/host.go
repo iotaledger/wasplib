@@ -34,6 +34,28 @@ func ConnectWasmHost() {
 	wasmlib.ConnectHost(WasmVmHost{})
 }
 
+func (w WasmVmHost) CallFunc(objId int32, keyId int32, params []byte) []byte {
+	args := (*byte)(nil)
+	size := int32(len(params))
+	if size != 0 {
+		args = &params[0]
+	}
+
+	// pass params and query expected length of result
+	size = hostGetBytes(objId, keyId, wasmlib.TYPE_CALL, args, size)
+
+	// -1 means non-existent, so return default value for type
+	if size <= 0 {
+		return []byte(nil)
+	}
+
+	// allocate a sufficient length byte array in Wasm memory
+	// and let the host copy the actual result into this Wasm byte array
+	result := make([]byte, size)
+	hostGetBytes(objId, keyId, wasmlib.TYPE_CALL+1, &result[0], size)
+	return result
+}
+
 func (w WasmVmHost) Exists(objId int32, keyId int32, typeId int32) bool {
 	// negative length (-1) means only test for existence
 	// returned size -1 indicates keyId not found (or error)
@@ -56,9 +78,9 @@ func (w WasmVmHost) GetBytes(objId int32, keyId int32, typeId int32) []byte {
 
 	// allocate a sufficient length byte array in Wasm memory
 	// and let the host copy the actual data bytes into this Wasm byte array
-	bytes := make([]byte, size)
-	hostGetBytes(objId, keyId, typeId, &bytes[0], size)
-	return bytes
+	result := make([]byte, size)
+	hostGetBytes(objId, keyId, typeId, &result[0], size)
+	return result
 }
 
 func (w WasmVmHost) GetKeyIdFromBytes(bytes []byte) int32 {

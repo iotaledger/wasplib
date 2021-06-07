@@ -401,6 +401,10 @@ pub struct ScImmutableMap {
 }
 
 impl ScImmutableMap {
+    pub fn call_func(&self, key_id: Key32, params: &[u8]) -> Vec<u8> {
+        call_func(self.obj_id, key_id, params)
+    }
+
     // get value proxy for immutable ScAddress field specified by key
     pub fn get_address<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAddress {
         ScImmutableAddress { obj_id: self.obj_id, key_id: key.get_key_id() }

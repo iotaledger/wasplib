@@ -8,6 +8,7 @@ import "encoding/binary"
 const (
 	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20
+	TYPE_CALL  int32 = 0x40
 
 	TYPE_ADDRESS    int32 = 1
 	TYPE_AGENT_ID   int32 = 2
@@ -25,6 +26,7 @@ const (
 var TypeSizes = [...]uint8{0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0}
 
 type ScHost interface {
+	CallFunc(objId int32, keyId int32, params []byte) []byte
 	Exists(objId int32, keyId int32, typeId int32) bool
 	GetBytes(objId int32, keyId int32, typeId int32) []byte
 	GetKeyIdFromBytes(bytes []byte) int32
@@ -41,6 +43,10 @@ func ConnectHost(h ScHost) ScHost {
 	oldHost := host
 	host = h
 	return oldHost
+}
+
+func CallFunc(objId int32, keyId Key32, params []byte) []byte {
+	return host.CallFunc(objId, int32(keyId), params)
 }
 
 func Clear(objId int32) {
