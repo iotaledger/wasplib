@@ -4,13 +4,24 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/iotaledger/wasplib/tools/schema/generator"
 	"os"
 )
 
+var flagInit = flag.String("init", "", "generate Go code")
+
+var flagGo = flag.Bool("go", false, "generate Go code")
+var flagJava = flag.Bool("java", false, "generate Java code")
+var flagRust = flag.Bool("rust", false, "generate Rust code")
+
 func main() {
+	flag.Parse()
+	if !(*flagGo || *flagJava) { *flagRust = true }
+
 	err := generator.FindModulePath()
 	if err != nil {
 		fmt.Println(err)
@@ -33,13 +44,18 @@ func main() {
 	if err == nil {
 		defer file.Close()
 		err = generateCoreContractsSchema(file)
+		return
+	}
+
+	if *flagInit != "" {
+		err = generateSchemaNew()
 		if err != nil {
 			fmt.Println(err)
 		}
 		return
 	}
 
-	fmt.Println("no schema file found")
+	flag.Usage()
 }
 
 func generateCoreContractsSchema(file *os.File) error {
@@ -67,15 +83,61 @@ func generateSchema(file *os.File) error {
 	if err != nil {
 		return err
 	}
-	//err = schema.GenerateJava()
-	//if err != nil {
-	//	return err
-	//}
-	err = schema.GenerateRust()
+	if *flagGo {
+		fmt.Println("generating Go code")
+		err = schema.GenerateGo()
+		if err != nil {
+			return err
+		}
+	}
+	if *flagJava {
+		fmt.Println("generating Java code")
+		err = schema.GenerateJava()
+		if err != nil {
+			return err
+		}
+	}
+	if *flagRust {
+		fmt.Println("generating Rust code")
+		err = schema.GenerateRust()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func generateSchemaNew() error {
+	fmt.Println("generating schema.json")
+	file, err := os.Create("schema.json")
 	if err != nil {
 		return err
 	}
-	return schema.GenerateGo()
+	defer file.Close()
+
+	jsonSchema := &generator.JsonSchema{}
+	jsonSchema.Name = *flagInit
+	jsonSchema.Description = *flagInit + " description"
+	jsonSchema.Types = make(generator.StringMapMap)
+	jsonSchema.Subtypes = make(generator.StringMap)
+	jsonSchema.State = make(generator.StringMap)
+	jsonSchema.Funcs = make(generator.FuncDescMap)
+	jsonSchema.Views = make(generator.FuncDescMap)
+	funcInit := &generator.FuncDesc{}
+	funcInit.Params = make(generator.StringMap)
+	funcInit.Results = make(generator.StringMap)
+	funcInit.Params["owner"] = "?AgentId // optional owner of this smart contract"
+	jsonSchema.Funcs["init"] = funcInit
+
+	b, err := json.Marshal(jsonSchema)
+	if err != nil {
+		return err
+	}
+
+	var out bytes.Buffer
+	json.Indent(&out, b, "", "\t")
+	_,err = out.WriteTo(file)
+	return err
 }
 
 func loadSchema(file *os.File) (*generator.Schema, error) {

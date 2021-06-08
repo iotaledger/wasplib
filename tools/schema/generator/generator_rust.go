@@ -226,7 +226,7 @@ func (s *Schema) generateRustFuncs() error {
 func (s *Schema) generateRustFuncSignature(file *os.File, funcDef *FuncDef) {
 	funcName := snake(funcDef.FullName)
 	funcKind := capitalize(funcDef.FullName[:4])
-	fmt.Fprintf(file, "\npub fn %s(ctx: &Sc%sContext, f: &%sContext) {\n", funcName, funcKind, capitalize(funcDef.FullName))
+	fmt.Fprintf(file, "\npub fn %s(_ctx: &Sc%sContext, _f: &%sContext) {\n", funcName, funcKind, capitalize(funcDef.FullName))
 	fmt.Fprintf(file, "}\n")
 }
 
@@ -319,6 +319,7 @@ func (s *Schema) generateRustLib() error {
 	fmt.Fprintln(file, copyright(true))
 	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
+	fmt.Fprintln(file, allowUnusedImports)
 	fmt.Fprintf(file, "use %s::*;\n", s.Name)
 	fmt.Fprint(file, useWasmLib)
 	fmt.Fprintln(file, useWasmLibHost)
@@ -339,14 +340,16 @@ func (s *Schema) generateRustLib() error {
 
 	fmt.Fprintf(file, "\n#[no_mangle]\n")
 	fmt.Fprintf(file, "fn on_load() {\n")
-	fmt.Fprintf(file, "    let exports = ScExports::new();\n")
+	if len(s.Funcs) != 0 {
+		fmt.Fprintf(file, "    let exports = ScExports::new();\n")
+	}
 	for _, funcDef := range s.Funcs {
 		name := snake(funcDef.FullName)
 		kind := funcDef.FullName[:4]
 		fmt.Fprintf(file, "    exports.add_%s(%s, %s_thunk);\n", kind, upper(name), name)
 	}
 
-	fmt.Fprintf(file, "    unsafe {\n")
+	fmt.Fprintf(file, "\n    unsafe {\n")
 	fmt.Fprintf(file, "        for i in 0..KEY_MAP_LEN {\n")
 	fmt.Fprintf(file, "            IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);\n")
 	fmt.Fprintf(file, "        }\n")
@@ -514,8 +517,10 @@ func (s *Schema) generateRustStateStruct(file *os.File, kind string, mutability 
 	fmt.Fprintf(file, "    pub(crate) state_id: i32,\n")
 	fmt.Fprintf(file, "}\n")
 
-	fmt.Fprintf(file, "\nimpl %s {", x)
-	defer fmt.Fprintf(file, "}\n")
+	if len(s.StateVars) != 0 {
+		fmt.Fprintf(file, "\nimpl %s {", x)
+		defer fmt.Fprintf(file, "}\n")
+	}
 
 	for _, stateVar := range s.StateVars {
 		varName := snake(stateVar.Name)

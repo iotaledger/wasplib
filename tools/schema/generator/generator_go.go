@@ -391,7 +391,9 @@ func (s *Schema) generateGoState() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintf(file, importWasmLib)
+	if len(s.StateVars) != 0 {
+		fmt.Fprintf(file, importWasmLib)
+	}
 
 	s.generateGoStateStruct(file, "Func", "Mutable")
 	s.generateGoStateStruct(file, "View", "Immutable")
