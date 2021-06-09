@@ -117,7 +117,7 @@ pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, f: &FuncTestChainOwner
 
 pub fn func_test_event_log_deploy(ctx: &ScFuncContext, _f: &FuncTestEventLogDeployContext) {
     // deploy the same contract with another name
-    let program_hash = ctx.utility().hash_blake2b("test_sandbox".as_bytes());
+    let program_hash = ctx.utility().hash_blake2b("testcore".as_bytes());
     ctx.deploy(&program_hash, CONTRACT_NAME_DEPLOYED, "test contract deploy log", None);
 }
 

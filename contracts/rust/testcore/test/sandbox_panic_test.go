@@ -13,7 +13,7 @@ func testPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncPanicFullEP).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncPanicFullEP).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
@@ -34,7 +34,7 @@ func testPanicViewCall(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncPanicViewEP)
+	_, err := chain.CallView(ScName, sbtestsc.FuncPanicViewEP)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 
@@ -54,7 +54,7 @@ func testCallPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicFullEP).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicFullEP).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
@@ -75,7 +75,7 @@ func testCallPanicViewFromFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicViewEPFromFull).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicViewEPFromFull).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
@@ -96,7 +96,7 @@ func testCallPanicViewFromView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncCallPanicViewEPFromView)
+	_, err := chain.CallView(ScName, sbtestsc.FuncCallPanicViewEPFromView)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 

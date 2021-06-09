@@ -15,7 +15,7 @@ const IdxParamUserDefined = 2
 const IdxVarColorList = 3
 const IdxVarRegistry = 4
 
-var keyMap = [5]string{
+var keyMap = [5]wasmlib.Key{
 	ParamColor,
 	ParamDescription,
 	ParamUserDefined,

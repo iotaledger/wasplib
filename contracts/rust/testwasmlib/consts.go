@@ -13,18 +13,16 @@ const ScName = "testwasmlib"
 const ScDescription = "Exercise all aspects of WasmLib"
 const HScName = wasmlib.ScHname(0x89703a45)
 
-const ParamAddress = "address"
-const ParamAgentId = "agentId"
-const ParamBytes = "bytes"
-const ParamChainId = "chainId"
-const ParamColor = "color"
-const ParamHash = "hash"
-const ParamHname = "hname"
-const ParamInt64 = "int64"
-const ParamRequestId = "requestId"
-const ParamString = "string"
-
-const VarDummy = "dummy"
+const ParamAddress = wasmlib.Key("address")
+const ParamAgentId = wasmlib.Key("agentId")
+const ParamBytes = wasmlib.Key("bytes")
+const ParamChainId = wasmlib.Key("chainId")
+const ParamColor = wasmlib.Key("color")
+const ParamHash = wasmlib.Key("hash")
+const ParamHname = wasmlib.Key("hname")
+const ParamInt64 = wasmlib.Key("int64")
+const ParamRequestId = wasmlib.Key("requestId")
+const ParamString = wasmlib.Key("string")
 
 const FuncParamTypes = "paramTypes"
 

@@ -24,8 +24,6 @@ pub const PARAM_INT64: &str = "int64";
 pub const PARAM_REQUEST_ID: &str = "requestId";
 pub const PARAM_STRING: &str = "string";
 
-pub const VAR_DUMMY: &str = "dummy";
-
 pub const FUNC_PARAM_TYPES: &str = "paramTypes";
 
 pub const HFUNC_PARAM_TYPES: ScHname = ScHname(0x6921c4cd);

@@ -26,7 +26,7 @@ const DEFAULT_PLAY_PERIOD: i64 = 120;
 // The 'placeBet' function takes 1 mandatory parameter:
 // - 'number', which must be s an Int64 number from 1 to MAX_NUMBER
 // The 'member' function will save the number together with the address of the better and
-// the amount of incoming iotas as the bet amount in its state.
+// the amount of incoming iotas as the bet amount in its f.state.
 pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
 
     // Since we are sure that the 'number' parameter actually exists we can

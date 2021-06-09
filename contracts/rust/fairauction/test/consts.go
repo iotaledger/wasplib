@@ -7,10 +7,10 @@
 
 package test
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import "github.com/iotaledger/wasp/packages/coretypes"
 
 const ScName = "fairauction"
-const HScName = wasmlib.ScHname(0x1b5c43b1)
+const HScName = coretypes.Hname(0x1b5c43b1)
 
 const ParamColor = "color"
 const ParamDescription = "description"
@@ -42,8 +42,8 @@ const FuncSetOwnerMargin = "setOwnerMargin"
 const FuncStartAuction = "startAuction"
 const ViewGetInfo = "getInfo"
 
-const HFuncFinalizeAuction = wasmlib.ScHname(0x8d534ddc)
-const HFuncPlaceBid = wasmlib.ScHname(0x9bd72fa9)
-const HFuncSetOwnerMargin = wasmlib.ScHname(0x1774461a)
-const HFuncStartAuction = wasmlib.ScHname(0xd5b7bacb)
-const HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+const HFuncFinalizeAuction = coretypes.Hname(0x8d534ddc)
+const HFuncPlaceBid = coretypes.Hname(0x9bd72fa9)
+const HFuncSetOwnerMargin = coretypes.Hname(0x1774461a)
+const HFuncStartAuction = coretypes.Hname(0xd5b7bacb)
+const HViewGetInfo = coretypes.Hname(0xcfedba5f)

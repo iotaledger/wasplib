@@ -15,7 +15,7 @@ const IdxResultCounter = 2
 const IdxVarCounter = 3
 const IdxVarNumRepeats = 4
 
-var keyMap = [5]string{
+var keyMap = [5]wasmlib.Key{
 	ParamCounter,
 	ParamNumRepeats,
 	ResultCounter,

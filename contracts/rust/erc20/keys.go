@@ -21,7 +21,7 @@ const IdxVarAllAllowances = 8
 const IdxVarBalances = 9
 const IdxVarSupply = 10
 
-var keyMap = [11]string{
+var keyMap = [11]wasmlib.Key{
 	ParamAccount,
 	ParamAmount,
 	ParamCreator,

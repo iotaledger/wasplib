@@ -21,9 +21,8 @@ pub const IDX_PARAM_HNAME: usize = 6;
 pub const IDX_PARAM_INT64: usize = 7;
 pub const IDX_PARAM_REQUEST_ID: usize = 8;
 pub const IDX_PARAM_STRING: usize = 9;
-pub const IDX_VAR_DUMMY: usize = 10;
 
-pub const KEY_MAP_LEN: usize = 11;
+pub const KEY_MAP_LEN: usize = 10;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_ADDRESS,
@@ -36,7 +35,6 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_INT64,
     PARAM_REQUEST_ID,
     PARAM_STRING,
-    VAR_DUMMY,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

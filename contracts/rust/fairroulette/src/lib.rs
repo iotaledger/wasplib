@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use fairroulette::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -31,6 +33,7 @@ fn on_load() {
     exports.add_func(FUNC_PLACE_BET, func_place_bet_thunk);
     exports.add_func(FUNC_PLAY_PERIOD, func_play_period_thunk);
     exports.add_view(VIEW_LAST_WINNING_NUMBER, view_last_winning_number_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

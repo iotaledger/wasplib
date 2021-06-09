@@ -7,20 +7,11 @@
 
 package testwasmlib
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type TestWasmLibFuncState struct {
 	stateId int32
 }
 
-func (s TestWasmLibFuncState) Dummy() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.stateId, idxMap[IdxVarDummy])
-}
-
 type TestWasmLibViewState struct {
 	stateId int32
-}
-
-func (s TestWasmLibViewState) Dummy() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.stateId, idxMap[IdxVarDummy])
 }

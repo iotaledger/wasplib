@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use fairauction::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -32,6 +34,7 @@ fn on_load() {
     exports.add_func(FUNC_SET_OWNER_MARGIN, func_set_owner_margin_thunk);
     exports.add_func(FUNC_START_AUCTION, func_start_auction_thunk);
     exports.add_view(VIEW_GET_INFO, view_get_info_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

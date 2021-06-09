@@ -19,7 +19,7 @@ const IdxVarMembers = 6
 const IdxVarOwner = 7
 const IdxVarTotalFactor = 8
 
-var keyMap = [9]string{
+var keyMap = [9]wasmlib.Key{
 	ParamAddress,
 	ParamFactor,
 	ParamOwner,

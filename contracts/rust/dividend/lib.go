@@ -18,7 +18,7 @@ func OnLoad() {
 	exports.AddView(ViewGetFactor, viewGetFactorThunk)
 
 	for i, key := range keyMap {
-		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+		idxMap[i] = key.KeyId()
 	}
 }
 

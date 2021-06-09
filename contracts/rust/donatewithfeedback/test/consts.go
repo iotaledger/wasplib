@@ -7,10 +7,10 @@
 
 package test
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+import "github.com/iotaledger/wasp/packages/coretypes"
 
 const ScName = "donatewithfeedback"
-const HScName = wasmlib.ScHname(0x696d7f66)
+const HScName = coretypes.Hname(0x696d7f66)
 
 const ParamAmount = "amount"
 const ParamFeedback = "feedback"
@@ -34,7 +34,7 @@ const FuncWithdraw = "withdraw"
 const ViewDonation = "donation"
 const ViewDonationInfo = "donationInfo"
 
-const HFuncDonate = wasmlib.ScHname(0xdc9b133a)
-const HFuncWithdraw = wasmlib.ScHname(0x9dcc0f41)
-const HViewDonation = wasmlib.ScHname(0xbdb245ba)
-const HViewDonationInfo = wasmlib.ScHname(0xc8f7c726)
+const HFuncDonate = coretypes.Hname(0xdc9b133a)
+const HFuncWithdraw = coretypes.Hname(0x9dcc0f41)
+const HViewDonation = coretypes.Hname(0xbdb245ba)
+const HViewDonationInfo = coretypes.Hname(0xc8f7c726)

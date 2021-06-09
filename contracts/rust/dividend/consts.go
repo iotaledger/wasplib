@@ -13,17 +13,17 @@ const ScName = "dividend"
 const ScDescription = "Simple dividend smart contract"
 const HScName = wasmlib.ScHname(0xcce2e239)
 
-const ParamAddress = "address"
-const ParamFactor = "factor"
-const ParamOwner = "owner"
+const ParamAddress = wasmlib.Key("address")
+const ParamFactor = wasmlib.Key("factor")
+const ParamOwner = wasmlib.Key("owner")
 
-const ResultFactor = "factor"
+const ResultFactor = wasmlib.Key("factor")
 
-const VarFactor = "factor"
-const VarMemberList = "memberList"
-const VarMembers = "members"
-const VarOwner = "owner"
-const VarTotalFactor = "totalFactor"
+const VarFactor = wasmlib.Key("factor")
+const VarMemberList = wasmlib.Key("memberList")
+const VarMembers = wasmlib.Key("members")
+const VarOwner = wasmlib.Key("owner")
+const VarTotalFactor = wasmlib.Key("totalFactor")
 
 const FuncDivide = "divide"
 const FuncInit = "init"

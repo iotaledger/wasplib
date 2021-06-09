@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-const importWasmLib = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
+const importCoreTypes  = "import \"github.com/iotaledger/wasp/packages/coretypes\"\n"
+const importWasmLib    = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
 const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/wasmclient\"\n"
 
 var goFuncRegexp = regexp.MustCompile("^func (\\w+).+$")
@@ -43,7 +44,7 @@ var goTypeIds = StringMap{
 func (s *Schema) GenerateGo() error {
 	s.NewTypes = make(map[string]bool)
 
-	err := s.generateGoConsts()
+	err := s.generateGoConsts(false)
 	if err != nil {
 		return err
 	}
@@ -73,35 +74,41 @@ func (s *Schema) GenerateGo() error {
 	}
 
 	// go-specific stuff
-	err = s.generateGoWasmMain()
-	if err != nil {
-		return err
-	}
-	return s.generateGoTests()
+	return s.generateGoWasmMain()
 }
 
-func (s *Schema) generateGoConsts() error {
+func (s *Schema) generateGoConsts(test bool) error {
 	file, err := os.Create("consts.go")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
+	packageName := "test"
+	importTypes := importCoreTypes
+	if !test {
+		packageName = s.Name
+		importTypes = importWasmLib
+	}
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintln(file, importWasmLib)
+	fmt.Fprintf(file, "package %s\n\n", packageName)
+	fmt.Fprintln(file, importTypes)
 
 	fmt.Fprintf(file, "const ScName = \"%s\"\n", s.Name)
 	if s.Description != "" {
 		fmt.Fprintf(file, "const ScDescription = \"%s\"\n", s.Description)
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "const HScName = wasmlib.ScHname(0x%s)\n", hName.String())
+	hNameType := "wasmlib.ScHname"
+	if test {
+		hNameType = "coretypes.Hname"
+	}
+	fmt.Fprintf(file, "const HScName = %s(0x%s)\n", hNameType, hName.String())
 
-	s.generateGoConstsFields(file, s.Params, "Param")
-	s.generateGoConstsFields(file, s.Results, "Result")
-	s.generateGoConstsFields(file, s.StateVars, "Var")
+	s.generateGoConstsFields(file, test, s.Params, "Param")
+	s.generateGoConstsFields(file, test, s.Results, "Result")
+	s.generateGoConstsFields(file, test, s.StateVars, "Var")
 
 	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
@@ -114,18 +121,22 @@ func (s *Schema) generateGoConsts() error {
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "const H%s = wasmlib.ScHname(0x%s)\n", name, hName.String())
+			fmt.Fprintf(file, "const H%s = %s(0x%s)\n", name, hNameType, hName.String())
 		}
 	}
 	return nil
 }
 
-func (s *Schema) generateGoConstsFields(file *os.File, fields []*Field, prefix string) {
+func (s *Schema) generateGoConstsFields(file *os.File, test bool, fields []*Field, prefix string) {
 	if len(fields) != 0 {
 		fmt.Fprintln(file)
 		for _, field := range fields {
 			name := prefix + capitalize(field.Name)
-			fmt.Fprintf(file, "const %s = \"%s\"\n", name, field.Alias)
+			value := "\"" + field.Alias + "\""
+			if !test {
+				value = "wasmlib.Key(" + value + ")"
+			}
+			fmt.Fprintf(file, "const %s = %s\n", name, value)
 		}
 	}
 }
@@ -215,7 +226,7 @@ func (s *Schema) generateGoKeys() error {
 	s.generateGoKeysIndexes(file, s.StateVars, "Var")
 
 	size := len(s.Params) + len(s.Results) + len(s.StateVars)
-	fmt.Fprintf(file, "\nvar keyMap = [%d]string{\n", size)
+	fmt.Fprintf(file, "\nvar keyMap = [%d]wasmlib.Key{\n", size)
 	s.generateGoKeysArray(file, s.Params, "Param")
 	s.generateGoKeysArray(file, s.Results, "Result")
 	s.generateGoKeysArray(file, s.StateVars, "Var")
@@ -262,7 +273,7 @@ func (s *Schema) generateGoLib() error {
 	}
 
 	fmt.Fprintf(file, "\n\tfor i, key := range keyMap {\n")
-	fmt.Fprintf(file, "\t\tidxMap[i] = wasmlib.GetKeyIdFromString(key)\n")
+	fmt.Fprintf(file, "\t\tidxMap[i] = key.KeyId()\n")
 	fmt.Fprintf(file, "\t}\n")
 
 	fmt.Fprintf(file, "}\n")
@@ -467,12 +478,18 @@ func (s *Schema) generateGoSubtypes() error {
 	return nil
 }
 
-func (s *Schema) generateGoTests() error {
+func (s *Schema) GenerateGoTests() error {
 	err := os.MkdirAll("test", 0755)
 	if err != nil {
 		return err
 	}
+	err = os.Chdir("test")
+	if err != nil {
+		return err
+	}
+	defer os.Chdir("..")
 	//TODO
+	s.generateGoConsts(true)
 	return nil
 }
 

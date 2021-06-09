@@ -183,9 +183,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
 pub fn view_get_info(ctx: &ScViewContext, f: &ViewGetInfoContext) {
     let color = f.params.color.value();
     let current_auction = f.state.auctions().get_auction(&color);
-    if !current_auction.exists() {
-        ctx.panic("Missing auction info");
-    }
+    ctx.require(current_auction.exists(), "Missing auction info");
 
     let auction = current_auction.value();
     f.results.color.set_value(&auction.color);

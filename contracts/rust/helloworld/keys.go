@@ -10,11 +10,9 @@ package helloworld
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const IdxResultHelloWorld = 0
-const IdxVarDummy = 1
 
-var keyMap = [2]string{
+var keyMap = [1]wasmlib.Key{
 	ResultHelloWorld,
-	VarDummy,
 }
 
-var idxMap [2]wasmlib.Key32
+var idxMap [1]wasmlib.Key32

@@ -31,7 +31,7 @@ const IdxVarBidderList = 18
 const IdxVarBids = 19
 const IdxVarOwnerMargin = 20
 
-var keyMap = [21]string{
+var keyMap = [21]wasmlib.Key{
 	ParamColor,
 	ParamDescription,
 	ParamDuration,

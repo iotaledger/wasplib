@@ -6,7 +6,6 @@ import (
 	"github.com/iotaledger/wasp/packages/hashing"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
-	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/stretchr/testify/require"
 	"strconv"
 	"strings"
@@ -14,17 +13,6 @@ import (
 )
 
 var (
-	ParamAddress   = string(testwasmlib.ParamAddress)
-	ParamAgentId   = string(testwasmlib.ParamAgentId)
-	ParamBytes     = string(testwasmlib.ParamBytes)
-	ParamChainId   = string(testwasmlib.ParamChainId)
-	ParamColor     = string(testwasmlib.ParamColor)
-	ParamHash      = string(testwasmlib.ParamHash)
-	ParamHname     = string(testwasmlib.ParamHname)
-	ParamInt64     = string(testwasmlib.ParamInt64)
-	ParamRequestId = string(testwasmlib.ParamRequestId)
-	ParamString    = string(testwasmlib.ParamString)
-
 	allParams = []string{
 		ParamAddress,
 		ParamAgentId,
@@ -39,20 +27,19 @@ var (
 )
 
 func setupTest(t *testing.T) *solo.Chain {
-	return common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
+	return common.StartChainAndDeployWasmContractByName(t, ScName)
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
-	_, err := chain.FindContract(testwasmlib.ScName)
+	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
+	_, err := chain.FindContract(ScName)
 	require.NoError(t, err)
 }
 
 func TestNoParams(t *testing.T) {
 	chain := setupTest(t)
 
-	req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-	).WithIotas(1)
+	req := solo.NewCallParams(ScName, FuncParamTypes).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
@@ -62,7 +49,7 @@ func TestValidParams(t *testing.T) {
 
 	chainId := chain.ChainID
 	address := chainId.AsAddress()
-	hname := coretypes.Hn(testwasmlib.ScName)
+	hname := HScName
 	agentId := coretypes.NewAgentID(address, hname)
 	color, _, err := ledgerstate.ColorFromBytes([]byte("RedGreenBlueYellowCyanBlackWhite"))
 	require.NoError(t, err)
@@ -70,7 +57,7 @@ func TestValidParams(t *testing.T) {
 	require.NoError(t, err)
 	requestId, err := coretypes.RequestIDFromBytes([]byte("abcdefghijklmnopqrstuvwxyz123456\x00\x00"))
 	require.NoError(t, err)
-	req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+	req := solo.NewCallParams(ScName, FuncParamTypes,
 		ParamAddress, address,
 		ParamAgentId, agentId,
 		ParamBytes, []byte("these are bytes"),
@@ -90,7 +77,7 @@ func TestValidSizeParams(t *testing.T) {
 	for index, param := range allParams {
 		t.Run("ValidSize "+param, func(t *testing.T) {
 			chain := setupTest(t)
-			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+			req := solo.NewCallParams(ScName, FuncParamTypes,
 				param, make([]byte, allLengths[index]),
 			).WithIotas(1)
 			_, err := chain.PostRequestSync(req, nil)
@@ -109,21 +96,21 @@ func TestInvalidSizeParams(t *testing.T) {
 		t.Run("InvalidSize "+param, func(t *testing.T) {
 			chain := setupTest(t)
 
-			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+			req := solo.NewCallParams(ScName, FuncParamTypes,
 				param, make([]byte, 0),
 			).WithIotas(1)
 			_, err := chain.PostRequestSync(req, nil)
 			require.Error(t, err)
 			require.True(t, strings.HasSuffix(err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+			req = solo.NewCallParams(ScName, FuncParamTypes,
 				param, make([]byte, allLengths[index]-1),
 			).WithIotas(1)
 			_, err = chain.PostRequestSync(req, nil)
 			require.Error(t, err)
 			require.True(t, strings.Contains(err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+			req = solo.NewCallParams(ScName, FuncParamTypes,
 				param, make([]byte, allLengths[index]+1),
 			).WithIotas(1)
 			_, err = chain.PostRequestSync(req, nil)
@@ -161,7 +148,7 @@ func TestInvalidTypeParams(t *testing.T) {
 		for index, value := range values {
 			t.Run("InvalidType "+param+" "+strconv.Itoa(index), func(t *testing.T) {
 				chain := setupTest(t)
-				req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+				req := solo.NewCallParams(ScName, FuncParamTypes,
 					param, value,
 				).WithIotas(1)
 				_, err := chain.PostRequestSync(req, nil)

@@ -12,22 +12,22 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const ScName = "donatewithfeedback"
 const HScName = wasmlib.ScHname(0x696d7f66)
 
-const ParamAmount = "amount"
-const ParamFeedback = "feedback"
-const ParamNr = "nr"
+const ParamAmount = wasmlib.Key("amount")
+const ParamFeedback = wasmlib.Key("feedback")
+const ParamNr = wasmlib.Key("nr")
 
-const ResultAmount = "amount"
-const ResultCount = "count"
-const ResultDonator = "donator"
-const ResultError = "error"
-const ResultFeedback = "feedback"
-const ResultMaxDonation = "maxDonation"
-const ResultTimestamp = "timestamp"
-const ResultTotalDonation = "totalDonation"
+const ResultAmount = wasmlib.Key("amount")
+const ResultCount = wasmlib.Key("count")
+const ResultDonator = wasmlib.Key("donator")
+const ResultError = wasmlib.Key("error")
+const ResultFeedback = wasmlib.Key("feedback")
+const ResultMaxDonation = wasmlib.Key("maxDonation")
+const ResultTimestamp = wasmlib.Key("timestamp")
+const ResultTotalDonation = wasmlib.Key("totalDonation")
 
-const VarLog = "log"
-const VarMaxDonation = "maxDonation"
-const VarTotalDonation = "totalDonation"
+const VarLog = wasmlib.Key("log")
+const VarMaxDonation = wasmlib.Key("maxDonation")
+const VarTotalDonation = wasmlib.Key("totalDonation")
 
 const FuncDonate = "donate"
 const FuncWithdraw = "withdraw"

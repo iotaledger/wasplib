@@ -17,7 +17,7 @@ const IdxVarLastWinningNumber = 4
 const IdxVarLockedBets = 5
 const IdxVarPlayPeriod = 6
 
-var keyMap = [7]string{
+var keyMap = [7]wasmlib.Key{
 	ParamNumber,
 	ParamPlayPeriod,
 	ResultLastWinningNumber,

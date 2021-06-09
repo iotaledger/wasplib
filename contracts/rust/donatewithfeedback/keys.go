@@ -24,7 +24,7 @@ const IdxVarLog = 11
 const IdxVarMaxDonation = 12
 const IdxVarTotalDonation = 13
 
-var keyMap = [14]string{
+var keyMap = [14]wasmlib.Key{
 	ParamAmount,
 	ParamFeedback,
 	ParamNr,

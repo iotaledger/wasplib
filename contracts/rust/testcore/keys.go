@@ -38,7 +38,7 @@ const IdxVarHnameEP = 25
 const IdxVarMintedColor = 26
 const IdxVarMintedSupply = 27
 
-var keyMap = [28]string{
+var keyMap = [28]wasmlib.Key{
 	ParamAddress,
 	ParamAgentId,
 	ParamCaller,

@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use dividend::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -30,6 +32,7 @@ fn on_load() {
     exports.add_func(FUNC_MEMBER, func_member_thunk);
     exports.add_func(FUNC_SET_OWNER, func_set_owner_thunk);
     exports.add_view(VIEW_GET_FACTOR, view_get_factor_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

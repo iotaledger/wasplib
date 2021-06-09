@@ -34,9 +34,9 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, f *FuncCallOnChainContext) {
 	varCounter.SetValue(varCounter.Value() + 1)
 
 	params := wasmlib.NewScMutableMap()
-	params.GetInt64(wasmlib.Key(ParamIntValue)).SetValue(paramInt)
+	params.GetInt64(ParamIntValue).SetValue(paramInt)
 	ret := ctx.Call(targetContract, targetEp, params, nil)
-	retVal := ret.GetInt64(wasmlib.Key(ParamIntValue))
+	retVal := ret.GetInt64(ParamIntValue)
 	f.Results.IntValue.SetValue(retVal.Value())
 }
 
@@ -89,8 +89,8 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, f *FuncRunRecursionContext) {
 	}
 
 	parms := wasmlib.NewScMutableMap()
-	parms.GetInt64(wasmlib.Key(ParamIntValue)).SetValue(depth - 1)
-	parms.GetHname(wasmlib.Key(ParamHnameEP)).SetValue(HFuncRunRecursion)
+	parms.GetInt64(ParamIntValue).SetValue(depth - 1)
+	parms.GetHname(ParamHnameEP).SetValue(HFuncRunRecursion)
 	ctx.CallSelf(HFuncCallOnChain, parms, nil)
 	// TODO how would I return result of the call ???
 	f.Results.IntValue.SetValue(depth - 1)
@@ -119,7 +119,7 @@ func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *FuncTestChainOwnerID
 
 func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, f *FuncTestEventLogDeployContext) {
 	// deploy the same contract with another name
-	programHash := ctx.Utility().HashBlake2b([]byte("test_sandbox"))
+	programHash := ctx.Utility().HashBlake2b([]byte("testcore"))
 	ctx.Deploy(programHash, ContractNameDeployed, "test contract deploy log", nil)
 }
 
@@ -155,14 +155,14 @@ func viewFibonacci(ctx wasmlib.ScViewContext, f *ViewFibonacciContext) {
 		return
 	}
 	parms1 := wasmlib.NewScMutableMap()
-	parms1.GetInt64(wasmlib.Key(ParamIntValue)).SetValue(n - 1)
+	parms1.GetInt64(ParamIntValue).SetValue(n - 1)
 	results1 := ctx.CallSelf(HViewFibonacci, parms1)
-	n1 := results1.GetInt64(wasmlib.Key(ParamIntValue)).Value()
+	n1 := results1.GetInt64(ParamIntValue).Value()
 
 	parms2 := wasmlib.NewScMutableMap()
-	parms2.GetInt64(wasmlib.Key(ParamIntValue)).SetValue(n - 2)
+	parms2.GetInt64(ParamIntValue).SetValue(n - 2)
 	results2 := ctx.CallSelf(HViewFibonacci, parms2)
-	n2 := results2.GetInt64(wasmlib.Key(ParamIntValue)).Value()
+	n2 := results2.GetInt64(ParamIntValue).Value()
 
 	f.Results.IntValue.SetValue(n1 + n2)
 }

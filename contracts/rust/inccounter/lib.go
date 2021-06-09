@@ -26,7 +26,7 @@ func OnLoad() {
 	exports.AddView(ViewGetCounter, viewGetCounterThunk)
 
 	for i, key := range keyMap {
-		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+		idxMap[i] = key.KeyId()
 	}
 }
 

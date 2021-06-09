@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use inccounter::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -38,6 +40,7 @@ fn on_load() {
     exports.add_func(FUNC_TEST_LEB128, func_test_leb128_thunk);
     exports.add_func(FUNC_WHEN_MUST_INCREMENT, func_when_must_increment_thunk);
     exports.add_view(VIEW_GET_COUNTER, view_get_counter_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

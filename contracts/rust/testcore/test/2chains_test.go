@@ -57,7 +57,7 @@ func test2Chains(t *testing.T, w bool) {
 	chain2.AssertOwnersIotas(2 + extraToken2)
 	chain2.AssertTotalIotas(3 + extraToken2)
 
-	req = solo.NewCallParams(sbtestsc.Name, sbtestsc.FuncWithdrawToChain,
+	req = solo.NewCallParams(ScName, sbtestsc.FuncWithdrawToChain,
 		sbtestsc.ParamChainID, chain1.ChainID,
 	).WithIotas(1)
 

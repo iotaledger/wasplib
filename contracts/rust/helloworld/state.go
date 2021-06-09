@@ -7,20 +7,11 @@
 
 package helloworld
 
-import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type HelloWorldFuncState struct {
 	stateId int32
 }
 
-func (s HelloWorldFuncState) Dummy() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.stateId, idxMap[IdxVarDummy])
-}
-
 type HelloWorldViewState struct {
 	stateId int32
-}
-
-func (s HelloWorldViewState) Dummy() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.stateId, idxMap[IdxVarDummy])
 }

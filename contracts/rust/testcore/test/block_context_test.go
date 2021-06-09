@@ -12,7 +12,7 @@ func TestBasicBlockContext1(t *testing.T) {
 	_, chain := setupChain(t, nil)
 	_, _ = setupTestSandboxSC(t, chain, nil, false)
 
-	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncTestBlockContext1).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncTestBlockContext1).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 }
@@ -21,11 +21,11 @@ func TestBasicBlockContext2(t *testing.T) {
 	_, chain := setupChain(t, nil)
 	_, _ = setupTestSandboxSC(t, chain, nil, false)
 
-	req := solo.NewCallParams(SandboxSCName, sbtestsc.FuncTestBlockContext2).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncTestBlockContext2).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	res, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncGetStringValue, sbtestsc.ParamVarName, "atTheEndKey")
+	res, err := chain.CallView(ScName, sbtestsc.FuncGetStringValue, sbtestsc.ParamVarName, "atTheEndKey")
 	require.NoError(t, err)
 	b, err := res.Get("atTheEndKey")
 	require.NoError(t, err)

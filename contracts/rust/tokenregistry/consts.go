@@ -12,12 +12,12 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const ScName = "tokenregistry"
 const HScName = wasmlib.ScHname(0xe1ba0c78)
 
-const ParamColor = "color"
-const ParamDescription = "description"
-const ParamUserDefined = "userDefined"
+const ParamColor = wasmlib.Key("color")
+const ParamDescription = wasmlib.Key("description")
+const ParamUserDefined = wasmlib.Key("userDefined")
 
-const VarColorList = "colorList"
-const VarRegistry = "registry"
+const VarColorList = wasmlib.Key("colorList")
+const VarRegistry = wasmlib.Key("registry")
 
 const FuncMintSupply = "mintSupply"
 const FuncTransferOwnership = "transferOwnership"

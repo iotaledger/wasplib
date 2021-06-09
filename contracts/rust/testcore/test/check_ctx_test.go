@@ -19,9 +19,9 @@ func testMainCallsFromFullEP(t *testing.T, w bool) {
 
 	setupTestSandboxSC(t, chain, user, w)
 
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncCheckContextFromFullEP,
+	req := solo.NewCallParams(ScName, sbtestsc.FuncCheckContextFromFullEP,
 		sbtestsc.ParamChainID, chain.ChainID,
-		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), sbtestsc.Interface.Hname()),
+		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName),
 		sbtestsc.ParamCaller, userAgentID,
 		sbtestsc.ParamChainOwnerID, chain.OriginatorAgentID,
 		sbtestsc.ParamContractCreator, userAgentID,
@@ -38,9 +38,9 @@ func testMainCallsFromViewEP(t *testing.T, w bool) {
 
 	setupTestSandboxSC(t, chain, user, w)
 
-	_, err := chain.CallView(sbtestsc.Interface.Name, sbtestsc.FuncCheckContextFromViewEP,
+	_, err := chain.CallView(ScName, sbtestsc.FuncCheckContextFromViewEP,
 		sbtestsc.ParamChainID, chain.ChainID,
-		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), sbtestsc.Interface.Hname()),
+		sbtestsc.ParamAgentID, coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName),
 		sbtestsc.ParamChainOwnerID, chain.OriginatorAgentID,
 		sbtestsc.ParamContractCreator, userAgentID,
 	)
@@ -55,7 +55,7 @@ func testMintedSupplyOk(t *testing.T, w bool) {
 	setupTestSandboxSC(t, chain, user, w)
 
 	newSupply := uint64(42)
-	req := solo.NewCallParams(sbtestsc.Interface.Name, sbtestsc.FuncGetMintedSupply).
+	req := solo.NewCallParams(ScName, sbtestsc.FuncGetMintedSupply).
 		WithIotas(1).
 		WithMint(userAddress, newSupply)
 	tx, ret, err := chain.PostRequestSyncTx(req, user)

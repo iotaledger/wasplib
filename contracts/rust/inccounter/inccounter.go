@@ -69,7 +69,7 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *FuncLocalStatePostContext)
 func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
 	//note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
 	params := wasmlib.NewScMutableMap()
-	params.GetInt64(wasmlib.Key(VarCounter)).SetValue(nr)
+	params.GetInt64(VarCounter).SetValue(nr)
 	transfer := wasmlib.NewScTransferIotas(1)
 	ctx.PostSelf(HFuncWhenMustIncrement, params, transfer, 0)
 }

@@ -18,18 +18,6 @@ pub struct HelloWorldFuncState {
     pub(crate) state_id: i32,
 }
 
-impl HelloWorldFuncState {
-    pub fn dummy(&self) -> ScMutableString {
-        ScMutableString::new(self.state_id, idx_map(IDX_VAR_DUMMY))
-    }
-}
-
 pub struct HelloWorldViewState {
     pub(crate) state_id: i32,
-}
-
-impl HelloWorldViewState {
-    pub fn dummy(&self) -> ScImmutableString {
-        ScImmutableString::new(self.state_id, idx_map(IDX_VAR_DUMMY))
-    }
 }

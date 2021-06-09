@@ -89,6 +89,10 @@ func generateSchema(file *os.File) error {
 		if err != nil {
 			return err
 		}
+		return schema.GenerateGoTests()
+		if err != nil {
+			return err
+		}
 	}
 	if *flagJava {
 		fmt.Println("generating Java code")
@@ -100,6 +104,10 @@ func generateSchema(file *os.File) error {
 	if *flagRust {
 		fmt.Println("generating Rust code")
 		err = schema.GenerateRust()
+		if err != nil {
+			return err
+		}
+		return schema.GenerateGoTests()
 		if err != nil {
 			return err
 		}

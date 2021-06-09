@@ -19,9 +19,8 @@ const IdxParamHname = 6
 const IdxParamInt64 = 7
 const IdxParamRequestId = 8
 const IdxParamString = 9
-const IdxVarDummy = 10
 
-var keyMap = [11]string{
+var keyMap = [10]wasmlib.Key{
 	ParamAddress,
 	ParamAgentId,
 	ParamBytes,
@@ -32,7 +31,6 @@ var keyMap = [11]string{
 	ParamInt64,
 	ParamRequestId,
 	ParamString,
-	VarDummy,
 }
 
-var idxMap [11]wasmlib.Key32
+var idxMap [10]wasmlib.Key32

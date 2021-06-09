@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use erc20::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -33,6 +35,7 @@ fn on_load() {
     exports.add_view(VIEW_ALLOWANCE, view_allowance_thunk);
     exports.add_view(VIEW_BALANCE_OF, view_balance_of_thunk);
     exports.add_view(VIEW_TOTAL_SUPPLY, view_total_supply_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

@@ -9,6 +9,8 @@
 
 #![allow(dead_code)]
 
+#![allow(unused_imports)]
+
 use testcore::*;
 use wasmlib::*;
 use wasmlib::host::*;
@@ -53,6 +55,7 @@ fn on_load() {
     exports.add_view(VIEW_TEST_CHAIN_OWNER_ID_VIEW, view_test_chain_owner_id_view_thunk);
     exports.add_view(VIEW_TEST_PANIC_VIEW_EP, view_test_panic_view_ep_thunk);
     exports.add_view(VIEW_TEST_SANDBOX_CALL, view_test_sandbox_call_thunk);
+
     unsafe {
         for i in 0..KEY_MAP_LEN {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);

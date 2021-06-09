@@ -14,7 +14,7 @@ func OnLoad() {
 	exports.AddFunc(FuncParamTypes, funcParamTypesThunk)
 
 	for i, key := range keyMap {
-		idxMap[i] = wasmlib.GetKeyIdFromString(key)
+		idxMap[i] = key.KeyId()
 	}
 }
 
