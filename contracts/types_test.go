@@ -6,9 +6,10 @@
 package contracts
 
 import (
+	"testing"
+
 	"github.com/iotaledger/wasplib/tools/schema/generator"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRustToGo(t *testing.T) {

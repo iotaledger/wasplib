@@ -4,6 +4,9 @@
 package test
 
 import (
+	"testing"
+	"time"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -13,8 +16,6 @@ import (
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 var auctioneer *ed25519.KeyPair
@@ -67,7 +68,7 @@ func TestFaStartAuction(t *testing.T) {
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(5))
 }
 
 func TestFaAuctionInfo(t *testing.T) {
@@ -84,7 +85,7 @@ func TestFaAuctionInfo(t *testing.T) {
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(5))
 }
 
 func TestFaNoBids(t *testing.T) {
@@ -92,7 +93,7 @@ func TestFaNoBids(t *testing.T) {
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(5))
 
 	res, err := chain.CallView(
 		ScName, ViewGetInfo,
@@ -113,7 +114,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(6))
 
 	res, err := chain.CallView(
 		ScName, ViewGetInfo,
@@ -136,7 +137,7 @@ func TestFaOneBid(t *testing.T) {
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(6))
 
 	res, err := chain.CallView(
 		ScName, ViewGetInfo,

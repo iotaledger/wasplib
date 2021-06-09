@@ -1,6 +1,9 @@
 package test
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -8,8 +11,6 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"strings"
-	"testing"
 )
 
 func TestOffLedgerFailNoAccount(t *testing.T) {

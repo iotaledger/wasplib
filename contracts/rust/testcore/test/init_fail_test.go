@@ -1,10 +1,11 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestSuccess(t *testing.T) {

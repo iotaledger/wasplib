@@ -1,12 +1,13 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDoNothing(t *testing.T) { run2(t, testDoNothing) }

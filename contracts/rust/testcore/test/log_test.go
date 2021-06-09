@@ -1,6 +1,11 @@
 package test
 
 import (
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/collections"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -8,10 +13,6 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"strconv"
-	"strings"
-	"testing"
-	"time"
 )
 
 func TestEventlogGetLast3(t *testing.T) { run2(t, testEventlogGetLast3) }

@@ -5,9 +5,10 @@ package common
 
 import (
 	"errors"
+	"strconv"
+
 	"github.com/bytecodealliance/wasmtime-go"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
-	"strconv"
 )
 
 type WasmTimeJavaVM struct {

@@ -1,11 +1,12 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestDeployErc20(t *testing.T) {

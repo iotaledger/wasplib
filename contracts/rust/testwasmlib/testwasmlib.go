@@ -5,6 +5,7 @@ package testwasmlib
 
 import (
 	"bytes"
+
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 

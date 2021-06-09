@@ -5,10 +5,11 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
 const allowDeadCode = "#![allow(dead_code)]\n"

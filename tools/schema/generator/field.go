@@ -5,9 +5,10 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"regexp"
 	"strings"
+
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
 var fldNameRegexp = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*$")

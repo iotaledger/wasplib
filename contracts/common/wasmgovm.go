@@ -5,9 +5,10 @@ package common
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
-	"strings"
 )
 
 type WasmGoVM struct {

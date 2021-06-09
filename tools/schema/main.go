@@ -8,8 +8,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/iotaledger/wasplib/tools/schema/generator"
 	"os"
+
+	"github.com/iotaledger/wasplib/tools/schema/generator"
 )
 
 var flagInit = flag.String("init", "", "generate Go code")
@@ -20,7 +21,9 @@ var flagRust = flag.Bool("rust", false, "generate Rust code")
 
 func main() {
 	flag.Parse()
-	if !(*flagGo || *flagJava) { *flagRust = true }
+	if !(*flagGo || *flagJava) {
+		*flagRust = true
+	}
 
 	err := generator.FindModulePath()
 	if err != nil {
@@ -144,7 +147,7 @@ func generateSchemaNew() error {
 
 	var out bytes.Buffer
 	json.Indent(&out, b, "", "\t")
-	_,err = out.WriteTo(file)
+	_, err = out.WriteTo(file)
 	return err
 }
 

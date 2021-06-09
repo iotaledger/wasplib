@@ -2,6 +2,8 @@ package test
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -15,7 +17,6 @@ import (
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 const (
@@ -29,8 +30,8 @@ const (
 )
 
 var (
-	//WasmFileTestcore = "sbtestsc/testcore_bg.wasm"
-	//WasmFileErc20    = "sbtestsc/erc20_bg.wasm"
+//WasmFileTestcore = "sbtestsc/testcore_bg.wasm"
+//WasmFileErc20    = "sbtestsc/erc20_bg.wasm"
 )
 
 // deploy the specified contract on the chain

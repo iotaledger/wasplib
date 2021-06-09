@@ -5,6 +5,11 @@ package test
 
 import (
 	"fmt"
+	"sort"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
@@ -12,10 +17,6 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
-	"sort"
-	"strings"
-	"testing"
-	"time"
 )
 
 func setupTest(t *testing.T) *solo.Chain {
@@ -67,7 +68,7 @@ func TestIncrementRepeatThrice(t *testing.T) {
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(7))
 
 	checkStateCounter(t, chain, 4)
 }
@@ -99,7 +100,7 @@ func TestIncrementPostIncrement(t *testing.T) {
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(5))
 
 	checkStateCounter(t, chain, 2)
 }
@@ -137,7 +138,7 @@ func TestIncrementLocalStatePost(t *testing.T) {
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	chain.WaitForEmptyBacklog()
+	require.True(t, chain.WaitForRequestsThrough(7))
 
 	if common.WasmRunner == 0 {
 		// global var in wasm execution has no effect

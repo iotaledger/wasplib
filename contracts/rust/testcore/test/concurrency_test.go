@@ -1,6 +1,9 @@
 package test
 
 import (
+	"testing"
+	"time"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -8,8 +11,6 @@ import (
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 func TestCounter(t *testing.T) { run2(t, testCounter) }
@@ -37,6 +38,10 @@ func testConcurrency(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
+	extra := 0
+	if w {
+		extra = 1
+	}
 	req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter).WithIotas(1)
 
 	repeats := []int{300, 100, 100, 100, 200, 100, 100}
@@ -51,14 +56,9 @@ func testConcurrency(t *testing.T, w bool) {
 				require.NoError(t, err)
 				chain.Env.EnqueueRequests(tx)
 			}
-			//var m runtime.MemStats
-			//runtime.ReadMemStats(&m)
-			//t.Logf("++++++++++++++ #%d -- alloc: %d MB, total: %d MB GC: %d",
-			//	r, m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.NumGC)
 		}(r, n)
 	}
-
-	chain.WaitForEmptyBacklog(20 * time.Second)
+	require.True(t, chain.WaitForRequestsThrough(sum+3+extra, 20*time.Second))
 
 	ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter)
 	require.NoError(t, err)
@@ -83,6 +83,10 @@ func testConcurrency2(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
+	extra := 0
+	if w {
+		extra = 1
+	}
 	req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter).WithIotas(1)
 
 	repeats := []int{300, 100, 100, 100, 200, 100, 100}
@@ -103,7 +107,7 @@ func testConcurrency2(t *testing.T, w bool) {
 		}(r, n)
 	}
 
-	chain.WaitForEmptyBacklog(20 * time.Second)
+	require.True(t, chain.WaitForRequestsThrough(sum+3+extra, 20*time.Second))
 
 	ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter)
 	require.NoError(t, err)

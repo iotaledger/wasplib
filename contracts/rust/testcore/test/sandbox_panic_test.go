@@ -1,11 +1,12 @@
 package test
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
-	"strings"
-	"testing"
 )
 
 func TestPanicFull(t *testing.T) { run2(t, testPanicFull) }

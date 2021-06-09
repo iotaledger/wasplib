@@ -5,14 +5,15 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
-const importCoreTypes  = "import \"github.com/iotaledger/wasp/packages/coretypes\"\n"
-const importWasmLib    = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
+const importCoreTypes = "import \"github.com/iotaledger/wasp/packages/coretypes\"\n"
+const importWasmLib = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
 const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/wasmclient\"\n"
 
 var goFuncRegexp = regexp.MustCompile("^func (\\w+).+$")

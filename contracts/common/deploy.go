@@ -1,6 +1,8 @@
 package common
 
 import (
+	"testing"
+
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
@@ -16,7 +18,6 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 const (

@@ -5,6 +5,7 @@ package common
 
 import (
 	"fmt"
+
 	"github.com/iotaledger/wart/wasm/consts/value"
 	"github.com/iotaledger/wart/wasm/executors"
 	"github.com/iotaledger/wart/wasm/sections"

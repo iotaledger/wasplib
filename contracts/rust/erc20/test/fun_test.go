@@ -1,6 +1,8 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -9,7 +11,6 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 var (

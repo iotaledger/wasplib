@@ -1,15 +1,16 @@
 package test
 
 import (
+	"strconv"
+	"strings"
+	"testing"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/hashing"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
-	"strconv"
-	"strings"
-	"testing"
 )
 
 var (

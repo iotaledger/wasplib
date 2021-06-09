@@ -5,8 +5,9 @@ package generator
 
 import (
 	"fmt"
-	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
+
+	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
 func GenerateGoCoreContractsSchema(coreSchemas []*Schema) error {

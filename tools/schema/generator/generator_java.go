@@ -6,10 +6,11 @@ package generator
 import (
 	"bufio"
 	"fmt"
-	"github.com/iotaledger/wasp/packages/coretypes"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
 var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
