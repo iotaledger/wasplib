@@ -92,7 +92,7 @@ func generateSchema(file *os.File) error {
 		if err != nil {
 			return err
 		}
-		return schema.GenerateGoTests()
+		err = schema.GenerateGoTests()
 		if err != nil {
 			return err
 		}
@@ -110,7 +110,7 @@ func generateSchema(file *os.File) error {
 		if err != nil {
 			return err
 		}
-		return schema.GenerateGoTests()
+		err = schema.GenerateGoTests()
 		if err != nil {
 			return err
 		}

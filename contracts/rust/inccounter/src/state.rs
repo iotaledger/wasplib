@@ -14,30 +14,30 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct IncCounterFuncState {
-    pub(crate) state_id: i32,
+pub struct MutableIncCounterState {
+    pub(crate) id: i32,
 }
 
-impl IncCounterFuncState {
+impl MutableIncCounterState {
     pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
     }
 
     pub fn num_repeats(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_NUM_REPEATS))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_NUM_REPEATS))
     }
 }
 
-pub struct IncCounterViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableIncCounterState {
+    pub(crate) id: i32,
 }
 
-impl IncCounterViewState {
+impl ImmutableIncCounterState {
     pub fn counter(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
     }
 
     pub fn num_repeats(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_NUM_REPEATS))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_NUM_REPEATS))
     }
 }

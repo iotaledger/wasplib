@@ -15,7 +15,7 @@ const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
 pub fn func_finalize_auction(ctx: &ScFuncContext, f: &FuncFinalizeAuctionContext) {
-    let color = f.params.color.value();
+    let color = f.params.color().value();
     let current_auction = f.state.auctions().get_auction(&color);
     ctx.require(current_auction.exists(), "Missing auction info");
     let auction = current_auction.value();
@@ -59,7 +59,7 @@ pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
     let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
     ctx.require(bid_amount > 0, "Missing bid amount");
 
-    let color = f.params.color.value();
+    let color = f.params.color().value();
     let current_auction = f.state.auctions().get_auction(&color);
     ctx.require(current_auction.exists(), "Missing auction info");
 
@@ -96,7 +96,7 @@ pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
 }
 
 pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &FuncSetOwnerMarginContext) {
-    let mut owner_margin = f.params.owner_margin.value();
+    let mut owner_margin = f.params.owner_margin().value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
     }
@@ -107,7 +107,7 @@ pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &FuncSetOwnerMarginContext
 }
 
 pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
-    let color = f.params.color.value();
+    let color = f.params.color().value();
     if color == ScColor::IOTA || color == ScColor::MINT {
         ctx.panic("Reserved auction token color");
     }
@@ -116,10 +116,10 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
         ctx.panic("Missing auction tokens");
     }
 
-    let minimum_bid = f.params.minimum_bid.value();
+    let minimum_bid = f.params.minimum_bid().value();
 
     // duration in minutes
-    let mut duration = f.params.duration.value();
+    let mut duration = f.params.duration().value();
     if duration == 0 {
         duration = DURATION_DEFAULT;
     }
@@ -130,7 +130,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
         duration = DURATION_MAX;
     }
 
-    let mut description = f.params.description.value();
+    let mut description = f.params.description().value();
     if description == "" {
         description = "N/A".to_string();
     }
@@ -181,25 +181,25 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
 }
 
 pub fn view_get_info(ctx: &ScViewContext, f: &ViewGetInfoContext) {
-    let color = f.params.color.value();
+    let color = f.params.color().value();
     let current_auction = f.state.auctions().get_auction(&color);
     ctx.require(current_auction.exists(), "Missing auction info");
 
     let auction = current_auction.value();
-    f.results.color.set_value(&auction.color);
-    f.results.creator.set_value(&auction.creator);
-    f.results.deposit.set_value(auction.deposit);
-    f.results.description.set_value(&auction.description);
-    f.results.duration.set_value(auction.duration);
-    f.results.highest_bid.set_value(auction.highest_bid);
-    f.results.highest_bidder.set_value(&auction.highest_bidder);
-    f.results.minimum_bid.set_value(auction.minimum_bid);
-    f.results.num_tokens.set_value(auction.num_tokens);
-    f.results.owner_margin.set_value(auction.owner_margin);
-    f.results.when_started.set_value(auction.when_started);
+    f.results.color().set_value(&auction.color);
+    f.results.creator().set_value(&auction.creator);
+    f.results.deposit().set_value(auction.deposit);
+    f.results.description().set_value(&auction.description);
+    f.results.duration().set_value(auction.duration);
+    f.results.highest_bid().set_value(auction.highest_bid);
+    f.results.highest_bidder().set_value(&auction.highest_bidder);
+    f.results.minimum_bid().set_value(auction.minimum_bid);
+    f.results.num_tokens().set_value(auction.num_tokens);
+    f.results.owner_margin().set_value(auction.owner_margin);
+    f.results.when_started().set_value(auction.when_started);
 
     let bidder_list = f.state.bidder_list().get_bidder_list(&color);
-    f.results.bidders.set_value(bidder_list.length() as i64);
+    f.results.bidders().set_value(bidder_list.length() as i64);
 }
 
 fn transfer_tokens(ctx: &ScFuncContext, agent: &ScAgentId, color: &ScColor, amount: i64) {

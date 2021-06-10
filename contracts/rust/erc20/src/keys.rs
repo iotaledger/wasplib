@@ -19,9 +19,9 @@ pub const IDX_PARAM_RECIPIENT: usize = 4;
 pub const IDX_PARAM_SUPPLY: usize = 5;
 pub const IDX_RESULT_AMOUNT: usize = 6;
 pub const IDX_RESULT_SUPPLY: usize = 7;
-pub const IDX_VAR_ALL_ALLOWANCES: usize = 8;
-pub const IDX_VAR_BALANCES: usize = 9;
-pub const IDX_VAR_SUPPLY: usize = 10;
+pub const IDX_STATE_ALL_ALLOWANCES: usize = 8;
+pub const IDX_STATE_BALANCES: usize = 9;
+pub const IDX_STATE_SUPPLY: usize = 10;
 
 pub const KEY_MAP_LEN: usize = 11;
 
@@ -34,9 +34,9 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_SUPPLY,
     RESULT_AMOUNT,
     RESULT_SUPPLY,
-    VAR_ALL_ALLOWANCES,
-    VAR_BALANCES,
-    VAR_SUPPLY,
+    STATE_ALL_ALLOWANCES,
+    STATE_BALANCES,
+    STATE_SUPPLY,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

@@ -33,22 +33,22 @@ impl ArrayOfMutableDonation {
     }
 }
 
-pub struct DonateWithFeedbackFuncState {
-    pub(crate) state_id: i32,
+pub struct MutableDonateWithFeedbackState {
+    pub(crate) id: i32,
 }
 
-impl DonateWithFeedbackFuncState {
+impl MutableDonateWithFeedbackState {
     pub fn log(&self) -> ArrayOfMutableDonation {
-        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOG), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_LOG), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableDonation { obj_id: arr_id }
     }
 
     pub fn max_donation(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_MAX_DONATION))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_MAX_DONATION))
     }
 
     pub fn total_donation(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_TOTAL_DONATION))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_TOTAL_DONATION))
     }
 }
 
@@ -66,21 +66,21 @@ impl ArrayOfImmutableDonation {
     }
 }
 
-pub struct DonateWithFeedbackViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableDonateWithFeedbackState {
+    pub(crate) id: i32,
 }
 
-impl DonateWithFeedbackViewState {
+impl ImmutableDonateWithFeedbackState {
     pub fn log(&self) -> ArrayOfImmutableDonation {
-        let arr_id = get_object_id(self.state_id, idx_map(IDX_VAR_LOG), TYPE_ARRAY | TYPE_BYTES);
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_LOG), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableDonation { obj_id: arr_id }
     }
 
     pub fn max_donation(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_MAX_DONATION))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_MAX_DONATION))
     }
 
     pub fn total_donation(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_TOTAL_DONATION))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_TOTAL_DONATION))
     }
 }

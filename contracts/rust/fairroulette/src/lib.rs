@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod types;
 mod fairroulette;
@@ -42,7 +46,7 @@ fn on_load() {
 }
 
 pub struct FuncLockBetsContext {
-    state: FairRouletteFuncState,
+    state: MutableFairRouletteState,
 }
 
 fn func_lock_bets_thunk(ctx: &ScFuncContext) {
@@ -51,8 +55,8 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
     let f = FuncLockBetsContext {
-        state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairRouletteState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_lock_bets(ctx, &f);
@@ -60,7 +64,7 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncPayWinnersContext {
-    state: FairRouletteFuncState,
+    state: MutableFairRouletteState,
 }
 
 fn func_pay_winners_thunk(ctx: &ScFuncContext) {
@@ -69,46 +73,37 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
     let f = FuncPayWinnersContext {
-        state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairRouletteState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_pay_winners(ctx, &f);
     ctx.log("fairroulette.funcPayWinners ok");
 }
 
-pub struct FuncPlaceBetParams {
-    pub number: ScImmutableInt64, // the number a better bets on
-}
-
 pub struct FuncPlaceBetContext {
-    params: FuncPlaceBetParams,
-    state:  FairRouletteFuncState,
+    params: ImmutableFuncPlaceBetParams,
+    state:  MutableFairRouletteState,
 }
 
 fn func_place_bet_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlaceBet");
-    let p = ctx.params().map_id();
     let f = FuncPlaceBetContext {
-        params: FuncPlaceBetParams {
-            number: ScImmutableInt64::new(p, idx_map(IDX_PARAM_NUMBER)),
+        params: ImmutableFuncPlaceBetParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairRouletteState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.number.exists(), "missing mandatory number");
+    ctx.require(f.params.number().exists(), "missing mandatory number");
     func_place_bet(ctx, &f);
     ctx.log("fairroulette.funcPlaceBet ok");
 }
 
-pub struct FuncPlayPeriodParams {
-    pub play_period: ScImmutableInt64, // number of minutes in one playing round
-}
-
 pub struct FuncPlayPeriodContext {
-    params: FuncPlayPeriodParams,
-    state:  FairRouletteFuncState,
+    params: ImmutableFuncPlayPeriodParams,
+    state:  MutableFairRouletteState,
 }
 
 fn func_play_period_thunk(ctx: &ScFuncContext) {
@@ -116,38 +111,32 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
     // only SC creator can update the play period
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncPlayPeriodContext {
-        params: FuncPlayPeriodParams {
-            play_period: ScImmutableInt64::new(p, idx_map(IDX_PARAM_PLAY_PERIOD)),
+        params: ImmutableFuncPlayPeriodParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairRouletteFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairRouletteState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.play_period.exists(), "missing mandatory playPeriod");
+    ctx.require(f.params.play_period().exists(), "missing mandatory playPeriod");
     func_play_period(ctx, &f);
     ctx.log("fairroulette.funcPlayPeriod ok");
 }
 
-pub struct ViewLastWinningNumberResults {
-    pub last_winning_number: ScMutableInt64,
-}
-
 pub struct ViewLastWinningNumberContext {
-    results: ViewLastWinningNumberResults,
-    state:   FairRouletteViewState,
+    results: MutableViewLastWinningNumberResults,
+    state:   ImmutableFairRouletteState,
 }
 
 fn view_last_winning_number_thunk(ctx: &ScViewContext) {
     ctx.log("fairroulette.viewLastWinningNumber");
-    let r = ctx.results().map_id();
     let f = ViewLastWinningNumberContext {
-        results: ViewLastWinningNumberResults {
-            last_winning_number: ScMutableInt64::new(r, idx_map(IDX_RESULT_LAST_WINNING_NUMBER)),
+        results: MutableViewLastWinningNumberResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: FairRouletteViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableFairRouletteState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_last_winning_number(ctx, &f);

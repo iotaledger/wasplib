@@ -25,9 +25,9 @@ pub const RESULT_MAX_DONATION: &str = "maxDonation";
 pub const RESULT_TIMESTAMP: &str = "timestamp";
 pub const RESULT_TOTAL_DONATION: &str = "totalDonation";
 
-pub const VAR_LOG: &str = "log";
-pub const VAR_MAX_DONATION: &str = "maxDonation";
-pub const VAR_TOTAL_DONATION: &str = "totalDonation";
+pub const STATE_LOG: &str = "log";
+pub const STATE_MAX_DONATION: &str = "maxDonation";
+pub const STATE_TOTAL_DONATION: &str = "totalDonation";
 
 pub const FUNC_DONATE: &str = "donate";
 pub const FUNC_WITHDRAW: &str = "withdraw";

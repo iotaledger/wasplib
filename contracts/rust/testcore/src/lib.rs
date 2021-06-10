@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod testcore;
 
@@ -63,116 +67,82 @@ fn on_load() {
     }
 }
 
-pub struct FuncCallOnChainParams {
-    pub hname_contract: ScImmutableHname,
-    pub hname_ep:       ScImmutableHname,
-    pub int_value:      ScImmutableInt64,
-}
-
-pub struct FuncCallOnChainResults {
-    pub int_value: ScMutableInt64,
-}
-
 pub struct FuncCallOnChainContext {
-    params:  FuncCallOnChainParams,
-    results: FuncCallOnChainResults,
-    state:   TestCoreFuncState,
+    params:  ImmutableFuncCallOnChainParams,
+    results: MutableFuncCallOnChainResults,
+    state:   MutableTestCoreState,
 }
 
 fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCallOnChain");
-    let p = ctx.params().map_id();
-    let r = ctx.results().map_id();
     let f = FuncCallOnChainContext {
-        params: FuncCallOnChainParams {
-            hname_contract: ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME_CONTRACT)),
-            hname_ep:       ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME_EP)),
-            int_value:      ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT_VALUE)),
+        params: ImmutableFuncCallOnChainParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: FuncCallOnChainResults {
-            int_value: ScMutableInt64::new(r, idx_map(IDX_RESULT_INT_VALUE)),
+        results: MutableFuncCallOnChainResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.int_value.exists(), "missing mandatory intValue");
+    ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
     func_call_on_chain(ctx, &f);
     ctx.log("testcore.funcCallOnChain ok");
 }
 
-pub struct FuncCheckContextFromFullEPParams {
-    pub agent_id:         ScImmutableAgentId,
-    pub caller:           ScImmutableAgentId,
-    pub chain_id:         ScImmutableChainId,
-    pub chain_owner_id:   ScImmutableAgentId,
-    pub contract_creator: ScImmutableAgentId,
-}
-
 pub struct FuncCheckContextFromFullEPContext {
-    params: FuncCheckContextFromFullEPParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncCheckContextFromFullEPParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCheckContextFromFullEP");
-    let p = ctx.params().map_id();
     let f = FuncCheckContextFromFullEPContext {
-        params: FuncCheckContextFromFullEPParams {
-            agent_id:         ScImmutableAgentId::new(p, idx_map(IDX_PARAM_AGENT_ID)),
-            caller:           ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CALLER)),
-            chain_id:         ScImmutableChainId::new(p, idx_map(IDX_PARAM_CHAIN_ID)),
-            chain_owner_id:   ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CHAIN_OWNER_ID)),
-            contract_creator: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CONTRACT_CREATOR)),
+        params: ImmutableFuncCheckContextFromFullEPParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.agent_id.exists(), "missing mandatory agentId");
-    ctx.require(f.params.caller.exists(), "missing mandatory caller");
-    ctx.require(f.params.chain_id.exists(), "missing mandatory chainId");
-    ctx.require(f.params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
-    ctx.require(f.params.contract_creator.exists(), "missing mandatory contractCreator");
+    ctx.require(f.params.agent_id().exists(), "missing mandatory agentId");
+    ctx.require(f.params.caller().exists(), "missing mandatory caller");
+    ctx.require(f.params.chain_id().exists(), "missing mandatory chainId");
+    ctx.require(f.params.chain_owner_id().exists(), "missing mandatory chainOwnerId");
+    ctx.require(f.params.contract_creator().exists(), "missing mandatory contractCreator");
     func_check_context_from_full_ep(ctx, &f);
     ctx.log("testcore.funcCheckContextFromFullEP ok");
 }
 
 pub struct FuncDoNothingContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_do_nothing_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcDoNothing");
     let f = FuncDoNothingContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_do_nothing(ctx, &f);
     ctx.log("testcore.funcDoNothing ok");
 }
 
-pub struct FuncGetMintedSupplyResults {
-    pub minted_color:  ScMutableColor,
-    pub minted_supply: ScMutableInt64,
-}
-
 pub struct FuncGetMintedSupplyContext {
-    results: FuncGetMintedSupplyResults,
-    state:   TestCoreFuncState,
+    results: MutableFuncGetMintedSupplyResults,
+    state:   MutableTestCoreState,
 }
 
 fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcGetMintedSupply");
-    let r = ctx.results().map_id();
     let f = FuncGetMintedSupplyContext {
-        results: FuncGetMintedSupplyResults {
-            minted_color:  ScMutableColor::new(r, idx_map(IDX_RESULT_MINTED_COLOR)),
-            minted_supply: ScMutableInt64::new(r, idx_map(IDX_RESULT_MINTED_SUPPLY)),
+        results: MutableFuncGetMintedSupplyResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_get_minted_supply(ctx, &f);
@@ -180,14 +150,14 @@ fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncIncCounterContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_inc_counter_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcIncCounter");
     let f = FuncIncCounterContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_inc_counter(ctx, &f);
@@ -195,161 +165,122 @@ fn func_inc_counter_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncInitContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcInit");
     let f = FuncInitContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_init(ctx, &f);
     ctx.log("testcore.funcInit ok");
 }
 
-pub struct FuncPassTypesFullParams {
-    pub hash:        ScImmutableHash,
-    pub hname:       ScImmutableHname,
-    pub hname_zero:  ScImmutableHname,
-    pub int64:       ScImmutableInt64,
-    pub int64_zero:  ScImmutableInt64,
-    pub string:      ScImmutableString,
-    pub string_zero: ScImmutableString,
-}
-
 pub struct FuncPassTypesFullContext {
-    params: FuncPassTypesFullParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncPassTypesFullParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcPassTypesFull");
-    let p = ctx.params().map_id();
     let f = FuncPassTypesFullContext {
-        params: FuncPassTypesFullParams {
-            hash:        ScImmutableHash::new(p, idx_map(IDX_PARAM_HASH)),
-            hname:       ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME)),
-            hname_zero:  ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME_ZERO)),
-            int64:       ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64)),
-            int64_zero:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64_ZERO)),
-            string:      ScImmutableString::new(p, idx_map(IDX_PARAM_STRING)),
-            string_zero: ScImmutableString::new(p, idx_map(IDX_PARAM_STRING_ZERO)),
+        params: ImmutableFuncPassTypesFullParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.hash.exists(), "missing mandatory hash");
-    ctx.require(f.params.hname.exists(), "missing mandatory hname");
-    ctx.require(f.params.hname_zero.exists(), "missing mandatory hnameZero");
-    ctx.require(f.params.int64.exists(), "missing mandatory int64");
-    ctx.require(f.params.int64_zero.exists(), "missing mandatory int64Zero");
-    ctx.require(f.params.string.exists(), "missing mandatory string");
-    ctx.require(f.params.string_zero.exists(), "missing mandatory stringZero");
+    ctx.require(f.params.hash().exists(), "missing mandatory hash");
+    ctx.require(f.params.hname().exists(), "missing mandatory hname");
+    ctx.require(f.params.hname_zero().exists(), "missing mandatory hnameZero");
+    ctx.require(f.params.int64().exists(), "missing mandatory int64");
+    ctx.require(f.params.int64_zero().exists(), "missing mandatory int64Zero");
+    ctx.require(f.params.string().exists(), "missing mandatory string");
+    ctx.require(f.params.string_zero().exists(), "missing mandatory stringZero");
     func_pass_types_full(ctx, &f);
     ctx.log("testcore.funcPassTypesFull ok");
 }
 
-pub struct FuncRunRecursionParams {
-    pub int_value: ScImmutableInt64,
-}
-
-pub struct FuncRunRecursionResults {
-    pub int_value: ScMutableInt64,
-}
-
 pub struct FuncRunRecursionContext {
-    params:  FuncRunRecursionParams,
-    results: FuncRunRecursionResults,
-    state:   TestCoreFuncState,
+    params:  ImmutableFuncRunRecursionParams,
+    results: MutableFuncRunRecursionResults,
+    state:   MutableTestCoreState,
 }
 
 fn func_run_recursion_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcRunRecursion");
-    let p = ctx.params().map_id();
-    let r = ctx.results().map_id();
     let f = FuncRunRecursionContext {
-        params: FuncRunRecursionParams {
-            int_value: ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT_VALUE)),
+        params: ImmutableFuncRunRecursionParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: FuncRunRecursionResults {
-            int_value: ScMutableInt64::new(r, idx_map(IDX_RESULT_INT_VALUE)),
+        results: MutableFuncRunRecursionResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.int_value.exists(), "missing mandatory intValue");
+    ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
     func_run_recursion(ctx, &f);
     ctx.log("testcore.funcRunRecursion ok");
 }
 
-pub struct FuncSendToAddressParams {
-    pub address: ScImmutableAddress,
-}
-
 pub struct FuncSendToAddressContext {
-    params: FuncSendToAddressParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncSendToAddressParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_send_to_address_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSendToAddress");
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncSendToAddressContext {
-        params: FuncSendToAddressParams {
-            address: ScImmutableAddress::new(p, idx_map(IDX_PARAM_ADDRESS)),
+        params: ImmutableFuncSendToAddressParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.address.exists(), "missing mandatory address");
+    ctx.require(f.params.address().exists(), "missing mandatory address");
     func_send_to_address(ctx, &f);
     ctx.log("testcore.funcSendToAddress ok");
 }
 
-pub struct FuncSetIntParams {
-    pub int_value: ScImmutableInt64,
-    pub name:      ScImmutableString,
-}
-
 pub struct FuncSetIntContext {
-    params: FuncSetIntParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncSetIntParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_set_int_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSetInt");
-    let p = ctx.params().map_id();
     let f = FuncSetIntContext {
-        params: FuncSetIntParams {
-            int_value: ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT_VALUE)),
-            name:      ScImmutableString::new(p, idx_map(IDX_PARAM_NAME)),
+        params: ImmutableFuncSetIntParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.int_value.exists(), "missing mandatory intValue");
-    ctx.require(f.params.name.exists(), "missing mandatory name");
+    ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
+    ctx.require(f.params.name().exists(), "missing mandatory name");
     func_set_int(ctx, &f);
     ctx.log("testcore.funcSetInt ok");
 }
 
 pub struct FuncTestCallPanicFullEPContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicFullEP");
     let f = FuncTestCallPanicFullEPContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_call_panic_full_ep(ctx, &f);
@@ -357,38 +288,33 @@ fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncTestCallPanicViewEPFromFullContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicViewEPFromFull");
     let f = FuncTestCallPanicViewEPFromFullContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_call_panic_view_ep_from_full(ctx, &f);
     ctx.log("testcore.funcTestCallPanicViewEPFromFull ok");
 }
 
-pub struct FuncTestChainOwnerIDFullResults {
-    pub chain_owner_id: ScMutableAgentId,
-}
-
 pub struct FuncTestChainOwnerIDFullContext {
-    results: FuncTestChainOwnerIDFullResults,
-    state:   TestCoreFuncState,
+    results: MutableFuncTestChainOwnerIDFullResults,
+    state:   MutableTestCoreState,
 }
 
 fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestChainOwnerIDFull");
-    let r = ctx.results().map_id();
     let f = FuncTestChainOwnerIDFullContext {
-        results: FuncTestChainOwnerIDFullResults {
-            chain_owner_id: ScMutableAgentId::new(r, idx_map(IDX_RESULT_CHAIN_OWNER_ID)),
+        results: MutableFuncTestChainOwnerIDFullResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_chain_owner_id_full(ctx, &f);
@@ -396,14 +322,14 @@ fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncTestEventLogDeployContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogDeploy");
     let f = FuncTestEventLogDeployContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_event_log_deploy(ctx, &f);
@@ -411,293 +337,230 @@ fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
 }
 
 pub struct FuncTestEventLogEventDataContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogEventData");
     let f = FuncTestEventLogEventDataContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_event_log_event_data(ctx, &f);
     ctx.log("testcore.funcTestEventLogEventData ok");
 }
 
-pub struct FuncTestEventLogGenericDataParams {
-    pub counter: ScImmutableInt64,
-}
-
 pub struct FuncTestEventLogGenericDataContext {
-    params: FuncTestEventLogGenericDataParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncTestEventLogGenericDataParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogGenericData");
-    let p = ctx.params().map_id();
     let f = FuncTestEventLogGenericDataContext {
-        params: FuncTestEventLogGenericDataParams {
-            counter: ScImmutableInt64::new(p, idx_map(IDX_PARAM_COUNTER)),
+        params: ImmutableFuncTestEventLogGenericDataParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.counter.exists(), "missing mandatory counter");
+    ctx.require(f.params.counter().exists(), "missing mandatory counter");
     func_test_event_log_generic_data(ctx, &f);
     ctx.log("testcore.funcTestEventLogGenericData ok");
 }
 
 pub struct FuncTestPanicFullEPContext {
-    state: TestCoreFuncState,
+    state: MutableTestCoreState,
 }
 
 fn func_test_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestPanicFullEP");
     let f = FuncTestPanicFullEPContext {
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_test_panic_full_ep(ctx, &f);
     ctx.log("testcore.funcTestPanicFullEP ok");
 }
 
-pub struct FuncWithdrawToChainParams {
-    pub chain_id: ScImmutableChainId,
-}
-
 pub struct FuncWithdrawToChainContext {
-    params: FuncWithdrawToChainParams,
-    state:  TestCoreFuncState,
+    params: ImmutableFuncWithdrawToChainParams,
+    state:  MutableTestCoreState,
 }
 
 fn func_withdraw_to_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcWithdrawToChain");
-    let p = ctx.params().map_id();
     let f = FuncWithdrawToChainContext {
-        params: FuncWithdrawToChainParams {
-            chain_id: ScImmutableChainId::new(p, idx_map(IDX_PARAM_CHAIN_ID)),
+        params: ImmutableFuncWithdrawToChainParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.chain_id.exists(), "missing mandatory chainId");
+    ctx.require(f.params.chain_id().exists(), "missing mandatory chainId");
     func_withdraw_to_chain(ctx, &f);
     ctx.log("testcore.funcWithdrawToChain ok");
 }
 
-pub struct ViewCheckContextFromViewEPParams {
-    pub agent_id:         ScImmutableAgentId,
-    pub chain_id:         ScImmutableChainId,
-    pub chain_owner_id:   ScImmutableAgentId,
-    pub contract_creator: ScImmutableAgentId,
-}
-
 pub struct ViewCheckContextFromViewEPContext {
-    params: ViewCheckContextFromViewEPParams,
-    state:  TestCoreViewState,
+    params: ImmutableViewCheckContextFromViewEPParams,
+    state:  ImmutableTestCoreState,
 }
 
 fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewCheckContextFromViewEP");
-    let p = ctx.params().map_id();
     let f = ViewCheckContextFromViewEPContext {
-        params: ViewCheckContextFromViewEPParams {
-            agent_id:         ScImmutableAgentId::new(p, idx_map(IDX_PARAM_AGENT_ID)),
-            chain_id:         ScImmutableChainId::new(p, idx_map(IDX_PARAM_CHAIN_ID)),
-            chain_owner_id:   ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CHAIN_OWNER_ID)),
-            contract_creator: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_CONTRACT_CREATOR)),
+        params: ImmutableViewCheckContextFromViewEPParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.agent_id.exists(), "missing mandatory agentId");
-    ctx.require(f.params.chain_id.exists(), "missing mandatory chainId");
-    ctx.require(f.params.chain_owner_id.exists(), "missing mandatory chainOwnerId");
-    ctx.require(f.params.contract_creator.exists(), "missing mandatory contractCreator");
+    ctx.require(f.params.agent_id().exists(), "missing mandatory agentId");
+    ctx.require(f.params.chain_id().exists(), "missing mandatory chainId");
+    ctx.require(f.params.chain_owner_id().exists(), "missing mandatory chainOwnerId");
+    ctx.require(f.params.contract_creator().exists(), "missing mandatory contractCreator");
     view_check_context_from_view_ep(ctx, &f);
     ctx.log("testcore.viewCheckContextFromViewEP ok");
 }
 
-pub struct ViewFibonacciParams {
-    pub int_value: ScImmutableInt64,
-}
-
-pub struct ViewFibonacciResults {
-    pub int_value: ScMutableInt64,
-}
-
 pub struct ViewFibonacciContext {
-    params:  ViewFibonacciParams,
-    results: ViewFibonacciResults,
-    state:   TestCoreViewState,
+    params:  ImmutableViewFibonacciParams,
+    results: MutableViewFibonacciResults,
+    state:   ImmutableTestCoreState,
 }
 
 fn view_fibonacci_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewFibonacci");
-    let p = ctx.params().map_id();
-    let r = ctx.results().map_id();
     let f = ViewFibonacciContext {
-        params: ViewFibonacciParams {
-            int_value: ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT_VALUE)),
+        params: ImmutableViewFibonacciParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: ViewFibonacciResults {
-            int_value: ScMutableInt64::new(r, idx_map(IDX_RESULT_INT_VALUE)),
+        results: MutableViewFibonacciResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.int_value.exists(), "missing mandatory intValue");
+    ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
     view_fibonacci(ctx, &f);
     ctx.log("testcore.viewFibonacci ok");
 }
 
-pub struct ViewGetCounterResults {
-    pub counter: ScMutableInt64,
-}
-
 pub struct ViewGetCounterContext {
-    results: ViewGetCounterResults,
-    state:   TestCoreViewState,
+    results: MutableViewGetCounterResults,
+    state:   ImmutableTestCoreState,
 }
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetCounter");
-    let r = ctx.results().map_id();
     let f = ViewGetCounterContext {
-        results: ViewGetCounterResults {
-            counter: ScMutableInt64::new(r, idx_map(IDX_RESULT_COUNTER)),
+        results: MutableViewGetCounterResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_get_counter(ctx, &f);
     ctx.log("testcore.viewGetCounter ok");
 }
 
-pub struct ViewGetIntParams {
-    pub name: ScImmutableString,
-}
-
 pub struct ViewGetIntContext {
-    params: ViewGetIntParams,
-    state:  TestCoreViewState,
+    params: ImmutableViewGetIntParams,
+    state:  ImmutableTestCoreState,
 }
 
 fn view_get_int_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetInt");
-    let p = ctx.params().map_id();
     let f = ViewGetIntContext {
-        params: ViewGetIntParams {
-            name: ScImmutableString::new(p, idx_map(IDX_PARAM_NAME)),
+        params: ImmutableViewGetIntParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.name.exists(), "missing mandatory name");
+    ctx.require(f.params.name().exists(), "missing mandatory name");
     view_get_int(ctx, &f);
     ctx.log("testcore.viewGetInt ok");
 }
 
 pub struct ViewJustViewContext {
-    state: TestCoreViewState,
+    state: ImmutableTestCoreState,
 }
 
 fn view_just_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewJustView");
     let f = ViewJustViewContext {
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_just_view(ctx, &f);
     ctx.log("testcore.viewJustView ok");
 }
 
-pub struct ViewPassTypesViewParams {
-    pub hash:        ScImmutableHash,
-    pub hname:       ScImmutableHname,
-    pub hname_zero:  ScImmutableHname,
-    pub int64:       ScImmutableInt64,
-    pub int64_zero:  ScImmutableInt64,
-    pub string:      ScImmutableString,
-    pub string_zero: ScImmutableString,
-}
-
 pub struct ViewPassTypesViewContext {
-    params: ViewPassTypesViewParams,
-    state:  TestCoreViewState,
+    params: ImmutableViewPassTypesViewParams,
+    state:  ImmutableTestCoreState,
 }
 
 fn view_pass_types_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewPassTypesView");
-    let p = ctx.params().map_id();
     let f = ViewPassTypesViewContext {
-        params: ViewPassTypesViewParams {
-            hash:        ScImmutableHash::new(p, idx_map(IDX_PARAM_HASH)),
-            hname:       ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME)),
-            hname_zero:  ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME_ZERO)),
-            int64:       ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64)),
-            int64_zero:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64_ZERO)),
-            string:      ScImmutableString::new(p, idx_map(IDX_PARAM_STRING)),
-            string_zero: ScImmutableString::new(p, idx_map(IDX_PARAM_STRING_ZERO)),
+        params: ImmutableViewPassTypesViewParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.hash.exists(), "missing mandatory hash");
-    ctx.require(f.params.hname.exists(), "missing mandatory hname");
-    ctx.require(f.params.hname_zero.exists(), "missing mandatory hnameZero");
-    ctx.require(f.params.int64.exists(), "missing mandatory int64");
-    ctx.require(f.params.int64_zero.exists(), "missing mandatory int64Zero");
-    ctx.require(f.params.string.exists(), "missing mandatory string");
-    ctx.require(f.params.string_zero.exists(), "missing mandatory stringZero");
+    ctx.require(f.params.hash().exists(), "missing mandatory hash");
+    ctx.require(f.params.hname().exists(), "missing mandatory hname");
+    ctx.require(f.params.hname_zero().exists(), "missing mandatory hnameZero");
+    ctx.require(f.params.int64().exists(), "missing mandatory int64");
+    ctx.require(f.params.int64_zero().exists(), "missing mandatory int64Zero");
+    ctx.require(f.params.string().exists(), "missing mandatory string");
+    ctx.require(f.params.string_zero().exists(), "missing mandatory stringZero");
     view_pass_types_view(ctx, &f);
     ctx.log("testcore.viewPassTypesView ok");
 }
 
 pub struct ViewTestCallPanicViewEPFromViewContext {
-    state: TestCoreViewState,
+    state: ImmutableTestCoreState,
 }
 
 fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestCallPanicViewEPFromView");
     let f = ViewTestCallPanicViewEPFromViewContext {
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_test_call_panic_view_ep_from_view(ctx, &f);
     ctx.log("testcore.viewTestCallPanicViewEPFromView ok");
 }
 
-pub struct ViewTestChainOwnerIDViewResults {
-    pub chain_owner_id: ScMutableAgentId,
-}
-
 pub struct ViewTestChainOwnerIDViewContext {
-    results: ViewTestChainOwnerIDViewResults,
-    state:   TestCoreViewState,
+    results: MutableViewTestChainOwnerIDViewResults,
+    state:   ImmutableTestCoreState,
 }
 
 fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestChainOwnerIDView");
-    let r = ctx.results().map_id();
     let f = ViewTestChainOwnerIDViewContext {
-        results: ViewTestChainOwnerIDViewResults {
-            chain_owner_id: ScMutableAgentId::new(r, idx_map(IDX_RESULT_CHAIN_OWNER_ID)),
+        results: MutableViewTestChainOwnerIDViewResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_test_chain_owner_id_view(ctx, &f);
@@ -705,38 +568,33 @@ fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
 }
 
 pub struct ViewTestPanicViewEPContext {
-    state: TestCoreViewState,
+    state: ImmutableTestCoreState,
 }
 
 fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestPanicViewEP");
     let f = ViewTestPanicViewEPContext {
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_test_panic_view_ep(ctx, &f);
     ctx.log("testcore.viewTestPanicViewEP ok");
 }
 
-pub struct ViewTestSandboxCallResults {
-    pub sandbox_call: ScMutableString,
-}
-
 pub struct ViewTestSandboxCallContext {
-    results: ViewTestSandboxCallResults,
-    state:   TestCoreViewState,
+    results: MutableViewTestSandboxCallResults,
+    state:   ImmutableTestCoreState,
 }
 
 fn view_test_sandbox_call_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestSandboxCall");
-    let r = ctx.results().map_id();
     let f = ViewTestSandboxCallContext {
-        results: ViewTestSandboxCallResults {
-            sandbox_call: ScMutableString::new(r, idx_map(IDX_RESULT_SANDBOX_CALL)),
+        results: MutableViewTestSandboxCallResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: TestCoreViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTestCoreState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_test_sandbox_call(ctx, &f);

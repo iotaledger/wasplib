@@ -30,23 +30,23 @@ impl MapAgentIdToMutableAllowancesForAgent {
     }
 }
 
-pub struct Erc20FuncState {
-    pub(crate) state_id: i32,
+pub struct MutableErc20State {
+    pub(crate) id: i32,
 }
 
-impl Erc20FuncState {
+impl MutableErc20State {
     pub fn all_allowances(&self) -> MapAgentIdToMutableAllowancesForAgent {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_ALL_ALLOWANCES), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_ALL_ALLOWANCES), TYPE_MAP);
         MapAgentIdToMutableAllowancesForAgent { obj_id: map_id }
     }
 
     pub fn balances(&self) -> MapAgentIdToMutableInt64 {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BALANCES), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BALANCES), TYPE_MAP);
         MapAgentIdToMutableInt64 { obj_id: map_id }
     }
 
     pub fn supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_SUPPLY))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_SUPPLY))
     }
 }
 
@@ -61,22 +61,22 @@ impl MapAgentIdToImmutableAllowancesForAgent {
     }
 }
 
-pub struct Erc20ViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableErc20State {
+    pub(crate) id: i32,
 }
 
-impl Erc20ViewState {
+impl ImmutableErc20State {
     pub fn all_allowances(&self) -> MapAgentIdToImmutableAllowancesForAgent {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_ALL_ALLOWANCES), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_ALL_ALLOWANCES), TYPE_MAP);
         MapAgentIdToImmutableAllowancesForAgent { obj_id: map_id }
     }
 
     pub fn balances(&self) -> MapAgentIdToImmutableInt64 {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BALANCES), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BALANCES), TYPE_MAP);
         MapAgentIdToImmutableInt64 { obj_id: map_id }
     }
 
     pub fn supply(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_SUPPLY))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_SUPPLY))
     }
 }

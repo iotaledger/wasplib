@@ -28,10 +28,10 @@ pub fn func_init(ctx: &ScFuncContext, f: &FuncInitContext) {
     let mut owner: ScAgentId = ctx.contract_creator();
 
     // Now we check if the optional 'owner' parameter is present in the params map.
-    if f.params.owner.exists() {
+    if f.params.owner().exists() {
         // Yes, it was present, so now we overwrite the default owner with
         // the one specified by the 'owner' parameter.
-        owner = f.params.owner.value();
+        owner = f.params.owner().value();
     }
 
     // Now that we have sorted out which agent will be the owner of this contract
@@ -61,7 +61,7 @@ pub fn func_member(ctx: &ScFuncContext, f: &FuncMemberContext) {
     // Since we are sure that the 'factor' parameter actually exists we can
     // retrieve its actual value into an i64. Note that we use Rust's built-in
     // data types when manipulating Int64, String, or Bytes value objects.
-    let factor: i64 = f.params.factor.value();
+    let factor: i64 = f.params.factor().value();
 
     // As an extra requirement we check that the 'factor' parameter value is not
     // negative. If it is, we panic out with an error message.
@@ -75,7 +75,7 @@ pub fn func_member(ctx: &ScFuncContext, f: &FuncMemberContext) {
 
     // Since we are sure that the 'address' parameter actually exists we can
     // retrieve its actual value into an ScAddress value type.
-    let address: ScAddress = f.params.address.value();
+    let address: ScAddress = f.params.address().value();
 
     // Create an ScMutableMap proxy to the state storage map on the host.
 
@@ -225,7 +225,7 @@ pub fn func_set_owner(_ctx: &ScFuncContext, f: &FuncSetOwnerContext) {
     let state_owner: ScMutableAgentId = f.state.owner();
 
     // Save the new owner parameter value in the 'owner' variable in state storage.
-    state_owner.set_value(&f.params.owner.value());
+    state_owner.set_value(&f.params.owner().value());
 }
 
 // 'getFactor' is a simple View function. It will retrieve the factor
@@ -234,7 +234,7 @@ pub fn view_get_factor(_ctx: &ScViewContext, f: &ViewGetFactorContext) {
 
     // Since we are sure that the 'address' parameter actually exists we can
     // retrieve its actual value into an ScAddress value type.
-    let address: ScAddress = f.params.address.value();
+    let address: ScAddress = f.params.address().value();
 
     // Now that we have sorted out the parameter we will access the state
     // storage on the host. First we create an ScImmutableMap proxy to the state
@@ -256,5 +256,5 @@ pub fn view_get_factor(_ctx: &ScViewContext, f: &ViewGetFactorContext) {
 
     // Set the value associated with the 'factor' key to the factor we got from
     // the members map through an ScMutableInt64 proxy to the results map.
-    f.results.factor.set_value(factor);
+    f.results.factor().set_value(factor);
 }

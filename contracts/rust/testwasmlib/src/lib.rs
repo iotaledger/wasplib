@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod testwasmlib;
 
@@ -36,42 +40,19 @@ fn on_load() {
     }
 }
 
-pub struct FuncParamTypesParams {
-    pub address:    ScImmutableAddress,
-    pub agent_id:   ScImmutableAgentId,
-    pub bytes:      ScImmutableBytes,
-    pub chain_id:   ScImmutableChainId,
-    pub color:      ScImmutableColor,
-    pub hash:       ScImmutableHash,
-    pub hname:      ScImmutableHname,
-    pub int64:      ScImmutableInt64,
-    pub request_id: ScImmutableRequestId,
-    pub string:     ScImmutableString,
-}
-
 pub struct FuncParamTypesContext {
-    params: FuncParamTypesParams,
-    state:  TestWasmLibFuncState,
+    params: ImmutableFuncParamTypesParams,
+    state:  MutableTestWasmLibState,
 }
 
 fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes");
-    let p = ctx.params().map_id();
     let f = FuncParamTypesContext {
-        params: FuncParamTypesParams {
-            address:    ScImmutableAddress::new(p, idx_map(IDX_PARAM_ADDRESS)),
-            agent_id:   ScImmutableAgentId::new(p, idx_map(IDX_PARAM_AGENT_ID)),
-            bytes:      ScImmutableBytes::new(p, idx_map(IDX_PARAM_BYTES)),
-            chain_id:   ScImmutableChainId::new(p, idx_map(IDX_PARAM_CHAIN_ID)),
-            color:      ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
-            hash:       ScImmutableHash::new(p, idx_map(IDX_PARAM_HASH)),
-            hname:      ScImmutableHname::new(p, idx_map(IDX_PARAM_HNAME)),
-            int64:      ScImmutableInt64::new(p, idx_map(IDX_PARAM_INT64)),
-            request_id: ScImmutableRequestId::new(p, idx_map(IDX_PARAM_REQUEST_ID)),
-            string:     ScImmutableString::new(p, idx_map(IDX_PARAM_STRING)),
+        params: ImmutableFuncParamTypesParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TestWasmLibFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTestWasmLibState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_param_types(ctx, &f);

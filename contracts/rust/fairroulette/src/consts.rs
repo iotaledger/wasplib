@@ -17,10 +17,10 @@ pub const PARAM_PLAY_PERIOD: &str = "playPeriod";
 
 pub const RESULT_LAST_WINNING_NUMBER: &str = "lastWinningNumber";
 
-pub const VAR_BETS: &str = "bets";
-pub const VAR_LAST_WINNING_NUMBER: &str = "lastWinningNumber";
-pub const VAR_LOCKED_BETS: &str = "lockedBets";
-pub const VAR_PLAY_PERIOD: &str = "playPeriod";
+pub const STATE_BETS: &str = "bets";
+pub const STATE_LAST_WINNING_NUMBER: &str = "lastWinningNumber";
+pub const STATE_LOCKED_BETS: &str = "lockedBets";
+pub const STATE_PLAY_PERIOD: &str = "playPeriod";
 
 pub const FUNC_LOCK_BETS: &str = "lockBets";
 pub const FUNC_PAY_WINNERS: &str = "payWinners";

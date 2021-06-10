@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod dividend;
 
@@ -41,52 +45,42 @@ fn on_load() {
 }
 
 pub struct FuncDivideContext {
-    state: DividendFuncState,
+    state: MutableDividendState,
 }
 
 fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide");
     let f = FuncDivideContext {
-        state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableDividendState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_divide(ctx, &f);
     ctx.log("dividend.funcDivide ok");
 }
 
-pub struct FuncInitParams {
-    pub owner: ScImmutableAgentId, // optional owner, defaults to contract creator
-}
-
 pub struct FuncInitContext {
-    params: FuncInitParams,
-    state:  DividendFuncState,
+    params: ImmutableFuncInitParams,
+    state:  MutableDividendState,
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcInit");
-    let p = ctx.params().map_id();
     let f = FuncInitContext {
-        params: FuncInitParams {
-            owner: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_OWNER)),
+        params: ImmutableFuncInitParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableDividendState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_init(ctx, &f);
     ctx.log("dividend.funcInit ok");
 }
 
-pub struct FuncMemberParams {
-    pub address: ScImmutableAddress, // address of dividend recipient
-    pub factor:  ScImmutableInt64,   // relative division factor
-}
-
 pub struct FuncMemberContext {
-    params: FuncMemberParams,
-    state:  DividendFuncState,
+    params: ImmutableFuncMemberParams,
+    state:  MutableDividendState,
 }
 
 fn func_member_thunk(ctx: &ScFuncContext) {
@@ -96,29 +90,23 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncMemberContext {
-        params: FuncMemberParams {
-            address: ScImmutableAddress::new(p, idx_map(IDX_PARAM_ADDRESS)),
-            factor:  ScImmutableInt64::new(p, idx_map(IDX_PARAM_FACTOR)),
+        params: ImmutableFuncMemberParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableDividendState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.address.exists(), "missing mandatory address");
-    ctx.require(f.params.factor.exists(), "missing mandatory factor");
+    ctx.require(f.params.address().exists(), "missing mandatory address");
+    ctx.require(f.params.factor().exists(), "missing mandatory factor");
     func_member(ctx, &f);
     ctx.log("dividend.funcMember ok");
 }
 
-pub struct FuncSetOwnerParams {
-    pub owner: ScImmutableAgentId, // new owner of smart contract
-}
-
 pub struct FuncSetOwnerContext {
-    params: FuncSetOwnerParams,
-    state:  DividendFuncState,
+    params: ImmutableFuncSetOwnerParams,
+    state:  MutableDividendState,
 }
 
 fn func_set_owner_thunk(ctx: &ScFuncContext) {
@@ -128,50 +116,39 @@ fn func_set_owner_thunk(ctx: &ScFuncContext) {
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncSetOwnerContext {
-        params: FuncSetOwnerParams {
-            owner: ScImmutableAgentId::new(p, idx_map(IDX_PARAM_OWNER)),
+        params: ImmutableFuncSetOwnerParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: DividendFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableDividendState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.owner.exists(), "missing mandatory owner");
+    ctx.require(f.params.owner().exists(), "missing mandatory owner");
     func_set_owner(ctx, &f);
     ctx.log("dividend.funcSetOwner ok");
 }
 
-pub struct ViewGetFactorParams {
-    pub address: ScImmutableAddress, // address of dividend recipient
-}
-
-pub struct ViewGetFactorResults {
-    pub factor: ScMutableInt64, // relative division factor
-}
-
 pub struct ViewGetFactorContext {
-    params:  ViewGetFactorParams,
-    results: ViewGetFactorResults,
-    state:   DividendViewState,
+    params:  ImmutableViewGetFactorParams,
+    results: MutableViewGetFactorResults,
+    state:   ImmutableDividendState,
 }
 
 fn view_get_factor_thunk(ctx: &ScViewContext) {
     ctx.log("dividend.viewGetFactor");
-    let p = ctx.params().map_id();
-    let r = ctx.results().map_id();
     let f = ViewGetFactorContext {
-        params: ViewGetFactorParams {
-            address: ScImmutableAddress::new(p, idx_map(IDX_PARAM_ADDRESS)),
+        params: ImmutableViewGetFactorParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: ViewGetFactorResults {
-            factor: ScMutableInt64::new(r, idx_map(IDX_RESULT_FACTOR)),
+        results: MutableViewGetFactorResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: DividendViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableDividendState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.address.exists(), "missing mandatory address");
+    ctx.require(f.params.address().exists(), "missing mandatory address");
     view_get_factor(ctx, &f);
     ctx.log("dividend.viewGetFactor ok");
 }

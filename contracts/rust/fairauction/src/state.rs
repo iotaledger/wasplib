@@ -60,28 +60,28 @@ impl MapColorToMutableBids {
     }
 }
 
-pub struct FairAuctionFuncState {
-    pub(crate) state_id: i32,
+pub struct MutableFairAuctionState {
+    pub(crate) id: i32,
 }
 
-impl FairAuctionFuncState {
+impl MutableFairAuctionState {
     pub fn auctions(&self) -> MapColorToMutableAuction {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_AUCTIONS), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_AUCTIONS), TYPE_MAP);
         MapColorToMutableAuction { obj_id: map_id }
     }
 
     pub fn bidder_list(&self) -> MapColorToMutableBidderList {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BIDDER_LIST), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BIDDER_LIST), TYPE_MAP);
         MapColorToMutableBidderList { obj_id: map_id }
     }
 
     pub fn bids(&self) -> MapColorToMutableBids {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BIDS), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BIDS), TYPE_MAP);
         MapColorToMutableBids { obj_id: map_id }
     }
 
     pub fn owner_margin(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_OWNER_MARGIN))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_OWNER_MARGIN))
     }
 }
 
@@ -117,27 +117,27 @@ impl MapColorToImmutableBids {
     }
 }
 
-pub struct FairAuctionViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableFairAuctionState {
+    pub(crate) id: i32,
 }
 
-impl FairAuctionViewState {
+impl ImmutableFairAuctionState {
     pub fn auctions(&self) -> MapColorToImmutableAuction {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_AUCTIONS), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_AUCTIONS), TYPE_MAP);
         MapColorToImmutableAuction { obj_id: map_id }
     }
 
     pub fn bidder_list(&self) -> MapColorToImmutableBidderList {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BIDDER_LIST), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BIDDER_LIST), TYPE_MAP);
         MapColorToImmutableBidderList { obj_id: map_id }
     }
 
     pub fn bids(&self) -> MapColorToImmutableBids {
-        let map_id = get_object_id(self.state_id, idx_map(IDX_VAR_BIDS), TYPE_MAP);
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BIDS), TYPE_MAP);
         MapColorToImmutableBids { obj_id: map_id }
     }
 
     pub fn owner_margin(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_OWNER_MARGIN))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_OWNER_MARGIN))
     }
 }

@@ -14,46 +14,46 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct TestCoreFuncState {
-    pub(crate) state_id: i32,
+pub struct MutableTestCoreState {
+    pub(crate) id: i32,
 }
 
-impl TestCoreFuncState {
+impl MutableTestCoreState {
     pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
     }
 
     pub fn hname_ep(&self) -> ScMutableHname {
-        ScMutableHname::new(self.state_id, idx_map(IDX_VAR_HNAME_EP))
+        ScMutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
     }
 
     pub fn minted_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.state_id, idx_map(IDX_VAR_MINTED_COLOR))
+        ScMutableColor::new(self.id, idx_map(IDX_STATE_MINTED_COLOR))
     }
 
     pub fn minted_supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.state_id, idx_map(IDX_VAR_MINTED_SUPPLY))
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_MINTED_SUPPLY))
     }
 }
 
-pub struct TestCoreViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableTestCoreState {
+    pub(crate) id: i32,
 }
 
-impl TestCoreViewState {
+impl ImmutableTestCoreState {
     pub fn counter(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_COUNTER))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
     }
 
     pub fn hname_ep(&self) -> ScImmutableHname {
-        ScImmutableHname::new(self.state_id, idx_map(IDX_VAR_HNAME_EP))
+        ScImmutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
     }
 
     pub fn minted_color(&self) -> ScImmutableColor {
-        ScImmutableColor::new(self.state_id, idx_map(IDX_VAR_MINTED_COLOR))
+        ScImmutableColor::new(self.id, idx_map(IDX_STATE_MINTED_COLOR))
     }
 
     pub fn minted_supply(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.state_id, idx_map(IDX_VAR_MINTED_SUPPLY))
+        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_MINTED_SUPPLY))
     }
 }

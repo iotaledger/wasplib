@@ -11,7 +11,7 @@ pub fn func_donate(ctx: &ScFuncContext, f: &FuncDonateContext) {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
         error: String::new(),
-        feedback: f.params.feedback.value(),
+        feedback: f.params.feedback().value(),
         timestamp: ctx.timestamp(),
     };
     if donation.amount == 0 || donation.feedback.len() == 0 {
@@ -34,7 +34,7 @@ pub fn func_donate(ctx: &ScFuncContext, f: &FuncDonateContext) {
 
 pub fn func_withdraw(ctx: &ScFuncContext, f: &FuncWithdrawContext) {
     let balance = ctx.balances().balance(&ScColor::IOTA);
-    let mut amount = f.params.amount.value();
+    let mut amount = f.params.amount().value();
     if amount == 0 || amount > balance {
         amount = balance;
     }
@@ -48,17 +48,17 @@ pub fn func_withdraw(ctx: &ScFuncContext, f: &FuncWithdrawContext) {
 }
 
 pub fn view_donation(_ctx: &ScViewContext, f: &ViewDonationContext) {
-    let nr = (f.params.nr.value()) as i32;
+    let nr = (f.params.nr().value()) as i32;
     let donation = f.state.log().get_donation(nr).value();
-    f.results.amount.set_value(donation.amount);
-    f.results.donator.set_value(&donation.donator);
-    f.results.error.set_value(&donation.error);
-    f.results.feedback.set_value(&donation.feedback);
-    f.results.timestamp.set_value(donation.timestamp);
+    f.results.amount().set_value(donation.amount);
+    f.results.donator().set_value(&donation.donator);
+    f.results.error().set_value(&donation.error);
+    f.results.feedback().set_value(&donation.feedback);
+    f.results.timestamp().set_value(donation.timestamp);
 }
 
 pub fn view_donation_info(_ctx: &ScViewContext, f: &ViewDonationInfoContext) {
-    f.results.max_donation.set_value(f.state.max_donation().value());
-    f.results.total_donation.set_value(f.state.total_donation().value());
-    f.results.count.set_value(f.state.log().length() as i64);
+    f.results.max_donation().set_value(f.state.max_donation().value());
+    f.results.total_donation().set_value(f.state.total_donation().value());
+    f.results.count().set_value(f.state.log().length() as i64);
 }

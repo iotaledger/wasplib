@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod subtypes;
 mod types;
@@ -42,13 +46,9 @@ fn on_load() {
     }
 }
 
-pub struct FuncFinalizeAuctionParams {
-    pub color: ScImmutableColor, // color identifies the auction
-}
-
 pub struct FuncFinalizeAuctionContext {
-    params: FuncFinalizeAuctionParams,
-    state:  FairAuctionFuncState,
+    params: ImmutableFuncFinalizeAuctionParams,
+    state:  MutableFairAuctionState,
 }
 
 fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
@@ -56,52 +56,42 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncFinalizeAuctionContext {
-        params: FuncFinalizeAuctionParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableFuncFinalizeAuctionParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairAuctionState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     func_finalize_auction(ctx, &f);
     ctx.log("fairauction.funcFinalizeAuction ok");
 }
 
-pub struct FuncPlaceBidParams {
-    pub color: ScImmutableColor, // color identifies the auction
-}
-
 pub struct FuncPlaceBidContext {
-    params: FuncPlaceBidParams,
-    state:  FairAuctionFuncState,
+    params: ImmutableFuncPlaceBidParams,
+    state:  MutableFairAuctionState,
 }
 
 fn func_place_bid_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcPlaceBid");
-    let p = ctx.params().map_id();
     let f = FuncPlaceBidContext {
-        params: FuncPlaceBidParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableFuncPlaceBidParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairAuctionState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     func_place_bid(ctx, &f);
     ctx.log("fairauction.funcPlaceBid ok");
 }
 
-pub struct FuncSetOwnerMarginParams {
-    pub owner_margin: ScImmutableInt64, // new SC owner margin in promilles
-}
-
 pub struct FuncSetOwnerMarginContext {
-    params: FuncSetOwnerMarginParams,
-    state:  FairAuctionFuncState,
+    params: ImmutableFuncSetOwnerMarginParams,
+    state:  MutableFairAuctionState,
 }
 
 fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
@@ -109,104 +99,60 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
     // only SC creator can set owner margin
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncSetOwnerMarginContext {
-        params: FuncSetOwnerMarginParams {
-            owner_margin: ScImmutableInt64::new(p, idx_map(IDX_PARAM_OWNER_MARGIN)),
+        params: ImmutableFuncSetOwnerMarginParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairAuctionState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.owner_margin.exists(), "missing mandatory ownerMargin");
+    ctx.require(f.params.owner_margin().exists(), "missing mandatory ownerMargin");
     func_set_owner_margin(ctx, &f);
     ctx.log("fairauction.funcSetOwnerMargin ok");
 }
 
-pub struct FuncStartAuctionParams {
-    pub color:       ScImmutableColor,  // color of the tokens being auctioned
-    pub description: ScImmutableString, // description of the tokens being auctioned
-    pub duration:    ScImmutableInt64,  // duration of auction in minutes
-    pub minimum_bid: ScImmutableInt64,  // minimum required amount for any bid
-}
-
 pub struct FuncStartAuctionContext {
-    params: FuncStartAuctionParams,
-    state:  FairAuctionFuncState,
+    params: ImmutableFuncStartAuctionParams,
+    state:  MutableFairAuctionState,
 }
 
 fn func_start_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcStartAuction");
-    let p = ctx.params().map_id();
     let f = FuncStartAuctionContext {
-        params: FuncStartAuctionParams {
-            color:       ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
-            description: ScImmutableString::new(p, idx_map(IDX_PARAM_DESCRIPTION)),
-            duration:    ScImmutableInt64::new(p, idx_map(IDX_PARAM_DURATION)),
-            minimum_bid: ScImmutableInt64::new(p, idx_map(IDX_PARAM_MINIMUM_BID)),
+        params: ImmutableFuncStartAuctionParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: FairAuctionFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableFairAuctionState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
-    ctx.require(f.params.minimum_bid.exists(), "missing mandatory minimumBid");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
+    ctx.require(f.params.minimum_bid().exists(), "missing mandatory minimumBid");
     func_start_auction(ctx, &f);
     ctx.log("fairauction.funcStartAuction ok");
 }
 
-pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor, // color identifies the auction
-}
-
-pub struct ViewGetInfoResults {
-    pub bidders:        ScMutableInt64,   // nr of bidders
-    pub color:          ScMutableColor,   // color of tokens for sale
-    pub creator:        ScMutableAgentId, // issuer of start_auction transaction
-    pub deposit:        ScMutableInt64,   // deposit by auction owner to cover the SC fees
-    pub description:    ScMutableString,  // auction description
-    pub duration:       ScMutableInt64,   // auction duration in minutes
-    pub highest_bid:    ScMutableInt64,   // the current highest bid amount
-    pub highest_bidder: ScMutableAgentId, // the current highest bidder
-    pub minimum_bid:    ScMutableInt64,   // minimum bid amount
-    pub num_tokens:     ScMutableInt64,   // number of tokens for sale
-    pub owner_margin:   ScMutableInt64,   // auction owner's margin in promilles
-    pub when_started:   ScMutableInt64,   // timestamp when auction started
-}
-
 pub struct ViewGetInfoContext {
-    params:  ViewGetInfoParams,
-    results: ViewGetInfoResults,
-    state:   FairAuctionViewState,
+    params:  ImmutableViewGetInfoParams,
+    results: MutableViewGetInfoResults,
+    state:   ImmutableFairAuctionState,
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("fairauction.viewGetInfo");
-    let p = ctx.params().map_id();
-    let r = ctx.results().map_id();
     let f = ViewGetInfoContext {
-        params: ViewGetInfoParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableViewGetInfoParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: ViewGetInfoResults {
-            bidders:        ScMutableInt64::new(r, idx_map(IDX_RESULT_BIDDERS)),
-            color:          ScMutableColor::new(r, idx_map(IDX_RESULT_COLOR)),
-            creator:        ScMutableAgentId::new(r, idx_map(IDX_RESULT_CREATOR)),
-            deposit:        ScMutableInt64::new(r, idx_map(IDX_RESULT_DEPOSIT)),
-            description:    ScMutableString::new(r, idx_map(IDX_RESULT_DESCRIPTION)),
-            duration:       ScMutableInt64::new(r, idx_map(IDX_RESULT_DURATION)),
-            highest_bid:    ScMutableInt64::new(r, idx_map(IDX_RESULT_HIGHEST_BID)),
-            highest_bidder: ScMutableAgentId::new(r, idx_map(IDX_RESULT_HIGHEST_BIDDER)),
-            minimum_bid:    ScMutableInt64::new(r, idx_map(IDX_RESULT_MINIMUM_BID)),
-            num_tokens:     ScMutableInt64::new(r, idx_map(IDX_RESULT_NUM_TOKENS)),
-            owner_margin:   ScMutableInt64::new(r, idx_map(IDX_RESULT_OWNER_MARGIN)),
-            when_started:   ScMutableInt64::new(r, idx_map(IDX_RESULT_WHEN_STARTED)),
+        results: MutableViewGetInfoResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: FairAuctionViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableFairAuctionState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     view_get_info(ctx, &f);
     ctx.log("fairauction.viewGetInfo ok");
 }

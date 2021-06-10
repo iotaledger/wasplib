@@ -23,9 +23,9 @@ pub const PARAM_SUPPLY: &str = "s";
 pub const RESULT_AMOUNT: &str = "am";
 pub const RESULT_SUPPLY: &str = "s";
 
-pub const VAR_ALL_ALLOWANCES: &str = "a";
-pub const VAR_BALANCES: &str = "b";
-pub const VAR_SUPPLY: &str = "s";
+pub const STATE_ALL_ALLOWANCES: &str = "a";
+pub const STATE_BALANCES: &str = "b";
+pub const STATE_SUPPLY: &str = "s";
 
 pub const FUNC_APPROVE: &str = "approve";
 pub const FUNC_INIT: &str = "init";

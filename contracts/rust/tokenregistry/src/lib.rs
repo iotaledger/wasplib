@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod types;
 mod tokenregistry;
@@ -40,39 +44,28 @@ fn on_load() {
     }
 }
 
-pub struct FuncMintSupplyParams {
-    pub description:  ScImmutableString, // description what minted token represents
-    pub user_defined: ScImmutableString, // any user defined text
-}
-
 pub struct FuncMintSupplyContext {
-    params: FuncMintSupplyParams,
-    state:  TokenRegistryFuncState,
+    params: ImmutableFuncMintSupplyParams,
+    state:  MutableTokenRegistryState,
 }
 
 fn func_mint_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcMintSupply");
-    let p = ctx.params().map_id();
     let f = FuncMintSupplyContext {
-        params: FuncMintSupplyParams {
-            description:  ScImmutableString::new(p, idx_map(IDX_PARAM_DESCRIPTION)),
-            user_defined: ScImmutableString::new(p, idx_map(IDX_PARAM_USER_DEFINED)),
+        params: ImmutableFuncMintSupplyParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TokenRegistryFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTokenRegistryState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_mint_supply(ctx, &f);
     ctx.log("tokenregistry.funcMintSupply ok");
 }
 
-pub struct FuncTransferOwnershipParams {
-    pub color: ScImmutableColor, // color of token to transfer ownership of
-}
-
 pub struct FuncTransferOwnershipContext {
-    params: FuncTransferOwnershipParams,
-    state:  TokenRegistryFuncState,
+    params: ImmutableFuncTransferOwnershipParams,
+    state:  MutableTokenRegistryState,
 }
 
 fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
@@ -80,27 +73,22 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
     //TODO the one who can transfer token ownership
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncTransferOwnershipContext {
-        params: FuncTransferOwnershipParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableFuncTransferOwnershipParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TokenRegistryFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTokenRegistryState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     func_transfer_ownership(ctx, &f);
     ctx.log("tokenregistry.funcTransferOwnership ok");
 }
 
-pub struct FuncUpdateMetadataParams {
-    pub color: ScImmutableColor, // color of token to update metadata for
-}
-
 pub struct FuncUpdateMetadataContext {
-    params: FuncUpdateMetadataParams,
-    state:  TokenRegistryFuncState,
+    params: ImmutableFuncUpdateMetadataParams,
+    state:  MutableTokenRegistryState,
 }
 
 fn func_update_metadata_thunk(ctx: &ScFuncContext) {
@@ -108,41 +96,35 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
     //TODO the one who can change the token info
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let p = ctx.params().map_id();
     let f = FuncUpdateMetadataContext {
-        params: FuncUpdateMetadataParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableFuncUpdateMetadataParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TokenRegistryFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableTokenRegistryState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     func_update_metadata(ctx, &f);
     ctx.log("tokenregistry.funcUpdateMetadata ok");
 }
 
-pub struct ViewGetInfoParams {
-    pub color: ScImmutableColor, // color of token to view registry info of
-}
-
 pub struct ViewGetInfoContext {
-    params: ViewGetInfoParams,
-    state:  TokenRegistryViewState,
+    params: ImmutableViewGetInfoParams,
+    state:  ImmutableTokenRegistryState,
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("tokenregistry.viewGetInfo");
-    let p = ctx.params().map_id();
     let f = ViewGetInfoContext {
-        params: ViewGetInfoParams {
-            color: ScImmutableColor::new(p, idx_map(IDX_PARAM_COLOR)),
+        params: ImmutableViewGetInfoParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        state: TokenRegistryViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableTokenRegistryState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
-    ctx.require(f.params.color.exists(), "missing mandatory color");
+    ctx.require(f.params.color().exists(), "missing mandatory color");
     view_get_info(ctx, &f);
     ctx.log("tokenregistry.viewGetInfo ok");
 }

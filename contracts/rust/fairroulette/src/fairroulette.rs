@@ -31,7 +31,7 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
 
     // Since we are sure that the 'number' parameter actually exists we can
     // retrieve its actual value into an i64.
-    let number: i64 = f.params.number.value();
+    let number: i64 = f.params.number().value();
     // require that the number is a valid number to bet on, otherwise panic out.
     ctx.require(number >= 1 && number <= MAX_NUMBER, "invalid number");
 
@@ -259,7 +259,7 @@ pub fn func_play_period(ctx: &ScFuncContext, f: &FuncPlayPeriodContext) {
 
     // Since we are sure that the 'playPeriod' parameter actually exists we can
     // retrieve its actual value into an i64 value.
-    let play_period: i64 = f.params.play_period.value();
+    let play_period: i64 = f.params.play_period().value();
 
     // Require that the play period (in seconds) is not ridiculously low.
     // Otherwise panic out with an error message.
@@ -283,5 +283,5 @@ pub fn view_last_winning_number(_ctx: &ScViewContext, f: &ViewLastWinningNumberC
 
     // Set the value associated with the 'lastWinningNumber' key to the value
     // we got from state storage
-    f.results.last_winning_number.set_value(last_winning_number);
+    f.results.last_winning_number().set_value(last_winning_number);
 }

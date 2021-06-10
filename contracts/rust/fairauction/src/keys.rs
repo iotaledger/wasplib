@@ -28,10 +28,10 @@ pub const IDX_RESULT_MINIMUM_BID: usize = 13;
 pub const IDX_RESULT_NUM_TOKENS: usize = 14;
 pub const IDX_RESULT_OWNER_MARGIN: usize = 15;
 pub const IDX_RESULT_WHEN_STARTED: usize = 16;
-pub const IDX_VAR_AUCTIONS: usize = 17;
-pub const IDX_VAR_BIDDER_LIST: usize = 18;
-pub const IDX_VAR_BIDS: usize = 19;
-pub const IDX_VAR_OWNER_MARGIN: usize = 20;
+pub const IDX_STATE_AUCTIONS: usize = 17;
+pub const IDX_STATE_BIDDER_LIST: usize = 18;
+pub const IDX_STATE_BIDS: usize = 19;
+pub const IDX_STATE_OWNER_MARGIN: usize = 20;
 
 pub const KEY_MAP_LEN: usize = 21;
 
@@ -53,10 +53,10 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     RESULT_NUM_TOKENS,
     RESULT_OWNER_MARGIN,
     RESULT_WHEN_STARTED,
-    VAR_AUCTIONS,
-    VAR_BIDDER_LIST,
-    VAR_BIDS,
-    VAR_OWNER_MARGIN,
+    STATE_AUCTIONS,
+    STATE_BIDDER_LIST,
+    STATE_BIDS,
+    STATE_OWNER_MARGIN,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

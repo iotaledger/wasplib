@@ -39,10 +39,10 @@ pub const RESULT_MINTED_COLOR: &str = "mintedColor";
 pub const RESULT_MINTED_SUPPLY: &str = "mintedSupply";
 pub const RESULT_SANDBOX_CALL: &str = "sandboxCall";
 
-pub const VAR_COUNTER: &str = "counter";
-pub const VAR_HNAME_EP: &str = "hnameEP";
-pub const VAR_MINTED_COLOR: &str = "mintedColor";
-pub const VAR_MINTED_SUPPLY: &str = "mintedSupply";
+pub const STATE_COUNTER: &str = "counter";
+pub const STATE_HNAME_EP: &str = "hnameEP";
+pub const STATE_MINTED_COLOR: &str = "mintedColor";
+pub const STATE_MINTED_SUPPLY: &str = "mintedSupply";
 
 pub const FUNC_CALL_ON_CHAIN: &str = "callOnChain";
 pub const FUNC_CHECK_CONTEXT_FROM_FULL_EP: &str = "checkContextFromFullEP";

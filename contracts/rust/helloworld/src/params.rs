@@ -14,10 +14,18 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableHelloWorldState {
+pub struct MutableFuncHelloWorldParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableHelloWorldState {
+pub struct ImmutableFuncHelloWorldParams {
+    pub(crate) id: i32,
+}
+
+pub struct MutableViewGetHelloWorldParams {
+    pub(crate) id: i32,
+}
+
+pub struct ImmutableViewGetHelloWorldParams {
     pub(crate) id: i32,
 }

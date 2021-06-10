@@ -31,8 +31,8 @@ pub fn func_increment(_ctx: &ScFuncContext, f: &FuncIncrementContext) {
 }
 
 pub fn func_init(_ctx: &ScFuncContext, f: &FuncInitContext) {
-    if f.params.counter.exists() {
-        let counter = f.params.counter.value();
+    if f.params.counter().exists() {
+        let counter = f.params.counter().value();
         f.state.counter().set_value(counter);
     }
 }
@@ -67,7 +67,7 @@ pub fn func_local_state_post(ctx: &ScFuncContext, _f: &FuncLocalStatePostContext
 fn local_state_post(ctx: &ScFuncContext, nr: i64) {
     //note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
     let params = ScMutableMap::new();
-    params.get_int64(VAR_COUNTER).set_value(nr);
+    params.get_int64(STATE_COUNTER).set_value(nr);
     let transfer = ScTransfers::iotas(1);
     ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, Some(params), transfer, 0);
 }
@@ -104,7 +104,7 @@ pub fn func_repeat_many(ctx: &ScFuncContext, f: &FuncRepeatManyContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     let state_repeats = f.state.num_repeats();
-    let mut repeats = f.params.num_repeats.value();
+    let mut repeats = f.params.num_repeats().value();
     if repeats == 0 {
         repeats = state_repeats.value();
         if repeats == 0 {
@@ -120,7 +120,7 @@ pub fn func_when_must_increment(ctx: &ScFuncContext, f: &FuncWhenMustIncrementCo
     func_when_must_increment_state(ctx, &f.state);
 }
 
-pub fn func_when_must_increment_state(ctx: &ScFuncContext, state: &IncCounterFuncState) {
+pub fn func_when_must_increment_state(ctx: &ScFuncContext, state: &MutableIncCounterState) {
     ctx.log("when_must_increment called");
     unsafe {
         if !LOCAL_STATE_MUST_INCREMENT {
@@ -136,7 +136,7 @@ pub fn func_when_must_increment_state(ctx: &ScFuncContext, state: &IncCounterFun
 pub fn view_get_counter(_ctx: &ScViewContext, f: &ViewGetCounterContext) {
     let counter = f.state.counter();
     if counter.exists() {
-        f.results.counter.set_value(counter.value());
+        f.results.counter().set_value(counter.value());
     }
 }
 

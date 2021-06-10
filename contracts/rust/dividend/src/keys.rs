@@ -15,11 +15,11 @@ pub const IDX_PARAM_ADDRESS: usize = 0;
 pub const IDX_PARAM_FACTOR: usize = 1;
 pub const IDX_PARAM_OWNER: usize = 2;
 pub const IDX_RESULT_FACTOR: usize = 3;
-pub const IDX_VAR_FACTOR: usize = 4;
-pub const IDX_VAR_MEMBER_LIST: usize = 5;
-pub const IDX_VAR_MEMBERS: usize = 6;
-pub const IDX_VAR_OWNER: usize = 7;
-pub const IDX_VAR_TOTAL_FACTOR: usize = 8;
+pub const IDX_STATE_FACTOR: usize = 4;
+pub const IDX_STATE_MEMBER_LIST: usize = 5;
+pub const IDX_STATE_MEMBERS: usize = 6;
+pub const IDX_STATE_OWNER: usize = 7;
+pub const IDX_STATE_TOTAL_FACTOR: usize = 8;
 
 pub const KEY_MAP_LEN: usize = 9;
 
@@ -28,11 +28,11 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_FACTOR,
     PARAM_OWNER,
     RESULT_FACTOR,
-    VAR_FACTOR,
-    VAR_MEMBER_LIST,
-    VAR_MEMBERS,
-    VAR_OWNER,
-    VAR_TOTAL_FACTOR,
+    STATE_FACTOR,
+    STATE_MEMBER_LIST,
+    STATE_MEMBERS,
+    STATE_OWNER,
+    STATE_TOTAL_FACTOR,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

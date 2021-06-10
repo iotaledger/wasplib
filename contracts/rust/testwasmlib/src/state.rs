@@ -14,10 +14,10 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct TestWasmLibFuncState {
-    pub(crate) state_id: i32,
+pub struct MutableTestWasmLibState {
+    pub(crate) id: i32,
 }
 
-pub struct TestWasmLibViewState {
-    pub(crate) state_id: i32,
+pub struct ImmutableTestWasmLibState {
+    pub(crate) id: i32,
 }

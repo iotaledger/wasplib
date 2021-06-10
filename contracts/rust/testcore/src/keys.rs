@@ -35,10 +35,10 @@ pub const IDX_RESULT_INT_VALUE: usize = 20;
 pub const IDX_RESULT_MINTED_COLOR: usize = 21;
 pub const IDX_RESULT_MINTED_SUPPLY: usize = 22;
 pub const IDX_RESULT_SANDBOX_CALL: usize = 23;
-pub const IDX_VAR_COUNTER: usize = 24;
-pub const IDX_VAR_HNAME_EP: usize = 25;
-pub const IDX_VAR_MINTED_COLOR: usize = 26;
-pub const IDX_VAR_MINTED_SUPPLY: usize = 27;
+pub const IDX_STATE_COUNTER: usize = 24;
+pub const IDX_STATE_HNAME_EP: usize = 25;
+pub const IDX_STATE_MINTED_COLOR: usize = 26;
+pub const IDX_STATE_MINTED_SUPPLY: usize = 27;
 
 pub const KEY_MAP_LEN: usize = 28;
 
@@ -67,10 +67,10 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     RESULT_MINTED_COLOR,
     RESULT_MINTED_SUPPLY,
     RESULT_SANDBOX_CALL,
-    VAR_COUNTER,
-    VAR_HNAME_EP,
-    VAR_MINTED_COLOR,
-    VAR_MINTED_SUPPLY,
+    STATE_COUNTER,
+    STATE_HNAME_EP,
+    STATE_MINTED_COLOR,
+    STATE_MINTED_SUPPLY,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

@@ -22,8 +22,8 @@ pub fn func_mint_supply(ctx: &ScFuncContext, f: &FuncMintSupplyContext) {
         owner: ctx.caller(),
         created: ctx.timestamp(),
         updated: ctx.timestamp(),
-        description: f.params.description.value(),
-        user_defined: f.params.user_defined.value(),
+        description: f.params.description().value(),
+        user_defined: f.params.user_defined().value(),
     };
     if token.description.is_empty() {
         token.description += "no dscr";

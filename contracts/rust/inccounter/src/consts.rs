@@ -17,8 +17,8 @@ pub const PARAM_NUM_REPEATS: &str = "numRepeats";
 
 pub const RESULT_COUNTER: &str = "counter";
 
-pub const VAR_COUNTER: &str = "counter";
-pub const VAR_NUM_REPEATS: &str = "numRepeats";
+pub const STATE_COUNTER: &str = "counter";
+pub const STATE_NUM_REPEATS: &str = "numRepeats";
 
 pub const FUNC_CALL_INCREMENT: &str = "callIncrement";
 pub const FUNC_CALL_INCREMENT_RECURSE5X: &str = "callIncrementRecurse5x";

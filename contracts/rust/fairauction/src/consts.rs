@@ -31,10 +31,10 @@ pub const RESULT_NUM_TOKENS: &str = "numTokens";
 pub const RESULT_OWNER_MARGIN: &str = "ownerMargin";
 pub const RESULT_WHEN_STARTED: &str = "whenStarted";
 
-pub const VAR_AUCTIONS: &str = "auctions";
-pub const VAR_BIDDER_LIST: &str = "bidderList";
-pub const VAR_BIDS: &str = "bids";
-pub const VAR_OWNER_MARGIN: &str = "ownerMargin";
+pub const STATE_AUCTIONS: &str = "auctions";
+pub const STATE_BIDDER_LIST: &str = "bidderList";
+pub const STATE_BIDS: &str = "bids";
+pub const STATE_OWNER_MARGIN: &str = "ownerMargin";
 
 pub const FUNC_FINALIZE_AUCTION: &str = "finalizeAuction";
 pub const FUNC_PLACE_BID: &str = "placeBid";

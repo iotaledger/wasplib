@@ -17,10 +17,14 @@ use wasmlib::host::*;
 
 use crate::consts::*;
 use crate::keys::*;
+use crate::params::*;
+use crate::results::*;
 use crate::state::*;
 
 mod consts;
 mod keys;
+mod params;
+mod results;
 mod state;
 mod helloworld;
 
@@ -38,38 +42,33 @@ fn on_load() {
 }
 
 pub struct FuncHelloWorldContext {
-    state: HelloWorldFuncState,
+    state: MutableHelloWorldState,
 }
 
 fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld");
     let f = FuncHelloWorldContext {
-        state: HelloWorldFuncState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: MutableHelloWorldState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     func_hello_world(ctx, &f);
     ctx.log("helloworld.funcHelloWorld ok");
 }
 
-pub struct ViewGetHelloWorldResults {
-    pub hello_world: ScMutableString,
-}
-
 pub struct ViewGetHelloWorldContext {
-    results: ViewGetHelloWorldResults,
-    state:   HelloWorldViewState,
+    results: MutableViewGetHelloWorldResults,
+    state:   ImmutableHelloWorldState,
 }
 
 fn view_get_hello_world_thunk(ctx: &ScViewContext) {
     ctx.log("helloworld.viewGetHelloWorld");
-    let r = ctx.results().map_id();
     let f = ViewGetHelloWorldContext {
-        results: ViewGetHelloWorldResults {
-            hello_world: ScMutableString::new(r, idx_map(IDX_RESULT_HELLO_WORLD)),
+        results: MutableViewGetHelloWorldResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
-        state: HelloWorldViewState {
-            state_id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        state: ImmutableHelloWorldState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
     };
     view_get_hello_world(ctx, &f);

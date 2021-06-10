@@ -19,11 +19,11 @@ pub const PARAM_OWNER: &str = "owner";
 
 pub const RESULT_FACTOR: &str = "factor";
 
-pub const VAR_FACTOR: &str = "factor";
-pub const VAR_MEMBER_LIST: &str = "memberList";
-pub const VAR_MEMBERS: &str = "members";
-pub const VAR_OWNER: &str = "owner";
-pub const VAR_TOTAL_FACTOR: &str = "totalFactor";
+pub const STATE_FACTOR: &str = "factor";
+pub const STATE_MEMBER_LIST: &str = "memberList";
+pub const STATE_MEMBERS: &str = "members";
+pub const STATE_OWNER: &str = "owner";
+pub const STATE_TOTAL_FACTOR: &str = "totalFactor";
 
 pub const FUNC_DIVIDE: &str = "divide";
 pub const FUNC_INIT: &str = "init";

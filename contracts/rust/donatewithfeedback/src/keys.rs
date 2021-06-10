@@ -22,9 +22,9 @@ pub const IDX_RESULT_FEEDBACK: usize = 7;
 pub const IDX_RESULT_MAX_DONATION: usize = 8;
 pub const IDX_RESULT_TIMESTAMP: usize = 9;
 pub const IDX_RESULT_TOTAL_DONATION: usize = 10;
-pub const IDX_VAR_LOG: usize = 11;
-pub const IDX_VAR_MAX_DONATION: usize = 12;
-pub const IDX_VAR_TOTAL_DONATION: usize = 13;
+pub const IDX_STATE_LOG: usize = 11;
+pub const IDX_STATE_MAX_DONATION: usize = 12;
+pub const IDX_STATE_TOTAL_DONATION: usize = 13;
 
 pub const KEY_MAP_LEN: usize = 14;
 
@@ -40,9 +40,9 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     RESULT_MAX_DONATION,
     RESULT_TIMESTAMP,
     RESULT_TOTAL_DONATION,
-    VAR_LOG,
-    VAR_MAX_DONATION,
-    VAR_TOTAL_DONATION,
+    STATE_LOG,
+    STATE_MAX_DONATION,
+    STATE_TOTAL_DONATION,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

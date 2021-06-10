@@ -14,8 +14,8 @@ use crate::*;
 pub const IDX_PARAM_COLOR: usize = 0;
 pub const IDX_PARAM_DESCRIPTION: usize = 1;
 pub const IDX_PARAM_USER_DEFINED: usize = 2;
-pub const IDX_VAR_COLOR_LIST: usize = 3;
-pub const IDX_VAR_REGISTRY: usize = 4;
+pub const IDX_STATE_COLOR_LIST: usize = 3;
+pub const IDX_STATE_REGISTRY: usize = 4;
 
 pub const KEY_MAP_LEN: usize = 5;
 
@@ -23,8 +23,8 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_COLOR,
     PARAM_DESCRIPTION,
     PARAM_USER_DEFINED,
-    VAR_COLOR_LIST,
-    VAR_REGISTRY,
+    STATE_COLOR_LIST,
+    STATE_REGISTRY,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];
