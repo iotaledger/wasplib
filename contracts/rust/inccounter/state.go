@@ -9,26 +9,26 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type IncCounterFuncState struct {
-	stateId int32
+type MutableIncCounterState struct {
+	id int32
 }
 
-func (s IncCounterFuncState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarCounter])
+func (s MutableIncCounterState) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
 }
 
-func (s IncCounterFuncState) NumRepeats() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarNumRepeats])
+func (s MutableIncCounterState) NumRepeats() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateNumRepeats])
 }
 
-type IncCounterViewState struct {
-	stateId int32
+type ImmutableIncCounterState struct {
+	id int32
 }
 
-func (s IncCounterViewState) Counter() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarCounter])
+func (s ImmutableIncCounterState) Counter() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateCounter])
 }
 
-func (s IncCounterViewState) NumRepeats() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarNumRepeats])
+func (s ImmutableIncCounterState) NumRepeats() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateNumRepeats])
 }

@@ -9,18 +9,20 @@ package tokenregistry
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const IdxParamColor = 0
-const IdxParamDescription = 1
-const IdxParamUserDefined = 2
-const IdxVarColorList = 3
-const IdxVarRegistry = 4
+const (
+	IdxParamColor = 0
+	IdxParamDescription = 1
+	IdxParamUserDefined = 2
+	IdxStateColorList = 3
+	IdxStateRegistry = 4
+)
 
 var keyMap = [5]wasmlib.Key{
 	ParamColor,
 	ParamDescription,
 	ParamUserDefined,
-	VarColorList,
-	VarRegistry,
+	StateColorList,
+	StateRegistry,
 }
 
 var idxMap [5]wasmlib.Key32

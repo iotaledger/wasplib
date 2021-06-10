@@ -9,41 +9,43 @@ package test
 
 import "github.com/iotaledger/wasp/packages/coretypes"
 
-const ScName = "fairauction"
-const HScName = coretypes.Hname(0x1b5c43b1)
+const (
+	ScName = "fairauction"
+	HScName = coretypes.Hname(0x1b5c43b1)
 
-const ParamColor = "color"
-const ParamDescription = "description"
-const ParamDuration = "duration"
-const ParamMinimumBid = "minimumBid"
-const ParamOwnerMargin = "ownerMargin"
+	ParamColor = "color"
+	ParamDescription = "description"
+	ParamDuration = "duration"
+	ParamMinimumBid = "minimumBid"
+	ParamOwnerMargin = "ownerMargin"
 
-const ResultBidders = "bidders"
-const ResultColor = "color"
-const ResultCreator = "creator"
-const ResultDeposit = "deposit"
-const ResultDescription = "description"
-const ResultDuration = "duration"
-const ResultHighestBid = "highestBid"
-const ResultHighestBidder = "highestBidder"
-const ResultMinimumBid = "minimumBid"
-const ResultNumTokens = "numTokens"
-const ResultOwnerMargin = "ownerMargin"
-const ResultWhenStarted = "whenStarted"
+	ResultBidders = "bidders"
+	ResultColor = "color"
+	ResultCreator = "creator"
+	ResultDeposit = "deposit"
+	ResultDescription = "description"
+	ResultDuration = "duration"
+	ResultHighestBid = "highestBid"
+	ResultHighestBidder = "highestBidder"
+	ResultMinimumBid = "minimumBid"
+	ResultNumTokens = "numTokens"
+	ResultOwnerMargin = "ownerMargin"
+	ResultWhenStarted = "whenStarted"
 
-const VarAuctions = "auctions"
-const VarBidderList = "bidderList"
-const VarBids = "bids"
-const VarOwnerMargin = "ownerMargin"
+	StateAuctions = "auctions"
+	StateBidderList = "bidderList"
+	StateBids = "bids"
+	StateOwnerMargin = "ownerMargin"
 
-const FuncFinalizeAuction = "finalizeAuction"
-const FuncPlaceBid = "placeBid"
-const FuncSetOwnerMargin = "setOwnerMargin"
-const FuncStartAuction = "startAuction"
-const ViewGetInfo = "getInfo"
+	FuncFinalizeAuction = "finalizeAuction"
+	FuncPlaceBid = "placeBid"
+	FuncSetOwnerMargin = "setOwnerMargin"
+	FuncStartAuction = "startAuction"
+	ViewGetInfo = "getInfo"
 
-const HFuncFinalizeAuction = coretypes.Hname(0x8d534ddc)
-const HFuncPlaceBid = coretypes.Hname(0x9bd72fa9)
-const HFuncSetOwnerMargin = coretypes.Hname(0x1774461a)
-const HFuncStartAuction = coretypes.Hname(0xd5b7bacb)
-const HViewGetInfo = coretypes.Hname(0xcfedba5f)
+	HFuncFinalizeAuction = coretypes.Hname(0x8d534ddc)
+	HFuncPlaceBid = coretypes.Hname(0x9bd72fa9)
+	HFuncSetOwnerMargin = coretypes.Hname(0x1774461a)
+	HFuncStartAuction = coretypes.Hname(0xd5b7bacb)
+	HViewGetInfo = coretypes.Hname(0xcfedba5f)
+)

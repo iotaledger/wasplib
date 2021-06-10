@@ -9,26 +9,28 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const IdxParamAddress = 0
-const IdxParamFactor = 1
-const IdxParamOwner = 2
-const IdxResultFactor = 3
-const IdxVarFactor = 4
-const IdxVarMemberList = 5
-const IdxVarMembers = 6
-const IdxVarOwner = 7
-const IdxVarTotalFactor = 8
+const (
+	IdxParamAddress = 0
+	IdxParamFactor = 1
+	IdxParamOwner = 2
+	IdxResultFactor = 3
+	IdxStateFactor = 4
+	IdxStateMemberList = 5
+	IdxStateMembers = 6
+	IdxStateOwner = 7
+	IdxStateTotalFactor = 8
+)
 
 var keyMap = [9]wasmlib.Key{
 	ParamAddress,
 	ParamFactor,
 	ParamOwner,
 	ResultFactor,
-	VarFactor,
-	VarMemberList,
-	VarMembers,
-	VarOwner,
-	VarTotalFactor,
+	StateFactor,
+	StateMemberList,
+	StateMembers,
+	StateOwner,
+	StateTotalFactor,
 }
 
 var idxMap [9]wasmlib.Key32

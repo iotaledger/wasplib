@@ -9,34 +9,36 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const IdxParamAddress = 0
-const IdxParamAgentId = 1
-const IdxParamCaller = 2
-const IdxParamChainId = 3
-const IdxParamChainOwnerId = 4
-const IdxParamContractCreator = 5
-const IdxParamCounter = 6
-const IdxParamHash = 7
-const IdxParamHname = 8
-const IdxParamHnameContract = 9
-const IdxParamHnameEP = 10
-const IdxParamHnameZero = 11
-const IdxParamInt64 = 12
-const IdxParamInt64Zero = 13
-const IdxParamIntValue = 14
-const IdxParamName = 15
-const IdxParamString = 16
-const IdxParamStringZero = 17
-const IdxResultChainOwnerId = 18
-const IdxResultCounter = 19
-const IdxResultIntValue = 20
-const IdxResultMintedColor = 21
-const IdxResultMintedSupply = 22
-const IdxResultSandboxCall = 23
-const IdxVarCounter = 24
-const IdxVarHnameEP = 25
-const IdxVarMintedColor = 26
-const IdxVarMintedSupply = 27
+const (
+	IdxParamAddress = 0
+	IdxParamAgentId = 1
+	IdxParamCaller = 2
+	IdxParamChainId = 3
+	IdxParamChainOwnerId = 4
+	IdxParamContractCreator = 5
+	IdxParamCounter = 6
+	IdxParamHash = 7
+	IdxParamHname = 8
+	IdxParamHnameContract = 9
+	IdxParamHnameEP = 10
+	IdxParamHnameZero = 11
+	IdxParamInt64 = 12
+	IdxParamInt64Zero = 13
+	IdxParamIntValue = 14
+	IdxParamName = 15
+	IdxParamString = 16
+	IdxParamStringZero = 17
+	IdxResultChainOwnerId = 18
+	IdxResultCounter = 19
+	IdxResultIntValue = 20
+	IdxResultMintedColor = 21
+	IdxResultMintedSupply = 22
+	IdxResultSandboxCall = 23
+	IdxStateCounter = 24
+	IdxStateHnameEP = 25
+	IdxStateMintedColor = 26
+	IdxStateMintedSupply = 27
+)
 
 var keyMap = [28]wasmlib.Key{
 	ParamAddress,
@@ -63,10 +65,10 @@ var keyMap = [28]wasmlib.Key{
 	ResultMintedColor,
 	ResultMintedSupply,
 	ResultSandboxCall,
-	VarCounter,
-	VarHnameEP,
-	VarMintedColor,
-	VarMintedSupply,
+	StateCounter,
+	StateHnameEP,
+	StateMintedColor,
+	StateMintedSupply,
 }
 
 var idxMap [28]wasmlib.Key32

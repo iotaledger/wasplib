@@ -18,42 +18,19 @@ func OnLoad() {
 	}
 }
 
-type FuncParamTypesParams struct {
-	Address   wasmlib.ScImmutableAddress
-	AgentId   wasmlib.ScImmutableAgentId
-	Bytes     wasmlib.ScImmutableBytes
-	ChainId   wasmlib.ScImmutableChainId
-	Color     wasmlib.ScImmutableColor
-	Hash      wasmlib.ScImmutableHash
-	Hname     wasmlib.ScImmutableHname
-	Int64     wasmlib.ScImmutableInt64
-	RequestId wasmlib.ScImmutableRequestId
-	String    wasmlib.ScImmutableString
-}
-
 type FuncParamTypesContext struct {
-	Params FuncParamTypesParams
-	State  TestWasmLibFuncState
+	Params ImmutableFuncParamTypesParams
+	State  MutableTestWasmLibState
 }
 
 func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testwasmlib.funcParamTypes")
-	p := ctx.Params().MapId()
 	f := &FuncParamTypesContext{
-		Params: FuncParamTypesParams{
-			Address:   wasmlib.NewScImmutableAddress(p, idxMap[IdxParamAddress]),
-			AgentId:   wasmlib.NewScImmutableAgentId(p, idxMap[IdxParamAgentId]),
-			Bytes:     wasmlib.NewScImmutableBytes(p, idxMap[IdxParamBytes]),
-			ChainId:   wasmlib.NewScImmutableChainId(p, idxMap[IdxParamChainId]),
-			Color:     wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
-			Hash:      wasmlib.NewScImmutableHash(p, idxMap[IdxParamHash]),
-			Hname:     wasmlib.NewScImmutableHname(p, idxMap[IdxParamHname]),
-			Int64:     wasmlib.NewScImmutableInt64(p, idxMap[IdxParamInt64]),
-			RequestId: wasmlib.NewScImmutableRequestId(p, idxMap[IdxParamRequestId]),
-			String:    wasmlib.NewScImmutableString(p, idxMap[IdxParamString]),
+		Params: ImmutableFuncParamTypesParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: TestWasmLibFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableTestWasmLibState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcParamTypes(ctx, f)

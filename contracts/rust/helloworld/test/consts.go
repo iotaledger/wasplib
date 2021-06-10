@@ -9,14 +9,16 @@ package test
 
 import "github.com/iotaledger/wasp/packages/coretypes"
 
-const ScName = "helloworld"
-const ScDescription = "The ubiquitous hello world demo"
-const HScName = coretypes.Hname(0x0683223c)
+const (
+	ScName = "helloworld"
+	ScDescription = "The ubiquitous hello world demo"
+	HScName = coretypes.Hname(0x0683223c)
 
-const ResultHelloWorld = "helloWorld"
+	ResultHelloWorld = "helloWorld"
 
-const FuncHelloWorld = "helloWorld"
-const ViewGetHelloWorld = "getHelloWorld"
+	FuncHelloWorld = "helloWorld"
+	ViewGetHelloWorld = "getHelloWorld"
 
-const HFuncHelloWorld = coretypes.Hname(0x9d042e65)
-const HViewGetHelloWorld = coretypes.Hname(0x210439ce)
+	HFuncHelloWorld = coretypes.Hname(0x9d042e65)
+	HViewGetHelloWorld = coretypes.Hname(0x210439ce)
+)

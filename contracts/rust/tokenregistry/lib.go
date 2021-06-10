@@ -21,39 +21,28 @@ func OnLoad() {
 	}
 }
 
-type FuncMintSupplyParams struct {
-	Description wasmlib.ScImmutableString // description what minted token represents
-	UserDefined wasmlib.ScImmutableString // any user defined text
-}
-
 type FuncMintSupplyContext struct {
-	Params FuncMintSupplyParams
-	State  TokenRegistryFuncState
+	Params ImmutableFuncMintSupplyParams
+	State  MutableTokenRegistryState
 }
 
 func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcMintSupply")
-	p := ctx.Params().MapId()
 	f := &FuncMintSupplyContext{
-		Params: FuncMintSupplyParams{
-			Description: wasmlib.NewScImmutableString(p, idxMap[IdxParamDescription]),
-			UserDefined: wasmlib.NewScImmutableString(p, idxMap[IdxParamUserDefined]),
+		Params: ImmutableFuncMintSupplyParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableTokenRegistryState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcMintSupply(ctx, f)
 	ctx.Log("tokenregistry.funcMintSupply ok")
 }
 
-type FuncTransferOwnershipParams struct {
-	Color wasmlib.ScImmutableColor // color of token to transfer ownership of
-}
-
 type FuncTransferOwnershipContext struct {
-	Params FuncTransferOwnershipParams
-	State  TokenRegistryFuncState
+	Params ImmutableFuncTransferOwnershipParams
+	State  MutableTokenRegistryState
 }
 
 func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
@@ -61,27 +50,22 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can transfer token ownership
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	p := ctx.Params().MapId()
 	f := &FuncTransferOwnershipContext{
-		Params: FuncTransferOwnershipParams{
-			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
+		Params: ImmutableFuncTransferOwnershipParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableTokenRegistryState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
-	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
+	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
 	funcTransferOwnership(ctx, f)
 	ctx.Log("tokenregistry.funcTransferOwnership ok")
 }
 
-type FuncUpdateMetadataParams struct {
-	Color wasmlib.ScImmutableColor // color of token to update metadata for
-}
-
 type FuncUpdateMetadataContext struct {
-	Params FuncUpdateMetadataParams
-	State  TokenRegistryFuncState
+	Params ImmutableFuncUpdateMetadataParams
+	State  MutableTokenRegistryState
 }
 
 func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
@@ -89,41 +73,35 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can change the token info
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	p := ctx.Params().MapId()
 	f := &FuncUpdateMetadataContext{
-		Params: FuncUpdateMetadataParams{
-			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
+		Params: ImmutableFuncUpdateMetadataParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: TokenRegistryFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableTokenRegistryState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
-	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
+	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
 	funcUpdateMetadata(ctx, f)
 	ctx.Log("tokenregistry.funcUpdateMetadata ok")
 }
 
-type ViewGetInfoParams struct {
-	Color wasmlib.ScImmutableColor // color of token to view registry info of
-}
-
 type ViewGetInfoContext struct {
-	Params ViewGetInfoParams
-	State  TokenRegistryViewState
+	Params ImmutableViewGetInfoParams
+	State  ImmutableTokenRegistryState
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("tokenregistry.viewGetInfo")
-	p := ctx.Params().MapId()
 	f := &ViewGetInfoContext{
-		Params: ViewGetInfoParams{
-			Color: wasmlib.NewScImmutableColor(p, idxMap[IdxParamColor]),
+		Params: ImmutableViewGetInfoParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: TokenRegistryViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: ImmutableTokenRegistryState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
-	ctx.Require(f.Params.Color.Exists(), "missing mandatory color")
+	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
 	viewGetInfo(ctx, f)
 	ctx.Log("tokenregistry.viewGetInfo ok")
 }

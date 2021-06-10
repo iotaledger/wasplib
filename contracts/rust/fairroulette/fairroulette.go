@@ -33,7 +33,7 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *FuncPlaceBetContext) {
 
 	// Since we are sure that the 'number' parameter actually exists we can
 	// retrieve its actual value into an i64.
-	number := f.Params.Number.Value()
+	number := f.Params.Number().Value()
 	// require that the number is a valid number to bet on, otherwise panic out.
 	ctx.Require(number >= 1 && number <= MaxNumber, "invalid number")
 
@@ -258,7 +258,7 @@ func funcPlayPeriod(ctx wasmlib.ScFuncContext, f *FuncPlayPeriodContext) {
 
 	// Since we are sure that the 'playPeriod' parameter actually exists we can
 	// retrieve its actual value into an i64 value.
-	playPeriod := f.Params.PlayPeriod.Value()
+	playPeriod := f.Params.PlayPeriod().Value()
 
 	// Require that the play period (in seconds) is not ridiculously low.
 	// Otherwise panic out with an error message.
@@ -282,5 +282,5 @@ func viewLastWinningNumber(ctx wasmlib.ScViewContext, f *ViewLastWinningNumberCo
 
 	// Set the value associated with the 'lastWinningNumber' key to the value
 	// we got from state storage
-	f.Results.LastWinningNumber.SetValue(lastWinningNumber)
+	f.Results.LastWinningNumber().SetValue(lastWinningNumber)
 }

@@ -30,10 +30,10 @@ func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
 	owner := ctx.ContractCreator()
 
 	// Now we check if the optional 'owner' parameter is present in the params map.
-	if f.Params.Owner.Exists() {
+	if f.Params.Owner().Exists() {
 		// Yes, it was present, so now we overwrite the default owner with
 		// the one specified by the 'owner' parameter.
-		owner = f.Params.Owner.Value()
+		owner = f.Params.Owner().Value()
 	}
 
 	// Now that we have sorted out which agent will be the owner of this contract
@@ -60,7 +60,7 @@ func funcMember(ctx wasmlib.ScFuncContext, f *FuncMemberContext) {
 	// Since we are sure that the 'factor' parameter actually exists we can
 	// retrieve its actual value into an i64. Note that we use Rust's built-in
 	// data types when manipulating Int64, String, or Bytes value objects.
-	factor := f.Params.Factor.Value()
+	factor := f.Params.Factor().Value()
 
 	// As an extra requirement we check that the 'factor' parameter value is not
 	// negative. If it is, we panic out with an error message.
@@ -74,7 +74,7 @@ func funcMember(ctx wasmlib.ScFuncContext, f *FuncMemberContext) {
 
 	// Since we are sure that the 'address' parameter actually exists we can
 	// retrieve its actual value into an ScAddress value type.
-	address := f.Params.Address.Value()
+	address := f.Params.Address().Value()
 
 	// Create an ScMutableMap proxy to the state storage map on the host.
 	// We will store the address/factor combinations in a key/value sub-map inside
@@ -220,7 +220,7 @@ func funcSetOwner(ctx wasmlib.ScFuncContext, f *FuncSetOwnerContext) {
 
 	// Get a proxy to the 'owner' variable in state storage.
 	// Save the new owner parameter value in the 'owner' variable in state storage.
-	f.State.Owner().SetValue(f.Params.Owner.Value())
+	f.State.Owner().SetValue(f.Params.Owner().Value())
 }
 
 // 'getFactor' is a simple View function. It will retrieve the factor
@@ -229,7 +229,7 @@ func viewGetFactor(ctx wasmlib.ScViewContext, f *ViewGetFactorContext) {
 
 	// Since we are sure that the 'address' parameter actually exists we can
 	// retrieve its actual value into an ScAddress value type.
-	address := f.Params.Address.Value()
+	address := f.Params.Address().Value()
 
 	// Now that we have sorted out the parameter we will access the state
 	// storage on the host. First we create an ScImmutableMap proxy to the state
@@ -248,5 +248,5 @@ func viewGetFactor(ctx wasmlib.ScViewContext, f *ViewGetFactorContext) {
 
 	// Set the value associated with the 'factor' key to the factor we got from
 	// the members map through an ScMutableInt64 proxy to the results map.
-	f.Results.Factor.SetValue(factor)
+	f.Results.Factor().SetValue(factor)
 }

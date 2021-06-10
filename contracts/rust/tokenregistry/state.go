@@ -37,17 +37,17 @@ func (m MapColorToMutableToken) GetToken(key wasmlib.ScColor) MutableToken {
 	return MutableToken{objId: m.objId, keyId: key.KeyId()}
 }
 
-type TokenRegistryFuncState struct {
-	stateId int32
+type MutableTokenRegistryState struct {
+	id int32
 }
 
-func (s TokenRegistryFuncState) ColorList() ArrayOfMutableColor {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
+func (s MutableTokenRegistryState) ColorList() ArrayOfMutableColor {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
 	return ArrayOfMutableColor{objId: arrId}
 }
 
-func (s TokenRegistryFuncState) Registry() MapColorToMutableToken {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarRegistry], wasmlib.TYPE_MAP)
+func (s MutableTokenRegistryState) Registry() MapColorToMutableToken {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateRegistry], wasmlib.TYPE_MAP)
 	return MapColorToMutableToken{objId: mapId}
 }
 
@@ -71,16 +71,16 @@ func (m MapColorToImmutableToken) GetToken(key wasmlib.ScColor) ImmutableToken {
 	return ImmutableToken{objId: m.objId, keyId: key.KeyId()}
 }
 
-type TokenRegistryViewState struct {
-	stateId int32
+type ImmutableTokenRegistryState struct {
+	id int32
 }
 
-func (s TokenRegistryViewState) ColorList() ArrayOfImmutableColor {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
+func (s ImmutableTokenRegistryState) ColorList() ArrayOfImmutableColor {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateColorList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_COLOR)
 	return ArrayOfImmutableColor{objId: arrId}
 }
 
-func (s TokenRegistryViewState) Registry() MapColorToImmutableToken {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarRegistry], wasmlib.TYPE_MAP)
+func (s ImmutableTokenRegistryState) Registry() MapColorToImmutableToken {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateRegistry], wasmlib.TYPE_MAP)
 	return MapColorToImmutableToken{objId: mapId}
 }

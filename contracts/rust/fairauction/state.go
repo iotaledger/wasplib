@@ -47,27 +47,27 @@ func (m MapColorToMutableBids) GetBids(key wasmlib.ScColor) MutableBids {
 	return MutableBids{objId: subId}
 }
 
-type FairAuctionFuncState struct {
-	stateId int32
+type MutableFairAuctionState struct {
+	id int32
 }
 
-func (s FairAuctionFuncState) Auctions() MapColorToMutableAuction {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarAuctions], wasmlib.TYPE_MAP)
+func (s MutableFairAuctionState) Auctions() MapColorToMutableAuction {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAuctions], wasmlib.TYPE_MAP)
 	return MapColorToMutableAuction{objId: mapId}
 }
 
-func (s FairAuctionFuncState) BidderList() MapColorToMutableBidderList {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBidderList], wasmlib.TYPE_MAP)
+func (s MutableFairAuctionState) BidderList() MapColorToMutableBidderList {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBidderList], wasmlib.TYPE_MAP)
 	return MapColorToMutableBidderList{objId: mapId}
 }
 
-func (s FairAuctionFuncState) Bids() MapColorToMutableBids {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBids], wasmlib.TYPE_MAP)
+func (s MutableFairAuctionState) Bids() MapColorToMutableBids {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBids], wasmlib.TYPE_MAP)
 	return MapColorToMutableBids{objId: mapId}
 }
 
-func (s FairAuctionFuncState) OwnerMargin() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarOwnerMargin])
+func (s MutableFairAuctionState) OwnerMargin() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateOwnerMargin])
 }
 
 type MapColorToImmutableAuction struct {
@@ -96,25 +96,25 @@ func (m MapColorToImmutableBids) GetBids(key wasmlib.ScColor) ImmutableBids {
 	return ImmutableBids{objId: subId}
 }
 
-type FairAuctionViewState struct {
-	stateId int32
+type ImmutableFairAuctionState struct {
+	id int32
 }
 
-func (s FairAuctionViewState) Auctions() MapColorToImmutableAuction {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarAuctions], wasmlib.TYPE_MAP)
+func (s ImmutableFairAuctionState) Auctions() MapColorToImmutableAuction {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAuctions], wasmlib.TYPE_MAP)
 	return MapColorToImmutableAuction{objId: mapId}
 }
 
-func (s FairAuctionViewState) BidderList() MapColorToImmutableBidderList {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBidderList], wasmlib.TYPE_MAP)
+func (s ImmutableFairAuctionState) BidderList() MapColorToImmutableBidderList {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBidderList], wasmlib.TYPE_MAP)
 	return MapColorToImmutableBidderList{objId: mapId}
 }
 
-func (s FairAuctionViewState) Bids() MapColorToImmutableBids {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBids], wasmlib.TYPE_MAP)
+func (s ImmutableFairAuctionState) Bids() MapColorToImmutableBids {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBids], wasmlib.TYPE_MAP)
 	return MapColorToImmutableBids{objId: mapId}
 }
 
-func (s FairAuctionViewState) OwnerMargin() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarOwnerMargin])
+func (s ImmutableFairAuctionState) OwnerMargin() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateOwnerMargin])
 }

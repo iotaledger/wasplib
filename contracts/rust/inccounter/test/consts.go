@@ -9,41 +9,43 @@ package test
 
 import "github.com/iotaledger/wasp/packages/coretypes"
 
-const ScName = "inccounter"
-const HScName = coretypes.Hname(0xaf2438e9)
+const (
+	ScName = "inccounter"
+	HScName = coretypes.Hname(0xaf2438e9)
 
-const ParamCounter = "counter"
-const ParamNumRepeats = "numRepeats"
+	ParamCounter = "counter"
+	ParamNumRepeats = "numRepeats"
 
-const ResultCounter = "counter"
+	ResultCounter = "counter"
 
-const VarCounter = "counter"
-const VarNumRepeats = "numRepeats"
+	StateCounter = "counter"
+	StateNumRepeats = "numRepeats"
 
-const FuncCallIncrement = "callIncrement"
-const FuncCallIncrementRecurse5x = "callIncrementRecurse5x"
-const FuncIncrement = "increment"
-const FuncInit = "init"
-const FuncLocalStateInternalCall = "localStateInternalCall"
-const FuncLocalStatePost = "localStatePost"
-const FuncLocalStateSandboxCall = "localStateSandboxCall"
-const FuncLoop = "loop"
-const FuncPostIncrement = "postIncrement"
-const FuncRepeatMany = "repeatMany"
-const FuncTestLeb128 = "testLeb128"
-const FuncWhenMustIncrement = "whenMustIncrement"
-const ViewGetCounter = "getCounter"
+	FuncCallIncrement = "callIncrement"
+	FuncCallIncrementRecurse5x = "callIncrementRecurse5x"
+	FuncIncrement = "increment"
+	FuncInit = "init"
+	FuncLocalStateInternalCall = "localStateInternalCall"
+	FuncLocalStatePost = "localStatePost"
+	FuncLocalStateSandboxCall = "localStateSandboxCall"
+	FuncLoop = "loop"
+	FuncPostIncrement = "postIncrement"
+	FuncRepeatMany = "repeatMany"
+	FuncTestLeb128 = "testLeb128"
+	FuncWhenMustIncrement = "whenMustIncrement"
+	ViewGetCounter = "getCounter"
 
-const HFuncCallIncrement = coretypes.Hname(0xeb5dcacd)
-const HFuncCallIncrementRecurse5x = coretypes.Hname(0x8749fbff)
-const HFuncIncrement = coretypes.Hname(0xd351bd12)
-const HFuncInit = coretypes.Hname(0x1f44d644)
-const HFuncLocalStateInternalCall = coretypes.Hname(0xecfc5d33)
-const HFuncLocalStatePost = coretypes.Hname(0x3fd54d13)
-const HFuncLocalStateSandboxCall = coretypes.Hname(0x7bd22c53)
-const HFuncLoop = coretypes.Hname(0xa9a20fa9)
-const HFuncPostIncrement = coretypes.Hname(0x81c772f5)
-const HFuncRepeatMany = coretypes.Hname(0x4ff450d3)
-const HFuncTestLeb128 = coretypes.Hname(0xd8364cb9)
-const HFuncWhenMustIncrement = coretypes.Hname(0xb4c3e7a6)
-const HViewGetCounter = coretypes.Hname(0xb423e607)
+	HFuncCallIncrement = coretypes.Hname(0xeb5dcacd)
+	HFuncCallIncrementRecurse5x = coretypes.Hname(0x8749fbff)
+	HFuncIncrement = coretypes.Hname(0xd351bd12)
+	HFuncInit = coretypes.Hname(0x1f44d644)
+	HFuncLocalStateInternalCall = coretypes.Hname(0xecfc5d33)
+	HFuncLocalStatePost = coretypes.Hname(0x3fd54d13)
+	HFuncLocalStateSandboxCall = coretypes.Hname(0x7bd22c53)
+	HFuncLoop = coretypes.Hname(0xa9a20fa9)
+	HFuncPostIncrement = coretypes.Hname(0x81c772f5)
+	HFuncRepeatMany = coretypes.Hname(0x4ff450d3)
+	HFuncTestLeb128 = coretypes.Hname(0xd8364cb9)
+	HFuncWhenMustIncrement = coretypes.Hname(0xb4c3e7a6)
+	HViewGetCounter = coretypes.Hname(0xb423e607)
+)

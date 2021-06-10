@@ -9,30 +9,32 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const ScName = "dividend"
-const ScDescription = "Simple dividend smart contract"
-const HScName = wasmlib.ScHname(0xcce2e239)
+const (
+	ScName = "dividend"
+	ScDescription = "Simple dividend smart contract"
+	HScName = wasmlib.ScHname(0xcce2e239)
 
-const ParamAddress = wasmlib.Key("address")
-const ParamFactor = wasmlib.Key("factor")
-const ParamOwner = wasmlib.Key("owner")
+	ParamAddress = wasmlib.Key("address")
+	ParamFactor = wasmlib.Key("factor")
+	ParamOwner = wasmlib.Key("owner")
 
-const ResultFactor = wasmlib.Key("factor")
+	ResultFactor = wasmlib.Key("factor")
 
-const VarFactor = wasmlib.Key("factor")
-const VarMemberList = wasmlib.Key("memberList")
-const VarMembers = wasmlib.Key("members")
-const VarOwner = wasmlib.Key("owner")
-const VarTotalFactor = wasmlib.Key("totalFactor")
+	StateFactor = wasmlib.Key("factor")
+	StateMemberList = wasmlib.Key("memberList")
+	StateMembers = wasmlib.Key("members")
+	StateOwner = wasmlib.Key("owner")
+	StateTotalFactor = wasmlib.Key("totalFactor")
 
-const FuncDivide = "divide"
-const FuncInit = "init"
-const FuncMember = "member"
-const FuncSetOwner = "setOwner"
-const ViewGetFactor = "getFactor"
+	FuncDivide = "divide"
+	FuncInit = "init"
+	FuncMember = "member"
+	FuncSetOwner = "setOwner"
+	ViewGetFactor = "getFactor"
 
-const HFuncDivide = wasmlib.ScHname(0xc7878107)
-const HFuncInit = wasmlib.ScHname(0x1f44d644)
-const HFuncMember = wasmlib.ScHname(0xc07da2cb)
-const HFuncSetOwner = wasmlib.ScHname(0x2a15fe7b)
-const HViewGetFactor = wasmlib.ScHname(0x0ee668fe)
+	HFuncDivide = wasmlib.ScHname(0xc7878107)
+	HFuncInit = wasmlib.ScHname(0x1f44d644)
+	HFuncMember = wasmlib.ScHname(0xc07da2cb)
+	HFuncSetOwner = wasmlib.ScHname(0x2a15fe7b)
+	HViewGetFactor = wasmlib.ScHname(0x0ee668fe)
+)

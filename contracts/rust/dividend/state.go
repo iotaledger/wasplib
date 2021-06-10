@@ -37,30 +37,30 @@ func (m MapAddressToMutableInt64) GetInt64(key wasmlib.ScAddress) wasmlib.ScMuta
 	return wasmlib.NewScMutableInt64(m.objId, key.KeyId())
 }
 
-type DividendFuncState struct {
-	stateId int32
+type MutableDividendState struct {
+	id int32
 }
 
-func (s DividendFuncState) Factor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarFactor])
+func (s MutableDividendState) Factor() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateFactor])
 }
 
-func (s DividendFuncState) MemberList() ArrayOfMutableAddress {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
+func (s MutableDividendState) MemberList() ArrayOfMutableAddress {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
 	return ArrayOfMutableAddress{objId: arrId}
 }
 
-func (s DividendFuncState) Members() MapAddressToMutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMembers], wasmlib.TYPE_MAP)
+func (s MutableDividendState) Members() MapAddressToMutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMembers], wasmlib.TYPE_MAP)
 	return MapAddressToMutableInt64{objId: mapId}
 }
 
-func (s DividendFuncState) Owner() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.stateId, idxMap[IdxVarOwner])
+func (s MutableDividendState) Owner() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxStateOwner])
 }
 
-func (s DividendFuncState) TotalFactor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarTotalFactor])
+func (s MutableDividendState) TotalFactor() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateTotalFactor])
 }
 
 type ArrayOfImmutableAddress struct {
@@ -83,28 +83,28 @@ func (m MapAddressToImmutableInt64) GetInt64(key wasmlib.ScAddress) wasmlib.ScIm
 	return wasmlib.NewScImmutableInt64(m.objId, key.KeyId())
 }
 
-type DividendViewState struct {
-	stateId int32
+type ImmutableDividendState struct {
+	id int32
 }
 
-func (s DividendViewState) Factor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarFactor])
+func (s ImmutableDividendState) Factor() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateFactor])
 }
 
-func (s DividendViewState) MemberList() ArrayOfImmutableAddress {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
+func (s ImmutableDividendState) MemberList() ArrayOfImmutableAddress {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
 	return ArrayOfImmutableAddress{objId: arrId}
 }
 
-func (s DividendViewState) Members() MapAddressToImmutableInt64 {
-	mapId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarMembers], wasmlib.TYPE_MAP)
+func (s ImmutableDividendState) Members() MapAddressToImmutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMembers], wasmlib.TYPE_MAP)
 	return MapAddressToImmutableInt64{objId: mapId}
 }
 
-func (s DividendViewState) Owner() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.stateId, idxMap[IdxVarOwner])
+func (s ImmutableDividendState) Owner() wasmlib.ScImmutableAgentId {
+	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxStateOwner])
 }
 
-func (s DividendViewState) TotalFactor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarTotalFactor])
+func (s ImmutableDividendState) TotalFactor() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateTotalFactor])
 }

@@ -9,21 +9,23 @@ package test
 
 import "github.com/iotaledger/wasp/packages/coretypes"
 
-const ScName = "testwasmlib"
-const ScDescription = "Exercise all aspects of WasmLib"
-const HScName = coretypes.Hname(0x89703a45)
+const (
+	ScName = "testwasmlib"
+	ScDescription = "Exercise all aspects of WasmLib"
+	HScName = coretypes.Hname(0x89703a45)
 
-const ParamAddress = "address"
-const ParamAgentId = "agentId"
-const ParamBytes = "bytes"
-const ParamChainId = "chainId"
-const ParamColor = "color"
-const ParamHash = "hash"
-const ParamHname = "hname"
-const ParamInt64 = "int64"
-const ParamRequestId = "requestId"
-const ParamString = "string"
+	ParamAddress = "address"
+	ParamAgentId = "agentId"
+	ParamBytes = "bytes"
+	ParamChainId = "chainId"
+	ParamColor = "color"
+	ParamHash = "hash"
+	ParamHname = "hname"
+	ParamInt64 = "int64"
+	ParamRequestId = "requestId"
+	ParamString = "string"
 
-const FuncParamTypes = "paramTypes"
+	FuncParamTypes = "paramTypes"
 
-const HFuncParamTypes = coretypes.Hname(0x6921c4cd)
+	HFuncParamTypes = coretypes.Hname(0x6921c4cd)
+)

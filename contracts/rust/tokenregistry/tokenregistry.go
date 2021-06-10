@@ -23,8 +23,8 @@ func funcMintSupply(ctx wasmlib.ScFuncContext, f *FuncMintSupplyContext) {
 		Owner:       ctx.Caller(),
 		Created:     ctx.Timestamp(),
 		Updated:     ctx.Timestamp(),
-		Description: f.Params.Description.Value(),
-		UserDefined: f.Params.UserDefined.Value(),
+		Description: f.Params.Description().Value(),
+		UserDefined: f.Params.UserDefined().Value(),
 	}
 	if len(token.Description) == 0 {
 		token.Description += "no dscr"

@@ -25,21 +25,21 @@ func (a ArrayOfMutableDonation) GetDonation(index int32) MutableDonation {
 	return MutableDonation{objId: a.objId, keyId: wasmlib.Key32(index)}
 }
 
-type DonateWithFeedbackFuncState struct {
-	stateId int32
+type MutableDonateWithFeedbackState struct {
+	id int32
 }
 
-func (s DonateWithFeedbackFuncState) Log() ArrayOfMutableDonation {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s MutableDonateWithFeedbackState) Log() ArrayOfMutableDonation {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableDonation{objId: arrId}
 }
 
-func (s DonateWithFeedbackFuncState) MaxDonation() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarMaxDonation])
+func (s MutableDonateWithFeedbackState) MaxDonation() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateMaxDonation])
 }
 
-func (s DonateWithFeedbackFuncState) TotalDonation() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarTotalDonation])
+func (s MutableDonateWithFeedbackState) TotalDonation() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateTotalDonation])
 }
 
 type ArrayOfImmutableDonation struct {
@@ -54,19 +54,19 @@ func (a ArrayOfImmutableDonation) GetDonation(index int32) ImmutableDonation {
 	return ImmutableDonation{objId: a.objId, keyId: wasmlib.Key32(index)}
 }
 
-type DonateWithFeedbackViewState struct {
-	stateId int32
+type ImmutableDonateWithFeedbackState struct {
+	id int32
 }
 
-func (s DonateWithFeedbackViewState) Log() ArrayOfImmutableDonation {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s ImmutableDonateWithFeedbackState) Log() ArrayOfImmutableDonation {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateLog], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableDonation{objId: arrId}
 }
 
-func (s DonateWithFeedbackViewState) MaxDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarMaxDonation])
+func (s ImmutableDonateWithFeedbackState) MaxDonation() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateMaxDonation])
 }
 
-func (s DonateWithFeedbackViewState) TotalDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarTotalDonation])
+func (s ImmutableDonateWithFeedbackState) TotalDonation() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateTotalDonation])
 }

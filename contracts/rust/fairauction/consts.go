@@ -9,41 +9,43 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const ScName = "fairauction"
-const HScName = wasmlib.ScHname(0x1b5c43b1)
+const (
+	ScName = "fairauction"
+	HScName = wasmlib.ScHname(0x1b5c43b1)
 
-const ParamColor = wasmlib.Key("color")
-const ParamDescription = wasmlib.Key("description")
-const ParamDuration = wasmlib.Key("duration")
-const ParamMinimumBid = wasmlib.Key("minimumBid")
-const ParamOwnerMargin = wasmlib.Key("ownerMargin")
+	ParamColor = wasmlib.Key("color")
+	ParamDescription = wasmlib.Key("description")
+	ParamDuration = wasmlib.Key("duration")
+	ParamMinimumBid = wasmlib.Key("minimumBid")
+	ParamOwnerMargin = wasmlib.Key("ownerMargin")
 
-const ResultBidders = wasmlib.Key("bidders")
-const ResultColor = wasmlib.Key("color")
-const ResultCreator = wasmlib.Key("creator")
-const ResultDeposit = wasmlib.Key("deposit")
-const ResultDescription = wasmlib.Key("description")
-const ResultDuration = wasmlib.Key("duration")
-const ResultHighestBid = wasmlib.Key("highestBid")
-const ResultHighestBidder = wasmlib.Key("highestBidder")
-const ResultMinimumBid = wasmlib.Key("minimumBid")
-const ResultNumTokens = wasmlib.Key("numTokens")
-const ResultOwnerMargin = wasmlib.Key("ownerMargin")
-const ResultWhenStarted = wasmlib.Key("whenStarted")
+	ResultBidders = wasmlib.Key("bidders")
+	ResultColor = wasmlib.Key("color")
+	ResultCreator = wasmlib.Key("creator")
+	ResultDeposit = wasmlib.Key("deposit")
+	ResultDescription = wasmlib.Key("description")
+	ResultDuration = wasmlib.Key("duration")
+	ResultHighestBid = wasmlib.Key("highestBid")
+	ResultHighestBidder = wasmlib.Key("highestBidder")
+	ResultMinimumBid = wasmlib.Key("minimumBid")
+	ResultNumTokens = wasmlib.Key("numTokens")
+	ResultOwnerMargin = wasmlib.Key("ownerMargin")
+	ResultWhenStarted = wasmlib.Key("whenStarted")
 
-const VarAuctions = wasmlib.Key("auctions")
-const VarBidderList = wasmlib.Key("bidderList")
-const VarBids = wasmlib.Key("bids")
-const VarOwnerMargin = wasmlib.Key("ownerMargin")
+	StateAuctions = wasmlib.Key("auctions")
+	StateBidderList = wasmlib.Key("bidderList")
+	StateBids = wasmlib.Key("bids")
+	StateOwnerMargin = wasmlib.Key("ownerMargin")
 
-const FuncFinalizeAuction = "finalizeAuction"
-const FuncPlaceBid = "placeBid"
-const FuncSetOwnerMargin = "setOwnerMargin"
-const FuncStartAuction = "startAuction"
-const ViewGetInfo = "getInfo"
+	FuncFinalizeAuction = "finalizeAuction"
+	FuncPlaceBid = "placeBid"
+	FuncSetOwnerMargin = "setOwnerMargin"
+	FuncStartAuction = "startAuction"
+	ViewGetInfo = "getInfo"
 
-const HFuncFinalizeAuction = wasmlib.ScHname(0x8d534ddc)
-const HFuncPlaceBid = wasmlib.ScHname(0x9bd72fa9)
-const HFuncSetOwnerMargin = wasmlib.ScHname(0x1774461a)
-const HFuncStartAuction = wasmlib.ScHname(0xd5b7bacb)
-const HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+	HFuncFinalizeAuction = wasmlib.ScHname(0x8d534ddc)
+	HFuncPlaceBid = wasmlib.ScHname(0x9bd72fa9)
+	HFuncSetOwnerMargin = wasmlib.ScHname(0x1774461a)
+	HFuncStartAuction = wasmlib.ScHname(0xd5b7bacb)
+	HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+)

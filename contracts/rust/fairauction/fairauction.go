@@ -16,7 +16,7 @@ const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
 func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FuncFinalizeAuctionContext) {
-	color := f.Params.Color.Value()
+	color := f.Params.Color().Value()
 	currentAuction := f.State.Auctions().GetAuction(color)
 	ctx.Require(currentAuction.Exists(), "Missing auction info")
 	auction := currentAuction.Value()
@@ -60,7 +60,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, f *FuncPlaceBidContext) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
 	ctx.Require(bidAmount > 0, "Missing bid amount")
 
-	color := f.Params.Color.Value()
+	color := f.Params.Color().Value()
 	currentAuction := f.State.Auctions().GetAuction(color)
 	ctx.Require(currentAuction.Exists(), "Missing auction info")
 
@@ -97,7 +97,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, f *FuncPlaceBidContext) {
 }
 
 func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, f *FuncSetOwnerMarginContext) {
-	ownerMargin := f.Params.OwnerMargin.Value()
+	ownerMargin := f.Params.OwnerMargin().Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
 	}
@@ -108,7 +108,7 @@ func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, f *FuncSetOwnerMarginContext)
 }
 
 func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
-	color := f.Params.Color.Value()
+	color := f.Params.Color().Value()
 	if color == wasmlib.IOTA || color == wasmlib.MINT {
 		ctx.Panic("Reserved auction token color")
 	}
@@ -117,10 +117,10 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
 		ctx.Panic("Missing auction tokens")
 	}
 
-	minimumBid := f.Params.MinimumBid.Value()
+	minimumBid := f.Params.MinimumBid().Value()
 
 	// duration in minutes
-	duration := f.Params.Duration.Value()
+	duration := f.Params.Duration().Value()
 	if duration == 0 {
 		duration = DurationDefault
 	}
@@ -131,7 +131,7 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
 		duration = DurationMax
 	}
 
-	description := f.Params.Description.Value()
+	description := f.Params.Description().Value()
 	if description == "" {
 		description = "N/A"
 	}
@@ -182,27 +182,27 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
 }
 
 func viewGetInfo(ctx wasmlib.ScViewContext, f *ViewGetInfoContext) {
-	color := f.Params.Color.Value()
+	color := f.Params.Color().Value()
 	currentAuction := f.State.Auctions().GetAuction(color)
 	if !currentAuction.Exists() {
 		ctx.Panic("Missing auction info")
 	}
 
 	auction := currentAuction.Value()
-	f.Results.Color.SetValue(auction.Color)
-	f.Results.Creator.SetValue(auction.Creator)
-	f.Results.Deposit.SetValue(auction.Deposit)
-	f.Results.Description.SetValue(auction.Description)
-	f.Results.Duration.SetValue(auction.Duration)
-	f.Results.HighestBid.SetValue(auction.HighestBid)
-	f.Results.HighestBidder.SetValue(auction.HighestBidder)
-	f.Results.MinimumBid.SetValue(auction.MinimumBid)
-	f.Results.NumTokens.SetValue(auction.NumTokens)
-	f.Results.OwnerMargin.SetValue(auction.OwnerMargin)
-	f.Results.WhenStarted.SetValue(auction.WhenStarted)
+	f.Results.Color().SetValue(auction.Color)
+	f.Results.Creator().SetValue(auction.Creator)
+	f.Results.Deposit().SetValue(auction.Deposit)
+	f.Results.Description().SetValue(auction.Description)
+	f.Results.Duration().SetValue(auction.Duration)
+	f.Results.HighestBid().SetValue(auction.HighestBid)
+	f.Results.HighestBidder().SetValue(auction.HighestBidder)
+	f.Results.MinimumBid().SetValue(auction.MinimumBid)
+	f.Results.NumTokens().SetValue(auction.NumTokens)
+	f.Results.OwnerMargin().SetValue(auction.OwnerMargin)
+	f.Results.WhenStarted().SetValue(auction.WhenStarted)
 
 	bidderList := f.State.BidderList().GetBidderList(color)
-	f.Results.Bidders.SetValue(int64(bidderList.Length()))
+	f.Results.Bidders().SetValue(int64(bidderList.Length()))
 }
 
 func transferTokens(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentId, color wasmlib.ScColor, amount int64) {

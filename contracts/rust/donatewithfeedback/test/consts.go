@@ -9,32 +9,34 @@ package test
 
 import "github.com/iotaledger/wasp/packages/coretypes"
 
-const ScName = "donatewithfeedback"
-const HScName = coretypes.Hname(0x696d7f66)
+const (
+	ScName = "donatewithfeedback"
+	HScName = coretypes.Hname(0x696d7f66)
 
-const ParamAmount = "amount"
-const ParamFeedback = "feedback"
-const ParamNr = "nr"
+	ParamAmount = "amount"
+	ParamFeedback = "feedback"
+	ParamNr = "nr"
 
-const ResultAmount = "amount"
-const ResultCount = "count"
-const ResultDonator = "donator"
-const ResultError = "error"
-const ResultFeedback = "feedback"
-const ResultMaxDonation = "maxDonation"
-const ResultTimestamp = "timestamp"
-const ResultTotalDonation = "totalDonation"
+	ResultAmount = "amount"
+	ResultCount = "count"
+	ResultDonator = "donator"
+	ResultError = "error"
+	ResultFeedback = "feedback"
+	ResultMaxDonation = "maxDonation"
+	ResultTimestamp = "timestamp"
+	ResultTotalDonation = "totalDonation"
 
-const VarLog = "log"
-const VarMaxDonation = "maxDonation"
-const VarTotalDonation = "totalDonation"
+	StateLog = "log"
+	StateMaxDonation = "maxDonation"
+	StateTotalDonation = "totalDonation"
 
-const FuncDonate = "donate"
-const FuncWithdraw = "withdraw"
-const ViewDonation = "donation"
-const ViewDonationInfo = "donationInfo"
+	FuncDonate = "donate"
+	FuncWithdraw = "withdraw"
+	ViewDonation = "donation"
+	ViewDonationInfo = "donationInfo"
 
-const HFuncDonate = coretypes.Hname(0xdc9b133a)
-const HFuncWithdraw = coretypes.Hname(0x9dcc0f41)
-const HViewDonation = coretypes.Hname(0xbdb245ba)
-const HViewDonationInfo = coretypes.Hname(0xc8f7c726)
+	HFuncDonate = coretypes.Hname(0xdc9b133a)
+	HFuncWithdraw = coretypes.Hname(0x9dcc0f41)
+	HViewDonation = coretypes.Hname(0xbdb245ba)
+	HViewDonationInfo = coretypes.Hname(0xc8f7c726)
+)

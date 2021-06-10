@@ -12,7 +12,7 @@ func funcDonate(ctx wasmlib.ScFuncContext, f *FuncDonateContext) {
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
 		Error:     "",
-		Feedback:  f.Params.Feedback.Value(),
+		Feedback:  f.Params.Feedback().Value(),
 		Timestamp: ctx.Timestamp(),
 	}
 	if donation.Amount == 0 || len(donation.Feedback) == 0 {
@@ -35,7 +35,7 @@ func funcDonate(ctx wasmlib.ScFuncContext, f *FuncDonateContext) {
 
 func funcWithdraw(ctx wasmlib.ScFuncContext, f *FuncWithdrawContext) {
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
-	amount := f.Params.Amount.Value()
+	amount := f.Params.Amount().Value()
 	if amount == 0 || amount > balance {
 		amount = balance
 	}
@@ -49,17 +49,17 @@ func funcWithdraw(ctx wasmlib.ScFuncContext, f *FuncWithdrawContext) {
 }
 
 func viewDonation(ctx wasmlib.ScViewContext, f *ViewDonationContext) {
-	nr := int32(f.Params.Nr.Value())
+	nr := int32(f.Params.Nr().Value())
 	donation := f.State.Log().GetDonation(nr).Value()
-	f.Results.Amount.SetValue(donation.Amount)
-	f.Results.Donator.SetValue(donation.Donator)
-	f.Results.Error.SetValue(donation.Error)
-	f.Results.Feedback.SetValue(donation.Feedback)
-	f.Results.Timestamp.SetValue(donation.Timestamp)
+	f.Results.Amount().SetValue(donation.Amount)
+	f.Results.Donator().SetValue(donation.Donator)
+	f.Results.Error().SetValue(donation.Error)
+	f.Results.Feedback().SetValue(donation.Feedback)
+	f.Results.Timestamp().SetValue(donation.Timestamp)
 }
 
 func viewDonationInfo(ctx wasmlib.ScViewContext, f *ViewDonationInfoContext) {
-	f.Results.MaxDonation.SetValue(f.State.MaxDonation().Value())
-	f.Results.TotalDonation.SetValue(f.State.TotalDonation().Value())
-	f.Results.Count.SetValue(int64(f.State.Log().Length()))
+	f.Results.MaxDonation().SetValue(f.State.MaxDonation().Value())
+	f.Results.TotalDonation().SetValue(f.State.TotalDonation().Value())
+	f.Results.Count().SetValue(int64(f.State.Log().Length()))
 }

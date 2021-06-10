@@ -199,7 +199,7 @@ func checkStateCounter(t *testing.T, chain *solo.Chain, expected interface{}) {
 		ScName, ViewGetCounter,
 	)
 	require.NoError(t, err)
-	counter, exists, err := codec.DecodeInt64(res[VarCounter])
+	counter, exists, err := codec.DecodeInt64(res[StateCounter])
 	require.NoError(t, err)
 	if expected == nil {
 		require.False(t, exists)

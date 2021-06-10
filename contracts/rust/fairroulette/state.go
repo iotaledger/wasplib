@@ -25,26 +25,26 @@ func (a ArrayOfMutableBet) GetBet(index int32) MutableBet {
 	return MutableBet{objId: a.objId, keyId: wasmlib.Key32(index)}
 }
 
-type FairRouletteFuncState struct {
-	stateId int32
+type MutableFairRouletteState struct {
+	id int32
 }
 
-func (s FairRouletteFuncState) Bets() ArrayOfMutableBet {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s MutableFairRouletteState) Bets() ArrayOfMutableBet {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableBet{objId: arrId}
 }
 
-func (s FairRouletteFuncState) LastWinningNumber() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarLastWinningNumber])
+func (s MutableFairRouletteState) LastWinningNumber() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateLastWinningNumber])
 }
 
-func (s FairRouletteFuncState) LockedBets() ArrayOfMutableBet {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLockedBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s MutableFairRouletteState) LockedBets() ArrayOfMutableBet {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateLockedBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableBet{objId: arrId}
 }
 
-func (s FairRouletteFuncState) PlayPeriod() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarPlayPeriod])
+func (s MutableFairRouletteState) PlayPeriod() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStatePlayPeriod])
 }
 
 type ArrayOfImmutableBet struct {
@@ -59,24 +59,24 @@ func (a ArrayOfImmutableBet) GetBet(index int32) ImmutableBet {
 	return ImmutableBet{objId: a.objId, keyId: wasmlib.Key32(index)}
 }
 
-type FairRouletteViewState struct {
-	stateId int32
+type ImmutableFairRouletteState struct {
+	id int32
 }
 
-func (s FairRouletteViewState) Bets() ArrayOfImmutableBet {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s ImmutableFairRouletteState) Bets() ArrayOfImmutableBet {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableBet{objId: arrId}
 }
 
-func (s FairRouletteViewState) LastWinningNumber() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarLastWinningNumber])
+func (s ImmutableFairRouletteState) LastWinningNumber() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateLastWinningNumber])
 }
 
-func (s FairRouletteViewState) LockedBets() ArrayOfImmutableBet {
-	arrId := wasmlib.GetObjectId(s.stateId, idxMap[IdxVarLockedBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+func (s ImmutableFairRouletteState) LockedBets() ArrayOfImmutableBet {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateLockedBets], wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableBet{objId: arrId}
 }
 
-func (s FairRouletteViewState) PlayPeriod() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarPlayPeriod])
+func (s ImmutableFairRouletteState) PlayPeriod() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStatePlayPeriod])
 }

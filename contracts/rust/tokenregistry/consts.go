@@ -9,22 +9,24 @@ package tokenregistry
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const ScName = "tokenregistry"
-const HScName = wasmlib.ScHname(0xe1ba0c78)
+const (
+	ScName = "tokenregistry"
+	HScName = wasmlib.ScHname(0xe1ba0c78)
 
-const ParamColor = wasmlib.Key("color")
-const ParamDescription = wasmlib.Key("description")
-const ParamUserDefined = wasmlib.Key("userDefined")
+	ParamColor = wasmlib.Key("color")
+	ParamDescription = wasmlib.Key("description")
+	ParamUserDefined = wasmlib.Key("userDefined")
 
-const VarColorList = wasmlib.Key("colorList")
-const VarRegistry = wasmlib.Key("registry")
+	StateColorList = wasmlib.Key("colorList")
+	StateRegistry = wasmlib.Key("registry")
 
-const FuncMintSupply = "mintSupply"
-const FuncTransferOwnership = "transferOwnership"
-const FuncUpdateMetadata = "updateMetadata"
-const ViewGetInfo = "getInfo"
+	FuncMintSupply = "mintSupply"
+	FuncTransferOwnership = "transferOwnership"
+	FuncUpdateMetadata = "updateMetadata"
+	ViewGetInfo = "getInfo"
 
-const HFuncMintSupply = wasmlib.ScHname(0x564349a7)
-const HFuncTransferOwnership = wasmlib.ScHname(0xbb9eb5af)
-const HFuncUpdateMetadata = wasmlib.ScHname(0xa26b23b6)
-const HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+	HFuncMintSupply = wasmlib.ScHname(0x564349a7)
+	HFuncTransferOwnership = wasmlib.ScHname(0xbb9eb5af)
+	HFuncUpdateMetadata = wasmlib.ScHname(0xa26b23b6)
+	HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+)

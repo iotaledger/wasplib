@@ -7,11 +7,10 @@
 
 package testwasmlib
 
-
-type TestWasmLibFuncState struct {
-	stateId int32
+type MutableTestWasmLibState struct {
+	id int32
 }
 
-type TestWasmLibViewState struct {
-	stateId int32
+type ImmutableTestWasmLibState struct {
+	id int32
 }

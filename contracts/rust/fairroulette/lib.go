@@ -23,7 +23,7 @@ func OnLoad() {
 }
 
 type FuncLockBetsContext struct {
-	State FairRouletteFuncState
+	State MutableFairRouletteState
 }
 
 func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
@@ -32,8 +32,8 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
 	f := &FuncLockBetsContext{
-		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableFairRouletteState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcLockBets(ctx, f)
@@ -41,7 +41,7 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncPayWinnersContext struct {
-	State FairRouletteFuncState
+	State MutableFairRouletteState
 }
 
 func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
@@ -50,46 +50,37 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
 	f := &FuncPayWinnersContext{
-		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableFairRouletteState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	funcPayWinners(ctx, f)
 	ctx.Log("fairroulette.funcPayWinners ok")
 }
 
-type FuncPlaceBetParams struct {
-	Number wasmlib.ScImmutableInt64 // the number a better bets on
-}
-
 type FuncPlaceBetContext struct {
-	Params FuncPlaceBetParams
-	State  FairRouletteFuncState
+	Params ImmutableFuncPlaceBetParams
+	State  MutableFairRouletteState
 }
 
 func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPlaceBet")
-	p := ctx.Params().MapId()
 	f := &FuncPlaceBetContext{
-		Params: FuncPlaceBetParams{
-			Number: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamNumber]),
+		Params: ImmutableFuncPlaceBetParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableFairRouletteState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
-	ctx.Require(f.Params.Number.Exists(), "missing mandatory number")
+	ctx.Require(f.Params.Number().Exists(), "missing mandatory number")
 	funcPlaceBet(ctx, f)
 	ctx.Log("fairroulette.funcPlaceBet ok")
 }
 
-type FuncPlayPeriodParams struct {
-	PlayPeriod wasmlib.ScImmutableInt64 // number of minutes in one playing round
-}
-
 type FuncPlayPeriodContext struct {
-	Params FuncPlayPeriodParams
-	State  FairRouletteFuncState
+	Params ImmutableFuncPlayPeriodParams
+	State  MutableFairRouletteState
 }
 
 func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
@@ -97,38 +88,32 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can update the play period
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	p := ctx.Params().MapId()
 	f := &FuncPlayPeriodContext{
-		Params: FuncPlayPeriodParams{
-			PlayPeriod: wasmlib.NewScImmutableInt64(p, idxMap[IdxParamPlayPeriod]),
+		Params: ImmutableFuncPlayPeriodParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		State: FairRouletteFuncState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: MutableFairRouletteState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
-	ctx.Require(f.Params.PlayPeriod.Exists(), "missing mandatory playPeriod")
+	ctx.Require(f.Params.PlayPeriod().Exists(), "missing mandatory playPeriod")
 	funcPlayPeriod(ctx, f)
 	ctx.Log("fairroulette.funcPlayPeriod ok")
 }
 
-type ViewLastWinningNumberResults struct {
-	LastWinningNumber wasmlib.ScMutableInt64
-}
-
 type ViewLastWinningNumberContext struct {
-	Results ViewLastWinningNumberResults
-	State   FairRouletteViewState
+	Results MutableViewLastWinningNumberResults
+	State   ImmutableFairRouletteState
 }
 
 func viewLastWinningNumberThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("fairroulette.viewLastWinningNumber")
-	r := ctx.Results().MapId()
 	f := &ViewLastWinningNumberContext{
-		Results: ViewLastWinningNumberResults{
-			LastWinningNumber: wasmlib.NewScMutableInt64(r, idxMap[IdxResultLastWinningNumber]),
+		Results: MutableViewLastWinningNumberResults{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
-		State: FairRouletteViewState{
-			stateId: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		State: ImmutableFairRouletteState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
 	}
 	viewLastWinningNumber(ctx, f)

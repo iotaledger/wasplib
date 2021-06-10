@@ -9,42 +9,42 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type TestCoreFuncState struct {
-	stateId int32
+type MutableTestCoreState struct {
+	id int32
 }
 
-func (s TestCoreFuncState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarCounter])
+func (s MutableTestCoreState) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
 }
 
-func (s TestCoreFuncState) HnameEP() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.stateId, idxMap[IdxVarHnameEP])
+func (s MutableTestCoreState) HnameEP() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxStateHnameEP])
 }
 
-func (s TestCoreFuncState) MintedColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.stateId, idxMap[IdxVarMintedColor])
+func (s MutableTestCoreState) MintedColor() wasmlib.ScMutableColor {
+	return wasmlib.NewScMutableColor(s.id, idxMap[IdxStateMintedColor])
 }
 
-func (s TestCoreFuncState) MintedSupply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.stateId, idxMap[IdxVarMintedSupply])
+func (s MutableTestCoreState) MintedSupply() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateMintedSupply])
 }
 
-type TestCoreViewState struct {
-	stateId int32
+type ImmutableTestCoreState struct {
+	id int32
 }
 
-func (s TestCoreViewState) Counter() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarCounter])
+func (s ImmutableTestCoreState) Counter() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateCounter])
 }
 
-func (s TestCoreViewState) HnameEP() wasmlib.ScImmutableHname {
-	return wasmlib.NewScImmutableHname(s.stateId, idxMap[IdxVarHnameEP])
+func (s ImmutableTestCoreState) HnameEP() wasmlib.ScImmutableHname {
+	return wasmlib.NewScImmutableHname(s.id, idxMap[IdxStateHnameEP])
 }
 
-func (s TestCoreViewState) MintedColor() wasmlib.ScImmutableColor {
-	return wasmlib.NewScImmutableColor(s.stateId, idxMap[IdxVarMintedColor])
+func (s ImmutableTestCoreState) MintedColor() wasmlib.ScImmutableColor {
+	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxStateMintedColor])
 }
 
-func (s TestCoreViewState) MintedSupply() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.stateId, idxMap[IdxVarMintedSupply])
+func (s ImmutableTestCoreState) MintedSupply() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateMintedSupply])
 }

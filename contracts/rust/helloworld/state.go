@@ -7,11 +7,10 @@
 
 package helloworld
 
-
-type HelloWorldFuncState struct {
-	stateId int32
+type MutableHelloWorldState struct {
+	id int32
 }
 
-type HelloWorldViewState struct {
-	stateId int32
+type ImmutableHelloWorldState struct {
+	id int32
 }

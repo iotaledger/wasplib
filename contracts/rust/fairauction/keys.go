@@ -9,27 +9,29 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-const IdxParamColor = 0
-const IdxParamDescription = 1
-const IdxParamDuration = 2
-const IdxParamMinimumBid = 3
-const IdxParamOwnerMargin = 4
-const IdxResultBidders = 5
-const IdxResultColor = 6
-const IdxResultCreator = 7
-const IdxResultDeposit = 8
-const IdxResultDescription = 9
-const IdxResultDuration = 10
-const IdxResultHighestBid = 11
-const IdxResultHighestBidder = 12
-const IdxResultMinimumBid = 13
-const IdxResultNumTokens = 14
-const IdxResultOwnerMargin = 15
-const IdxResultWhenStarted = 16
-const IdxVarAuctions = 17
-const IdxVarBidderList = 18
-const IdxVarBids = 19
-const IdxVarOwnerMargin = 20
+const (
+	IdxParamColor = 0
+	IdxParamDescription = 1
+	IdxParamDuration = 2
+	IdxParamMinimumBid = 3
+	IdxParamOwnerMargin = 4
+	IdxResultBidders = 5
+	IdxResultColor = 6
+	IdxResultCreator = 7
+	IdxResultDeposit = 8
+	IdxResultDescription = 9
+	IdxResultDuration = 10
+	IdxResultHighestBid = 11
+	IdxResultHighestBidder = 12
+	IdxResultMinimumBid = 13
+	IdxResultNumTokens = 14
+	IdxResultOwnerMargin = 15
+	IdxResultWhenStarted = 16
+	IdxStateAuctions = 17
+	IdxStateBidderList = 18
+	IdxStateBids = 19
+	IdxStateOwnerMargin = 20
+)
 
 var keyMap = [21]wasmlib.Key{
 	ParamColor,
@@ -49,10 +51,10 @@ var keyMap = [21]wasmlib.Key{
 	ResultNumTokens,
 	ResultOwnerMargin,
 	ResultWhenStarted,
-	VarAuctions,
-	VarBidderList,
-	VarBids,
-	VarOwnerMargin,
+	StateAuctions,
+	StateBidderList,
+	StateBids,
+	StateOwnerMargin,
 }
 
 var idxMap [21]wasmlib.Key32

@@ -12,5 +12,5 @@ func funcHelloWorld(ctx wasmlib.ScFuncContext, f *FuncHelloWorldContext) {
 }
 
 func viewGetHelloWorld(ctx wasmlib.ScViewContext, f *ViewGetHelloWorldContext) {
-	f.Results.HelloWorld.SetValue("Hello, world!")
+	f.Results.HelloWorld().SetValue("Hello, world!")
 }

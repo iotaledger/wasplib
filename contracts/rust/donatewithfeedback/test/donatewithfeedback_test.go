@@ -64,11 +64,11 @@ func TestDonateOnce(t *testing.T) {
 	require.NoError(t, err)
 	require.EqualValues(t, 1, count)
 
-	max, _, err := codec.DecodeInt64(ret[VarMaxDonation])
+	max, _, err := codec.DecodeInt64(ret[StateMaxDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 42, max)
 
-	tot, _, err := codec.DecodeInt64(ret[VarTotalDonation])
+	tot, _, err := codec.DecodeInt64(ret[StateTotalDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 42, tot)
 
@@ -107,11 +107,11 @@ func TestDonateTwice(t *testing.T) {
 	require.NoError(t, err)
 	require.EqualValues(t, 2, count)
 
-	max, _, err := codec.DecodeInt64(ret[VarMaxDonation])
+	max, _, err := codec.DecodeInt64(ret[StateMaxDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 69, max)
 
-	tot, _, err := codec.DecodeInt64(ret[VarTotalDonation])
+	tot, _, err := codec.DecodeInt64(ret[StateTotalDonation])
 	require.NoError(t, err)
 	require.EqualValues(t, 42+69, tot)
 

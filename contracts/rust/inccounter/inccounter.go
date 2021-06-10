@@ -33,8 +33,8 @@ func funcIncrement(ctx wasmlib.ScFuncContext, f *FuncIncrementContext) {
 }
 
 func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
-	if f.Params.Counter.Exists() {
-		counter := f.Params.Counter.Value()
+	if f.Params.Counter().Exists() {
+		counter := f.Params.Counter().Value()
 		f.State.Counter().SetValue(counter)
 	}
 }
@@ -69,7 +69,7 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *FuncLocalStatePostContext)
 func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
 	//note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
 	params := wasmlib.NewScMutableMap()
-	params.GetInt64(VarCounter).SetValue(nr)
+	params.GetInt64(StateCounter).SetValue(nr)
 	transfer := wasmlib.NewScTransferIotas(1)
 	ctx.PostSelf(HFuncWhenMustIncrement, params, transfer, 0)
 }
@@ -107,7 +107,7 @@ func funcRepeatMany(ctx wasmlib.ScFuncContext, f *FuncRepeatManyContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	stateRepeats := f.State.NumRepeats()
-	repeats := f.Params.NumRepeats.Value()
+	repeats := f.Params.NumRepeats().Value()
 	if repeats == 0 {
 		repeats = stateRepeats.Value()
 		if repeats == 0 {
@@ -123,7 +123,7 @@ func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f *FuncWhenMustIncrementCo
 	funcWhenMustIncrementState(ctx, f.State)
 }
 
-func funcWhenMustIncrementState(ctx wasmlib.ScFuncContext, state IncCounterFuncState) {
+func funcWhenMustIncrementState(ctx wasmlib.ScFuncContext, state MutableIncCounterState) {
 	ctx.Log("when_must_increment called")
 	{
 		if !LocalStateMustIncrement {
@@ -139,7 +139,7 @@ func funcWhenMustIncrementState(ctx wasmlib.ScFuncContext, state IncCounterFuncS
 func viewGetCounter(ctx wasmlib.ScViewContext, f *ViewGetCounterContext) {
 	counter := f.State.Counter()
 	if counter.Exists() {
-		f.Results.Counter.SetValue(counter.Value())
+		f.Results.Counter().SetValue(counter.Value())
 	}
 }
 
