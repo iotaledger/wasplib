@@ -9,20 +9,28 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncDonateResults struct {
+type ImmutableViewDonationResults struct {
 	id int32
 }
 
-type ImmutableFuncDonateResults struct {
-	id int32
+func (s ImmutableViewDonationResults) Amount() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type MutableFuncWithdrawResults struct {
-	id int32
+func (s ImmutableViewDonationResults) Donator() wasmlib.ScImmutableAgentId {
+	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultDonator])
 }
 
-type ImmutableFuncWithdrawResults struct {
-	id int32
+func (s ImmutableViewDonationResults) Error() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultError])
+}
+
+func (s ImmutableViewDonationResults) Feedback() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultFeedback])
+}
+
+func (s ImmutableViewDonationResults) Timestamp() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTimestamp])
 }
 
 type MutableViewDonationResults struct {
@@ -49,28 +57,20 @@ func (s MutableViewDonationResults) Timestamp() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultTimestamp])
 }
 
-type ImmutableViewDonationResults struct {
+type ImmutableViewDonationInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewDonationResults) Amount() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
+func (s ImmutableViewDonationInfoResults) Count() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCount])
 }
 
-func (s ImmutableViewDonationResults) Donator() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultDonator])
+func (s ImmutableViewDonationInfoResults) MaxDonation() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMaxDonation])
 }
 
-func (s ImmutableViewDonationResults) Error() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultError])
-}
-
-func (s ImmutableViewDonationResults) Feedback() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultFeedback])
-}
-
-func (s ImmutableViewDonationResults) Timestamp() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTimestamp])
+func (s ImmutableViewDonationInfoResults) TotalDonation() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTotalDonation])
 }
 
 type MutableViewDonationInfoResults struct {
@@ -87,20 +87,4 @@ func (s MutableViewDonationInfoResults) MaxDonation() wasmlib.ScMutableInt64 {
 
 func (s MutableViewDonationInfoResults) TotalDonation() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultTotalDonation])
-}
-
-type ImmutableViewDonationInfoResults struct {
-	id int32
-}
-
-func (s ImmutableViewDonationInfoResults) Count() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCount])
-}
-
-func (s ImmutableViewDonationInfoResults) MaxDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMaxDonation])
-}
-
-func (s ImmutableViewDonationInfoResults) TotalDonation() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTotalDonation])
 }

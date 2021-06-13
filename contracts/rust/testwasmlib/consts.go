@@ -10,20 +10,20 @@ package testwasmlib
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "testwasmlib"
+	ScName        = "testwasmlib"
 	ScDescription = "Exercise all aspects of WasmLib"
-	HScName = wasmlib.ScHname(0x89703a45)
+	HScName       = wasmlib.ScHname(0x89703a45)
 
-	ParamAddress = wasmlib.Key("address")
-	ParamAgentId = wasmlib.Key("agentId")
-	ParamBytes = wasmlib.Key("bytes")
-	ParamChainId = wasmlib.Key("chainId")
-	ParamColor = wasmlib.Key("color")
-	ParamHash = wasmlib.Key("hash")
-	ParamHname = wasmlib.Key("hname")
-	ParamInt64 = wasmlib.Key("int64")
+	ParamAddress   = wasmlib.Key("address")
+	ParamAgentId   = wasmlib.Key("agentId")
+	ParamBytes     = wasmlib.Key("bytes")
+	ParamChainId   = wasmlib.Key("chainId")
+	ParamColor     = wasmlib.Key("color")
+	ParamHash      = wasmlib.Key("hash")
+	ParamHname     = wasmlib.Key("hname")
+	ParamInt64     = wasmlib.Key("int64")
 	ParamRequestId = wasmlib.Key("requestId")
-	ParamString = wasmlib.Key("string")
+	ParamString    = wasmlib.Key("string")
 
 	FuncParamTypes = "paramTypes"
 

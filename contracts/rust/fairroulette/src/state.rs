@@ -15,48 +15,6 @@ use crate::*;
 use crate::keys::*;
 use crate::types::*;
 
-pub struct ArrayOfMutableBet {
-    pub(crate) obj_id: i32,
-}
-
-impl ArrayOfMutableBet {
-    pub fn clear(&self) {
-        clear(self.obj_id);
-    }
-
-    pub fn length(&self) -> i32 {
-        get_length(self.obj_id)
-    }
-
-    pub fn get_bet(&self, index: i32) -> MutableBet {
-        MutableBet { obj_id: self.obj_id, key_id: Key32(index) }
-    }
-}
-
-pub struct MutableFairRouletteState {
-    pub(crate) id: i32,
-}
-
-impl MutableFairRouletteState {
-    pub fn bets(&self) -> ArrayOfMutableBet {
-        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_BETS), TYPE_ARRAY | TYPE_BYTES);
-        ArrayOfMutableBet { obj_id: arr_id }
-    }
-
-    pub fn last_winning_number(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_LAST_WINNING_NUMBER))
-    }
-
-    pub fn locked_bets(&self) -> ArrayOfMutableBet {
-        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_LOCKED_BETS), TYPE_ARRAY | TYPE_BYTES);
-        ArrayOfMutableBet { obj_id: arr_id }
-    }
-
-    pub fn play_period(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
-    }
-}
-
 pub struct ArrayOfImmutableBet {
     pub(crate) obj_id: i32,
 }
@@ -71,6 +29,7 @@ impl ArrayOfImmutableBet {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFairRouletteState {
     pub(crate) id: i32,
 }
@@ -92,5 +51,48 @@ impl ImmutableFairRouletteState {
 
     pub fn play_period(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
+    }
+}
+
+pub struct ArrayOfMutableBet {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfMutableBet {
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_bet(&self, index: i32) -> MutableBet {
+        MutableBet { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFairRouletteState {
+    pub(crate) id: i32,
+}
+
+impl MutableFairRouletteState {
+    pub fn bets(&self) -> ArrayOfMutableBet {
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_BETS), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfMutableBet { obj_id: arr_id }
+    }
+
+    pub fn last_winning_number(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_LAST_WINNING_NUMBER))
+    }
+
+    pub fn locked_bets(&self) -> ArrayOfMutableBet {
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_LOCKED_BETS), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfMutableBet { obj_id: arr_id }
+    }
+
+    pub fn play_period(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
     }
 }

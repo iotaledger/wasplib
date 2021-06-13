@@ -9,26 +9,6 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableTestCoreState struct {
-	id int32
-}
-
-func (s MutableTestCoreState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
-}
-
-func (s MutableTestCoreState) HnameEP() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxStateHnameEP])
-}
-
-func (s MutableTestCoreState) MintedColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.id, idxMap[IdxStateMintedColor])
-}
-
-func (s MutableTestCoreState) MintedSupply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateMintedSupply])
-}
-
 type ImmutableTestCoreState struct {
 	id int32
 }
@@ -47,4 +27,24 @@ func (s ImmutableTestCoreState) MintedColor() wasmlib.ScImmutableColor {
 
 func (s ImmutableTestCoreState) MintedSupply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateMintedSupply])
+}
+
+type MutableTestCoreState struct {
+	id int32
+}
+
+func (s MutableTestCoreState) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
+}
+
+func (s MutableTestCoreState) HnameEP() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxStateHnameEP])
+}
+
+func (s MutableTestCoreState) MintedColor() wasmlib.ScMutableColor {
+	return wasmlib.NewScMutableColor(s.id, idxMap[IdxStateMintedColor])
+}
+
+func (s MutableTestCoreState) MintedSupply() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateMintedSupply])
 }

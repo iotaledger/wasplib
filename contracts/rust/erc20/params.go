@@ -9,18 +9,6 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncApproveParams struct {
-	id int32
-}
-
-func (s MutableFuncApproveParams) Amount() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
-}
-
-func (s MutableFuncApproveParams) Delegation() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
-}
-
 type ImmutableFuncApproveParams struct {
 	id int32
 }
@@ -33,16 +21,20 @@ func (s ImmutableFuncApproveParams) Delegation() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type MutableFuncInitParams struct {
+type MutableFuncApproveParams struct {
 	id int32
 }
 
-func (s MutableFuncInitParams) Creator() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamCreator])
+func NewMutableFuncApproveParams() MutableFuncApproveParams {
+	return MutableFuncApproveParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncInitParams) Supply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamSupply])
+func (s MutableFuncApproveParams) Amount() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
+}
+
+func (s MutableFuncApproveParams) Delegation() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
 type ImmutableFuncInitParams struct {
@@ -57,16 +49,20 @@ func (s ImmutableFuncInitParams) Supply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamSupply])
 }
 
-type MutableFuncTransferParams struct {
+type MutableFuncInitParams struct {
 	id int32
 }
 
-func (s MutableFuncTransferParams) Account() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
+func NewMutableFuncInitParams() MutableFuncInitParams {
+	return MutableFuncInitParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncTransferParams) Amount() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
+func (s MutableFuncInitParams) Creator() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamCreator])
+}
+
+func (s MutableFuncInitParams) Supply() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamSupply])
 }
 
 type ImmutableFuncTransferParams struct {
@@ -81,20 +77,20 @@ func (s ImmutableFuncTransferParams) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-type MutableFuncTransferFromParams struct {
+type MutableFuncTransferParams struct {
 	id int32
 }
 
-func (s MutableFuncTransferFromParams) Account() wasmlib.ScMutableAgentId {
+func NewMutableFuncTransferParams() MutableFuncTransferParams {
+	return MutableFuncTransferParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncTransferParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s MutableFuncTransferFromParams) Amount() wasmlib.ScMutableInt64 {
+func (s MutableFuncTransferParams) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
-}
-
-func (s MutableFuncTransferFromParams) Recipient() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamRecipient])
 }
 
 type ImmutableFuncTransferFromParams struct {
@@ -113,16 +109,24 @@ func (s ImmutableFuncTransferFromParams) Recipient() wasmlib.ScImmutableAgentId 
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamRecipient])
 }
 
-type MutableViewAllowanceParams struct {
+type MutableFuncTransferFromParams struct {
 	id int32
 }
 
-func (s MutableViewAllowanceParams) Account() wasmlib.ScMutableAgentId {
+func NewMutableFuncTransferFromParams() MutableFuncTransferFromParams {
+	return MutableFuncTransferFromParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncTransferFromParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s MutableViewAllowanceParams) Delegation() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
+func (s MutableFuncTransferFromParams) Amount() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
+}
+
+func (s MutableFuncTransferFromParams) Recipient() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamRecipient])
 }
 
 type ImmutableViewAllowanceParams struct {
@@ -137,12 +141,20 @@ func (s ImmutableViewAllowanceParams) Delegation() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type MutableViewBalanceOfParams struct {
+type MutableViewAllowanceParams struct {
 	id int32
 }
 
-func (s MutableViewBalanceOfParams) Account() wasmlib.ScMutableAgentId {
+func NewMutableViewAllowanceParams() MutableViewAllowanceParams {
+	return MutableViewAllowanceParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewAllowanceParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
+}
+
+func (s MutableViewAllowanceParams) Delegation() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
 type ImmutableViewBalanceOfParams struct {
@@ -153,10 +165,14 @@ func (s ImmutableViewBalanceOfParams) Account() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-type MutableViewTotalSupplyParams struct {
+type MutableViewBalanceOfParams struct {
 	id int32
 }
 
-type ImmutableViewTotalSupplyParams struct {
-	id int32
+func NewMutableViewBalanceOfParams() MutableViewBalanceOfParams {
+	return MutableViewBalanceOfParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewBalanceOfParams) Account() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }

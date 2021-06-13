@@ -10,20 +10,20 @@ package donatewithfeedback
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamAmount = 0
-	IdxParamFeedback = 1
-	IdxParamNr = 2
-	IdxResultAmount = 3
-	IdxResultCount = 4
-	IdxResultDonator = 5
-	IdxResultError = 6
-	IdxResultFeedback = 7
-	IdxResultMaxDonation = 8
-	IdxResultTimestamp = 9
+	IdxParamAmount         = 0
+	IdxParamFeedback       = 1
+	IdxParamNr             = 2
+	IdxResultAmount        = 3
+	IdxResultCount         = 4
+	IdxResultDonator       = 5
+	IdxResultError         = 6
+	IdxResultFeedback      = 7
+	IdxResultMaxDonation   = 8
+	IdxResultTimestamp     = 9
 	IdxResultTotalDonation = 10
-	IdxStateLog = 11
-	IdxStateMaxDonation = 12
-	IdxStateTotalDonation = 13
+	IdxStateLog            = 11
+	IdxStateMaxDonation    = 12
+	IdxStateTotalDonation  = 13
 )
 
 var keyMap = [14]wasmlib.Key{

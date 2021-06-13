@@ -96,6 +96,10 @@ func (s *Schema) GenerateRust() error {
 	if err != nil {
 		return err
 	}
+	err = s.generateRustContract()
+	if err != nil {
+		return err
+	}
 	err = s.generateRustFuncs()
 	if err != nil {
 		return err
@@ -186,9 +190,133 @@ func (s *Schema) generateRustConstsFields(file *os.File, fields []*Field, prefix
 		fmt.Fprintln(file)
 		for _, field := range fields {
 			name := prefix + upper(snake(field.Name))
-			fmt.Fprintf(file, "pub const %s: &str = \"%s\";\n", name, field.Alias)
+			value := "\"" + field.Alias + "\""
+			fmt.Fprintf(file, "pub const %s: &str = %s;\n", name, value)
 		}
 	}
+}
+
+func (s *Schema) generateRustContract() error {
+	file, err := os.Create("contract.rs")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// write file header
+	fmt.Fprintln(file, copyright(true))
+	fmt.Fprintln(file, allowDeadCode)
+	fmt.Fprintln(file, useWasmLib)
+	fmt.Fprint(file, useConsts)
+	fmt.Fprint(file, useParams)
+	fmt.Fprint(file, useResults)
+
+	typeName := s.FullName + "Func"
+	fmt.Fprintf(file, "\npub struct %s {\n", typeName)
+	fmt.Fprintf(file, "    sc: ScContractFunc,\n")
+	fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\nimpl %s {", typeName)
+
+	fmt.Fprintf(file, "\n    pub fn new(ctx: &ScFuncContext) -> %s {\n", typeName)
+	fmt.Fprintf(file, "        %s { sc: ScContractFunc::new(ctx, HSC_NAME) }\n", typeName)
+	fmt.Fprintf(file, "    }\n")
+
+	fmt.Fprintf(file, "\n    pub fn delay(&mut self, seconds: i64) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "        self.sc.delay(seconds);\n")
+	fmt.Fprintf(file, "        self\n")
+	fmt.Fprintf(file, "    }\n")
+
+	fmt.Fprintf(file, "\n    pub fn of_contract(&mut self, contract: ScHname) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "        self.sc.of_contract(contract);\n")
+	fmt.Fprintf(file, "        self\n")
+	fmt.Fprintf(file, "    }\n")
+
+	fmt.Fprintf(file, "\n    pub fn post(&mut self) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "        self.sc.post();\n")
+	fmt.Fprintf(file, "        self\n")
+	fmt.Fprintf(file, "    }\n")
+
+	fmt.Fprintf(file, "\n    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "        self.sc.post_to_chain(chain_id);\n")
+	fmt.Fprintf(file, "        self\n")
+	fmt.Fprintf(file, "    }\n")
+
+	for _, funcDef := range s.Funcs {
+		funcName := capitalize(funcDef.FullName)
+		shortName := snake(funcName[4:])
+		params := ""
+		params2 := "0"
+		if len(funcDef.Params) != 0 {
+			params = ", params: Mutable" + funcName + "Params"
+			params2 = "params.id"
+		}
+		results := ""
+		if len(funcDef.Results) != 0 {
+			results = "-> Immutable" + funcName + "Results "
+		}
+
+		if strings.HasPrefix(funcName, "Func") {
+			fmt.Fprintf(file, "\n    pub fn %s(&mut self%s, transfer: ScTransfers) %s{\n", shortName, params, results)
+			fmt.Fprintf(file, "        self.sc.run(H%s, %s, Some(transfer));\n", upper(snake(funcName)), params2)
+			if len(funcDef.Results) != 0 {
+				fmt.Fprintf(file, "        %s{ id: self.sc.result_map_id() }\n", results[3:])
+			}
+			fmt.Fprintf(file, "    }\n")
+			continue
+		}
+
+		fmt.Fprintf(file, "\n    pub fn %s(&mut self%s) %s{\n", shortName, params, results)
+		fmt.Fprintf(file, "        self.sc.run(H%s, %s, None);\n", upper(snake(funcName)), params2)
+		if len(funcDef.Results) != 0 {
+			fmt.Fprintf(file, "        %s{ id: self.sc.result_map_id() }\n", results[3:])
+		}
+		fmt.Fprintf(file, "    }\n")
+	}
+	fmt.Fprintf(file, "}\n")
+
+	typeName = s.FullName + "View"
+	fmt.Fprintf(file, "\npub struct %s {\n", typeName)
+	fmt.Fprintf(file, "    sc: ScContractView,\n")
+	fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\nimpl %s {", typeName)
+
+	fmt.Fprintf(file, "\n    pub fn new(ctx: &ScViewContext) -> %s {\n", typeName)
+	fmt.Fprintf(file, "        %s { sc: ScContractView::new(ctx, HSC_NAME) }\n", typeName)
+	fmt.Fprintf(file, "    }\n")
+
+	fmt.Fprintf(file, "\n    pub fn of_contract(&mut self, contract: ScHname) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "        self.sc.of_contract(contract);\n")
+	fmt.Fprintf(file, "        self\n")
+	fmt.Fprintf(file, "    }\n")
+
+	for _, funcDef := range s.Funcs {
+		funcName := capitalize(funcDef.FullName)
+		shortName := snake(funcName[4:])
+		if strings.HasPrefix(funcName, "Func") {
+			continue
+		}
+
+		params := ""
+		params2 := "0"
+		if len(funcDef.Params) != 0 {
+			params = ", params: Mutable" + funcName + "Params"
+			params2 = "params.id"
+		}
+		results := ""
+		if len(funcDef.Results) != 0 {
+			results = "-> Immutable" + funcName + "Results "
+		}
+
+		fmt.Fprintf(file, "\n    pub fn %s(&mut self%s) %s{\n", shortName, params, results)
+		fmt.Fprintf(file, "        self.sc.run(H%s, %s);\n", upper(snake(funcName)), params2)
+		if len(funcDef.Results) != 0 {
+			fmt.Fprintf(file, "        %s{ id: self.sc.result_map_id() }\n", results[3:])
+		}
+		fmt.Fprintf(file, "    }\n")
+	}
+	fmt.Fprintf(file, "}\n")
+
+	return nil
 }
 
 func (s *Schema) generateRustFuncs() error {
@@ -341,6 +469,7 @@ func (s *Schema) generateRustLib() error {
 	fmt.Fprintln(file, useState)
 
 	fmt.Fprintf(file, "mod consts;\n")
+	fmt.Fprintf(file, "mod contract;\n")
 	fmt.Fprintf(file, "mod keys;\n")
 	fmt.Fprintf(file, "mod params;\n")
 	fmt.Fprintf(file, "mod results;\n")
@@ -516,8 +645,8 @@ func (s *Schema) generateRustState() error {
 		fmt.Fprint(file, useTypes)
 	}
 
-	s.generateRustStruct(file, s.StateVars, "Mutable", s.FullName, "State")
-	s.generateRustStruct(file, s.StateVars, "Immutable", s.FullName, "State")
+	s.generateRustStruct(file, s.StateVars, "Immutable", s.FullName, "State", false)
+	s.generateRustStruct(file, s.StateVars, "Mutable", s.FullName, "State", false)
 	return nil
 }
 
@@ -547,8 +676,8 @@ func (s *Schema) generateRustParams() error {
 
 	for _, f := range s.Funcs {
 		typeName := capitalize(f.FullName)
-		s.generateRustStruct(file, f.Params, "Mutable", typeName, "Params")
-		s.generateRustStruct(file, f.Params, "Immutable", typeName, "Params")
+		s.generateRustStruct(file, f.Params, "Immutable", typeName, "Params", false)
+		s.generateRustStruct(file, f.Params, "Mutable", typeName, "Params", true)
 	}
 	return nil
 }
@@ -579,31 +708,38 @@ func (s *Schema) generateRustResults() error {
 
 	for _, f := range s.Funcs {
 		typeName := capitalize(f.FullName)
-		s.generateRustStruct(file, f.Results, "Mutable", typeName, "Results")
-		s.generateRustStruct(file, f.Results, "Immutable", typeName, "Results")
+		s.generateRustStruct(file, f.Results, "Immutable", typeName, "Results", false)
+		s.generateRustStruct(file, f.Results, "Mutable", typeName, "Results", false)
 	}
 	return nil
 }
 
-func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
+func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string, new bool) {
 	typeName = mutability + typeName + kind
 	if strings.HasSuffix(kind, "s") {
 		kind = kind[0 : len(kind)-1]
 	}
-    kind = upper(kind) + "_"
+	kind = upper(kind) + "_"
 
 	// first generate necessary array and map types
 	for _, field := range fields {
 		s.generateRustProxy(file, field, mutability)
 	}
 
-	fmt.Fprintf(file, "\npub struct %s {\n", typeName)
+	fmt.Fprintf(file, "\n#[derive(Clone, Copy)]\n")
+	fmt.Fprintf(file, "pub struct %s {\n", typeName)
 	fmt.Fprintf(file, "    pub(crate) id: i32,\n")
 	fmt.Fprintf(file, "}\n")
 
-	if len(fields) != 0 {
+	if len(fields) != 0 || new {
 		fmt.Fprintf(file, "\nimpl %s {", typeName)
 		defer fmt.Fprintf(file, "}\n")
+	}
+
+	if new {
+		fmt.Fprintf(file, "\n    pub fn new() -> %s {\n", typeName)
+		fmt.Fprintf(file, "        %s { id: ScMutableMap::new().map_id() }\n", typeName)
+		fmt.Fprintf(file, "    }\n")
 	}
 
 	for _, field := range fields {

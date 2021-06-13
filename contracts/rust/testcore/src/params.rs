@@ -14,24 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncCallOnChainParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncCallOnChainParams {
-    pub fn hname_contract(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_CONTRACT))
-    }
-
-    pub fn hname_ep(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_EP))
-    }
-
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallOnChainParams {
     pub(crate) id: i32,
 }
@@ -50,32 +33,30 @@ impl ImmutableFuncCallOnChainParams {
     }
 }
 
-pub struct MutableFuncCheckContextFromFullEPParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallOnChainParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncCheckContextFromFullEPParams {
-    pub fn agent_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
+impl MutableFuncCallOnChainParams {
+    pub fn new() -> MutableFuncCallOnChainParams {
+        MutableFuncCallOnChainParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn caller(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CALLER))
+    pub fn hname_contract(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_CONTRACT))
     }
 
-    pub fn chain_id(&self) -> ScMutableChainId {
-        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    pub fn hname_ep(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_EP))
     }
 
-    pub fn chain_owner_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
-    }
-
-    pub fn contract_creator(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCheckContextFromFullEPParams {
     pub(crate) id: i32,
 }
@@ -102,72 +83,102 @@ impl ImmutableFuncCheckContextFromFullEPParams {
     }
 }
 
-pub struct MutableFuncDoNothingParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCheckContextFromFullEPParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncCheckContextFromFullEPParams {
+    pub fn new() -> MutableFuncCheckContextFromFullEPParams {
+        MutableFuncCheckContextFromFullEPParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn agent_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
+    }
+
+    pub fn caller(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CALLER))
+    }
+
+    pub fn chain_id(&self) -> ScMutableChainId {
+        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+
+    pub fn chain_owner_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
+    }
+
+    pub fn contract_creator(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncDoNothingParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncGetMintedSupplyParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncDoNothingParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncDoNothingParams {
+    pub fn new() -> MutableFuncDoNothingParams {
+        MutableFuncDoNothingParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncGetMintedSupplyParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncIncCounterParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncGetMintedSupplyParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncGetMintedSupplyParams {
+    pub fn new() -> MutableFuncGetMintedSupplyParams {
+        MutableFuncGetMintedSupplyParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncIncCounterParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncInitParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncIncCounterParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncIncCounterParams {
+    pub fn new() -> MutableFuncIncCounterParams {
+        MutableFuncIncCounterParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncPassTypesFullParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncPassTypesFullParams {
-    pub fn hash(&self) -> ScMutableHash {
-        ScMutableHash::new(self.id, idx_map(IDX_PARAM_HASH))
-    }
-
-    pub fn hname(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
-    }
-
-    pub fn hname_zero(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_ZERO))
-    }
-
-    pub fn int64(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
-    }
-
-    pub fn int64_zero(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64_ZERO))
-    }
-
-    pub fn string(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
-    }
-
-    pub fn string_zero(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING_ZERO))
+impl MutableFuncInitParams {
+    pub fn new() -> MutableFuncInitParams {
+        MutableFuncInitParams { id: ScMutableMap::new().map_id() }
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPassTypesFullParams {
     pub(crate) id: i32,
 }
@@ -202,267 +213,16 @@ impl ImmutableFuncPassTypesFullParams {
     }
 }
 
-pub struct MutableFuncRunRecursionParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPassTypesFullParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRunRecursionParams {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-}
-
-pub struct ImmutableFuncRunRecursionParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncRunRecursionParams {
-    pub fn int_value(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-}
-
-pub struct MutableFuncSendToAddressParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncSendToAddressParams {
-    pub fn address(&self) -> ScMutableAddress {
-        ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
-    }
-}
-
-pub struct ImmutableFuncSendToAddressParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncSendToAddressParams {
-    pub fn address(&self) -> ScImmutableAddress {
-        ScImmutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
-    }
-}
-
-pub struct MutableFuncSetIntParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncSetIntParams {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+impl MutableFuncPassTypesFullParams {
+    pub fn new() -> MutableFuncPassTypesFullParams {
+        MutableFuncPassTypesFullParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn name(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
-    }
-}
-
-pub struct ImmutableFuncSetIntParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncSetIntParams {
-    pub fn int_value(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-
-    pub fn name(&self) -> ScImmutableString {
-        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
-    }
-}
-
-pub struct MutableFuncTestCallPanicFullEPParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestCallPanicFullEPParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncTestCallPanicViewEPFromFullParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestCallPanicViewEPFromFullParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncTestChainOwnerIDFullParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestChainOwnerIDFullParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncTestEventLogDeployParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestEventLogDeployParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncTestEventLogEventDataParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestEventLogEventDataParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncTestEventLogGenericDataParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncTestEventLogGenericDataParams {
-    pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
-    }
-}
-
-pub struct ImmutableFuncTestEventLogGenericDataParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncTestEventLogGenericDataParams {
-    pub fn counter(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
-    }
-}
-
-pub struct MutableFuncTestPanicFullEPParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableFuncTestPanicFullEPParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncWithdrawToChainParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncWithdrawToChainParams {
-    pub fn chain_id(&self) -> ScMutableChainId {
-        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
-    }
-}
-
-pub struct ImmutableFuncWithdrawToChainParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncWithdrawToChainParams {
-    pub fn chain_id(&self) -> ScImmutableChainId {
-        ScImmutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
-    }
-}
-
-pub struct MutableViewCheckContextFromViewEPParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewCheckContextFromViewEPParams {
-    pub fn agent_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
-    }
-
-    pub fn chain_id(&self) -> ScMutableChainId {
-        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
-    }
-
-    pub fn chain_owner_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
-    }
-
-    pub fn contract_creator(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
-    }
-}
-
-pub struct ImmutableViewCheckContextFromViewEPParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewCheckContextFromViewEPParams {
-    pub fn agent_id(&self) -> ScImmutableAgentId {
-        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
-    }
-
-    pub fn chain_id(&self) -> ScImmutableChainId {
-        ScImmutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
-    }
-
-    pub fn chain_owner_id(&self) -> ScImmutableAgentId {
-        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
-    }
-
-    pub fn contract_creator(&self) -> ScImmutableAgentId {
-        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
-    }
-}
-
-pub struct MutableViewFibonacciParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewFibonacciParams {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-}
-
-pub struct ImmutableViewFibonacciParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewFibonacciParams {
-    pub fn int_value(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
-    }
-}
-
-pub struct MutableViewGetCounterParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableViewGetCounterParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableViewGetIntParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewGetIntParams {
-    pub fn name(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
-    }
-}
-
-pub struct ImmutableViewGetIntParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetIntParams {
-    pub fn name(&self) -> ScImmutableString {
-        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
-    }
-}
-
-pub struct MutableViewJustViewParams {
-    pub(crate) id: i32,
-}
-
-pub struct ImmutableViewJustViewParams {
-    pub(crate) id: i32,
-}
-
-pub struct MutableViewPassTypesViewParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewPassTypesViewParams {
     pub fn hash(&self) -> ScMutableHash {
         ScMutableHash::new(self.id, idx_map(IDX_PARAM_HASH))
     }
@@ -492,6 +252,375 @@ impl MutableViewPassTypesViewParams {
     }
 }
 
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncRunRecursionParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableFuncRunRecursionParams {
+    pub fn int_value(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncRunRecursionParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncRunRecursionParams {
+    pub fn new() -> MutableFuncRunRecursionParams {
+        MutableFuncRunRecursionParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncSendToAddressParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableFuncSendToAddressParams {
+    pub fn address(&self) -> ScImmutableAddress {
+        ScImmutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncSendToAddressParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncSendToAddressParams {
+    pub fn new() -> MutableFuncSendToAddressParams {
+        MutableFuncSendToAddressParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn address(&self) -> ScMutableAddress {
+        ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncSetIntParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableFuncSetIntParams {
+    pub fn int_value(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncSetIntParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncSetIntParams {
+    pub fn new() -> MutableFuncSetIntParams {
+        MutableFuncSetIntParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestCallPanicFullEPParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestCallPanicFullEPParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestCallPanicFullEPParams {
+    pub fn new() -> MutableFuncTestCallPanicFullEPParams {
+        MutableFuncTestCallPanicFullEPParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestCallPanicViewEPFromFullParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestCallPanicViewEPFromFullParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestCallPanicViewEPFromFullParams {
+    pub fn new() -> MutableFuncTestCallPanicViewEPFromFullParams {
+        MutableFuncTestCallPanicViewEPFromFullParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestChainOwnerIDFullParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestChainOwnerIDFullParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestChainOwnerIDFullParams {
+    pub fn new() -> MutableFuncTestChainOwnerIDFullParams {
+        MutableFuncTestChainOwnerIDFullParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestEventLogDeployParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogDeployParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestEventLogDeployParams {
+    pub fn new() -> MutableFuncTestEventLogDeployParams {
+        MutableFuncTestEventLogDeployParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestEventLogEventDataParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogEventDataParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestEventLogEventDataParams {
+    pub fn new() -> MutableFuncTestEventLogEventDataParams {
+        MutableFuncTestEventLogEventDataParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestEventLogGenericDataParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableFuncTestEventLogGenericDataParams {
+    pub fn counter(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogGenericDataParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestEventLogGenericDataParams {
+    pub fn new() -> MutableFuncTestEventLogGenericDataParams {
+        MutableFuncTestEventLogGenericDataParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn counter(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncTestPanicFullEPParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestPanicFullEPParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncTestPanicFullEPParams {
+    pub fn new() -> MutableFuncTestPanicFullEPParams {
+        MutableFuncTestPanicFullEPParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncWithdrawToChainParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableFuncWithdrawToChainParams {
+    pub fn chain_id(&self) -> ScImmutableChainId {
+        ScImmutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncWithdrawToChainParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncWithdrawToChainParams {
+    pub fn new() -> MutableFuncWithdrawToChainParams {
+        MutableFuncWithdrawToChainParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn chain_id(&self) -> ScMutableChainId {
+        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewCheckContextFromViewEPParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewCheckContextFromViewEPParams {
+    pub fn agent_id(&self) -> ScImmutableAgentId {
+        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
+    }
+
+    pub fn chain_id(&self) -> ScImmutableChainId {
+        ScImmutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+
+    pub fn chain_owner_id(&self) -> ScImmutableAgentId {
+        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
+    }
+
+    pub fn contract_creator(&self) -> ScImmutableAgentId {
+        ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewCheckContextFromViewEPParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewCheckContextFromViewEPParams {
+    pub fn new() -> MutableViewCheckContextFromViewEPParams {
+        MutableViewCheckContextFromViewEPParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn agent_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
+    }
+
+    pub fn chain_id(&self) -> ScMutableChainId {
+        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+
+    pub fn chain_owner_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CHAIN_OWNER_ID))
+    }
+
+    pub fn contract_creator(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CONTRACT_CREATOR))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewFibonacciParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewFibonacciParams {
+    pub fn int_value(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewFibonacciParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewFibonacciParams {
+    pub fn new() -> MutableViewFibonacciParams {
+        MutableViewFibonacciParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewGetCounterParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetCounterParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetCounterParams {
+    pub fn new() -> MutableViewGetCounterParams {
+        MutableViewGetCounterParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewGetIntParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewGetIntParams {
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetIntParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetIntParams {
+    pub fn new() -> MutableViewGetIntParams {
+        MutableViewGetIntParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewJustViewParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewJustViewParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewJustViewParams {
+    pub fn new() -> MutableViewJustViewParams {
+        MutableViewJustViewParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewPassTypesViewParams {
     pub(crate) id: i32,
 }
@@ -526,34 +655,105 @@ impl ImmutableViewPassTypesViewParams {
     }
 }
 
-pub struct MutableViewTestCallPanicViewEPFromViewParams {
+#[derive(Clone, Copy)]
+pub struct MutableViewPassTypesViewParams {
     pub(crate) id: i32,
 }
 
+impl MutableViewPassTypesViewParams {
+    pub fn new() -> MutableViewPassTypesViewParams {
+        MutableViewPassTypesViewParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn hash(&self) -> ScMutableHash {
+        ScMutableHash::new(self.id, idx_map(IDX_PARAM_HASH))
+    }
+
+    pub fn hname(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
+    }
+
+    pub fn hname_zero(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME_ZERO))
+    }
+
+    pub fn int64(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
+    }
+
+    pub fn int64_zero(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64_ZERO))
+    }
+
+    pub fn string(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
+    }
+
+    pub fn string_zero(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING_ZERO))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestCallPanicViewEPFromViewParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewTestChainOwnerIDViewParams {
+#[derive(Clone, Copy)]
+pub struct MutableViewTestCallPanicViewEPFromViewParams {
     pub(crate) id: i32,
 }
 
+impl MutableViewTestCallPanicViewEPFromViewParams {
+    pub fn new() -> MutableViewTestCallPanicViewEPFromViewParams {
+        MutableViewTestCallPanicViewEPFromViewParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestChainOwnerIDViewParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewTestPanicViewEPParams {
+#[derive(Clone, Copy)]
+pub struct MutableViewTestChainOwnerIDViewParams {
     pub(crate) id: i32,
 }
 
+impl MutableViewTestChainOwnerIDViewParams {
+    pub fn new() -> MutableViewTestChainOwnerIDViewParams {
+        MutableViewTestChainOwnerIDViewParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestPanicViewEPParams {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
+pub struct MutableViewTestPanicViewEPParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewTestPanicViewEPParams {
+    pub fn new() -> MutableViewTestPanicViewEPParams {
+        MutableViewTestPanicViewEPParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewTestSandboxCallParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
 pub struct MutableViewTestSandboxCallParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableViewTestSandboxCallParams {
-    pub(crate) id: i32,
+impl MutableViewTestSandboxCallParams {
+    pub fn new() -> MutableViewTestSandboxCallParams {
+        MutableViewTestSandboxCallParams { id: ScMutableMap::new().map_id() }
+    }
 }

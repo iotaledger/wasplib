@@ -6,35 +6,3 @@
 // Change the json schema instead
 
 package tokenregistry
-
-type MutableFuncMintSupplyResults struct {
-	id int32
-}
-
-type ImmutableFuncMintSupplyResults struct {
-	id int32
-}
-
-type MutableFuncTransferOwnershipResults struct {
-	id int32
-}
-
-type ImmutableFuncTransferOwnershipResults struct {
-	id int32
-}
-
-type MutableFuncUpdateMetadataResults struct {
-	id int32
-}
-
-type ImmutableFuncUpdateMetadataResults struct {
-	id int32
-}
-
-type MutableViewGetInfoResults struct {
-	id int32
-}
-
-type ImmutableViewGetInfoResults struct {
-	id int32
-}

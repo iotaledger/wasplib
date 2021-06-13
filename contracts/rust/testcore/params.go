@@ -9,22 +9,6 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncCallOnChainParams struct {
-	id int32
-}
-
-func (s MutableFuncCallOnChainParams) HnameContract() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameContract])
-}
-
-func (s MutableFuncCallOnChainParams) HnameEP() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameEP])
-}
-
-func (s MutableFuncCallOnChainParams) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
-}
-
 type ImmutableFuncCallOnChainParams struct {
 	id int32
 }
@@ -41,28 +25,24 @@ func (s ImmutableFuncCallOnChainParams) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
-type MutableFuncCheckContextFromFullEPParams struct {
+type MutableFuncCallOnChainParams struct {
 	id int32
 }
 
-func (s MutableFuncCheckContextFromFullEPParams) AgentId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
+func NewMutableFuncCallOnChainParams() MutableFuncCallOnChainParams {
+	return MutableFuncCallOnChainParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncCheckContextFromFullEPParams) Caller() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamCaller])
+func (s MutableFuncCallOnChainParams) HnameContract() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameContract])
 }
 
-func (s MutableFuncCheckContextFromFullEPParams) ChainId() wasmlib.ScMutableChainId {
-	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
+func (s MutableFuncCallOnChainParams) HnameEP() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameEP])
 }
 
-func (s MutableFuncCheckContextFromFullEPParams) ChainOwnerId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamChainOwnerId])
-}
-
-func (s MutableFuncCheckContextFromFullEPParams) ContractCreator() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamContractCreator])
+func (s MutableFuncCallOnChainParams) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
 type ImmutableFuncCheckContextFromFullEPParams struct {
@@ -89,68 +69,32 @@ func (s ImmutableFuncCheckContextFromFullEPParams) ContractCreator() wasmlib.ScI
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamContractCreator])
 }
 
-type MutableFuncDoNothingParams struct {
+type MutableFuncCheckContextFromFullEPParams struct {
 	id int32
 }
 
-type ImmutableFuncDoNothingParams struct {
-	id int32
+func NewMutableFuncCheckContextFromFullEPParams() MutableFuncCheckContextFromFullEPParams {
+	return MutableFuncCheckContextFromFullEPParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableFuncGetMintedSupplyParams struct {
-	id int32
+func (s MutableFuncCheckContextFromFullEPParams) AgentId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
 }
 
-type ImmutableFuncGetMintedSupplyParams struct {
-	id int32
+func (s MutableFuncCheckContextFromFullEPParams) Caller() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamCaller])
 }
 
-type MutableFuncIncCounterParams struct {
-	id int32
+func (s MutableFuncCheckContextFromFullEPParams) ChainId() wasmlib.ScMutableChainId {
+	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
 }
 
-type ImmutableFuncIncCounterParams struct {
-	id int32
+func (s MutableFuncCheckContextFromFullEPParams) ChainOwnerId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamChainOwnerId])
 }
 
-type MutableFuncInitParams struct {
-	id int32
-}
-
-type ImmutableFuncInitParams struct {
-	id int32
-}
-
-type MutableFuncPassTypesFullParams struct {
-	id int32
-}
-
-func (s MutableFuncPassTypesFullParams) Hash() wasmlib.ScMutableHash {
-	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
-}
-
-func (s MutableFuncPassTypesFullParams) Hname() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
-}
-
-func (s MutableFuncPassTypesFullParams) HnameZero() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameZero])
-}
-
-func (s MutableFuncPassTypesFullParams) Int64() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
-}
-
-func (s MutableFuncPassTypesFullParams) Int64Zero() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64Zero])
-}
-
-func (s MutableFuncPassTypesFullParams) String() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
-}
-
-func (s MutableFuncPassTypesFullParams) StringZero() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamStringZero])
+func (s MutableFuncCheckContextFromFullEPParams) ContractCreator() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamContractCreator])
 }
 
 type ImmutableFuncPassTypesFullParams struct {
@@ -185,12 +129,40 @@ func (s ImmutableFuncPassTypesFullParams) StringZero() wasmlib.ScImmutableString
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamStringZero])
 }
 
-type MutableFuncRunRecursionParams struct {
+type MutableFuncPassTypesFullParams struct {
 	id int32
 }
 
-func (s MutableFuncRunRecursionParams) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
+func NewMutableFuncPassTypesFullParams() MutableFuncPassTypesFullParams {
+	return MutableFuncPassTypesFullParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncPassTypesFullParams) Hash() wasmlib.ScMutableHash {
+	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
+}
+
+func (s MutableFuncPassTypesFullParams) Hname() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
+}
+
+func (s MutableFuncPassTypesFullParams) HnameZero() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameZero])
+}
+
+func (s MutableFuncPassTypesFullParams) Int64() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
+}
+
+func (s MutableFuncPassTypesFullParams) Int64Zero() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64Zero])
+}
+
+func (s MutableFuncPassTypesFullParams) String() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
+}
+
+func (s MutableFuncPassTypesFullParams) StringZero() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamStringZero])
 }
 
 type ImmutableFuncRunRecursionParams struct {
@@ -201,12 +173,16 @@ func (s ImmutableFuncRunRecursionParams) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
-type MutableFuncSendToAddressParams struct {
+type MutableFuncRunRecursionParams struct {
 	id int32
 }
 
-func (s MutableFuncSendToAddressParams) Address() wasmlib.ScMutableAddress {
-	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
+func NewMutableFuncRunRecursionParams() MutableFuncRunRecursionParams {
+	return MutableFuncRunRecursionParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncRunRecursionParams) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
 type ImmutableFuncSendToAddressParams struct {
@@ -217,16 +193,16 @@ func (s ImmutableFuncSendToAddressParams) Address() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, idxMap[IdxParamAddress])
 }
 
-type MutableFuncSetIntParams struct {
+type MutableFuncSendToAddressParams struct {
 	id int32
 }
 
-func (s MutableFuncSetIntParams) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
+func NewMutableFuncSendToAddressParams() MutableFuncSendToAddressParams {
+	return MutableFuncSendToAddressParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncSetIntParams) Name() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+func (s MutableFuncSendToAddressParams) Address() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
 }
 
 type ImmutableFuncSetIntParams struct {
@@ -241,52 +217,20 @@ func (s ImmutableFuncSetIntParams) Name() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
 }
 
-type MutableFuncTestCallPanicFullEPParams struct {
+type MutableFuncSetIntParams struct {
 	id int32
 }
 
-type ImmutableFuncTestCallPanicFullEPParams struct {
-	id int32
+func NewMutableFuncSetIntParams() MutableFuncSetIntParams {
+	return MutableFuncSetIntParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableFuncTestCallPanicViewEPFromFullParams struct {
-	id int32
+func (s MutableFuncSetIntParams) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
-type ImmutableFuncTestCallPanicViewEPFromFullParams struct {
-	id int32
-}
-
-type MutableFuncTestChainOwnerIDFullParams struct {
-	id int32
-}
-
-type ImmutableFuncTestChainOwnerIDFullParams struct {
-	id int32
-}
-
-type MutableFuncTestEventLogDeployParams struct {
-	id int32
-}
-
-type ImmutableFuncTestEventLogDeployParams struct {
-	id int32
-}
-
-type MutableFuncTestEventLogEventDataParams struct {
-	id int32
-}
-
-type ImmutableFuncTestEventLogEventDataParams struct {
-	id int32
-}
-
-type MutableFuncTestEventLogGenericDataParams struct {
-	id int32
-}
-
-func (s MutableFuncTestEventLogGenericDataParams) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamCounter])
+func (s MutableFuncSetIntParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
 }
 
 type ImmutableFuncTestEventLogGenericDataParams struct {
@@ -297,20 +241,16 @@ func (s ImmutableFuncTestEventLogGenericDataParams) Counter() wasmlib.ScImmutabl
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
-type MutableFuncTestPanicFullEPParams struct {
+type MutableFuncTestEventLogGenericDataParams struct {
 	id int32
 }
 
-type ImmutableFuncTestPanicFullEPParams struct {
-	id int32
+func NewMutableFuncTestEventLogGenericDataParams() MutableFuncTestEventLogGenericDataParams {
+	return MutableFuncTestEventLogGenericDataParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableFuncWithdrawToChainParams struct {
-	id int32
-}
-
-func (s MutableFuncWithdrawToChainParams) ChainId() wasmlib.ScMutableChainId {
-	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
+func (s MutableFuncTestEventLogGenericDataParams) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
 type ImmutableFuncWithdrawToChainParams struct {
@@ -321,24 +261,16 @@ func (s ImmutableFuncWithdrawToChainParams) ChainId() wasmlib.ScImmutableChainId
 	return wasmlib.NewScImmutableChainId(s.id, idxMap[IdxParamChainId])
 }
 
-type MutableViewCheckContextFromViewEPParams struct {
+type MutableFuncWithdrawToChainParams struct {
 	id int32
 }
 
-func (s MutableViewCheckContextFromViewEPParams) AgentId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
+func NewMutableFuncWithdrawToChainParams() MutableFuncWithdrawToChainParams {
+	return MutableFuncWithdrawToChainParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableViewCheckContextFromViewEPParams) ChainId() wasmlib.ScMutableChainId {
+func (s MutableFuncWithdrawToChainParams) ChainId() wasmlib.ScMutableChainId {
 	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
-}
-
-func (s MutableViewCheckContextFromViewEPParams) ChainOwnerId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamChainOwnerId])
-}
-
-func (s MutableViewCheckContextFromViewEPParams) ContractCreator() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamContractCreator])
 }
 
 type ImmutableViewCheckContextFromViewEPParams struct {
@@ -361,12 +293,28 @@ func (s ImmutableViewCheckContextFromViewEPParams) ContractCreator() wasmlib.ScI
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamContractCreator])
 }
 
-type MutableViewFibonacciParams struct {
+type MutableViewCheckContextFromViewEPParams struct {
 	id int32
 }
 
-func (s MutableViewFibonacciParams) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
+func NewMutableViewCheckContextFromViewEPParams() MutableViewCheckContextFromViewEPParams {
+	return MutableViewCheckContextFromViewEPParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewCheckContextFromViewEPParams) AgentId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
+}
+
+func (s MutableViewCheckContextFromViewEPParams) ChainId() wasmlib.ScMutableChainId {
+	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
+}
+
+func (s MutableViewCheckContextFromViewEPParams) ChainOwnerId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamChainOwnerId])
+}
+
+func (s MutableViewCheckContextFromViewEPParams) ContractCreator() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamContractCreator])
 }
 
 type ImmutableViewFibonacciParams struct {
@@ -377,20 +325,16 @@ func (s ImmutableViewFibonacciParams) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
-type MutableViewGetCounterParams struct {
+type MutableViewFibonacciParams struct {
 	id int32
 }
 
-type ImmutableViewGetCounterParams struct {
-	id int32
+func NewMutableViewFibonacciParams() MutableViewFibonacciParams {
+	return MutableViewFibonacciParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableViewGetIntParams struct {
-	id int32
-}
-
-func (s MutableViewGetIntParams) Name() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+func (s MutableViewFibonacciParams) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamIntValue])
 }
 
 type ImmutableViewGetIntParams struct {
@@ -401,44 +345,16 @@ func (s ImmutableViewGetIntParams) Name() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
 }
 
-type MutableViewJustViewParams struct {
+type MutableViewGetIntParams struct {
 	id int32
 }
 
-type ImmutableViewJustViewParams struct {
-	id int32
+func NewMutableViewGetIntParams() MutableViewGetIntParams {
+	return MutableViewGetIntParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableViewPassTypesViewParams struct {
-	id int32
-}
-
-func (s MutableViewPassTypesViewParams) Hash() wasmlib.ScMutableHash {
-	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
-}
-
-func (s MutableViewPassTypesViewParams) Hname() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
-}
-
-func (s MutableViewPassTypesViewParams) HnameZero() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameZero])
-}
-
-func (s MutableViewPassTypesViewParams) Int64() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
-}
-
-func (s MutableViewPassTypesViewParams) Int64Zero() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64Zero])
-}
-
-func (s MutableViewPassTypesViewParams) String() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
-}
-
-func (s MutableViewPassTypesViewParams) StringZero() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamStringZero])
+func (s MutableViewGetIntParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
 }
 
 type ImmutableViewPassTypesViewParams struct {
@@ -473,34 +389,38 @@ func (s ImmutableViewPassTypesViewParams) StringZero() wasmlib.ScImmutableString
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamStringZero])
 }
 
-type MutableViewTestCallPanicViewEPFromViewParams struct {
+type MutableViewPassTypesViewParams struct {
 	id int32
 }
 
-type ImmutableViewTestCallPanicViewEPFromViewParams struct {
-	id int32
+func NewMutableViewPassTypesViewParams() MutableViewPassTypesViewParams {
+	return MutableViewPassTypesViewParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableViewTestChainOwnerIDViewParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) Hash() wasmlib.ScMutableHash {
+	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
 }
 
-type ImmutableViewTestChainOwnerIDViewParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) Hname() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
 }
 
-type MutableViewTestPanicViewEPParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) HnameZero() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHnameZero])
 }
 
-type ImmutableViewTestPanicViewEPParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) Int64() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
 }
 
-type MutableViewTestSandboxCallParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) Int64Zero() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64Zero])
 }
 
-type ImmutableViewTestSandboxCallParams struct {
-	id int32
+func (s MutableViewPassTypesViewParams) String() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
+}
+
+func (s MutableViewPassTypesViewParams) StringZero() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamStringZero])
 }

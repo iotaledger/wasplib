@@ -9,14 +9,6 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncDonateParams struct {
-	id int32
-}
-
-func (s MutableFuncDonateParams) Feedback() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamFeedback])
-}
-
 type ImmutableFuncDonateParams struct {
 	id int32
 }
@@ -25,12 +17,16 @@ func (s ImmutableFuncDonateParams) Feedback() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamFeedback])
 }
 
-type MutableFuncWithdrawParams struct {
+type MutableFuncDonateParams struct {
 	id int32
 }
 
-func (s MutableFuncWithdrawParams) Amount() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
+func NewMutableFuncDonateParams() MutableFuncDonateParams {
+	return MutableFuncDonateParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncDonateParams) Feedback() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamFeedback])
 }
 
 type ImmutableFuncWithdrawParams struct {
@@ -41,12 +37,16 @@ func (s ImmutableFuncWithdrawParams) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-type MutableViewDonationParams struct {
+type MutableFuncWithdrawParams struct {
 	id int32
 }
 
-func (s MutableViewDonationParams) Nr() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNr])
+func NewMutableFuncWithdrawParams() MutableFuncWithdrawParams {
+	return MutableFuncWithdrawParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncWithdrawParams) Amount() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
 type ImmutableViewDonationParams struct {
@@ -57,10 +57,14 @@ func (s ImmutableViewDonationParams) Nr() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamNr])
 }
 
-type MutableViewDonationInfoParams struct {
+type MutableViewDonationParams struct {
 	id int32
 }
 
-type ImmutableViewDonationInfoParams struct {
-	id int32
+func NewMutableViewDonationParams() MutableViewDonationParams {
+	return MutableViewDonationParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewDonationParams) Nr() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNr])
 }

@@ -6,11 +6,3 @@
 // Change the json schema instead
 
 package testwasmlib
-
-type MutableFuncParamTypesResults struct {
-	id int32
-}
-
-type ImmutableFuncParamTypesResults struct {
-	id int32
-}

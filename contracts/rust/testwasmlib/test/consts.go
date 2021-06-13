@@ -10,20 +10,20 @@ package test
 import "github.com/iotaledger/wasp/packages/coretypes"
 
 const (
-	ScName = "testwasmlib"
+	ScName        = "testwasmlib"
 	ScDescription = "Exercise all aspects of WasmLib"
-	HScName = coretypes.Hname(0x89703a45)
+	HScName       = coretypes.Hname(0x89703a45)
 
-	ParamAddress = "address"
-	ParamAgentId = "agentId"
-	ParamBytes = "bytes"
-	ParamChainId = "chainId"
-	ParamColor = "color"
-	ParamHash = "hash"
-	ParamHname = "hname"
-	ParamInt64 = "int64"
+	ParamAddress   = "address"
+	ParamAgentId   = "agentId"
+	ParamBytes     = "bytes"
+	ParamChainId   = "chainId"
+	ParamColor     = "color"
+	ParamHash      = "hash"
+	ParamHname     = "hname"
+	ParamInt64     = "int64"
 	ParamRequestId = "requestId"
-	ParamString = "string"
+	ParamString    = "string"
 
 	FuncParamTypes = "paramTypes"
 

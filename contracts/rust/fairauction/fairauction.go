@@ -175,10 +175,10 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
 	}
 	currentAuction.SetValue(auction)
 
-	finalizeParams := wasmlib.NewScMutableMap()
-	finalizeParams.GetColor(ParamColor).SetValue(auction.Color)
+	params := NewMutableFuncFinalizeAuctionParams()
+	params.Color().SetValue(auction.Color)
 	transfer := wasmlib.NewScTransferIotas(1)
-	ctx.PostSelf(HFuncFinalizeAuction, finalizeParams, transfer, duration*60)
+	NewFairAuctionFunc(ctx).Post().Delay(duration*60).FinalizeAuction(params, transfer)
 }
 
 func viewGetInfo(ctx wasmlib.ScViewContext, f *ViewGetInfoContext) {

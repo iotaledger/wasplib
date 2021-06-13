@@ -10,14 +10,14 @@ package dividend
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamAddress = 0
-	IdxParamFactor = 1
-	IdxParamOwner = 2
-	IdxResultFactor = 3
-	IdxStateFactor = 4
-	IdxStateMemberList = 5
-	IdxStateMembers = 6
-	IdxStateOwner = 7
+	IdxParamAddress     = 0
+	IdxParamFactor      = 1
+	IdxParamOwner       = 2
+	IdxResultFactor     = 3
+	IdxStateFactor      = 4
+	IdxStateMemberList  = 5
+	IdxStateMembers     = 6
+	IdxStateOwner       = 7
 	IdxStateTotalFactor = 8
 )
 

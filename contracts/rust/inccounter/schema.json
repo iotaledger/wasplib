@@ -18,6 +18,14 @@
     },
     "callIncrementRecurse5x": {
     },
+    "endlessLoop": {
+    },
+    "localStateInternalCall": {
+    },
+    "localStatePost": {
+    },
+    "localStateSandboxCall": {
+    },
     "postIncrement": {
     },
     "repeatMany": {
@@ -25,17 +33,12 @@
         "numRepeats": "?Int64 // number of times to recursively call myself"
       }
     },
-    "whenMustIncrement": {
-    },
-    "localStateInternalCall": {
-    },
-    "localStateSandboxCall": {
-    },
-    "localStatePost": {
-    },
-    "loop": {
-    },
     "testLeb128": {
+    },
+    "whenMustIncrement": {
+      "params": {
+        "dummy": "?Int64 // dummy param to prevent 'duplicate outputs not allowed'"
+      }
     }
   },
   "views": {

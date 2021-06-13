@@ -9,6 +9,52 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type ArrayOfImmutableAddress struct {
+	objId int32
+}
+
+func (a ArrayOfImmutableAddress) Length() int32 {
+	return wasmlib.GetLength(a.objId)
+}
+
+func (a ArrayOfImmutableAddress) GetAddress(index int32) wasmlib.ScImmutableAddress {
+	return wasmlib.NewScImmutableAddress(a.objId, wasmlib.Key32(index))
+}
+
+type MapAddressToImmutableInt64 struct {
+	objId int32
+}
+
+func (m MapAddressToImmutableInt64) GetInt64(key wasmlib.ScAddress) wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(m.objId, key.KeyId())
+}
+
+type ImmutableDividendState struct {
+	id int32
+}
+
+func (s ImmutableDividendState) Factor() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateFactor])
+}
+
+func (s ImmutableDividendState) MemberList() ArrayOfImmutableAddress {
+	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
+	return ArrayOfImmutableAddress{objId: arrId}
+}
+
+func (s ImmutableDividendState) Members() MapAddressToImmutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMembers], wasmlib.TYPE_MAP)
+	return MapAddressToImmutableInt64{objId: mapId}
+}
+
+func (s ImmutableDividendState) Owner() wasmlib.ScImmutableAgentId {
+	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxStateOwner])
+}
+
+func (s ImmutableDividendState) TotalFactor() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateTotalFactor])
+}
+
 type ArrayOfMutableAddress struct {
 	objId int32
 }
@@ -61,50 +107,4 @@ func (s MutableDividendState) Owner() wasmlib.ScMutableAgentId {
 
 func (s MutableDividendState) TotalFactor() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateTotalFactor])
-}
-
-type ArrayOfImmutableAddress struct {
-	objId int32
-}
-
-func (a ArrayOfImmutableAddress) Length() int32 {
-	return wasmlib.GetLength(a.objId)
-}
-
-func (a ArrayOfImmutableAddress) GetAddress(index int32) wasmlib.ScImmutableAddress {
-	return wasmlib.NewScImmutableAddress(a.objId, wasmlib.Key32(index))
-}
-
-type MapAddressToImmutableInt64 struct {
-	objId int32
-}
-
-func (m MapAddressToImmutableInt64) GetInt64(key wasmlib.ScAddress) wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(m.objId, key.KeyId())
-}
-
-type ImmutableDividendState struct {
-	id int32
-}
-
-func (s ImmutableDividendState) Factor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateFactor])
-}
-
-func (s ImmutableDividendState) MemberList() ArrayOfImmutableAddress {
-	arrId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
-	return ArrayOfImmutableAddress{objId: arrId}
-}
-
-func (s ImmutableDividendState) Members() MapAddressToImmutableInt64 {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateMembers], wasmlib.TYPE_MAP)
-	return MapAddressToImmutableInt64{objId: mapId}
-}
-
-func (s ImmutableDividendState) Owner() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxStateOwner])
-}
-
-func (s ImmutableDividendState) TotalFactor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateTotalFactor])
 }

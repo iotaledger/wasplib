@@ -10,27 +10,27 @@ package fairauction
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamColor = 0
-	IdxParamDescription = 1
-	IdxParamDuration = 2
-	IdxParamMinimumBid = 3
-	IdxParamOwnerMargin = 4
-	IdxResultBidders = 5
-	IdxResultColor = 6
-	IdxResultCreator = 7
-	IdxResultDeposit = 8
-	IdxResultDescription = 9
-	IdxResultDuration = 10
-	IdxResultHighestBid = 11
+	IdxParamColor          = 0
+	IdxParamDescription    = 1
+	IdxParamDuration       = 2
+	IdxParamMinimumBid     = 3
+	IdxParamOwnerMargin    = 4
+	IdxResultBidders       = 5
+	IdxResultColor         = 6
+	IdxResultCreator       = 7
+	IdxResultDeposit       = 8
+	IdxResultDescription   = 9
+	IdxResultDuration      = 10
+	IdxResultHighestBid    = 11
 	IdxResultHighestBidder = 12
-	IdxResultMinimumBid = 13
-	IdxResultNumTokens = 14
-	IdxResultOwnerMargin = 15
-	IdxResultWhenStarted = 16
-	IdxStateAuctions = 17
-	IdxStateBidderList = 18
-	IdxStateBids = 19
-	IdxStateOwnerMargin = 20
+	IdxResultMinimumBid    = 13
+	IdxResultNumTokens     = 14
+	IdxResultOwnerMargin   = 15
+	IdxResultWhenStarted   = 16
+	IdxStateAuctions       = 17
+	IdxStateBidderList     = 18
+	IdxStateBids           = 19
+	IdxStateOwnerMargin    = 20
 )
 
 var keyMap = [21]wasmlib.Key{

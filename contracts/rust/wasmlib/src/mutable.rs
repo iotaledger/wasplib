@@ -527,6 +527,7 @@ impl ScMutableInt64Array {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // map proxy for mutable map
+#[derive(Clone, Copy)]
 pub struct ScMutableMap {
     pub(crate) obj_id: i32,
 }

@@ -124,11 +124,15 @@ func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost
 		return err
 	}
 
-	// TinyGo Wasm implementation uses this one to write panic message to console
-	err = vm.linker.DefineFunc("wasi_unstable", "fd_write",
-		func(fd int32, iovs int32, size int32, written int32) int32 {
-			return vm.HostFdWrite(fd, iovs, size, written)
-		})
+	// TinyGo Wasm versions uses this one to write panic message to console
+	fdWrite := func(fd int32, iovs int32, size int32, written int32) int32 {
+		return vm.HostFdWrite(fd, iovs, size, written)
+	}
+	err = vm.linker.DefineFunc("wasi_unstable", "fd_write", fdWrite)
+	if err != nil {
+		return err
+	}
+	err = vm.linker.DefineFunc("wasi_snapshot_preview1", "fd_write", fdWrite)
 	if err != nil {
 		return err
 	}

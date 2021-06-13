@@ -15,41 +15,6 @@ use crate::*;
 use crate::keys::*;
 use crate::subtypes::*;
 
-pub struct MapAgentIdToMutableAllowancesForAgent {
-    pub(crate) obj_id: i32,
-}
-
-impl MapAgentIdToMutableAllowancesForAgent {
-    pub fn clear(&self) {
-        clear(self.obj_id)
-    }
-
-    pub fn get_allowances_for_agent(&self, key: &ScAgentId) -> MutableAllowancesForAgent {
-        let sub_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_MAP);
-        MutableAllowancesForAgent { obj_id: sub_id }
-    }
-}
-
-pub struct MutableErc20State {
-    pub(crate) id: i32,
-}
-
-impl MutableErc20State {
-    pub fn all_allowances(&self) -> MapAgentIdToMutableAllowancesForAgent {
-        let map_id = get_object_id(self.id, idx_map(IDX_STATE_ALL_ALLOWANCES), TYPE_MAP);
-        MapAgentIdToMutableAllowancesForAgent { obj_id: map_id }
-    }
-
-    pub fn balances(&self) -> MapAgentIdToMutableInt64 {
-        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BALANCES), TYPE_MAP);
-        MapAgentIdToMutableInt64 { obj_id: map_id }
-    }
-
-    pub fn supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_SUPPLY))
-    }
-}
-
 pub struct MapAgentIdToImmutableAllowancesForAgent {
     pub(crate) obj_id: i32,
 }
@@ -61,6 +26,7 @@ impl MapAgentIdToImmutableAllowancesForAgent {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableErc20State {
     pub(crate) id: i32,
 }
@@ -78,5 +44,41 @@ impl ImmutableErc20State {
 
     pub fn supply(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_STATE_SUPPLY))
+    }
+}
+
+pub struct MapAgentIdToMutableAllowancesForAgent {
+    pub(crate) obj_id: i32,
+}
+
+impl MapAgentIdToMutableAllowancesForAgent {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_allowances_for_agent(&self, key: &ScAgentId) -> MutableAllowancesForAgent {
+        let sub_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_MAP);
+        MutableAllowancesForAgent { obj_id: sub_id }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableErc20State {
+    pub(crate) id: i32,
+}
+
+impl MutableErc20State {
+    pub fn all_allowances(&self) -> MapAgentIdToMutableAllowancesForAgent {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_ALL_ALLOWANCES), TYPE_MAP);
+        MapAgentIdToMutableAllowancesForAgent { obj_id: map_id }
+    }
+
+    pub fn balances(&self) -> MapAgentIdToMutableInt64 {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_BALANCES), TYPE_MAP);
+        MapAgentIdToMutableInt64 { obj_id: map_id }
+    }
+
+    pub fn supply(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_SUPPLY))
     }
 }

@@ -14,20 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncApproveParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncApproveParams {
-    pub fn amount(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
-    }
-
-    pub fn delegation(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_DELEGATION))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncApproveParams {
     pub(crate) id: i32,
 }
@@ -42,20 +29,26 @@ impl ImmutableFuncApproveParams {
     }
 }
 
-pub struct MutableFuncInitParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncApproveParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncInitParams {
-    pub fn creator(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CREATOR))
+impl MutableFuncApproveParams {
+    pub fn new() -> MutableFuncApproveParams {
+        MutableFuncApproveParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_SUPPLY))
+    pub fn amount(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
+    }
+
+    pub fn delegation(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_DELEGATION))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitParams {
     pub(crate) id: i32,
 }
@@ -70,20 +63,26 @@ impl ImmutableFuncInitParams {
     }
 }
 
-pub struct MutableFuncTransferParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncTransferParams {
-    pub fn account(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_ACCOUNT))
+impl MutableFuncInitParams {
+    pub fn new() -> MutableFuncInitParams {
+        MutableFuncInitParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn amount(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
+    pub fn creator(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_CREATOR))
+    }
+
+    pub fn supply(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_SUPPLY))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferParams {
     pub(crate) id: i32,
 }
@@ -98,11 +97,16 @@ impl ImmutableFuncTransferParams {
     }
 }
 
-pub struct MutableFuncTransferFromParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncTransferFromParams {
+impl MutableFuncTransferParams {
+    pub fn new() -> MutableFuncTransferParams {
+        MutableFuncTransferParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn account(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_ACCOUNT))
     }
@@ -110,12 +114,9 @@ impl MutableFuncTransferFromParams {
     pub fn amount(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
     }
-
-    pub fn recipient(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_RECIPIENT))
-    }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferFromParams {
     pub(crate) id: i32,
 }
@@ -134,20 +135,30 @@ impl ImmutableFuncTransferFromParams {
     }
 }
 
-pub struct MutableViewAllowanceParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferFromParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewAllowanceParams {
+impl MutableFuncTransferFromParams {
+    pub fn new() -> MutableFuncTransferFromParams {
+        MutableFuncTransferFromParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn account(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_ACCOUNT))
     }
 
-    pub fn delegation(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_DELEGATION))
+    pub fn amount(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
+    }
+
+    pub fn recipient(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_RECIPIENT))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewAllowanceParams {
     pub(crate) id: i32,
 }
@@ -162,16 +173,26 @@ impl ImmutableViewAllowanceParams {
     }
 }
 
-pub struct MutableViewBalanceOfParams {
+#[derive(Clone, Copy)]
+pub struct MutableViewAllowanceParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewBalanceOfParams {
+impl MutableViewAllowanceParams {
+    pub fn new() -> MutableViewAllowanceParams {
+        MutableViewAllowanceParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn account(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_ACCOUNT))
     }
+
+    pub fn delegation(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_DELEGATION))
+    }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewBalanceOfParams {
     pub(crate) id: i32,
 }
@@ -182,10 +203,33 @@ impl ImmutableViewBalanceOfParams {
     }
 }
 
+#[derive(Clone, Copy)]
+pub struct MutableViewBalanceOfParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewBalanceOfParams {
+    pub fn new() -> MutableViewBalanceOfParams {
+        MutableViewBalanceOfParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn account(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_ACCOUNT))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewTotalSupplyParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
 pub struct MutableViewTotalSupplyParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableViewTotalSupplyParams {
-    pub(crate) id: i32,
+impl MutableViewTotalSupplyParams {
+    pub fn new() -> MutableViewTotalSupplyParams {
+        MutableViewTotalSupplyParams { id: ScMutableMap::new().map_id() }
+    }
 }

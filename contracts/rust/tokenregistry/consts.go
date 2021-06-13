@@ -10,23 +10,23 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "tokenregistry"
+	ScName  = "tokenregistry"
 	HScName = wasmlib.ScHname(0xe1ba0c78)
 
-	ParamColor = wasmlib.Key("color")
+	ParamColor       = wasmlib.Key("color")
 	ParamDescription = wasmlib.Key("description")
 	ParamUserDefined = wasmlib.Key("userDefined")
 
 	StateColorList = wasmlib.Key("colorList")
-	StateRegistry = wasmlib.Key("registry")
+	StateRegistry  = wasmlib.Key("registry")
 
-	FuncMintSupply = "mintSupply"
+	FuncMintSupply        = "mintSupply"
 	FuncTransferOwnership = "transferOwnership"
-	FuncUpdateMetadata = "updateMetadata"
-	ViewGetInfo = "getInfo"
+	FuncUpdateMetadata    = "updateMetadata"
+	ViewGetInfo           = "getInfo"
 
-	HFuncMintSupply = wasmlib.ScHname(0x564349a7)
+	HFuncMintSupply        = wasmlib.ScHname(0x564349a7)
 	HFuncTransferOwnership = wasmlib.ScHname(0xbb9eb5af)
-	HFuncUpdateMetadata = wasmlib.ScHname(0xa26b23b6)
-	HViewGetInfo = wasmlib.ScHname(0xcfedba5f)
+	HFuncUpdateMetadata    = wasmlib.ScHname(0xa26b23b6)
+	HViewGetInfo           = wasmlib.ScHname(0xcfedba5f)
 )

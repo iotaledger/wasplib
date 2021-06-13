@@ -5,6 +5,7 @@
 
 pub use bytes::*;
 pub use context::*;
+pub use contract::*;
 pub use corecontracts::*;
 pub use exports::ScExports;
 pub use hashtypes::*;
@@ -14,6 +15,7 @@ pub use mutable::*;
 
 mod bytes;
 mod context;
+mod contract;
 mod corecontracts;
 mod exports;
 mod hashtypes;

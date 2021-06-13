@@ -13,12 +13,12 @@ func OnLoad() {
 	exports := wasmlib.NewScExports()
 	exports.AddFunc(FuncCallIncrement, funcCallIncrementThunk)
 	exports.AddFunc(FuncCallIncrementRecurse5x, funcCallIncrementRecurse5xThunk)
+	exports.AddFunc(FuncEndlessLoop, funcEndlessLoopThunk)
 	exports.AddFunc(FuncIncrement, funcIncrementThunk)
 	exports.AddFunc(FuncInit, funcInitThunk)
 	exports.AddFunc(FuncLocalStateInternalCall, funcLocalStateInternalCallThunk)
 	exports.AddFunc(FuncLocalStatePost, funcLocalStatePostThunk)
 	exports.AddFunc(FuncLocalStateSandboxCall, funcLocalStateSandboxCallThunk)
-	exports.AddFunc(FuncLoop, funcLoopThunk)
 	exports.AddFunc(FuncPostIncrement, funcPostIncrementThunk)
 	exports.AddFunc(FuncRepeatMany, funcRepeatManyThunk)
 	exports.AddFunc(FuncTestLeb128, funcTestLeb128Thunk)
@@ -58,6 +58,21 @@ func funcCallIncrementRecurse5xThunk(ctx wasmlib.ScFuncContext) {
 	}
 	funcCallIncrementRecurse5x(ctx, f)
 	ctx.Log("inccounter.funcCallIncrementRecurse5x ok")
+}
+
+type FuncEndlessLoopContext struct {
+	State MutableIncCounterState
+}
+
+func funcEndlessLoopThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("inccounter.funcEndlessLoop")
+	f := &FuncEndlessLoopContext{
+		State: MutableIncCounterState{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+		},
+	}
+	funcEndlessLoop(ctx, f)
+	ctx.Log("inccounter.funcEndlessLoop ok")
 }
 
 type FuncIncrementContext struct {
@@ -139,21 +154,6 @@ func funcLocalStateSandboxCallThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcLocalStateSandboxCall ok")
 }
 
-type FuncLoopContext struct {
-	State MutableIncCounterState
-}
-
-func funcLoopThunk(ctx wasmlib.ScFuncContext) {
-	ctx.Log("inccounter.funcLoop")
-	f := &FuncLoopContext{
-		State: MutableIncCounterState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
-		},
-	}
-	funcLoop(ctx, f)
-	ctx.Log("inccounter.funcLoop ok")
-}
-
 type FuncPostIncrementContext struct {
 	State MutableIncCounterState
 }
@@ -204,12 +204,16 @@ func funcTestLeb128Thunk(ctx wasmlib.ScFuncContext) {
 }
 
 type FuncWhenMustIncrementContext struct {
-	State MutableIncCounterState
+	Params ImmutableFuncWhenMustIncrementParams
+	State  MutableIncCounterState
 }
 
 func funcWhenMustIncrementThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("inccounter.funcWhenMustIncrement")
 	f := &FuncWhenMustIncrementContext{
+		Params: ImmutableFuncWhenMustIncrementParams{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+		},
 		State: MutableIncCounterState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},

@@ -9,6 +9,33 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type MapAgentIdToImmutableAllowancesForAgent struct {
+	objId int32
+}
+
+func (m MapAgentIdToImmutableAllowancesForAgent) GetAllowancesForAgent(key wasmlib.ScAgentId) ImmutableAllowancesForAgent {
+	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_MAP)
+	return ImmutableAllowancesForAgent{objId: subId}
+}
+
+type ImmutableErc20State struct {
+	id int32
+}
+
+func (s ImmutableErc20State) AllAllowances() MapAgentIdToImmutableAllowancesForAgent {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAllAllowances], wasmlib.TYPE_MAP)
+	return MapAgentIdToImmutableAllowancesForAgent{objId: mapId}
+}
+
+func (s ImmutableErc20State) Balances() MapAgentIdToImmutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBalances], wasmlib.TYPE_MAP)
+	return MapAgentIdToImmutableInt64{objId: mapId}
+}
+
+func (s ImmutableErc20State) Supply() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateSupply])
+}
+
 type MapAgentIdToMutableAllowancesForAgent struct {
 	objId int32
 }
@@ -38,31 +65,4 @@ func (s MutableErc20State) Balances() MapAgentIdToMutableInt64 {
 
 func (s MutableErc20State) Supply() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateSupply])
-}
-
-type MapAgentIdToImmutableAllowancesForAgent struct {
-	objId int32
-}
-
-func (m MapAgentIdToImmutableAllowancesForAgent) GetAllowancesForAgent(key wasmlib.ScAgentId) ImmutableAllowancesForAgent {
-	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_MAP)
-	return ImmutableAllowancesForAgent{objId: subId}
-}
-
-type ImmutableErc20State struct {
-	id int32
-}
-
-func (s ImmutableErc20State) AllAllowances() MapAgentIdToImmutableAllowancesForAgent {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAllAllowances], wasmlib.TYPE_MAP)
-	return MapAgentIdToImmutableAllowancesForAgent{objId: mapId}
-}
-
-func (s ImmutableErc20State) Balances() MapAgentIdToImmutableInt64 {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBalances], wasmlib.TYPE_MAP)
-	return MapAgentIdToImmutableInt64{objId: mapId}
-}
-
-func (s ImmutableErc20State) Supply() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateSupply])
 }

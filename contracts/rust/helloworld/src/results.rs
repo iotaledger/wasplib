@@ -14,24 +14,17 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncHelloWorldResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncHelloWorldResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewGetHelloWorldResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncHelloWorldResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetHelloWorldResults {
-    pub fn hello_world(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_RESULT_HELLO_WORLD))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetHelloWorldResults {
     pub(crate) id: i32,
 }
@@ -39,5 +32,16 @@ pub struct ImmutableViewGetHelloWorldResults {
 impl ImmutableViewGetHelloWorldResults {
     pub fn hello_world(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, idx_map(IDX_RESULT_HELLO_WORLD))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetHelloWorldResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetHelloWorldResults {
+    pub fn hello_world(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_RESULT_HELLO_WORLD))
     }
 }

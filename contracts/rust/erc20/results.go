@@ -9,46 +9,6 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncApproveResults struct {
-	id int32
-}
-
-type ImmutableFuncApproveResults struct {
-	id int32
-}
-
-type MutableFuncInitResults struct {
-	id int32
-}
-
-type ImmutableFuncInitResults struct {
-	id int32
-}
-
-type MutableFuncTransferResults struct {
-	id int32
-}
-
-type ImmutableFuncTransferResults struct {
-	id int32
-}
-
-type MutableFuncTransferFromResults struct {
-	id int32
-}
-
-type ImmutableFuncTransferFromResults struct {
-	id int32
-}
-
-type MutableViewAllowanceResults struct {
-	id int32
-}
-
-func (s MutableViewAllowanceResults) Amount() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
-}
-
 type ImmutableViewAllowanceResults struct {
 	id int32
 }
@@ -57,11 +17,11 @@ func (s ImmutableViewAllowanceResults) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type MutableViewBalanceOfResults struct {
+type MutableViewAllowanceResults struct {
 	id int32
 }
 
-func (s MutableViewBalanceOfResults) Amount() wasmlib.ScMutableInt64 {
+func (s MutableViewAllowanceResults) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
@@ -73,12 +33,12 @@ func (s ImmutableViewBalanceOfResults) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type MutableViewTotalSupplyResults struct {
+type MutableViewBalanceOfResults struct {
 	id int32
 }
 
-func (s MutableViewTotalSupplyResults) Supply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultSupply])
+func (s MutableViewBalanceOfResults) Amount() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
 type ImmutableViewTotalSupplyResults struct {
@@ -87,4 +47,12 @@ type ImmutableViewTotalSupplyResults struct {
 
 func (s ImmutableViewTotalSupplyResults) Supply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultSupply])
+}
+
+type MutableViewTotalSupplyResults struct {
+	id int32
+}
+
+func (s MutableViewTotalSupplyResults) Supply() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultSupply])
 }

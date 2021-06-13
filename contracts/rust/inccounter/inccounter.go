@@ -9,12 +9,19 @@ import (
 
 var LocalStateMustIncrement = false
 
+func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
+	if f.Params.Counter().Exists() {
+		counter := f.Params.Counter().Value()
+		f.State.Counter().SetValue(counter)
+	}
+}
+
 func funcCallIncrement(ctx wasmlib.ScFuncContext, f *FuncCallIncrementContext) {
 	counter := f.State.Counter()
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		ctx.CallSelf(HFuncCallIncrement, nil, nil)
+		NewIncCounterFunc(ctx).CallIncrement(wasmlib.NoScTransfers())
 	}
 }
 
@@ -23,7 +30,12 @@ func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f *FuncCallIncrementR
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
-		ctx.CallSelf(HFuncCallIncrementRecurse5x, nil, nil)
+		NewIncCounterFunc(ctx).CallIncrementRecurse5x(wasmlib.NoScTransfers())
+	}
+}
+
+func funcEndlessLoop(ctx wasmlib.ScFuncContext, f *FuncEndlessLoopContext) {
+	for {
 	}
 }
 
@@ -32,23 +44,16 @@ func funcIncrement(ctx wasmlib.ScFuncContext, f *FuncIncrementContext) {
 	counter.SetValue(counter.Value() + 1)
 }
 
-func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
-	if f.Params.Counter().Exists() {
-		counter := f.Params.Counter().Value()
-		f.State.Counter().SetValue(counter)
-	}
-}
-
 func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, f *FuncLocalStateInternalCallContext) {
 	{
 		LocalStateMustIncrement = false
 	}
-	funcWhenMustIncrementState(ctx, f.State)
+	whenMustIncrementState(ctx, f.State)
 	{
 		LocalStateMustIncrement = true
 	}
-	funcWhenMustIncrementState(ctx, f.State)
-	funcWhenMustIncrementState(ctx, f.State)
+	whenMustIncrementState(ctx, f.State)
+	whenMustIncrementState(ctx, f.State)
 	// counter ends up as 2
 }
 
@@ -66,30 +71,20 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *FuncLocalStatePostContext)
 	// counter ends up as 0
 }
 
-func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
-	//note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
-	params := wasmlib.NewScMutableMap()
-	params.GetInt64(StateCounter).SetValue(nr)
-	transfer := wasmlib.NewScTransferIotas(1)
-	ctx.PostSelf(HFuncWhenMustIncrement, params, transfer, 0)
-}
-
 func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f *FuncLocalStateSandboxCallContext) {
 	{
 		LocalStateMustIncrement = false
 	}
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	params := NewMutableFuncWhenMustIncrementParams()
+	none := wasmlib.NoScTransfers()
+	sc := NewIncCounterFunc(ctx)
+	sc.WhenMustIncrement(params, none)
 	{
 		LocalStateMustIncrement = true
 	}
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
-	ctx.CallSelf(HFuncWhenMustIncrement, nil, nil)
+	sc.WhenMustIncrement(params, none)
+	sc.WhenMustIncrement(params, none)
 	// counter ends up as 0
-}
-
-func funcLoop(ctx wasmlib.ScFuncContext, f *FuncLoopContext) {
-	for {
-	}
 }
 
 func funcPostIncrement(ctx wasmlib.ScFuncContext, f *FuncPostIncrementContext) {
@@ -98,7 +93,7 @@ func funcPostIncrement(ctx wasmlib.ScFuncContext, f *FuncPostIncrementContext) {
 	counter.SetValue(value + 1)
 	if value == 0 {
 		transfer := wasmlib.NewScTransferIotas(1)
-		ctx.PostSelf(HFuncPostIncrement, nil, transfer, 0)
+		NewIncCounterFunc(ctx).Post().PostIncrement(transfer)
 	}
 }
 
@@ -116,22 +111,11 @@ func funcRepeatMany(ctx wasmlib.ScFuncContext, f *FuncRepeatManyContext) {
 	}
 	stateRepeats.SetValue(repeats - 1)
 	transfer := wasmlib.NewScTransferIotas(1)
-	ctx.PostSelf(HFuncRepeatMany, nil, transfer, 0)
+	NewIncCounterFunc(ctx).Post().RepeatMany(NewMutableFuncRepeatManyParams(), transfer)
 }
 
 func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f *FuncWhenMustIncrementContext) {
-	funcWhenMustIncrementState(ctx, f.State)
-}
-
-func funcWhenMustIncrementState(ctx wasmlib.ScFuncContext, state MutableIncCounterState) {
-	ctx.Log("when_must_increment called")
-	{
-		if !LocalStateMustIncrement {
-			return
-		}
-	}
-	counter := state.Counter()
-	counter.SetValue(counter.Value() + 1)
+	whenMustIncrementState(ctx, f.State)
 }
 
 // note that get_counter mirrors the state of the 'counter' state variable
@@ -144,22 +128,22 @@ func viewGetCounter(ctx wasmlib.ScViewContext, f *ViewGetCounterContext) {
 }
 
 func funcTestLeb128(ctx wasmlib.ScFuncContext, f *FuncTestLeb128Context) {
-	save(ctx, "v-1", -1)
-	save(ctx, "v-2", -2)
-	save(ctx, "v-126", -126)
-	save(ctx, "v-127", -127)
-	save(ctx, "v-128", -128)
-	save(ctx, "v-129", -129)
-	save(ctx, "v0", 0)
-	save(ctx, "v+1", 1)
-	save(ctx, "v+2", 2)
-	save(ctx, "v+126", 126)
-	save(ctx, "v+127", 127)
-	save(ctx, "v+128", 128)
-	save(ctx, "v+129", 129)
+	leb128Save(ctx, "v-1", -1)
+	leb128Save(ctx, "v-2", -2)
+	leb128Save(ctx, "v-126", -126)
+	leb128Save(ctx, "v-127", -127)
+	leb128Save(ctx, "v-128", -128)
+	leb128Save(ctx, "v-129", -129)
+	leb128Save(ctx, "v0", 0)
+	leb128Save(ctx, "v+1", 1)
+	leb128Save(ctx, "v+2", 2)
+	leb128Save(ctx, "v+126", 126)
+	leb128Save(ctx, "v+127", 127)
+	leb128Save(ctx, "v+128", 128)
+	leb128Save(ctx, "v+129", 129)
 }
 
-func save(ctx wasmlib.ScFuncContext, name string, value int64) {
+func leb128Save(ctx wasmlib.ScFuncContext, name string, value int64) {
 	encoder := wasmlib.NewBytesEncoder()
 	encoder.Int64(value)
 	spot := ctx.State().GetBytes(wasmlib.Key(name))
@@ -172,4 +156,23 @@ func save(ctx wasmlib.ScFuncContext, name string, value int64) {
 		ctx.Log(name + " in : " + ctx.Utility().String(value))
 		ctx.Log(name + " out: " + ctx.Utility().String(retrieved))
 	}
+}
+
+func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
+	// note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
+	params := NewMutableFuncWhenMustIncrementParams()
+	params.Dummy().SetValue(nr)
+	transfer := wasmlib.NewScTransferIotas(1)
+	NewIncCounterFunc(ctx).Post().WhenMustIncrement(params, transfer)
+}
+
+func whenMustIncrementState(ctx wasmlib.ScFuncContext, state MutableIncCounterState) {
+	ctx.Log("when_must_increment called")
+	{
+		if !LocalStateMustIncrement {
+			return
+		}
+	}
+	counter := state.Counter()
+	counter.SetValue(counter.Value() + 1)
 }

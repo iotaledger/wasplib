@@ -9,6 +9,55 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type MapColorToImmutableAuction struct {
+	objId int32
+}
+
+func (m MapColorToImmutableAuction) GetAuction(key wasmlib.ScColor) ImmutableAuction {
+	return ImmutableAuction{objId: m.objId, keyId: key.KeyId()}
+}
+
+type MapColorToImmutableBidderList struct {
+	objId int32
+}
+
+func (m MapColorToImmutableBidderList) GetBidderList(key wasmlib.ScColor) ImmutableBidderList {
+	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_AGENT_ID)
+	return ImmutableBidderList{objId: subId}
+}
+
+type MapColorToImmutableBids struct {
+	objId int32
+}
+
+func (m MapColorToImmutableBids) GetBids(key wasmlib.ScColor) ImmutableBids {
+	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_MAP)
+	return ImmutableBids{objId: subId}
+}
+
+type ImmutableFairAuctionState struct {
+	id int32
+}
+
+func (s ImmutableFairAuctionState) Auctions() MapColorToImmutableAuction {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAuctions], wasmlib.TYPE_MAP)
+	return MapColorToImmutableAuction{objId: mapId}
+}
+
+func (s ImmutableFairAuctionState) BidderList() MapColorToImmutableBidderList {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBidderList], wasmlib.TYPE_MAP)
+	return MapColorToImmutableBidderList{objId: mapId}
+}
+
+func (s ImmutableFairAuctionState) Bids() MapColorToImmutableBids {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBids], wasmlib.TYPE_MAP)
+	return MapColorToImmutableBids{objId: mapId}
+}
+
+func (s ImmutableFairAuctionState) OwnerMargin() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateOwnerMargin])
+}
+
 type MapColorToMutableAuction struct {
 	objId int32
 }
@@ -68,53 +117,4 @@ func (s MutableFairAuctionState) Bids() MapColorToMutableBids {
 
 func (s MutableFairAuctionState) OwnerMargin() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateOwnerMargin])
-}
-
-type MapColorToImmutableAuction struct {
-	objId int32
-}
-
-func (m MapColorToImmutableAuction) GetAuction(key wasmlib.ScColor) ImmutableAuction {
-	return ImmutableAuction{objId: m.objId, keyId: key.KeyId()}
-}
-
-type MapColorToImmutableBidderList struct {
-	objId int32
-}
-
-func (m MapColorToImmutableBidderList) GetBidderList(key wasmlib.ScColor) ImmutableBidderList {
-	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_AGENT_ID)
-	return ImmutableBidderList{objId: subId}
-}
-
-type MapColorToImmutableBids struct {
-	objId int32
-}
-
-func (m MapColorToImmutableBids) GetBids(key wasmlib.ScColor) ImmutableBids {
-	subId := wasmlib.GetObjectId(m.objId, key.KeyId(), wasmlib.TYPE_MAP)
-	return ImmutableBids{objId: subId}
-}
-
-type ImmutableFairAuctionState struct {
-	id int32
-}
-
-func (s ImmutableFairAuctionState) Auctions() MapColorToImmutableAuction {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateAuctions], wasmlib.TYPE_MAP)
-	return MapColorToImmutableAuction{objId: mapId}
-}
-
-func (s ImmutableFairAuctionState) BidderList() MapColorToImmutableBidderList {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBidderList], wasmlib.TYPE_MAP)
-	return MapColorToImmutableBidderList{objId: mapId}
-}
-
-func (s ImmutableFairAuctionState) Bids() MapColorToImmutableBids {
-	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateBids], wasmlib.TYPE_MAP)
-	return MapColorToImmutableBids{objId: mapId}
-}
-
-func (s ImmutableFairAuctionState) OwnerMargin() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateOwnerMargin])
 }

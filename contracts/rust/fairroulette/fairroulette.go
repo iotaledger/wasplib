@@ -88,7 +88,7 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *FuncPlaceBetContext) {
 		// be placed. Once the 'lockBets' function gets triggered by the ISCP it will gather all
 		// bets up to that moment as the ones to consider for determining the winner.
 		transfer := wasmlib.NewScTransferIotas(1)
-		ctx.PostSelf(HFuncLockBets, nil, transfer, playPeriod)
+		NewFairRouletteFunc(ctx).Post().Delay(playPeriod).LockBets(transfer)
 	}
 }
 
@@ -129,7 +129,7 @@ func funcLockBets(ctx wasmlib.ScFuncContext, f *FuncLockBetsContext) {
 	// Next we trigger an immediate request to the 'payWinners' function
 	// See more explanation of the why below.
 	transfer := wasmlib.NewScTransferIotas(1)
-	ctx.PostSelf(HFuncPayWinners, nil, transfer, 0)
+	NewFairRouletteFunc(ctx).Post().PayWinners(transfer)
 }
 
 // 'payWinners' is a function whose execution gets initiated by the 'lockBets' function.

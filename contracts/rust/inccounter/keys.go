@@ -10,19 +10,21 @@ package inccounter
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamCounter = 0
-	IdxParamNumRepeats = 1
-	IdxResultCounter = 2
-	IdxStateCounter = 3
-	IdxStateNumRepeats = 4
+	IdxParamCounter    = 0
+	IdxParamDummy      = 1
+	IdxParamNumRepeats = 2
+	IdxResultCounter   = 3
+	IdxStateCounter    = 4
+	IdxStateNumRepeats = 5
 )
 
-var keyMap = [5]wasmlib.Key{
+var keyMap = [6]wasmlib.Key{
 	ParamCounter,
+	ParamDummy,
 	ParamNumRepeats,
 	ResultCounter,
 	StateCounter,
 	StateNumRepeats,
 }
 
-var idxMap [5]wasmlib.Key32
+var idxMap [6]wasmlib.Key32

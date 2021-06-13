@@ -9,18 +9,6 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableIncCounterState struct {
-	id int32
-}
-
-func (s MutableIncCounterState) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
-}
-
-func (s MutableIncCounterState) NumRepeats() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateNumRepeats])
-}
-
 type ImmutableIncCounterState struct {
 	id int32
 }
@@ -31,4 +19,16 @@ func (s ImmutableIncCounterState) Counter() wasmlib.ScImmutableInt64 {
 
 func (s ImmutableIncCounterState) NumRepeats() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateNumRepeats])
+}
+
+type MutableIncCounterState struct {
+	id int32
+}
+
+func (s MutableIncCounterState) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateCounter])
+}
+
+func (s MutableIncCounterState) NumRepeats() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateNumRepeats])
 }

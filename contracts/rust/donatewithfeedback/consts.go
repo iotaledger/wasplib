@@ -10,33 +10,33 @@ package donatewithfeedback
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "donatewithfeedback"
+	ScName  = "donatewithfeedback"
 	HScName = wasmlib.ScHname(0x696d7f66)
 
-	ParamAmount = wasmlib.Key("amount")
+	ParamAmount   = wasmlib.Key("amount")
 	ParamFeedback = wasmlib.Key("feedback")
-	ParamNr = wasmlib.Key("nr")
+	ParamNr       = wasmlib.Key("nr")
 
-	ResultAmount = wasmlib.Key("amount")
-	ResultCount = wasmlib.Key("count")
-	ResultDonator = wasmlib.Key("donator")
-	ResultError = wasmlib.Key("error")
-	ResultFeedback = wasmlib.Key("feedback")
-	ResultMaxDonation = wasmlib.Key("maxDonation")
-	ResultTimestamp = wasmlib.Key("timestamp")
+	ResultAmount        = wasmlib.Key("amount")
+	ResultCount         = wasmlib.Key("count")
+	ResultDonator       = wasmlib.Key("donator")
+	ResultError         = wasmlib.Key("error")
+	ResultFeedback      = wasmlib.Key("feedback")
+	ResultMaxDonation   = wasmlib.Key("maxDonation")
+	ResultTimestamp     = wasmlib.Key("timestamp")
 	ResultTotalDonation = wasmlib.Key("totalDonation")
 
-	StateLog = wasmlib.Key("log")
-	StateMaxDonation = wasmlib.Key("maxDonation")
+	StateLog           = wasmlib.Key("log")
+	StateMaxDonation   = wasmlib.Key("maxDonation")
 	StateTotalDonation = wasmlib.Key("totalDonation")
 
-	FuncDonate = "donate"
-	FuncWithdraw = "withdraw"
-	ViewDonation = "donation"
+	FuncDonate       = "donate"
+	FuncWithdraw     = "withdraw"
+	ViewDonation     = "donation"
 	ViewDonationInfo = "donationInfo"
 
-	HFuncDonate = wasmlib.ScHname(0xdc9b133a)
-	HFuncWithdraw = wasmlib.ScHname(0x9dcc0f41)
-	HViewDonation = wasmlib.ScHname(0xbdb245ba)
+	HFuncDonate       = wasmlib.ScHname(0xdc9b133a)
+	HFuncWithdraw     = wasmlib.ScHname(0x9dcc0f41)
+	HViewDonation     = wasmlib.ScHname(0xbdb245ba)
 	HViewDonationInfo = wasmlib.ScHname(0xc8f7c726)
 )

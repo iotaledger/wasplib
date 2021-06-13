@@ -14,16 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncCallOnChainResults {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncCallOnChainResults {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallOnChainResults {
     pub(crate) id: i32,
 }
@@ -34,36 +25,38 @@ impl ImmutableFuncCallOnChainResults {
     }
 }
 
-pub struct MutableFuncCheckContextFromFullEPResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallOnChainResults {
     pub(crate) id: i32,
 }
 
+impl MutableFuncCallOnChainResults {
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCheckContextFromFullEPResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncDoNothingResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCheckContextFromFullEPResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncDoNothingResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncGetMintedSupplyResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncDoNothingResults {
     pub(crate) id: i32,
 }
 
-impl MutableFuncGetMintedSupplyResults {
-    pub fn minted_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_RESULT_MINTED_COLOR))
-    }
-
-    pub fn minted_supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_MINTED_SUPPLY))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncGetMintedSupplyResults {
     pub(crate) id: i32,
 }
@@ -78,40 +71,52 @@ impl ImmutableFuncGetMintedSupplyResults {
     }
 }
 
-pub struct MutableFuncIncCounterResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncGetMintedSupplyResults {
     pub(crate) id: i32,
 }
 
+impl MutableFuncGetMintedSupplyResults {
+    pub fn minted_color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_RESULT_MINTED_COLOR))
+    }
+
+    pub fn minted_supply(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_MINTED_SUPPLY))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncIncCounterResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncInitResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncIncCounterResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncPassTypesFullResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPassTypesFullResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncRunRecursionResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPassTypesFullResults {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRunRecursionResults {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncRunRecursionResults {
     pub(crate) id: i32,
 }
@@ -122,48 +127,58 @@ impl ImmutableFuncRunRecursionResults {
     }
 }
 
-pub struct MutableFuncSendToAddressResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncRunRecursionResults {
     pub(crate) id: i32,
 }
 
+impl MutableFuncRunRecursionResults {
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncSendToAddressResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncSetIntResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncSendToAddressResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncSetIntResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestCallPanicFullEPResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncSetIntResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestCallPanicFullEPResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestCallPanicViewEPFromFullResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestCallPanicFullEPResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestCallPanicViewEPFromFullResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestChainOwnerIDFullResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestCallPanicViewEPFromFullResults {
     pub(crate) id: i32,
 }
 
-impl MutableFuncTestChainOwnerIDFullResults {
-    pub fn chain_owner_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_RESULT_CHAIN_OWNER_ID))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestChainOwnerIDFullResults {
     pub(crate) id: i32,
 }
@@ -174,64 +189,78 @@ impl ImmutableFuncTestChainOwnerIDFullResults {
     }
 }
 
-pub struct MutableFuncTestEventLogDeployResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestChainOwnerIDFullResults {
     pub(crate) id: i32,
 }
 
+impl MutableFuncTestChainOwnerIDFullResults {
+    pub fn chain_owner_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_RESULT_CHAIN_OWNER_ID))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestEventLogDeployResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestEventLogEventDataResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogDeployResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestEventLogEventDataResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestEventLogGenericDataResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogEventDataResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestEventLogGenericDataResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestPanicFullEPResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestEventLogGenericDataResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestPanicFullEPResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncWithdrawToChainResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestPanicFullEPResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncWithdrawToChainResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewCheckContextFromViewEPResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncWithdrawToChainResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewCheckContextFromViewEPResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewFibonacciResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewCheckContextFromViewEPResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewFibonacciResults {
-    pub fn int_value(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewFibonacciResults {
     pub(crate) id: i32,
 }
@@ -242,16 +271,18 @@ impl ImmutableViewFibonacciResults {
     }
 }
 
-pub struct MutableViewGetCounterResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewFibonacciResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetCounterResults {
-    pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_COUNTER))
+impl MutableViewFibonacciResults {
+    pub fn int_value(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_INT_VALUE))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetCounterResults {
     pub(crate) id: i32,
 }
@@ -262,48 +293,58 @@ impl ImmutableViewGetCounterResults {
     }
 }
 
-pub struct MutableViewGetIntResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewGetCounterResults {
     pub(crate) id: i32,
 }
 
+impl MutableViewGetCounterResults {
+    pub fn counter(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_COUNTER))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetIntResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewJustViewResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewGetIntResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewJustViewResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewPassTypesViewResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewJustViewResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewPassTypesViewResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewTestCallPanicViewEPFromViewResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewPassTypesViewResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestCallPanicViewEPFromViewResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewTestChainOwnerIDViewResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewTestCallPanicViewEPFromViewResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewTestChainOwnerIDViewResults {
-    pub fn chain_owner_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_RESULT_CHAIN_OWNER_ID))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestChainOwnerIDViewResults {
     pub(crate) id: i32,
 }
@@ -314,24 +355,28 @@ impl ImmutableViewTestChainOwnerIDViewResults {
     }
 }
 
-pub struct MutableViewTestPanicViewEPResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewTestChainOwnerIDViewResults {
     pub(crate) id: i32,
 }
 
+impl MutableViewTestChainOwnerIDViewResults {
+    pub fn chain_owner_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_RESULT_CHAIN_OWNER_ID))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestPanicViewEPResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewTestSandboxCallResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewTestPanicViewEPResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewTestSandboxCallResults {
-    pub fn sandbox_call(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_RESULT_SANDBOX_CALL))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTestSandboxCallResults {
     pub(crate) id: i32,
 }
@@ -339,5 +384,16 @@ pub struct ImmutableViewTestSandboxCallResults {
 impl ImmutableViewTestSandboxCallResults {
     pub fn sandbox_call(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, idx_map(IDX_RESULT_SANDBOX_CALL))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewTestSandboxCallResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewTestSandboxCallResults {
+    pub fn sandbox_call(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_RESULT_SANDBOX_CALL))
     }
 }

@@ -15,6 +15,47 @@ use crate::*;
 use crate::keys::*;
 use crate::types::*;
 
+pub struct ArrayOfImmutableColor {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfImmutableColor {
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_color(&self, index: i32) -> ScImmutableColor {
+        ScImmutableColor::new(self.obj_id, Key32(index))
+    }
+}
+
+pub struct MapColorToImmutableToken {
+    pub(crate) obj_id: i32,
+}
+
+impl MapColorToImmutableToken {
+    pub fn get_token(&self, key: &ScColor) -> ImmutableToken {
+        ImmutableToken { obj_id: self.obj_id, key_id: key.get_key_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableTokenRegistryState {
+    pub(crate) id: i32,
+}
+
+impl ImmutableTokenRegistryState {
+    pub fn color_list(&self) -> ArrayOfImmutableColor {
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_COLOR_LIST), TYPE_ARRAY | TYPE_COLOR);
+        ArrayOfImmutableColor { obj_id: arr_id }
+    }
+
+    pub fn registry(&self) -> MapColorToImmutableToken {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_REGISTRY), TYPE_MAP);
+        MapColorToImmutableToken { obj_id: map_id }
+    }
+}
+
 pub struct ArrayOfMutableColor {
     pub(crate) obj_id: i32,
 }
@@ -47,6 +88,7 @@ impl MapColorToMutableToken {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct MutableTokenRegistryState {
     pub(crate) id: i32,
 }
@@ -60,45 +102,5 @@ impl MutableTokenRegistryState {
     pub fn registry(&self) -> MapColorToMutableToken {
         let map_id = get_object_id(self.id, idx_map(IDX_STATE_REGISTRY), TYPE_MAP);
         MapColorToMutableToken { obj_id: map_id }
-    }
-}
-
-pub struct ArrayOfImmutableColor {
-    pub(crate) obj_id: i32,
-}
-
-impl ArrayOfImmutableColor {
-    pub fn length(&self) -> i32 {
-        get_length(self.obj_id)
-    }
-
-    pub fn get_color(&self, index: i32) -> ScImmutableColor {
-        ScImmutableColor::new(self.obj_id, Key32(index))
-    }
-}
-
-pub struct MapColorToImmutableToken {
-    pub(crate) obj_id: i32,
-}
-
-impl MapColorToImmutableToken {
-    pub fn get_token(&self, key: &ScColor) -> ImmutableToken {
-        ImmutableToken { obj_id: self.obj_id, key_id: key.get_key_id() }
-    }
-}
-
-pub struct ImmutableTokenRegistryState {
-    pub(crate) id: i32,
-}
-
-impl ImmutableTokenRegistryState {
-    pub fn color_list(&self) -> ArrayOfImmutableColor {
-        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_COLOR_LIST), TYPE_ARRAY | TYPE_COLOR);
-        ArrayOfImmutableColor { obj_id: arr_id }
-    }
-
-    pub fn registry(&self) -> MapColorToImmutableToken {
-        let map_id = get_object_id(self.id, idx_map(IDX_STATE_REGISTRY), TYPE_MAP);
-        MapColorToImmutableToken { obj_id: map_id }
     }
 }

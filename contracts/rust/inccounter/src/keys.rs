@@ -12,15 +12,17 @@ use wasmlib::*;
 use crate::*;
 
 pub const IDX_PARAM_COUNTER: usize = 0;
-pub const IDX_PARAM_NUM_REPEATS: usize = 1;
-pub const IDX_RESULT_COUNTER: usize = 2;
-pub const IDX_STATE_COUNTER: usize = 3;
-pub const IDX_STATE_NUM_REPEATS: usize = 4;
+pub const IDX_PARAM_DUMMY: usize = 1;
+pub const IDX_PARAM_NUM_REPEATS: usize = 2;
+pub const IDX_RESULT_COUNTER: usize = 3;
+pub const IDX_STATE_COUNTER: usize = 4;
+pub const IDX_STATE_NUM_REPEATS: usize = 5;
 
-pub const KEY_MAP_LEN: usize = 5;
+pub const KEY_MAP_LEN: usize = 6;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_COUNTER,
+    PARAM_DUMMY,
     PARAM_NUM_REPEATS,
     RESULT_COUNTER,
     STATE_COUNTER,

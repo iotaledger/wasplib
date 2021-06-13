@@ -10,6 +10,7 @@
 use wasmlib::*;
 
 use crate::*;
+use crate::contract::FairRouletteFunc;
 use crate::types::*;
 
 // define some default configuration parameters
@@ -86,8 +87,8 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
         // amount of seconds. This will lock in the playing period, during which more bets can
         // be placed. Once the 'lockBets' function gets triggered by the ISCP it will gather all
         // bets up to that moment as the ones to consider for determining the winner.
-        let transfer = ScTransfers::iotas(1);
-        ctx.post_self(HFUNC_LOCK_BETS, None, transfer, play_period);
+        let mut sc = FairRouletteFunc::new(ctx);
+        sc.post().delay(play_period).lock_bets(ScTransfers::iotas(1));
     }
 }
 
@@ -128,8 +129,8 @@ pub fn func_lock_bets(ctx: &ScFuncContext, f: &FuncLockBetsContext) {
 
     // Next we trigger an immediate request to the 'payWinners' function
     // See more explanation of the why below.
-    let transfer = ScTransfers::iotas(1);
-    ctx.post_self(HFUNC_PAY_WINNERS, None, transfer, 0);
+    let mut sc = FairRouletteFunc::new(ctx);
+    sc.post().pay_winners(ScTransfers::iotas(1));
 }
 
 // 'payWinners' is a function whose execution gets initiated by the 'lockBets' function.

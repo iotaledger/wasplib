@@ -14,48 +14,47 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncApproveResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncApproveResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncInitResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncApproveResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTransferResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTransferFromResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferFromResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewAllowanceResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferFromResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewAllowanceResults {
-    pub fn amount(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_AMOUNT))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewAllowanceResults {
     pub(crate) id: i32,
 }
@@ -66,16 +65,18 @@ impl ImmutableViewAllowanceResults {
     }
 }
 
-pub struct MutableViewBalanceOfResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewAllowanceResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewBalanceOfResults {
+impl MutableViewAllowanceResults {
     pub fn amount(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_AMOUNT))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewBalanceOfResults {
     pub(crate) id: i32,
 }
@@ -86,16 +87,18 @@ impl ImmutableViewBalanceOfResults {
     }
 }
 
-pub struct MutableViewTotalSupplyResults {
+#[derive(Clone, Copy)]
+pub struct MutableViewBalanceOfResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewTotalSupplyResults {
-    pub fn supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_SUPPLY))
+impl MutableViewBalanceOfResults {
+    pub fn amount(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_AMOUNT))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewTotalSupplyResults {
     pub(crate) id: i32,
 }
@@ -103,5 +106,16 @@ pub struct ImmutableViewTotalSupplyResults {
 impl ImmutableViewTotalSupplyResults {
     pub fn supply(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_SUPPLY))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewTotalSupplyResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewTotalSupplyResults {
+    pub fn supply(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_SUPPLY))
     }
 }

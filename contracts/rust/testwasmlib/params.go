@@ -9,50 +9,6 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncParamTypesParams struct {
-	id int32
-}
-
-func (s MutableFuncParamTypesParams) Address() wasmlib.ScMutableAddress {
-	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
-}
-
-func (s MutableFuncParamTypesParams) AgentId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
-}
-
-func (s MutableFuncParamTypesParams) Bytes() wasmlib.ScMutableBytes {
-	return wasmlib.NewScMutableBytes(s.id, idxMap[IdxParamBytes])
-}
-
-func (s MutableFuncParamTypesParams) ChainId() wasmlib.ScMutableChainId {
-	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
-}
-
-func (s MutableFuncParamTypesParams) Color() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
-}
-
-func (s MutableFuncParamTypesParams) Hash() wasmlib.ScMutableHash {
-	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
-}
-
-func (s MutableFuncParamTypesParams) Hname() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
-}
-
-func (s MutableFuncParamTypesParams) Int64() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
-}
-
-func (s MutableFuncParamTypesParams) RequestId() wasmlib.ScMutableRequestId {
-	return wasmlib.NewScMutableRequestId(s.id, idxMap[IdxParamRequestId])
-}
-
-func (s MutableFuncParamTypesParams) String() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
-}
-
 type ImmutableFuncParamTypesParams struct {
 	id int32
 }
@@ -95,4 +51,52 @@ func (s ImmutableFuncParamTypesParams) RequestId() wasmlib.ScImmutableRequestId 
 
 func (s ImmutableFuncParamTypesParams) String() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamString])
+}
+
+type MutableFuncParamTypesParams struct {
+	id int32
+}
+
+func NewMutableFuncParamTypesParams() MutableFuncParamTypesParams {
+	return MutableFuncParamTypesParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncParamTypesParams) Address() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
+}
+
+func (s MutableFuncParamTypesParams) AgentId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
+}
+
+func (s MutableFuncParamTypesParams) Bytes() wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(s.id, idxMap[IdxParamBytes])
+}
+
+func (s MutableFuncParamTypesParams) ChainId() wasmlib.ScMutableChainId {
+	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
+}
+
+func (s MutableFuncParamTypesParams) Color() wasmlib.ScMutableColor {
+	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
+}
+
+func (s MutableFuncParamTypesParams) Hash() wasmlib.ScMutableHash {
+	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
+}
+
+func (s MutableFuncParamTypesParams) Hname() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
+}
+
+func (s MutableFuncParamTypesParams) Int64() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
+}
+
+func (s MutableFuncParamTypesParams) RequestId() wasmlib.ScMutableRequestId {
+	return wasmlib.NewScMutableRequestId(s.id, idxMap[IdxParamRequestId])
+}
+
+func (s MutableFuncParamTypesParams) String() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
 }

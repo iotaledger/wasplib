@@ -5,6 +5,7 @@ use types::*;
 use wasmlib::*;
 
 use crate::*;
+use crate::contract::FairAuctionFunc;
 
 const DURATION_DEFAULT: i64 = 60;
 const DURATION_MIN: i64 = 1;
@@ -174,10 +175,11 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
     };
     current_auction.set_value(&auction);
 
-    let finalize_params = ScMutableMap::new();
-    finalize_params.get_color(PARAM_COLOR).set_value(&auction.color);
+    let mut sc = FairAuctionFunc::new(ctx);
+    let params = MutableFuncFinalizeAuctionParams::new();
+    params.color().set_value(&auction.color);
     let transfer = ScTransfers::iotas(1);
-    ctx.post_self(HFUNC_FINALIZE_AUCTION, Some(finalize_params), transfer, duration * 60);
+    sc.post().delay(duration * 60).finalize_auction(params, transfer);
 }
 
 pub fn view_get_info(ctx: &ScViewContext, f: &ViewGetInfoContext) {

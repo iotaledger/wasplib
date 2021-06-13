@@ -9,14 +9,6 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncCallOnChainResults struct {
-	id int32
-}
-
-func (s MutableFuncCallOnChainResults) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
-}
-
 type ImmutableFuncCallOnChainResults struct {
 	id int32
 }
@@ -25,32 +17,12 @@ func (s ImmutableFuncCallOnChainResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableFuncCheckContextFromFullEPResults struct {
+type MutableFuncCallOnChainResults struct {
 	id int32
 }
 
-type ImmutableFuncCheckContextFromFullEPResults struct {
-	id int32
-}
-
-type MutableFuncDoNothingResults struct {
-	id int32
-}
-
-type ImmutableFuncDoNothingResults struct {
-	id int32
-}
-
-type MutableFuncGetMintedSupplyResults struct {
-	id int32
-}
-
-func (s MutableFuncGetMintedSupplyResults) MintedColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.id, idxMap[IdxResultMintedColor])
-}
-
-func (s MutableFuncGetMintedSupplyResults) MintedSupply() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultMintedSupply])
+func (s MutableFuncCallOnChainResults) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
 type ImmutableFuncGetMintedSupplyResults struct {
@@ -65,36 +37,16 @@ func (s ImmutableFuncGetMintedSupplyResults) MintedSupply() wasmlib.ScImmutableI
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMintedSupply])
 }
 
-type MutableFuncIncCounterResults struct {
+type MutableFuncGetMintedSupplyResults struct {
 	id int32
 }
 
-type ImmutableFuncIncCounterResults struct {
-	id int32
+func (s MutableFuncGetMintedSupplyResults) MintedColor() wasmlib.ScMutableColor {
+	return wasmlib.NewScMutableColor(s.id, idxMap[IdxResultMintedColor])
 }
 
-type MutableFuncInitResults struct {
-	id int32
-}
-
-type ImmutableFuncInitResults struct {
-	id int32
-}
-
-type MutableFuncPassTypesFullResults struct {
-	id int32
-}
-
-type ImmutableFuncPassTypesFullResults struct {
-	id int32
-}
-
-type MutableFuncRunRecursionResults struct {
-	id int32
-}
-
-func (s MutableFuncRunRecursionResults) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
+func (s MutableFuncGetMintedSupplyResults) MintedSupply() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultMintedSupply])
 }
 
 type ImmutableFuncRunRecursionResults struct {
@@ -105,44 +57,12 @@ func (s ImmutableFuncRunRecursionResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableFuncSendToAddressResults struct {
+type MutableFuncRunRecursionResults struct {
 	id int32
 }
 
-type ImmutableFuncSendToAddressResults struct {
-	id int32
-}
-
-type MutableFuncSetIntResults struct {
-	id int32
-}
-
-type ImmutableFuncSetIntResults struct {
-	id int32
-}
-
-type MutableFuncTestCallPanicFullEPResults struct {
-	id int32
-}
-
-type ImmutableFuncTestCallPanicFullEPResults struct {
-	id int32
-}
-
-type MutableFuncTestCallPanicViewEPFromFullResults struct {
-	id int32
-}
-
-type ImmutableFuncTestCallPanicViewEPFromFullResults struct {
-	id int32
-}
-
-type MutableFuncTestChainOwnerIDFullResults struct {
-	id int32
-}
-
-func (s MutableFuncTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
+func (s MutableFuncRunRecursionResults) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
 type ImmutableFuncTestChainOwnerIDFullResults struct {
@@ -153,60 +73,12 @@ func (s ImmutableFuncTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScImmut
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type MutableFuncTestEventLogDeployResults struct {
+type MutableFuncTestChainOwnerIDFullResults struct {
 	id int32
 }
 
-type ImmutableFuncTestEventLogDeployResults struct {
-	id int32
-}
-
-type MutableFuncTestEventLogEventDataResults struct {
-	id int32
-}
-
-type ImmutableFuncTestEventLogEventDataResults struct {
-	id int32
-}
-
-type MutableFuncTestEventLogGenericDataResults struct {
-	id int32
-}
-
-type ImmutableFuncTestEventLogGenericDataResults struct {
-	id int32
-}
-
-type MutableFuncTestPanicFullEPResults struct {
-	id int32
-}
-
-type ImmutableFuncTestPanicFullEPResults struct {
-	id int32
-}
-
-type MutableFuncWithdrawToChainResults struct {
-	id int32
-}
-
-type ImmutableFuncWithdrawToChainResults struct {
-	id int32
-}
-
-type MutableViewCheckContextFromViewEPResults struct {
-	id int32
-}
-
-type ImmutableViewCheckContextFromViewEPResults struct {
-	id int32
-}
-
-type MutableViewFibonacciResults struct {
-	id int32
-}
-
-func (s MutableViewFibonacciResults) IntValue() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
+func (s MutableFuncTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
 type ImmutableViewFibonacciResults struct {
@@ -217,12 +89,12 @@ func (s ImmutableViewFibonacciResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableViewGetCounterResults struct {
+type MutableViewFibonacciResults struct {
 	id int32
 }
 
-func (s MutableViewGetCounterResults) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCounter])
+func (s MutableViewFibonacciResults) IntValue() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
 type ImmutableViewGetCounterResults struct {
@@ -233,44 +105,12 @@ func (s ImmutableViewGetCounterResults) Counter() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
-type MutableViewGetIntResults struct {
+type MutableViewGetCounterResults struct {
 	id int32
 }
 
-type ImmutableViewGetIntResults struct {
-	id int32
-}
-
-type MutableViewJustViewResults struct {
-	id int32
-}
-
-type ImmutableViewJustViewResults struct {
-	id int32
-}
-
-type MutableViewPassTypesViewResults struct {
-	id int32
-}
-
-type ImmutableViewPassTypesViewResults struct {
-	id int32
-}
-
-type MutableViewTestCallPanicViewEPFromViewResults struct {
-	id int32
-}
-
-type ImmutableViewTestCallPanicViewEPFromViewResults struct {
-	id int32
-}
-
-type MutableViewTestChainOwnerIDViewResults struct {
-	id int32
-}
-
-func (s MutableViewTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
+func (s MutableViewGetCounterResults) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
 type ImmutableViewTestChainOwnerIDViewResults struct {
@@ -281,20 +121,12 @@ func (s ImmutableViewTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScImmut
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type MutableViewTestPanicViewEPResults struct {
+type MutableViewTestChainOwnerIDViewResults struct {
 	id int32
 }
 
-type ImmutableViewTestPanicViewEPResults struct {
-	id int32
-}
-
-type MutableViewTestSandboxCallResults struct {
-	id int32
-}
-
-func (s MutableViewTestSandboxCallResults) SandboxCall() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultSandboxCall])
+func (s MutableViewTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
 type ImmutableViewTestSandboxCallResults struct {
@@ -303,4 +135,12 @@ type ImmutableViewTestSandboxCallResults struct {
 
 func (s ImmutableViewTestSandboxCallResults) SandboxCall() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultSandboxCall])
+}
+
+type MutableViewTestSandboxCallResults struct {
+	id int32
+}
+
+func (s MutableViewTestSandboxCallResults) SandboxCall() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultSandboxCall])
 }

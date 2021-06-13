@@ -14,10 +14,12 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncParamTypesResults {
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncParamTypesResults {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableFuncParamTypesResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncParamTypesResults {
     pub(crate) id: i32,
 }

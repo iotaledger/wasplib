@@ -14,112 +14,127 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncCallIncrementResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallIncrementResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncCallIncrementRecurse5xResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallIncrementResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallIncrementRecurse5xResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncIncrementResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallIncrementRecurse5xResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncEndlessLoopResults {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncEndlessLoopResults {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncIncrementResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncInitResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncIncrementResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLocalStateInternalCallResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStateInternalCallResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLocalStatePostResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStateInternalCallResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStatePostResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLocalStateSandboxCallResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStatePostResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStateSandboxCallResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLoopResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStateSandboxCallResults {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableFuncLoopResults {
-    pub(crate) id: i32,
-}
-
-pub struct MutableFuncPostIncrementResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPostIncrementResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncRepeatManyResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPostIncrementResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncRepeatManyResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTestLeb128Results {
+#[derive(Clone, Copy)]
+pub struct MutableFuncRepeatManyResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestLeb128Results {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncWhenMustIncrementResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestLeb128Results {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncWhenMustIncrementResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewGetCounterResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncWhenMustIncrementResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetCounterResults {
-    pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_COUNTER))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetCounterResults {
     pub(crate) id: i32,
 }
@@ -127,5 +142,16 @@ pub struct ImmutableViewGetCounterResults {
 impl ImmutableViewGetCounterResults {
     pub fn counter(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_COUNTER))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetCounterResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetCounterResults {
+    pub fn counter(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_COUNTER))
     }
 }

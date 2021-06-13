@@ -10,42 +10,43 @@ package inccounter
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "inccounter"
+	ScName  = "inccounter"
 	HScName = wasmlib.ScHname(0xaf2438e9)
 
-	ParamCounter = wasmlib.Key("counter")
+	ParamCounter    = wasmlib.Key("counter")
+	ParamDummy      = wasmlib.Key("dummy")
 	ParamNumRepeats = wasmlib.Key("numRepeats")
 
 	ResultCounter = wasmlib.Key("counter")
 
-	StateCounter = wasmlib.Key("counter")
+	StateCounter    = wasmlib.Key("counter")
 	StateNumRepeats = wasmlib.Key("numRepeats")
 
-	FuncCallIncrement = "callIncrement"
+	FuncCallIncrement          = "callIncrement"
 	FuncCallIncrementRecurse5x = "callIncrementRecurse5x"
-	FuncIncrement = "increment"
-	FuncInit = "init"
+	FuncEndlessLoop            = "endlessLoop"
+	FuncIncrement              = "increment"
+	FuncInit                   = "init"
 	FuncLocalStateInternalCall = "localStateInternalCall"
-	FuncLocalStatePost = "localStatePost"
-	FuncLocalStateSandboxCall = "localStateSandboxCall"
-	FuncLoop = "loop"
-	FuncPostIncrement = "postIncrement"
-	FuncRepeatMany = "repeatMany"
-	FuncTestLeb128 = "testLeb128"
-	FuncWhenMustIncrement = "whenMustIncrement"
-	ViewGetCounter = "getCounter"
+	FuncLocalStatePost         = "localStatePost"
+	FuncLocalStateSandboxCall  = "localStateSandboxCall"
+	FuncPostIncrement          = "postIncrement"
+	FuncRepeatMany             = "repeatMany"
+	FuncTestLeb128             = "testLeb128"
+	FuncWhenMustIncrement      = "whenMustIncrement"
+	ViewGetCounter             = "getCounter"
 
-	HFuncCallIncrement = wasmlib.ScHname(0xeb5dcacd)
+	HFuncCallIncrement          = wasmlib.ScHname(0xeb5dcacd)
 	HFuncCallIncrementRecurse5x = wasmlib.ScHname(0x8749fbff)
-	HFuncIncrement = wasmlib.ScHname(0xd351bd12)
-	HFuncInit = wasmlib.ScHname(0x1f44d644)
+	HFuncEndlessLoop            = wasmlib.ScHname(0x365f0929)
+	HFuncIncrement              = wasmlib.ScHname(0xd351bd12)
+	HFuncInit                   = wasmlib.ScHname(0x1f44d644)
 	HFuncLocalStateInternalCall = wasmlib.ScHname(0xecfc5d33)
-	HFuncLocalStatePost = wasmlib.ScHname(0x3fd54d13)
-	HFuncLocalStateSandboxCall = wasmlib.ScHname(0x7bd22c53)
-	HFuncLoop = wasmlib.ScHname(0xa9a20fa9)
-	HFuncPostIncrement = wasmlib.ScHname(0x81c772f5)
-	HFuncRepeatMany = wasmlib.ScHname(0x4ff450d3)
-	HFuncTestLeb128 = wasmlib.ScHname(0xd8364cb9)
-	HFuncWhenMustIncrement = wasmlib.ScHname(0xb4c3e7a6)
-	HViewGetCounter = wasmlib.ScHname(0xb423e607)
+	HFuncLocalStatePost         = wasmlib.ScHname(0x3fd54d13)
+	HFuncLocalStateSandboxCall  = wasmlib.ScHname(0x7bd22c53)
+	HFuncPostIncrement          = wasmlib.ScHname(0x81c772f5)
+	HFuncRepeatMany             = wasmlib.ScHname(0x4ff450d3)
+	HFuncTestLeb128             = wasmlib.ScHname(0xd8364cb9)
+	HFuncWhenMustIncrement      = wasmlib.ScHname(0xb4c3e7a6)
+	HViewGetCounter             = wasmlib.ScHname(0xb423e607)
 )

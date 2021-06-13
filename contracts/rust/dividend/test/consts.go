@@ -10,31 +10,31 @@ package test
 import "github.com/iotaledger/wasp/packages/coretypes"
 
 const (
-	ScName = "dividend"
+	ScName        = "dividend"
 	ScDescription = "Simple dividend smart contract"
-	HScName = coretypes.Hname(0xcce2e239)
+	HScName       = coretypes.Hname(0xcce2e239)
 
 	ParamAddress = "address"
-	ParamFactor = "factor"
-	ParamOwner = "owner"
+	ParamFactor  = "factor"
+	ParamOwner   = "owner"
 
 	ResultFactor = "factor"
 
-	StateFactor = "factor"
-	StateMemberList = "memberList"
-	StateMembers = "members"
-	StateOwner = "owner"
+	StateFactor      = "factor"
+	StateMemberList  = "memberList"
+	StateMembers     = "members"
+	StateOwner       = "owner"
 	StateTotalFactor = "totalFactor"
 
-	FuncDivide = "divide"
-	FuncInit = "init"
-	FuncMember = "member"
-	FuncSetOwner = "setOwner"
+	FuncDivide    = "divide"
+	FuncInit      = "init"
+	FuncMember    = "member"
+	FuncSetOwner  = "setOwner"
 	ViewGetFactor = "getFactor"
 
-	HFuncDivide = coretypes.Hname(0xc7878107)
-	HFuncInit = coretypes.Hname(0x1f44d644)
-	HFuncMember = coretypes.Hname(0xc07da2cb)
-	HFuncSetOwner = coretypes.Hname(0x2a15fe7b)
+	HFuncDivide    = coretypes.Hname(0xc7878107)
+	HFuncInit      = coretypes.Hname(0x1f44d644)
+	HFuncMember    = coretypes.Hname(0xc07da2cb)
+	HFuncSetOwner  = coretypes.Hname(0x2a15fe7b)
 	HViewGetFactor = coretypes.Hname(0x0ee668fe)
 )

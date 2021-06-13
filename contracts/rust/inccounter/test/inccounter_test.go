@@ -181,7 +181,7 @@ func TestLoop(t *testing.T) {
 	chain := setupTest(t)
 
 	wasmhost.WasmTimeout = 1 * time.Second
-	req := solo.NewCallParams(ScName, FuncLoop).WithIotas(1)
+	req := solo.NewCallParams(ScName, FuncEndlessLoop).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	errText := err.Error()

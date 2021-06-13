@@ -7,10 +7,10 @@
 
 package testwasmlib
 
-type MutableTestWasmLibState struct {
+type ImmutableTestWasmLibState struct {
 	id int32
 }
 
-type ImmutableTestWasmLibState struct {
+type MutableTestWasmLibState struct {
 	id int32
 }

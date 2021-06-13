@@ -14,28 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableTestCoreState {
-    pub(crate) id: i32,
-}
-
-impl MutableTestCoreState {
-    pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
-    }
-
-    pub fn hname_ep(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
-    }
-
-    pub fn minted_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_STATE_MINTED_COLOR))
-    }
-
-    pub fn minted_supply(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_MINTED_SUPPLY))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableTestCoreState {
     pub(crate) id: i32,
 }
@@ -55,5 +34,28 @@ impl ImmutableTestCoreState {
 
     pub fn minted_supply(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_STATE_MINTED_SUPPLY))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableTestCoreState {
+    pub(crate) id: i32,
+}
+
+impl MutableTestCoreState {
+    pub fn counter(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_COUNTER))
+    }
+
+    pub fn hname_ep(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
+    }
+
+    pub fn minted_color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_STATE_MINTED_COLOR))
+    }
+
+    pub fn minted_supply(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_MINTED_SUPPLY))
     }
 }

@@ -14,52 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncParamTypesParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncParamTypesParams {
-    pub fn address(&self) -> ScMutableAddress {
-        ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
-    }
-
-    pub fn agent_id(&self) -> ScMutableAgentId {
-        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
-    }
-
-    pub fn bytes(&self) -> ScMutableBytes {
-        ScMutableBytes::new(self.id, idx_map(IDX_PARAM_BYTES))
-    }
-
-    pub fn chain_id(&self) -> ScMutableChainId {
-        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
-    }
-
-    pub fn color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
-    }
-
-    pub fn hash(&self) -> ScMutableHash {
-        ScMutableHash::new(self.id, idx_map(IDX_PARAM_HASH))
-    }
-
-    pub fn hname(&self) -> ScMutableHname {
-        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
-    }
-
-    pub fn int64(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
-    }
-
-    pub fn request_id(&self) -> ScMutableRequestId {
-        ScMutableRequestId::new(self.id, idx_map(IDX_PARAM_REQUEST_ID))
-    }
-
-    pub fn string(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncParamTypesParams {
     pub(crate) id: i32,
 }
@@ -103,5 +58,56 @@ impl ImmutableFuncParamTypesParams {
 
     pub fn string(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, idx_map(IDX_PARAM_STRING))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncParamTypesParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncParamTypesParams {
+    pub fn new() -> MutableFuncParamTypesParams {
+        MutableFuncParamTypesParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn address(&self) -> ScMutableAddress {
+        ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
+    }
+
+    pub fn agent_id(&self) -> ScMutableAgentId {
+        ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_AGENT_ID))
+    }
+
+    pub fn bytes(&self) -> ScMutableBytes {
+        ScMutableBytes::new(self.id, idx_map(IDX_PARAM_BYTES))
+    }
+
+    pub fn chain_id(&self) -> ScMutableChainId {
+        ScMutableChainId::new(self.id, idx_map(IDX_PARAM_CHAIN_ID))
+    }
+
+    pub fn color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
+    }
+
+    pub fn hash(&self) -> ScMutableHash {
+        ScMutableHash::new(self.id, idx_map(IDX_PARAM_HASH))
+    }
+
+    pub fn hname(&self) -> ScMutableHname {
+        ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
+    }
+
+    pub fn int64(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
+    }
+
+    pub fn request_id(&self) -> ScMutableRequestId {
+        ScMutableRequestId::new(self.id, idx_map(IDX_PARAM_REQUEST_ID))
+    }
+
+    pub fn string(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
     }
 }

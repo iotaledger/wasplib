@@ -4,31 +4,9 @@
 use wasmlib::*;
 
 use crate::*;
+use crate::contract::IncCounterFunc;
 
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
-
-pub fn func_call_increment(ctx: &ScFuncContext, f: &FuncCallIncrementContext) {
-    let counter = f.state.counter();
-    let value = counter.value();
-    counter.set_value(value + 1);
-    if value == 0 {
-        ctx.call_self(HFUNC_CALL_INCREMENT, None, None);
-    }
-}
-
-pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, f: &FuncCallIncrementRecurse5xContext) {
-    let counter = f.state.counter();
-    let value = counter.value();
-    counter.set_value(value + 1);
-    if value < 5 {
-        ctx.call_self(HFUNC_CALL_INCREMENT_RECURSE5X, None, None);
-    }
-}
-
-pub fn func_increment(_ctx: &ScFuncContext, f: &FuncIncrementContext) {
-    let counter = f.state.counter();
-    counter.set_value(counter.value() + 1);
-}
 
 pub fn func_init(_ctx: &ScFuncContext, f: &FuncInitContext) {
     if f.params.counter().exists() {
@@ -37,16 +15,45 @@ pub fn func_init(_ctx: &ScFuncContext, f: &FuncInitContext) {
     }
 }
 
+pub fn func_call_increment(ctx: &ScFuncContext, f: &FuncCallIncrementContext) {
+    let counter = f.state.counter();
+    let value = counter.value();
+    counter.set_value(value + 1);
+    if value == 0 {
+        let mut sc = IncCounterFunc::new(ctx);
+        sc.call_increment(ScTransfers::none());
+    }
+}
+
+pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, f: &FuncCallIncrementRecurse5xContext) {
+    let counter = f.state.counter();
+    let value = counter.value();
+    counter.set_value(value + 1);
+    if value < 5 {
+        let mut sc = IncCounterFunc::new(ctx);
+        sc.call_increment_recurse5x(ScTransfers::none());
+    }
+}
+
+pub fn func_endless_loop(_ctx: &ScFuncContext, _f: &FuncEndlessLoopContext) {
+    loop {}
+}
+
+pub fn func_increment(_ctx: &ScFuncContext, f: &FuncIncrementContext) {
+    let counter = f.state.counter();
+    counter.set_value(counter.value() + 1);
+}
+
 pub fn func_local_state_internal_call(ctx: &ScFuncContext, f: &FuncLocalStateInternalCallContext) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
-    func_when_must_increment_state(ctx, &f.state);
+    when_must_increment_state(ctx, &f.state);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    func_when_must_increment_state(ctx, &f.state);
-    func_when_must_increment_state(ctx, &f.state);
+    when_must_increment_state(ctx, &f.state);
+    when_must_increment_state(ctx, &f.state);
     // counter ends up as 2
 }
 
@@ -64,29 +71,20 @@ pub fn func_local_state_post(ctx: &ScFuncContext, _f: &FuncLocalStatePostContext
     // counter ends up as 0
 }
 
-fn local_state_post(ctx: &ScFuncContext, nr: i64) {
-    //note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
-    let params = ScMutableMap::new();
-    params.get_int64(STATE_COUNTER).set_value(nr);
-    let transfer = ScTransfers::iotas(1);
-    ctx.post_self(HFUNC_WHEN_MUST_INCREMENT, Some(params), transfer, 0);
-}
-
 pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _f: &FuncLocalStateSandboxCallContext) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
+    let mut sc = IncCounterFunc::new(ctx);
+    let params = MutableFuncWhenMustIncrementParams::new();
+    let none = ScTransfers::none();
+    sc.when_must_increment(params, none);
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
-    ctx.call_self(HFUNC_WHEN_MUST_INCREMENT, None, None);
+    sc.when_must_increment(params, none);
+    sc.when_must_increment(params, none);
     // counter ends up as 0
-}
-
-pub fn func_loop(_ctx: &ScFuncContext, _f: &FuncLoopContext) {
-    loop {}
 }
 
 pub fn func_post_increment(ctx: &ScFuncContext, f: &FuncPostIncrementContext) {
@@ -94,8 +92,8 @@ pub fn func_post_increment(ctx: &ScFuncContext, f: &FuncPostIncrementContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        let transfer = ScTransfers::iotas(1);
-        ctx.post_self(HFUNC_POST_INCREMENT, None, transfer, 0);
+        let mut sc = IncCounterFunc::new(ctx);
+        sc.post().increment(ScTransfers::iotas(1));
     }
 }
 
@@ -112,23 +110,29 @@ pub fn func_repeat_many(ctx: &ScFuncContext, f: &FuncRepeatManyContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    let transfer = ScTransfers::iotas(1);
-    ctx.post_self(HFUNC_REPEAT_MANY, None, transfer, 0);
+    let mut sc = IncCounterFunc::new(ctx);
+    let params = MutableFuncRepeatManyParams::new();
+    sc.post().repeat_many(params, ScTransfers::iotas(1));
+}
+
+pub fn func_test_leb128(ctx: &ScFuncContext, _f: &FuncTestLeb128Context) {
+    leb128_save(ctx, "v-1", -1);
+    leb128_save(ctx, "v-2", -2);
+    leb128_save(ctx, "v-126", -126);
+    leb128_save(ctx, "v-127", -127);
+    leb128_save(ctx, "v-128", -128);
+    leb128_save(ctx, "v-129", -129);
+    leb128_save(ctx, "v0", 0);
+    leb128_save(ctx, "v+1", 1);
+    leb128_save(ctx, "v+2", 2);
+    leb128_save(ctx, "v+126", 126);
+    leb128_save(ctx, "v+127", 127);
+    leb128_save(ctx, "v+128", 128);
+    leb128_save(ctx, "v+129", 129);
 }
 
 pub fn func_when_must_increment(ctx: &ScFuncContext, f: &FuncWhenMustIncrementContext) {
-    func_when_must_increment_state(ctx, &f.state);
-}
-
-pub fn func_when_must_increment_state(ctx: &ScFuncContext, state: &MutableIncCounterState) {
-    ctx.log("when_must_increment called");
-    unsafe {
-        if !LOCAL_STATE_MUST_INCREMENT {
-            return;
-        }
-    }
-    let counter = state.counter();
-    counter.set_value(counter.value() + 1);
+    when_must_increment_state(ctx, &f.state);
 }
 
 // note that get_counter mirrors the state of the 'counter' state variable
@@ -140,23 +144,7 @@ pub fn view_get_counter(_ctx: &ScViewContext, f: &ViewGetCounterContext) {
     }
 }
 
-pub fn func_test_leb128(ctx: &ScFuncContext, _f: &FuncTestLeb128Context) {
-    save(ctx, "v-1", -1);
-    save(ctx, "v-2", -2);
-    save(ctx, "v-126", -126);
-    save(ctx, "v-127", -127);
-    save(ctx, "v-128", -128);
-    save(ctx, "v-129", -129);
-    save(ctx, "v0", 0);
-    save(ctx, "v+1", 1);
-    save(ctx, "v+2", 2);
-    save(ctx, "v+126", 126);
-    save(ctx, "v+127", 127);
-    save(ctx, "v+128", 128);
-    save(ctx, "v+129", 129);
-}
-
-fn save(ctx: &ScFuncContext, name: &str, value: i64) {
+fn leb128_save(ctx: &ScFuncContext, name: &str, value: i64) {
     let mut encoder = BytesEncoder::new();
     encoder.int64(value);
     let spot = ctx.state().get_bytes(name);
@@ -169,4 +157,23 @@ fn save(ctx: &ScFuncContext, name: &str, value: i64) {
         ctx.log(&(name.to_string() + " in : " + &value.to_string()));
         ctx.log(&(name.to_string() + " out: " + &retrieved.to_string()));
     }
+}
+
+fn local_state_post(ctx: &ScFuncContext, nr: i64) {
+    //note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
+    let mut sc = IncCounterFunc::new(ctx);
+    let params = MutableFuncWhenMustIncrementParams::new();
+    params.dummy().set_value(nr);
+    sc.post().when_must_increment(params, ScTransfers::iotas(1));
+}
+
+fn when_must_increment_state(ctx: &ScFuncContext, state: &MutableIncCounterState) {
+    ctx.log("when_must_increment called");
+    unsafe {
+        if !LOCAL_STATE_MUST_INCREMENT {
+            return;
+        }
+    }
+    let counter = state.counter();
+    counter.set_value(counter.value() + 1);
 }

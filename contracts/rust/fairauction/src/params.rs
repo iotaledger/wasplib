@@ -14,16 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncFinalizeAuctionParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncFinalizeAuctionParams {
-    pub fn color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncFinalizeAuctionParams {
     pub(crate) id: i32,
 }
@@ -34,16 +25,22 @@ impl ImmutableFuncFinalizeAuctionParams {
     }
 }
 
-pub struct MutableFuncPlaceBidParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncFinalizeAuctionParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncPlaceBidParams {
+impl MutableFuncFinalizeAuctionParams {
+    pub fn new() -> MutableFuncFinalizeAuctionParams {
+        MutableFuncFinalizeAuctionParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn color(&self) -> ScMutableColor {
         ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPlaceBidParams {
     pub(crate) id: i32,
 }
@@ -54,16 +51,22 @@ impl ImmutableFuncPlaceBidParams {
     }
 }
 
-pub struct MutableFuncSetOwnerMarginParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPlaceBidParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncSetOwnerMarginParams {
-    pub fn owner_margin(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_OWNER_MARGIN))
+impl MutableFuncPlaceBidParams {
+    pub fn new() -> MutableFuncPlaceBidParams {
+        MutableFuncPlaceBidParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncSetOwnerMarginParams {
     pub(crate) id: i32,
 }
@@ -74,28 +77,22 @@ impl ImmutableFuncSetOwnerMarginParams {
     }
 }
 
-pub struct MutableFuncStartAuctionParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncSetOwnerMarginParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncStartAuctionParams {
-    pub fn color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
+impl MutableFuncSetOwnerMarginParams {
+    pub fn new() -> MutableFuncSetOwnerMarginParams {
+        MutableFuncSetOwnerMarginParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn description(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
-    }
-
-    pub fn duration(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_DURATION))
-    }
-
-    pub fn minimum_bid(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_MINIMUM_BID))
+    pub fn owner_margin(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_OWNER_MARGIN))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncStartAuctionParams {
     pub(crate) id: i32,
 }
@@ -118,16 +115,34 @@ impl ImmutableFuncStartAuctionParams {
     }
 }
 
-pub struct MutableViewGetInfoParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncStartAuctionParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetInfoParams {
+impl MutableFuncStartAuctionParams {
+    pub fn new() -> MutableFuncStartAuctionParams {
+        MutableFuncStartAuctionParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn color(&self) -> ScMutableColor {
         ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
+
+    pub fn description(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
+    }
+
+    pub fn duration(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_DURATION))
+    }
+
+    pub fn minimum_bid(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_MINIMUM_BID))
+    }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetInfoParams {
     pub(crate) id: i32,
 }
@@ -135,5 +150,20 @@ pub struct ImmutableViewGetInfoParams {
 impl ImmutableViewGetInfoParams {
     pub fn color(&self) -> ScImmutableColor {
         ScImmutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetInfoParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetInfoParams {
+    pub fn new() -> MutableViewGetInfoParams {
+        MutableViewGetInfoParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }

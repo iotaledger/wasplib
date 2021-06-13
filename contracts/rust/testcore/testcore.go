@@ -12,32 +12,32 @@ const MsgFullPanic = "========== panic FULL ENTRY POINT ========="
 const MsgViewPanic = "========== panic VIEW ========="
 
 func funcCallOnChain(ctx wasmlib.ScFuncContext, f *FuncCallOnChainContext) {
-	paramInt := f.Params.IntValue().Value()
+	paramIn := f.Params.IntValue().Value()
 
-	targetContract := ctx.Contract()
+	hnameContract := ctx.Contract()
 	if f.Params.HnameContract().Exists() {
-		targetContract = f.Params.HnameContract().Value()
+		hnameContract = f.Params.HnameContract().Value()
 	}
 
-	targetEp := HFuncCallOnChain
+	hnameEP := HFuncCallOnChain
 	if f.Params.HnameEP().Exists() {
-		targetEp = f.Params.HnameEP().Value()
+		hnameEP = f.Params.HnameEP().Value()
 	}
 
-	varCounter := f.State.Counter()
+	counter := f.State.Counter()
 
 	ctx.Log("call depth = " + f.Params.IntValue().String() +
-		", hnameContract = " + targetContract.String() +
-		", hnameEP = " + targetEp.String() +
-		", counter = " + varCounter.String())
+		", hnameContract = " + hnameContract.String() +
+		", hnameEP = " + hnameEP.String() +
+		", counter = " + counter.String())
 
-	varCounter.SetValue(varCounter.Value() + 1)
+	counter.SetValue(counter.Value() + 1)
 
 	params := wasmlib.NewScMutableMap()
-	params.GetInt64(ParamIntValue).SetValue(paramInt)
-	ret := ctx.Call(targetContract, targetEp, params, nil)
-	retVal := ret.GetInt64(ParamIntValue)
-	f.Results.IntValue().SetValue(retVal.Value())
+	params.GetInt64(ParamIntValue).SetValue(paramIn)
+	ret := ctx.Call(hnameContract, hnameEP, params, nil)
+	retVal := ret.GetInt64(ParamIntValue).Value()
+	f.Results.IntValue().SetValue(retVal)
 }
 
 func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, f *FuncCheckContextFromFullEPContext) {
@@ -88,12 +88,12 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, f *FuncRunRecursionContext) {
 		return
 	}
 
-	parms := wasmlib.NewScMutableMap()
-	parms.GetInt64(ParamIntValue).SetValue(depth - 1)
-	parms.GetHname(ParamHnameEP).SetValue(HFuncRunRecursion)
-	ctx.CallSelf(HFuncCallOnChain, parms, nil)
-	// TODO how would I return result of the call ???
-	f.Results.IntValue().SetValue(depth - 1)
+	parms := NewMutableFuncCallOnChainParams()
+	parms.IntValue().SetValue(depth - 1)
+	parms.HnameEP().SetValue(HFuncRunRecursion)
+	results := NewTestCoreFunc(ctx).CallOnChain(parms, wasmlib.NoScTransfers())
+	retVal := results.IntValue().Value()
+	f.Results.IntValue().SetValue(retVal)
 }
 
 func funcSendToAddress(ctx wasmlib.ScFuncContext, f *FuncSendToAddressContext) {
@@ -106,11 +106,11 @@ func funcSetInt(ctx wasmlib.ScFuncContext, f *FuncSetIntContext) {
 }
 
 func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, f *FuncTestCallPanicFullEPContext) {
-	ctx.CallSelf(HFuncTestPanicFullEP, nil, nil)
+	NewTestCoreFunc(ctx).TestPanicFullEP(wasmlib.NoScTransfers())
 }
 
 func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, f *FuncTestCallPanicViewEPFromFullContext) {
-	ctx.CallSelf(HViewTestPanicViewEP, nil, nil)
+	NewTestCoreFunc(ctx).TestPanicViewEP()
 }
 
 func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *FuncTestChainOwnerIDFullContext) {
@@ -154,15 +154,14 @@ func viewFibonacci(ctx wasmlib.ScViewContext, f *ViewFibonacciContext) {
 		f.Results.IntValue().SetValue(n)
 		return
 	}
-	parms1 := wasmlib.NewScMutableMap()
-	parms1.GetInt64(ParamIntValue).SetValue(n - 1)
-	results1 := ctx.CallSelf(HViewFibonacci, parms1)
-	n1 := results1.GetInt64(ParamIntValue).Value()
 
-	parms2 := wasmlib.NewScMutableMap()
-	parms2.GetInt64(ParamIntValue).SetValue(n - 2)
-	results2 := ctx.CallSelf(HViewFibonacci, parms2)
-	n2 := results2.GetInt64(ParamIntValue).Value()
+	parms1 := NewMutableViewFibonacciParams()
+	parms1.IntValue().SetValue(n - 1)
+	n1 := NewTestCoreView(ctx).Fibonacci(parms1).IntValue().Value()
+
+	parms2 := NewMutableViewFibonacciParams()
+	parms2.IntValue().SetValue(n - 2)
+	n2 := NewTestCoreView(ctx).Fibonacci(parms2).IntValue().Value()
 
 	f.Results.IntValue().SetValue(n1 + n2)
 }
@@ -194,7 +193,7 @@ func viewPassTypesView(ctx wasmlib.ScViewContext, f *ViewPassTypesViewContext) {
 }
 
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *ViewTestCallPanicViewEPFromViewContext) {
-	ctx.CallSelf(HViewTestPanicViewEP, nil)
+	NewTestCoreView(ctx).TestPanicViewEP()
 }
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *ViewTestChainOwnerIDViewContext) {

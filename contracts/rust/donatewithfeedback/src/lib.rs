@@ -22,6 +22,7 @@ use crate::results::*;
 use crate::state::*;
 
 mod consts;
+mod contract;
 mod keys;
 mod params;
 mod results;

@@ -4,6 +4,7 @@
 use wasmlib::*;
 
 use crate::*;
+use crate::contract::{TestCoreFunc, TestCoreView};
 
 const CONTRACT_NAME_DEPLOYED: &str = "exampleDeployTR";
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
@@ -12,28 +13,28 @@ const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
 pub fn func_call_on_chain(ctx: &ScFuncContext, f: &FuncCallOnChainContext) {
     let param_int = f.params.int_value().value();
 
-    let mut target_contract = ctx.contract();
+    let mut hname_contract = ctx.contract();
     if f.params.hname_contract().exists() {
-        target_contract = f.params.hname_contract().value();
+        hname_contract = f.params.hname_contract().value();
     }
 
-    let mut target_ep = HFUNC_CALL_ON_CHAIN;
+    let mut hname_ep = HFUNC_CALL_ON_CHAIN;
     if f.params.hname_ep().exists() {
-        target_ep = f.params.hname_ep().value();
+        hname_ep = f.params.hname_ep().value();
     }
 
     let counter = f.state.counter();
     ctx.log(&format!("call depth = {}, hnameContract = {}, hnameEP = {}, counter = {}",
                      &f.params.int_value().to_string(),
-                     &target_contract.to_string(),
-                     &target_ep.to_string(),
+                     &hname_contract.to_string(),
+                     &hname_ep.to_string(),
                      &counter.to_string()));
 
     counter.set_value(counter.value() + 1);
 
     let parms = ScMutableMap::new();
     parms.get_int64(PARAM_INT_VALUE).set_value(param_int);
-    let ret = ctx.call(target_contract, target_ep, Some(parms), None);
+    let ret = ctx.call(hname_contract, hname_ep, Some(parms), None);
     let ret_val = ret.get_int64(PARAM_INT_VALUE);
     f.results.int_value().set_value(ret_val.value());
 }
@@ -86,12 +87,13 @@ pub fn func_run_recursion(ctx: &ScFuncContext, f: &FuncRunRecursionContext) {
         return;
     }
 
-    let parms = ScMutableMap::new();
-    parms.get_int64(PARAM_INT_VALUE).set_value(depth - 1);
-    parms.get_hname(PARAM_HNAME_EP).set_value(HFUNC_RUN_RECURSION);
-    ctx.call_self(HFUNC_CALL_ON_CHAIN, Some(parms), None);
-    // TODO how would I return result of the call ???
-    f.results.int_value().set_value(depth - 1);
+    let mut sc = TestCoreFunc::new(ctx);
+    let parms = MutableFuncCallOnChainParams::new();
+    parms.int_value().set_value(depth - 1);
+    parms.hname_ep().set_value(HFUNC_RUN_RECURSION);
+    let results = sc.call_on_chain(parms, ScTransfers::none());
+    let ret_val = results.int_value().value();
+    f.results.int_value().set_value(ret_val);
 }
 
 pub fn func_send_to_address(ctx: &ScFuncContext, f: &FuncSendToAddressContext) {
@@ -104,11 +106,13 @@ pub fn func_set_int(ctx: &ScFuncContext, f: &FuncSetIntContext) {
 }
 
 pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _f: &FuncTestCallPanicFullEPContext) {
-    ctx.call_self(HFUNC_TEST_PANIC_FULL_EP, None, None);
+    let mut sc = TestCoreFunc::new(ctx);
+    sc.test_panic_full_ep(ScTransfers::none());
 }
 
 pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _f: &FuncTestCallPanicViewEPFromFullContext) {
-    ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None, None);
+    let mut sc = TestCoreFunc::new(ctx);
+    sc.test_panic_view_ep();
 }
 
 pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, f: &FuncTestChainOwnerIDFullContext) {
@@ -152,15 +156,17 @@ pub fn view_fibonacci(ctx: &ScViewContext, f: &ViewFibonacciContext) {
         f.results.int_value().set_value(n);
         return;
     }
-    let parms1 = ScMutableMap::new();
-    parms1.get_int64(PARAM_INT_VALUE).set_value(n - 1);
-    let results1 = ctx.call_self(HVIEW_FIBONACCI, Some(parms1));
-    let n1 = results1.get_int64(PARAM_INT_VALUE).value();
 
-    let parms2 = ScMutableMap::new();
-    parms2.get_int64(PARAM_INT_VALUE).set_value(n - 2);
-    let results2 = ctx.call_self(HVIEW_FIBONACCI, Some(parms2));
-    let n2 = results2.get_int64(PARAM_INT_VALUE).value();
+    let mut sc = TestCoreView::new(ctx);
+    let parms1 = MutableViewFibonacciParams::new();
+    parms1.int_value().set_value(n - 1);
+    let results1 = sc.fibonacci(parms1);
+    let n1 = results1.int_value().value();
+
+    let parms2 = MutableViewFibonacciParams::new();
+    parms2.int_value().set_value(n - 2);
+    let results2 = sc.fibonacci(parms2);
+    let n2 = results2.int_value().value();
 
     f.results.int_value().set_value(n1 + n2);
 }
@@ -192,7 +198,8 @@ pub fn view_pass_types_view(ctx: &ScViewContext, f: &ViewPassTypesViewContext) {
 }
 
 pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _f: &ViewTestCallPanicViewEPFromViewContext) {
-    ctx.call_self(HVIEW_TEST_PANIC_VIEW_EP, None);
+    let mut sc = TestCoreView::new(ctx);
+    sc.test_panic_view_ep();
 }
 
 pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, f: &ViewTestChainOwnerIDViewContext) {

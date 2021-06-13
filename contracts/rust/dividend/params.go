@@ -9,22 +9,6 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncDivideParams struct {
-	id int32
-}
-
-type ImmutableFuncDivideParams struct {
-	id int32
-}
-
-type MutableFuncInitParams struct {
-	id int32
-}
-
-func (s MutableFuncInitParams) Owner() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamOwner])
-}
-
 type ImmutableFuncInitParams struct {
 	id int32
 }
@@ -33,16 +17,16 @@ func (s ImmutableFuncInitParams) Owner() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamOwner])
 }
 
-type MutableFuncMemberParams struct {
+type MutableFuncInitParams struct {
 	id int32
 }
 
-func (s MutableFuncMemberParams) Address() wasmlib.ScMutableAddress {
-	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
+func NewMutableFuncInitParams() MutableFuncInitParams {
+	return MutableFuncInitParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncMemberParams) Factor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamFactor])
+func (s MutableFuncInitParams) Owner() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamOwner])
 }
 
 type ImmutableFuncMemberParams struct {
@@ -57,12 +41,20 @@ func (s ImmutableFuncMemberParams) Factor() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamFactor])
 }
 
-type MutableFuncSetOwnerParams struct {
+type MutableFuncMemberParams struct {
 	id int32
 }
 
-func (s MutableFuncSetOwnerParams) Owner() wasmlib.ScMutableAgentId {
-	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamOwner])
+func NewMutableFuncMemberParams() MutableFuncMemberParams {
+	return MutableFuncMemberParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncMemberParams) Address() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
+}
+
+func (s MutableFuncMemberParams) Factor() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamFactor])
 }
 
 type ImmutableFuncSetOwnerParams struct {
@@ -73,12 +65,16 @@ func (s ImmutableFuncSetOwnerParams) Owner() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamOwner])
 }
 
-type MutableViewGetFactorParams struct {
+type MutableFuncSetOwnerParams struct {
 	id int32
 }
 
-func (s MutableViewGetFactorParams) Address() wasmlib.ScMutableAddress {
-	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
+func NewMutableFuncSetOwnerParams() MutableFuncSetOwnerParams {
+	return MutableFuncSetOwnerParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncSetOwnerParams) Owner() wasmlib.ScMutableAgentId {
+	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamOwner])
 }
 
 type ImmutableViewGetFactorParams struct {
@@ -87,4 +83,16 @@ type ImmutableViewGetFactorParams struct {
 
 func (s ImmutableViewGetFactorParams) Address() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, idxMap[IdxParamAddress])
+}
+
+type MutableViewGetFactorParams struct {
+	id int32
+}
+
+func NewMutableViewGetFactorParams() MutableViewGetFactorParams {
+	return MutableViewGetFactorParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewGetFactorParams) Address() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
 }

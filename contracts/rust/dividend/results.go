@@ -9,36 +9,12 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncDivideResults struct {
+type ImmutableViewGetFactorResults struct {
 	id int32
 }
 
-type ImmutableFuncDivideResults struct {
-	id int32
-}
-
-type MutableFuncInitResults struct {
-	id int32
-}
-
-type ImmutableFuncInitResults struct {
-	id int32
-}
-
-type MutableFuncMemberResults struct {
-	id int32
-}
-
-type ImmutableFuncMemberResults struct {
-	id int32
-}
-
-type MutableFuncSetOwnerResults struct {
-	id int32
-}
-
-type ImmutableFuncSetOwnerResults struct {
-	id int32
+func (s ImmutableViewGetFactorResults) Factor() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultFactor])
 }
 
 type MutableViewGetFactorResults struct {
@@ -47,12 +23,4 @@ type MutableViewGetFactorResults struct {
 
 func (s MutableViewGetFactorResults) Factor() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultFactor])
-}
-
-type ImmutableViewGetFactorResults struct {
-	id int32
-}
-
-func (s ImmutableViewGetFactorResults) Factor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultFactor])
 }

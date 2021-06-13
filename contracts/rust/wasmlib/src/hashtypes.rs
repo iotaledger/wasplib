@@ -215,7 +215,7 @@ impl MapKey for ScHash {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // value object for 4-byte name hash
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Copy)]
 pub struct ScHname(pub u32);
 
 impl ScHname {

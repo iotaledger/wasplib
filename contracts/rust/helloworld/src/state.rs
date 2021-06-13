@@ -14,10 +14,12 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableHelloWorldState {
+#[derive(Clone, Copy)]
+pub struct ImmutableHelloWorldState {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableHelloWorldState {
+#[derive(Clone, Copy)]
+pub struct MutableHelloWorldState {
     pub(crate) id: i32,
 }

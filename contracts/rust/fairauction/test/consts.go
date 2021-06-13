@@ -10,42 +10,42 @@ package test
 import "github.com/iotaledger/wasp/packages/coretypes"
 
 const (
-	ScName = "fairauction"
+	ScName  = "fairauction"
 	HScName = coretypes.Hname(0x1b5c43b1)
 
-	ParamColor = "color"
+	ParamColor       = "color"
 	ParamDescription = "description"
-	ParamDuration = "duration"
-	ParamMinimumBid = "minimumBid"
+	ParamDuration    = "duration"
+	ParamMinimumBid  = "minimumBid"
 	ParamOwnerMargin = "ownerMargin"
 
-	ResultBidders = "bidders"
-	ResultColor = "color"
-	ResultCreator = "creator"
-	ResultDeposit = "deposit"
-	ResultDescription = "description"
-	ResultDuration = "duration"
-	ResultHighestBid = "highestBid"
+	ResultBidders       = "bidders"
+	ResultColor         = "color"
+	ResultCreator       = "creator"
+	ResultDeposit       = "deposit"
+	ResultDescription   = "description"
+	ResultDuration      = "duration"
+	ResultHighestBid    = "highestBid"
 	ResultHighestBidder = "highestBidder"
-	ResultMinimumBid = "minimumBid"
-	ResultNumTokens = "numTokens"
-	ResultOwnerMargin = "ownerMargin"
-	ResultWhenStarted = "whenStarted"
+	ResultMinimumBid    = "minimumBid"
+	ResultNumTokens     = "numTokens"
+	ResultOwnerMargin   = "ownerMargin"
+	ResultWhenStarted   = "whenStarted"
 
-	StateAuctions = "auctions"
-	StateBidderList = "bidderList"
-	StateBids = "bids"
+	StateAuctions    = "auctions"
+	StateBidderList  = "bidderList"
+	StateBids        = "bids"
 	StateOwnerMargin = "ownerMargin"
 
 	FuncFinalizeAuction = "finalizeAuction"
-	FuncPlaceBid = "placeBid"
-	FuncSetOwnerMargin = "setOwnerMargin"
-	FuncStartAuction = "startAuction"
-	ViewGetInfo = "getInfo"
+	FuncPlaceBid        = "placeBid"
+	FuncSetOwnerMargin  = "setOwnerMargin"
+	FuncStartAuction    = "startAuction"
+	ViewGetInfo         = "getInfo"
 
 	HFuncFinalizeAuction = coretypes.Hname(0x8d534ddc)
-	HFuncPlaceBid = coretypes.Hname(0x9bd72fa9)
-	HFuncSetOwnerMargin = coretypes.Hname(0x1774461a)
-	HFuncStartAuction = coretypes.Hname(0xd5b7bacb)
-	HViewGetInfo = coretypes.Hname(0xcfedba5f)
+	HFuncPlaceBid        = coretypes.Hname(0x9bd72fa9)
+	HFuncSetOwnerMargin  = coretypes.Hname(0x1774461a)
+	HFuncStartAuction    = coretypes.Hname(0xd5b7bacb)
+	HViewGetInfo         = coretypes.Hname(0xcfedba5f)
 )

@@ -6,19 +6,3 @@
 // Change the json schema instead
 
 package helloworld
-
-type MutableFuncHelloWorldParams struct {
-	id int32
-}
-
-type ImmutableFuncHelloWorldParams struct {
-	id int32
-}
-
-type MutableViewGetHelloWorldParams struct {
-	id int32
-}
-
-type ImmutableViewGetHelloWorldParams struct {
-	id int32
-}

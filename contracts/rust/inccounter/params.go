@@ -9,38 +9,6 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncCallIncrementParams struct {
-	id int32
-}
-
-type ImmutableFuncCallIncrementParams struct {
-	id int32
-}
-
-type MutableFuncCallIncrementRecurse5xParams struct {
-	id int32
-}
-
-type ImmutableFuncCallIncrementRecurse5xParams struct {
-	id int32
-}
-
-type MutableFuncIncrementParams struct {
-	id int32
-}
-
-type ImmutableFuncIncrementParams struct {
-	id int32
-}
-
-type MutableFuncInitParams struct {
-	id int32
-}
-
-func (s MutableFuncInitParams) Counter() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamCounter])
-}
-
 type ImmutableFuncInitParams struct {
 	id int32
 }
@@ -49,52 +17,16 @@ func (s ImmutableFuncInitParams) Counter() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
-type MutableFuncLocalStateInternalCallParams struct {
+type MutableFuncInitParams struct {
 	id int32
 }
 
-type ImmutableFuncLocalStateInternalCallParams struct {
-	id int32
+func NewMutableFuncInitParams() MutableFuncInitParams {
+	return MutableFuncInitParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableFuncLocalStatePostParams struct {
-	id int32
-}
-
-type ImmutableFuncLocalStatePostParams struct {
-	id int32
-}
-
-type MutableFuncLocalStateSandboxCallParams struct {
-	id int32
-}
-
-type ImmutableFuncLocalStateSandboxCallParams struct {
-	id int32
-}
-
-type MutableFuncLoopParams struct {
-	id int32
-}
-
-type ImmutableFuncLoopParams struct {
-	id int32
-}
-
-type MutableFuncPostIncrementParams struct {
-	id int32
-}
-
-type ImmutableFuncPostIncrementParams struct {
-	id int32
-}
-
-type MutableFuncRepeatManyParams struct {
-	id int32
-}
-
-func (s MutableFuncRepeatManyParams) NumRepeats() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNumRepeats])
+func (s MutableFuncInitParams) Counter() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
 type ImmutableFuncRepeatManyParams struct {
@@ -105,26 +37,34 @@ func (s ImmutableFuncRepeatManyParams) NumRepeats() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamNumRepeats])
 }
 
-type MutableFuncTestLeb128Params struct {
+type MutableFuncRepeatManyParams struct {
 	id int32
 }
 
-type ImmutableFuncTestLeb128Params struct {
-	id int32
+func NewMutableFuncRepeatManyParams() MutableFuncRepeatManyParams {
+	return MutableFuncRepeatManyParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-type MutableFuncWhenMustIncrementParams struct {
-	id int32
+func (s MutableFuncRepeatManyParams) NumRepeats() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNumRepeats])
 }
 
 type ImmutableFuncWhenMustIncrementParams struct {
 	id int32
 }
 
-type MutableViewGetCounterParams struct {
+func (s ImmutableFuncWhenMustIncrementParams) Dummy() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamDummy])
+}
+
+type MutableFuncWhenMustIncrementParams struct {
 	id int32
 }
 
-type ImmutableViewGetCounterParams struct {
-	id int32
+func NewMutableFuncWhenMustIncrementParams() MutableFuncWhenMustIncrementParams {
+	return MutableFuncWhenMustIncrementParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableFuncWhenMustIncrementParams) Dummy() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamDummy])
 }

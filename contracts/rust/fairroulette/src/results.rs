@@ -14,48 +14,47 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncLockBetsResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLockBetsResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncPayWinnersResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLockBetsResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPayWinnersResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncPlaceBetResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPayWinnersResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPlaceBetResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncPlayPeriodResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPlaceBetResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPlayPeriodResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewLastWinningNumberResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPlayPeriodResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewLastWinningNumberResults {
-    pub fn last_winning_number(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_LAST_WINNING_NUMBER))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableViewLastWinningNumberResults {
     pub(crate) id: i32,
 }
@@ -63,5 +62,16 @@ pub struct ImmutableViewLastWinningNumberResults {
 impl ImmutableViewLastWinningNumberResults {
     pub fn last_winning_number(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_LAST_WINNING_NUMBER))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewLastWinningNumberResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewLastWinningNumberResults {
+    pub fn last_winning_number(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_LAST_WINNING_NUMBER))
     }
 }

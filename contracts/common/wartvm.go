@@ -82,7 +82,7 @@ func (vm *WartVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error 
 			return nil
 		})
 	// go implementation uses this one to write panic message
-	m = executors.DefineModule("wasi_unstable")
+	m = executors.DefineModule("wasi_snapshot_preview1")
 	lnk = executors.NewWasmLinker(m)
 	_ = lnk.DefineFunction("fd_write",
 		[]value.DataType{value.I32, value.I32, value.I32, value.I32},

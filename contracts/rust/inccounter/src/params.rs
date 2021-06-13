@@ -14,40 +14,71 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncCallIncrementParams {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallIncrementParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncCallIncrementRecurse5xParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallIncrementParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncCallIncrementParams {
+    pub fn new() -> MutableFuncCallIncrementParams {
+        MutableFuncCallIncrementParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncCallIncrementRecurse5xParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncIncrementParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncCallIncrementRecurse5xParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncCallIncrementRecurse5xParams {
+    pub fn new() -> MutableFuncCallIncrementRecurse5xParams {
+        MutableFuncCallIncrementRecurse5xParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableFuncEndlessLoopParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncEndlessLoopParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncEndlessLoopParams {
+    pub fn new() -> MutableFuncEndlessLoopParams {
+        MutableFuncEndlessLoopParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncIncrementParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncInitParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncIncrementParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncInitParams {
-    pub fn counter(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
+impl MutableFuncIncrementParams {
+    pub fn new() -> MutableFuncIncrementParams {
+        MutableFuncIncrementParams { id: ScMutableMap::new().map_id() }
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncInitParams {
     pub(crate) id: i32,
 }
@@ -58,56 +89,86 @@ impl ImmutableFuncInitParams {
     }
 }
 
-pub struct MutableFuncLocalStateInternalCallParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncInitParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncInitParams {
+    pub fn new() -> MutableFuncInitParams {
+        MutableFuncInitParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn counter(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_COUNTER))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStateInternalCallParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLocalStatePostParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStateInternalCallParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncLocalStateInternalCallParams {
+    pub fn new() -> MutableFuncLocalStateInternalCallParams {
+        MutableFuncLocalStateInternalCallParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStatePostParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLocalStateSandboxCallParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStatePostParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncLocalStatePostParams {
+    pub fn new() -> MutableFuncLocalStatePostParams {
+        MutableFuncLocalStatePostParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncLocalStateSandboxCallParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncLoopParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncLocalStateSandboxCallParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableFuncLoopParams {
-    pub(crate) id: i32,
+impl MutableFuncLocalStateSandboxCallParams {
+    pub fn new() -> MutableFuncLocalStateSandboxCallParams {
+        MutableFuncLocalStateSandboxCallParams { id: ScMutableMap::new().map_id() }
+    }
 }
 
-pub struct MutableFuncPostIncrementParams {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncPostIncrementParams {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncRepeatManyParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncPostIncrementParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRepeatManyParams {
-    pub fn num_repeats(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_NUM_REPEATS))
+impl MutableFuncPostIncrementParams {
+    pub fn new() -> MutableFuncPostIncrementParams {
+        MutableFuncPostIncrementParams { id: ScMutableMap::new().map_id() }
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncRepeatManyParams {
     pub(crate) id: i32,
 }
@@ -118,26 +179,75 @@ impl ImmutableFuncRepeatManyParams {
     }
 }
 
-pub struct MutableFuncTestLeb128Params {
+#[derive(Clone, Copy)]
+pub struct MutableFuncRepeatManyParams {
     pub(crate) id: i32,
 }
 
+impl MutableFuncRepeatManyParams {
+    pub fn new() -> MutableFuncRepeatManyParams {
+        MutableFuncRepeatManyParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn num_repeats(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_NUM_REPEATS))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTestLeb128Params {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncWhenMustIncrementParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTestLeb128Params {
     pub(crate) id: i32,
 }
 
+impl MutableFuncTestLeb128Params {
+    pub fn new() -> MutableFuncTestLeb128Params {
+        MutableFuncTestLeb128Params { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncWhenMustIncrementParams {
     pub(crate) id: i32,
 }
 
+impl ImmutableFuncWhenMustIncrementParams {
+    pub fn dummy(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_DUMMY))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableFuncWhenMustIncrementParams {
+    pub(crate) id: i32,
+}
+
+impl MutableFuncWhenMustIncrementParams {
+    pub fn new() -> MutableFuncWhenMustIncrementParams {
+        MutableFuncWhenMustIncrementParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn dummy(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_DUMMY))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewGetCounterParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
 pub struct MutableViewGetCounterParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableViewGetCounterParams {
-    pub(crate) id: i32,
+impl MutableViewGetCounterParams {
+    pub fn new() -> MutableViewGetCounterParams {
+        MutableViewGetCounterParams { id: ScMutableMap::new().map_id() }
+    }
 }

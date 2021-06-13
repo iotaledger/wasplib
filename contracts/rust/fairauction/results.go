@@ -9,36 +9,56 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type MutableFuncFinalizeAuctionResults struct {
+type ImmutableViewGetInfoResults struct {
 	id int32
 }
 
-type ImmutableFuncFinalizeAuctionResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Bidders() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultBidders])
 }
 
-type MutableFuncPlaceBidResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Color() wasmlib.ScImmutableColor {
+	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxResultColor])
 }
 
-type ImmutableFuncPlaceBidResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Creator() wasmlib.ScImmutableAgentId {
+	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultCreator])
 }
 
-type MutableFuncSetOwnerMarginResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Deposit() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultDeposit])
 }
 
-type ImmutableFuncSetOwnerMarginResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Description() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultDescription])
 }
 
-type MutableFuncStartAuctionResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) Duration() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultDuration])
 }
 
-type ImmutableFuncStartAuctionResults struct {
-	id int32
+func (s ImmutableViewGetInfoResults) HighestBid() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultHighestBid])
+}
+
+func (s ImmutableViewGetInfoResults) HighestBidder() wasmlib.ScImmutableAgentId {
+	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultHighestBidder])
+}
+
+func (s ImmutableViewGetInfoResults) MinimumBid() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMinimumBid])
+}
+
+func (s ImmutableViewGetInfoResults) NumTokens() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultNumTokens])
+}
+
+func (s ImmutableViewGetInfoResults) OwnerMargin() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultOwnerMargin])
+}
+
+func (s ImmutableViewGetInfoResults) WhenStarted() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultWhenStarted])
 }
 
 type MutableViewGetInfoResults struct {
@@ -91,56 +111,4 @@ func (s MutableViewGetInfoResults) OwnerMargin() wasmlib.ScMutableInt64 {
 
 func (s MutableViewGetInfoResults) WhenStarted() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultWhenStarted])
-}
-
-type ImmutableViewGetInfoResults struct {
-	id int32
-}
-
-func (s ImmutableViewGetInfoResults) Bidders() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultBidders])
-}
-
-func (s ImmutableViewGetInfoResults) Color() wasmlib.ScImmutableColor {
-	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxResultColor])
-}
-
-func (s ImmutableViewGetInfoResults) Creator() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultCreator])
-}
-
-func (s ImmutableViewGetInfoResults) Deposit() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultDeposit])
-}
-
-func (s ImmutableViewGetInfoResults) Description() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultDescription])
-}
-
-func (s ImmutableViewGetInfoResults) Duration() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultDuration])
-}
-
-func (s ImmutableViewGetInfoResults) HighestBid() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultHighestBid])
-}
-
-func (s ImmutableViewGetInfoResults) HighestBidder() wasmlib.ScImmutableAgentId {
-	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultHighestBidder])
-}
-
-func (s ImmutableViewGetInfoResults) MinimumBid() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMinimumBid])
-}
-
-func (s ImmutableViewGetInfoResults) NumTokens() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultNumTokens])
-}
-
-func (s ImmutableViewGetInfoResults) OwnerMargin() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultOwnerMargin])
-}
-
-func (s ImmutableViewGetInfoResults) WhenStarted() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultWhenStarted])
 }

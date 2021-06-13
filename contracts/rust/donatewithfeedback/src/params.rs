@@ -14,16 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncDonateParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncDonateParams {
-    pub fn feedback(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_FEEDBACK))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncDonateParams {
     pub(crate) id: i32,
 }
@@ -34,16 +25,22 @@ impl ImmutableFuncDonateParams {
     }
 }
 
-pub struct MutableFuncWithdrawParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncDonateParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncWithdrawParams {
-    pub fn amount(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
+impl MutableFuncDonateParams {
+    pub fn new() -> MutableFuncDonateParams {
+        MutableFuncDonateParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn feedback(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_FEEDBACK))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncWithdrawParams {
     pub(crate) id: i32,
 }
@@ -54,16 +51,22 @@ impl ImmutableFuncWithdrawParams {
     }
 }
 
-pub struct MutableViewDonationParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncWithdrawParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewDonationParams {
-    pub fn nr(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_NR))
+impl MutableFuncWithdrawParams {
+    pub fn new() -> MutableFuncWithdrawParams {
+        MutableFuncWithdrawParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn amount(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_AMOUNT))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewDonationParams {
     pub(crate) id: i32,
 }
@@ -74,10 +77,33 @@ impl ImmutableViewDonationParams {
     }
 }
 
+#[derive(Clone, Copy)]
+pub struct MutableViewDonationParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewDonationParams {
+    pub fn new() -> MutableViewDonationParams {
+        MutableViewDonationParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn nr(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_NR))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewDonationInfoParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
 pub struct MutableViewDonationInfoParams {
     pub(crate) id: i32,
 }
 
-pub struct ImmutableViewDonationInfoParams {
-    pub(crate) id: i32,
+impl MutableViewDonationInfoParams {
+    pub fn new() -> MutableViewDonationInfoParams {
+        MutableViewDonationInfoParams { id: ScMutableMap::new().map_id() }
+    }
 }

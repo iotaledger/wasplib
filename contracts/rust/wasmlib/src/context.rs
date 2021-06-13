@@ -37,6 +37,7 @@ impl ScBalances {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // passes token transfer information to a function call
+#[derive(Clone, Copy)]
 pub struct ScTransfers {
     transfers: ScMutableMap,
 }
@@ -57,6 +58,10 @@ impl ScTransfers {
     // create a new transfer object ready to add token transfers
     pub fn new_transfers() -> ScTransfers {
         ScTransfers { transfers: ScMutableMap::new() }
+    }
+
+    pub fn none() -> ScTransfers {
+        ScTransfers { transfers: ScMutableMap { obj_id: 0 } }
     }
 
     // create a new transfer object from a balances object
@@ -256,6 +261,7 @@ pub trait ScBaseContext {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // smart contract interface with mutable access to state
+#[derive(Clone, Copy)]
 pub struct ScFuncContext {}
 
 // reuse shared part of interface
@@ -365,6 +371,7 @@ impl ScFuncContext {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // smart contract view interface which has only immutable access to state
+#[derive(Clone, Copy)]
 pub struct ScViewContext {}
 
 // reuse shared part of interface

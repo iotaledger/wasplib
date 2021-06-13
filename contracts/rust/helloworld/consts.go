@@ -10,15 +10,15 @@ package helloworld
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "helloworld"
+	ScName        = "helloworld"
 	ScDescription = "The ubiquitous hello world demo"
-	HScName = wasmlib.ScHname(0x0683223c)
+	HScName       = wasmlib.ScHname(0x0683223c)
 
 	ResultHelloWorld = wasmlib.Key("helloWorld")
 
-	FuncHelloWorld = "helloWorld"
+	FuncHelloWorld    = "helloWorld"
 	ViewGetHelloWorld = "getHelloWorld"
 
-	HFuncHelloWorld = wasmlib.ScHname(0x9d042e65)
+	HFuncHelloWorld    = wasmlib.ScHname(0x9d042e65)
 	HViewGetHelloWorld = wasmlib.ScHname(0x210439ce)
 )

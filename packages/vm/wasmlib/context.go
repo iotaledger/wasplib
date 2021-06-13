@@ -47,6 +47,10 @@ func NewScTransfers() ScTransfers {
 	return ScTransfers{transfers: *NewScMutableMap()}
 }
 
+func NoScTransfers() ScTransfers {
+	return ScTransfers{}
+}
+
 func NewScTransfersFromBalances(balances ScBalances) ScTransfers {
 	transfers := NewScTransfers()
 	colors := balances.Colors()

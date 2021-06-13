@@ -14,34 +14,42 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncMintSupplyResults {
-    pub(crate) id: i32,
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncMintSupplyResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncTransferOwnershipResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncMintSupplyResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferOwnershipResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableFuncUpdateMetadataResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferOwnershipResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncUpdateMetadataResults {
     pub(crate) id: i32,
 }
 
-pub struct MutableViewGetInfoResults {
+#[derive(Clone, Copy)]
+pub struct MutableFuncUpdateMetadataResults {
     pub(crate) id: i32,
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetInfoResults {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetInfoResults {
     pub(crate) id: i32,
 }

@@ -14,20 +14,7 @@ use wasmlib::host::*;
 use crate::*;
 use crate::keys::*;
 
-pub struct MutableFuncMintSupplyParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncMintSupplyParams {
-    pub fn description(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
-    }
-
-    pub fn user_defined(&self) -> ScMutableString {
-        ScMutableString::new(self.id, idx_map(IDX_PARAM_USER_DEFINED))
-    }
-}
-
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncMintSupplyParams {
     pub(crate) id: i32,
 }
@@ -42,16 +29,26 @@ impl ImmutableFuncMintSupplyParams {
     }
 }
 
-pub struct MutableFuncTransferOwnershipParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncMintSupplyParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncTransferOwnershipParams {
-    pub fn color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
+impl MutableFuncMintSupplyParams {
+    pub fn new() -> MutableFuncMintSupplyParams {
+        MutableFuncMintSupplyParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn description(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
+    }
+
+    pub fn user_defined(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_USER_DEFINED))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncTransferOwnershipParams {
     pub(crate) id: i32,
 }
@@ -62,16 +59,22 @@ impl ImmutableFuncTransferOwnershipParams {
     }
 }
 
-pub struct MutableFuncUpdateMetadataParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncTransferOwnershipParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncUpdateMetadataParams {
+impl MutableFuncTransferOwnershipParams {
+    pub fn new() -> MutableFuncTransferOwnershipParams {
+        MutableFuncTransferOwnershipParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn color(&self) -> ScMutableColor {
         ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableFuncUpdateMetadataParams {
     pub(crate) id: i32,
 }
@@ -82,16 +85,22 @@ impl ImmutableFuncUpdateMetadataParams {
     }
 }
 
-pub struct MutableViewGetInfoParams {
+#[derive(Clone, Copy)]
+pub struct MutableFuncUpdateMetadataParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetInfoParams {
+impl MutableFuncUpdateMetadataParams {
+    pub fn new() -> MutableFuncUpdateMetadataParams {
+        MutableFuncUpdateMetadataParams { id: ScMutableMap::new().map_id() }
+    }
+
     pub fn color(&self) -> ScMutableColor {
         ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetInfoParams {
     pub(crate) id: i32,
 }
@@ -99,5 +108,20 @@ pub struct ImmutableViewGetInfoParams {
 impl ImmutableViewGetInfoParams {
     pub fn color(&self) -> ScImmutableColor {
         ScImmutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewGetInfoParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewGetInfoParams {
+    pub fn new() -> MutableViewGetInfoParams {
+        MutableViewGetInfoParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, idx_map(IDX_PARAM_COLOR))
     }
 }

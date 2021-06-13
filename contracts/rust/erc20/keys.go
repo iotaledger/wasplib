@@ -10,17 +10,17 @@ package erc20
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamAccount = 0
-	IdxParamAmount = 1
-	IdxParamCreator = 2
-	IdxParamDelegation = 3
-	IdxParamRecipient = 4
-	IdxParamSupply = 5
-	IdxResultAmount = 6
-	IdxResultSupply = 7
+	IdxParamAccount       = 0
+	IdxParamAmount        = 1
+	IdxParamCreator       = 2
+	IdxParamDelegation    = 3
+	IdxParamRecipient     = 4
+	IdxParamSupply        = 5
+	IdxResultAmount       = 6
+	IdxResultSupply       = 7
 	IdxStateAllAllowances = 8
-	IdxStateBalances = 9
-	IdxStateSupply = 10
+	IdxStateBalances      = 9
+	IdxStateSupply        = 10
 )
 
 var keyMap = [11]wasmlib.Key{

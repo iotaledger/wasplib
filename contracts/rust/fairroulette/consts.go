@@ -10,28 +10,28 @@ package fairroulette
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName = "fairroulette"
+	ScName  = "fairroulette"
 	HScName = wasmlib.ScHname(0xdf79d138)
 
-	ParamNumber = wasmlib.Key("number")
+	ParamNumber     = wasmlib.Key("number")
 	ParamPlayPeriod = wasmlib.Key("playPeriod")
 
 	ResultLastWinningNumber = wasmlib.Key("lastWinningNumber")
 
-	StateBets = wasmlib.Key("bets")
+	StateBets              = wasmlib.Key("bets")
 	StateLastWinningNumber = wasmlib.Key("lastWinningNumber")
-	StateLockedBets = wasmlib.Key("lockedBets")
-	StatePlayPeriod = wasmlib.Key("playPeriod")
+	StateLockedBets        = wasmlib.Key("lockedBets")
+	StatePlayPeriod        = wasmlib.Key("playPeriod")
 
-	FuncLockBets = "lockBets"
-	FuncPayWinners = "payWinners"
-	FuncPlaceBet = "placeBet"
-	FuncPlayPeriod = "playPeriod"
+	FuncLockBets          = "lockBets"
+	FuncPayWinners        = "payWinners"
+	FuncPlaceBet          = "placeBet"
+	FuncPlayPeriod        = "playPeriod"
 	ViewLastWinningNumber = "lastWinningNumber"
 
-	HFuncLockBets = wasmlib.ScHname(0xe163b43c)
-	HFuncPayWinners = wasmlib.ScHname(0xfb2b0144)
-	HFuncPlaceBet = wasmlib.ScHname(0xdfba7d1b)
-	HFuncPlayPeriod = wasmlib.ScHname(0xcb94b293)
+	HFuncLockBets          = wasmlib.ScHname(0xe163b43c)
+	HFuncPayWinners        = wasmlib.ScHname(0xfb2b0144)
+	HFuncPlaceBet          = wasmlib.ScHname(0xdfba7d1b)
+	HFuncPlayPeriod        = wasmlib.ScHname(0xcb94b293)
 	HViewLastWinningNumber = wasmlib.ScHname(0x2f5f09fe)
 )

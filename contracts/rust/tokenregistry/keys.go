@@ -10,11 +10,11 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamColor = 0
+	IdxParamColor       = 0
 	IdxParamDescription = 1
 	IdxParamUserDefined = 2
-	IdxStateColorList = 3
-	IdxStateRegistry = 4
+	IdxStateColorList   = 3
+	IdxStateRegistry    = 4
 )
 
 var keyMap = [5]wasmlib.Key{

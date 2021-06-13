@@ -37,6 +37,10 @@ func testCallRecursive(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
+	//TODO currently TinyGo only goes up to 9 deep,
+	// need to modify globalVar to >65536 and memory.minPages
+	// accordingly before executing any code
+
 	req := solo.NewCallParams(ScName, sbtestsc.FuncCallOnChain,
 		sbtestsc.ParamIntParamValue, 31,
 		sbtestsc.ParamHnameContract, cID.Hname(),
