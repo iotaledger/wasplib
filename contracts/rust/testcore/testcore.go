@@ -5,6 +5,8 @@ package testcore
 
 import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreaccounts"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreroot"
 )
 
 const ContractNameDeployed = "exampleDeployTR"
@@ -138,7 +140,8 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, f *FuncTestPanicFullEPContex
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, f *FuncWithdrawToChainContext) {
 	transfers := wasmlib.NewScTransferIotas(1)
-	ctx.Post(f.Params.ChainId().Value(), wasmlib.CoreAccounts, wasmlib.CoreAccountsFuncWithdraw, nil, transfers, 0)
+	sc := coreaccounts.NewCoreAccountsFunc(ctx)
+	sc.PostToChain(f.Params.ChainId().Value()).Withdraw(transfers)
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, f *ViewCheckContextFromViewEPContext) {
@@ -205,7 +208,6 @@ func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *ViewTestPanicViewEPContex
 }
 
 func viewTestSandboxCall(ctx wasmlib.ScViewContext, f *ViewTestSandboxCallContext) {
-	ret := ctx.Call(wasmlib.CoreRoot, wasmlib.CoreRootViewGetChainInfo, nil)
-	desc := ret.GetString(wasmlib.Key("d")).Value()
-	f.Results.SandboxCall().SetValue(desc)
+	ret := coreroot.NewCoreRootView(ctx).GetChainInfo()
+	f.Results.SandboxCall().SetValue(ret.Description().Value())
 }

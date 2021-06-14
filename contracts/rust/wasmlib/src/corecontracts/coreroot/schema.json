@@ -1,0 +1,74 @@
+{
+  "name": "CoreRoot",
+  "description": "Core root contract",
+  "funcs": {
+    "claimChainOwnership": {
+    },
+    "delegateChainOwnership": {
+      "params": {
+        "chainOwner=$$owner$$": "AgentId"
+      }
+    },
+    "deployContract": {
+      "params": {
+        "programHash=$$proghash$$": "Hash //TODO variable init params for deployed contract",
+        "name=$$name$$": "String",
+        "description=$$description$$": "?String // default 'N/A'"
+      }
+    },
+    "grantDeployPermission": {
+      "params": {
+        "deployer=$$deployer$$": "AgentId"
+      }
+    },
+    "revokeDeployPermission": {
+      "params": {
+        "deployer=$$deployer$$": "AgentId"
+      }
+    },
+    "setContractFee": {
+      "params": {
+        "hname=$$hname$$": "Hname // contract id",
+        "ownerFee=$$ownerfee$$": "?Int64 // default 0 (no fee)",
+        "validatorFee=$$validatorfee$$": "?Int64 // default 0 (no fee)"
+      }
+    },
+    "setDefaultFee": {
+      "params": {
+        "ownerFee=$$ownerfee$$": "?Int64 // default -1 (not set)",
+        "validatorFee=$$validatorfee$$": "?Int64 // default -1 (not set)"
+      }
+    }
+  },
+  "views": {
+    "findContract": {
+      "params": {
+        "hname=$$hname$$": "Hname"
+      },
+      "results": {
+        "data=dt": "Bytes // encoded contract record"
+      }
+    },
+    "getChainInfo": {
+      "results": {
+        "chainID=c": "ChainId",
+        "chainOwnerID=o": "AgentId",
+        "description=d": "String",
+        "feeColor=f": "Color",
+        "defaultOwnerFee=do": "Int64",
+        "defaultValidatorFee=dv": "Int64",
+        "contractRegistry=r": "[Hname]Bytes // contract records"
+      }
+    },
+    "getFeeInfo": {
+      "params": {
+        "hname=$$hname$$": "Hname"
+      },
+      "results": {
+        "feeColor=f": "Color",
+        "ownerFee=of": "Int64",
+        "validatorFee=vf": "Int64"
+      }
+    }
+  }
+}

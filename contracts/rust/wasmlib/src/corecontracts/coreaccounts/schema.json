@@ -1,0 +1,27 @@
+{
+  "name": "CoreAccounts",
+  "description": "Core chain account ledger contract",
+  "funcs": {
+    "deposit": {
+      "params": {
+        "agentID=a": "?AgentId // default is caller"
+      }
+    },
+    "withdraw": {
+    }
+  },
+  "views": {
+    "accounts": {
+      "resultsMap": "[AgentId]Bytes // bytes are always empty"
+    },
+    "balance": {
+      "params": {
+        "agentID=a": "AgentId"
+      },
+      "resultsMap": "[Color]Int64"
+    },
+    "totalAssets": {
+      "resultsMap": "[Color]Int64"
+    }
+  }
+}

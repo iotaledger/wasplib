@@ -13,6 +13,8 @@ import (
 	"github.com/iotaledger/wasplib/tools/schema/generator"
 )
 
+var flagCore = flag.Bool("core", false, "generate core contract interface")
+
 var flagInit = flag.String("init", "", "generate Go code")
 
 var flagGo = flag.Bool("go", false, "generate Go code")
@@ -41,18 +43,6 @@ func main() {
 		return
 	}
 
-	// tool is also used to (re-)generate the core contract
-	// definitions inside the go and rust sections of wasmlib
-	file, err = os.Open("corecontracts.json")
-	if err == nil {
-		defer file.Close()
-		err = generateCoreContractsSchema(file)
-		if err != nil {
-			fmt.Println(err)
-		}
-		return
-	}
-
 	if *flagInit != "" {
 		err = generateSchemaNew()
 		if err != nil {
@@ -64,40 +54,23 @@ func main() {
 	flag.Usage()
 }
 
-func generateCoreContractsSchema(file *os.File) error {
-	coreSchemas, err := loadCoreSchemas(file)
-	if err != nil {
-		return err
-	}
-	err = generator.GenerateRustCoreContractsSchema(coreSchemas)
-	if err != nil {
-		return err
-	}
-	err = generator.GenerateGoCoreContractsSchema(coreSchemas)
-	if err != nil {
-		return err
-	}
-	err = generator.GenerateJavaCoreContractsSchema(coreSchemas)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func generateSchema(file *os.File) error {
 	schema, err := loadSchema(file)
 	if err != nil {
 		return err
 	}
+	schema.CoreContracts = *flagCore
 	if *flagGo {
 		fmt.Println("generating Go code")
 		err = schema.GenerateGo()
 		if err != nil {
 			return err
 		}
-		err = schema.GenerateGoTests()
-		if err != nil {
-			return err
+		if !schema.CoreContracts {
+			err = schema.GenerateGoTests()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	if *flagJava {
@@ -113,9 +86,11 @@ func generateSchema(file *os.File) error {
 		if err != nil {
 			return err
 		}
-		err = schema.GenerateGoTests()
-		if err != nil {
-			return err
+		if !schema.CoreContracts {
+			err = schema.GenerateGoTests()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -168,24 +143,4 @@ func loadSchema(file *os.File) (*generator.Schema, error) {
 		return nil, err
 	}
 	return schema, nil
-}
-
-func loadCoreSchemas(file *os.File) ([]*generator.Schema, error) {
-	fmt.Println("loading corecontracts.json")
-	coreJsonSchemas := make([]*generator.JsonSchema, 0)
-	err := json.NewDecoder(file).Decode(&coreJsonSchemas)
-	if err != nil {
-		return nil, err
-	}
-
-	coreSchemas := make([]*generator.Schema, 0)
-	for _, jsonSchema := range coreJsonSchemas {
-		schema := generator.NewSchema()
-		err = schema.Compile(jsonSchema)
-		if err != nil {
-			return nil, err
-		}
-		coreSchemas = append(coreSchemas, schema)
-	}
-	return coreSchemas, nil
 }

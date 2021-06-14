@@ -23,7 +23,7 @@ impl ScContractFunc {
     pub fn new(ctx: &ScFuncContext, contract: ScHname) -> ScContractFunc {
         ScContractFunc {
             ctx: ctx.clone(),
-            chain_id: ctx.chain_id().clone(),
+            chain_id: ctx.chain_id(),
             contract: contract,
             delay: 0,
             post: false,
@@ -47,6 +47,7 @@ impl ScContractFunc {
     }
 
     pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &ScContractFunc {
+        self.post = true;
         self.chain_id = chain_id;
         self
     }

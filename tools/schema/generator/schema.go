@@ -43,21 +43,22 @@ type FuncDef struct {
 }
 
 type Schema struct {
-	Name        string
-	FullName    string
-	Description string
-	KeyId       int
-	ConstLen    int
-	ConstNames  []string
-	ConstValues []string
-	Funcs       []*FuncDef
-	NewTypes    map[string]bool
-	Params      []*Field
-	Results     []*Field
-	StateVars   []*Field
-	Subtypes    []*Field
-	Types       []*TypeDef
-	Views       []*FuncDef
+	Name          string
+	FullName      string
+	Description   string
+	KeyId         int
+	ConstLen      int
+	ConstNames    []string
+	ConstValues   []string
+	CoreContracts bool
+	Funcs         []*FuncDef
+	NewTypes      map[string]bool
+	Params        []*Field
+	Results       []*Field
+	StateVars     []*Field
+	Subtypes      []*Field
+	Types         []*TypeDef
+	Views         []*FuncDef
 }
 
 func NewSchema() *Schema {
@@ -283,4 +284,18 @@ func (s *Schema) flushConsts(file *os.File, printer func(name string, value stri
 	s.ConstLen = 0
 	s.ConstNames = nil
 	s.ConstValues = nil
+}
+
+func (s *Schema) crateOrWasmLib(withContract bool, withHost bool) string {
+	if s.CoreContracts {
+		retVal := useCrate
+		if withContract {
+			retVal += "use crate::corecontracts::" + s.Name + "::*;\n"
+		}
+		if withHost {
+			retVal += "use crate::host::*;\n"
+		}
+		return retVal
+	}
+	return useWasmLib
 }

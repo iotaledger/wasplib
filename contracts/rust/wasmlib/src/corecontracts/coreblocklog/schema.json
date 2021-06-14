@@ -1,0 +1,51 @@
+{
+  "name": "CoreBlockLog",
+  "description": "Core block log contract",
+  "funcs": {
+  },
+  "views": {
+    "getBlockInfo": {
+      "params": {
+        "blockIndex=n": "Int64"
+      },
+      "results": {
+        "blockInfo=i": "Bytes"
+      }
+    },
+    "getLatestBlockInfo": {
+      "results": {
+        "blockInfo=i": "Bytes"
+      }
+    },
+    "getRequestLogRecord": {
+      "params": {
+        "requestID=u": "RequestId"
+      },
+      "results": {
+        "requestRecord=d": "Bytes",
+        "blockIndex=n": "Int64",
+        "requestIndex=r": "Int64"
+      }
+    },
+    "getRequestLogRecordsForBlock": {
+      "params": {
+        "blockIndex=n": "Int64"
+      },
+      "resultsMap": "[]Bytes //TODO requestRecord=d Array16?"
+    },
+    "getRequestIDsForBlock": {
+      "params": {
+        "blockIndex=n": "Int64"
+      },
+      "resultsMap": "[]Bytes //TODO requestID=u Array16?"
+    },
+    "isRequestProcessed": {
+      "params": {
+        "requestID=u": "RequestId"
+      },
+      "results": {
+        "requestProcessed=p": "String"
+      }
+    }
+  }
+}

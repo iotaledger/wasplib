@@ -55,21 +55,19 @@ var rustTypeIds = StringMap{
 func (s *Schema) GenerateRust() error {
 	s.NewTypes = make(map[string]bool)
 
-	err := os.MkdirAll("src", 0755)
-	if err != nil {
-		return err
+	if !s.CoreContracts {
+		err := os.MkdirAll("src", 0755)
+		if err != nil {
+			return err
+		}
+		err = os.Chdir("src")
+		if err != nil {
+			return err
+		}
+		defer os.Chdir("..")
 	}
-	err = os.Chdir("src")
-	if err != nil {
-		return err
-	}
-	defer os.Chdir("..")
 
-	err = s.generateRustConsts()
-	if err != nil {
-		return err
-	}
-	err = s.generateRustKeys()
+	err := s.generateRustConsts()
 	if err != nil {
 		return err
 	}
@@ -81,10 +79,6 @@ func (s *Schema) GenerateRust() error {
 	if err != nil {
 		return err
 	}
-	err = s.generateRustState()
-	if err != nil {
-		return err
-	}
 	err = s.generateRustParams()
 	if err != nil {
 		return err
@@ -93,21 +87,34 @@ func (s *Schema) GenerateRust() error {
 	if err != nil {
 		return err
 	}
-	err = s.generateRustLib()
-	if err != nil {
-		return err
-	}
 	err = s.generateRustContract()
 	if err != nil {
 		return err
 	}
-	err = s.generateRustFuncs()
-	if err != nil {
-		return err
+
+	if !s.CoreContracts {
+		err = s.generateRustKeys()
+		if err != nil {
+			return err
+		}
+		err = s.generateRustState()
+		if err != nil {
+			return err
+		}
+		err = s.generateRustLib()
+		if err != nil {
+			return err
+		}
+		err = s.generateRustFuncs()
+		if err != nil {
+			return err
+		}
+
+		// rust-specific stuff
+		return s.generateRustCargo()
 	}
 
-	// rust-specific stuff
-	return s.generateRustCargo()
+	return nil
 }
 
 func (s *Schema) generateRustCargo() error {
@@ -157,13 +164,18 @@ func (s *Schema) generateRustConsts() error {
 	fmt.Fprintln(file, copyright(true))
 	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
-	fmt.Fprintln(file, useWasmLib)
+	fmt.Fprintln(file, s.crateOrWasmLib(false, false))
 
-	s.appendConst("SC_NAME", "&str = \""+s.Name+"\"")
+	scName := s.Name
+	if s.CoreContracts {
+		// remove 'core' prefix
+		scName = scName[4:]
+	}
+	s.appendConst("SC_NAME", "&str = \""+scName+"\"")
 	if s.Description != "" {
 		s.appendConst("SC_DESCRIPTION", "&str = \""+s.Description+"\"")
 	}
-	hName := coretypes.Hn(s.Name)
+	hName := coretypes.Hn(scName)
 	s.appendConst("HSC_NAME", "ScHname = ScHname(0x"+hName.String()+")")
 	s.flushRustConsts(file)
 
@@ -214,10 +226,12 @@ func (s *Schema) generateRustContract() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintln(file, allowDeadCode)
-	fmt.Fprintln(file, useWasmLib)
-	fmt.Fprint(file, useConsts)
-	fmt.Fprint(file, useParams)
-	fmt.Fprint(file, useResults)
+	fmt.Fprint(file, s.crateOrWasmLib(true, false))
+	if !s.CoreContracts {
+		fmt.Fprint(file, "\n"+useConsts)
+		fmt.Fprint(file, useParams)
+		fmt.Fprint(file, useResults)
+	}
 
 	typeName := s.FullName + "Func"
 	fmt.Fprintf(file, "\npub struct %s {\n", typeName)
@@ -674,18 +688,12 @@ func (s *Schema) generateRustParams() error {
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprint(file, allowDeadCode)
 	fmt.Fprintln(file, allowUnusedImports)
-	fmt.Fprint(file, useWasmLib)
-	fmt.Fprintln(file, useWasmLibHost)
-	fmt.Fprint(file, useCrate)
-	fmt.Fprint(file, useKeys)
-
-	//params := 0
-	//for _, f := range s.Funcs {
-	//	params += len(f.Params)
-	//}
-	//if params != 0 {
-	//	fmt.Fprintf(file, "\n"+importWasmLib)
-	//}
+	fmt.Fprint(file, s.crateOrWasmLib(true, false))
+	if !s.CoreContracts {
+		fmt.Fprint(file, useWasmLibHost)
+		fmt.Fprint(file, "\n"+useCrate)
+		fmt.Fprint(file, useKeys)
+	}
 
 	for _, f := range s.Funcs {
 		typeName := capitalize(f.FullName)
@@ -706,18 +714,12 @@ func (s *Schema) generateRustResults() error {
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprint(file, allowDeadCode)
 	fmt.Fprintln(file, allowUnusedImports)
-	fmt.Fprint(file, useWasmLib)
-	fmt.Fprintln(file, useWasmLibHost)
-	fmt.Fprint(file, useCrate)
-	fmt.Fprint(file, useKeys)
-
-	//results := 0
-	//for _, f := range s.Funcs {
-	//	results += len(f.Results)
-	//}
-	//if results != 0 {
-	//	fmt.Fprintf(file, "\n"+importWasmLib)
-	//}
+	fmt.Fprint(file, s.crateOrWasmLib(true, true))
+	if !s.CoreContracts {
+		fmt.Fprint(file, useWasmLibHost)
+		fmt.Fprint(file, "\n"+useCrate)
+		fmt.Fprint(file, useKeys)
+	}
 
 	for _, f := range s.Funcs {
 		typeName := capitalize(f.FullName)
@@ -758,6 +760,9 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 	for _, field := range fields {
 		varName := snake(field.Name)
 		varId := "idx_map(IDX_" + kind + upper(varName) + ")"
+		if s.CoreContracts {
+			varId = kind + upper(varName) + ".get_key_id()"
+		}
 		varType := rustTypeIds[field.Type]
 		if len(varType) == 0 {
 			varType = "TYPE_BYTES"

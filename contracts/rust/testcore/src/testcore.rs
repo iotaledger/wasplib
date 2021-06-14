@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use wasmlib::*;
+use wasmlib::corecontracts::coreaccounts::contract::*;
+use wasmlib::corecontracts::coreroot::contract::*;
 
 use crate::*;
-use crate::contract::{TestCoreFunc, TestCoreView};
+use crate::contract::*;
 
 const CONTRACT_NAME_DEPLOYED: &str = "exampleDeployTR";
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
@@ -140,7 +142,8 @@ pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _f: &FuncTestPanicFullEPCont
 
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, f: &FuncWithdrawToChainContext) {
     let transfer = ScTransfers::iotas(1);
-    ctx.post(&f.params.chain_id().value(), CORE_ACCOUNTS, CORE_ACCOUNTS_FUNC_WITHDRAW, None, transfer, 0);
+    let mut sc = CoreAccountsFunc::new(ctx);
+    sc.post_to_chain(f.params.chain_id().value()).withdraw(transfer);
 }
 
 pub fn view_check_context_from_view_ep(ctx: &ScViewContext, f: &ViewCheckContextFromViewEPContext) {
@@ -211,7 +214,7 @@ pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &ViewTestPanicViewEPCont
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &ViewTestSandboxCallContext) {
-    let ret = ctx.call(CORE_ROOT, CORE_ROOT_VIEW_GET_CHAIN_INFO, None);
-    let desc = ret.get_string("d").value();
-    f.results.sandbox_call().set_value(&desc);
+    let mut sc = CoreRootView::new(ctx);
+    let ret = sc.get_chain_info();
+    f.results.sandbox_call().set_value(&ret.description().value());
 }

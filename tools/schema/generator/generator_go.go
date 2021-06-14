@@ -50,19 +50,11 @@ func (s *Schema) GenerateGo() error {
 	if err != nil {
 		return err
 	}
-	err = s.generateGoKeys()
-	if err != nil {
-		return err
-	}
 	err = s.generateGoTypes()
 	if err != nil {
 		return err
 	}
 	err = s.generateGoSubtypes()
-	if err != nil {
-		return err
-	}
-	err = s.generateGoState()
 	if err != nil {
 		return err
 	}
@@ -74,21 +66,34 @@ func (s *Schema) GenerateGo() error {
 	if err != nil {
 		return err
 	}
-	err = s.generateGoLib()
-	if err != nil {
-		return err
-	}
 	err = s.generateGoContract()
 	if err != nil {
 		return err
 	}
-	err = s.generateGoFuncs()
-	if err != nil {
-		return err
+
+	if !s.CoreContracts {
+		err = s.generateGoKeys()
+		if err != nil {
+			return err
+		}
+		err = s.generateGoState()
+		if err != nil {
+			return err
+		}
+		err = s.generateGoLib()
+		if err != nil {
+			return err
+		}
+		err = s.generateGoFuncs()
+		if err != nil {
+			return err
+		}
+
+		// go-specific stuff
+		return s.generateGoWasmMain()
 	}
 
-	// go-specific stuff
-	return s.generateGoWasmMain()
+	return nil
 }
 
 func (s *Schema) generateGoConsts(test bool) error {
@@ -109,12 +114,17 @@ func (s *Schema) generateGoConsts(test bool) error {
 	fmt.Fprintf(file, "package %s\n\n", packageName)
 	fmt.Fprintln(file, importTypes)
 
+	scName := s.Name
+	if s.CoreContracts {
+		// remove 'core' prefix
+		scName = scName[4:]
+	}
 	fmt.Fprintf(file, "const (\n")
-	s.appendConst("ScName", "\""+s.Name+"\"")
+	s.appendConst("ScName", "\""+scName+"\"")
 	if s.Description != "" {
 		s.appendConst("ScDescription", "\""+s.Description+"\"")
 	}
-	hName := coretypes.Hn(s.Name)
+	hName := coretypes.Hn(scName)
 	hNameType := "wasmlib.ScHname"
 	if test {
 		hNameType = "coretypes.Hname"
@@ -641,6 +651,9 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability str
 	for _, field := range fields {
 		varName := capitalize(field.Name)
 		varId := "idxMap[Idx" + kind + varName + "]"
+		if s.CoreContracts {
+			varId = kind + varName + ".KeyId()"
+		}
 		varType := goTypeIds[field.Type]
 		if len(varType) == 0 {
 			varType = "wasmlib.TYPE_BYTES"
@@ -704,7 +717,7 @@ func (s *Schema) GenerateGoTests() error {
 		return err
 	}
 	defer os.Chdir("..")
-	//TODO
+	//TODO <scname>_test.go
 	s.generateGoConsts(true)
 	return nil
 }
