@@ -3,12 +3,13 @@
 
 #![allow(unused_imports)]
 
+use consts::*;
+use contract::*;
+use params::*;
+use results::*;
+
 mod consts;
 pub mod contract;
 pub mod params;
 pub mod results;
 
-use consts::*;
-use contract::*;
-use params::*;
-use results::*;
