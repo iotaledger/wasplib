@@ -18,7 +18,9 @@ const (
 	IdxStateNumRepeats = 5
 )
 
-var keyMap = [6]wasmlib.Key{
+const keyMapLen = 6
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamCounter,
 	ParamDummy,
 	ParamNumRepeats,
@@ -27,4 +29,4 @@ var keyMap = [6]wasmlib.Key{
 	StateNumRepeats,
 }
 
-var idxMap [6]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

@@ -46,7 +46,10 @@ type Schema struct {
 	Name        string
 	FullName    string
 	Description string
-	KeyId       int32
+	KeyId       int
+	ConstLen    int
+	ConstNames  []string
+	ConstValues []string
 	Funcs       []*FuncDef
 	NewTypes    map[string]bool
 	Params      []*Field
@@ -160,7 +163,7 @@ func (s *Schema) compileFuncFields(fieldMap StringMap, allFieldMap *FieldMap, wh
 			existing = field
 		}
 		if existing.Alias != field.Alias {
-			return nil, fmt.Errorf("redefined %s alias", what)
+			return nil, fmt.Errorf("redefined %s alias: '%s' != '%s", what, existing.Alias, field.Alias)
 		}
 		if existing.Type != field.Type {
 			return nil, fmt.Errorf("redefined %s type", what)
@@ -263,4 +266,21 @@ func (s *Schema) scanExistingCode(file *os.File, funcRegexp *regexp.Regexp) ([]s
 		return nil, nil, err
 	}
 	return lines, existing, nil
+}
+
+func (s *Schema) appendConst(name string, value string) {
+	if s.ConstLen < len(name) {
+		s.ConstLen = len(name)
+	}
+	s.ConstNames = append(s.ConstNames, name)
+	s.ConstValues = append(s.ConstValues, value)
+}
+
+func (s *Schema) flushConsts(file *os.File, printer func(name string, value string, padLen int)) {
+	for i, name := range s.ConstNames {
+		printer(name, s.ConstValues[i], s.ConstLen)
+	}
+	s.ConstLen = 0
+	s.ConstNames = nil
+	s.ConstValues = nil
 }

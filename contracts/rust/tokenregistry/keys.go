@@ -17,7 +17,9 @@ const (
 	IdxStateRegistry    = 4
 )
 
-var keyMap = [5]wasmlib.Key{
+const keyMapLen = 5
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamColor,
 	ParamDescription,
 	ParamUserDefined,
@@ -25,4 +27,4 @@ var keyMap = [5]wasmlib.Key{
 	StateRegistry,
 }
 
-var idxMap [5]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

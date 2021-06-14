@@ -4,18 +4,25 @@
     "description": "Chain account ledger contract",
     "funcs": {
       "deposit": {
-        "agentID=a": "AgentId"
+        "params": {
+          "agentID=a": "?AgentId // default is caller"
+        }
       },
       "withdraw": {
       }
     },
     "views": {
       "accounts": {
+        "resultsMap": "[AgentId]Bytes // bytes are always empty"
       },
       "balance": {
-        "agentID=a": "AgentId"
+        "params": {
+          "agentID=a": "AgentId"
+        },
+        "resultsMap": "[Color]Int64"
       },
       "totalAssets": {
+        "resultsMap": "[Color]Int64"
       }
     }
   },
@@ -24,38 +31,106 @@
     "description": "Blob Contract",
     "funcs": {
       "storeBlob": {
+        "paramsMap": "[String]Bytes // set of named blobs",
+        "results": {
+          "hash": "Hash // calculated hash of blob set"
+        }
       }
     },
     "views": {
       "getBlobField": {
-        "hash": "Hash",
-        "field": "String"
+        "params": {
+          "hash": "Hash // blob set",
+          "field": "String // blob name"
+        },
+        "results": {
+          "bytes": "Bytes // blob data"
+        }
       },
       "getBlobInfo": {
-        "hash": "Hash"
+        "params": {
+          "hash": "Hash // blob set"
+        },
+        "resultsMap": "[String]Int32 // size for each named blob"
       },
       "listBlobs": {
+        "resultsMap": "[Hash]Int32 // total size for each blob set"
+      }
+    }
+  },
+  {
+    "name": "blocklog",
+    "description": "Block log Contract //TODO remove 'view' from name",
+    "funcs": {
+    },
+    "views": {
+      "getBlockInfo": {
+        "params": {
+          "blockIndex=n": "Int64"
+        },
+        "results": {
+          "blockInfo=i": "Bytes"
+        }
+      },
+      "getLatestBlockInfo": {
+        "results": {
+          "blockInfo=i": "Bytes"
+        }
+      },
+      "getRequestLogRecord": {
+        "params": {
+          "requestID=u": "RequestId"
+        },
+        "results": {
+          "requestRecord=d": "Bytes",
+          "blockIndex=n": "Int64",
+          "requestIndex=r": "Int64"
+        }
+      },
+      "getRequestLogRecordsForBlock": {
+        "params": {
+          "blockIndex=n": "Int64"
+        },
+        "resultsMap": "[]Bytes //TODO requestRecord=d Array16?"
+      },
+      "getRequestIDsForBlock": {
+        "params": {
+          "blockIndex=n": "Int64"
+        },
+        "resultsMap": "[]Bytes //TODO requestID=u Array16?"
+      },
+      "isRequestProcessed": {
+        "params": {
+          "requestID=u": "RequestId"
+        },
+        "results": {
+          "requestProcessed=p": "String"
+        }
       }
     }
   },
   {
     "name": "eventlog",
     "description": "Event log Contract",
-    "state": {
-      "numRecords": "Int64",
-      "records": "[]Bytes"
-    },
     "funcs": {
     },
     "views": {
       "getNumRecords": {
-        "contractHname": "Hname"
+        "params": {
+          "contractHname": "Hname"
+        },
+        "results": {
+          "numRecords": "Int64"
+        }
       },
       "getRecords": {
-        "contractHname": "Hname",
-        "maxLastRecords": "?Int64",
-        "fromTs": "?Int64",
-        "toTs": "?Int64"
+        "params": {
+          "contractHname": "Hname",
+          "maxLastRecords": "?Int64 // default 50",
+          "fromTs": "?Int64 // default 0",
+          "toTs": "?Int64 // default now"
+        },
+        "resultsMap": "[]Bytes //TODO records Array16"
       }
     }
   },
@@ -66,37 +141,70 @@
       "claimChainOwnership": {
       },
       "delegateChainOwnership": {
-        "chainOwner=$$owner$$": "AgentId"
+        "params": {
+          "chainOwner=$$owner$$": "AgentId"
+        }
       },
       "deployContract": {
-        "programHash=$$proghash$$": "Hash",
-        "name=$$name$$": "String",
-        "description=$$description$$": "?String"
+        "params": {
+          "programHash=$$proghash$$": "Hash //TODO variable init params for deployed contract",
+          "name=$$name$$": "String",
+          "description=$$description$$": "?String // default 'N/A'"
+        }
       },
       "grantDeployPermission": {
-        "deployer=$$deployer$$": "AgentId"
+        "params": {
+          "deployer=$$deployer$$": "AgentId"
+        }
       },
       "revokeDeployPermission": {
-        "deployer=$$deployer$$": "AgentId"
+        "params": {
+          "deployer=$$deployer$$": "AgentId"
+        }
       },
       "setContractFee": {
-        "hname=$$hname$$": "Hname",
-        "ownerFee=$$ownerfee$$": "?Int64",
-        "validatorFee=$$validatorfee$$": "?Int64"
+        "params": {
+          "hname=$$hname$$": "Hname // contract id",
+          "ownerFee=$$ownerfee$$": "?Int64 // default 0 (no fee)",
+          "validatorFee=$$validatorfee$$": "?Int64 // default 0 (no fee)"
+        }
       },
       "setDefaultFee": {
-        "ownerFee=$$ownerfee$$": "?Int64",
-        "validatorFee=$$validatorfee$$": "?Int64"
+        "params": {
+          "ownerFee=$$ownerfee$$": "?Int64 // default -1 (not set)",
+          "validatorFee=$$validatorfee$$": "?Int64 // default -1 (not set)"
+        }
       }
     },
     "views": {
       "findContract": {
-        "hname=$$hname$$": "Hname"
+        "params": {
+          "hname=$$hname$$": "Hname"
+        },
+        "results": {
+          "data=dt": "Bytes // encoded contract record"
+        }
       },
       "getChainInfo": {
+        "results": {
+          "chainID=c": "ChainId",
+          "chainOwnerID=o": "AgentId",
+          "description=d": "String",
+          "feeColor=f": "Color",
+          "defaultOwnerFee=do": "Int64",
+          "defaultValidatorFee=dv": "Int64",
+          "contractRegistry=r": "[Hname]Bytes // contract records"
+        }
       },
       "getFeeInfo": {
-        "hname=$$hname$$": "Hname"
+        "params": {
+          "hname=$$hname$$": "Hname"
+        },
+        "results": {
+          "feeColor=f": "Color",
+          "ownerFee=of": "Int64",
+          "validatorFee=vf": "Int64"
+        }
       }
     }
   }

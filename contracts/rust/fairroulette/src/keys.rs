@@ -5,19 +5,21 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 
 use crate::*;
 
-pub const IDX_PARAM_NUMBER: usize = 0;
-pub const IDX_PARAM_PLAY_PERIOD: usize = 1;
+pub const IDX_PARAM_NUMBER:               usize = 0;
+pub const IDX_PARAM_PLAY_PERIOD:          usize = 1;
 pub const IDX_RESULT_LAST_WINNING_NUMBER: usize = 2;
-pub const IDX_STATE_BETS: usize = 3;
-pub const IDX_STATE_LAST_WINNING_NUMBER: usize = 4;
-pub const IDX_STATE_LOCKED_BETS: usize = 5;
-pub const IDX_STATE_PLAY_PERIOD: usize = 6;
+pub const IDX_STATE_BETS:                 usize = 3;
+pub const IDX_STATE_LAST_WINNING_NUMBER:  usize = 4;
+pub const IDX_STATE_LOCKED_BETS:          usize = 5;
+pub const IDX_STATE_PLAY_PERIOD:          usize = 6;
 
 pub const KEY_MAP_LEN: usize = 7;
 
@@ -38,3 +40,5 @@ pub fn idx_map(idx: usize) -> Key32 {
         IDX_MAP[idx]
     }
 }
+
+//@formatter:on

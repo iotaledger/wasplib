@@ -23,7 +23,9 @@ const (
 	IdxStateSupply        = 10
 )
 
-var keyMap = [11]wasmlib.Key{
+const keyMapLen = 11
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAccount,
 	ParamAmount,
 	ParamCreator,
@@ -37,4 +39,4 @@ var keyMap = [11]wasmlib.Key{
 	StateSupply,
 }
 
-var idxMap [11]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

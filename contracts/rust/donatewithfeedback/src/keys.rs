@@ -5,26 +5,28 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 
 use crate::*;
 
-pub const IDX_PARAM_AMOUNT: usize = 0;
-pub const IDX_PARAM_FEEDBACK: usize = 1;
-pub const IDX_PARAM_NR: usize = 2;
-pub const IDX_RESULT_AMOUNT: usize = 3;
-pub const IDX_RESULT_COUNT: usize = 4;
-pub const IDX_RESULT_DONATOR: usize = 5;
-pub const IDX_RESULT_ERROR: usize = 6;
-pub const IDX_RESULT_FEEDBACK: usize = 7;
-pub const IDX_RESULT_MAX_DONATION: usize = 8;
-pub const IDX_RESULT_TIMESTAMP: usize = 9;
+pub const IDX_PARAM_AMOUNT:          usize = 0;
+pub const IDX_PARAM_FEEDBACK:        usize = 1;
+pub const IDX_PARAM_NR:              usize = 2;
+pub const IDX_RESULT_AMOUNT:         usize = 3;
+pub const IDX_RESULT_COUNT:          usize = 4;
+pub const IDX_RESULT_DONATOR:        usize = 5;
+pub const IDX_RESULT_ERROR:          usize = 6;
+pub const IDX_RESULT_FEEDBACK:       usize = 7;
+pub const IDX_RESULT_MAX_DONATION:   usize = 8;
+pub const IDX_RESULT_TIMESTAMP:      usize = 9;
 pub const IDX_RESULT_TOTAL_DONATION: usize = 10;
-pub const IDX_STATE_LOG: usize = 11;
-pub const IDX_STATE_MAX_DONATION: usize = 12;
-pub const IDX_STATE_TOTAL_DONATION: usize = 13;
+pub const IDX_STATE_LOG:             usize = 11;
+pub const IDX_STATE_MAX_DONATION:    usize = 12;
+pub const IDX_STATE_TOTAL_DONATION:  usize = 13;
 
 pub const KEY_MAP_LEN: usize = 14;
 
@@ -52,3 +54,5 @@ pub fn idx_map(idx: usize) -> Key32 {
         IDX_MAP[idx]
     }
 }
+
+//@formatter:on

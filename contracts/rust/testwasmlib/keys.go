@@ -22,7 +22,9 @@ const (
 	IdxParamString    = 9
 )
 
-var keyMap = [10]wasmlib.Key{
+const keyMapLen = 10
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
 	ParamAgentId,
 	ParamBytes,
@@ -35,4 +37,4 @@ var keyMap = [10]wasmlib.Key{
 	ParamString,
 }
 
-var idxMap [10]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

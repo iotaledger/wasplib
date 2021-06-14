@@ -19,7 +19,9 @@ const (
 	IdxStatePlayPeriod         = 6
 )
 
-var keyMap = [7]wasmlib.Key{
+const keyMapLen = 7
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamNumber,
 	ParamPlayPeriod,
 	ResultLastWinningNumber,
@@ -29,4 +31,4 @@ var keyMap = [7]wasmlib.Key{
 	StatePlayPeriod,
 }
 
-var idxMap [7]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

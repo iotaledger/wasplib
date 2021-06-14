@@ -35,7 +35,7 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, f: &FuncCallOnChainContext) {
     let parms = ScMutableMap::new();
     parms.get_int64(PARAM_INT_VALUE).set_value(param_int);
     let ret = ctx.call(hname_contract, hname_ep, Some(parms), None);
-    let ret_val = ret.get_int64(PARAM_INT_VALUE);
+    let ret_val = ret.get_int64(RESULT_INT_VALUE);
     f.results.int_value().set_value(ret_val.value());
 }
 

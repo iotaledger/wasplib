@@ -33,7 +33,9 @@ const (
 	IdxStateOwnerMargin    = 20
 )
 
-var keyMap = [21]wasmlib.Key{
+const keyMapLen = 21
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamColor,
 	ParamDescription,
 	ParamDuration,
@@ -57,4 +59,4 @@ var keyMap = [21]wasmlib.Key{
 	StateOwnerMargin,
 }
 
-var idxMap [21]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

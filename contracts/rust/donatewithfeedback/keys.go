@@ -26,7 +26,9 @@ const (
 	IdxStateTotalDonation  = 13
 )
 
-var keyMap = [14]wasmlib.Key{
+const keyMapLen = 14
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAmount,
 	ParamFeedback,
 	ParamNr,
@@ -43,4 +45,4 @@ var keyMap = [14]wasmlib.Key{
 	StateTotalDonation,
 }
 
-var idxMap [14]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

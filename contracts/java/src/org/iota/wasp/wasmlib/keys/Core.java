@@ -10,7 +10,6 @@ package org.iota.wasp.wasmlib.keys;
 import org.iota.wasp.wasmlib.hashtypes.*;
 
 public class Core {
-
     public static final ScHname Accounts = new ScHname(0x3c4b5e02);
     public static final ScHname AccountsFuncDeposit = new ScHname(0xbdc9102d);
     public static final ScHname AccountsFuncWithdraw = new ScHname(0x9dcc0f41);
@@ -28,6 +27,17 @@ public class Core {
 
     public static final Key BlobParamField = new Key("field");
     public static final Key BlobParamHash = new Key("hash");
+
+    public static final ScHname Blocklog = new ScHname(0xf538ef2b);
+    public static final ScHname BlocklogViewGetBlockInfo = new ScHname(0xbe89f9b3);
+    public static final ScHname BlocklogViewGetLatestBlockInfo = new ScHname(0x084a1760);
+    public static final ScHname BlocklogViewGetRequestIDsForBlock = new ScHname(0x5a20327a);
+    public static final ScHname BlocklogViewGetRequestLogRecord = new ScHname(0x31e07e48);
+    public static final ScHname BlocklogViewGetRequestLogRecordsForBlock = new ScHname(0x7210e621);
+    public static final ScHname BlocklogViewIsRequestProcessed = new ScHname(0xd57d50a9);
+
+    public static final Key BlocklogParamBlockIndex = new Key("n");
+    public static final Key BlocklogParamRequestID = new Key("u");
 
     public static final ScHname Eventlog = new ScHname(0x661aa7d8);
     public static final ScHname EventlogViewGetNumRecords = new ScHname(0x2f4b4a8c);

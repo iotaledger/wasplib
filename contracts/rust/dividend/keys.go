@@ -21,7 +21,9 @@ const (
 	IdxStateTotalFactor = 8
 )
 
-var keyMap = [9]wasmlib.Key{
+const keyMapLen = 9
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
 	ParamFactor,
 	ParamOwner,
@@ -33,4 +35,4 @@ var keyMap = [9]wasmlib.Key{
 	StateTotalFactor,
 }
 
-var idxMap [9]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

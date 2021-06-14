@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -109,16 +110,17 @@ func (s *Schema) generateGoConsts(test bool) error {
 	fmt.Fprintln(file, importTypes)
 
 	fmt.Fprintf(file, "const (\n")
-	fmt.Fprintf(file, "\tScName = \"%s\"\n", s.Name)
+	s.appendConst("ScName", "\""+s.Name+"\"")
 	if s.Description != "" {
-		fmt.Fprintf(file, "\tScDescription = \"%s\"\n", s.Description)
+		s.appendConst("ScDescription", "\""+s.Description+"\"")
 	}
 	hName := coretypes.Hn(s.Name)
 	hNameType := "wasmlib.ScHname"
 	if test {
 		hNameType = "coretypes.Hname"
 	}
-	fmt.Fprintf(file, "\tHScName = %s(0x%s)\n", hNameType, hName.String())
+	s.appendConst("HScName", hNameType+"(0x"+hName.String()+")")
+	s.flushGoConsts(file)
 
 	s.generateGoConstsFields(file, test, s.Params, "Param")
 	s.generateGoConstsFields(file, test, s.Results, "Result")
@@ -128,15 +130,17 @@ func (s *Schema) generateGoConsts(test bool) error {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := capitalize(funcDef.FullName)
-			fmt.Fprintf(file, "\t%s = \"%s\"\n", name, funcDef.Name)
+			s.appendConst(name, "\""+funcDef.Name+"\"")
 		}
+		s.flushGoConsts(file)
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FullName)
+			name := "H" + capitalize(funcDef.FullName)
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "\tH%s = %s(0x%s)\n", name, hNameType, hName.String())
+			s.appendConst(name, hNameType+"(0x"+hName.String()+")")
 		}
+		s.flushGoConsts(file)
 	}
 
 	fmt.Fprintf(file, ")\n")
@@ -152,8 +156,9 @@ func (s *Schema) generateGoConstsFields(file *os.File, test bool, fields []*Fiel
 			if !test {
 				value = "wasmlib.Key(" + value + ")"
 			}
-			fmt.Fprintf(file, "\t%s = %s\n", name, value)
+			s.appendConst(name, value)
 		}
+		s.flushGoConsts(file)
 	}
 }
 
@@ -360,15 +365,17 @@ func (s *Schema) generateGoKeys() error {
 	s.generateGoKeysIndexes(file, s.Params, "Param")
 	s.generateGoKeysIndexes(file, s.Results, "Result")
 	s.generateGoKeysIndexes(file, s.StateVars, "State")
+	s.flushGoConsts(file)
 	fmt.Fprintf(file, ")\n")
 
 	size := len(s.Params) + len(s.Results) + len(s.StateVars)
-	fmt.Fprintf(file, "\nvar keyMap = [%d]wasmlib.Key{\n", size)
+	fmt.Fprintf(file, "\nconst keyMapLen = %d\n", size)
+	fmt.Fprintf(file, "\nvar keyMap = [keyMapLen]wasmlib.Key{\n")
 	s.generateGoKeysArray(file, s.Params, "Param")
 	s.generateGoKeysArray(file, s.Results, "Result")
 	s.generateGoKeysArray(file, s.StateVars, "State")
 	fmt.Fprintf(file, "}\n")
-	fmt.Fprintf(file, "\nvar idxMap [%d]wasmlib.Key32\n", size)
+	fmt.Fprintf(file, "\nvar idxMap [keyMapLen]wasmlib.Key32\n")
 	return nil
 }
 
@@ -384,8 +391,9 @@ func (s *Schema) generateGoKeysIndexes(file *os.File, fields []*Field, prefix st
 	for _, field := range fields {
 		name := "Idx" + prefix + capitalize(field.Name)
 		field.KeyId = s.KeyId
-		fmt.Fprintf(file, "\t%s = %d\n", name, field.KeyId)
+		value := strconv.Itoa(field.KeyId)
 		s.KeyId++
+		s.appendConst(name, value)
 	}
 }
 
@@ -897,4 +905,10 @@ func (s *Schema) generateGoWasmMain() error {
 	fmt.Fprintf(file, "}\n")
 
 	return nil
+}
+
+func (s *Schema) flushGoConsts(file *os.File) {
+	s.flushConsts(file, func(name string, value string, padLen int) {
+		fmt.Fprintf(file, "\t%s = %s\n", pad(name, padLen), value)
+	})
 }

@@ -47,6 +47,9 @@ func main() {
 	if err == nil {
 		defer file.Close()
 		err = generateCoreContractsSchema(file)
+		if err != nil {
+			fmt.Println(err)
+		}
 		return
 	}
 

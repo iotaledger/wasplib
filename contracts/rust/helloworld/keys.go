@@ -13,8 +13,10 @@ const (
 	IdxResultHelloWorld = 0
 )
 
-var keyMap = [1]wasmlib.Key{
+const keyMapLen = 1
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ResultHelloWorld,
 }
 
-var idxMap [1]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

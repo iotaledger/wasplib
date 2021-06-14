@@ -33,7 +33,7 @@ type Field struct {
 	Alias    string // internal name alias, can be different from Name
 	Array    bool
 	Comment  string
-	KeyId    int32
+	KeyId    int
 	MapKey   string
 	Optional bool
 	Type     string

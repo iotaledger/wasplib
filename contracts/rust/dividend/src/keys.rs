@@ -5,20 +5,22 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 
 use crate::*;
 
-pub const IDX_PARAM_ADDRESS: usize = 0;
-pub const IDX_PARAM_FACTOR: usize = 1;
-pub const IDX_PARAM_OWNER: usize = 2;
-pub const IDX_RESULT_FACTOR: usize = 3;
-pub const IDX_STATE_FACTOR: usize = 4;
-pub const IDX_STATE_MEMBER_LIST: usize = 5;
-pub const IDX_STATE_MEMBERS: usize = 6;
-pub const IDX_STATE_OWNER: usize = 7;
+pub const IDX_PARAM_ADDRESS:      usize = 0;
+pub const IDX_PARAM_FACTOR:       usize = 1;
+pub const IDX_PARAM_OWNER:        usize = 2;
+pub const IDX_RESULT_FACTOR:      usize = 3;
+pub const IDX_STATE_FACTOR:       usize = 4;
+pub const IDX_STATE_MEMBER_LIST:  usize = 5;
+pub const IDX_STATE_MEMBERS:      usize = 6;
+pub const IDX_STATE_OWNER:        usize = 7;
 pub const IDX_STATE_TOTAL_FACTOR: usize = 8;
 
 pub const KEY_MAP_LEN: usize = 9;
@@ -42,3 +44,5 @@ pub fn idx_map(idx: usize) -> Key32 {
         IDX_MAP[idx]
     }
 }
+
+//@formatter:on

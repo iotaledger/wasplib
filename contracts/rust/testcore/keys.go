@@ -40,7 +40,9 @@ const (
 	IdxStateMintedSupply    = 27
 )
 
-var keyMap = [28]wasmlib.Key{
+const keyMapLen = 28
+
+var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
 	ParamAgentId,
 	ParamCaller,
@@ -71,4 +73,4 @@ var keyMap = [28]wasmlib.Key{
 	StateMintedSupply,
 }
 
-var idxMap [28]wasmlib.Key32
+var idxMap [keyMapLen]wasmlib.Key32

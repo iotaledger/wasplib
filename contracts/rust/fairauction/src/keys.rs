@@ -5,33 +5,35 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use wasmlib::*;
 
 use crate::*;
 
-pub const IDX_PARAM_COLOR: usize = 0;
-pub const IDX_PARAM_DESCRIPTION: usize = 1;
-pub const IDX_PARAM_DURATION: usize = 2;
-pub const IDX_PARAM_MINIMUM_BID: usize = 3;
-pub const IDX_PARAM_OWNER_MARGIN: usize = 4;
-pub const IDX_RESULT_BIDDERS: usize = 5;
-pub const IDX_RESULT_COLOR: usize = 6;
-pub const IDX_RESULT_CREATOR: usize = 7;
-pub const IDX_RESULT_DEPOSIT: usize = 8;
-pub const IDX_RESULT_DESCRIPTION: usize = 9;
-pub const IDX_RESULT_DURATION: usize = 10;
-pub const IDX_RESULT_HIGHEST_BID: usize = 11;
+pub const IDX_PARAM_COLOR:           usize = 0;
+pub const IDX_PARAM_DESCRIPTION:     usize = 1;
+pub const IDX_PARAM_DURATION:        usize = 2;
+pub const IDX_PARAM_MINIMUM_BID:     usize = 3;
+pub const IDX_PARAM_OWNER_MARGIN:    usize = 4;
+pub const IDX_RESULT_BIDDERS:        usize = 5;
+pub const IDX_RESULT_COLOR:          usize = 6;
+pub const IDX_RESULT_CREATOR:        usize = 7;
+pub const IDX_RESULT_DEPOSIT:        usize = 8;
+pub const IDX_RESULT_DESCRIPTION:    usize = 9;
+pub const IDX_RESULT_DURATION:       usize = 10;
+pub const IDX_RESULT_HIGHEST_BID:    usize = 11;
 pub const IDX_RESULT_HIGHEST_BIDDER: usize = 12;
-pub const IDX_RESULT_MINIMUM_BID: usize = 13;
-pub const IDX_RESULT_NUM_TOKENS: usize = 14;
-pub const IDX_RESULT_OWNER_MARGIN: usize = 15;
-pub const IDX_RESULT_WHEN_STARTED: usize = 16;
-pub const IDX_STATE_AUCTIONS: usize = 17;
-pub const IDX_STATE_BIDDER_LIST: usize = 18;
-pub const IDX_STATE_BIDS: usize = 19;
-pub const IDX_STATE_OWNER_MARGIN: usize = 20;
+pub const IDX_RESULT_MINIMUM_BID:    usize = 13;
+pub const IDX_RESULT_NUM_TOKENS:     usize = 14;
+pub const IDX_RESULT_OWNER_MARGIN:   usize = 15;
+pub const IDX_RESULT_WHEN_STARTED:   usize = 16;
+pub const IDX_STATE_AUCTIONS:        usize = 17;
+pub const IDX_STATE_BIDDER_LIST:     usize = 18;
+pub const IDX_STATE_BIDS:            usize = 19;
+pub const IDX_STATE_OWNER_MARGIN:    usize = 20;
 
 pub const KEY_MAP_LEN: usize = 21;
 
@@ -66,3 +68,5 @@ pub fn idx_map(idx: usize) -> Key32 {
         IDX_MAP[idx]
     }
 }
+
+//@formatter:on

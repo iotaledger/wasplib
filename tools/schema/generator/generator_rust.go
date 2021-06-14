@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -154,15 +155,17 @@ func (s *Schema) generateRustConsts() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
+	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
 	fmt.Fprintln(file, useWasmLib)
 
-	fmt.Fprintf(file, "pub const SC_NAME: &str = \"%s\";\n", s.Name)
+	s.appendConst("SC_NAME", "&str = \""+s.Name+"\"")
 	if s.Description != "" {
-		fmt.Fprintf(file, "pub const SC_DESCRIPTION: &str = \"%s\";\n", s.Description)
+		s.appendConst("SC_DESCRIPTION", "&str = \""+s.Description+"\"")
 	}
 	hName := coretypes.Hn(s.Name)
-	fmt.Fprintf(file, "pub const HSC_NAME: ScHname = ScHname(0x%s);\n", hName.String())
+	s.appendConst("HSC_NAME", "ScHname = ScHname(0x"+hName.String()+")")
+	s.flushRustConsts(file)
 
 	s.generateRustConstsFields(file, s.Params, "PARAM_")
 	s.generateRustConstsFields(file, s.Results, "RESULT_")
@@ -172,16 +175,20 @@ func (s *Schema) generateRustConsts() error {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
 			name := upper(snake(funcDef.FullName))
-			fmt.Fprintf(file, "pub const %s: &str = \"%s\";\n", name, funcDef.Name)
+			s.appendConst(name, "&str = \""+funcDef.Name+"\"")
 		}
+		s.flushRustConsts(file)
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
-			name := upper(snake(funcDef.FullName))
+			name := "H" + upper(snake(funcDef.FullName))
 			hName = coretypes.Hn(funcDef.Name)
-			fmt.Fprintf(file, "pub const H%s: ScHname = ScHname(0x%s);\n", name, hName.String())
+			s.appendConst(name, "ScHname = ScHname(0x"+hName.String()+")")
 		}
+		s.flushRustConsts(file)
 	}
+
+	formatter(file, true)
 	return nil
 }
 
@@ -190,9 +197,10 @@ func (s *Schema) generateRustConstsFields(file *os.File, fields []*Field, prefix
 		fmt.Fprintln(file)
 		for _, field := range fields {
 			name := prefix + upper(snake(field.Name))
-			value := "\"" + field.Alias + "\""
-			fmt.Fprintf(file, "pub const %s: &str = %s;\n", name, value)
+			value := "&str = \"" + field.Alias + "\""
+			s.appendConst(name, value)
 		}
+		s.flushRustConsts(file)
 	}
 }
 
@@ -403,6 +411,7 @@ func (s *Schema) generateRustKeys() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
+	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
 	fmt.Fprintln(file, useWasmLib)
 	fmt.Fprintln(file, useCrate)
@@ -411,6 +420,7 @@ func (s *Schema) generateRustKeys() error {
 	s.generateRustKeysIndexes(file, s.Params, "PARAM_")
 	s.generateRustKeysIndexes(file, s.Results, "RESULT_")
 	s.generateRustKeysIndexes(file, s.StateVars, "STATE_")
+	s.flushRustConsts(file)
 
 	size := len(s.Params) + len(s.Results) + len(s.StateVars)
 	fmt.Fprintf(file, "\npub const KEY_MAP_LEN: usize = %d;\n", size)
@@ -427,6 +437,8 @@ func (s *Schema) generateRustKeys() error {
 	fmt.Fprintf(file, "        IDX_MAP[idx]\n")
 	fmt.Fprintf(file, "    }\n")
 	fmt.Fprintf(file, "}\n")
+
+	formatter(file, true)
 	return nil
 }
 
@@ -442,8 +454,9 @@ func (s *Schema) generateRustKeysIndexes(file *os.File, fields []*Field, prefix 
 	for _, field := range fields {
 		name := "IDX_" + prefix + upper(snake(field.Name))
 		field.KeyId = s.KeyId
-		fmt.Fprintf(file, "pub const %s: usize = %d;\n", name, field.KeyId)
+		value := "usize = " + strconv.Itoa(field.KeyId)
 		s.KeyId++
+		s.appendConst(name, value)
 	}
 }
 
@@ -984,4 +997,10 @@ func (s *Schema) generateRustTypeProxy(file *os.File, typeDef *TypeDef, mutable 
 	fmt.Fprintf(file, "    }\n")
 
 	fmt.Fprintf(file, "}\n")
+}
+
+func (s *Schema) flushRustConsts(file *os.File) {
+	s.flushConsts(file, func(name string, value string, padLen int) {
+		fmt.Fprintf(file, "pub const %s %s;\n", pad(name+":", padLen+1), value)
+	})
 }
