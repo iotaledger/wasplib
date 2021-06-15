@@ -17,7 +17,7 @@ func NewCoreEventLogFunc(ctx wasmlib.ScFuncContext) *CoreEventLogFunc {
 	return &CoreEventLogFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *CoreEventLogFunc) Delay(seconds int64) *CoreEventLogFunc {
+func (f *CoreEventLogFunc) Delay(seconds int32) *CoreEventLogFunc {
 	f.sc.Delay(seconds)
 	return f
 }

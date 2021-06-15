@@ -19,7 +19,7 @@ impl CoreEventLogFunc {
         CoreEventLogFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut CoreEventLogFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut CoreEventLogFunc {
         self.sc.delay(seconds);
         self
     }

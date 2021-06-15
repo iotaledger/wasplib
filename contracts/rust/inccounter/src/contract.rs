@@ -22,7 +22,7 @@ impl IncCounterFunc {
         IncCounterFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut IncCounterFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut IncCounterFunc {
         self.sc.delay(seconds);
         self
     }

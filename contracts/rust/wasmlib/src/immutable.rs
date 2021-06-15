@@ -346,6 +346,104 @@ impl ScImmutableHnameArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+// value proxy for immutable int16 in host container
+pub struct ScImmutableInt16 {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScImmutableInt16 {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableInt16 {
+        ScImmutableInt16 { obj_id, key_id }
+    }
+
+    // check if value exists in host container
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_INT16)
+    }
+
+    // human-readable string representation
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    // get value from host container
+    pub fn value(&self) -> i16 {
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT16);
+        i16::from_le_bytes(bytes.try_into().expect("invalid i16 length"))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// array proxy for immutable array of int16
+pub struct ScImmutableInt16Array {
+    pub(crate) obj_id: i32,
+}
+
+impl ScImmutableInt16Array {
+    // get value proxy for item at index, index can be 0..length()-1
+    pub fn get_int16(&self, index: i32) -> ScImmutableInt16 {
+        ScImmutableInt16 { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// value proxy for immutable int32 in host container
+pub struct ScImmutableInt32 {
+    obj_id: i32,
+    key_id: Key32,
+}
+
+impl ScImmutableInt32 {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableInt32 {
+        ScImmutableInt32 { obj_id, key_id }
+    }
+
+    // check if value exists in host container
+    pub fn exists(&self) -> bool {
+        exists(self.obj_id, self.key_id, TYPE_INT32)
+    }
+
+    // human-readable string representation
+    pub fn to_string(&self) -> String {
+        self.value().to_string()
+    }
+
+    // get value from host container
+    pub fn value(&self) -> i32 {
+        let bytes = get_bytes(self.obj_id, self.key_id, TYPE_INT32);
+        i32::from_le_bytes(bytes.try_into().expect("invalid i32 length"))
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+// array proxy for immutable array of int32
+pub struct ScImmutableInt32Array {
+    pub(crate) obj_id: i32,
+}
+
+impl ScImmutableInt32Array {
+    // get value proxy for item at index, index can be 0..length()-1
+    pub fn get_int32(&self, index: i32) -> ScImmutableInt32 {
+        ScImmutableInt32 { obj_id: self.obj_id, key_id: Key32(index) }
+    }
+
+    // number of items in array
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 // value proxy for immutable int64 in host container
 pub struct ScImmutableInt64 {
     obj_id: i32,
@@ -480,6 +578,28 @@ impl ScImmutableMap {
     pub fn get_hname_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableHnameArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_HNAME | TYPE_ARRAY);
         ScImmutableHnameArray { obj_id: arr_id }
+    }
+
+    // get value proxy for immutable int16 field specified by key
+    pub fn get_int16<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt16 {
+        ScImmutableInt16 { obj_id: self.obj_id, key_id: key.get_key_id() }
+    }
+
+    // get array proxy for ScImmutableInt16Array specified by key
+    pub fn get_int16_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt16Array {
+        let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_INT16 | TYPE_ARRAY);
+        ScImmutableInt16Array { obj_id: arr_id }
+    }
+
+    // get value proxy for immutable int32 field specified by key
+    pub fn get_int32<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt32 {
+        ScImmutableInt32 { obj_id: self.obj_id, key_id: key.get_key_id() }
+    }
+
+    // get array proxy for ScImmutableInt32Array specified by key
+    pub fn get_int32_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableInt32Array {
+        let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_INT32 | TYPE_ARRAY);
+        ScImmutableInt32Array { obj_id: arr_id }
     }
 
     // get value proxy for immutable int64 field specified by key

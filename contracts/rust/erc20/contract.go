@@ -17,7 +17,7 @@ func NewErc20Func(ctx wasmlib.ScFuncContext) *Erc20Func {
 	return &Erc20Func{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *Erc20Func) Delay(seconds int64) *Erc20Func {
+func (f *Erc20Func) Delay(seconds int32) *Erc20Func {
 	f.sc.Delay(seconds)
 	return f
 }

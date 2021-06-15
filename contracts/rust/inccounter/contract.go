@@ -17,7 +17,7 @@ func NewIncCounterFunc(ctx wasmlib.ScFuncContext) *IncCounterFunc {
 	return &IncCounterFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *IncCounterFunc) Delay(seconds int64) *IncCounterFunc {
+func (f *IncCounterFunc) Delay(seconds int32) *IncCounterFunc {
 	f.sc.Delay(seconds)
 	return f
 }

@@ -22,7 +22,7 @@ impl TokenRegistryFunc {
         TokenRegistryFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut TokenRegistryFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut TokenRegistryFunc {
         self.sc.delay(seconds);
         self
     }

@@ -17,7 +17,7 @@ func NewFairAuctionFunc(ctx wasmlib.ScFuncContext) *FairAuctionFunc {
 	return &FairAuctionFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *FairAuctionFunc) Delay(seconds int64) *FairAuctionFunc {
+func (f *FairAuctionFunc) Delay(seconds int32) *FairAuctionFunc {
 	f.sc.Delay(seconds)
 	return f
 }

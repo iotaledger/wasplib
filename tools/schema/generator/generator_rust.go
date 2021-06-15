@@ -35,6 +35,8 @@ var rustTypes = StringMap{
 	"Color":     "ScColor",
 	"Hash":      "ScHash",
 	"Hname":     "ScHname",
+	"Int16":     "i16",
+	"Int32":     "i32",
 	"Int64":     "i64",
 	"RequestId": "ScRequestId",
 	"String":    "String",
@@ -47,6 +49,8 @@ var rustTypeIds = StringMap{
 	"Color":     "TYPE_COLOR",
 	"Hash":      "TYPE_HASH",
 	"Hname":     "TYPE_HNAME",
+	"Int16":     "TYPE_INT16",
+	"Int32":     "TYPE_INT32",
 	"Int64":     "TYPE_INT64",
 	"RequestId": "TYPE_REQUEST_ID",
 	"String":    "TYPE_STRING",
@@ -243,7 +247,7 @@ func (s *Schema) generateRustContract() error {
 	fmt.Fprintf(file, "        %s { sc: ScContractFunc::new(ctx, HSC_NAME) }\n", typeName)
 	fmt.Fprintf(file, "    }\n")
 
-	fmt.Fprintf(file, "\n    pub fn delay(&mut self, seconds: i64) -> &mut %s {\n", typeName)
+	fmt.Fprintf(file, "\n    pub fn delay(&mut self, seconds: i32) -> &mut %s {\n", typeName)
 	fmt.Fprintf(file, "        self.sc.delay(seconds);\n")
 	fmt.Fprintf(file, "        self\n")
 	fmt.Fprintf(file, "    }\n")
@@ -961,7 +965,7 @@ func (s *Schema) generateRustType(file *os.File, typeDef *TypeDef) {
 	for _, field := range typeDef.Fields {
 		name := snake(field.Name)
 		ref := "&"
-		if field.Type == "Int64" || field.Type == "Hname" {
+		if field.Type == "Hname" || field.Type == "Int64" || field.Type == "Int32" || field.Type == "Int16" {
 			ref = ""
 		}
 		fmt.Fprintf(file, "        encode.%s(%sself.%s);\n", snake(field.Type), ref, name)

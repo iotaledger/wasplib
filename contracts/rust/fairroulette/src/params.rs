@@ -78,8 +78,8 @@ pub struct ImmutableFuncPlayPeriodParams {
 }
 
 impl ImmutableFuncPlayPeriodParams {
-    pub fn play_period(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
+    pub fn play_period(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
     }
 }
 
@@ -93,8 +93,8 @@ impl MutableFuncPlayPeriodParams {
         MutableFuncPlayPeriodParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn play_period(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
+    pub fn play_period(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
     }
 }
 

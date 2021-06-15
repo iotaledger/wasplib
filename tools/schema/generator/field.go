@@ -23,6 +23,8 @@ var FieldTypes = map[string]int32{
 	"Color":     wasmlib.TYPE_COLOR,
 	"Hash":      wasmlib.TYPE_HASH,
 	"Hname":     wasmlib.TYPE_HNAME,
+	"Int16":     wasmlib.TYPE_INT16,
+	"Int32":     wasmlib.TYPE_INT32,
 	"Int64":     wasmlib.TYPE_INT64,
 	"RequestId": wasmlib.TYPE_REQUEST_ID,
 	"String":    wasmlib.TYPE_STRING,

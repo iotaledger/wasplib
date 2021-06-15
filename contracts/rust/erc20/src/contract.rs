@@ -22,7 +22,7 @@ impl Erc20Func {
         Erc20Func { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut Erc20Func {
+    pub fn delay(&mut self, seconds: i32) -> &mut Erc20Func {
         self.sc.delay(seconds);
         self
     }

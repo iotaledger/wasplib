@@ -17,7 +17,7 @@ func NewHelloWorldFunc(ctx wasmlib.ScFuncContext) *HelloWorldFunc {
 	return &HelloWorldFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *HelloWorldFunc) Delay(seconds int64) *HelloWorldFunc {
+func (f *HelloWorldFunc) Delay(seconds int32) *HelloWorldFunc {
 	f.sc.Delay(seconds)
 	return f
 }

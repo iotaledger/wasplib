@@ -110,11 +110,11 @@ impl ScUtility {
     // aggregates the specified multiple BLS signatures and public keys into a single one
     pub fn bls_aggregate_signatures(&self, pub_keys_bin: &[&[u8]], sigs_bin: &[&[u8]]) -> (Vec<u8>, Vec<u8>) {
         let mut encode = BytesEncoder::new();
-        encode.int64(pub_keys_bin.len() as i64);
+        encode.int32(pub_keys_bin.len() as i32);
         for pub_key in pub_keys_bin {
             encode.bytes(pub_key);
         }
-        encode.int64(sigs_bin.len() as i64);
+        encode.int32(sigs_bin.len() as i32);
         for sig in sigs_bin {
             encode.bytes(sig);
         }
@@ -275,14 +275,14 @@ impl ScFuncContext {
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = params {
-            encode.int64(params.map_id() as i64);
+            encode.int32(params.map_id());
         } else {
-            encode.int64(0);
+            encode.int32(0);
         }
         if let Some(transfer) = transfer {
-            encode.int64(transfer.transfers.map_id() as i64);
+            encode.int32(transfer.transfers.map_id());
         } else {
-            encode.int64(0);
+            encode.int32(0);
         }
         ROOT.get_bytes(&KEY_CALL).set_value(&encode.data());
         ROOT.get_map(&KEY_RETURN).immutable()
@@ -304,9 +304,9 @@ impl ScFuncContext {
         encode.string(name);
         encode.string(description);
         if let Some(params) = params {
-            encode.int64(params.map_id() as i64);
+            encode.int32(params.map_id());
         } else {
-            encode.int64(0);
+            encode.int32(0);
         }
         ROOT.get_bytes(&KEY_DEPLOY).set_value(&encode.data());
     }
@@ -329,23 +329,23 @@ impl ScFuncContext {
     // asynchronously calls the specified smart contract function,
     // passing the provided parameters and token transfers to it
     // it is possible to schedule the call for a later execution by specifying a delay
-    pub fn post(&self, chain_id: &ScChainId, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i64) {
+    pub fn post(&self, chain_id: &ScChainId, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i32) {
         let mut encode = BytesEncoder::new();
         encode.chain_id(chain_id);
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = &params {
-            encode.int64(params.map_id() as i64);
+            encode.int32(params.map_id());
         } else {
-            encode.int64(0);
+            encode.int32(0);
         }
-        encode.int64(transfer.transfers.map_id() as i64);
-        encode.int64(delay);
+        encode.int32(transfer.transfers.map_id());
+        encode.int32(delay);
         ROOT.get_bytes(&KEY_POST).set_value(&encode.data());
     }
 
     // shorthand to asynchronously call a smart contract function of the current contract
-    pub fn post_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i64) {
+    pub fn post_self(&self, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i32) {
         self.post(&self.chain_id(), self.contract(), hfunction, params, transfer, delay);
     }
 
@@ -364,7 +364,7 @@ impl ScFuncContext {
         let transfers = ROOT.get_map_array(&KEY_TRANSFERS);
         let tx = transfers.get_map(transfers.length());
         tx.get_address(&KEY_ADDRESS).set_value(address);
-        tx.get_int64(&KEY_BALANCES).set_value(transfer.transfers.map_id() as i64);
+        tx.get_int32(&KEY_BALANCES).set_value(transfer.transfers.map_id());
     }
 }
 
@@ -385,11 +385,11 @@ impl ScViewContext {
         encode.hname(&hcontract);
         encode.hname(&hfunction);
         if let Some(params) = params {
-            encode.int64(params.map_id() as i64);
+            encode.int32(params.map_id());
         } else {
-            encode.int64(0);
+            encode.int32(0);
         }
-        encode.int64(0);
+        encode.int32(0);
         ROOT.get_bytes(&KEY_CALL).set_value(&encode.data());
         ROOT.get_map(&KEY_RETURN).immutable()
     }

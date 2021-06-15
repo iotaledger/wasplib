@@ -18,7 +18,7 @@ use crate::types::*;
 // the maximum number one can bet on. The range of numbers starts at 1.
 const MAX_NUMBER: i64 = 5;
 // the default playing period of one betting round in minutes
-const DEFAULT_PLAY_PERIOD: i64 = 120;
+const DEFAULT_PLAY_PERIOD: i32 = 120;
 
 // 'placeBet' is used by betters to place a bet on a number from 1 to MAX_NUMBER. The first
 // incoming bet triggers a betting round of configurable duration. After the playing period
@@ -73,7 +73,7 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
     if bet_nr == 0 {
         // Yes it was, query the state for the length of the playing period in seconds by
         // retrieving the "playPeriod" from state storage
-        let mut play_period: i64 = f.state.play_period().value();
+        let mut play_period: i32 = f.state.play_period().value();
 
         // if the play period is less than 10 seconds we override it with the default duration.
         // Note that this will also happen when the play period was not set yet because in that
@@ -260,7 +260,7 @@ pub fn func_play_period(ctx: &ScFuncContext, f: &FuncPlayPeriodContext) {
 
     // Since we are sure that the 'playPeriod' parameter actually exists we can
     // retrieve its actual value into an i64 value.
-    let play_period: i64 = f.params.play_period().value();
+    let play_period: i32 = f.params.play_period().value();
 
     // Require that the play period (in seconds) is not ridiculously low.
     // Otherwise panic out with an error message.

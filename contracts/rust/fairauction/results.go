@@ -33,8 +33,8 @@ func (s ImmutableViewGetInfoResults) Description() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultDescription])
 }
 
-func (s ImmutableViewGetInfoResults) Duration() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultDuration])
+func (s ImmutableViewGetInfoResults) Duration() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxResultDuration])
 }
 
 func (s ImmutableViewGetInfoResults) HighestBid() wasmlib.ScImmutableInt64 {
@@ -85,8 +85,8 @@ func (s MutableViewGetInfoResults) Description() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultDescription])
 }
 
-func (s MutableViewGetInfoResults) Duration() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultDuration])
+func (s MutableViewGetInfoResults) Duration() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxResultDuration])
 }
 
 func (s MutableViewGetInfoResults) HighestBid() wasmlib.ScMutableInt64 {

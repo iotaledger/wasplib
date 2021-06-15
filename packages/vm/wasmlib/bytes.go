@@ -20,8 +20,8 @@ func (d *BytesDecoder) AgentId() ScAgentId {
 }
 
 func (d *BytesDecoder) Bytes() []byte {
-	size := d.Int64()
-	if len(d.data) < int(size) {
+	size := int(d.Int32())
+	if len(d.data) < size {
 		panic("insufficient bytes")
 	}
 	value := d.data[:size]
@@ -51,8 +51,20 @@ func (d *BytesDecoder) Hname() ScHname {
 	return NewScHnameFromBytes(d.Bytes())
 }
 
+func (d *BytesDecoder) Int16() int16 {
+	return int16(d.leb128Decode(16))
+}
+
+func (d *BytesDecoder) Int32() int32 {
+	return int32(d.leb128Decode(32))
+}
+
 func (d *BytesDecoder) Int64() int64 {
-	// leb128 decoder
+	return d.leb128Decode(64)
+}
+
+// leb128 decoder
+func (d *BytesDecoder) leb128Decode(bits int) int64 {
 	val := int64(0)
 	s := 0
 	for {
@@ -74,7 +86,7 @@ func (d *BytesDecoder) Int64() int64 {
 			return val | (int64(b) << s)
 		}
 		s += 7
-		if s >= 64 {
+		if s >= bits {
 			panic("integer representation too long")
 		}
 	}
@@ -107,7 +119,7 @@ func (e *BytesEncoder) AgentId(value ScAgentId) *BytesEncoder {
 }
 
 func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
-	e.Int64(int64(len(value)))
+	e.Int32(int32(len(value)))
 	e.data = append(e.data, value...)
 	return e
 }
@@ -132,8 +144,20 @@ func (e *BytesEncoder) Hname(value ScHname) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
+func (e *BytesEncoder) Int16(value int16) *BytesEncoder {
+	return e.leb128Encode(int64(value))
+}
+
+func (e *BytesEncoder) Int32(value int32) *BytesEncoder {
+	return e.leb128Encode(int64(value))
+}
+
 func (e *BytesEncoder) Int64(value int64) *BytesEncoder {
-	// leb128 encoder
+	return e.leb128Encode(value)
+}
+
+// leb128 encoder
+func (e *BytesEncoder) leb128Encode(value int64) *BytesEncoder {
 	for {
 		b := byte(value)
 		s := b & 0x40

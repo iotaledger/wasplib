@@ -80,8 +80,8 @@ impl ImmutableViewGetInfoResults {
         ScImmutableString::new(self.id, idx_map(IDX_RESULT_DESCRIPTION))
     }
 
-    pub fn duration(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_DURATION))
+    pub fn duration(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_RESULT_DURATION))
     }
 
     pub fn highest_bid(&self) -> ScImmutableInt64 {
@@ -135,8 +135,8 @@ impl MutableViewGetInfoResults {
         ScMutableString::new(self.id, idx_map(IDX_RESULT_DESCRIPTION))
     }
 
-    pub fn duration(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_DURATION))
+    pub fn duration(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_RESULT_DURATION))
     }
 
     pub fn highest_bid(&self) -> ScMutableInt64 {

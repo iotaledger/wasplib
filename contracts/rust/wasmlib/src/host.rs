@@ -18,13 +18,15 @@ pub const TYPE_CHAIN_ID: i32 = 4;
 pub const TYPE_COLOR: i32 = 5;
 pub const TYPE_HASH: i32 = 6;
 pub const TYPE_HNAME: i32 = 7;
-pub const TYPE_INT64: i32 = 8;
-pub const TYPE_MAP: i32 = 9;
-pub const TYPE_REQUEST_ID: i32 = 10;
-pub const TYPE_STRING: i32 = 11;
+pub const TYPE_INT16: i32 = 8;
+pub const TYPE_INT32: i32 = 9;
+pub const TYPE_INT64: i32 = 10;
+pub const TYPE_MAP: i32 = 11;
+pub const TYPE_REQUEST_ID: i32 = 12;
+pub const TYPE_STRING: i32 = 13;
 
 // size in bytes of predefined types, indexed by the TYPE_* consts
-const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0];
+const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0];
 
 // These 4 external functions are funneling the entire WasmLib functionality
 // to their counterparts on the host.
@@ -76,7 +78,7 @@ pub fn call_func(obj_id: i32, key_id: Key32, params: &[u8]) -> Vec<u8> {
 // Removes all its sub-objects as well.
 pub fn clear(obj_id: i32) {
     // special key "length" is used with integer value zero
-    set_bytes(obj_id, KEY_LENGTH, TYPE_INT64, &0_i64.to_le_bytes())
+    set_bytes(obj_id, KEY_LENGTH, TYPE_INT32, &0_i32.to_le_bytes())
 }
 
 // Check if the specified container object contains a value with the specified key and type.
@@ -133,8 +135,8 @@ pub fn get_key_id_from_string(key: &str) -> Key32 {
 // Retrieve the length of an array container object on the host
 pub fn get_length(obj_id: i32) -> i32 {
     // special integer key "length" is used
-    let bytes = get_bytes(obj_id, KEY_LENGTH, TYPE_INT64);
-    i64::from_le_bytes(bytes.try_into().unwrap()) as i32
+    let bytes = get_bytes(obj_id, KEY_LENGTH, TYPE_INT32);
+    i32::from_le_bytes(bytes.try_into().unwrap())
 }
 
 // Retrieve the id of the specified container sub-object

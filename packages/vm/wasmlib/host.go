@@ -17,13 +17,15 @@ const (
 	TYPE_COLOR      int32 = 5
 	TYPE_HASH       int32 = 6
 	TYPE_HNAME      int32 = 7
-	TYPE_INT64      int32 = 8
-	TYPE_MAP        int32 = 9
-	TYPE_REQUEST_ID int32 = 10
-	TYPE_STRING     int32 = 11
+	TYPE_INT16      int32 = 8
+	TYPE_INT32      int32 = 9
+	TYPE_INT64      int32 = 10
+	TYPE_MAP        int32 = 11
+	TYPE_REQUEST_ID int32 = 12
+	TYPE_STRING     int32 = 13
 )
 
-var TypeSizes = [...]uint8{0, 33, 37, 0, 33, 32, 32, 4, 8, 0, 34, 0}
+var TypeSizes = [...]uint8{0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0}
 
 type ScHost interface {
 	CallFunc(objId int32, keyId int32, params []byte) []byte
@@ -50,7 +52,8 @@ func CallFunc(objId int32, keyId Key32, params []byte) []byte {
 }
 
 func Clear(objId int32) {
-	SetBytes(objId, KeyLength, TYPE_INT64, make([]byte, 8))
+	var zero [4]byte
+	SetBytes(objId, KeyLength, TYPE_INT32, zero[:])
 }
 
 func Exists(objId int32, keyId Key32, typeId int32) bool {
@@ -74,8 +77,8 @@ func GetKeyIdFromString(key string) Key32 {
 }
 
 func GetLength(objId int32) int32 {
-	bytes := GetBytes(objId, KeyLength, TYPE_INT64)
-	return int32(binary.LittleEndian.Uint64(bytes))
+	bytes := GetBytes(objId, KeyLength, TYPE_INT32)
+	return int32(binary.LittleEndian.Uint32(bytes))
 }
 
 func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {

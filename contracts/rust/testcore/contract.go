@@ -17,7 +17,7 @@ func NewTestCoreFunc(ctx wasmlib.ScFuncContext) *TestCoreFunc {
 	return &TestCoreFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *TestCoreFunc) Delay(seconds int64) *TestCoreFunc {
+func (f *TestCoreFunc) Delay(seconds int32) *TestCoreFunc {
 	f.sc.Delay(seconds)
 	return f
 }

@@ -39,8 +39,8 @@ func (s ImmutableFairRouletteState) LockedBets() ArrayOfImmutableBet {
 	return ArrayOfImmutableBet{objId: arrId}
 }
 
-func (s ImmutableFairRouletteState) PlayPeriod() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStatePlayPeriod])
+func (s ImmutableFairRouletteState) PlayPeriod() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxStatePlayPeriod])
 }
 
 type ArrayOfMutableBet struct {
@@ -77,6 +77,6 @@ func (s MutableFairRouletteState) LockedBets() ArrayOfMutableBet {
 	return ArrayOfMutableBet{objId: arrId}
 }
 
-func (s MutableFairRouletteState) PlayPeriod() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStatePlayPeriod])
+func (s MutableFairRouletteState) PlayPeriod() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxStatePlayPeriod])
 }

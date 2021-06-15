@@ -22,7 +22,7 @@ impl TestCoreFunc {
         TestCoreFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut TestCoreFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut TestCoreFunc {
         self.sc.delay(seconds);
         self
     }

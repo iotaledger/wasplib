@@ -14,7 +14,7 @@ pub struct ScContractFunc {
     ctx: ScFuncContext,
     chain_id: ScChainId,
     contract: ScHname,
-    delay: i64,
+    delay: i32,
     post: bool,
     results: ScImmutableMap,
 }
@@ -31,7 +31,7 @@ impl ScContractFunc {
         }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &ScContractFunc {
+    pub fn delay(&mut self, seconds: i32) -> &ScContractFunc {
         self.delay = seconds;
         self
     }

@@ -19,7 +19,7 @@ impl CoreRootFunc {
         CoreRootFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut CoreRootFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut CoreRootFunc {
         self.sc.delay(seconds);
         self
     }

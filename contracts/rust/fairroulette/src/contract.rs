@@ -22,7 +22,7 @@ impl FairRouletteFunc {
         FairRouletteFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut FairRouletteFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut FairRouletteFunc {
         self.sc.delay(seconds);
         self
     }

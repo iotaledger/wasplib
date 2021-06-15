@@ -33,8 +33,8 @@ type ImmutableFuncPlayPeriodParams struct {
 	id int32
 }
 
-func (s ImmutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamPlayPeriod])
+func (s ImmutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamPlayPeriod])
 }
 
 type MutableFuncPlayPeriodParams struct {
@@ -45,6 +45,6 @@ func NewMutableFuncPlayPeriodParams() MutableFuncPlayPeriodParams {
 	return MutableFuncPlayPeriodParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamPlayPeriod])
+func (s MutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamPlayPeriod])
 }

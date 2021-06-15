@@ -82,7 +82,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, f *FuncPlaceBidContext) {
 		index := bidderList.Length()
 		bidderList.GetAgentId(index).SetValue(caller)
 		bid := &Bid{
-			Index:     int64(index),
+			Index:     index,
 			Amount:    bidAmount,
 			Timestamp: ctx.Timestamp(),
 		}

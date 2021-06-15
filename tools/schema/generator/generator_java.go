@@ -22,6 +22,8 @@ var javaTypes = StringMap{
 	"Color":     "ScColor",
 	"Hash":      "ScHash",
 	"Hname":     "Hname",
+	"Int16":     "short",
+	"Int32":     "int",
 	"Int64":     "long",
 	"RequestId": "ScRequestId",
 	"String":    "String",

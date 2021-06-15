@@ -17,7 +17,7 @@ func NewDividendFunc(ctx wasmlib.ScFuncContext) *DividendFunc {
 	return &DividendFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *DividendFunc) Delay(seconds int64) *DividendFunc {
+func (f *DividendFunc) Delay(seconds int32) *DividendFunc {
 	f.sc.Delay(seconds)
 	return f
 }

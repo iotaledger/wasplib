@@ -17,7 +17,7 @@ func NewFairRouletteFunc(ctx wasmlib.ScFuncContext) *FairRouletteFunc {
 	return &FairRouletteFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *FairRouletteFunc) Delay(seconds int64) *FairRouletteFunc {
+func (f *FairRouletteFunc) Delay(seconds int32) *FairRouletteFunc {
 	f.sc.Delay(seconds)
 	return f
 }

@@ -17,7 +17,7 @@ func NewCoreRootFunc(ctx wasmlib.ScFuncContext) *CoreRootFunc {
 	return &CoreRootFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *CoreRootFunc) Delay(seconds int64) *CoreRootFunc {
+func (f *CoreRootFunc) Delay(seconds int32) *CoreRootFunc {
 	f.sc.Delay(seconds)
 	return f
 }

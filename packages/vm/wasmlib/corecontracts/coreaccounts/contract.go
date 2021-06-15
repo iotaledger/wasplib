@@ -17,7 +17,7 @@ func NewCoreAccountsFunc(ctx wasmlib.ScFuncContext) *CoreAccountsFunc {
 	return &CoreAccountsFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *CoreAccountsFunc) Delay(seconds int64) *CoreAccountsFunc {
+func (f *CoreAccountsFunc) Delay(seconds int32) *CoreAccountsFunc {
 	f.sc.Delay(seconds)
 	return f
 }

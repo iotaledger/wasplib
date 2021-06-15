@@ -19,7 +19,7 @@ impl CoreBlobFunc {
         CoreBlobFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut CoreBlobFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut CoreBlobFunc {
         self.sc.delay(seconds);
         self
     }

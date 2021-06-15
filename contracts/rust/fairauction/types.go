@@ -14,7 +14,7 @@ type Auction struct {
 	Creator       wasmlib.ScAgentId // issuer of start_auction transaction
 	Deposit       int64             // deposit by auction owner to cover the SC fees
 	Description   string            // auction description
-	Duration      int64             // auction duration in minutes
+	Duration      int32             // auction duration in minutes
 	HighestBid    int64             // the current highest bid amount
 	HighestBidder wasmlib.ScAgentId // the current highest bidder
 	MinimumBid    int64             // minimum bid amount
@@ -30,7 +30,7 @@ func NewAuctionFromBytes(bytes []byte) *Auction {
 	data.Creator = decode.AgentId()
 	data.Deposit = decode.Int64()
 	data.Description = decode.String()
-	data.Duration = decode.Int64()
+	data.Duration = decode.Int32()
 	data.HighestBid = decode.Int64()
 	data.HighestBidder = decode.AgentId()
 	data.MinimumBid = decode.Int64()
@@ -47,7 +47,7 @@ func (o *Auction) Bytes() []byte {
 		AgentId(o.Creator).
 		Int64(o.Deposit).
 		String(o.Description).
-		Int64(o.Duration).
+		Int32(o.Duration).
 		Int64(o.HighestBid).
 		AgentId(o.HighestBidder).
 		Int64(o.MinimumBid).
@@ -89,7 +89,7 @@ func (o MutableAuction) Value() *Auction {
 
 type Bid struct {
 	Amount    int64 // cumulative amount of bids from same bidder
-	Index     int64 // index of bidder in bidder list
+	Index     int32 // index of bidder in bidder list
 	Timestamp int64 // timestamp of most recent bid
 }
 
@@ -97,7 +97,7 @@ func NewBidFromBytes(bytes []byte) *Bid {
 	decode := wasmlib.NewBytesDecoder(bytes)
 	data := &Bid{}
 	data.Amount = decode.Int64()
-	data.Index = decode.Int64()
+	data.Index = decode.Int32()
 	data.Timestamp = decode.Int64()
 	decode.Close()
 	return data
@@ -106,7 +106,7 @@ func NewBidFromBytes(bytes []byte) *Bid {
 func (o *Bid) Bytes() []byte {
 	return wasmlib.NewBytesEncoder().
 		Int64(o.Amount).
-		Int64(o.Index).
+		Int32(o.Index).
 		Int64(o.Timestamp).
 		Data()
 }

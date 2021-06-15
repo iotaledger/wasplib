@@ -19,7 +19,7 @@ impl CoreBlockLogFunc {
         CoreBlockLogFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut CoreBlockLogFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut CoreBlockLogFunc {
         self.sc.delay(seconds);
         self
     }

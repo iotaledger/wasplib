@@ -11,7 +11,7 @@
     "bets": "[]Bet",
     "lastWinningNumber": "Int64",
     "lockedBets": "[]Bet",
-    "playPeriod": "Int64"
+    "playPeriod": "Int32"
   },
   "funcs": {
     "placeBet": {
@@ -28,7 +28,7 @@
     "playPeriod": {
       "access": "creator // only SC creator can update the play period",
       "params": {
-        "playPeriod": "Int64 // number of minutes in one playing round"
+        "playPeriod": "Int32 // number of minutes in one playing round"
       }
     }
   },

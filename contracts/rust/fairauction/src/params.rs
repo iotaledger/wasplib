@@ -106,8 +106,8 @@ impl ImmutableFuncStartAuctionParams {
         ScImmutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
     }
 
-    pub fn duration(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_DURATION))
+    pub fn duration(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_DURATION))
     }
 
     pub fn minimum_bid(&self) -> ScImmutableInt64 {
@@ -133,8 +133,8 @@ impl MutableFuncStartAuctionParams {
         ScMutableString::new(self.id, idx_map(IDX_PARAM_DESCRIPTION))
     }
 
-    pub fn duration(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_PARAM_DURATION))
+    pub fn duration(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_DURATION))
     }
 
     pub fn minimum_bid(&self) -> ScMutableInt64 {

@@ -22,7 +22,7 @@ impl DividendFunc {
         DividendFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut DividendFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut DividendFunc {
         self.sc.delay(seconds);
         self
     }

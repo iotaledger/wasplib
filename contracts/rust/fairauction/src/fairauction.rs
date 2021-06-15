@@ -7,9 +7,9 @@ use wasmlib::*;
 use crate::*;
 use crate::contract::FairAuctionFunc;
 
-const DURATION_DEFAULT: i64 = 60;
-const DURATION_MIN: i64 = 1;
-const DURATION_MAX: i64 = 120;
+const DURATION_DEFAULT: i32 = 60;
+const DURATION_MIN: i32 = 1;
+const DURATION_MAX: i32 = 120;
 const MAX_DESCRIPTION_LENGTH: usize = 150;
 const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
@@ -82,7 +82,7 @@ pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
         let index = bidder_list.length();
         bidder_list.get_agent_id(index).set_value(&caller);
         let bid = Bid {
-            index: index as i64,
+            index: index,
             amount: bid_amount,
             timestamp: ctx.timestamp(),
         };

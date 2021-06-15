@@ -17,7 +17,7 @@ func NewTokenRegistryFunc(ctx wasmlib.ScFuncContext) *TokenRegistryFunc {
 	return &TokenRegistryFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *TokenRegistryFunc) Delay(seconds int64) *TokenRegistryFunc {
+func (f *TokenRegistryFunc) Delay(seconds int32) *TokenRegistryFunc {
 	f.sc.Delay(seconds)
 	return f
 }

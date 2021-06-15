@@ -49,8 +49,8 @@ impl ImmutableFairRouletteState {
         ArrayOfImmutableBet { obj_id: arr_id }
     }
 
-    pub fn play_period(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
+    pub fn play_period(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
     }
 }
 
@@ -92,7 +92,7 @@ impl MutableFairRouletteState {
         ArrayOfMutableBet { obj_id: arr_id }
     }
 
-    pub fn play_period(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
+    pub fn play_period(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_STATE_PLAY_PERIOD))
     }
 }

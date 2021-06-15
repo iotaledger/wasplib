@@ -22,7 +22,7 @@ impl DonateWithFeedbackFunc {
         DonateWithFeedbackFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut DonateWithFeedbackFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut DonateWithFeedbackFunc {
         self.sc.delay(seconds);
         self
     }

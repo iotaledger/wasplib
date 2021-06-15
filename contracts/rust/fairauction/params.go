@@ -81,8 +81,8 @@ func (s ImmutableFuncStartAuctionParams) Description() wasmlib.ScImmutableString
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s ImmutableFuncStartAuctionParams) Duration() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamDuration])
+func (s ImmutableFuncStartAuctionParams) Duration() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamDuration])
 }
 
 func (s ImmutableFuncStartAuctionParams) MinimumBid() wasmlib.ScImmutableInt64 {
@@ -105,8 +105,8 @@ func (s MutableFuncStartAuctionParams) Description() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s MutableFuncStartAuctionParams) Duration() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamDuration])
+func (s MutableFuncStartAuctionParams) Duration() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamDuration])
 }
 
 func (s MutableFuncStartAuctionParams) MinimumBid() wasmlib.ScMutableInt64 {

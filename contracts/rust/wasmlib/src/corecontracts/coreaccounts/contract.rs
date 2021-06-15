@@ -19,7 +19,7 @@ impl CoreAccountsFunc {
         CoreAccountsFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut CoreAccountsFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut CoreAccountsFunc {
         self.sc.delay(seconds);
         self
     }

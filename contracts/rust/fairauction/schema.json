@@ -6,7 +6,7 @@
       "creator": "AgentId // issuer of start_auction transaction",
       "deposit": "Int64 // deposit by auction owner to cover the SC fees",
       "description": "String // auction description",
-      "duration": "Int64 // auction duration in minutes",
+      "duration": "Int32 // auction duration in minutes",
       "highestBid": "Int64 // the current highest bid amount",
       "highestBidder": "AgentId // the current highest bidder",
       "minimumBid": "Int64 // minimum bid amount",
@@ -16,7 +16,7 @@
     },
     "Bid": {
       "amount": "Int64 // cumulative amount of bids from same bidder",
-      "index": "Int64 // index of bidder in bidder list",
+      "index": "Int32 // index of bidder in bidder list",
       "timestamp": "Int64 // timestamp of most recent bid"
     }
   },
@@ -35,7 +35,7 @@
       "params": {
         "color": "Color // color of the tokens being auctioned",
         "description": "?String // description of the tokens being auctioned",
-        "duration": "?Int64 // duration of auction in minutes",
+        "duration": "?Int32 // duration of auction in minutes",
         "minimumBid": "Int64 // minimum required amount for any bid"
       }
     },
@@ -67,7 +67,7 @@
         "creator": "AgentId // issuer of start_auction transaction",
         "deposit": "Int64 // deposit by auction owner to cover the SC fees",
         "description": "String // auction description",
-        "duration": "Int64 // auction duration in minutes",
+        "duration": "Int32 // auction duration in minutes",
         "highestBid": "Int64 // the current highest bid amount",
         "highestBidder": "AgentId // the current highest bidder",
         "minimumBid": "Int64 // minimum bid amount",

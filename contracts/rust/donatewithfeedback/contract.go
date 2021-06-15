@@ -17,7 +17,7 @@ func NewDonateWithFeedbackFunc(ctx wasmlib.ScFuncContext) *DonateWithFeedbackFun
 	return &DonateWithFeedbackFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *DonateWithFeedbackFunc) Delay(seconds int64) *DonateWithFeedbackFunc {
+func (f *DonateWithFeedbackFunc) Delay(seconds int32) *DonateWithFeedbackFunc {
 	f.sc.Delay(seconds)
 	return f
 }

@@ -90,11 +90,11 @@ func (ctx ScUtility) BlsAddressFromPubKey(pubKey []byte) ScAddress {
 
 func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
 	encode := NewBytesEncoder()
-	encode.Int64(int64(len(pubKeys)))
+	encode.Int32(int32(len(pubKeys)))
 	for _, pubKey := range pubKeys {
 		encode.Bytes(pubKey)
 	}
-	encode.Int64(int64(len(sigs)))
+	encode.Int32(int32(len(sigs)))
 	for _, sig := range sigs {
 		encode.Bytes(sig)
 	}
@@ -246,14 +246,14 @@ func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMu
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
 	if params != nil {
-		encode.Int64(int64(params.objId))
+		encode.Int32(params.objId)
 	} else {
-		encode.Int64(0)
+		encode.Int32(0)
 	}
 	if transfer != nil {
-		encode.Int64(int64(transfer.transfers.objId))
+		encode.Int32(transfer.transfers.objId)
 	} else {
-		encode.Int64(0)
+		encode.Int32(0)
 	}
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
@@ -276,9 +276,9 @@ func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description str
 	encode.String(name)
 	encode.String(description)
 	if params != nil {
-		encode.Int64(int64(params.objId))
+		encode.Int32(params.objId)
 	} else {
-		encode.Int64(0)
+		encode.Int32(0)
 	}
 	Root.GetBytes(KeyDeploy).SetValue(encode.Data())
 }
@@ -299,22 +299,22 @@ func (ctx ScFuncContext) Minted() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(chainId ScChainId, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int64) {
+func (ctx ScFuncContext) Post(chainId ScChainId, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
 	encode := NewBytesEncoder()
 	encode.ChainId(chainId)
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
 	if params != nil {
-		encode.Int64(int64(params.objId))
+		encode.Int32(params.objId)
 	} else {
-		encode.Int64(0)
+		encode.Int32(0)
 	}
-	encode.Int64(int64(transfer.transfers.objId))
-	encode.Int64(delay)
+	encode.Int32(transfer.transfers.objId)
+	encode.Int32(delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 
-func (ctx ScFuncContext) PostSelf(hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int64) {
+func (ctx ScFuncContext) PostSelf(hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
 	ctx.Post(ctx.ChainId(), ctx.Contract(), hFunction, params, transfer, delay)
 }
 
@@ -333,7 +333,7 @@ func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer ScTransfe
 	transfers := Root.GetMapArray(KeyTransfers)
 	tx := transfers.GetMap(transfers.Length())
 	tx.GetAddress(KeyAddress).SetValue(address)
-	tx.GetInt64(KeyBalances).SetValue(int64(transfer.transfers.objId))
+	tx.GetInt32(KeyBalances).SetValue(transfer.transfers.objId)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -349,11 +349,11 @@ func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMuta
 	encode.Hname(contract)
 	encode.Hname(function)
 	if params != nil {
-		encode.Int64(int64(params.objId))
+		encode.Int32(params.objId)
 	} else {
-		encode.Int64(0)
+		encode.Int32(0)
 	}
-	encode.Int64(0)
+	encode.Int32(0)
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	return Root.GetMap(KeyReturn).Immutable()
 }

@@ -355,6 +355,110 @@ func (o ScMutableHnameArray) Length() int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScMutableInt16 struct {
+	objId int32
+	keyId Key32
+}
+
+func NewScMutableInt16(objId int32, keyId Key32) ScMutableInt16 {
+	return ScMutableInt16{objId: objId, keyId: keyId}
+}
+
+func (o ScMutableInt16) Exists() bool {
+	return Exists(o.objId, o.keyId, TYPE_INT16)
+}
+
+func (o ScMutableInt16) SetValue(value int16) {
+	bytes := make([]byte, 2)
+	binary.LittleEndian.PutUint16(bytes, uint16(value))
+	SetBytes(o.objId, o.keyId, TYPE_INT16, bytes)
+}
+
+func (o ScMutableInt16) String() string {
+	return strconv.FormatInt(int64(o.Value()), 10)
+}
+
+func (o ScMutableInt16) Value() int16 {
+	bytes := GetBytes(o.objId, o.keyId, TYPE_INT16)
+	return int16(binary.LittleEndian.Uint16(bytes))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableInt16Array struct {
+	objId int32
+}
+
+func (o ScMutableInt16Array) Clear() {
+	Clear(o.objId)
+}
+
+func (o ScMutableInt16Array) GetInt16(index int32) ScMutableInt16 {
+	return ScMutableInt16{objId: o.objId, keyId: Key32(index)}
+}
+
+func (o ScMutableInt16Array) Immutable() ScImmutableInt16Array {
+	return ScImmutableInt16Array{objId: o.objId}
+}
+
+func (o ScMutableInt16Array) Length() int32 {
+	return GetLength(o.objId)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableInt32 struct {
+	objId int32
+	keyId Key32
+}
+
+func NewScMutableInt32(objId int32, keyId Key32) ScMutableInt32 {
+	return ScMutableInt32{objId: objId, keyId: keyId}
+}
+
+func (o ScMutableInt32) Exists() bool {
+	return Exists(o.objId, o.keyId, TYPE_INT32)
+}
+
+func (o ScMutableInt32) SetValue(value int32) {
+	bytes := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bytes, uint32(value))
+	SetBytes(o.objId, o.keyId, TYPE_INT32, bytes)
+}
+
+func (o ScMutableInt32) String() string {
+	return strconv.FormatInt(int64(o.Value()), 10)
+}
+
+func (o ScMutableInt32) Value() int32 {
+	bytes := GetBytes(o.objId, o.keyId, TYPE_INT32)
+	return int32(binary.LittleEndian.Uint32(bytes))
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScMutableInt32Array struct {
+	objId int32
+}
+
+func (o ScMutableInt32Array) Clear() {
+	Clear(o.objId)
+}
+
+func (o ScMutableInt32Array) GetInt32(index int32) ScMutableInt32 {
+	return ScMutableInt32{objId: o.objId, keyId: Key32(index)}
+}
+
+func (o ScMutableInt32Array) Immutable() ScImmutableInt32Array {
+	return ScImmutableInt32Array{objId: o.objId}
+}
+
+func (o ScMutableInt32Array) Length() int32 {
+	return GetLength(o.objId)
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScMutableInt64 struct {
 	objId int32
 	keyId Key32
@@ -485,6 +589,24 @@ func (o ScMutableMap) GetHname(key MapKey) ScMutableHname {
 func (o ScMutableMap) GetHnameArray(key MapKey) ScMutableHnameArray {
 	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_HNAME|TYPE_ARRAY)
 	return ScMutableHnameArray{objId: arrId}
+}
+
+func (o ScMutableMap) GetInt16(key MapKey) ScMutableInt16 {
+	return ScMutableInt16{objId: o.objId, keyId: key.KeyId()}
+}
+
+func (o ScMutableMap) GetInt16Array(key MapKey) ScMutableInt16Array {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT16|TYPE_ARRAY)
+	return ScMutableInt16Array{objId: arrId}
+}
+
+func (o ScMutableMap) GetInt32(key MapKey) ScMutableInt32 {
+	return ScMutableInt32{objId: o.objId, keyId: key.KeyId()}
+}
+
+func (o ScMutableMap) GetInt32Array(key MapKey) ScMutableInt32Array {
+	arrId := GetObjectId(o.objId, key.KeyId(), TYPE_INT32|TYPE_ARRAY)
+	return ScMutableInt32Array{objId: arrId}
 }
 
 func (o ScMutableMap) GetInt64(key MapKey) ScMutableInt64 {

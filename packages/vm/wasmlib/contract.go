@@ -4,7 +4,7 @@ type ScContractFunc struct {
 	ctx      ScFuncContext
 	chainId  ScChainId
 	contract ScHname
-	delay    int64
+	delay    int32
 	post     bool
 	results  ScImmutableMap
 }
@@ -13,7 +13,7 @@ func NewScContractFunc(ctx ScFuncContext, contract ScHname) ScContractFunc {
 	return ScContractFunc{ctx: ctx, chainId: ctx.ChainId(), contract: contract}
 }
 
-func (f *ScContractFunc) Delay(seconds int64) {
+func (f *ScContractFunc) Delay(seconds int32) {
 	f.delay = seconds
 }
 

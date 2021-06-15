@@ -22,7 +22,7 @@ impl TestWasmLibFunc {
         TestWasmLibFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
     }
 
-    pub fn delay(&mut self, seconds: i64) -> &mut TestWasmLibFunc {
+    pub fn delay(&mut self, seconds: i32) -> &mut TestWasmLibFunc {
         self.sc.delay(seconds);
         self
     }

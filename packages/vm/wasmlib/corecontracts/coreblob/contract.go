@@ -17,7 +17,7 @@ func NewCoreBlobFunc(ctx wasmlib.ScFuncContext) *CoreBlobFunc {
 	return &CoreBlobFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
 }
 
-func (f *CoreBlobFunc) Delay(seconds int64) *CoreBlobFunc {
+func (f *CoreBlobFunc) Delay(seconds int32) *CoreBlobFunc {
 	f.sc.Delay(seconds)
 	return f
 }

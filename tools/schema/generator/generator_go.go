@@ -26,6 +26,8 @@ var goTypes = StringMap{
 	"Color":     "wasmlib.ScColor",
 	"Hash":      "wasmlib.ScHash",
 	"Hname":     "wasmlib.ScHname",
+	"Int16":     "int16",
+	"Int32":     "int32",
 	"Int64":     "int64",
 	"RequestId": "wasmlib.ScRequestId",
 	"String":    "string",
@@ -38,6 +40,8 @@ var goTypeIds = StringMap{
 	"Color":     "wasmlib.TYPE_COLOR",
 	"Hash":      "wasmlib.TYPE_HASH",
 	"Hname":     "wasmlib.TYPE_HNAME",
+	"Int16":     "wasmlib.TYPE_INT16",
+	"Int32":     "wasmlib.TYPE_INT32",
 	"Int64":     "wasmlib.TYPE_INT64",
 	"RequestId": "wasmlib.TYPE_REQUEST_ID",
 	"String":    "wasmlib.TYPE_STRING",
@@ -193,7 +197,7 @@ func (s *Schema) generateGoContract() error {
 	fmt.Fprintf(file, "\treturn &%s{sc: wasmlib.NewScContractFunc(ctx, HScName)}\n", typeName)
 	fmt.Fprintf(file, "}\n")
 
-	fmt.Fprintf(file, "\nfunc (f *%s) Delay(seconds int64) *%s {\n", typeName, typeName)
+	fmt.Fprintf(file, "\nfunc (f *%s) Delay(seconds int32) *%s {\n", typeName, typeName)
 	fmt.Fprintf(file, "\tf.sc.Delay(seconds)\n")
 	fmt.Fprintf(file, "\treturn f\n")
 	fmt.Fprintf(file, "}\n")
