@@ -1,0 +1,26 @@
+{
+  "name": "CoreGovernance",
+  "description": "Core governance contract",
+  "funcs": {
+    "addAllowedStateControllerAddress": {
+      "params": {
+        "stateControllerAddress=S": "Address"
+      }
+    },
+    "removeAllowedStateControllerAddress": {
+      "params": {
+        "stateControllerAddress=S": "Address"
+      }
+    },
+    "rotateStateController": {
+      "params": {
+        "stateControllerAddress=S": "Address"
+      }
+    }
+  },
+  "views": {
+    "getAllowedStateControllerAddresses": {
+      "resultsMap": "[]Bytes //TODO allowedStateControllerAddresses=a Array16?"
+    }
+  }
+}

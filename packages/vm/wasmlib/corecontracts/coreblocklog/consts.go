@@ -17,12 +17,15 @@ const (
 	ParamBlockIndex = wasmlib.Key("n")
 	ParamRequestID  = wasmlib.Key("u")
 
-	ResultBlockIndex       = wasmlib.Key("n")
-	ResultBlockInfo        = wasmlib.Key("i")
-	ResultRequestIndex     = wasmlib.Key("r")
-	ResultRequestProcessed = wasmlib.Key("p")
-	ResultRequestRecord    = wasmlib.Key("d")
+	ResultBlockIndex             = wasmlib.Key("n")
+	ResultBlockInfo              = wasmlib.Key("i")
+	ResultGoverningAddress       = wasmlib.Key("g")
+	ResultRequestIndex           = wasmlib.Key("r")
+	ResultRequestProcessed       = wasmlib.Key("p")
+	ResultRequestRecord          = wasmlib.Key("d")
+	ResultStateControllerAddress = wasmlib.Key("s")
 
+	ViewControlAddresses             = "controlAddresses"
 	ViewGetBlockInfo                 = "getBlockInfo"
 	ViewGetLatestBlockInfo           = "getLatestBlockInfo"
 	ViewGetRequestIDsForBlock        = "getRequestIDsForBlock"
@@ -30,6 +33,7 @@ const (
 	ViewGetRequestLogRecordsForBlock = "getRequestLogRecordsForBlock"
 	ViewIsRequestProcessed           = "isRequestProcessed"
 
+	HViewControlAddresses             = wasmlib.ScHname(0x796bd223)
 	HViewGetBlockInfo                 = wasmlib.ScHname(0xbe89f9b3)
 	HViewGetLatestBlockInfo           = wasmlib.ScHname(0x084a1760)
 	HViewGetRequestIDsForBlock        = wasmlib.ScHname(0x5a20327a)

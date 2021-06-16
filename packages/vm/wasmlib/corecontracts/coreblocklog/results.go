@@ -9,6 +9,38 @@ package coreblocklog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type ImmutableViewControlAddressesResults struct {
+	id int32
+}
+
+func (s ImmutableViewControlAddressesResults) BlockIndex() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, ResultBlockIndex.KeyId())
+}
+
+func (s ImmutableViewControlAddressesResults) GoverningAddress() wasmlib.ScImmutableAddress {
+	return wasmlib.NewScImmutableAddress(s.id, ResultGoverningAddress.KeyId())
+}
+
+func (s ImmutableViewControlAddressesResults) StateControllerAddress() wasmlib.ScImmutableAddress {
+	return wasmlib.NewScImmutableAddress(s.id, ResultStateControllerAddress.KeyId())
+}
+
+type MutableViewControlAddressesResults struct {
+	id int32
+}
+
+func (s MutableViewControlAddressesResults) BlockIndex() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, ResultBlockIndex.KeyId())
+}
+
+func (s MutableViewControlAddressesResults) GoverningAddress() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, ResultGoverningAddress.KeyId())
+}
+
+func (s MutableViewControlAddressesResults) StateControllerAddress() wasmlib.ScMutableAddress {
+	return wasmlib.NewScMutableAddress(s.id, ResultStateControllerAddress.KeyId())
+}
+
 type ImmutableViewGetBlockInfoResults struct {
 	id int32
 }

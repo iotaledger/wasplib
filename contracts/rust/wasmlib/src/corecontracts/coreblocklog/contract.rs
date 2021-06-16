@@ -39,6 +39,11 @@ impl CoreBlockLogFunc {
         self
     }
 
+    pub fn control_addresses(&mut self) -> ImmutableViewControlAddressesResults {
+        self.sc.run(HVIEW_CONTROL_ADDRESSES, 0, None);
+        ImmutableViewControlAddressesResults { id: self.sc.result_map_id() }
+    }
+
     pub fn get_block_info(&mut self, params: MutableViewGetBlockInfoParams) -> ImmutableViewGetBlockInfoResults {
         self.sc.run(HVIEW_GET_BLOCK_INFO, params.id, None);
         ImmutableViewGetBlockInfoResults { id: self.sc.result_map_id() }
@@ -80,6 +85,11 @@ impl CoreBlockLogView {
     pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreBlockLogView {
         self.sc.of_contract(contract);
         self
+    }
+
+    pub fn control_addresses(&mut self) -> ImmutableViewControlAddressesResults {
+        self.sc.run(HVIEW_CONTROL_ADDRESSES, 0);
+        ImmutableViewControlAddressesResults { id: self.sc.result_map_id() }
     }
 
     pub fn get_block_info(&mut self, params: MutableViewGetBlockInfoParams) -> ImmutableViewGetBlockInfoResults {

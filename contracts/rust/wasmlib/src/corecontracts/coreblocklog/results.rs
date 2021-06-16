@@ -13,6 +13,44 @@ use crate::corecontracts::coreblocklog::*;
 use crate::host::*;
 
 #[derive(Clone, Copy)]
+pub struct ImmutableViewControlAddressesResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewControlAddressesResults {
+    pub fn block_index(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    }
+
+    pub fn governing_address(&self) -> ScImmutableAddress {
+        ScImmutableAddress::new(self.id, RESULT_GOVERNING_ADDRESS.get_key_id())
+    }
+
+    pub fn state_controller_address(&self) -> ScImmutableAddress {
+        ScImmutableAddress::new(self.id, RESULT_STATE_CONTROLLER_ADDRESS.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewControlAddressesResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewControlAddressesResults {
+    pub fn block_index(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    }
+
+    pub fn governing_address(&self) -> ScMutableAddress {
+        ScMutableAddress::new(self.id, RESULT_GOVERNING_ADDRESS.get_key_id())
+    }
+
+    pub fn state_controller_address(&self) -> ScMutableAddress {
+        ScMutableAddress::new(self.id, RESULT_STATE_CONTROLLER_ADDRESS.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetBlockInfoResults {
     pub(crate) id: i32,
 }

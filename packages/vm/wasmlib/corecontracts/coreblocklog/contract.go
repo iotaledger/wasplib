@@ -37,6 +37,11 @@ func (f *CoreBlockLogFunc) PostToChain(chainId wasmlib.ScChainId) *CoreBlockLogF
 	return f
 }
 
+func (f *CoreBlockLogFunc) ControlAddresses() ImmutableViewControlAddressesResults {
+	f.sc.Run(HViewControlAddresses, 0, nil)
+	return ImmutableViewControlAddressesResults{id: f.sc.ResultMapId()}
+}
+
 func (f *CoreBlockLogFunc) GetBlockInfo(params MutableViewGetBlockInfoParams) ImmutableViewGetBlockInfoResults {
 	f.sc.Run(HViewGetBlockInfo, params.id, nil)
 	return ImmutableViewGetBlockInfoResults{id: f.sc.ResultMapId()}
@@ -76,6 +81,11 @@ func NewCoreBlockLogView(ctx wasmlib.ScViewContext) *CoreBlockLogView {
 func (v *CoreBlockLogView) OfContract(contract wasmlib.ScHname) *CoreBlockLogView {
 	v.sc.OfContract(contract)
 	return v
+}
+
+func (v *CoreBlockLogView) ControlAddresses() ImmutableViewControlAddressesResults {
+	v.sc.Run(HViewControlAddresses, 0)
+	return ImmutableViewControlAddressesResults{id: v.sc.ResultMapId()}
 }
 
 func (v *CoreBlockLogView) GetBlockInfo(params MutableViewGetBlockInfoParams) ImmutableViewGetBlockInfoResults {

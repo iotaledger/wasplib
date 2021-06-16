@@ -12,6 +12,22 @@ use crate::*;
 use crate::corecontracts::coreblocklog::*;
 
 #[derive(Clone, Copy)]
+pub struct ImmutableViewControlAddressesParams {
+    pub(crate) id: i32,
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewControlAddressesParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewControlAddressesParams {
+    pub fn new() -> MutableViewControlAddressesParams {
+        MutableViewControlAddressesParams { id: ScMutableMap::new().map_id() }
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableViewGetBlockInfoParams {
     pub(crate) id: i32,
 }

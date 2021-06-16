@@ -46,6 +46,13 @@
       "results": {
         "requestProcessed=p": "String"
       }
+    },
+    "controlAddresses": {
+      "results": {
+        "stateControllerAddress=s": "Address",
+        "governingAddress=g": "Address",
+        "blockIndex=n": "Int64"
+      }
     }
   }
 }
