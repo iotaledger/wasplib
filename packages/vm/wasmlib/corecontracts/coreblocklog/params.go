@@ -13,8 +13,8 @@ type ImmutableViewGetBlockInfoParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetBlockInfoParams) BlockIndex() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s ImmutableViewGetBlockInfoParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type MutableViewGetBlockInfoParams struct {
@@ -25,16 +25,16 @@ func NewMutableViewGetBlockInfoParams() MutableViewGetBlockInfoParams {
 	return MutableViewGetBlockInfoParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableViewGetBlockInfoParams) BlockIndex() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s MutableViewGetBlockInfoParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type ImmutableViewGetRequestIDsForBlockParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetRequestIDsForBlockParams) BlockIndex() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s ImmutableViewGetRequestIDsForBlockParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type MutableViewGetRequestIDsForBlockParams struct {
@@ -45,8 +45,8 @@ func NewMutableViewGetRequestIDsForBlockParams() MutableViewGetRequestIDsForBloc
 	return MutableViewGetRequestIDsForBlockParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableViewGetRequestIDsForBlockParams) BlockIndex() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s MutableViewGetRequestIDsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type ImmutableViewGetRequestLogRecordParams struct {
@@ -73,8 +73,8 @@ type ImmutableViewGetRequestLogRecordsForBlockParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s ImmutableViewGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type MutableViewGetRequestLogRecordsForBlockParams struct {
@@ -85,8 +85,8 @@ func NewMutableViewGetRequestLogRecordsForBlockParams() MutableViewGetRequestLog
 	return MutableViewGetRequestLogRecordsForBlockParams{id: wasmlib.NewScMutableMap().MapId()}
 }
 
-func (s MutableViewGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamBlockIndex.KeyId())
+func (s MutableViewGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyId())
 }
 
 type ImmutableViewIsRequestProcessedParams struct {

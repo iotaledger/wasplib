@@ -17,6 +17,8 @@ pub const HSC_NAME:       ScHname = ScHname(0x17cf909f);
 
 pub const PARAM_STATE_CONTROLLER_ADDRESS: &str = "S";
 
+pub const RESULT_ALLOWED_STATE_CONTROLLER_ADDRESSES: &str = "a";
+
 pub const FUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS:    &str = "addAllowedStateControllerAddress";
 pub const FUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS: &str = "removeAllowedStateControllerAddress";
 pub const FUNC_ROTATE_STATE_CONTROLLER:                 &str = "rotateStateController";

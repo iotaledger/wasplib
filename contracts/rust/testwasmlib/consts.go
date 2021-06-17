@@ -14,18 +14,29 @@ const (
 	ScDescription = "Exercise all aspects of WasmLib"
 	HScName       = wasmlib.ScHname(0x89703a45)
 
-	ParamAddress   = wasmlib.Key("address")
-	ParamAgentId   = wasmlib.Key("agentId")
-	ParamBytes     = wasmlib.Key("bytes")
-	ParamChainId   = wasmlib.Key("chainId")
-	ParamColor     = wasmlib.Key("color")
-	ParamHash      = wasmlib.Key("hash")
-	ParamHname     = wasmlib.Key("hname")
-	ParamInt64     = wasmlib.Key("int64")
-	ParamRequestId = wasmlib.Key("requestId")
-	ParamString    = wasmlib.Key("string")
+	ParamAddress     = wasmlib.Key("address")
+	ParamAgentId     = wasmlib.Key("agentId")
+	ParamBlockIndex  = wasmlib.Key("blockIndex")
+	ParamBytes       = wasmlib.Key("bytes")
+	ParamChainId     = wasmlib.Key("chainId")
+	ParamColor       = wasmlib.Key("color")
+	ParamHash        = wasmlib.Key("hash")
+	ParamHname       = wasmlib.Key("hname")
+	ParamInt16       = wasmlib.Key("int16")
+	ParamInt32       = wasmlib.Key("int32")
+	ParamInt64       = wasmlib.Key("int64")
+	ParamRecordIndex = wasmlib.Key("recordIndex")
+	ParamRequestId   = wasmlib.Key("requestId")
+	ParamString      = wasmlib.Key("string")
 
-	FuncParamTypes = "paramTypes"
+	ResultCount  = wasmlib.Key("count")
+	ResultRecord = wasmlib.Key("record")
 
-	HFuncParamTypes = wasmlib.ScHname(0x6921c4cd)
+	FuncParamTypes   = "paramTypes"
+	ViewBlockRecord  = "blockRecord"
+	ViewBlockRecords = "blockRecords"
+
+	HFuncParamTypes   = wasmlib.ScHname(0x6921c4cd)
+	HViewBlockRecord  = wasmlib.ScHname(0xad13b2f8)
+	HViewBlockRecords = wasmlib.ScHname(0x16e249ea)
 )

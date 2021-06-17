@@ -51,8 +51,9 @@ impl CoreGovernanceFunc {
         self.sc.run(HFUNC_ROTATE_STATE_CONTROLLER, params.id, Some(transfer));
     }
 
-    pub fn get_allowed_state_controller_addresses(&mut self) {
+    pub fn get_allowed_state_controller_addresses(&mut self) -> ImmutableViewGetAllowedStateControllerAddressesResults {
         self.sc.run(HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, 0, None);
+        ImmutableViewGetAllowedStateControllerAddressesResults { id: self.sc.result_map_id() }
     }
 }
 
@@ -70,7 +71,8 @@ impl CoreGovernanceView {
         self
     }
 
-    pub fn get_allowed_state_controller_addresses(&mut self) {
+    pub fn get_allowed_state_controller_addresses(&mut self) -> ImmutableViewGetAllowedStateControllerAddressesResults {
         self.sc.run(HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, 0);
+        ImmutableViewGetAllowedStateControllerAddressesResults { id: self.sc.result_map_id() }
     }
 }

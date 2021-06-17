@@ -48,6 +48,14 @@ impl ImmutableFuncParamTypesParams {
         ScImmutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
     }
 
+    pub fn int16(&self) -> ScImmutableInt16 {
+        ScImmutableInt16::new(self.id, idx_map(IDX_PARAM_INT16))
+    }
+
+    pub fn int32(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_INT32))
+    }
+
     pub fn int64(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
     }
@@ -99,6 +107,14 @@ impl MutableFuncParamTypesParams {
         ScMutableHname::new(self.id, idx_map(IDX_PARAM_HNAME))
     }
 
+    pub fn int16(&self) -> ScMutableInt16 {
+        ScMutableInt16::new(self.id, idx_map(IDX_PARAM_INT16))
+    }
+
+    pub fn int32(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_INT32))
+    }
+
     pub fn int64(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_PARAM_INT64))
     }
@@ -109,5 +125,65 @@ impl MutableFuncParamTypesParams {
 
     pub fn string(&self) -> ScMutableString {
         ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewBlockRecordParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewBlockRecordParams {
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
+    }
+
+    pub fn record_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_RECORD_INDEX))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewBlockRecordParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewBlockRecordParams {
+    pub fn new() -> MutableViewBlockRecordParams {
+        MutableViewBlockRecordParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
+    }
+
+    pub fn record_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_RECORD_INDEX))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewBlockRecordsParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewBlockRecordsParams {
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewBlockRecordsParams {
+    pub(crate) id: i32,
+}
+
+impl MutableViewBlockRecordsParams {
+    pub fn new() -> MutableViewBlockRecordsParams {
+        MutableViewBlockRecordsParams { id: ScMutableMap::new().map_id() }
+    }
+
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
     }
 }

@@ -33,8 +33,8 @@ pub struct ImmutableViewGetBlockInfoParams {
 }
 
 impl ImmutableViewGetBlockInfoParams {
-    pub fn block_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
@@ -48,8 +48,8 @@ impl MutableViewGetBlockInfoParams {
         MutableViewGetBlockInfoParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn block_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
@@ -75,8 +75,8 @@ pub struct ImmutableViewGetRequestIDsForBlockParams {
 }
 
 impl ImmutableViewGetRequestIDsForBlockParams {
-    pub fn block_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
@@ -90,8 +90,8 @@ impl MutableViewGetRequestIDsForBlockParams {
         MutableViewGetRequestIDsForBlockParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn block_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
@@ -127,8 +127,8 @@ pub struct ImmutableViewGetRequestLogRecordsForBlockParams {
 }
 
 impl ImmutableViewGetRequestLogRecordsForBlockParams {
-    pub fn block_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
@@ -142,8 +142,8 @@ impl MutableViewGetRequestLogRecordsForBlockParams {
         MutableViewGetRequestLogRecordsForBlockParams { id: ScMutableMap::new().map_id() }
     }
 
-    pub fn block_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 

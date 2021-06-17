@@ -54,8 +54,9 @@ impl CoreBlockLogFunc {
         ImmutableViewGetLatestBlockInfoResults { id: self.sc.result_map_id() }
     }
 
-    pub fn get_request_i_ds_for_block(&mut self, params: MutableViewGetRequestIDsForBlockParams) {
+    pub fn get_request_i_ds_for_block(&mut self, params: MutableViewGetRequestIDsForBlockParams) -> ImmutableViewGetRequestIDsForBlockResults {
         self.sc.run(HVIEW_GET_REQUEST_I_DS_FOR_BLOCK, params.id, None);
+        ImmutableViewGetRequestIDsForBlockResults { id: self.sc.result_map_id() }
     }
 
     pub fn get_request_log_record(&mut self, params: MutableViewGetRequestLogRecordParams) -> ImmutableViewGetRequestLogRecordResults {
@@ -63,8 +64,9 @@ impl CoreBlockLogFunc {
         ImmutableViewGetRequestLogRecordResults { id: self.sc.result_map_id() }
     }
 
-    pub fn get_request_log_records_for_block(&mut self, params: MutableViewGetRequestLogRecordsForBlockParams) {
+    pub fn get_request_log_records_for_block(&mut self, params: MutableViewGetRequestLogRecordsForBlockParams) -> ImmutableViewGetRequestLogRecordsForBlockResults {
         self.sc.run(HVIEW_GET_REQUEST_LOG_RECORDS_FOR_BLOCK, params.id, None);
+        ImmutableViewGetRequestLogRecordsForBlockResults { id: self.sc.result_map_id() }
     }
 
     pub fn is_request_processed(&mut self, params: MutableViewIsRequestProcessedParams) -> ImmutableViewIsRequestProcessedResults {
@@ -102,8 +104,9 @@ impl CoreBlockLogView {
         ImmutableViewGetLatestBlockInfoResults { id: self.sc.result_map_id() }
     }
 
-    pub fn get_request_i_ds_for_block(&mut self, params: MutableViewGetRequestIDsForBlockParams) {
+    pub fn get_request_i_ds_for_block(&mut self, params: MutableViewGetRequestIDsForBlockParams) -> ImmutableViewGetRequestIDsForBlockResults {
         self.sc.run(HVIEW_GET_REQUEST_I_DS_FOR_BLOCK, params.id);
+        ImmutableViewGetRequestIDsForBlockResults { id: self.sc.result_map_id() }
     }
 
     pub fn get_request_log_record(&mut self, params: MutableViewGetRequestLogRecordParams) -> ImmutableViewGetRequestLogRecordResults {
@@ -111,8 +114,9 @@ impl CoreBlockLogView {
         ImmutableViewGetRequestLogRecordResults { id: self.sc.result_map_id() }
     }
 
-    pub fn get_request_log_records_for_block(&mut self, params: MutableViewGetRequestLogRecordsForBlockParams) {
+    pub fn get_request_log_records_for_block(&mut self, params: MutableViewGetRequestLogRecordsForBlockParams) -> ImmutableViewGetRequestLogRecordsForBlockResults {
         self.sc.run(HVIEW_GET_REQUEST_LOG_RECORDS_FOR_BLOCK, params.id);
+        ImmutableViewGetRequestLogRecordsForBlockResults { id: self.sc.result_map_id() }
     }
 
     pub fn is_request_processed(&mut self, params: MutableViewIsRequestProcessedParams) -> ImmutableViewIsRequestProcessedResults {

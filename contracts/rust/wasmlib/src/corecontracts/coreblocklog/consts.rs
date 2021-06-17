@@ -21,6 +21,7 @@ pub const PARAM_REQUEST_ID:  &str = "u";
 pub const RESULT_BLOCK_INDEX:              &str = "n";
 pub const RESULT_BLOCK_INFO:               &str = "i";
 pub const RESULT_GOVERNING_ADDRESS:        &str = "g";
+pub const RESULT_REQUEST_ID:               &str = "u";
 pub const RESULT_REQUEST_INDEX:            &str = "r";
 pub const RESULT_REQUEST_PROCESSED:        &str = "p";
 pub const RESULT_REQUEST_RECORD:           &str = "d";

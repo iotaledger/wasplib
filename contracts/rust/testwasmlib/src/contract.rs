@@ -45,6 +45,16 @@ impl TestWasmLibFunc {
     pub fn param_types(&mut self, params: MutableFuncParamTypesParams, transfer: ScTransfers) {
         self.sc.run(HFUNC_PARAM_TYPES, params.id, Some(transfer));
     }
+
+    pub fn block_record(&mut self, params: MutableViewBlockRecordParams) -> ImmutableViewBlockRecordResults {
+        self.sc.run(HVIEW_BLOCK_RECORD, params.id, None);
+        ImmutableViewBlockRecordResults { id: self.sc.result_map_id() }
+    }
+
+    pub fn block_records(&mut self, params: MutableViewBlockRecordsParams) -> ImmutableViewBlockRecordsResults {
+        self.sc.run(HVIEW_BLOCK_RECORDS, params.id, None);
+        ImmutableViewBlockRecordsResults { id: self.sc.result_map_id() }
+    }
 }
 
 pub struct TestWasmLibView {
@@ -59,5 +69,15 @@ impl TestWasmLibView {
     pub fn of_contract(&mut self, contract: ScHname) -> &mut TestWasmLibView {
         self.sc.of_contract(contract);
         self
+    }
+
+    pub fn block_record(&mut self, params: MutableViewBlockRecordParams) -> ImmutableViewBlockRecordResults {
+        self.sc.run(HVIEW_BLOCK_RECORD, params.id);
+        ImmutableViewBlockRecordResults { id: self.sc.result_map_id() }
+    }
+
+    pub fn block_records(&mut self, params: MutableViewBlockRecordsParams) -> ImmutableViewBlockRecordsResults {
+        self.sc.run(HVIEW_BLOCK_RECORDS, params.id);
+        ImmutableViewBlockRecordsResults { id: self.sc.result_map_id() }
     }
 }

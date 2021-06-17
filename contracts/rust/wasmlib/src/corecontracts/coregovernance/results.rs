@@ -42,12 +42,58 @@ pub struct MutableFuncRotateStateControllerResults {
     pub(crate) id: i32,
 }
 
+pub struct ArrayOfImmutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfImmutableBytes {
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, index: i32) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.obj_id, Key32(index))
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct ImmutableViewGetAllowedStateControllerAddressesResults {
     pub(crate) id: i32,
 }
 
+impl ImmutableViewGetAllowedStateControllerAddressesResults {
+    pub fn allowed_state_controller_addresses(&self) -> ArrayOfImmutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_ALLOWED_STATE_CONTROLLER_ADDRESSES.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfImmutableBytes { obj_id: arr_id }
+    }
+}
+
+pub struct ArrayOfMutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfMutableBytes {
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, index: i32) -> ScMutableBytes {
+        ScMutableBytes::new(self.obj_id, Key32(index))
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct MutableViewGetAllowedStateControllerAddressesResults {
     pub(crate) id: i32,
+}
+
+impl MutableViewGetAllowedStateControllerAddressesResults {
+    pub fn allowed_state_controller_addresses(&self) -> ArrayOfMutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_ALLOWED_STATE_CONTROLLER_ADDRESSES.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfMutableBytes { obj_id: arr_id }
+    }
 }

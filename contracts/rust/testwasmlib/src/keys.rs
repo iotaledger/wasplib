@@ -13,30 +13,42 @@ use wasmlib::*;
 
 use crate::*;
 
-pub const IDX_PARAM_ADDRESS:    usize = 0;
-pub const IDX_PARAM_AGENT_ID:   usize = 1;
-pub const IDX_PARAM_BYTES:      usize = 2;
-pub const IDX_PARAM_CHAIN_ID:   usize = 3;
-pub const IDX_PARAM_COLOR:      usize = 4;
-pub const IDX_PARAM_HASH:       usize = 5;
-pub const IDX_PARAM_HNAME:      usize = 6;
-pub const IDX_PARAM_INT64:      usize = 7;
-pub const IDX_PARAM_REQUEST_ID: usize = 8;
-pub const IDX_PARAM_STRING:     usize = 9;
+pub const IDX_PARAM_ADDRESS:      usize = 0;
+pub const IDX_PARAM_AGENT_ID:     usize = 1;
+pub const IDX_PARAM_BLOCK_INDEX:  usize = 2;
+pub const IDX_PARAM_BYTES:        usize = 3;
+pub const IDX_PARAM_CHAIN_ID:     usize = 4;
+pub const IDX_PARAM_COLOR:        usize = 5;
+pub const IDX_PARAM_HASH:         usize = 6;
+pub const IDX_PARAM_HNAME:        usize = 7;
+pub const IDX_PARAM_INT16:        usize = 8;
+pub const IDX_PARAM_INT32:        usize = 9;
+pub const IDX_PARAM_INT64:        usize = 10;
+pub const IDX_PARAM_RECORD_INDEX: usize = 11;
+pub const IDX_PARAM_REQUEST_ID:   usize = 12;
+pub const IDX_PARAM_STRING:       usize = 13;
+pub const IDX_RESULT_COUNT:       usize = 14;
+pub const IDX_RESULT_RECORD:      usize = 15;
 
-pub const KEY_MAP_LEN: usize = 10;
+pub const KEY_MAP_LEN: usize = 16;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_ADDRESS,
     PARAM_AGENT_ID,
+    PARAM_BLOCK_INDEX,
     PARAM_BYTES,
     PARAM_CHAIN_ID,
     PARAM_COLOR,
     PARAM_HASH,
     PARAM_HNAME,
+    PARAM_INT16,
+    PARAM_INT32,
     PARAM_INT64,
+    PARAM_RECORD_INDEX,
     PARAM_REQUEST_ID,
     PARAM_STRING,
+    RESULT_COUNT,
+    RESULT_RECORD,
 ];
 
 pub static mut IDX_MAP: [Key32; KEY_MAP_LEN] = [Key32(0); KEY_MAP_LEN];

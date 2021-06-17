@@ -33,6 +33,8 @@ mod testwasmlib;
 fn on_load() {
     let exports = ScExports::new();
     exports.add_func(FUNC_PARAM_TYPES, func_param_types_thunk);
+    exports.add_view(VIEW_BLOCK_RECORD, view_block_record_thunk);
+    exports.add_view(VIEW_BLOCK_RECORDS, view_block_records_thunk);
 
     unsafe {
         for i in 0..KEY_MAP_LEN {
@@ -58,6 +60,55 @@ fn func_param_types_thunk(ctx: &ScFuncContext) {
     };
     func_param_types(ctx, &f);
     ctx.log("testwasmlib.funcParamTypes ok");
+}
+
+pub struct ViewBlockRecordContext {
+    params:  ImmutableViewBlockRecordParams,
+    results: MutableViewBlockRecordResults,
+    state:   ImmutableTestWasmLibState,
+}
+
+fn view_block_record_thunk(ctx: &ScViewContext) {
+    ctx.log("testwasmlib.viewBlockRecord");
+    let f = ViewBlockRecordContext {
+        params: ImmutableViewBlockRecordParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+        },
+        results: MutableViewBlockRecordResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+        },
+        state: ImmutableTestWasmLibState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        },
+    };
+    ctx.require(f.params.block_index().exists(), "missing mandatory blockIndex");
+    ctx.require(f.params.record_index().exists(), "missing mandatory recordIndex");
+    view_block_record(ctx, &f);
+    ctx.log("testwasmlib.viewBlockRecord ok");
+}
+
+pub struct ViewBlockRecordsContext {
+    params:  ImmutableViewBlockRecordsParams,
+    results: MutableViewBlockRecordsResults,
+    state:   ImmutableTestWasmLibState,
+}
+
+fn view_block_records_thunk(ctx: &ScViewContext) {
+    ctx.log("testwasmlib.viewBlockRecords");
+    let f = ViewBlockRecordsContext {
+        params: ImmutableViewBlockRecordsParams {
+            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+        },
+        results: MutableViewBlockRecordsResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+        },
+        state: ImmutableTestWasmLibState {
+            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+        },
+    };
+    ctx.require(f.params.block_index().exists(), "missing mandatory blockIndex");
+    view_block_records(ctx, &f);
+    ctx.log("testwasmlib.viewBlockRecords ok");
 }
 
 //@formatter:on

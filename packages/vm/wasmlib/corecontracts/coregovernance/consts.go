@@ -16,6 +16,8 @@ const (
 
 	ParamStateControllerAddress = wasmlib.Key("S")
 
+	ResultAllowedStateControllerAddresses = wasmlib.Key("a")
+
 	FuncAddAllowedStateControllerAddress    = "addAllowedStateControllerAddress"
 	FuncRemoveAllowedStateControllerAddress = "removeAllowedStateControllerAddress"
 	FuncRotateStateController               = "rotateStateController"

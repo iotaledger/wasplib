@@ -49,8 +49,9 @@ func (f *CoreGovernanceFunc) RotateStateController(params MutableFuncRotateState
 	f.sc.Run(HFuncRotateStateController, params.id, &transfer)
 }
 
-func (f *CoreGovernanceFunc) GetAllowedStateControllerAddresses() {
+func (f *CoreGovernanceFunc) GetAllowedStateControllerAddresses() ImmutableViewGetAllowedStateControllerAddressesResults {
 	f.sc.Run(HViewGetAllowedStateControllerAddresses, 0, nil)
+	return ImmutableViewGetAllowedStateControllerAddressesResults{id: f.sc.ResultMapId()}
 }
 
 type CoreGovernanceView struct {
@@ -66,6 +67,7 @@ func (v *CoreGovernanceView) OfContract(contract wasmlib.ScHname) *CoreGovernanc
 	return v
 }
 
-func (v *CoreGovernanceView) GetAllowedStateControllerAddresses() {
+func (v *CoreGovernanceView) GetAllowedStateControllerAddresses() ImmutableViewGetAllowedStateControllerAddressesResults {
 	v.sc.Run(HViewGetAllowedStateControllerAddresses, 0)
+	return ImmutableViewGetAllowedStateControllerAddressesResults{id: v.sc.ResultMapId()}
 }

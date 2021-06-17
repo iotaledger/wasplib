@@ -10,31 +10,43 @@ package testwasmlib
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	IdxParamAddress   = 0
-	IdxParamAgentId   = 1
-	IdxParamBytes     = 2
-	IdxParamChainId   = 3
-	IdxParamColor     = 4
-	IdxParamHash      = 5
-	IdxParamHname     = 6
-	IdxParamInt64     = 7
-	IdxParamRequestId = 8
-	IdxParamString    = 9
+	IdxParamAddress     = 0
+	IdxParamAgentId     = 1
+	IdxParamBlockIndex  = 2
+	IdxParamBytes       = 3
+	IdxParamChainId     = 4
+	IdxParamColor       = 5
+	IdxParamHash        = 6
+	IdxParamHname       = 7
+	IdxParamInt16       = 8
+	IdxParamInt32       = 9
+	IdxParamInt64       = 10
+	IdxParamRecordIndex = 11
+	IdxParamRequestId   = 12
+	IdxParamString      = 13
+	IdxResultCount      = 14
+	IdxResultRecord     = 15
 )
 
-const keyMapLen = 10
+const keyMapLen = 16
 
 var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
 	ParamAgentId,
+	ParamBlockIndex,
 	ParamBytes,
 	ParamChainId,
 	ParamColor,
 	ParamHash,
 	ParamHname,
+	ParamInt16,
+	ParamInt32,
 	ParamInt64,
+	ParamRecordIndex,
 	ParamRequestId,
 	ParamString,
+	ResultCount,
+	ResultRecord,
 }
 
 var idxMap [keyMapLen]wasmlib.Key32

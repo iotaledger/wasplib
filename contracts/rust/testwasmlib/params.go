@@ -41,6 +41,14 @@ func (s ImmutableFuncParamTypesParams) Hname() wasmlib.ScImmutableHname {
 	return wasmlib.NewScImmutableHname(s.id, idxMap[IdxParamHname])
 }
 
+func (s ImmutableFuncParamTypesParams) Int16() wasmlib.ScImmutableInt16 {
+	return wasmlib.NewScImmutableInt16(s.id, idxMap[IdxParamInt16])
+}
+
+func (s ImmutableFuncParamTypesParams) Int32() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamInt32])
+}
+
 func (s ImmutableFuncParamTypesParams) Int64() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamInt64])
 }
@@ -89,6 +97,14 @@ func (s MutableFuncParamTypesParams) Hname() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
 }
 
+func (s MutableFuncParamTypesParams) Int16() wasmlib.ScMutableInt16 {
+	return wasmlib.NewScMutableInt16(s.id, idxMap[IdxParamInt16])
+}
+
+func (s MutableFuncParamTypesParams) Int32() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamInt32])
+}
+
 func (s MutableFuncParamTypesParams) Int64() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
 }
@@ -99,4 +115,52 @@ func (s MutableFuncParamTypesParams) RequestId() wasmlib.ScMutableRequestId {
 
 func (s MutableFuncParamTypesParams) String() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
+}
+
+type ImmutableViewBlockRecordParams struct {
+	id int32
+}
+
+func (s ImmutableViewBlockRecordParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamBlockIndex])
+}
+
+func (s ImmutableViewBlockRecordParams) RecordIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamRecordIndex])
+}
+
+type MutableViewBlockRecordParams struct {
+	id int32
+}
+
+func NewMutableViewBlockRecordParams() MutableViewBlockRecordParams {
+	return MutableViewBlockRecordParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewBlockRecordParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamBlockIndex])
+}
+
+func (s MutableViewBlockRecordParams) RecordIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamRecordIndex])
+}
+
+type ImmutableViewBlockRecordsParams struct {
+	id int32
+}
+
+func (s ImmutableViewBlockRecordsParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamBlockIndex])
+}
+
+type MutableViewBlockRecordsParams struct {
+	id int32
+}
+
+func NewMutableViewBlockRecordsParams() MutableViewBlockRecordsParams {
+	return MutableViewBlockRecordsParams{id: wasmlib.NewScMutableMap().MapId()}
+}
+
+func (s MutableViewBlockRecordsParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamBlockIndex])
 }

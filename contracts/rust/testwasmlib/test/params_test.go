@@ -21,10 +21,12 @@ var (
 		ParamColor,
 		ParamHash,
 		ParamHname,
+		ParamInt16,
+		ParamInt32,
 		ParamInt64,
 		ParamRequestId,
 	}
-	allLengths = []int{33, 37, 33, 32, 32, 4, 8, 34}
+	allLengths = []int{33, 37, 33, 32, 32, 4, 2, 4, 8, 34}
 )
 
 func setupTest(t *testing.T) *solo.Chain {
@@ -66,6 +68,8 @@ func TestValidParams(t *testing.T) {
 		ParamColor, color,
 		ParamHash, hash,
 		ParamHname, hname,
+		ParamInt16, int16(12345),
+		ParamInt32, int32(1234567890),
 		ParamInt64, int64(1234567890123456789),
 		ParamRequestId, requestId,
 		ParamString, "this is a string",

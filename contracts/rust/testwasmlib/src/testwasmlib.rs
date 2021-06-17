@@ -30,6 +30,12 @@ pub fn func_param_types(ctx: &ScFuncContext, f: &FuncParamTypesContext) {
     if f.params.hname().exists() {
         ctx.require(f.params.hname().value() == ctx.account_id().hname(), "mismatch: Hname");
     }
+    if f.params.int16().exists() {
+        ctx.require(f.params.int16().value() == 12345, "mismatch: Int16");
+    }
+    if f.params.int32().exists() {
+        ctx.require(f.params.int32().value() == 1234567890, "mismatch: Int32");
+    }
     if f.params.int64().exists() {
         ctx.require(f.params.int64().value() == 1234567890123456789, "mismatch: Int64");
     }
@@ -40,4 +46,10 @@ pub fn func_param_types(ctx: &ScFuncContext, f: &FuncParamTypesContext) {
     if f.params.string().exists() {
         ctx.require(f.params.string().value() == "this is a string", "mismatch: String");
     }
+}
+
+pub fn view_block_record(_ctx: &ScViewContext, _f: &ViewBlockRecordContext) {
+}
+
+pub fn view_block_records(_ctx: &ScViewContext, _f: &ViewBlockRecordsContext) {
 }

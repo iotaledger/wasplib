@@ -52,8 +52,9 @@ func (f *CoreBlockLogFunc) GetLatestBlockInfo() ImmutableViewGetLatestBlockInfoR
 	return ImmutableViewGetLatestBlockInfoResults{id: f.sc.ResultMapId()}
 }
 
-func (f *CoreBlockLogFunc) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) {
+func (f *CoreBlockLogFunc) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) ImmutableViewGetRequestIDsForBlockResults {
 	f.sc.Run(HViewGetRequestIDsForBlock, params.id, nil)
+	return ImmutableViewGetRequestIDsForBlockResults{id: f.sc.ResultMapId()}
 }
 
 func (f *CoreBlockLogFunc) GetRequestLogRecord(params MutableViewGetRequestLogRecordParams) ImmutableViewGetRequestLogRecordResults {
@@ -61,8 +62,9 @@ func (f *CoreBlockLogFunc) GetRequestLogRecord(params MutableViewGetRequestLogRe
 	return ImmutableViewGetRequestLogRecordResults{id: f.sc.ResultMapId()}
 }
 
-func (f *CoreBlockLogFunc) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) {
+func (f *CoreBlockLogFunc) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) ImmutableViewGetRequestLogRecordsForBlockResults {
 	f.sc.Run(HViewGetRequestLogRecordsForBlock, params.id, nil)
+	return ImmutableViewGetRequestLogRecordsForBlockResults{id: f.sc.ResultMapId()}
 }
 
 func (f *CoreBlockLogFunc) IsRequestProcessed(params MutableViewIsRequestProcessedParams) ImmutableViewIsRequestProcessedResults {
@@ -98,8 +100,9 @@ func (v *CoreBlockLogView) GetLatestBlockInfo() ImmutableViewGetLatestBlockInfoR
 	return ImmutableViewGetLatestBlockInfoResults{id: v.sc.ResultMapId()}
 }
 
-func (v *CoreBlockLogView) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) {
+func (v *CoreBlockLogView) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) ImmutableViewGetRequestIDsForBlockResults {
 	v.sc.Run(HViewGetRequestIDsForBlock, params.id)
+	return ImmutableViewGetRequestIDsForBlockResults{id: v.sc.ResultMapId()}
 }
 
 func (v *CoreBlockLogView) GetRequestLogRecord(params MutableViewGetRequestLogRecordParams) ImmutableViewGetRequestLogRecordResults {
@@ -107,8 +110,9 @@ func (v *CoreBlockLogView) GetRequestLogRecord(params MutableViewGetRequestLogRe
 	return ImmutableViewGetRequestLogRecordResults{id: v.sc.ResultMapId()}
 }
 
-func (v *CoreBlockLogView) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) {
+func (v *CoreBlockLogView) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) ImmutableViewGetRequestLogRecordsForBlockResults {
 	v.sc.Run(HViewGetRequestLogRecordsForBlock, params.id)
+	return ImmutableViewGetRequestLogRecordsForBlockResults{id: v.sc.ResultMapId()}
 }
 
 func (v *CoreBlockLogView) IsRequestProcessed(params MutableViewIsRequestProcessedParams) ImmutableViewIsRequestProcessedResults {

@@ -18,8 +18,8 @@ pub struct ImmutableViewControlAddressesResults {
 }
 
 impl ImmutableViewControlAddressesResults {
-    pub fn block_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
 
     pub fn governing_address(&self) -> ScImmutableAddress {
@@ -37,8 +37,8 @@ pub struct MutableViewControlAddressesResults {
 }
 
 impl MutableViewControlAddressesResults {
-    pub fn block_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
 
     pub fn governing_address(&self) -> ScMutableAddress {
@@ -94,14 +94,60 @@ impl MutableViewGetLatestBlockInfoResults {
     }
 }
 
+pub struct ArrayOfImmutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfImmutableBytes {
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, index: i32) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.obj_id, Key32(index))
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct ImmutableViewGetRequestIDsForBlockResults {
     pub(crate) id: i32,
 }
 
+impl ImmutableViewGetRequestIDsForBlockResults {
+    pub fn request_id(&self) -> ArrayOfImmutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_REQUEST_ID.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfImmutableBytes { obj_id: arr_id }
+    }
+}
+
+pub struct ArrayOfMutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl ArrayOfMutableBytes {
+    pub fn clear(&self) {
+        clear(self.obj_id);
+    }
+
+    pub fn length(&self) -> i32 {
+        get_length(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, index: i32) -> ScMutableBytes {
+        ScMutableBytes::new(self.obj_id, Key32(index))
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct MutableViewGetRequestIDsForBlockResults {
     pub(crate) id: i32,
+}
+
+impl MutableViewGetRequestIDsForBlockResults {
+    pub fn request_id(&self) -> ArrayOfMutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_REQUEST_ID.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfMutableBytes { obj_id: arr_id }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -110,12 +156,12 @@ pub struct ImmutableViewGetRequestLogRecordResults {
 }
 
 impl ImmutableViewGetRequestLogRecordResults {
-    pub fn block_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
 
-    pub fn request_index(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_REQUEST_INDEX.get_key_id())
+    pub fn request_index(&self) -> ScImmutableInt16 {
+        ScImmutableInt16::new(self.id, RESULT_REQUEST_INDEX.get_key_id())
     }
 
     pub fn request_record(&self) -> ScImmutableBytes {
@@ -129,12 +175,12 @@ pub struct MutableViewGetRequestLogRecordResults {
 }
 
 impl MutableViewGetRequestLogRecordResults {
-    pub fn block_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
+    pub fn block_index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
 
-    pub fn request_index(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_REQUEST_INDEX.get_key_id())
+    pub fn request_index(&self) -> ScMutableInt16 {
+        ScMutableInt16::new(self.id, RESULT_REQUEST_INDEX.get_key_id())
     }
 
     pub fn request_record(&self) -> ScMutableBytes {
@@ -147,9 +193,23 @@ pub struct ImmutableViewGetRequestLogRecordsForBlockResults {
     pub(crate) id: i32,
 }
 
+impl ImmutableViewGetRequestLogRecordsForBlockResults {
+    pub fn request_record(&self) -> ArrayOfImmutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_REQUEST_RECORD.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfImmutableBytes { obj_id: arr_id }
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct MutableViewGetRequestLogRecordsForBlockResults {
     pub(crate) id: i32,
+}
+
+impl MutableViewGetRequestLogRecordsForBlockResults {
+    pub fn request_record(&self) -> ArrayOfMutableBytes {
+        let arr_id = get_object_id(self.id, RESULT_REQUEST_RECORD.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
+        ArrayOfMutableBytes { obj_id: arr_id }
+    }
 }
 
 #[derive(Clone, Copy)]

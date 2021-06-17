@@ -20,6 +20,7 @@ const (
 	ResultBlockIndex             = wasmlib.Key("n")
 	ResultBlockInfo              = wasmlib.Key("i")
 	ResultGoverningAddress       = wasmlib.Key("g")
+	ResultRequestID              = wasmlib.Key("u")
 	ResultRequestIndex           = wasmlib.Key("r")
 	ResultRequestProcessed       = wasmlib.Key("p")
 	ResultRequestRecord          = wasmlib.Key("d")

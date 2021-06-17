@@ -6,3 +6,37 @@
 // Change the json schema instead
 
 package testwasmlib
+
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+
+type ImmutableViewBlockRecordResults struct {
+	id int32
+}
+
+func (s ImmutableViewBlockRecordResults) Record() wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(s.id, idxMap[IdxResultRecord])
+}
+
+type MutableViewBlockRecordResults struct {
+	id int32
+}
+
+func (s MutableViewBlockRecordResults) Record() wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(s.id, idxMap[IdxResultRecord])
+}
+
+type ImmutableViewBlockRecordsResults struct {
+	id int32
+}
+
+func (s ImmutableViewBlockRecordsResults) Count() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxResultCount])
+}
+
+type MutableViewBlockRecordsResults struct {
+	id int32
+}
+
+func (s MutableViewBlockRecordsResults) Count() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxResultCount])
+}

@@ -15,19 +15,30 @@ pub const SC_NAME:        &str = "testwasmlib";
 pub const SC_DESCRIPTION: &str = "Exercise all aspects of WasmLib";
 pub const HSC_NAME:       ScHname = ScHname(0x89703a45);
 
-pub const PARAM_ADDRESS:    &str = "address";
-pub const PARAM_AGENT_ID:   &str = "agentId";
-pub const PARAM_BYTES:      &str = "bytes";
-pub const PARAM_CHAIN_ID:   &str = "chainId";
-pub const PARAM_COLOR:      &str = "color";
-pub const PARAM_HASH:       &str = "hash";
-pub const PARAM_HNAME:      &str = "hname";
-pub const PARAM_INT64:      &str = "int64";
-pub const PARAM_REQUEST_ID: &str = "requestId";
-pub const PARAM_STRING:     &str = "string";
+pub const PARAM_ADDRESS:      &str = "address";
+pub const PARAM_AGENT_ID:     &str = "agentId";
+pub const PARAM_BLOCK_INDEX:  &str = "blockIndex";
+pub const PARAM_BYTES:        &str = "bytes";
+pub const PARAM_CHAIN_ID:     &str = "chainId";
+pub const PARAM_COLOR:        &str = "color";
+pub const PARAM_HASH:         &str = "hash";
+pub const PARAM_HNAME:        &str = "hname";
+pub const PARAM_INT16:        &str = "int16";
+pub const PARAM_INT32:        &str = "int32";
+pub const PARAM_INT64:        &str = "int64";
+pub const PARAM_RECORD_INDEX: &str = "recordIndex";
+pub const PARAM_REQUEST_ID:   &str = "requestId";
+pub const PARAM_STRING:       &str = "string";
 
-pub const FUNC_PARAM_TYPES: &str = "paramTypes";
+pub const RESULT_COUNT:  &str = "count";
+pub const RESULT_RECORD: &str = "record";
 
-pub const HFUNC_PARAM_TYPES: ScHname = ScHname(0x6921c4cd);
+pub const FUNC_PARAM_TYPES:   &str = "paramTypes";
+pub const VIEW_BLOCK_RECORD:  &str = "blockRecord";
+pub const VIEW_BLOCK_RECORDS: &str = "blockRecords";
+
+pub const HFUNC_PARAM_TYPES:   ScHname = ScHname(0x6921c4cd);
+pub const HVIEW_BLOCK_RECORD:  ScHname = ScHname(0xad13b2f8);
+pub const HVIEW_BLOCK_RECORDS: ScHname = ScHname(0x16e249ea);
 
 //@formatter:on

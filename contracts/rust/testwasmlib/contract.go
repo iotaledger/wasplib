@@ -41,6 +41,16 @@ func (f *TestWasmLibFunc) ParamTypes(params MutableFuncParamTypesParams, transfe
 	f.sc.Run(HFuncParamTypes, params.id, &transfer)
 }
 
+func (f *TestWasmLibFunc) BlockRecord(params MutableViewBlockRecordParams) ImmutableViewBlockRecordResults {
+	f.sc.Run(HViewBlockRecord, params.id, nil)
+	return ImmutableViewBlockRecordResults{id: f.sc.ResultMapId()}
+}
+
+func (f *TestWasmLibFunc) BlockRecords(params MutableViewBlockRecordsParams) ImmutableViewBlockRecordsResults {
+	f.sc.Run(HViewBlockRecords, params.id, nil)
+	return ImmutableViewBlockRecordsResults{id: f.sc.ResultMapId()}
+}
+
 type TestWasmLibView struct {
 	sc wasmlib.ScContractView
 }
@@ -52,4 +62,14 @@ func NewTestWasmLibView(ctx wasmlib.ScViewContext) *TestWasmLibView {
 func (v *TestWasmLibView) OfContract(contract wasmlib.ScHname) *TestWasmLibView {
 	v.sc.OfContract(contract)
 	return v
+}
+
+func (v *TestWasmLibView) BlockRecord(params MutableViewBlockRecordParams) ImmutableViewBlockRecordResults {
+	v.sc.Run(HViewBlockRecord, params.id)
+	return ImmutableViewBlockRecordResults{id: v.sc.ResultMapId()}
+}
+
+func (v *TestWasmLibView) BlockRecords(params MutableViewBlockRecordsParams) ImmutableViewBlockRecordsResults {
+	v.sc.Run(HViewBlockRecords, params.id)
+	return ImmutableViewBlockRecordsResults{id: v.sc.ResultMapId()}
 }

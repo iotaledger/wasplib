@@ -23,3 +23,47 @@ pub struct ImmutableFuncParamTypesResults {
 pub struct MutableFuncParamTypesResults {
     pub(crate) id: i32,
 }
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewBlockRecordResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewBlockRecordResults {
+    pub fn record(&self) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.id, idx_map(IDX_RESULT_RECORD))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewBlockRecordResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewBlockRecordResults {
+    pub fn record(&self) -> ScMutableBytes {
+        ScMutableBytes::new(self.id, idx_map(IDX_RESULT_RECORD))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableViewBlockRecordsResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableViewBlockRecordsResults {
+    pub fn count(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_RESULT_COUNT))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableViewBlockRecordsResults {
+    pub(crate) id: i32,
+}
+
+impl MutableViewBlockRecordsResults {
+    pub fn count(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_RESULT_COUNT))
+    }
+}

@@ -7,6 +7,7 @@ import (
 	"bytes"
 
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreblocklog"
 )
 
 func funcParamTypes(ctx wasmlib.ScFuncContext, f *FuncParamTypesContext) {
@@ -34,6 +35,12 @@ func funcParamTypes(ctx wasmlib.ScFuncContext, f *FuncParamTypesContext) {
 	if f.Params.Hname().Exists() {
 		ctx.Require(f.Params.Hname().Value() == ctx.AccountId().Hname(), "mismatch: Hname")
 	}
+	if f.Params.Int16().Exists() {
+		ctx.Require(f.Params.Int16().Value() == 12345, "mismatch: Int16")
+	}
+	if f.Params.Int32().Exists() {
+		ctx.Require(f.Params.Int32().Value() == 1234567890, "mismatch: Int32")
+	}
 	if f.Params.Int64().Exists() {
 		ctx.Require(f.Params.Int64().Value() == 1234567890123456789, "mismatch: Int64")
 	}
@@ -44,4 +51,22 @@ func funcParamTypes(ctx wasmlib.ScFuncContext, f *FuncParamTypesContext) {
 	if f.Params.String().Exists() {
 		ctx.Require(f.Params.String().Value() == "this is a string", "mismatch: String")
 	}
+}
+
+func viewBlockRecord(ctx wasmlib.ScViewContext, f *ViewBlockRecordContext) {
+	sc := coreblocklog.NewCoreBlockLogView(ctx)
+	params := coreblocklog.NewMutableViewGetRequestLogRecordsForBlockParams()
+	params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
+	ret := sc.GetRequestLogRecordsForBlock(params)
+	recordIndex := f.Params.RecordIndex().Value()
+	ctx.Require(recordIndex < ret.RequestRecord().Length(), "invalid recordIndex")
+	f.Results.Record().SetValue(ret.RequestRecord().GetBytes(recordIndex).Value())
+}
+
+func viewBlockRecords(ctx wasmlib.ScViewContext, f *ViewBlockRecordsContext) {
+	sc := coreblocklog.NewCoreBlockLogView(ctx)
+	params := coreblocklog.NewMutableViewGetRequestLogRecordsForBlockParams()
+	params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
+	ret := sc.GetRequestLogRecordsForBlock(params)
+	f.Results.Count().SetValue(ret.RequestRecord().Length())
 }

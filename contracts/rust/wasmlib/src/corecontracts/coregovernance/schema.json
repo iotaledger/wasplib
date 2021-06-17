@@ -20,7 +20,9 @@
   },
   "views": {
     "getAllowedStateControllerAddresses": {
-      "resultsMap": "[]Bytes //TODO allowedStateControllerAddresses=a Array16?"
+      "results": {
+        "allowedStateControllerAddresses=a": "[]Bytes //TODO Array16"
+      }
     }
   }
 }

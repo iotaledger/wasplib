@@ -6,3 +6,51 @@
 // Change the json schema instead
 
 package coregovernance
+
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+
+type ArrayOfImmutableBytes struct {
+	objId int32
+}
+
+func (a ArrayOfImmutableBytes) Length() int32 {
+	return wasmlib.GetLength(a.objId)
+}
+
+func (a ArrayOfImmutableBytes) GetBytes(index int32) wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(a.objId, wasmlib.Key32(index))
+}
+
+type ImmutableViewGetAllowedStateControllerAddressesResults struct {
+	id int32
+}
+
+func (s ImmutableViewGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfImmutableBytes {
+	arrId := wasmlib.GetObjectId(s.id, ResultAllowedStateControllerAddresses.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	return ArrayOfImmutableBytes{objId: arrId}
+}
+
+type ArrayOfMutableBytes struct {
+	objId int32
+}
+
+func (a ArrayOfMutableBytes) Clear() {
+	wasmlib.Clear(a.objId)
+}
+
+func (a ArrayOfMutableBytes) Length() int32 {
+	return wasmlib.GetLength(a.objId)
+}
+
+func (a ArrayOfMutableBytes) GetBytes(index int32) wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(a.objId, wasmlib.Key32(index))
+}
+
+type MutableViewGetAllowedStateControllerAddressesResults struct {
+	id int32
+}
+
+func (s MutableViewGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfMutableBytes {
+	arrId := wasmlib.GetObjectId(s.id, ResultAllowedStateControllerAddresses.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	return ArrayOfMutableBytes{objId: arrId}
+}
