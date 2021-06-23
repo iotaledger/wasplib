@@ -8,7 +8,6 @@
 #![allow(dead_code)]
 
 use std::ptr;
-
 use wasmlib::*;
 
 use crate::consts::*;

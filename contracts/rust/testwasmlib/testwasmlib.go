@@ -10,7 +10,7 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreblocklog"
 )
 
-func funcParamTypes(ctx wasmlib.ScFuncContext, f*ParamTypesContext) {
+func funcParamTypes(ctx wasmlib.ScFuncContext, f *ParamTypesContext) {
 	if f.Params.Address().Exists() {
 		ctx.Require(f.Params.Address().Value() == ctx.AccountId().Address(), "mismatch: Address")
 	}
@@ -53,7 +53,7 @@ func funcParamTypes(ctx wasmlib.ScFuncContext, f*ParamTypesContext) {
 	}
 }
 
-func viewBlockRecord(ctx wasmlib.ScViewContext, f*BlockRecordContext) {
+func viewBlockRecord(ctx wasmlib.ScViewContext, f *BlockRecordContext) {
 	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
 	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
 	records.Func.Call()
@@ -62,7 +62,7 @@ func viewBlockRecord(ctx wasmlib.ScViewContext, f*BlockRecordContext) {
 	f.Results.Record().SetValue(records.Results.RequestRecord().GetBytes(recordIndex).Value())
 }
 
-func viewBlockRecords(ctx wasmlib.ScViewContext, f*BlockRecordsContext) {
+func viewBlockRecords(ctx wasmlib.ScViewContext, f *BlockRecordsContext) {
 	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
 	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
 	records.Func.Call()

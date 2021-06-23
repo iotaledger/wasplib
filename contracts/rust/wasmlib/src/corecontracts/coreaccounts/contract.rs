@@ -8,7 +8,6 @@
 #![allow(dead_code)]
 
 use std::ptr;
-
 use crate::*;
 use crate::corecontracts::coreaccounts::*;
 

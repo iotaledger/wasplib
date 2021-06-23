@@ -9,14 +9,14 @@ import (
 
 var LocalStateMustIncrement = false
 
-func funcInit(ctx wasmlib.ScFuncContext, f*InitContext) {
+func funcInit(ctx wasmlib.ScFuncContext, f *InitContext) {
 	if f.Params.Counter().Exists() {
 		counter := f.Params.Counter().Value()
 		f.State.Counter().SetValue(counter)
 	}
 }
 
-func funcCallIncrement(ctx wasmlib.ScFuncContext, f*CallIncrementContext) {
+func funcCallIncrement(ctx wasmlib.ScFuncContext, f *CallIncrementContext) {
 	counter := f.State.Counter()
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -25,7 +25,7 @@ func funcCallIncrement(ctx wasmlib.ScFuncContext, f*CallIncrementContext) {
 	}
 }
 
-func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f*CallIncrementRecurse5xContext) {
+func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f *CallIncrementRecurse5xContext) {
 	counter := f.State.Counter()
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -34,17 +34,17 @@ func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f*CallIncrementRecurs
 	}
 }
 
-func funcEndlessLoop(ctx wasmlib.ScFuncContext, f*EndlessLoopContext) {
+func funcEndlessLoop(ctx wasmlib.ScFuncContext, f *EndlessLoopContext) {
 	for {
 	}
 }
 
-func funcIncrement(ctx wasmlib.ScFuncContext, f*IncrementContext) {
+func funcIncrement(ctx wasmlib.ScFuncContext, f *IncrementContext) {
 	counter := f.State.Counter()
 	counter.SetValue(counter.Value() + 1)
 }
 
-func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, f*LocalStateInternalCallContext) {
+func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, f *LocalStateInternalCallContext) {
 	LocalStateMustIncrement = false
 	whenMustIncrementState(ctx, f.State)
 	LocalStateMustIncrement = true
@@ -53,7 +53,7 @@ func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, f*LocalStateInternalC
 	// counter ends up as 2
 }
 
-func funcLocalStatePost(ctx wasmlib.ScFuncContext, f*LocalStatePostContext) {
+func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *LocalStatePostContext) {
 	LocalStateMustIncrement = false
 	// prevent multiple identical posts, need a dummy param to differentiate them
 	localStatePost(ctx, 1)
@@ -63,7 +63,7 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f*LocalStatePostContext) {
 	// counter ends up as 0
 }
 
-func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f*LocalStateSandboxCallContext) {
+func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f *LocalStateSandboxCallContext) {
 	LocalStateMustIncrement = false
 	NewWhenMustIncrementCall(ctx).Func.Call()
 	LocalStateMustIncrement = true
@@ -72,7 +72,7 @@ func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f*LocalStateSandboxCal
 	// counter ends up as 0
 }
 
-func funcPostIncrement(ctx wasmlib.ScFuncContext, f*PostIncrementContext) {
+func funcPostIncrement(ctx wasmlib.ScFuncContext, f *PostIncrementContext) {
 	counter := f.State.Counter()
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -81,7 +81,7 @@ func funcPostIncrement(ctx wasmlib.ScFuncContext, f*PostIncrementContext) {
 	}
 }
 
-func funcRepeatMany(ctx wasmlib.ScFuncContext, f*RepeatManyContext) {
+func funcRepeatMany(ctx wasmlib.ScFuncContext, f *RepeatManyContext) {
 	counter := f.State.Counter()
 	value := counter.Value()
 	counter.SetValue(value + 1)
@@ -97,20 +97,20 @@ func funcRepeatMany(ctx wasmlib.ScFuncContext, f*RepeatManyContext) {
 	NewRepeatManyCall(ctx).Func.TransferIotas(1).Post()
 }
 
-func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f*WhenMustIncrementContext) {
+func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f *WhenMustIncrementContext) {
 	whenMustIncrementState(ctx, f.State)
 }
 
 // note that get_counter mirrors the state of the 'counter' state variable
 // which means that if the state variable was not present it also will not be present in the result
-func viewGetCounter(ctx wasmlib.ScViewContext, f*GetCounterContext) {
+func viewGetCounter(ctx wasmlib.ScViewContext, f *GetCounterContext) {
 	counter := f.State.Counter()
 	if counter.Exists() {
 		f.Results.Counter().SetValue(counter.Value())
 	}
 }
 
-func funcTestLeb128(ctx wasmlib.ScFuncContext, f*TestLeb128Context) {
+func funcTestLeb128(ctx wasmlib.ScFuncContext, f *TestLeb128Context) {
 	leb128Save(ctx, "v-1", -1)
 	leb128Save(ctx, "v-2", -2)
 	leb128Save(ctx, "v-126", -126)

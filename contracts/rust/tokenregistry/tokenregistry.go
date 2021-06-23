@@ -7,7 +7,7 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcMintSupply(ctx wasmlib.ScFuncContext, f*MintSupplyContext) {
+func funcMintSupply(ctx wasmlib.ScFuncContext, f *MintSupplyContext) {
 	minted := ctx.Minted()
 	mintedColors := minted.Colors()
 	ctx.Require(mintedColors.Length() == 1, "need single minted color")
@@ -34,14 +34,14 @@ func funcMintSupply(ctx wasmlib.ScFuncContext, f*MintSupplyContext) {
 	colorList.GetColor(colorList.Length()).SetValue(mintedColor)
 }
 
-func funcTransferOwnership(ctx wasmlib.ScFuncContext, f*TransferOwnershipContext) {
+func funcTransferOwnership(ctx wasmlib.ScFuncContext, f *TransferOwnershipContext) {
 	//TODO
 }
 
-func funcUpdateMetadata(ctx wasmlib.ScFuncContext, f*UpdateMetadataContext) {
+func funcUpdateMetadata(ctx wasmlib.ScFuncContext, f *UpdateMetadataContext) {
 	//TODO
 }
 
-func viewGetInfo(ctx wasmlib.ScViewContext, f*GetInfoContext) {
+func viewGetInfo(ctx wasmlib.ScViewContext, f *GetInfoContext) {
 	//TODO
 }

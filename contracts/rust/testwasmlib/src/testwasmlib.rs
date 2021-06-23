@@ -48,8 +48,6 @@ pub fn func_param_types(ctx: &ScFuncContext, f: &ParamTypesContext) {
     }
 }
 
-pub fn view_block_record(_ctx: &ScViewContext, _f: &BlockRecordContext) {
-}
+pub fn view_block_record(_ctx: &ScViewContext, _f: &BlockRecordContext) {}
 
-pub fn view_block_records(_ctx: &ScViewContext, _f: &BlockRecordsContext) {
-}
+pub fn view_block_records(_ctx: &ScViewContext, _f: &BlockRecordsContext) {}
