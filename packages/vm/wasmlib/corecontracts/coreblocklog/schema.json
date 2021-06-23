@@ -40,7 +40,7 @@
         "blockIndex=n": "Int32"
       },
       "results": {
-        "requestID=u":"[]Bytes //TODO Array16"
+        "requestID=u": "[]Bytes //TODO Array16"
       }
     },
     "isRequestProcessed": {
