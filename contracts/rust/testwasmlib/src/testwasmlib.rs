@@ -5,7 +5,7 @@ use wasmlib::*;
 
 use crate::*;
 
-pub fn func_param_types(ctx: &ScFuncContext, f: &FuncParamTypesContext) {
+pub fn func_param_types(ctx: &ScFuncContext, f: &ParamTypesContext) {
     if f.params.address().exists() {
         ctx.require(f.params.address().value() == ctx.account_id().address(), "mismatch: Address");
     }
@@ -48,8 +48,8 @@ pub fn func_param_types(ctx: &ScFuncContext, f: &FuncParamTypesContext) {
     }
 }
 
-pub fn view_block_record(_ctx: &ScViewContext, _f: &ViewBlockRecordContext) {
+pub fn view_block_record(_ctx: &ScViewContext, _f: &BlockRecordContext) {
 }
 
-pub fn view_block_records(_ctx: &ScViewContext, _f: &ViewBlockRecordsContext) {
+pub fn view_block_records(_ctx: &ScViewContext, _f: &BlockRecordsContext) {
 }

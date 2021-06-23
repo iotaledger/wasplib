@@ -4,47 +4,45 @@
 use wasmlib::*;
 
 use crate::*;
-use crate::contract::IncCounterFunc;
+use crate::contract::*;
 
 static mut LOCAL_STATE_MUST_INCREMENT: bool = false;
 
-pub fn func_init(_ctx: &ScFuncContext, f: &FuncInitContext) {
+pub fn func_init(_ctx: &ScFuncContext, f: &InitContext) {
     if f.params.counter().exists() {
         let counter = f.params.counter().value();
         f.state.counter().set_value(counter);
     }
 }
 
-pub fn func_call_increment(ctx: &ScFuncContext, f: &FuncCallIncrementContext) {
+pub fn func_call_increment(ctx: &ScFuncContext, f: &CallIncrementContext) {
     let counter = f.state.counter();
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        let mut sc = IncCounterFunc::new(ctx);
-        sc.call_increment(ScTransfers::none());
+        CallIncrementCall::new(ctx).func.call();
     }
 }
 
-pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, f: &FuncCallIncrementRecurse5xContext) {
+pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, f: &CallIncrementRecurse5xContext) {
     let counter = f.state.counter();
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        let mut sc = IncCounterFunc::new(ctx);
-        sc.call_increment_recurse5x(ScTransfers::none());
+        CallIncrementRecurse5xCall::new(ctx).func.call();
     }
 }
 
-pub fn func_endless_loop(_ctx: &ScFuncContext, _f: &FuncEndlessLoopContext) {
+pub fn func_endless_loop(_ctx: &ScFuncContext, _f: &EndlessLoopContext) {
     loop {}
 }
 
-pub fn func_increment(_ctx: &ScFuncContext, f: &FuncIncrementContext) {
+pub fn func_increment(_ctx: &ScFuncContext, f: &IncrementContext) {
     let counter = f.state.counter();
     counter.set_value(counter.value() + 1);
 }
 
-pub fn func_local_state_internal_call(ctx: &ScFuncContext, f: &FuncLocalStateInternalCallContext) {
+pub fn func_local_state_internal_call(ctx: &ScFuncContext, f: &LocalStateInternalCallContext) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -57,7 +55,7 @@ pub fn func_local_state_internal_call(ctx: &ScFuncContext, f: &FuncLocalStateInt
     // counter ends up as 2
 }
 
-pub fn func_local_state_post(ctx: &ScFuncContext, _f: &FuncLocalStatePostContext) {
+pub fn func_local_state_post(ctx: &ScFuncContext, _f: &LocalStatePostContext) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
@@ -71,33 +69,29 @@ pub fn func_local_state_post(ctx: &ScFuncContext, _f: &FuncLocalStatePostContext
     // counter ends up as 0
 }
 
-pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _f: &FuncLocalStateSandboxCallContext) {
+pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _f: &LocalStateSandboxCallContext) {
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
-    let mut sc = IncCounterFunc::new(ctx);
-    let params = MutableFuncWhenMustIncrementParams::new();
-    let none = ScTransfers::none();
-    sc.when_must_increment(params, none);
+    WhenMustIncrementCall::new(ctx).func.call();
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    sc.when_must_increment(params, none);
-    sc.when_must_increment(params, none);
+    WhenMustIncrementCall::new(ctx).func.call();
+    WhenMustIncrementCall::new(ctx).func.call();
     // counter ends up as 0
 }
 
-pub fn func_post_increment(ctx: &ScFuncContext, f: &FuncPostIncrementContext) {
+pub fn func_post_increment(ctx: &ScFuncContext, f: &PostIncrementContext) {
     let counter = f.state.counter();
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        let mut sc = IncCounterFunc::new(ctx);
-        sc.post().increment(ScTransfers::iotas(1));
+        IncrementCall::new(ctx).func.transfer_iotas(1).post();
     }
 }
 
-pub fn func_repeat_many(ctx: &ScFuncContext, f: &FuncRepeatManyContext) {
+pub fn func_repeat_many(ctx: &ScFuncContext, f: &RepeatManyContext) {
     let counter = f.state.counter();
     let value = counter.value();
     counter.set_value(value + 1);
@@ -110,12 +104,10 @@ pub fn func_repeat_many(ctx: &ScFuncContext, f: &FuncRepeatManyContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    let mut sc = IncCounterFunc::new(ctx);
-    let params = MutableFuncRepeatManyParams::new();
-    sc.post().repeat_many(params, ScTransfers::iotas(1));
+    RepeatManyCall::new(ctx).func.transfer_iotas(1).post();
 }
 
-pub fn func_test_leb128(ctx: &ScFuncContext, _f: &FuncTestLeb128Context) {
+pub fn func_test_leb128(ctx: &ScFuncContext, _f: &TestLeb128Context) {
     leb128_save(ctx, "v-1", -1);
     leb128_save(ctx, "v-2", -2);
     leb128_save(ctx, "v-126", -126);
@@ -131,13 +123,13 @@ pub fn func_test_leb128(ctx: &ScFuncContext, _f: &FuncTestLeb128Context) {
     leb128_save(ctx, "v+129", 129);
 }
 
-pub fn func_when_must_increment(ctx: &ScFuncContext, f: &FuncWhenMustIncrementContext) {
+pub fn func_when_must_increment(ctx: &ScFuncContext, f: &WhenMustIncrementContext) {
     when_must_increment_state(ctx, &f.state);
 }
 
 // note that get_counter mirrors the state of the 'counter' state variable
 // which means that if the state variable was not present it also will not be present in the result
-pub fn view_get_counter(_ctx: &ScViewContext, f: &ViewGetCounterContext) {
+pub fn view_get_counter(_ctx: &ScViewContext, f: &GetCounterContext) {
     let counter = f.state.counter();
     if counter.exists() {
         f.results.counter().set_value(counter.value());
@@ -161,10 +153,9 @@ fn leb128_save(ctx: &ScFuncContext, name: &str, value: i64) {
 
 fn local_state_post(ctx: &ScFuncContext, nr: i64) {
     //note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
-    let mut sc = IncCounterFunc::new(ctx);
-    let params = MutableFuncWhenMustIncrementParams::new();
-    params.dummy().set_value(nr);
-    sc.post().when_must_increment(params, ScTransfers::iotas(1));
+    let f = WhenMustIncrementCall::new(ctx);
+    f.params.dummy().set_value(nr);
+    f.func.transfer_iotas(1).post();
 }
 
 fn when_must_increment_state(ctx: &ScFuncContext, state: &MutableIncCounterState) {

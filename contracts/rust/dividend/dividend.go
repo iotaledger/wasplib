@@ -23,7 +23,7 @@ import (
 // The 'init' function takes a single optional parameter:
 // - 'owner', which is the agent id of the entity owning the contract.
 // When this parameter is omitted the owner will default to the contract creator.
-func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
+func funcInit(ctx wasmlib.ScFuncContext, f*InitContext) {
 
 	// First we set up a default value for the owner in case the optional
 	// 'owner' parameter was omitted.
@@ -55,7 +55,7 @@ func funcInit(ctx wasmlib.ScFuncContext, f *FuncInitContext) {
 // The 'member' function will save the address/factor combination in its state
 // storage and also calculate and store a running sum of all factors so that the
 // 'divide' function can simply start using these precalculated values
-func funcMember(ctx wasmlib.ScFuncContext, f *FuncMemberContext) {
+func funcMember(ctx wasmlib.ScFuncContext, f*MemberContext) {
 
 	// Since we are sure that the 'factor' parameter actually exists we can
 	// retrieve its actual value into an i64. Note that we use Rust's built-in
@@ -139,7 +139,7 @@ func funcMember(ctx wasmlib.ScFuncContext, f *FuncMemberContext) {
 // integer and keeps any remaining iotas in its own account. They will be added
 // to any next round of tokens received prior to calculation of the new
 // dispersion amounts.
-func funcDivide(ctx wasmlib.ScFuncContext, f *FuncDivideContext) {
+func funcDivide(ctx wasmlib.ScFuncContext, f*DivideContext) {
 
 	// Create an ScBalances map proxy to the total account balances for this
 	// smart contract. Note that ScBalances wraps an ScImmutableMap of token
@@ -216,7 +216,7 @@ func funcDivide(ctx wasmlib.ScFuncContext, f *FuncDivideContext) {
 // The 'setOwner' function takes a single mandatory parameter:
 // - 'owner', which is the agent id of the entity that will own the contract.
 // Only the current owner can change the owner.
-func funcSetOwner(ctx wasmlib.ScFuncContext, f *FuncSetOwnerContext) {
+func funcSetOwner(ctx wasmlib.ScFuncContext, f*SetOwnerContext) {
 
 	// Get a proxy to the 'owner' variable in state storage.
 	// Save the new owner parameter value in the 'owner' variable in state storage.
@@ -225,7 +225,7 @@ func funcSetOwner(ctx wasmlib.ScFuncContext, f *FuncSetOwnerContext) {
 
 // 'getFactor' is a simple View function. It will retrieve the factor
 // associated with the (mandatory) address parameter it was provided with.
-func viewGetFactor(ctx wasmlib.ScViewContext, f *ViewGetFactorContext) {
+func viewGetFactor(ctx wasmlib.ScViewContext, f*GetFactorContext) {
 
 	// Since we are sure that the 'address' parameter actually exists we can
 	// retrieve its actual value into an ScAddress value type.

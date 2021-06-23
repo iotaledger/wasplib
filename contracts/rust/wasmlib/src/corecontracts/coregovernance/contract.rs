@@ -7,72 +7,80 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coregovernance::*;
 
-pub struct CoreGovernanceFunc {
-    sc: ScContractFunc,
+pub struct AddAllowedStateControllerAddressCall {
+    pub func: ScFunc,
+    pub params: MutableAddAllowedStateControllerAddressParams,
 }
 
-impl CoreGovernanceFunc {
-    pub fn new(ctx: &ScFuncContext) -> CoreGovernanceFunc {
-        CoreGovernanceFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut CoreGovernanceFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreGovernanceFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut CoreGovernanceFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut CoreGovernanceFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn add_allowed_state_controller_address(&mut self, params: MutableFuncAddAllowedStateControllerAddressParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS, params.id, Some(transfer));
-    }
-
-    pub fn remove_allowed_state_controller_address(&mut self, params: MutableFuncRemoveAllowedStateControllerAddressParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS, params.id, Some(transfer));
-    }
-
-    pub fn rotate_state_controller(&mut self, params: MutableFuncRotateStateControllerParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_ROTATE_STATE_CONTROLLER, params.id, Some(transfer));
-    }
-
-    pub fn get_allowed_state_controller_addresses(&mut self) -> ImmutableViewGetAllowedStateControllerAddressesResults {
-        self.sc.run(HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, 0, None);
-        ImmutableViewGetAllowedStateControllerAddressesResults { id: self.sc.result_map_id() }
+impl AddAllowedStateControllerAddressCall {
+    pub fn new(_ctx: &ScFuncContext) -> AddAllowedStateControllerAddressCall {
+        let mut f = AddAllowedStateControllerAddressCall {
+            func: ScFunc::zero(),
+            params: MutableAddAllowedStateControllerAddressParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct CoreGovernanceView {
-    sc: ScContractView,
+pub struct RemoveAllowedStateControllerAddressCall {
+    pub func: ScFunc,
+    pub params: MutableRemoveAllowedStateControllerAddressParams,
 }
 
-impl CoreGovernanceView {
-    pub fn new(ctx: &ScViewContext) -> CoreGovernanceView {
-        CoreGovernanceView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl RemoveAllowedStateControllerAddressCall {
+    pub fn new(_ctx: &ScFuncContext) -> RemoveAllowedStateControllerAddressCall {
+        let mut f = RemoveAllowedStateControllerAddressCall {
+            func: ScFunc::zero(),
+            params: MutableRemoveAllowedStateControllerAddressParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct RotateStateControllerCall {
+    pub func: ScFunc,
+    pub params: MutableRotateStateControllerParams,
+}
+
+impl RotateStateControllerCall {
+    pub fn new(_ctx: &ScFuncContext) -> RotateStateControllerCall {
+        let mut f = RotateStateControllerCall {
+            func: ScFunc::zero(),
+            params: MutableRotateStateControllerParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_ROTATE_STATE_CONTROLLER, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetAllowedStateControllerAddressesCall {
+    pub func: ScView,
+    pub results: ImmutableGetAllowedStateControllerAddressesResults,
+}
+
+impl GetAllowedStateControllerAddressesCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetAllowedStateControllerAddressesCall {
+        let mut f = GetAllowedStateControllerAddressesCall {
+            func: ScView::zero(),
+            results: ImmutableGetAllowedStateControllerAddressesResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreGovernanceView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_allowed_state_controller_addresses(&mut self) -> ImmutableViewGetAllowedStateControllerAddressesResults {
-        self.sc.run(HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, 0);
-        ImmutableViewGetAllowedStateControllerAddressesResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetAllowedStateControllerAddressesCall {
+        let mut f = GetAllowedStateControllerAddressesCall {
+            func: ScView::zero(),
+            results: ImmutableGetAllowedStateControllerAddressesResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

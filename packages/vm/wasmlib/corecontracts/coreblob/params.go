@@ -9,50 +9,42 @@ package coreblob
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewGetBlobFieldParams struct {
+type ImmutableGetBlobFieldParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetBlobFieldParams) Field() wasmlib.ScImmutableString {
+func (s ImmutableGetBlobFieldParams) Field() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, ParamField.KeyId())
 }
 
-func (s ImmutableViewGetBlobFieldParams) Hash() wasmlib.ScImmutableHash {
+func (s ImmutableGetBlobFieldParams) Hash() wasmlib.ScImmutableHash {
 	return wasmlib.NewScImmutableHash(s.id, ParamHash.KeyId())
 }
 
-type MutableViewGetBlobFieldParams struct {
+type MutableGetBlobFieldParams struct {
 	id int32
 }
 
-func NewMutableViewGetBlobFieldParams() MutableViewGetBlobFieldParams {
-	return MutableViewGetBlobFieldParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetBlobFieldParams) Field() wasmlib.ScMutableString {
+func (s MutableGetBlobFieldParams) Field() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, ParamField.KeyId())
 }
 
-func (s MutableViewGetBlobFieldParams) Hash() wasmlib.ScMutableHash {
+func (s MutableGetBlobFieldParams) Hash() wasmlib.ScMutableHash {
 	return wasmlib.NewScMutableHash(s.id, ParamHash.KeyId())
 }
 
-type ImmutableViewGetBlobInfoParams struct {
+type ImmutableGetBlobInfoParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetBlobInfoParams) Hash() wasmlib.ScImmutableHash {
+func (s ImmutableGetBlobInfoParams) Hash() wasmlib.ScImmutableHash {
 	return wasmlib.NewScImmutableHash(s.id, ParamHash.KeyId())
 }
 
-type MutableViewGetBlobInfoParams struct {
+type MutableGetBlobInfoParams struct {
 	id int32
 }
 
-func NewMutableViewGetBlobInfoParams() MutableViewGetBlobInfoParams {
-	return MutableViewGetBlobInfoParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetBlobInfoParams) Hash() wasmlib.ScMutableHash {
+func (s MutableGetBlobInfoParams) Hash() wasmlib.ScMutableHash {
 	return wasmlib.NewScMutableHash(s.id, ParamHash.KeyId())
 }

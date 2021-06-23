@@ -9,65 +9,52 @@ package coregovernance
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreGovernanceFunc struct {
-	sc wasmlib.ScContractFunc
+type AddAllowedStateControllerAddressCall struct {
+	Func wasmlib.ScFunc
+	Params MutableAddAllowedStateControllerAddressParams
 }
 
-func NewCoreGovernanceFunc(ctx wasmlib.ScFuncContext) *CoreGovernanceFunc {
-	return &CoreGovernanceFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreGovernanceFunc) Delay(seconds int32) *CoreGovernanceFunc {
-	f.sc.Delay(seconds)
+func NewAddAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *AddAllowedStateControllerAddressCall {
+	f := &AddAllowedStateControllerAddressCall{}
+	f.Func.Init(HScName, HFuncAddAllowedStateControllerAddress, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreGovernanceFunc) OfContract(contract wasmlib.ScHname) *CoreGovernanceFunc {
-	f.sc.OfContract(contract)
+type RemoveAllowedStateControllerAddressCall struct {
+	Func wasmlib.ScFunc
+	Params MutableRemoveAllowedStateControllerAddressParams
+}
+
+func NewRemoveAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *RemoveAllowedStateControllerAddressCall {
+	f := &RemoveAllowedStateControllerAddressCall{}
+	f.Func.Init(HScName, HFuncRemoveAllowedStateControllerAddress, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreGovernanceFunc) Post() *CoreGovernanceFunc {
-	f.sc.Post()
+type RotateStateControllerCall struct {
+	Func wasmlib.ScFunc
+	Params MutableRotateStateControllerParams
+}
+
+func NewRotateStateControllerCall(ctx wasmlib.ScFuncContext) *RotateStateControllerCall {
+	f := &RotateStateControllerCall{}
+	f.Func.Init(HScName, HFuncRotateStateController, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreGovernanceFunc) PostToChain(chainId wasmlib.ScChainId) *CoreGovernanceFunc {
-	f.sc.PostToChain(chainId)
+type GetAllowedStateControllerAddressesCall struct {
+	Func wasmlib.ScView
+	Results ImmutableGetAllowedStateControllerAddressesResults
+}
+
+func NewGetAllowedStateControllerAddressesCall(ctx wasmlib.ScFuncContext) *GetAllowedStateControllerAddressesCall {
+	f := &GetAllowedStateControllerAddressesCall{}
+	f.Func.Init(HScName, HViewGetAllowedStateControllerAddresses, nil, &f.Results.id)
 	return f
 }
 
-func (f *CoreGovernanceFunc) AddAllowedStateControllerAddress(params MutableFuncAddAllowedStateControllerAddressParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncAddAllowedStateControllerAddress, params.id, &transfer)
-}
-
-func (f *CoreGovernanceFunc) RemoveAllowedStateControllerAddress(params MutableFuncRemoveAllowedStateControllerAddressParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncRemoveAllowedStateControllerAddress, params.id, &transfer)
-}
-
-func (f *CoreGovernanceFunc) RotateStateController(params MutableFuncRotateStateControllerParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncRotateStateController, params.id, &transfer)
-}
-
-func (f *CoreGovernanceFunc) GetAllowedStateControllerAddresses() ImmutableViewGetAllowedStateControllerAddressesResults {
-	f.sc.Run(HViewGetAllowedStateControllerAddresses, 0, nil)
-	return ImmutableViewGetAllowedStateControllerAddressesResults{id: f.sc.ResultMapId()}
-}
-
-type CoreGovernanceView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewCoreGovernanceView(ctx wasmlib.ScViewContext) *CoreGovernanceView {
-	return &CoreGovernanceView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *CoreGovernanceView) OfContract(contract wasmlib.ScHname) *CoreGovernanceView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *CoreGovernanceView) GetAllowedStateControllerAddresses() ImmutableViewGetAllowedStateControllerAddressesResults {
-	v.sc.Run(HViewGetAllowedStateControllerAddresses, 0)
-	return ImmutableViewGetAllowedStateControllerAddressesResults{id: v.sc.ResultMapId()}
+func NewGetAllowedStateControllerAddressesCallFromView(ctx wasmlib.ScViewContext) *GetAllowedStateControllerAddressesCall {
+	f := &GetAllowedStateControllerAddressesCall{}
+	f.Func.Init(HScName, HViewGetAllowedStateControllerAddresses, nil, &f.Results.id)
+	return f
 }

@@ -9,158 +9,146 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncParamTypesParams struct {
+type ImmutableParamTypesParams struct {
 	id int32
 }
 
-func (s ImmutableFuncParamTypesParams) Address() wasmlib.ScImmutableAddress {
+func (s ImmutableParamTypesParams) Address() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, idxMap[IdxParamAddress])
 }
 
-func (s ImmutableFuncParamTypesParams) AgentId() wasmlib.ScImmutableAgentId {
+func (s ImmutableParamTypesParams) AgentId() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAgentId])
 }
 
-func (s ImmutableFuncParamTypesParams) Bytes() wasmlib.ScImmutableBytes {
+func (s ImmutableParamTypesParams) Bytes() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, idxMap[IdxParamBytes])
 }
 
-func (s ImmutableFuncParamTypesParams) ChainId() wasmlib.ScImmutableChainId {
+func (s ImmutableParamTypesParams) ChainId() wasmlib.ScImmutableChainId {
 	return wasmlib.NewScImmutableChainId(s.id, idxMap[IdxParamChainId])
 }
 
-func (s ImmutableFuncParamTypesParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableParamTypesParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-func (s ImmutableFuncParamTypesParams) Hash() wasmlib.ScImmutableHash {
+func (s ImmutableParamTypesParams) Hash() wasmlib.ScImmutableHash {
 	return wasmlib.NewScImmutableHash(s.id, idxMap[IdxParamHash])
 }
 
-func (s ImmutableFuncParamTypesParams) Hname() wasmlib.ScImmutableHname {
+func (s ImmutableParamTypesParams) Hname() wasmlib.ScImmutableHname {
 	return wasmlib.NewScImmutableHname(s.id, idxMap[IdxParamHname])
 }
 
-func (s ImmutableFuncParamTypesParams) Int16() wasmlib.ScImmutableInt16 {
+func (s ImmutableParamTypesParams) Int16() wasmlib.ScImmutableInt16 {
 	return wasmlib.NewScImmutableInt16(s.id, idxMap[IdxParamInt16])
 }
 
-func (s ImmutableFuncParamTypesParams) Int32() wasmlib.ScImmutableInt32 {
+func (s ImmutableParamTypesParams) Int32() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamInt32])
 }
 
-func (s ImmutableFuncParamTypesParams) Int64() wasmlib.ScImmutableInt64 {
+func (s ImmutableParamTypesParams) Int64() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamInt64])
 }
 
-func (s ImmutableFuncParamTypesParams) RequestId() wasmlib.ScImmutableRequestId {
+func (s ImmutableParamTypesParams) RequestId() wasmlib.ScImmutableRequestId {
 	return wasmlib.NewScImmutableRequestId(s.id, idxMap[IdxParamRequestId])
 }
 
-func (s ImmutableFuncParamTypesParams) String() wasmlib.ScImmutableString {
+func (s ImmutableParamTypesParams) String() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamString])
 }
 
-type MutableFuncParamTypesParams struct {
+type MutableParamTypesParams struct {
 	id int32
 }
 
-func NewMutableFuncParamTypesParams() MutableFuncParamTypesParams {
-	return MutableFuncParamTypesParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncParamTypesParams) Address() wasmlib.ScMutableAddress {
+func (s MutableParamTypesParams) Address() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, idxMap[IdxParamAddress])
 }
 
-func (s MutableFuncParamTypesParams) AgentId() wasmlib.ScMutableAgentId {
+func (s MutableParamTypesParams) AgentId() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAgentId])
 }
 
-func (s MutableFuncParamTypesParams) Bytes() wasmlib.ScMutableBytes {
+func (s MutableParamTypesParams) Bytes() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, idxMap[IdxParamBytes])
 }
 
-func (s MutableFuncParamTypesParams) ChainId() wasmlib.ScMutableChainId {
+func (s MutableParamTypesParams) ChainId() wasmlib.ScMutableChainId {
 	return wasmlib.NewScMutableChainId(s.id, idxMap[IdxParamChainId])
 }
 
-func (s MutableFuncParamTypesParams) Color() wasmlib.ScMutableColor {
+func (s MutableParamTypesParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-func (s MutableFuncParamTypesParams) Hash() wasmlib.ScMutableHash {
+func (s MutableParamTypesParams) Hash() wasmlib.ScMutableHash {
 	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamHash])
 }
 
-func (s MutableFuncParamTypesParams) Hname() wasmlib.ScMutableHname {
+func (s MutableParamTypesParams) Hname() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, idxMap[IdxParamHname])
 }
 
-func (s MutableFuncParamTypesParams) Int16() wasmlib.ScMutableInt16 {
+func (s MutableParamTypesParams) Int16() wasmlib.ScMutableInt16 {
 	return wasmlib.NewScMutableInt16(s.id, idxMap[IdxParamInt16])
 }
 
-func (s MutableFuncParamTypesParams) Int32() wasmlib.ScMutableInt32 {
+func (s MutableParamTypesParams) Int32() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamInt32])
 }
 
-func (s MutableFuncParamTypesParams) Int64() wasmlib.ScMutableInt64 {
+func (s MutableParamTypesParams) Int64() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
 }
 
-func (s MutableFuncParamTypesParams) RequestId() wasmlib.ScMutableRequestId {
+func (s MutableParamTypesParams) RequestId() wasmlib.ScMutableRequestId {
 	return wasmlib.NewScMutableRequestId(s.id, idxMap[IdxParamRequestId])
 }
 
-func (s MutableFuncParamTypesParams) String() wasmlib.ScMutableString {
+func (s MutableParamTypesParams) String() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
 }
 
-type ImmutableViewBlockRecordParams struct {
+type ImmutableBlockRecordParams struct {
 	id int32
 }
 
-func (s ImmutableViewBlockRecordParams) BlockIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableBlockRecordParams) BlockIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamBlockIndex])
 }
 
-func (s ImmutableViewBlockRecordParams) RecordIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableBlockRecordParams) RecordIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamRecordIndex])
 }
 
-type MutableViewBlockRecordParams struct {
+type MutableBlockRecordParams struct {
 	id int32
 }
 
-func NewMutableViewBlockRecordParams() MutableViewBlockRecordParams {
-	return MutableViewBlockRecordParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewBlockRecordParams) BlockIndex() wasmlib.ScMutableInt32 {
+func (s MutableBlockRecordParams) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamBlockIndex])
 }
 
-func (s MutableViewBlockRecordParams) RecordIndex() wasmlib.ScMutableInt32 {
+func (s MutableBlockRecordParams) RecordIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamRecordIndex])
 }
 
-type ImmutableViewBlockRecordsParams struct {
+type ImmutableBlockRecordsParams struct {
 	id int32
 }
 
-func (s ImmutableViewBlockRecordsParams) BlockIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableBlockRecordsParams) BlockIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamBlockIndex])
 }
 
-type MutableViewBlockRecordsParams struct {
+type MutableBlockRecordsParams struct {
 	id int32
 }
 
-func NewMutableViewBlockRecordsParams() MutableViewBlockRecordsParams {
-	return MutableViewBlockRecordsParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewBlockRecordsParams) BlockIndex() wasmlib.ScMutableInt32 {
+func (s MutableBlockRecordsParams) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamBlockIndex])
 }

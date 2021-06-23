@@ -29,7 +29,7 @@ const DefaultPlayPeriod = 120
 // - 'number', which must be s an Int64 number from 1 to MAX_NUMBER
 // The 'member' function will save the number together with the address of the better and
 // the amount of incoming iotas as the bet amount in its state.
-func funcPlaceBet(ctx wasmlib.ScFuncContext, f *FuncPlaceBetContext) {
+func funcPlaceBet(ctx wasmlib.ScFuncContext, f*PlaceBetContext) {
 
 	// Since we are sure that the 'number' parameter actually exists we can
 	// retrieve its actual value into an i64.
@@ -87,8 +87,7 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *FuncPlaceBetContext) {
 		// amount of seconds. This will lock in the playing period, during which more bets can
 		// be placed. Once the 'lockBets' function gets triggered by the ISCP it will gather all
 		// bets up to that moment as the ones to consider for determining the winner.
-		transfer := wasmlib.NewScTransferIotas(1)
-		NewFairRouletteFunc(ctx).Post().Delay(playPeriod).LockBets(transfer)
+		NewLockBetsCall(ctx).Func.Delay(playPeriod).TransferIotas(1).Post()
 	}
 }
 
@@ -100,7 +99,7 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *FuncPlaceBetContext) {
 // second state storage array called "lockedBets", after which it will request the 'payWinners'
 // function to be run. Note that any bets coming in after that moment will start the cycle from
 // scratch, with the first incoming bet triggering a new delayed execution of 'lockBets'.
-func funcLockBets(ctx wasmlib.ScFuncContext, f *FuncLockBetsContext) {
+func funcLockBets(ctx wasmlib.ScFuncContext, f*LockBetsContext) {
 
 	// Create an ScMutableMap proxy to the state storage map on the host.
 	// Create an ScMutableBytesArray proxy to the bytes array named 'bets' in state storage.
@@ -128,8 +127,7 @@ func funcLockBets(ctx wasmlib.ScFuncContext, f *FuncLockBetsContext) {
 
 	// Next we trigger an immediate request to the 'payWinners' function
 	// See more explanation of the why below.
-	transfer := wasmlib.NewScTransferIotas(1)
-	NewFairRouletteFunc(ctx).Post().PayWinners(transfer)
+	NewPayWinnersCall(ctx).Func.TransferIotas(1).Post()
 }
 
 // 'payWinners' is a function whose execution gets initiated by the 'lockBets' function.
@@ -142,7 +140,7 @@ func funcLockBets(ctx wasmlib.ScFuncContext, f *FuncLockBetsContext) {
 // a deterministic source of entropy for the random number generator. In this way every node in
 // the committee will be using the same pseudo-random value sequence, which in turn makes sure
 // that all nodes can agree on the outcome.
-func funcPayWinners(ctx wasmlib.ScFuncContext, f *FuncPayWinnersContext) {
+func funcPayWinners(ctx wasmlib.ScFuncContext, f*PayWinnersContext) {
 
 	// Use the built-in random number generator which has been automatically initialized by
 	// using the transaction hash as initial entropy data. Note that the pseudo-random number
@@ -254,7 +252,7 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *FuncPayWinnersContext) {
 
 // 'playPeriod' can be used by the contract creator to set the length of a betting round
 // to a different value than the default value, which is 120 seconds..
-func funcPlayPeriod(ctx wasmlib.ScFuncContext, f *FuncPlayPeriodContext) {
+func funcPlayPeriod(ctx wasmlib.ScFuncContext, f*PlayPeriodContext) {
 
 	// Since we are sure that the 'playPeriod' parameter actually exists we can
 	// retrieve its actual value into an i64 value.
@@ -269,7 +267,7 @@ func funcPlayPeriod(ctx wasmlib.ScFuncContext, f *FuncPlayPeriodContext) {
 	f.State.PlayPeriod().SetValue(playPeriod)
 }
 
-func viewLastWinningNumber(ctx wasmlib.ScViewContext, f *ViewLastWinningNumberContext) {
+func viewLastWinningNumber(ctx wasmlib.ScViewContext, f*LastWinningNumberContext) {
 
 	// Create an ScImmutableMap proxy to the state storage map on the host.
 

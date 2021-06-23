@@ -7,77 +7,82 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct TestWasmLibFunc {
-    sc: ScContractFunc,
+pub struct ParamTypesCall {
+    pub func: ScFunc,
+    pub params: MutableParamTypesParams,
 }
 
-impl TestWasmLibFunc {
-    pub fn new(ctx: &ScFuncContext) -> TestWasmLibFunc {
-        TestWasmLibFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut TestWasmLibFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TestWasmLibFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut TestWasmLibFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut TestWasmLibFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn param_types(&mut self, params: MutableFuncParamTypesParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PARAM_TYPES, params.id, Some(transfer));
-    }
-
-    pub fn block_record(&mut self, params: MutableViewBlockRecordParams) -> ImmutableViewBlockRecordResults {
-        self.sc.run(HVIEW_BLOCK_RECORD, params.id, None);
-        ImmutableViewBlockRecordResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn block_records(&mut self, params: MutableViewBlockRecordsParams) -> ImmutableViewBlockRecordsResults {
-        self.sc.run(HVIEW_BLOCK_RECORDS, params.id, None);
-        ImmutableViewBlockRecordsResults { id: self.sc.result_map_id() }
+impl ParamTypesCall {
+    pub fn new(_ctx: &ScFuncContext) -> ParamTypesCall {
+        let mut f = ParamTypesCall {
+            func: ScFunc::zero(),
+            params: MutableParamTypesParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PARAM_TYPES, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct TestWasmLibView {
-    sc: ScContractView,
+pub struct BlockRecordCall {
+    pub func: ScView,
+    pub params: MutableBlockRecordParams,
+    pub results: ImmutableBlockRecordResults,
 }
 
-impl TestWasmLibView {
-    pub fn new(ctx: &ScViewContext) -> TestWasmLibView {
-        TestWasmLibView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl BlockRecordCall {
+    pub fn new(_ctx: &ScFuncContext) -> BlockRecordCall {
+        let mut f = BlockRecordCall {
+            func: ScView::zero(),
+            params: MutableBlockRecordParams { id: 0 },
+            results: ImmutableBlockRecordResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BLOCK_RECORD, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TestWasmLibView {
-        self.sc.of_contract(contract);
-        self
+    pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordCall {
+        let mut f = BlockRecordCall {
+            func: ScView::zero(),
+            params: MutableBlockRecordParams { id: 0 },
+            results: ImmutableBlockRecordResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BLOCK_RECORD, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct BlockRecordsCall {
+    pub func: ScView,
+    pub params: MutableBlockRecordsParams,
+    pub results: ImmutableBlockRecordsResults,
+}
+
+impl BlockRecordsCall {
+    pub fn new(_ctx: &ScFuncContext) -> BlockRecordsCall {
+        let mut f = BlockRecordsCall {
+            func: ScView::zero(),
+            params: MutableBlockRecordsParams { id: 0 },
+            results: ImmutableBlockRecordsResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BLOCK_RECORDS, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn block_record(&mut self, params: MutableViewBlockRecordParams) -> ImmutableViewBlockRecordResults {
-        self.sc.run(HVIEW_BLOCK_RECORD, params.id);
-        ImmutableViewBlockRecordResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn block_records(&mut self, params: MutableViewBlockRecordsParams) -> ImmutableViewBlockRecordsResults {
-        self.sc.run(HVIEW_BLOCK_RECORDS, params.id);
-        ImmutableViewBlockRecordsResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordsCall {
+        let mut f = BlockRecordsCall {
+            func: ScView::zero(),
+            params: MutableBlockRecordsParams { id: 0 },
+            results: ImmutableBlockRecordsResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BLOCK_RECORDS, &mut f.params.id, &mut f.results.id);
+        f
     }
 }

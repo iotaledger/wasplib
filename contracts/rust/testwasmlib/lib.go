@@ -20,15 +20,15 @@ func OnLoad() {
 	}
 }
 
-type FuncParamTypesContext struct {
-	Params ImmutableFuncParamTypesParams
+type ParamTypesContext struct {
+	Params ImmutableParamTypesParams
 	State  MutableTestWasmLibState
 }
 
 func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testwasmlib.funcParamTypes")
-	f := &FuncParamTypesContext{
-		Params: ImmutableFuncParamTypesParams{
+	f := &ParamTypesContext{
+		Params: ImmutableParamTypesParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestWasmLibState{
@@ -39,19 +39,19 @@ func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testwasmlib.funcParamTypes ok")
 }
 
-type ViewBlockRecordContext struct {
-	Params  ImmutableViewBlockRecordParams
-	Results MutableViewBlockRecordResults
+type BlockRecordContext struct {
+	Params  ImmutableBlockRecordParams
+	Results MutableBlockRecordResults
 	State   ImmutableTestWasmLibState
 }
 
 func viewBlockRecordThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testwasmlib.viewBlockRecord")
-	f := &ViewBlockRecordContext{
-		Params: ImmutableViewBlockRecordParams{
+	f := &BlockRecordContext{
+		Params: ImmutableBlockRecordParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewBlockRecordResults{
+		Results: MutableBlockRecordResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestWasmLibState{
@@ -64,19 +64,19 @@ func viewBlockRecordThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testwasmlib.viewBlockRecord ok")
 }
 
-type ViewBlockRecordsContext struct {
-	Params  ImmutableViewBlockRecordsParams
-	Results MutableViewBlockRecordsResults
+type BlockRecordsContext struct {
+	Params  ImmutableBlockRecordsParams
+	Results MutableBlockRecordsResults
 	State   ImmutableTestWasmLibState
 }
 
 func viewBlockRecordsThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testwasmlib.viewBlockRecords")
-	f := &ViewBlockRecordsContext{
-		Params: ImmutableViewBlockRecordsParams{
+	f := &BlockRecordsContext{
+		Params: ImmutableBlockRecordsParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewBlockRecordsResults{
+		Results: MutableBlockRecordsResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestWasmLibState{

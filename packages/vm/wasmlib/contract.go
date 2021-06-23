@@ -1,71 +1,95 @@
 package wasmlib
 
-type ScContractFunc struct {
-	ctx      ScFuncContext
-	chainId  ScChainId
-	contract ScHname
-	delay    int32
-	post     bool
-	results  ScImmutableMap
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScView struct {
+	hContract ScHname
+	hFunction ScHname
+	paramsId  *int32
+	resultsId *int32
 }
 
-func NewScContractFunc(ctx ScFuncContext, contract ScHname) ScContractFunc {
-	return ScContractFunc{ctx: ctx, chainId: ctx.ChainId(), contract: contract}
-}
-
-func (f *ScContractFunc) Delay(seconds int32) {
-	f.delay = seconds
-}
-
-func (f *ScContractFunc) OfContract(contract ScHname) {
-	f.contract = contract
-}
-
-func (f *ScContractFunc) Post() {
-	f.post = true
-}
-
-func (f *ScContractFunc) PostToChain(chainId ScChainId) {
-	f.post = true
-	f.chainId = chainId
-}
-
-func (f *ScContractFunc) ResultMapId() int32 {
-	mapId := f.results.MapId()
-	f.ctx.Require(mapId != 0, "Cannot get results from asynchronous post")
-	return mapId
-}
-
-func (f *ScContractFunc) Run(function ScHname, paramsId int32, transfer *ScTransfers) {
-	params := &ScMutableMap{objId: paramsId}
-	if f.post {
-		f.ctx.Require(transfer != nil, "Cannot post to view")
-		f.ctx.Post(f.chainId, f.contract, function, params, *transfer, f.delay)
-		return
+func (v *ScView) Init(hContract ScHname, hFunction ScHname, paramsId *int32, resultsId *int32) {
+	v.hContract = hContract
+	v.hFunction = hFunction
+	v.paramsId = paramsId
+	v.resultsId = resultsId
+	if paramsId != nil {
+		*paramsId = NewScMutableMap().MapId()
 	}
-
-	f.results = f.ctx.Call(f.contract, function, params, transfer)
 }
 
-type ScContractView struct {
-	ctx      ScViewContext
-	contract ScHname
-	results  ScImmutableMap
+func (v *ScView) Call() {
+	v.call(0)
 }
 
-func NewScContractView(ctx ScViewContext, contract ScHname) ScContractView {
-	return ScContractView{ctx: ctx, contract: contract}
+func (v *ScView) call(transferId int32) {
+	encode := NewBytesEncoder()
+	encode.Hname(v.hContract)
+	encode.Hname(v.hFunction)
+	encode.Int32(paramsId(v.paramsId))
+	encode.Int32(transferId)
+	Root.GetBytes(KeyCall).SetValue(encode.Data())
+	if v.resultsId != nil {
+		*v.resultsId = GetObjectId(1, KeyReturn, TYPE_MAP)
+	}
 }
 
-func (v *ScContractView) OfContract(contract ScHname) {
-	v.contract = contract
+func (v *ScView) OfContract(hContract ScHname) *ScView {
+	v.hContract = hContract
+	return v
 }
 
-func (v *ScContractView) ResultMapId() int32 {
-	return v.results.MapId()
+func paramsId(id *int32) int32 {
+	if id == nil {
+		return 0
+	}
+	return *id
 }
 
-func (v *ScContractView) Run(function ScHname, paramsId int32) {
-	params := &ScMutableMap{objId: paramsId}
-	v.results = v.ctx.Call(v.contract, function, params)
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+type ScFunc struct {
+	ScView
+	delay      int32
+	transferId int32
+}
+
+func (f *ScFunc) Call() {
+	if f.delay != 0 {
+		Panic("cannot delay a call")
+	}
+	f.call(f.transferId)
+}
+
+func (f *ScFunc) Delay(seconds int32) *ScFunc {
+	f.delay = seconds
+	return f
+}
+
+func (f *ScFunc) Post() {
+	f.PostToChain(Root.GetChainId(KeyChainId).Value())
+}
+
+func (f *ScFunc) PostToChain(chainId ScChainId) {
+	if f.transferId == 0 {
+		Panic("transfer is required for post")
+	}
+	encode := NewBytesEncoder()
+	encode.ChainId(chainId)
+	encode.Hname(f.hContract)
+	encode.Hname(f.hFunction)
+	encode.Int32(paramsId(f.paramsId))
+	encode.Int32(f.transferId)
+	encode.Int32(f.delay)
+	Root.GetBytes(KeyPost).SetValue(encode.Data())
+}
+
+func (f *ScFunc) Transfer(transfer ScTransfers) *ScFunc {
+	f.transferId = transfer.transfers.MapId()
+	return f
+}
+
+func (f *ScFunc) TransferIotas(amount int64) *ScFunc {
+	return f.Transfer(NewScTransferIotas(amount))
 }

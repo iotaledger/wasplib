@@ -15,101 +15,45 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncLockBetsParams {
+pub struct ImmutablePlaceBetParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncLockBetsParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncLockBetsParams {
-    pub fn new() -> MutableFuncLockBetsParams {
-        MutableFuncLockBetsParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPayWinnersParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncPayWinnersParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncPayWinnersParams {
-    pub fn new() -> MutableFuncPayWinnersParams {
-        MutableFuncPayWinnersParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPlaceBetParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncPlaceBetParams {
+impl ImmutablePlaceBetParams {
     pub fn number(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_PARAM_NUMBER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncPlaceBetParams {
+pub struct MutablePlaceBetParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncPlaceBetParams {
-    pub fn new() -> MutableFuncPlaceBetParams {
-        MutableFuncPlaceBetParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutablePlaceBetParams {
     pub fn number(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_PARAM_NUMBER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncPlayPeriodParams {
+pub struct ImmutablePlayPeriodParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncPlayPeriodParams {
+impl ImmutablePlayPeriodParams {
     pub fn play_period(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncPlayPeriodParams {
+pub struct MutablePlayPeriodParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncPlayPeriodParams {
-    pub fn new() -> MutableFuncPlayPeriodParams {
-        MutableFuncPlayPeriodParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutablePlayPeriodParams {
     pub fn play_period(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, idx_map(IDX_PARAM_PLAY_PERIOD))
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewLastWinningNumberParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewLastWinningNumberParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewLastWinningNumberParams {
-    pub fn new() -> MutableViewLastWinningNumberParams {
-        MutableViewLastWinningNumberParams { id: ScMutableMap::new().map_id() }
     }
 }

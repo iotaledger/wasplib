@@ -9,101 +9,131 @@ package coreroot
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreRootFunc struct {
-	sc wasmlib.ScContractFunc
+type ClaimChainOwnershipCall struct {
+	Func wasmlib.ScFunc
 }
 
-func NewCoreRootFunc(ctx wasmlib.ScFuncContext) *CoreRootFunc {
-	return &CoreRootFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreRootFunc) Delay(seconds int32) *CoreRootFunc {
-	f.sc.Delay(seconds)
+func NewClaimChainOwnershipCall(ctx wasmlib.ScFuncContext) *ClaimChainOwnershipCall {
+	f := &ClaimChainOwnershipCall{}
+	f.Func.Init(HScName, HFuncClaimChainOwnership, nil, nil)
 	return f
 }
 
-func (f *CoreRootFunc) OfContract(contract wasmlib.ScHname) *CoreRootFunc {
-	f.sc.OfContract(contract)
+type DelegateChainOwnershipCall struct {
+	Func wasmlib.ScFunc
+	Params MutableDelegateChainOwnershipParams
+}
+
+func NewDelegateChainOwnershipCall(ctx wasmlib.ScFuncContext) *DelegateChainOwnershipCall {
+	f := &DelegateChainOwnershipCall{}
+	f.Func.Init(HScName, HFuncDelegateChainOwnership, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreRootFunc) Post() *CoreRootFunc {
-	f.sc.Post()
+type DeployContractCall struct {
+	Func wasmlib.ScFunc
+	Params MutableDeployContractParams
+}
+
+func NewDeployContractCall(ctx wasmlib.ScFuncContext) *DeployContractCall {
+	f := &DeployContractCall{}
+	f.Func.Init(HScName, HFuncDeployContract, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreRootFunc) PostToChain(chainId wasmlib.ScChainId) *CoreRootFunc {
-	f.sc.PostToChain(chainId)
+type GrantDeployPermissionCall struct {
+	Func wasmlib.ScFunc
+	Params MutableGrantDeployPermissionParams
+}
+
+func NewGrantDeployPermissionCall(ctx wasmlib.ScFuncContext) *GrantDeployPermissionCall {
+	f := &GrantDeployPermissionCall{}
+	f.Func.Init(HScName, HFuncGrantDeployPermission, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreRootFunc) ClaimChainOwnership(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncClaimChainOwnership, 0, &transfer)
+type RevokeDeployPermissionCall struct {
+	Func wasmlib.ScFunc
+	Params MutableRevokeDeployPermissionParams
 }
 
-func (f *CoreRootFunc) DelegateChainOwnership(params MutableFuncDelegateChainOwnershipParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncDelegateChainOwnership, params.id, &transfer)
+func NewRevokeDeployPermissionCall(ctx wasmlib.ScFuncContext) *RevokeDeployPermissionCall {
+	f := &RevokeDeployPermissionCall{}
+	f.Func.Init(HScName, HFuncRevokeDeployPermission, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreRootFunc) DeployContract(params MutableFuncDeployContractParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncDeployContract, params.id, &transfer)
+type SetContractFeeCall struct {
+	Func wasmlib.ScFunc
+	Params MutableSetContractFeeParams
 }
 
-func (f *CoreRootFunc) GrantDeployPermission(params MutableFuncGrantDeployPermissionParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncGrantDeployPermission, params.id, &transfer)
+func NewSetContractFeeCall(ctx wasmlib.ScFuncContext) *SetContractFeeCall {
+	f := &SetContractFeeCall{}
+	f.Func.Init(HScName, HFuncSetContractFee, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreRootFunc) RevokeDeployPermission(params MutableFuncRevokeDeployPermissionParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncRevokeDeployPermission, params.id, &transfer)
+type SetDefaultFeeCall struct {
+	Func wasmlib.ScFunc
+	Params MutableSetDefaultFeeParams
 }
 
-func (f *CoreRootFunc) SetContractFee(params MutableFuncSetContractFeeParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncSetContractFee, params.id, &transfer)
+func NewSetDefaultFeeCall(ctx wasmlib.ScFuncContext) *SetDefaultFeeCall {
+	f := &SetDefaultFeeCall{}
+	f.Func.Init(HScName, HFuncSetDefaultFee, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreRootFunc) SetDefaultFee(params MutableFuncSetDefaultFeeParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncSetDefaultFee, params.id, &transfer)
+type FindContractCall struct {
+	Func wasmlib.ScView
+	Params MutableFindContractParams
+	Results ImmutableFindContractResults
 }
 
-func (f *CoreRootFunc) FindContract(params MutableViewFindContractParams) ImmutableViewFindContractResults {
-	f.sc.Run(HViewFindContract, params.id, nil)
-	return ImmutableViewFindContractResults{id: f.sc.ResultMapId()}
+func NewFindContractCall(ctx wasmlib.ScFuncContext) *FindContractCall {
+	f := &FindContractCall{}
+	f.Func.Init(HScName, HViewFindContract, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *CoreRootFunc) GetChainInfo() ImmutableViewGetChainInfoResults {
-	f.sc.Run(HViewGetChainInfo, 0, nil)
-	return ImmutableViewGetChainInfoResults{id: f.sc.ResultMapId()}
+func NewFindContractCallFromView(ctx wasmlib.ScViewContext) *FindContractCall {
+	f := &FindContractCall{}
+	f.Func.Init(HScName, HViewFindContract, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *CoreRootFunc) GetFeeInfo(params MutableViewGetFeeInfoParams) ImmutableViewGetFeeInfoResults {
-	f.sc.Run(HViewGetFeeInfo, params.id, nil)
-	return ImmutableViewGetFeeInfoResults{id: f.sc.ResultMapId()}
+type GetChainInfoCall struct {
+	Func wasmlib.ScView
+	Results ImmutableGetChainInfoResults
 }
 
-type CoreRootView struct {
-	sc wasmlib.ScContractView
+func NewGetChainInfoCall(ctx wasmlib.ScFuncContext) *GetChainInfoCall {
+	f := &GetChainInfoCall{}
+	f.Func.Init(HScName, HViewGetChainInfo, nil, &f.Results.id)
+	return f
 }
 
-func NewCoreRootView(ctx wasmlib.ScViewContext) *CoreRootView {
-	return &CoreRootView{sc: wasmlib.NewScContractView(ctx, HScName)}
+func NewGetChainInfoCallFromView(ctx wasmlib.ScViewContext) *GetChainInfoCall {
+	f := &GetChainInfoCall{}
+	f.Func.Init(HScName, HViewGetChainInfo, nil, &f.Results.id)
+	return f
 }
 
-func (v *CoreRootView) OfContract(contract wasmlib.ScHname) *CoreRootView {
-	v.sc.OfContract(contract)
-	return v
+type GetFeeInfoCall struct {
+	Func wasmlib.ScView
+	Params MutableGetFeeInfoParams
+	Results ImmutableGetFeeInfoResults
 }
 
-func (v *CoreRootView) FindContract(params MutableViewFindContractParams) ImmutableViewFindContractResults {
-	v.sc.Run(HViewFindContract, params.id)
-	return ImmutableViewFindContractResults{id: v.sc.ResultMapId()}
+func NewGetFeeInfoCall(ctx wasmlib.ScFuncContext) *GetFeeInfoCall {
+	f := &GetFeeInfoCall{}
+	f.Func.Init(HScName, HViewGetFeeInfo, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (v *CoreRootView) GetChainInfo() ImmutableViewGetChainInfoResults {
-	v.sc.Run(HViewGetChainInfo, 0)
-	return ImmutableViewGetChainInfoResults{id: v.sc.ResultMapId()}
-}
-
-func (v *CoreRootView) GetFeeInfo(params MutableViewGetFeeInfoParams) ImmutableViewGetFeeInfoResults {
-	v.sc.Run(HViewGetFeeInfo, params.id)
-	return ImmutableViewGetFeeInfoResults{id: v.sc.ResultMapId()}
+func NewGetFeeInfoCallFromView(ctx wasmlib.ScViewContext) *GetFeeInfoCall {
+	f := &GetFeeInfoCall{}
+	f.Func.Init(HScName, HViewGetFeeInfo, &f.Params.id, &f.Results.id)
+	return f
 }

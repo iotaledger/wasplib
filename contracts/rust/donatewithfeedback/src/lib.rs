@@ -45,15 +45,15 @@ fn on_load() {
     }
 }
 
-pub struct FuncDonateContext {
-    params: ImmutableFuncDonateParams,
+pub struct DonateContext {
+    params: ImmutableDonateParams,
     state:  MutableDonateWithFeedbackState,
 }
 
 fn func_donate_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcDonate");
-    let f = FuncDonateContext {
-        params: ImmutableFuncDonateParams {
+    let f = DonateContext {
+        params: ImmutableDonateParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableDonateWithFeedbackState {
@@ -64,8 +64,8 @@ fn func_donate_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcDonate ok");
 }
 
-pub struct FuncWithdrawContext {
-    params: ImmutableFuncWithdrawParams,
+pub struct WithdrawContext {
+    params: ImmutableWithdrawParams,
     state:  MutableDonateWithFeedbackState,
 }
 
@@ -74,8 +74,8 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
     // only SC creator can withdraw donated funds
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncWithdrawContext {
-        params: ImmutableFuncWithdrawParams {
+    let f = WithdrawContext {
+        params: ImmutableWithdrawParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableDonateWithFeedbackState {
@@ -86,19 +86,19 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcWithdraw ok");
 }
 
-pub struct ViewDonationContext {
-    params:  ImmutableViewDonationParams,
-    results: MutableViewDonationResults,
+pub struct DonationContext {
+    params:  ImmutableDonationParams,
+    results: MutableDonationResults,
     state:   ImmutableDonateWithFeedbackState,
 }
 
 fn view_donation_thunk(ctx: &ScViewContext) {
     ctx.log("donatewithfeedback.viewDonation");
-    let f = ViewDonationContext {
-        params: ImmutableViewDonationParams {
+    let f = DonationContext {
+        params: ImmutableDonationParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewDonationResults {
+        results: MutableDonationResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableDonateWithFeedbackState {
@@ -110,15 +110,15 @@ fn view_donation_thunk(ctx: &ScViewContext) {
     ctx.log("donatewithfeedback.viewDonation ok");
 }
 
-pub struct ViewDonationInfoContext {
-    results: MutableViewDonationInfoResults,
+pub struct DonationInfoContext {
+    results: MutableDonationInfoResults,
     state:   ImmutableDonateWithFeedbackState,
 }
 
 fn view_donation_info_thunk(ctx: &ScViewContext) {
     ctx.log("donatewithfeedback.viewDonationInfo");
-    let f = ViewDonationInfoContext {
-        results: MutableViewDonationInfoResults {
+    let f = DonationInfoContext {
+        results: MutableDonationInfoResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableDonateWithFeedbackState {

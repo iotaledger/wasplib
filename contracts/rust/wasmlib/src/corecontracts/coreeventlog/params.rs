@@ -12,37 +12,33 @@ use crate::*;
 use crate::corecontracts::coreeventlog::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetNumRecordsParams {
+pub struct ImmutableGetNumRecordsParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetNumRecordsParams {
+impl ImmutableGetNumRecordsParams {
     pub fn contract_hname(&self) -> ScImmutableHname {
         ScImmutableHname::new(self.id, PARAM_CONTRACT_HNAME.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetNumRecordsParams {
+pub struct MutableGetNumRecordsParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetNumRecordsParams {
-    pub fn new() -> MutableViewGetNumRecordsParams {
-        MutableViewGetNumRecordsParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetNumRecordsParams {
     pub fn contract_hname(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, PARAM_CONTRACT_HNAME.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRecordsParams {
+pub struct ImmutableGetRecordsParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRecordsParams {
+impl ImmutableGetRecordsParams {
     pub fn contract_hname(&self) -> ScImmutableHname {
         ScImmutableHname::new(self.id, PARAM_CONTRACT_HNAME.get_key_id())
     }
@@ -61,15 +57,11 @@ impl ImmutableViewGetRecordsParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRecordsParams {
+pub struct MutableGetRecordsParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRecordsParams {
-    pub fn new() -> MutableViewGetRecordsParams {
-        MutableViewGetRecordsParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetRecordsParams {
     pub fn contract_hname(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, PARAM_CONTRACT_HNAME.get_key_id())
     }

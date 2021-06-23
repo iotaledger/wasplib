@@ -13,7 +13,9 @@ const (
 	ScName        = "testcore"
 	ScDescription = "Core test for ISCP wasmlib Rust/Wasm library"
 	HScName       = wasmlib.ScHname(0x370d33ad)
+)
 
+const (
 	ParamAddress         = wasmlib.Key("address")
 	ParamAgentId         = wasmlib.Key("agentID")
 	ParamCaller          = wasmlib.Key("caller")
@@ -32,19 +34,25 @@ const (
 	ParamName            = wasmlib.Key("intParamName")
 	ParamString          = wasmlib.Key("string")
 	ParamStringZero      = wasmlib.Key("string-0")
+)
 
+const (
 	ResultChainOwnerId = wasmlib.Key("chainOwnerID")
 	ResultCounter      = wasmlib.Key("counter")
 	ResultIntValue     = wasmlib.Key("intParamValue")
 	ResultMintedColor  = wasmlib.Key("mintedColor")
 	ResultMintedSupply = wasmlib.Key("mintedSupply")
 	ResultSandboxCall  = wasmlib.Key("sandboxCall")
+)
 
+const (
 	StateCounter      = wasmlib.Key("counter")
 	StateHnameEP      = wasmlib.Key("hnameEP")
 	StateMintedColor  = wasmlib.Key("mintedColor")
 	StateMintedSupply = wasmlib.Key("mintedSupply")
+)
 
+const (
 	FuncCallOnChain                 = "callOnChain"
 	FuncCheckContextFromFullEP      = "checkContextFromFullEP"
 	FuncDoNothing                   = "doNothing"
@@ -73,7 +81,9 @@ const (
 	ViewTestChainOwnerIDView        = "testChainOwnerIDView"
 	ViewTestPanicViewEP             = "testPanicViewEP"
 	ViewTestSandboxCall             = "testSandboxCall"
+)
 
+const (
 	HFuncCallOnChain                 = wasmlib.ScHname(0x95a3d123)
 	HFuncCheckContextFromFullEP      = wasmlib.ScHname(0xa56c24ba)
 	HFuncDoNothing                   = wasmlib.ScHname(0xdda4a6de)

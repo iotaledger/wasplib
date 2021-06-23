@@ -13,7 +13,9 @@ const (
 	ScName        = "testwasmlib"
 	ScDescription = "Exercise all aspects of WasmLib"
 	HScName       = coretypes.Hname(0x89703a45)
+)
 
+const (
 	ParamAddress     = "address"
 	ParamAgentId     = "agentId"
 	ParamBlockIndex  = "blockIndex"
@@ -28,14 +30,20 @@ const (
 	ParamRecordIndex = "recordIndex"
 	ParamRequestId   = "requestId"
 	ParamString      = "string"
+)
 
+const (
 	ResultCount  = "count"
 	ResultRecord = "record"
+)
 
+const (
 	FuncParamTypes   = "paramTypes"
 	ViewBlockRecord  = "blockRecord"
 	ViewBlockRecords = "blockRecords"
+)
 
+const (
 	HFuncParamTypes   = coretypes.Hname(0x6921c4cd)
 	HViewBlockRecord  = coretypes.Hname(0xad13b2f8)
 	HViewBlockRecords = coretypes.Hname(0x16e249ea)

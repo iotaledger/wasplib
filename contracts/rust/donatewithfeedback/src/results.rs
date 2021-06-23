@@ -15,31 +15,11 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncDonateResults {
+pub struct ImmutableDonationResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncDonateResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncWithdrawResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncWithdrawResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewDonationResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewDonationResults {
+impl ImmutableDonationResults {
     pub fn amount(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_AMOUNT))
     }
@@ -62,11 +42,11 @@ impl ImmutableViewDonationResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewDonationResults {
+pub struct MutableDonationResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewDonationResults {
+impl MutableDonationResults {
     pub fn amount(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_AMOUNT))
     }
@@ -89,11 +69,11 @@ impl MutableViewDonationResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewDonationInfoResults {
+pub struct ImmutableDonationInfoResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewDonationInfoResults {
+impl ImmutableDonationInfoResults {
     pub fn count(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_COUNT))
     }
@@ -108,11 +88,11 @@ impl ImmutableViewDonationInfoResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewDonationInfoResults {
+pub struct MutableDonationInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewDonationInfoResults {
+impl MutableDonationInfoResults {
     pub fn count(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_COUNT))
     }

@@ -22,8 +22,8 @@ func OnLoad() {
 	}
 }
 
-type FuncFinalizeAuctionContext struct {
-	Params ImmutableFuncFinalizeAuctionParams
+type FinalizeAuctionContext struct {
+	Params ImmutableFinalizeAuctionParams
 	State  MutableFairAuctionState
 }
 
@@ -32,8 +32,8 @@ func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
 	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
-	f := &FuncFinalizeAuctionContext{
-		Params: ImmutableFuncFinalizeAuctionParams{
+	f := &FinalizeAuctionContext{
+		Params: ImmutableFinalizeAuctionParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairAuctionState{
@@ -45,15 +45,15 @@ func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcFinalizeAuction ok")
 }
 
-type FuncPlaceBidContext struct {
-	Params ImmutableFuncPlaceBidParams
+type PlaceBidContext struct {
+	Params ImmutablePlaceBidParams
 	State  MutableFairAuctionState
 }
 
 func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcPlaceBid")
-	f := &FuncPlaceBidContext{
-		Params: ImmutableFuncPlaceBidParams{
+	f := &PlaceBidContext{
+		Params: ImmutablePlaceBidParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairAuctionState{
@@ -65,8 +65,8 @@ func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcPlaceBid ok")
 }
 
-type FuncSetOwnerMarginContext struct {
-	Params ImmutableFuncSetOwnerMarginParams
+type SetOwnerMarginContext struct {
+	Params ImmutableSetOwnerMarginParams
 	State  MutableFairAuctionState
 }
 
@@ -75,8 +75,8 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can set owner margin
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncSetOwnerMarginContext{
-		Params: ImmutableFuncSetOwnerMarginParams{
+	f := &SetOwnerMarginContext{
+		Params: ImmutableSetOwnerMarginParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairAuctionState{
@@ -88,15 +88,15 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcSetOwnerMargin ok")
 }
 
-type FuncStartAuctionContext struct {
-	Params ImmutableFuncStartAuctionParams
+type StartAuctionContext struct {
+	Params ImmutableStartAuctionParams
 	State  MutableFairAuctionState
 }
 
 func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcStartAuction")
-	f := &FuncStartAuctionContext{
-		Params: ImmutableFuncStartAuctionParams{
+	f := &StartAuctionContext{
+		Params: ImmutableStartAuctionParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairAuctionState{
@@ -109,19 +109,19 @@ func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcStartAuction ok")
 }
 
-type ViewGetInfoContext struct {
-	Params  ImmutableViewGetInfoParams
-	Results MutableViewGetInfoResults
+type GetInfoContext struct {
+	Params  ImmutableGetInfoParams
+	Results MutableGetInfoResults
 	State   ImmutableFairAuctionState
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("fairauction.viewGetInfo")
-	f := &ViewGetInfoContext{
-		Params: ImmutableViewGetInfoParams{
+	f := &GetInfoContext{
+		Params: ImmutableGetInfoParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewGetInfoResults{
+		Results: MutableGetInfoResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableFairAuctionState{

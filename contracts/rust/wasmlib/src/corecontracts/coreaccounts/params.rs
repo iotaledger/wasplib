@@ -12,101 +12,45 @@ use crate::*;
 use crate::corecontracts::coreaccounts::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncDepositParams {
+pub struct ImmutableDepositParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncDepositParams {
+impl ImmutableDepositParams {
     pub fn agent_id(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, PARAM_AGENT_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncDepositParams {
+pub struct MutableDepositParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncDepositParams {
-    pub fn new() -> MutableFuncDepositParams {
-        MutableFuncDepositParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableDepositParams {
     pub fn agent_id(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, PARAM_AGENT_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncWithdrawParams {
+pub struct ImmutableBalanceParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncWithdrawParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncWithdrawParams {
-    pub fn new() -> MutableFuncWithdrawParams {
-        MutableFuncWithdrawParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewAccountsParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewAccountsParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewAccountsParams {
-    pub fn new() -> MutableViewAccountsParams {
-        MutableViewAccountsParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewBalanceParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewBalanceParams {
+impl ImmutableBalanceParams {
     pub fn agent_id(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, PARAM_AGENT_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewBalanceParams {
+pub struct MutableBalanceParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewBalanceParams {
-    pub fn new() -> MutableViewBalanceParams {
-        MutableViewBalanceParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableBalanceParams {
     pub fn agent_id(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, PARAM_AGENT_ID.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewTotalAssetsParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewTotalAssetsParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewTotalAssetsParams {
-    pub fn new() -> MutableViewTotalAssetsParams {
-        MutableViewTotalAssetsParams { id: ScMutableMap::new().map_id() }
     }
 }

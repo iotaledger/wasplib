@@ -9,62 +9,50 @@ package coregovernance
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncAddAllowedStateControllerAddressParams struct {
+type ImmutableAddAllowedStateControllerAddressParams struct {
 	id int32
 }
 
-func (s ImmutableFuncAddAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScImmutableAddress {
+func (s ImmutableAddAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }
 
-type MutableFuncAddAllowedStateControllerAddressParams struct {
+type MutableAddAllowedStateControllerAddressParams struct {
 	id int32
 }
 
-func NewMutableFuncAddAllowedStateControllerAddressParams() MutableFuncAddAllowedStateControllerAddressParams {
-	return MutableFuncAddAllowedStateControllerAddressParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncAddAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScMutableAddress {
+func (s MutableAddAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }
 
-type ImmutableFuncRemoveAllowedStateControllerAddressParams struct {
+type ImmutableRemoveAllowedStateControllerAddressParams struct {
 	id int32
 }
 
-func (s ImmutableFuncRemoveAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScImmutableAddress {
+func (s ImmutableRemoveAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }
 
-type MutableFuncRemoveAllowedStateControllerAddressParams struct {
+type MutableRemoveAllowedStateControllerAddressParams struct {
 	id int32
 }
 
-func NewMutableFuncRemoveAllowedStateControllerAddressParams() MutableFuncRemoveAllowedStateControllerAddressParams {
-	return MutableFuncRemoveAllowedStateControllerAddressParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncRemoveAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScMutableAddress {
+func (s MutableRemoveAllowedStateControllerAddressParams) StateControllerAddress() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }
 
-type ImmutableFuncRotateStateControllerParams struct {
+type ImmutableRotateStateControllerParams struct {
 	id int32
 }
 
-func (s ImmutableFuncRotateStateControllerParams) StateControllerAddress() wasmlib.ScImmutableAddress {
+func (s ImmutableRotateStateControllerParams) StateControllerAddress() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }
 
-type MutableFuncRotateStateControllerParams struct {
+type MutableRotateStateControllerParams struct {
 	id int32
 }
 
-func NewMutableFuncRotateStateControllerParams() MutableFuncRotateStateControllerParams {
-	return MutableFuncRotateStateControllerParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncRotateStateControllerParams) StateControllerAddress() wasmlib.ScMutableAddress {
+func (s MutableRotateStateControllerParams) StateControllerAddress() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, ParamStateControllerAddress.KeyId())
 }

@@ -7,10 +7,10 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcHelloWorld(ctx wasmlib.ScFuncContext, f *FuncHelloWorldContext) {
+func funcHelloWorld(ctx wasmlib.ScFuncContext, f*HelloWorldContext) {
 	ctx.Log("Hello, world!")
 }
 
-func viewGetHelloWorld(ctx wasmlib.ScViewContext, f *ViewGetHelloWorldContext) {
+func viewGetHelloWorld(ctx wasmlib.ScViewContext, f*GetHelloWorldContext) {
 	f.Results.HelloWorld().SetValue("Hello, world!")
 }

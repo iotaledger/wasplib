@@ -13,11 +13,11 @@ use crate::corecontracts::coreblocklog::*;
 use crate::host::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewControlAddressesResults {
+pub struct ImmutableControlAddressesResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewControlAddressesResults {
+impl ImmutableControlAddressesResults {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
@@ -32,11 +32,11 @@ impl ImmutableViewControlAddressesResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewControlAddressesResults {
+pub struct MutableControlAddressesResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewControlAddressesResults {
+impl MutableControlAddressesResults {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
@@ -51,44 +51,44 @@ impl MutableViewControlAddressesResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlockInfoResults {
+pub struct ImmutableGetBlockInfoResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetBlockInfoResults {
+impl ImmutableGetBlockInfoResults {
     pub fn block_info(&self) -> ScImmutableBytes {
         ScImmutableBytes::new(self.id, RESULT_BLOCK_INFO.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetBlockInfoResults {
+pub struct MutableGetBlockInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetBlockInfoResults {
+impl MutableGetBlockInfoResults {
     pub fn block_info(&self) -> ScMutableBytes {
         ScMutableBytes::new(self.id, RESULT_BLOCK_INFO.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetLatestBlockInfoResults {
+pub struct ImmutableGetLatestBlockInfoResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetLatestBlockInfoResults {
+impl ImmutableGetLatestBlockInfoResults {
     pub fn block_info(&self) -> ScImmutableBytes {
         ScImmutableBytes::new(self.id, RESULT_BLOCK_INFO.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetLatestBlockInfoResults {
+pub struct MutableGetLatestBlockInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetLatestBlockInfoResults {
+impl MutableGetLatestBlockInfoResults {
     pub fn block_info(&self) -> ScMutableBytes {
         ScMutableBytes::new(self.id, RESULT_BLOCK_INFO.get_key_id())
     }
@@ -109,11 +109,11 @@ impl ArrayOfImmutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestIDsForBlockResults {
+pub struct ImmutableGetRequestIDsForBlockResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRequestIDsForBlockResults {
+impl ImmutableGetRequestIDsForBlockResults {
     pub fn request_id(&self) -> ArrayOfImmutableBytes {
         let arr_id = get_object_id(self.id, RESULT_REQUEST_ID.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableBytes { obj_id: arr_id }
@@ -139,11 +139,11 @@ impl ArrayOfMutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestIDsForBlockResults {
+pub struct MutableGetRequestIDsForBlockResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestIDsForBlockResults {
+impl MutableGetRequestIDsForBlockResults {
     pub fn request_id(&self) -> ArrayOfMutableBytes {
         let arr_id = get_object_id(self.id, RESULT_REQUEST_ID.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableBytes { obj_id: arr_id }
@@ -151,11 +151,11 @@ impl MutableViewGetRequestIDsForBlockResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestLogRecordResults {
+pub struct ImmutableGetRequestLogRecordResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRequestLogRecordResults {
+impl ImmutableGetRequestLogRecordResults {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
@@ -170,11 +170,11 @@ impl ImmutableViewGetRequestLogRecordResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestLogRecordResults {
+pub struct MutableGetRequestLogRecordResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestLogRecordResults {
+impl MutableGetRequestLogRecordResults {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, RESULT_BLOCK_INDEX.get_key_id())
     }
@@ -189,11 +189,11 @@ impl MutableViewGetRequestLogRecordResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestLogRecordsForBlockResults {
+pub struct ImmutableGetRequestLogRecordsForBlockResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRequestLogRecordsForBlockResults {
+impl ImmutableGetRequestLogRecordsForBlockResults {
     pub fn request_record(&self) -> ArrayOfImmutableBytes {
         let arr_id = get_object_id(self.id, RESULT_REQUEST_RECORD.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableBytes { obj_id: arr_id }
@@ -201,11 +201,11 @@ impl ImmutableViewGetRequestLogRecordsForBlockResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestLogRecordsForBlockResults {
+pub struct MutableGetRequestLogRecordsForBlockResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestLogRecordsForBlockResults {
+impl MutableGetRequestLogRecordsForBlockResults {
     pub fn request_record(&self) -> ArrayOfMutableBytes {
         let arr_id = get_object_id(self.id, RESULT_REQUEST_RECORD.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableBytes { obj_id: arr_id }
@@ -213,22 +213,22 @@ impl MutableViewGetRequestLogRecordsForBlockResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewIsRequestProcessedResults {
+pub struct ImmutableIsRequestProcessedResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewIsRequestProcessedResults {
+impl ImmutableIsRequestProcessedResults {
     pub fn request_processed(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, RESULT_REQUEST_PROCESSED.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewIsRequestProcessedResults {
+pub struct MutableIsRequestProcessedResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewIsRequestProcessedResults {
+impl MutableIsRequestProcessedResults {
     pub fn request_processed(&self) -> ScMutableString {
         ScMutableString::new(self.id, RESULT_REQUEST_PROCESSED.get_key_id())
     }

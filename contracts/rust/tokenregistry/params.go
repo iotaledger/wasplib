@@ -9,90 +9,74 @@ package tokenregistry
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncMintSupplyParams struct {
+type ImmutableMintSupplyParams struct {
 	id int32
 }
 
-func (s ImmutableFuncMintSupplyParams) Description() wasmlib.ScImmutableString {
+func (s ImmutableMintSupplyParams) Description() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s ImmutableFuncMintSupplyParams) UserDefined() wasmlib.ScImmutableString {
+func (s ImmutableMintSupplyParams) UserDefined() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamUserDefined])
 }
 
-type MutableFuncMintSupplyParams struct {
+type MutableMintSupplyParams struct {
 	id int32
 }
 
-func NewMutableFuncMintSupplyParams() MutableFuncMintSupplyParams {
-	return MutableFuncMintSupplyParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncMintSupplyParams) Description() wasmlib.ScMutableString {
+func (s MutableMintSupplyParams) Description() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s MutableFuncMintSupplyParams) UserDefined() wasmlib.ScMutableString {
+func (s MutableMintSupplyParams) UserDefined() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamUserDefined])
 }
 
-type ImmutableFuncTransferOwnershipParams struct {
+type ImmutableTransferOwnershipParams struct {
 	id int32
 }
 
-func (s ImmutableFuncTransferOwnershipParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableTransferOwnershipParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableFuncTransferOwnershipParams struct {
+type MutableTransferOwnershipParams struct {
 	id int32
 }
 
-func NewMutableFuncTransferOwnershipParams() MutableFuncTransferOwnershipParams {
-	return MutableFuncTransferOwnershipParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncTransferOwnershipParams) Color() wasmlib.ScMutableColor {
+func (s MutableTransferOwnershipParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type ImmutableFuncUpdateMetadataParams struct {
+type ImmutableUpdateMetadataParams struct {
 	id int32
 }
 
-func (s ImmutableFuncUpdateMetadataParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableUpdateMetadataParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableFuncUpdateMetadataParams struct {
+type MutableUpdateMetadataParams struct {
 	id int32
 }
 
-func NewMutableFuncUpdateMetadataParams() MutableFuncUpdateMetadataParams {
-	return MutableFuncUpdateMetadataParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncUpdateMetadataParams) Color() wasmlib.ScMutableColor {
+func (s MutableUpdateMetadataParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type ImmutableViewGetInfoParams struct {
+type ImmutableGetInfoParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetInfoParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableGetInfoParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableViewGetInfoParams struct {
+type MutableGetInfoParams struct {
 	id int32
 }
 
-func NewMutableViewGetInfoParams() MutableViewGetInfoParams {
-	return MutableViewGetInfoParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetInfoParams) Color() wasmlib.ScMutableColor {
+func (s MutableGetInfoParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }

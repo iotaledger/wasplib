@@ -12,7 +12,7 @@ use crate::*;
 // inputs:
 //  - PARAM_DELEGATION: agentID
 //  - PARAM_AMOUNT: i64
-pub fn func_approve(ctx: &ScFuncContext, f: &FuncApproveContext) {
+pub fn func_approve(ctx: &ScFuncContext, f: &ApproveContext) {
     let delegation = f.params.delegation().value();
     let amount = f.params.amount().value();
     ctx.require(amount > 0, "erc20.approve.fail: wrong 'amount' parameter");
@@ -27,7 +27,7 @@ pub fn func_approve(ctx: &ScFuncContext, f: &FuncApproveContext) {
 // - input:
 //   -- PARAM_SUPPLY must be nonzero positive integer. Mandatory
 //   -- PARAM_CREATOR is the AgentID where initial supply is placed. Mandatory
-pub fn func_init(ctx: &ScFuncContext, f: &FuncInitContext) {
+pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
     let supply = f.params.supply().value();
     ctx.require(supply > 0, "erc20.on_init.fail: wrong 'supply' parameter");
     f.state.supply().set_value(supply);
@@ -47,7 +47,7 @@ pub fn func_init(ctx: &ScFuncContext, f: &FuncInitContext) {
 // Input:
 // - PARAM_ACCOUNT: agentID
 // - PARAM_AMOUNT: i64
-pub fn func_transfer(ctx: &ScFuncContext, f: &FuncTransferContext) {
+pub fn func_transfer(ctx: &ScFuncContext, f: &TransferContext) {
     let amount = f.params.amount().value();
     ctx.require(amount > 0, "erc20.transfer.fail: wrong 'amount' parameter");
 
@@ -70,7 +70,7 @@ pub fn func_transfer(ctx: &ScFuncContext, f: &FuncTransferContext) {
 // - PARAM_ACCOUNT: agentID   the spender
 // - PARAM_RECIPIENT: agentID   the target
 // - PARAM_AMOUNT: i64
-pub fn func_transfer_from(ctx: &ScFuncContext, f: &FuncTransferFromContext) {
+pub fn func_transfer_from(ctx: &ScFuncContext, f: &TransferFromContext) {
     // validate parameters
     let account = f.params.account().value();
     let recipient = f.params.recipient().value();
@@ -102,7 +102,7 @@ pub fn func_transfer_from(ctx: &ScFuncContext, f: &FuncTransferFromContext) {
 // - PARAM_DELEGATION: agentID
 // Output:
 // - PARAM_AMOUNT: i64
-pub fn view_allowance(_ctx: &ScViewContext, f: &ViewAllowanceContext) {
+pub fn view_allowance(_ctx: &ScViewContext, f: &AllowanceContext) {
     // all allowances of the address 'owner' are stored in the map of the same name
     let allowances = f.state.all_allowances().get_allowances_for_agent(&f.params.account().value());
     let allow = allowances.get_int64(&f.params.delegation().value()).value();
@@ -112,7 +112,7 @@ pub fn view_allowance(_ctx: &ScViewContext, f: &ViewAllowanceContext) {
 // the view returns balance of the token held in the account
 // Input:
 // - PARAM_ACCOUNT: agentID
-pub fn view_balance_of(_ctx: &ScViewContext, f: &ViewBalanceOfContext) {
+pub fn view_balance_of(_ctx: &ScViewContext, f: &BalanceOfContext) {
     let balances = f.state.balances();
     let balance = balances.get_int64(&f.params.account().value());
     f.results.amount().set_value(balance.value());
@@ -121,6 +121,6 @@ pub fn view_balance_of(_ctx: &ScViewContext, f: &ViewBalanceOfContext) {
 // the view returns total supply set when creating the contract (a constant).
 // Output:
 // - PARAM_SUPPLY: i64
-pub fn view_total_supply(_ctx: &ScViewContext, f: &ViewTotalSupplyContext) {
+pub fn view_total_supply(_ctx: &ScViewContext, f: &TotalSupplyContext) {
     f.results.supply().set_value(f.state.supply().value());
 }

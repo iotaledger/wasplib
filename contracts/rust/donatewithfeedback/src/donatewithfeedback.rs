@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_donate(ctx: &ScFuncContext, f: &FuncDonateContext) {
+pub fn func_donate(ctx: &ScFuncContext, f: &DonateContext) {
     let mut donation = Donation {
         amount: ctx.incoming().balance(&ScColor::IOTA),
         donator: ctx.caller(),
@@ -32,7 +32,7 @@ pub fn func_donate(ctx: &ScFuncContext, f: &FuncDonateContext) {
     total_donated.set_value(total_donated.value() + donation.amount);
 }
 
-pub fn func_withdraw(ctx: &ScFuncContext, f: &FuncWithdrawContext) {
+pub fn func_withdraw(ctx: &ScFuncContext, f: &WithdrawContext) {
     let balance = ctx.balances().balance(&ScColor::IOTA);
     let mut amount = f.params.amount().value();
     if amount == 0 || amount > balance {
@@ -47,7 +47,7 @@ pub fn func_withdraw(ctx: &ScFuncContext, f: &FuncWithdrawContext) {
     ctx.transfer_to_address(&sc_creator, ScTransfers::iotas(amount));
 }
 
-pub fn view_donation(_ctx: &ScViewContext, f: &ViewDonationContext) {
+pub fn view_donation(_ctx: &ScViewContext, f: &DonationContext) {
     let nr = (f.params.nr().value()) as i32;
     let donation = f.state.log().get_donation(nr).value();
     f.results.amount().set_value(donation.amount);
@@ -57,7 +57,7 @@ pub fn view_donation(_ctx: &ScViewContext, f: &ViewDonationContext) {
     f.results.timestamp().set_value(donation.timestamp);
 }
 
-pub fn view_donation_info(_ctx: &ScViewContext, f: &ViewDonationInfoContext) {
+pub fn view_donation_info(_ctx: &ScViewContext, f: &DonationInfoContext) {
     f.results.max_donation().set_value(f.state.max_donation().value());
     f.results.total_donation().set_value(f.state.total_donation().value());
     f.results.count().set_value(f.state.log().length() as i64);

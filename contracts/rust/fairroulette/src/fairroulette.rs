@@ -10,7 +10,7 @@
 use wasmlib::*;
 
 use crate::*;
-use crate::contract::FairRouletteFunc;
+use crate::contract::*;
 use crate::types::*;
 
 // define some default configuration parameters
@@ -28,7 +28,7 @@ const DEFAULT_PLAY_PERIOD: i32 = 120;
 // - 'number', which must be s an Int64 number from 1 to MAX_NUMBER
 // The 'member' function will save the number together with the address of the better and
 // the amount of incoming iotas as the bet amount in its state.
-pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
+pub fn func_place_bet(ctx: &ScFuncContext, f: &PlaceBetContext) {
 
     // Since we are sure that the 'number' parameter actually exists we can
     // retrieve its actual value into an i64.
@@ -87,8 +87,7 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
         // amount of seconds. This will lock in the playing period, during which more bets can
         // be placed. Once the 'lockBets' function gets triggered by the ISCP it will gather all
         // bets up to that moment as the ones to consider for determining the winner.
-        let mut sc = FairRouletteFunc::new(ctx);
-        sc.post().delay(play_period).lock_bets(ScTransfers::iotas(1));
+        LockBetsCall::new(ctx).func.delay(play_period).transfer_iotas(1).post();
     }
 }
 
@@ -100,7 +99,7 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &FuncPlaceBetContext) {
 // second state storage array called "lockedBets", after which it will request the 'payWinners'
 // function to be run. Note that any bets coming in after that moment will start the cycle from
 // scratch, with the first incoming bet triggering a new delayed execution of 'lockBets'.
-pub fn func_lock_bets(ctx: &ScFuncContext, f: &FuncLockBetsContext) {
+pub fn func_lock_bets(ctx: &ScFuncContext, f: &LockBetsContext) {
 
     // Create an ScMutableMap proxy to the state storage map on the host.
 
@@ -129,8 +128,7 @@ pub fn func_lock_bets(ctx: &ScFuncContext, f: &FuncLockBetsContext) {
 
     // Next we trigger an immediate request to the 'payWinners' function
     // See more explanation of the why below.
-    let mut sc = FairRouletteFunc::new(ctx);
-    sc.post().pay_winners(ScTransfers::iotas(1));
+    PayWinnersCall::new(ctx).func.transfer_iotas(1).post();
 }
 
 // 'payWinners' is a function whose execution gets initiated by the 'lockBets' function.
@@ -143,7 +141,7 @@ pub fn func_lock_bets(ctx: &ScFuncContext, f: &FuncLockBetsContext) {
 // a deterministic source of entropy for the random number generator. In this way every node in
 // the committee will be using the same pseudo-random value sequence, which in turn makes sure
 // that all nodes can agree on the outcome.
-pub fn func_pay_winners(ctx: &ScFuncContext, f: &FuncPayWinnersContext) {
+pub fn func_pay_winners(ctx: &ScFuncContext, f: &PayWinnersContext) {
 
     // Use the built-in random number generator which has been automatically initialized by
     // using the transaction hash as initial entropy data. Note that the pseudo-random number
@@ -256,7 +254,7 @@ pub fn func_pay_winners(ctx: &ScFuncContext, f: &FuncPayWinnersContext) {
 
 // 'playPeriod' can be used by the contract creator to set the length of a betting round
 // to a different value than the default value, which is 120 seconds..
-pub fn func_play_period(ctx: &ScFuncContext, f: &FuncPlayPeriodContext) {
+pub fn func_play_period(ctx: &ScFuncContext, f: &PlayPeriodContext) {
 
     // Since we are sure that the 'playPeriod' parameter actually exists we can
     // retrieve its actual value into an i64 value.
@@ -271,7 +269,7 @@ pub fn func_play_period(ctx: &ScFuncContext, f: &FuncPlayPeriodContext) {
     f.state.play_period().set_value(play_period);
 }
 
-pub fn view_last_winning_number(_ctx: &ScViewContext, f: &ViewLastWinningNumberContext) {
+pub fn view_last_winning_number(_ctx: &ScViewContext, f: &LastWinningNumberContext) {
 
     // Create an ScImmutableMap proxy to the state storage map on the host.
 

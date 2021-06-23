@@ -45,19 +45,19 @@ func OnLoad() {
 	}
 }
 
-type FuncCallOnChainContext struct {
-	Params  ImmutableFuncCallOnChainParams
-	Results MutableFuncCallOnChainResults
+type CallOnChainContext struct {
+	Params  ImmutableCallOnChainParams
+	Results MutableCallOnChainResults
 	State   MutableTestCoreState
 }
 
 func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCallOnChain")
-	f := &FuncCallOnChainContext{
-		Params: ImmutableFuncCallOnChainParams{
+	f := &CallOnChainContext{
+		Params: ImmutableCallOnChainParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableFuncCallOnChainResults{
+		Results: MutableCallOnChainResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -69,15 +69,15 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCallOnChain ok")
 }
 
-type FuncCheckContextFromFullEPContext struct {
-	Params ImmutableFuncCheckContextFromFullEPParams
+type CheckContextFromFullEPContext struct {
+	Params ImmutableCheckContextFromFullEPParams
 	State  MutableTestCoreState
 }
 
 func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCheckContextFromFullEP")
-	f := &FuncCheckContextFromFullEPContext{
-		Params: ImmutableFuncCheckContextFromFullEPParams{
+	f := &CheckContextFromFullEPContext{
+		Params: ImmutableCheckContextFromFullEPParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -93,13 +93,13 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCheckContextFromFullEP ok")
 }
 
-type FuncDoNothingContext struct {
+type DoNothingContext struct {
 	State MutableTestCoreState
 }
 
 func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcDoNothing")
-	f := &FuncDoNothingContext{
+	f := &DoNothingContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -108,15 +108,15 @@ func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcDoNothing ok")
 }
 
-type FuncGetMintedSupplyContext struct {
-	Results MutableFuncGetMintedSupplyResults
+type GetMintedSupplyContext struct {
+	Results MutableGetMintedSupplyResults
 	State   MutableTestCoreState
 }
 
 func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcGetMintedSupply")
-	f := &FuncGetMintedSupplyContext{
-		Results: MutableFuncGetMintedSupplyResults{
+	f := &GetMintedSupplyContext{
+		Results: MutableGetMintedSupplyResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -127,13 +127,13 @@ func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcGetMintedSupply ok")
 }
 
-type FuncIncCounterContext struct {
+type IncCounterContext struct {
 	State MutableTestCoreState
 }
 
 func funcIncCounterThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcIncCounter")
-	f := &FuncIncCounterContext{
+	f := &IncCounterContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -142,13 +142,13 @@ func funcIncCounterThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcIncCounter ok")
 }
 
-type FuncInitContext struct {
+type InitContext struct {
 	State MutableTestCoreState
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcInit")
-	f := &FuncInitContext{
+	f := &InitContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -157,15 +157,15 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcInit ok")
 }
 
-type FuncPassTypesFullContext struct {
-	Params ImmutableFuncPassTypesFullParams
+type PassTypesFullContext struct {
+	Params ImmutablePassTypesFullParams
 	State  MutableTestCoreState
 }
 
 func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcPassTypesFull")
-	f := &FuncPassTypesFullContext{
-		Params: ImmutableFuncPassTypesFullParams{
+	f := &PassTypesFullContext{
+		Params: ImmutablePassTypesFullParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -183,19 +183,19 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcPassTypesFull ok")
 }
 
-type FuncRunRecursionContext struct {
-	Params  ImmutableFuncRunRecursionParams
-	Results MutableFuncRunRecursionResults
+type RunRecursionContext struct {
+	Params  ImmutableRunRecursionParams
+	Results MutableRunRecursionResults
 	State   MutableTestCoreState
 }
 
 func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcRunRecursion")
-	f := &FuncRunRecursionContext{
-		Params: ImmutableFuncRunRecursionParams{
+	f := &RunRecursionContext{
+		Params: ImmutableRunRecursionParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableFuncRunRecursionResults{
+		Results: MutableRunRecursionResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -207,8 +207,8 @@ func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcRunRecursion ok")
 }
 
-type FuncSendToAddressContext struct {
-	Params ImmutableFuncSendToAddressParams
+type SendToAddressContext struct {
+	Params ImmutableSendToAddressParams
 	State  MutableTestCoreState
 }
 
@@ -216,8 +216,8 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcSendToAddress")
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncSendToAddressContext{
-		Params: ImmutableFuncSendToAddressParams{
+	f := &SendToAddressContext{
+		Params: ImmutableSendToAddressParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -229,15 +229,15 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcSendToAddress ok")
 }
 
-type FuncSetIntContext struct {
-	Params ImmutableFuncSetIntParams
+type SetIntContext struct {
+	Params ImmutableSetIntParams
 	State  MutableTestCoreState
 }
 
 func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcSetInt")
-	f := &FuncSetIntContext{
-		Params: ImmutableFuncSetIntParams{
+	f := &SetIntContext{
+		Params: ImmutableSetIntParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -250,13 +250,13 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcSetInt ok")
 }
 
-type FuncTestCallPanicFullEPContext struct {
+type TestCallPanicFullEPContext struct {
 	State MutableTestCoreState
 }
 
 func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicFullEP")
-	f := &FuncTestCallPanicFullEPContext{
+	f := &TestCallPanicFullEPContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -265,13 +265,13 @@ func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicFullEP ok")
 }
 
-type FuncTestCallPanicViewEPFromFullContext struct {
+type TestCallPanicViewEPFromFullContext struct {
 	State MutableTestCoreState
 }
 
 func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicViewEPFromFull")
-	f := &FuncTestCallPanicViewEPFromFullContext{
+	f := &TestCallPanicViewEPFromFullContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -280,15 +280,15 @@ func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicViewEPFromFull ok")
 }
 
-type FuncTestChainOwnerIDFullContext struct {
-	Results MutableFuncTestChainOwnerIDFullResults
+type TestChainOwnerIDFullContext struct {
+	Results MutableTestChainOwnerIDFullResults
 	State   MutableTestCoreState
 }
 
 func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestChainOwnerIDFull")
-	f := &FuncTestChainOwnerIDFullContext{
-		Results: MutableFuncTestChainOwnerIDFullResults{
+	f := &TestChainOwnerIDFullContext{
+		Results: MutableTestChainOwnerIDFullResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -299,13 +299,13 @@ func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestChainOwnerIDFull ok")
 }
 
-type FuncTestEventLogDeployContext struct {
+type TestEventLogDeployContext struct {
 	State MutableTestCoreState
 }
 
 func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogDeploy")
-	f := &FuncTestEventLogDeployContext{
+	f := &TestEventLogDeployContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -314,13 +314,13 @@ func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogDeploy ok")
 }
 
-type FuncTestEventLogEventDataContext struct {
+type TestEventLogEventDataContext struct {
 	State MutableTestCoreState
 }
 
 func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogEventData")
-	f := &FuncTestEventLogEventDataContext{
+	f := &TestEventLogEventDataContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -329,15 +329,15 @@ func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogEventData ok")
 }
 
-type FuncTestEventLogGenericDataContext struct {
-	Params ImmutableFuncTestEventLogGenericDataParams
+type TestEventLogGenericDataContext struct {
+	Params ImmutableTestEventLogGenericDataParams
 	State  MutableTestCoreState
 }
 
 func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogGenericData")
-	f := &FuncTestEventLogGenericDataContext{
-		Params: ImmutableFuncTestEventLogGenericDataParams{
+	f := &TestEventLogGenericDataContext{
+		Params: ImmutableTestEventLogGenericDataParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -349,13 +349,13 @@ func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogGenericData ok")
 }
 
-type FuncTestPanicFullEPContext struct {
+type TestPanicFullEPContext struct {
 	State MutableTestCoreState
 }
 
 func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestPanicFullEP")
-	f := &FuncTestPanicFullEPContext{
+	f := &TestPanicFullEPContext{
 		State: MutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -364,15 +364,15 @@ func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestPanicFullEP ok")
 }
 
-type FuncWithdrawToChainContext struct {
-	Params ImmutableFuncWithdrawToChainParams
+type WithdrawToChainContext struct {
+	Params ImmutableWithdrawToChainParams
 	State  MutableTestCoreState
 }
 
 func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcWithdrawToChain")
-	f := &FuncWithdrawToChainContext{
-		Params: ImmutableFuncWithdrawToChainParams{
+	f := &WithdrawToChainContext{
+		Params: ImmutableWithdrawToChainParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTestCoreState{
@@ -384,15 +384,15 @@ func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcWithdrawToChain ok")
 }
 
-type ViewCheckContextFromViewEPContext struct {
-	Params ImmutableViewCheckContextFromViewEPParams
+type CheckContextFromViewEPContext struct {
+	Params ImmutableCheckContextFromViewEPParams
 	State  ImmutableTestCoreState
 }
 
 func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewCheckContextFromViewEP")
-	f := &ViewCheckContextFromViewEPContext{
-		Params: ImmutableViewCheckContextFromViewEPParams{
+	f := &CheckContextFromViewEPContext{
+		Params: ImmutableCheckContextFromViewEPParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -407,19 +407,19 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewCheckContextFromViewEP ok")
 }
 
-type ViewFibonacciContext struct {
-	Params  ImmutableViewFibonacciParams
-	Results MutableViewFibonacciResults
+type FibonacciContext struct {
+	Params  ImmutableFibonacciParams
+	Results MutableFibonacciResults
 	State   ImmutableTestCoreState
 }
 
 func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewFibonacci")
-	f := &ViewFibonacciContext{
-		Params: ImmutableViewFibonacciParams{
+	f := &FibonacciContext{
+		Params: ImmutableFibonacciParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewFibonacciResults{
+		Results: MutableFibonacciResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -431,15 +431,15 @@ func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewFibonacci ok")
 }
 
-type ViewGetCounterContext struct {
-	Results MutableViewGetCounterResults
+type GetCounterContext struct {
+	Results MutableGetCounterResults
 	State   ImmutableTestCoreState
 }
 
 func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetCounter")
-	f := &ViewGetCounterContext{
-		Results: MutableViewGetCounterResults{
+	f := &GetCounterContext{
+		Results: MutableGetCounterResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -450,15 +450,15 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetCounter ok")
 }
 
-type ViewGetIntContext struct {
-	Params ImmutableViewGetIntParams
+type GetIntContext struct {
+	Params ImmutableGetIntParams
 	State  ImmutableTestCoreState
 }
 
 func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetInt")
-	f := &ViewGetIntContext{
-		Params: ImmutableViewGetIntParams{
+	f := &GetIntContext{
+		Params: ImmutableGetIntParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -470,13 +470,13 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetInt ok")
 }
 
-type ViewJustViewContext struct {
+type JustViewContext struct {
 	State ImmutableTestCoreState
 }
 
 func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewJustView")
-	f := &ViewJustViewContext{
+	f := &JustViewContext{
 		State: ImmutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -485,15 +485,15 @@ func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewJustView ok")
 }
 
-type ViewPassTypesViewContext struct {
-	Params ImmutableViewPassTypesViewParams
+type PassTypesViewContext struct {
+	Params ImmutablePassTypesViewParams
 	State  ImmutableTestCoreState
 }
 
 func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewPassTypesView")
-	f := &ViewPassTypesViewContext{
-		Params: ImmutableViewPassTypesViewParams{
+	f := &PassTypesViewContext{
+		Params: ImmutablePassTypesViewParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -511,13 +511,13 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewPassTypesView ok")
 }
 
-type ViewTestCallPanicViewEPFromViewContext struct {
+type TestCallPanicViewEPFromViewContext struct {
 	State ImmutableTestCoreState
 }
 
 func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestCallPanicViewEPFromView")
-	f := &ViewTestCallPanicViewEPFromViewContext{
+	f := &TestCallPanicViewEPFromViewContext{
 		State: ImmutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -526,15 +526,15 @@ func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestCallPanicViewEPFromView ok")
 }
 
-type ViewTestChainOwnerIDViewContext struct {
-	Results MutableViewTestChainOwnerIDViewResults
+type TestChainOwnerIDViewContext struct {
+	Results MutableTestChainOwnerIDViewResults
 	State   ImmutableTestCoreState
 }
 
 func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestChainOwnerIDView")
-	f := &ViewTestChainOwnerIDViewContext{
-		Results: MutableViewTestChainOwnerIDViewResults{
+	f := &TestChainOwnerIDViewContext{
+		Results: MutableTestChainOwnerIDViewResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
@@ -545,13 +545,13 @@ func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestChainOwnerIDView ok")
 }
 
-type ViewTestPanicViewEPContext struct {
+type TestPanicViewEPContext struct {
 	State ImmutableTestCoreState
 }
 
 func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestPanicViewEP")
-	f := &ViewTestPanicViewEPContext{
+	f := &TestPanicViewEPContext{
 		State: ImmutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -560,15 +560,15 @@ func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestPanicViewEP ok")
 }
 
-type ViewTestSandboxCallContext struct {
-	Results MutableViewTestSandboxCallResults
+type TestSandboxCallContext struct {
+	Results MutableTestSandboxCallResults
 	State   ImmutableTestCoreState
 }
 
 func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestSandboxCall")
-	f := &ViewTestSandboxCallContext{
-		Results: MutableViewTestSandboxCallResults{
+	f := &TestSandboxCallContext{
+		Results: MutableTestSandboxCallResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{

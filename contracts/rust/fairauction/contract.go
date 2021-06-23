@@ -9,69 +9,64 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type FairAuctionFunc struct {
-	sc wasmlib.ScContractFunc
+type FinalizeAuctionCall struct {
+	Func wasmlib.ScFunc
+	Params MutableFinalizeAuctionParams
 }
 
-func NewFairAuctionFunc(ctx wasmlib.ScFuncContext) *FairAuctionFunc {
-	return &FairAuctionFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *FairAuctionFunc) Delay(seconds int32) *FairAuctionFunc {
-	f.sc.Delay(seconds)
+func NewFinalizeAuctionCall(ctx wasmlib.ScFuncContext) *FinalizeAuctionCall {
+	f := &FinalizeAuctionCall{}
+	f.Func.Init(HScName, HFuncFinalizeAuction, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairAuctionFunc) OfContract(contract wasmlib.ScHname) *FairAuctionFunc {
-	f.sc.OfContract(contract)
+type PlaceBidCall struct {
+	Func wasmlib.ScFunc
+	Params MutablePlaceBidParams
+}
+
+func NewPlaceBidCall(ctx wasmlib.ScFuncContext) *PlaceBidCall {
+	f := &PlaceBidCall{}
+	f.Func.Init(HScName, HFuncPlaceBid, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairAuctionFunc) Post() *FairAuctionFunc {
-	f.sc.Post()
+type SetOwnerMarginCall struct {
+	Func wasmlib.ScFunc
+	Params MutableSetOwnerMarginParams
+}
+
+func NewSetOwnerMarginCall(ctx wasmlib.ScFuncContext) *SetOwnerMarginCall {
+	f := &SetOwnerMarginCall{}
+	f.Func.Init(HScName, HFuncSetOwnerMargin, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairAuctionFunc) PostToChain(chainId wasmlib.ScChainId) *FairAuctionFunc {
-	f.sc.PostToChain(chainId)
+type StartAuctionCall struct {
+	Func wasmlib.ScFunc
+	Params MutableStartAuctionParams
+}
+
+func NewStartAuctionCall(ctx wasmlib.ScFuncContext) *StartAuctionCall {
+	f := &StartAuctionCall{}
+	f.Func.Init(HScName, HFuncStartAuction, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairAuctionFunc) FinalizeAuction(params MutableFuncFinalizeAuctionParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncFinalizeAuction, params.id, &transfer)
+type GetInfoCall struct {
+	Func wasmlib.ScView
+	Params MutableGetInfoParams
+	Results ImmutableGetInfoResults
 }
 
-func (f *FairAuctionFunc) PlaceBid(params MutableFuncPlaceBidParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncPlaceBid, params.id, &transfer)
+func NewGetInfoCall(ctx wasmlib.ScFuncContext) *GetInfoCall {
+	f := &GetInfoCall{}
+	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *FairAuctionFunc) SetOwnerMargin(params MutableFuncSetOwnerMarginParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncSetOwnerMargin, params.id, &transfer)
-}
-
-func (f *FairAuctionFunc) StartAuction(params MutableFuncStartAuctionParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncStartAuction, params.id, &transfer)
-}
-
-func (f *FairAuctionFunc) GetInfo(params MutableViewGetInfoParams) ImmutableViewGetInfoResults {
-	f.sc.Run(HViewGetInfo, params.id, nil)
-	return ImmutableViewGetInfoResults{id: f.sc.ResultMapId()}
-}
-
-type FairAuctionView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewFairAuctionView(ctx wasmlib.ScViewContext) *FairAuctionView {
-	return &FairAuctionView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *FairAuctionView) OfContract(contract wasmlib.ScHname) *FairAuctionView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *FairAuctionView) GetInfo(params MutableViewGetInfoParams) ImmutableViewGetInfoResults {
-	v.sc.Run(HViewGetInfo, params.id)
-	return ImmutableViewGetInfoResults{id: v.sc.ResultMapId()}
+func NewGetInfoCallFromView(ctx wasmlib.ScViewContext) *GetInfoCall {
+	f := &GetInfoCall{}
+	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, &f.Results.id)
+	return f
 }

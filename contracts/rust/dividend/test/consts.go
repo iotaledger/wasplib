@@ -13,25 +13,33 @@ const (
 	ScName        = "dividend"
 	ScDescription = "Simple dividend smart contract"
 	HScName       = coretypes.Hname(0xcce2e239)
+)
 
+const (
 	ParamAddress = "address"
 	ParamFactor  = "factor"
 	ParamOwner   = "owner"
+)
 
-	ResultFactor = "factor"
+const ResultFactor = "factor"
 
+const (
 	StateFactor      = "factor"
 	StateMemberList  = "memberList"
 	StateMembers     = "members"
 	StateOwner       = "owner"
 	StateTotalFactor = "totalFactor"
+)
 
+const (
 	FuncDivide    = "divide"
 	FuncInit      = "init"
 	FuncMember    = "member"
 	FuncSetOwner  = "setOwner"
 	ViewGetFactor = "getFactor"
+)
 
+const (
 	HFuncDivide    = coretypes.Hname(0xc7878107)
 	HFuncInit      = coretypes.Hname(0x1f44d644)
 	HFuncMember    = coretypes.Hname(0xc07da2cb)

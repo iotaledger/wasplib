@@ -7,7 +7,7 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-func funcDonate(ctx wasmlib.ScFuncContext, f *FuncDonateContext) {
+func funcDonate(ctx wasmlib.ScFuncContext, f*DonateContext) {
 	donation := &Donation{
 		Amount:    ctx.Incoming().Balance(wasmlib.IOTA),
 		Donator:   ctx.Caller(),
@@ -33,7 +33,7 @@ func funcDonate(ctx wasmlib.ScFuncContext, f *FuncDonateContext) {
 	totalDonated.SetValue(totalDonated.Value() + donation.Amount)
 }
 
-func funcWithdraw(ctx wasmlib.ScFuncContext, f *FuncWithdrawContext) {
+func funcWithdraw(ctx wasmlib.ScFuncContext, f*WithdrawContext) {
 	balance := ctx.Balances().Balance(wasmlib.IOTA)
 	amount := f.Params.Amount().Value()
 	if amount == 0 || amount > balance {
@@ -48,7 +48,7 @@ func funcWithdraw(ctx wasmlib.ScFuncContext, f *FuncWithdrawContext) {
 	ctx.TransferToAddress(scCreator, wasmlib.NewScTransferIotas(amount))
 }
 
-func viewDonation(ctx wasmlib.ScViewContext, f *ViewDonationContext) {
+func viewDonation(ctx wasmlib.ScViewContext, f*DonationContext) {
 	nr := int32(f.Params.Nr().Value())
 	donation := f.State.Log().GetDonation(nr).Value()
 	f.Results.Amount().SetValue(donation.Amount)
@@ -58,7 +58,7 @@ func viewDonation(ctx wasmlib.ScViewContext, f *ViewDonationContext) {
 	f.Results.Timestamp().SetValue(donation.Timestamp)
 }
 
-func viewDonationInfo(ctx wasmlib.ScViewContext, f *ViewDonationInfoContext) {
+func viewDonationInfo(ctx wasmlib.ScViewContext, f*DonationInfoContext) {
 	f.Results.MaxDonation().SetValue(f.State.MaxDonation().Value())
 	f.Results.TotalDonation().SetValue(f.State.TotalDonation().Value())
 	f.Results.Count().SetValue(int64(f.State.Log().Length()))

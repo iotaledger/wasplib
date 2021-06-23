@@ -43,15 +43,15 @@ fn on_load() {
     }
 }
 
-pub struct FuncParamTypesContext {
-    params: ImmutableFuncParamTypesParams,
+pub struct ParamTypesContext {
+    params: ImmutableParamTypesParams,
     state:  MutableTestWasmLibState,
 }
 
 fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes");
-    let f = FuncParamTypesContext {
-        params: ImmutableFuncParamTypesParams {
+    let f = ParamTypesContext {
+        params: ImmutableParamTypesParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestWasmLibState {
@@ -62,19 +62,19 @@ fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes ok");
 }
 
-pub struct ViewBlockRecordContext {
-    params:  ImmutableViewBlockRecordParams,
-    results: MutableViewBlockRecordResults,
+pub struct BlockRecordContext {
+    params:  ImmutableBlockRecordParams,
+    results: MutableBlockRecordResults,
     state:   ImmutableTestWasmLibState,
 }
 
 fn view_block_record_thunk(ctx: &ScViewContext) {
     ctx.log("testwasmlib.viewBlockRecord");
-    let f = ViewBlockRecordContext {
-        params: ImmutableViewBlockRecordParams {
+    let f = BlockRecordContext {
+        params: ImmutableBlockRecordParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewBlockRecordResults {
+        results: MutableBlockRecordResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestWasmLibState {
@@ -87,19 +87,19 @@ fn view_block_record_thunk(ctx: &ScViewContext) {
     ctx.log("testwasmlib.viewBlockRecord ok");
 }
 
-pub struct ViewBlockRecordsContext {
-    params:  ImmutableViewBlockRecordsParams,
-    results: MutableViewBlockRecordsResults,
+pub struct BlockRecordsContext {
+    params:  ImmutableBlockRecordsParams,
+    results: MutableBlockRecordsResults,
     state:   ImmutableTestWasmLibState,
 }
 
 fn view_block_records_thunk(ctx: &ScViewContext) {
     ctx.log("testwasmlib.viewBlockRecords");
-    let f = ViewBlockRecordsContext {
-        params: ImmutableViewBlockRecordsParams {
+    let f = BlockRecordsContext {
+        params: ImmutableBlockRecordsParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewBlockRecordsResults {
+        results: MutableBlockRecordsResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestWasmLibState {

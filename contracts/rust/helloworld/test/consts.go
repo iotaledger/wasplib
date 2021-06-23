@@ -13,12 +13,16 @@ const (
 	ScName        = "helloworld"
 	ScDescription = "The ubiquitous hello world demo"
 	HScName       = coretypes.Hname(0x0683223c)
+)
 
-	ResultHelloWorld = "helloWorld"
+const ResultHelloWorld = "helloWorld"
 
+const (
 	FuncHelloWorld    = "helloWorld"
 	ViewGetHelloWorld = "getHelloWorld"
+)
 
+const (
 	HFuncHelloWorld    = coretypes.Hname(0x9d042e65)
 	HViewGetHelloWorld = coretypes.Hname(0x210439ce)
 )

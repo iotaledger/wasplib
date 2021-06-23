@@ -7,79 +7,100 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct DividendFunc {
-    sc: ScContractFunc,
+pub struct DivideCall {
+    pub func: ScFunc,
 }
 
-impl DividendFunc {
-    pub fn new(ctx: &ScFuncContext) -> DividendFunc {
-        DividendFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut DividendFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut DividendFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut DividendFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut DividendFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn divide(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_DIVIDE, 0, Some(transfer));
-    }
-
-    pub fn init(&mut self, params: MutableFuncInitParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INIT, params.id, Some(transfer));
-    }
-
-    pub fn member(&mut self, params: MutableFuncMemberParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_MEMBER, params.id, Some(transfer));
-    }
-
-    pub fn set_owner(&mut self, params: MutableFuncSetOwnerParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_SET_OWNER, params.id, Some(transfer));
-    }
-
-    pub fn get_factor(&mut self, params: MutableViewGetFactorParams) -> ImmutableViewGetFactorResults {
-        self.sc.run(HVIEW_GET_FACTOR, params.id, None);
-        ImmutableViewGetFactorResults { id: self.sc.result_map_id() }
+impl DivideCall {
+    pub fn new(_ctx: &ScFuncContext) -> DivideCall {
+        let mut f = DivideCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_DIVIDE, ptr::null_mut(), ptr::null_mut());
+        f
     }
 }
 
-pub struct DividendView {
-    sc: ScContractView,
+pub struct InitCall {
+    pub func: ScFunc,
+    pub params: MutableInitParams,
 }
 
-impl DividendView {
-    pub fn new(ctx: &ScViewContext) -> DividendView {
-        DividendView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl InitCall {
+    pub fn new(_ctx: &ScFuncContext) -> InitCall {
+        let mut f = InitCall {
+            func: ScFunc::zero(),
+            params: MutableInitParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct MemberCall {
+    pub func: ScFunc,
+    pub params: MutableMemberParams,
+}
+
+impl MemberCall {
+    pub fn new(_ctx: &ScFuncContext) -> MemberCall {
+        let mut f = MemberCall {
+            func: ScFunc::zero(),
+            params: MutableMemberParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_MEMBER, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct SetOwnerCall {
+    pub func: ScFunc,
+    pub params: MutableSetOwnerParams,
+}
+
+impl SetOwnerCall {
+    pub fn new(_ctx: &ScFuncContext) -> SetOwnerCall {
+        let mut f = SetOwnerCall {
+            func: ScFunc::zero(),
+            params: MutableSetOwnerParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_OWNER, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetFactorCall {
+    pub func: ScView,
+    pub params: MutableGetFactorParams,
+    pub results: ImmutableGetFactorResults,
+}
+
+impl GetFactorCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetFactorCall {
+        let mut f = GetFactorCall {
+            func: ScView::zero(),
+            params: MutableGetFactorParams { id: 0 },
+            results: ImmutableGetFactorResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_FACTOR, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut DividendView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_factor(&mut self, params: MutableViewGetFactorParams) -> ImmutableViewGetFactorResults {
-        self.sc.run(HVIEW_GET_FACTOR, params.id);
-        ImmutableViewGetFactorResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetFactorCall {
+        let mut f = GetFactorCall {
+            func: ScView::zero(),
+            params: MutableGetFactorParams { id: 0 },
+            results: ImmutableGetFactorResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_FACTOR, &mut f.params.id, &mut f.results.id);
+        f
     }
 }

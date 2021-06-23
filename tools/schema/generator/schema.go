@@ -35,11 +35,13 @@ type JsonSchema struct {
 }
 
 type FuncDef struct {
-	Name     string
-	FullName string
 	Access   string
+	Kind     string
+	FuncName string
+	String   string
 	Params   []*Field
 	Results  []*Field
+	Type     string
 }
 
 type Schema struct {
@@ -112,10 +114,10 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results *FieldMap, views bool) (err error) {
 	//TODO check for clashing Hnames
 
-	prefix := "func"
+	kind := "func"
 	jsonFuncs := jsonSchema.Funcs
 	if views {
-		prefix = "view"
+		kind = "view"
 		jsonFuncs = jsonSchema.Views
 	}
 	for _, funcName := range sortedFuncDescs(jsonFuncs) {
@@ -124,8 +126,10 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results 
 		}
 		funcDesc := jsonFuncs[funcName]
 		funcDef := &FuncDef{}
-		funcDef.Name = funcName
-		funcDef.FullName = prefix + capitalize(funcDef.Name)
+		funcDef.String = funcName
+		funcDef.Kind = capitalize(kind)
+		funcDef.Type = capitalize(funcName)
+		funcDef.FuncName = kind + funcDef.Type
 		funcDef.Access = funcDesc.Access
 		funcDef.Params, err = s.compileFuncFields(funcDesc.Params, params, "param")
 		if err != nil {

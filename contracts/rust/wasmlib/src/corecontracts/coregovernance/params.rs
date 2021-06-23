@@ -12,95 +12,67 @@ use crate::*;
 use crate::corecontracts::coregovernance::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncAddAllowedStateControllerAddressParams {
+pub struct ImmutableAddAllowedStateControllerAddressParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncAddAllowedStateControllerAddressParams {
+impl ImmutableAddAllowedStateControllerAddressParams {
     pub fn state_controller_address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncAddAllowedStateControllerAddressParams {
+pub struct MutableAddAllowedStateControllerAddressParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncAddAllowedStateControllerAddressParams {
-    pub fn new() -> MutableFuncAddAllowedStateControllerAddressParams {
-        MutableFuncAddAllowedStateControllerAddressParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableAddAllowedStateControllerAddressParams {
     pub fn state_controller_address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncRemoveAllowedStateControllerAddressParams {
+pub struct ImmutableRemoveAllowedStateControllerAddressParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncRemoveAllowedStateControllerAddressParams {
+impl ImmutableRemoveAllowedStateControllerAddressParams {
     pub fn state_controller_address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncRemoveAllowedStateControllerAddressParams {
+pub struct MutableRemoveAllowedStateControllerAddressParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRemoveAllowedStateControllerAddressParams {
-    pub fn new() -> MutableFuncRemoveAllowedStateControllerAddressParams {
-        MutableFuncRemoveAllowedStateControllerAddressParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableRemoveAllowedStateControllerAddressParams {
     pub fn state_controller_address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncRotateStateControllerParams {
+pub struct ImmutableRotateStateControllerParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncRotateStateControllerParams {
+impl ImmutableRotateStateControllerParams {
     pub fn state_controller_address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncRotateStateControllerParams {
+pub struct MutableRotateStateControllerParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRotateStateControllerParams {
-    pub fn new() -> MutableFuncRotateStateControllerParams {
-        MutableFuncRotateStateControllerParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableRotateStateControllerParams {
     pub fn state_controller_address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, PARAM_STATE_CONTROLLER_ADDRESS.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetAllowedStateControllerAddressesParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewGetAllowedStateControllerAddressesParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewGetAllowedStateControllerAddressesParams {
-    pub fn new() -> MutableViewGetAllowedStateControllerAddressesParams {
-        MutableViewGetAllowedStateControllerAddressesParams { id: ScMutableMap::new().map_id() }
     }
 }

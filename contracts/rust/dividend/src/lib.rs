@@ -45,13 +45,13 @@ fn on_load() {
     }
 }
 
-pub struct FuncDivideContext {
+pub struct DivideContext {
     state: MutableDividendState,
 }
 
 fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide");
-    let f = FuncDivideContext {
+    let f = DivideContext {
         state: MutableDividendState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -60,15 +60,15 @@ fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide ok");
 }
 
-pub struct FuncInitContext {
-    params: ImmutableFuncInitParams,
+pub struct InitContext {
+    params: ImmutableInitParams,
     state:  MutableDividendState,
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcInit");
-    let f = FuncInitContext {
-        params: ImmutableFuncInitParams {
+    let f = InitContext {
+        params: ImmutableInitParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableDividendState {
@@ -79,8 +79,8 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcInit ok");
 }
 
-pub struct FuncMemberContext {
-    params: ImmutableFuncMemberParams,
+pub struct MemberContext {
+    params: ImmutableMemberParams,
     state:  MutableDividendState,
 }
 
@@ -91,8 +91,8 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");
 
-    let f = FuncMemberContext {
-        params: ImmutableFuncMemberParams {
+    let f = MemberContext {
+        params: ImmutableMemberParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableDividendState {
@@ -105,8 +105,8 @@ fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcMember ok");
 }
 
-pub struct FuncSetOwnerContext {
-    params: ImmutableFuncSetOwnerParams,
+pub struct SetOwnerContext {
+    params: ImmutableSetOwnerParams,
     state:  MutableDividendState,
 }
 
@@ -117,8 +117,8 @@ fn func_set_owner_thunk(ctx: &ScFuncContext) {
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");
 
-    let f = FuncSetOwnerContext {
-        params: ImmutableFuncSetOwnerParams {
+    let f = SetOwnerContext {
+        params: ImmutableSetOwnerParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableDividendState {
@@ -130,19 +130,19 @@ fn func_set_owner_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcSetOwner ok");
 }
 
-pub struct ViewGetFactorContext {
-    params:  ImmutableViewGetFactorParams,
-    results: MutableViewGetFactorResults,
+pub struct GetFactorContext {
+    params:  ImmutableGetFactorParams,
+    results: MutableGetFactorResults,
     state:   ImmutableDividendState,
 }
 
 fn view_get_factor_thunk(ctx: &ScViewContext) {
     ctx.log("dividend.viewGetFactor");
-    let f = ViewGetFactorContext {
-        params: ImmutableViewGetFactorParams {
+    let f = GetFactorContext {
+        params: ImmutableGetFactorParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewGetFactorResults {
+        results: MutableGetFactorResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableDividendState {

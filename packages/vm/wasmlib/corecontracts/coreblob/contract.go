@@ -9,74 +9,64 @@ package coreblob
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreBlobFunc struct {
-	sc wasmlib.ScContractFunc
+type StoreBlobCall struct {
+	Func wasmlib.ScFunc
+	Results ImmutableStoreBlobResults
 }
 
-func NewCoreBlobFunc(ctx wasmlib.ScFuncContext) *CoreBlobFunc {
-	return &CoreBlobFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreBlobFunc) Delay(seconds int32) *CoreBlobFunc {
-	f.sc.Delay(seconds)
+func NewStoreBlobCall(ctx wasmlib.ScFuncContext) *StoreBlobCall {
+	f := &StoreBlobCall{}
+	f.Func.Init(HScName, HFuncStoreBlob, nil, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlobFunc) OfContract(contract wasmlib.ScHname) *CoreBlobFunc {
-	f.sc.OfContract(contract)
+type GetBlobFieldCall struct {
+	Func wasmlib.ScView
+	Params MutableGetBlobFieldParams
+	Results ImmutableGetBlobFieldResults
+}
+
+func NewGetBlobFieldCall(ctx wasmlib.ScFuncContext) *GetBlobFieldCall {
+	f := &GetBlobFieldCall{}
+	f.Func.Init(HScName, HViewGetBlobField, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlobFunc) Post() *CoreBlobFunc {
-	f.sc.Post()
+func NewGetBlobFieldCallFromView(ctx wasmlib.ScViewContext) *GetBlobFieldCall {
+	f := &GetBlobFieldCall{}
+	f.Func.Init(HScName, HViewGetBlobField, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlobFunc) PostToChain(chainId wasmlib.ScChainId) *CoreBlobFunc {
-	f.sc.PostToChain(chainId)
+type GetBlobInfoCall struct {
+	Func wasmlib.ScView
+	Params MutableGetBlobInfoParams
+}
+
+func NewGetBlobInfoCall(ctx wasmlib.ScFuncContext) *GetBlobInfoCall {
+	f := &GetBlobInfoCall{}
+	f.Func.Init(HScName, HViewGetBlobInfo, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreBlobFunc) StoreBlob(transfer wasmlib.ScTransfers) ImmutableFuncStoreBlobResults {
-	f.sc.Run(HFuncStoreBlob, 0, &transfer)
-	return ImmutableFuncStoreBlobResults{id: f.sc.ResultMapId()}
+func NewGetBlobInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlobInfoCall {
+	f := &GetBlobInfoCall{}
+	f.Func.Init(HScName, HViewGetBlobInfo, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreBlobFunc) GetBlobField(params MutableViewGetBlobFieldParams) ImmutableViewGetBlobFieldResults {
-	f.sc.Run(HViewGetBlobField, params.id, nil)
-	return ImmutableViewGetBlobFieldResults{id: f.sc.ResultMapId()}
+type ListBlobsCall struct {
+	Func wasmlib.ScView
 }
 
-func (f *CoreBlobFunc) GetBlobInfo(params MutableViewGetBlobInfoParams) {
-	f.sc.Run(HViewGetBlobInfo, params.id, nil)
+func NewListBlobsCall(ctx wasmlib.ScFuncContext) *ListBlobsCall {
+	f := &ListBlobsCall{}
+	f.Func.Init(HScName, HViewListBlobs, nil, nil)
+	return f
 }
 
-func (f *CoreBlobFunc) ListBlobs() {
-	f.sc.Run(HViewListBlobs, 0, nil)
-}
-
-type CoreBlobView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewCoreBlobView(ctx wasmlib.ScViewContext) *CoreBlobView {
-	return &CoreBlobView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *CoreBlobView) OfContract(contract wasmlib.ScHname) *CoreBlobView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *CoreBlobView) GetBlobField(params MutableViewGetBlobFieldParams) ImmutableViewGetBlobFieldResults {
-	v.sc.Run(HViewGetBlobField, params.id)
-	return ImmutableViewGetBlobFieldResults{id: v.sc.ResultMapId()}
-}
-
-func (v *CoreBlobView) GetBlobInfo(params MutableViewGetBlobInfoParams) {
-	v.sc.Run(HViewGetBlobInfo, params.id)
-}
-
-func (v *CoreBlobView) ListBlobs() {
-	v.sc.Run(HViewListBlobs, 0)
+func NewListBlobsCallFromView(ctx wasmlib.ScViewContext) *ListBlobsCall {
+	f := &ListBlobsCall{}
+	f.Func.Init(HScName, HViewListBlobs, nil, nil)
+	return f
 }

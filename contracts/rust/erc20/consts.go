@@ -13,21 +13,29 @@ const (
 	ScName        = "erc20"
 	ScDescription = "ERC-20 PoC for IOTA Smart Contracts"
 	HScName       = wasmlib.ScHname(0x200e3733)
+)
 
+const (
 	ParamAccount    = wasmlib.Key("ac")
 	ParamAmount     = wasmlib.Key("am")
 	ParamCreator    = wasmlib.Key("c")
 	ParamDelegation = wasmlib.Key("d")
 	ParamRecipient  = wasmlib.Key("r")
 	ParamSupply     = wasmlib.Key("s")
+)
 
+const (
 	ResultAmount = wasmlib.Key("am")
 	ResultSupply = wasmlib.Key("s")
+)
 
+const (
 	StateAllAllowances = wasmlib.Key("a")
 	StateBalances      = wasmlib.Key("b")
 	StateSupply        = wasmlib.Key("s")
+)
 
+const (
 	FuncApprove      = "approve"
 	FuncInit         = "init"
 	FuncTransfer     = "transfer"
@@ -35,7 +43,9 @@ const (
 	ViewAllowance    = "allowance"
 	ViewBalanceOf    = "balanceOf"
 	ViewTotalSupply  = "totalSupply"
+)
 
+const (
 	HFuncApprove      = wasmlib.ScHname(0xa0661268)
 	HFuncInit         = wasmlib.ScHname(0x1f44d644)
 	HFuncTransfer     = wasmlib.ScHname(0xa15da184)

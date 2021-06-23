@@ -24,15 +24,15 @@ func OnLoad() {
 	}
 }
 
-type FuncApproveContext struct {
-	Params ImmutableFuncApproveParams
+type ApproveContext struct {
+	Params ImmutableApproveParams
 	State  MutableErc20State
 }
 
 func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcApprove")
-	f := &FuncApproveContext{
-		Params: ImmutableFuncApproveParams{
+	f := &ApproveContext{
+		Params: ImmutableApproveParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableErc20State{
@@ -45,15 +45,15 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcApprove ok")
 }
 
-type FuncInitContext struct {
-	Params ImmutableFuncInitParams
+type InitContext struct {
+	Params ImmutableInitParams
 	State  MutableErc20State
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcInit")
-	f := &FuncInitContext{
-		Params: ImmutableFuncInitParams{
+	f := &InitContext{
+		Params: ImmutableInitParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableErc20State{
@@ -66,15 +66,15 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcInit ok")
 }
 
-type FuncTransferContext struct {
-	Params ImmutableFuncTransferParams
+type TransferContext struct {
+	Params ImmutableTransferParams
 	State  MutableErc20State
 }
 
 func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransfer")
-	f := &FuncTransferContext{
-		Params: ImmutableFuncTransferParams{
+	f := &TransferContext{
+		Params: ImmutableTransferParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableErc20State{
@@ -87,15 +87,15 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransfer ok")
 }
 
-type FuncTransferFromContext struct {
-	Params ImmutableFuncTransferFromParams
+type TransferFromContext struct {
+	Params ImmutableTransferFromParams
 	State  MutableErc20State
 }
 
 func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransferFrom")
-	f := &FuncTransferFromContext{
-		Params: ImmutableFuncTransferFromParams{
+	f := &TransferFromContext{
+		Params: ImmutableTransferFromParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableErc20State{
@@ -109,19 +109,19 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransferFrom ok")
 }
 
-type ViewAllowanceContext struct {
-	Params  ImmutableViewAllowanceParams
-	Results MutableViewAllowanceResults
+type AllowanceContext struct {
+	Params  ImmutableAllowanceParams
+	Results MutableAllowanceResults
 	State   ImmutableErc20State
 }
 
 func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewAllowance")
-	f := &ViewAllowanceContext{
-		Params: ImmutableViewAllowanceParams{
+	f := &AllowanceContext{
+		Params: ImmutableAllowanceParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewAllowanceResults{
+		Results: MutableAllowanceResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableErc20State{
@@ -134,19 +134,19 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewAllowance ok")
 }
 
-type ViewBalanceOfContext struct {
-	Params  ImmutableViewBalanceOfParams
-	Results MutableViewBalanceOfResults
+type BalanceOfContext struct {
+	Params  ImmutableBalanceOfParams
+	Results MutableBalanceOfResults
 	State   ImmutableErc20State
 }
 
 func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewBalanceOf")
-	f := &ViewBalanceOfContext{
-		Params: ImmutableViewBalanceOfParams{
+	f := &BalanceOfContext{
+		Params: ImmutableBalanceOfParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewBalanceOfResults{
+		Results: MutableBalanceOfResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableErc20State{
@@ -158,15 +158,15 @@ func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewBalanceOf ok")
 }
 
-type ViewTotalSupplyContext struct {
-	Results MutableViewTotalSupplyResults
+type TotalSupplyContext struct {
+	Results MutableTotalSupplyResults
 	State   ImmutableErc20State
 }
 
 func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewTotalSupply")
-	f := &ViewTotalSupplyContext{
-		Results: MutableViewTotalSupplyResults{
+	f := &TotalSupplyContext{
+		Results: MutableTotalSupplyResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableErc20State{

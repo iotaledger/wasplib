@@ -12,27 +12,11 @@ use crate::*;
 use crate::corecontracts::coreblob::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncStoreBlobParams {
+pub struct ImmutableGetBlobFieldParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncStoreBlobParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncStoreBlobParams {
-    pub fn new() -> MutableFuncStoreBlobParams {
-        MutableFuncStoreBlobParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlobFieldParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetBlobFieldParams {
+impl ImmutableGetBlobFieldParams {
     pub fn field(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, PARAM_FIELD.get_key_id())
     }
@@ -43,15 +27,11 @@ impl ImmutableViewGetBlobFieldParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetBlobFieldParams {
+pub struct MutableGetBlobFieldParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetBlobFieldParams {
-    pub fn new() -> MutableViewGetBlobFieldParams {
-        MutableViewGetBlobFieldParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetBlobFieldParams {
     pub fn field(&self) -> ScMutableString {
         ScMutableString::new(self.id, PARAM_FIELD.get_key_id())
     }
@@ -62,43 +42,23 @@ impl MutableViewGetBlobFieldParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlobInfoParams {
+pub struct ImmutableGetBlobInfoParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetBlobInfoParams {
+impl ImmutableGetBlobInfoParams {
     pub fn hash(&self) -> ScImmutableHash {
         ScImmutableHash::new(self.id, PARAM_HASH.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetBlobInfoParams {
+pub struct MutableGetBlobInfoParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetBlobInfoParams {
-    pub fn new() -> MutableViewGetBlobInfoParams {
-        MutableViewGetBlobInfoParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetBlobInfoParams {
     pub fn hash(&self) -> ScMutableHash {
         ScMutableHash::new(self.id, PARAM_HASH.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewListBlobsParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewListBlobsParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewListBlobsParams {
-    pub fn new() -> MutableViewListBlobsParams {
-        MutableViewListBlobsParams { id: ScMutableMap::new().map_id() }
     }
 }

@@ -7,79 +7,102 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct FairAuctionFunc {
-    sc: ScContractFunc,
+pub struct FinalizeAuctionCall {
+    pub func: ScFunc,
+    pub params: MutableFinalizeAuctionParams,
 }
 
-impl FairAuctionFunc {
-    pub fn new(ctx: &ScFuncContext) -> FairAuctionFunc {
-        FairAuctionFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut FairAuctionFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut FairAuctionFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut FairAuctionFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut FairAuctionFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn finalize_auction(&mut self, params: MutableFuncFinalizeAuctionParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_FINALIZE_AUCTION, params.id, Some(transfer));
-    }
-
-    pub fn place_bid(&mut self, params: MutableFuncPlaceBidParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PLACE_BID, params.id, Some(transfer));
-    }
-
-    pub fn set_owner_margin(&mut self, params: MutableFuncSetOwnerMarginParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_SET_OWNER_MARGIN, params.id, Some(transfer));
-    }
-
-    pub fn start_auction(&mut self, params: MutableFuncStartAuctionParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_START_AUCTION, params.id, Some(transfer));
-    }
-
-    pub fn get_info(&mut self, params: MutableViewGetInfoParams) -> ImmutableViewGetInfoResults {
-        self.sc.run(HVIEW_GET_INFO, params.id, None);
-        ImmutableViewGetInfoResults { id: self.sc.result_map_id() }
+impl FinalizeAuctionCall {
+    pub fn new(_ctx: &ScFuncContext) -> FinalizeAuctionCall {
+        let mut f = FinalizeAuctionCall {
+            func: ScFunc::zero(),
+            params: MutableFinalizeAuctionParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_FINALIZE_AUCTION, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct FairAuctionView {
-    sc: ScContractView,
+pub struct PlaceBidCall {
+    pub func: ScFunc,
+    pub params: MutablePlaceBidParams,
 }
 
-impl FairAuctionView {
-    pub fn new(ctx: &ScViewContext) -> FairAuctionView {
-        FairAuctionView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl PlaceBidCall {
+    pub fn new(_ctx: &ScFuncContext) -> PlaceBidCall {
+        let mut f = PlaceBidCall {
+            func: ScFunc::zero(),
+            params: MutablePlaceBidParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PLACE_BID, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct SetOwnerMarginCall {
+    pub func: ScFunc,
+    pub params: MutableSetOwnerMarginParams,
+}
+
+impl SetOwnerMarginCall {
+    pub fn new(_ctx: &ScFuncContext) -> SetOwnerMarginCall {
+        let mut f = SetOwnerMarginCall {
+            func: ScFunc::zero(),
+            params: MutableSetOwnerMarginParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_OWNER_MARGIN, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct StartAuctionCall {
+    pub func: ScFunc,
+    pub params: MutableStartAuctionParams,
+}
+
+impl StartAuctionCall {
+    pub fn new(_ctx: &ScFuncContext) -> StartAuctionCall {
+        let mut f = StartAuctionCall {
+            func: ScFunc::zero(),
+            params: MutableStartAuctionParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_START_AUCTION, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetInfoCall {
+    pub func: ScView,
+    pub params: MutableGetInfoParams,
+    pub results: ImmutableGetInfoResults,
+}
+
+impl GetInfoCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetInfoCall {
+        let mut f = GetInfoCall {
+            func: ScView::zero(),
+            params: MutableGetInfoParams { id: 0 },
+            results: ImmutableGetInfoResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut FairAuctionView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_info(&mut self, params: MutableViewGetInfoParams) -> ImmutableViewGetInfoResults {
-        self.sc.run(HVIEW_GET_INFO, params.id);
-        ImmutableViewGetInfoResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
+        let mut f = GetInfoCall {
+            func: ScView::zero(),
+            params: MutableGetInfoParams { id: 0 },
+            results: ImmutableGetInfoResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, &mut f.results.id);
+        f
     }
 }

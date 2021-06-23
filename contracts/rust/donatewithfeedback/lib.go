@@ -21,15 +21,15 @@ func OnLoad() {
 	}
 }
 
-type FuncDonateContext struct {
-	Params ImmutableFuncDonateParams
+type DonateContext struct {
+	Params ImmutableDonateParams
 	State  MutableDonateWithFeedbackState
 }
 
 func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcDonate")
-	f := &FuncDonateContext{
-		Params: ImmutableFuncDonateParams{
+	f := &DonateContext{
+		Params: ImmutableDonateParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableDonateWithFeedbackState{
@@ -40,8 +40,8 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcDonate ok")
 }
 
-type FuncWithdrawContext struct {
-	Params ImmutableFuncWithdrawParams
+type WithdrawContext struct {
+	Params ImmutableWithdrawParams
 	State  MutableDonateWithFeedbackState
 }
 
@@ -50,8 +50,8 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can withdraw donated funds
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncWithdrawContext{
-		Params: ImmutableFuncWithdrawParams{
+	f := &WithdrawContext{
+		Params: ImmutableWithdrawParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableDonateWithFeedbackState{
@@ -62,19 +62,19 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcWithdraw ok")
 }
 
-type ViewDonationContext struct {
-	Params  ImmutableViewDonationParams
-	Results MutableViewDonationResults
+type DonationContext struct {
+	Params  ImmutableDonationParams
+	Results MutableDonationResults
 	State   ImmutableDonateWithFeedbackState
 }
 
 func viewDonationThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("donatewithfeedback.viewDonation")
-	f := &ViewDonationContext{
-		Params: ImmutableViewDonationParams{
+	f := &DonationContext{
+		Params: ImmutableDonationParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewDonationResults{
+		Results: MutableDonationResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableDonateWithFeedbackState{
@@ -86,15 +86,15 @@ func viewDonationThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("donatewithfeedback.viewDonation ok")
 }
 
-type ViewDonationInfoContext struct {
-	Results MutableViewDonationInfoResults
+type DonationInfoContext struct {
+	Results MutableDonationInfoResults
 	State   ImmutableDonateWithFeedbackState
 }
 
 func viewDonationInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("donatewithfeedback.viewDonationInfo")
-	f := &ViewDonationInfoContext{
-		Results: MutableViewDonationInfoResults{
+	f := &DonationInfoContext{
+		Results: MutableDonationInfoResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableDonateWithFeedbackState{

@@ -13,7 +13,9 @@ const (
 	ScName        = "testwasmlib"
 	ScDescription = "Exercise all aspects of WasmLib"
 	HScName       = wasmlib.ScHname(0x89703a45)
+)
 
+const (
 	ParamAddress     = wasmlib.Key("address")
 	ParamAgentId     = wasmlib.Key("agentId")
 	ParamBlockIndex  = wasmlib.Key("blockIndex")
@@ -28,14 +30,20 @@ const (
 	ParamRecordIndex = wasmlib.Key("recordIndex")
 	ParamRequestId   = wasmlib.Key("requestId")
 	ParamString      = wasmlib.Key("string")
+)
 
+const (
 	ResultCount  = wasmlib.Key("count")
 	ResultRecord = wasmlib.Key("record")
+)
 
+const (
 	FuncParamTypes   = "paramTypes"
 	ViewBlockRecord  = "blockRecord"
 	ViewBlockRecords = "blockRecords"
+)
 
+const (
 	HFuncParamTypes   = wasmlib.ScHname(0x6921c4cd)
 	HViewBlockRecord  = wasmlib.ScHname(0xad13b2f8)
 	HViewBlockRecords = wasmlib.ScHname(0x16e249ea)

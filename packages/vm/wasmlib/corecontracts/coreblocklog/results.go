@@ -9,67 +9,67 @@ package coreblocklog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewControlAddressesResults struct {
+type ImmutableControlAddressesResults struct {
 	id int32
 }
 
-func (s ImmutableViewControlAddressesResults) BlockIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableControlAddressesResults) BlockIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, ResultBlockIndex.KeyId())
 }
 
-func (s ImmutableViewControlAddressesResults) GoverningAddress() wasmlib.ScImmutableAddress {
+func (s ImmutableControlAddressesResults) GoverningAddress() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, ResultGoverningAddress.KeyId())
 }
 
-func (s ImmutableViewControlAddressesResults) StateControllerAddress() wasmlib.ScImmutableAddress {
+func (s ImmutableControlAddressesResults) StateControllerAddress() wasmlib.ScImmutableAddress {
 	return wasmlib.NewScImmutableAddress(s.id, ResultStateControllerAddress.KeyId())
 }
 
-type MutableViewControlAddressesResults struct {
+type MutableControlAddressesResults struct {
 	id int32
 }
 
-func (s MutableViewControlAddressesResults) BlockIndex() wasmlib.ScMutableInt32 {
+func (s MutableControlAddressesResults) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, ResultBlockIndex.KeyId())
 }
 
-func (s MutableViewControlAddressesResults) GoverningAddress() wasmlib.ScMutableAddress {
+func (s MutableControlAddressesResults) GoverningAddress() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, ResultGoverningAddress.KeyId())
 }
 
-func (s MutableViewControlAddressesResults) StateControllerAddress() wasmlib.ScMutableAddress {
+func (s MutableControlAddressesResults) StateControllerAddress() wasmlib.ScMutableAddress {
 	return wasmlib.NewScMutableAddress(s.id, ResultStateControllerAddress.KeyId())
 }
 
-type ImmutableViewGetBlockInfoResults struct {
+type ImmutableGetBlockInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetBlockInfoResults) BlockInfo() wasmlib.ScImmutableBytes {
+func (s ImmutableGetBlockInfoResults) BlockInfo() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, ResultBlockInfo.KeyId())
 }
 
-type MutableViewGetBlockInfoResults struct {
+type MutableGetBlockInfoResults struct {
 	id int32
 }
 
-func (s MutableViewGetBlockInfoResults) BlockInfo() wasmlib.ScMutableBytes {
+func (s MutableGetBlockInfoResults) BlockInfo() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultBlockInfo.KeyId())
 }
 
-type ImmutableViewGetLatestBlockInfoResults struct {
+type ImmutableGetLatestBlockInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetLatestBlockInfoResults) BlockInfo() wasmlib.ScImmutableBytes {
+func (s ImmutableGetLatestBlockInfoResults) BlockInfo() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, ResultBlockInfo.KeyId())
 }
 
-type MutableViewGetLatestBlockInfoResults struct {
+type MutableGetLatestBlockInfoResults struct {
 	id int32
 }
 
-func (s MutableViewGetLatestBlockInfoResults) BlockInfo() wasmlib.ScMutableBytes {
+func (s MutableGetLatestBlockInfoResults) BlockInfo() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultBlockInfo.KeyId())
 }
 
@@ -85,11 +85,11 @@ func (a ArrayOfImmutableBytes) GetBytes(index int32) wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(a.objId, wasmlib.Key32(index))
 }
 
-type ImmutableViewGetRequestIDsForBlockResults struct {
+type ImmutableGetRequestIDsForBlockResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetRequestIDsForBlockResults) RequestID() ArrayOfImmutableBytes {
+func (s ImmutableGetRequestIDsForBlockResults) RequestID() ArrayOfImmutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultRequestID.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableBytes{objId: arrId}
 }
@@ -110,77 +110,77 @@ func (a ArrayOfMutableBytes) GetBytes(index int32) wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(a.objId, wasmlib.Key32(index))
 }
 
-type MutableViewGetRequestIDsForBlockResults struct {
+type MutableGetRequestIDsForBlockResults struct {
 	id int32
 }
 
-func (s MutableViewGetRequestIDsForBlockResults) RequestID() ArrayOfMutableBytes {
+func (s MutableGetRequestIDsForBlockResults) RequestID() ArrayOfMutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultRequestID.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableBytes{objId: arrId}
 }
 
-type ImmutableViewGetRequestLogRecordResults struct {
+type ImmutableGetRequestLogRecordResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetRequestLogRecordResults) BlockIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableGetRequestLogRecordResults) BlockIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, ResultBlockIndex.KeyId())
 }
 
-func (s ImmutableViewGetRequestLogRecordResults) RequestIndex() wasmlib.ScImmutableInt16 {
+func (s ImmutableGetRequestLogRecordResults) RequestIndex() wasmlib.ScImmutableInt16 {
 	return wasmlib.NewScImmutableInt16(s.id, ResultRequestIndex.KeyId())
 }
 
-func (s ImmutableViewGetRequestLogRecordResults) RequestRecord() wasmlib.ScImmutableBytes {
+func (s ImmutableGetRequestLogRecordResults) RequestRecord() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, ResultRequestRecord.KeyId())
 }
 
-type MutableViewGetRequestLogRecordResults struct {
+type MutableGetRequestLogRecordResults struct {
 	id int32
 }
 
-func (s MutableViewGetRequestLogRecordResults) BlockIndex() wasmlib.ScMutableInt32 {
+func (s MutableGetRequestLogRecordResults) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, ResultBlockIndex.KeyId())
 }
 
-func (s MutableViewGetRequestLogRecordResults) RequestIndex() wasmlib.ScMutableInt16 {
+func (s MutableGetRequestLogRecordResults) RequestIndex() wasmlib.ScMutableInt16 {
 	return wasmlib.NewScMutableInt16(s.id, ResultRequestIndex.KeyId())
 }
 
-func (s MutableViewGetRequestLogRecordResults) RequestRecord() wasmlib.ScMutableBytes {
+func (s MutableGetRequestLogRecordResults) RequestRecord() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultRequestRecord.KeyId())
 }
 
-type ImmutableViewGetRequestLogRecordsForBlockResults struct {
+type ImmutableGetRequestLogRecordsForBlockResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetRequestLogRecordsForBlockResults) RequestRecord() ArrayOfImmutableBytes {
+func (s ImmutableGetRequestLogRecordsForBlockResults) RequestRecord() ArrayOfImmutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultRequestRecord.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableBytes{objId: arrId}
 }
 
-type MutableViewGetRequestLogRecordsForBlockResults struct {
+type MutableGetRequestLogRecordsForBlockResults struct {
 	id int32
 }
 
-func (s MutableViewGetRequestLogRecordsForBlockResults) RequestRecord() ArrayOfMutableBytes {
+func (s MutableGetRequestLogRecordsForBlockResults) RequestRecord() ArrayOfMutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultRequestRecord.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableBytes{objId: arrId}
 }
 
-type ImmutableViewIsRequestProcessedResults struct {
+type ImmutableIsRequestProcessedResults struct {
 	id int32
 }
 
-func (s ImmutableViewIsRequestProcessedResults) RequestProcessed() wasmlib.ScImmutableString {
+func (s ImmutableIsRequestProcessedResults) RequestProcessed() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, ResultRequestProcessed.KeyId())
 }
 
-type MutableViewIsRequestProcessedResults struct {
+type MutableIsRequestProcessedResults struct {
 	id int32
 }
 
-func (s MutableViewIsRequestProcessedResults) RequestProcessed() wasmlib.ScMutableString {
+func (s MutableIsRequestProcessedResults) RequestProcessed() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, ResultRequestProcessed.KeyId())
 }

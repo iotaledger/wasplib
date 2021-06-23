@@ -12,23 +12,31 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const (
 	ScName  = "fairroulette"
 	HScName = wasmlib.ScHname(0xdf79d138)
+)
 
+const (
 	ParamNumber     = wasmlib.Key("number")
 	ParamPlayPeriod = wasmlib.Key("playPeriod")
+)
 
-	ResultLastWinningNumber = wasmlib.Key("lastWinningNumber")
+const ResultLastWinningNumber = wasmlib.Key("lastWinningNumber")
 
+const (
 	StateBets              = wasmlib.Key("bets")
 	StateLastWinningNumber = wasmlib.Key("lastWinningNumber")
 	StateLockedBets        = wasmlib.Key("lockedBets")
 	StatePlayPeriod        = wasmlib.Key("playPeriod")
+)
 
+const (
 	FuncLockBets          = "lockBets"
 	FuncPayWinners        = "payWinners"
 	FuncPlaceBet          = "placeBet"
 	FuncPlayPeriod        = "playPeriod"
 	ViewLastWinningNumber = "lastWinningNumber"
+)
 
+const (
 	HFuncLockBets          = wasmlib.ScHname(0xe163b43c)
 	HFuncPayWinners        = wasmlib.ScHname(0xfb2b0144)
 	HFuncPlaceBet          = wasmlib.ScHname(0xdfba7d1b)

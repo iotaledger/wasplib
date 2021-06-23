@@ -9,67 +9,49 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type TestWasmLibFunc struct {
-	sc wasmlib.ScContractFunc
+type ParamTypesCall struct {
+	Func wasmlib.ScFunc
+	Params MutableParamTypesParams
 }
 
-func NewTestWasmLibFunc(ctx wasmlib.ScFuncContext) *TestWasmLibFunc {
-	return &TestWasmLibFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *TestWasmLibFunc) Delay(seconds int32) *TestWasmLibFunc {
-	f.sc.Delay(seconds)
+func NewParamTypesCall(ctx wasmlib.ScFuncContext) *ParamTypesCall {
+	f := &ParamTypesCall{}
+	f.Func.Init(HScName, HFuncParamTypes, &f.Params.id, nil)
 	return f
 }
 
-func (f *TestWasmLibFunc) OfContract(contract wasmlib.ScHname) *TestWasmLibFunc {
-	f.sc.OfContract(contract)
+type BlockRecordCall struct {
+	Func wasmlib.ScView
+	Params MutableBlockRecordParams
+	Results ImmutableBlockRecordResults
+}
+
+func NewBlockRecordCall(ctx wasmlib.ScFuncContext) *BlockRecordCall {
+	f := &BlockRecordCall{}
+	f.Func.Init(HScName, HViewBlockRecord, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *TestWasmLibFunc) Post() *TestWasmLibFunc {
-	f.sc.Post()
+func NewBlockRecordCallFromView(ctx wasmlib.ScViewContext) *BlockRecordCall {
+	f := &BlockRecordCall{}
+	f.Func.Init(HScName, HViewBlockRecord, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *TestWasmLibFunc) PostToChain(chainId wasmlib.ScChainId) *TestWasmLibFunc {
-	f.sc.PostToChain(chainId)
+type BlockRecordsCall struct {
+	Func wasmlib.ScView
+	Params MutableBlockRecordsParams
+	Results ImmutableBlockRecordsResults
+}
+
+func NewBlockRecordsCall(ctx wasmlib.ScFuncContext) *BlockRecordsCall {
+	f := &BlockRecordsCall{}
+	f.Func.Init(HScName, HViewBlockRecords, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *TestWasmLibFunc) ParamTypes(params MutableFuncParamTypesParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncParamTypes, params.id, &transfer)
-}
-
-func (f *TestWasmLibFunc) BlockRecord(params MutableViewBlockRecordParams) ImmutableViewBlockRecordResults {
-	f.sc.Run(HViewBlockRecord, params.id, nil)
-	return ImmutableViewBlockRecordResults{id: f.sc.ResultMapId()}
-}
-
-func (f *TestWasmLibFunc) BlockRecords(params MutableViewBlockRecordsParams) ImmutableViewBlockRecordsResults {
-	f.sc.Run(HViewBlockRecords, params.id, nil)
-	return ImmutableViewBlockRecordsResults{id: f.sc.ResultMapId()}
-}
-
-type TestWasmLibView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewTestWasmLibView(ctx wasmlib.ScViewContext) *TestWasmLibView {
-	return &TestWasmLibView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *TestWasmLibView) OfContract(contract wasmlib.ScHname) *TestWasmLibView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *TestWasmLibView) BlockRecord(params MutableViewBlockRecordParams) ImmutableViewBlockRecordResults {
-	v.sc.Run(HViewBlockRecord, params.id)
-	return ImmutableViewBlockRecordResults{id: v.sc.ResultMapId()}
-}
-
-func (v *TestWasmLibView) BlockRecords(params MutableViewBlockRecordsParams) ImmutableViewBlockRecordsResults {
-	v.sc.Run(HViewBlockRecords, params.id)
-	return ImmutableViewBlockRecordsResults{id: v.sc.ResultMapId()}
+func NewBlockRecordsCallFromView(ctx wasmlib.ScViewContext) *BlockRecordsCall {
+	f := &BlockRecordsCall{}
+	f.Func.Init(HScName, HViewBlockRecords, &f.Params.id, &f.Results.id)
+	return f
 }

@@ -21,15 +21,15 @@ func OnLoad() {
 	}
 }
 
-type FuncMintSupplyContext struct {
-	Params ImmutableFuncMintSupplyParams
+type MintSupplyContext struct {
+	Params ImmutableMintSupplyParams
 	State  MutableTokenRegistryState
 }
 
 func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcMintSupply")
-	f := &FuncMintSupplyContext{
-		Params: ImmutableFuncMintSupplyParams{
+	f := &MintSupplyContext{
+		Params: ImmutableMintSupplyParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTokenRegistryState{
@@ -40,8 +40,8 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcMintSupply ok")
 }
 
-type FuncTransferOwnershipContext struct {
-	Params ImmutableFuncTransferOwnershipParams
+type TransferOwnershipContext struct {
+	Params ImmutableTransferOwnershipParams
 	State  MutableTokenRegistryState
 }
 
@@ -50,8 +50,8 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can transfer token ownership
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncTransferOwnershipContext{
-		Params: ImmutableFuncTransferOwnershipParams{
+	f := &TransferOwnershipContext{
+		Params: ImmutableTransferOwnershipParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTokenRegistryState{
@@ -63,8 +63,8 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcTransferOwnership ok")
 }
 
-type FuncUpdateMetadataContext struct {
-	Params ImmutableFuncUpdateMetadataParams
+type UpdateMetadataContext struct {
+	Params ImmutableUpdateMetadataParams
 	State  MutableTokenRegistryState
 }
 
@@ -73,8 +73,8 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	//TODO the one who can change the token info
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncUpdateMetadataContext{
-		Params: ImmutableFuncUpdateMetadataParams{
+	f := &UpdateMetadataContext{
+		Params: ImmutableUpdateMetadataParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableTokenRegistryState{
@@ -86,15 +86,15 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcUpdateMetadata ok")
 }
 
-type ViewGetInfoContext struct {
-	Params ImmutableViewGetInfoParams
+type GetInfoContext struct {
+	Params ImmutableGetInfoParams
 	State  ImmutableTokenRegistryState
 }
 
 func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("tokenregistry.viewGetInfo")
-	f := &ViewGetInfoContext{
-		Params: ImmutableViewGetInfoParams{
+	f := &GetInfoContext{
+		Params: ImmutableGetInfoParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTokenRegistryState{

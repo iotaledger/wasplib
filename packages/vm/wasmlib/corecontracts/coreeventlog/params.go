@@ -9,66 +9,58 @@ package coreeventlog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewGetNumRecordsParams struct {
+type ImmutableGetNumRecordsParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetNumRecordsParams) ContractHname() wasmlib.ScImmutableHname {
+func (s ImmutableGetNumRecordsParams) ContractHname() wasmlib.ScImmutableHname {
 	return wasmlib.NewScImmutableHname(s.id, ParamContractHname.KeyId())
 }
 
-type MutableViewGetNumRecordsParams struct {
+type MutableGetNumRecordsParams struct {
 	id int32
 }
 
-func NewMutableViewGetNumRecordsParams() MutableViewGetNumRecordsParams {
-	return MutableViewGetNumRecordsParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetNumRecordsParams) ContractHname() wasmlib.ScMutableHname {
+func (s MutableGetNumRecordsParams) ContractHname() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, ParamContractHname.KeyId())
 }
 
-type ImmutableViewGetRecordsParams struct {
+type ImmutableGetRecordsParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetRecordsParams) ContractHname() wasmlib.ScImmutableHname {
+func (s ImmutableGetRecordsParams) ContractHname() wasmlib.ScImmutableHname {
 	return wasmlib.NewScImmutableHname(s.id, ParamContractHname.KeyId())
 }
 
-func (s ImmutableViewGetRecordsParams) FromTs() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetRecordsParams) FromTs() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ParamFromTs.KeyId())
 }
 
-func (s ImmutableViewGetRecordsParams) MaxLastRecords() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetRecordsParams) MaxLastRecords() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ParamMaxLastRecords.KeyId())
 }
 
-func (s ImmutableViewGetRecordsParams) ToTs() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetRecordsParams) ToTs() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ParamToTs.KeyId())
 }
 
-type MutableViewGetRecordsParams struct {
+type MutableGetRecordsParams struct {
 	id int32
 }
 
-func NewMutableViewGetRecordsParams() MutableViewGetRecordsParams {
-	return MutableViewGetRecordsParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetRecordsParams) ContractHname() wasmlib.ScMutableHname {
+func (s MutableGetRecordsParams) ContractHname() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, ParamContractHname.KeyId())
 }
 
-func (s MutableViewGetRecordsParams) FromTs() wasmlib.ScMutableInt64 {
+func (s MutableGetRecordsParams) FromTs() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ParamFromTs.KeyId())
 }
 
-func (s MutableViewGetRecordsParams) MaxLastRecords() wasmlib.ScMutableInt64 {
+func (s MutableGetRecordsParams) MaxLastRecords() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ParamMaxLastRecords.KeyId())
 }
 
-func (s MutableViewGetRecordsParams) ToTs() wasmlib.ScMutableInt64 {
+func (s MutableGetRecordsParams) ToTs() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ParamToTs.KeyId())
 }

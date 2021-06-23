@@ -13,92 +13,22 @@ use crate::corecontracts::coreroot::*;
 use crate::host::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncClaimChainOwnershipResults {
+pub struct ImmutableFindContractResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncClaimChainOwnershipResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncDelegateChainOwnershipResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncDelegateChainOwnershipResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncDeployContractResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncDeployContractResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncGrantDeployPermissionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncGrantDeployPermissionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncRevokeDeployPermissionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncRevokeDeployPermissionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncSetContractFeeResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncSetContractFeeResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncSetDefaultFeeResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncSetDefaultFeeResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewFindContractResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewFindContractResults {
+impl ImmutableFindContractResults {
     pub fn data(&self) -> ScImmutableBytes {
         ScImmutableBytes::new(self.id, RESULT_DATA.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewFindContractResults {
+pub struct MutableFindContractResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewFindContractResults {
+impl MutableFindContractResults {
     pub fn data(&self) -> ScMutableBytes {
         ScMutableBytes::new(self.id, RESULT_DATA.get_key_id())
     }
@@ -115,11 +45,11 @@ impl MapHnameToImmutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetChainInfoResults {
+pub struct ImmutableGetChainInfoResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetChainInfoResults {
+impl ImmutableGetChainInfoResults {
     pub fn chain_id(&self) -> ScImmutableChainId {
         ScImmutableChainId::new(self.id, RESULT_CHAIN_ID.get_key_id())
     }
@@ -165,11 +95,11 @@ impl MapHnameToMutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetChainInfoResults {
+pub struct MutableGetChainInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetChainInfoResults {
+impl MutableGetChainInfoResults {
     pub fn chain_id(&self) -> ScMutableChainId {
         ScMutableChainId::new(self.id, RESULT_CHAIN_ID.get_key_id())
     }
@@ -201,11 +131,11 @@ impl MutableViewGetChainInfoResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetFeeInfoResults {
+pub struct ImmutableGetFeeInfoResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetFeeInfoResults {
+impl ImmutableGetFeeInfoResults {
     pub fn fee_color(&self) -> ScImmutableColor {
         ScImmutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
     }
@@ -220,11 +150,11 @@ impl ImmutableViewGetFeeInfoResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetFeeInfoResults {
+pub struct MutableGetFeeInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetFeeInfoResults {
+impl MutableGetFeeInfoResults {
     pub fn fee_color(&self) -> ScMutableColor {
         ScMutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
     }

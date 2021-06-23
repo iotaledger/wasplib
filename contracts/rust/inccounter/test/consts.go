@@ -12,16 +12,22 @@ import "github.com/iotaledger/wasp/packages/coretypes"
 const (
 	ScName  = "inccounter"
 	HScName = coretypes.Hname(0xaf2438e9)
+)
 
+const (
 	ParamCounter    = "counter"
 	ParamDummy      = "dummy"
 	ParamNumRepeats = "numRepeats"
+)
 
-	ResultCounter = "counter"
+const ResultCounter = "counter"
 
+const (
 	StateCounter    = "counter"
 	StateNumRepeats = "numRepeats"
+)
 
+const (
 	FuncCallIncrement          = "callIncrement"
 	FuncCallIncrementRecurse5x = "callIncrementRecurse5x"
 	FuncEndlessLoop            = "endlessLoop"
@@ -35,7 +41,9 @@ const (
 	FuncTestLeb128             = "testLeb128"
 	FuncWhenMustIncrement      = "whenMustIncrement"
 	ViewGetCounter             = "getCounter"
+)
 
+const (
 	HFuncCallIncrement          = coretypes.Hname(0xeb5dcacd)
 	HFuncCallIncrementRecurse5x = coretypes.Hname(0x8749fbff)
 	HFuncEndlessLoop            = coretypes.Hname(0x365f0929)

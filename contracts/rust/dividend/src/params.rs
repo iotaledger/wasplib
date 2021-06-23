@@ -15,53 +15,33 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncDivideParams {
+pub struct ImmutableInitParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncDivideParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncDivideParams {
-    pub fn new() -> MutableFuncDivideParams {
-        MutableFuncDivideParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncInitParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncInitParams {
+impl ImmutableInitParams {
     pub fn owner(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_OWNER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncInitParams {
+pub struct MutableInitParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncInitParams {
-    pub fn new() -> MutableFuncInitParams {
-        MutableFuncInitParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableInitParams {
     pub fn owner(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_OWNER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncMemberParams {
+pub struct ImmutableMemberParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncMemberParams {
+impl ImmutableMemberParams {
     pub fn address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }
@@ -72,15 +52,11 @@ impl ImmutableFuncMemberParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncMemberParams {
+pub struct MutableMemberParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncMemberParams {
-    pub fn new() -> MutableFuncMemberParams {
-        MutableFuncMemberParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableMemberParams {
     pub fn address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }
@@ -91,52 +67,44 @@ impl MutableFuncMemberParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncSetOwnerParams {
+pub struct ImmutableSetOwnerParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncSetOwnerParams {
+impl ImmutableSetOwnerParams {
     pub fn owner(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, idx_map(IDX_PARAM_OWNER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncSetOwnerParams {
+pub struct MutableSetOwnerParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncSetOwnerParams {
-    pub fn new() -> MutableFuncSetOwnerParams {
-        MutableFuncSetOwnerParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableSetOwnerParams {
     pub fn owner(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, idx_map(IDX_PARAM_OWNER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetFactorParams {
+pub struct ImmutableGetFactorParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetFactorParams {
+impl ImmutableGetFactorParams {
     pub fn address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetFactorParams {
+pub struct MutableGetFactorParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetFactorParams {
-    pub fn new() -> MutableViewGetFactorParams {
-        MutableViewGetFactorParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetFactorParams {
     pub fn address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }

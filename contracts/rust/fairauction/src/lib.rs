@@ -47,8 +47,8 @@ fn on_load() {
     }
 }
 
-pub struct FuncFinalizeAuctionContext {
-    params: ImmutableFuncFinalizeAuctionParams,
+pub struct FinalizeAuctionContext {
+    params: ImmutableFinalizeAuctionParams,
     state:  MutableFairAuctionState,
 }
 
@@ -57,8 +57,8 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let f = FuncFinalizeAuctionContext {
-        params: ImmutableFuncFinalizeAuctionParams {
+    let f = FinalizeAuctionContext {
+        params: ImmutableFinalizeAuctionParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairAuctionState {
@@ -70,15 +70,15 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcFinalizeAuction ok");
 }
 
-pub struct FuncPlaceBidContext {
-    params: ImmutableFuncPlaceBidParams,
+pub struct PlaceBidContext {
+    params: ImmutablePlaceBidParams,
     state:  MutableFairAuctionState,
 }
 
 fn func_place_bid_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcPlaceBid");
-    let f = FuncPlaceBidContext {
-        params: ImmutableFuncPlaceBidParams {
+    let f = PlaceBidContext {
+        params: ImmutablePlaceBidParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairAuctionState {
@@ -90,8 +90,8 @@ fn func_place_bid_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcPlaceBid ok");
 }
 
-pub struct FuncSetOwnerMarginContext {
-    params: ImmutableFuncSetOwnerMarginParams,
+pub struct SetOwnerMarginContext {
+    params: ImmutableSetOwnerMarginParams,
     state:  MutableFairAuctionState,
 }
 
@@ -100,8 +100,8 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
     // only SC creator can set owner margin
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncSetOwnerMarginContext {
-        params: ImmutableFuncSetOwnerMarginParams {
+    let f = SetOwnerMarginContext {
+        params: ImmutableSetOwnerMarginParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairAuctionState {
@@ -113,15 +113,15 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcSetOwnerMargin ok");
 }
 
-pub struct FuncStartAuctionContext {
-    params: ImmutableFuncStartAuctionParams,
+pub struct StartAuctionContext {
+    params: ImmutableStartAuctionParams,
     state:  MutableFairAuctionState,
 }
 
 fn func_start_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcStartAuction");
-    let f = FuncStartAuctionContext {
-        params: ImmutableFuncStartAuctionParams {
+    let f = StartAuctionContext {
+        params: ImmutableStartAuctionParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairAuctionState {
@@ -134,19 +134,19 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcStartAuction ok");
 }
 
-pub struct ViewGetInfoContext {
-    params:  ImmutableViewGetInfoParams,
-    results: MutableViewGetInfoResults,
+pub struct GetInfoContext {
+    params:  ImmutableGetInfoParams,
+    results: MutableGetInfoResults,
     state:   ImmutableFairAuctionState,
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("fairauction.viewGetInfo");
-    let f = ViewGetInfoContext {
-        params: ImmutableViewGetInfoParams {
+    let f = GetInfoContext {
+        params: ImmutableGetInfoParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewGetInfoResults {
+        results: MutableGetInfoResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableFairAuctionState {

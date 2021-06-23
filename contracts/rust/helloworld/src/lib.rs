@@ -42,13 +42,13 @@ fn on_load() {
     }
 }
 
-pub struct FuncHelloWorldContext {
+pub struct HelloWorldContext {
     state: MutableHelloWorldState,
 }
 
 fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld");
-    let f = FuncHelloWorldContext {
+    let f = HelloWorldContext {
         state: MutableHelloWorldState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -57,15 +57,15 @@ fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld ok");
 }
 
-pub struct ViewGetHelloWorldContext {
-    results: MutableViewGetHelloWorldResults,
+pub struct GetHelloWorldContext {
+    results: MutableGetHelloWorldResults,
     state:   ImmutableHelloWorldState,
 }
 
 fn view_get_hello_world_thunk(ctx: &ScViewContext) {
     ctx.log("helloworld.viewGetHelloWorld");
-    let f = ViewGetHelloWorldContext {
-        results: MutableViewGetHelloWorldResults {
+    let f = GetHelloWorldContext {
+        results: MutableGetHelloWorldResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableHelloWorldState {

@@ -9,18 +9,18 @@ package helloworld
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewGetHelloWorldResults struct {
+type ImmutableGetHelloWorldResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetHelloWorldResults) HelloWorld() wasmlib.ScImmutableString {
+func (s ImmutableGetHelloWorldResults) HelloWorld() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultHelloWorld])
 }
 
-type MutableViewGetHelloWorldResults struct {
+type MutableGetHelloWorldResults struct {
 	id int32
 }
 
-func (s MutableViewGetHelloWorldResults) HelloWorld() wasmlib.ScMutableString {
+func (s MutableGetHelloWorldResults) HelloWorld() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultHelloWorld])
 }

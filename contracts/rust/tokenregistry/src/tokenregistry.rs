@@ -6,7 +6,7 @@ use wasmlib::*;
 use crate::*;
 use crate::types::*;
 
-pub fn func_mint_supply(ctx: &ScFuncContext, f: &FuncMintSupplyContext) {
+pub fn func_mint_supply(ctx: &ScFuncContext, f: &MintSupplyContext) {
     let minted = ctx.minted();
     let minted_colors = minted.colors();
     ctx.require(minted_colors.length() == 1, "need single minted color");
@@ -33,14 +33,14 @@ pub fn func_mint_supply(ctx: &ScFuncContext, f: &FuncMintSupplyContext) {
     color_list.get_color(color_list.length()).set_value(&minted_color);
 }
 
-pub fn func_transfer_ownership(_ctx: &ScFuncContext, _f: &FuncTransferOwnershipContext) {
+pub fn func_transfer_ownership(_ctx: &ScFuncContext, _f: &TransferOwnershipContext) {
     //TODO
 }
 
-pub fn func_update_metadata(_ctx: &ScFuncContext, _f: &FuncUpdateMetadataContext) {
+pub fn func_update_metadata(_ctx: &ScFuncContext, _f: &UpdateMetadataContext) {
     //TODO
 }
 
-pub fn view_get_info(_ctx: &ScViewContext, _f: &ViewGetInfoContext) {
+pub fn view_get_info(_ctx: &ScViewContext, _f: &GetInfoContext) {
     //TODO
 }

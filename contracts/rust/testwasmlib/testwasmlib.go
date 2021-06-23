@@ -10,7 +10,7 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreblocklog"
 )
 
-func funcParamTypes(ctx wasmlib.ScFuncContext, f *FuncParamTypesContext) {
+func funcParamTypes(ctx wasmlib.ScFuncContext, f*ParamTypesContext) {
 	if f.Params.Address().Exists() {
 		ctx.Require(f.Params.Address().Value() == ctx.AccountId().Address(), "mismatch: Address")
 	}
@@ -53,20 +53,18 @@ func funcParamTypes(ctx wasmlib.ScFuncContext, f *FuncParamTypesContext) {
 	}
 }
 
-func viewBlockRecord(ctx wasmlib.ScViewContext, f *ViewBlockRecordContext) {
-	sc := coreblocklog.NewCoreBlockLogView(ctx)
-	params := coreblocklog.NewMutableViewGetRequestLogRecordsForBlockParams()
-	params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
-	ret := sc.GetRequestLogRecordsForBlock(params)
+func viewBlockRecord(ctx wasmlib.ScViewContext, f*BlockRecordContext) {
+	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
+	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
+	records.Func.Call()
 	recordIndex := f.Params.RecordIndex().Value()
-	ctx.Require(recordIndex < ret.RequestRecord().Length(), "invalid recordIndex")
-	f.Results.Record().SetValue(ret.RequestRecord().GetBytes(recordIndex).Value())
+	ctx.Require(recordIndex < records.Results.RequestRecord().Length(), "invalid recordIndex")
+	f.Results.Record().SetValue(records.Results.RequestRecord().GetBytes(recordIndex).Value())
 }
 
-func viewBlockRecords(ctx wasmlib.ScViewContext, f *ViewBlockRecordsContext) {
-	sc := coreblocklog.NewCoreBlockLogView(ctx)
-	params := coreblocklog.NewMutableViewGetRequestLogRecordsForBlockParams()
-	params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
-	ret := sc.GetRequestLogRecordsForBlock(params)
-	f.Results.Count().SetValue(ret.RequestRecord().Length())
+func viewBlockRecords(ctx wasmlib.ScViewContext, f*BlockRecordsContext) {
+	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
+	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
+	records.Func.Call()
+	f.Results.Count().SetValue(records.Results.RequestRecord().Length())
 }

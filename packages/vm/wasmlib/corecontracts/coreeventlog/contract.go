@@ -9,61 +9,37 @@ package coreeventlog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreEventLogFunc struct {
-	sc wasmlib.ScContractFunc
+type GetNumRecordsCall struct {
+	Func wasmlib.ScView
+	Params MutableGetNumRecordsParams
+	Results ImmutableGetNumRecordsResults
 }
 
-func NewCoreEventLogFunc(ctx wasmlib.ScFuncContext) *CoreEventLogFunc {
-	return &CoreEventLogFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreEventLogFunc) Delay(seconds int32) *CoreEventLogFunc {
-	f.sc.Delay(seconds)
+func NewGetNumRecordsCall(ctx wasmlib.ScFuncContext) *GetNumRecordsCall {
+	f := &GetNumRecordsCall{}
+	f.Func.Init(HScName, HViewGetNumRecords, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreEventLogFunc) OfContract(contract wasmlib.ScHname) *CoreEventLogFunc {
-	f.sc.OfContract(contract)
+func NewGetNumRecordsCallFromView(ctx wasmlib.ScViewContext) *GetNumRecordsCall {
+	f := &GetNumRecordsCall{}
+	f.Func.Init(HScName, HViewGetNumRecords, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreEventLogFunc) Post() *CoreEventLogFunc {
-	f.sc.Post()
+type GetRecordsCall struct {
+	Func wasmlib.ScView
+	Params MutableGetRecordsParams
+}
+
+func NewGetRecordsCall(ctx wasmlib.ScFuncContext) *GetRecordsCall {
+	f := &GetRecordsCall{}
+	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreEventLogFunc) PostToChain(chainId wasmlib.ScChainId) *CoreEventLogFunc {
-	f.sc.PostToChain(chainId)
+func NewGetRecordsCallFromView(ctx wasmlib.ScViewContext) *GetRecordsCall {
+	f := &GetRecordsCall{}
+	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, nil)
 	return f
-}
-
-func (f *CoreEventLogFunc) GetNumRecords(params MutableViewGetNumRecordsParams) ImmutableViewGetNumRecordsResults {
-	f.sc.Run(HViewGetNumRecords, params.id, nil)
-	return ImmutableViewGetNumRecordsResults{id: f.sc.ResultMapId()}
-}
-
-func (f *CoreEventLogFunc) GetRecords(params MutableViewGetRecordsParams) {
-	f.sc.Run(HViewGetRecords, params.id, nil)
-}
-
-type CoreEventLogView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewCoreEventLogView(ctx wasmlib.ScViewContext) *CoreEventLogView {
-	return &CoreEventLogView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *CoreEventLogView) OfContract(contract wasmlib.ScHname) *CoreEventLogView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *CoreEventLogView) GetNumRecords(params MutableViewGetNumRecordsParams) ImmutableViewGetNumRecordsResults {
-	v.sc.Run(HViewGetNumRecords, params.id)
-	return ImmutableViewGetNumRecordsResults{id: v.sc.ResultMapId()}
-}
-
-func (v *CoreEventLogView) GetRecords(params MutableViewGetRecordsParams) {
-	v.sc.Run(HViewGetRecords, params.id)
 }

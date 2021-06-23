@@ -7,68 +7,60 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreeventlog::*;
 
-pub struct CoreEventLogFunc {
-    sc: ScContractFunc,
+pub struct GetNumRecordsCall {
+    pub func: ScView,
+    pub params: MutableGetNumRecordsParams,
+    pub results: ImmutableGetNumRecordsResults,
 }
 
-impl CoreEventLogFunc {
-    pub fn new(ctx: &ScFuncContext) -> CoreEventLogFunc {
-        CoreEventLogFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
+impl GetNumRecordsCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetNumRecordsCall {
+        let mut f = GetNumRecordsCall {
+            func: ScView::zero(),
+            params: MutableGetNumRecordsParams { id: 0 },
+            results: ImmutableGetNumRecordsResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn delay(&mut self, seconds: i32) -> &mut CoreEventLogFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreEventLogFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut CoreEventLogFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut CoreEventLogFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn get_num_records(&mut self, params: MutableViewGetNumRecordsParams) -> ImmutableViewGetNumRecordsResults {
-        self.sc.run(HVIEW_GET_NUM_RECORDS, params.id, None);
-        ImmutableViewGetNumRecordsResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_records(&mut self, params: MutableViewGetRecordsParams) {
-        self.sc.run(HVIEW_GET_RECORDS, params.id, None);
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetNumRecordsCall {
+        let mut f = GetNumRecordsCall {
+            func: ScView::zero(),
+            params: MutableGetNumRecordsParams { id: 0 },
+            results: ImmutableGetNumRecordsResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS, &mut f.params.id, &mut f.results.id);
+        f
     }
 }
 
-pub struct CoreEventLogView {
-    sc: ScContractView,
+pub struct GetRecordsCall {
+    pub func: ScView,
+    pub params: MutableGetRecordsParams,
 }
 
-impl CoreEventLogView {
-    pub fn new(ctx: &ScViewContext) -> CoreEventLogView {
-        CoreEventLogView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl GetRecordsCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetRecordsCall {
+        let mut f = GetRecordsCall {
+            func: ScView::zero(),
+            params: MutableGetRecordsParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_RECORDS, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreEventLogView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_num_records(&mut self, params: MutableViewGetNumRecordsParams) -> ImmutableViewGetNumRecordsResults {
-        self.sc.run(HVIEW_GET_NUM_RECORDS, params.id);
-        ImmutableViewGetNumRecordsResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_records(&mut self, params: MutableViewGetRecordsParams) {
-        self.sc.run(HVIEW_GET_RECORDS, params.id);
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetRecordsCall {
+        let mut f = GetRecordsCall {
+            func: ScView::zero(),
+            params: MutableGetRecordsParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_RECORDS, &mut f.params.id, ptr::null_mut());
+        f
     }
 }

@@ -13,16 +13,20 @@ const (
 	ScName        = "governance"
 	ScDescription = "Core governance contract"
 	HScName       = wasmlib.ScHname(0x17cf909f)
+)
 
-	ParamStateControllerAddress = wasmlib.Key("S")
+const ParamStateControllerAddress = wasmlib.Key("S")
 
-	ResultAllowedStateControllerAddresses = wasmlib.Key("a")
+const ResultAllowedStateControllerAddresses = wasmlib.Key("a")
 
+const (
 	FuncAddAllowedStateControllerAddress    = "addAllowedStateControllerAddress"
 	FuncRemoveAllowedStateControllerAddress = "removeAllowedStateControllerAddress"
 	FuncRotateStateController               = "rotateStateController"
 	ViewGetAllowedStateControllerAddresses  = "getAllowedStateControllerAddresses"
+)
 
+const (
 	HFuncAddAllowedStateControllerAddress    = wasmlib.ScHname(0x9469d567)
 	HFuncRemoveAllowedStateControllerAddress = wasmlib.ScHname(0x31f69447)
 	HFuncRotateStateController               = wasmlib.ScHname(0x244d1038)

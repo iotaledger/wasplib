@@ -9,69 +9,63 @@ package dividend
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type DividendFunc struct {
-	sc wasmlib.ScContractFunc
+type DivideCall struct {
+	Func wasmlib.ScFunc
 }
 
-func NewDividendFunc(ctx wasmlib.ScFuncContext) *DividendFunc {
-	return &DividendFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *DividendFunc) Delay(seconds int32) *DividendFunc {
-	f.sc.Delay(seconds)
+func NewDivideCall(ctx wasmlib.ScFuncContext) *DivideCall {
+	f := &DivideCall{}
+	f.Func.Init(HScName, HFuncDivide, nil, nil)
 	return f
 }
 
-func (f *DividendFunc) OfContract(contract wasmlib.ScHname) *DividendFunc {
-	f.sc.OfContract(contract)
+type InitCall struct {
+	Func wasmlib.ScFunc
+	Params MutableInitParams
+}
+
+func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
+	f := &InitCall{}
+	f.Func.Init(HScName, HFuncInit, &f.Params.id, nil)
 	return f
 }
 
-func (f *DividendFunc) Post() *DividendFunc {
-	f.sc.Post()
+type MemberCall struct {
+	Func wasmlib.ScFunc
+	Params MutableMemberParams
+}
+
+func NewMemberCall(ctx wasmlib.ScFuncContext) *MemberCall {
+	f := &MemberCall{}
+	f.Func.Init(HScName, HFuncMember, &f.Params.id, nil)
 	return f
 }
 
-func (f *DividendFunc) PostToChain(chainId wasmlib.ScChainId) *DividendFunc {
-	f.sc.PostToChain(chainId)
+type SetOwnerCall struct {
+	Func wasmlib.ScFunc
+	Params MutableSetOwnerParams
+}
+
+func NewSetOwnerCall(ctx wasmlib.ScFuncContext) *SetOwnerCall {
+	f := &SetOwnerCall{}
+	f.Func.Init(HScName, HFuncSetOwner, &f.Params.id, nil)
 	return f
 }
 
-func (f *DividendFunc) Divide(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncDivide, 0, &transfer)
+type GetFactorCall struct {
+	Func wasmlib.ScView
+	Params MutableGetFactorParams
+	Results ImmutableGetFactorResults
 }
 
-func (f *DividendFunc) Init(params MutableFuncInitParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncInit, params.id, &transfer)
+func NewGetFactorCall(ctx wasmlib.ScFuncContext) *GetFactorCall {
+	f := &GetFactorCall{}
+	f.Func.Init(HScName, HViewGetFactor, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *DividendFunc) Member(params MutableFuncMemberParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncMember, params.id, &transfer)
-}
-
-func (f *DividendFunc) SetOwner(params MutableFuncSetOwnerParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncSetOwner, params.id, &transfer)
-}
-
-func (f *DividendFunc) GetFactor(params MutableViewGetFactorParams) ImmutableViewGetFactorResults {
-	f.sc.Run(HViewGetFactor, params.id, nil)
-	return ImmutableViewGetFactorResults{id: f.sc.ResultMapId()}
-}
-
-type DividendView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewDividendView(ctx wasmlib.ScViewContext) *DividendView {
-	return &DividendView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *DividendView) OfContract(contract wasmlib.ScHname) *DividendView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *DividendView) GetFactor(params MutableViewGetFactorParams) ImmutableViewGetFactorResults {
-	v.sc.Run(HViewGetFactor, params.id)
-	return ImmutableViewGetFactorResults{id: v.sc.ResultMapId()}
+func NewGetFactorCallFromView(ctx wasmlib.ScViewContext) *GetFactorCall {
+	f := &GetFactorCall{}
+	f.Func.Init(HScName, HViewGetFactor, &f.Params.id, &f.Results.id)
+	return f
 }

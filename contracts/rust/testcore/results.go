@@ -9,138 +9,138 @@ package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncCallOnChainResults struct {
+type ImmutableCallOnChainResults struct {
 	id int32
 }
 
-func (s ImmutableFuncCallOnChainResults) IntValue() wasmlib.ScImmutableInt64 {
+func (s ImmutableCallOnChainResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableFuncCallOnChainResults struct {
+type MutableCallOnChainResults struct {
 	id int32
 }
 
-func (s MutableFuncCallOnChainResults) IntValue() wasmlib.ScMutableInt64 {
+func (s MutableCallOnChainResults) IntValue() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type ImmutableFuncGetMintedSupplyResults struct {
+type ImmutableGetMintedSupplyResults struct {
 	id int32
 }
 
-func (s ImmutableFuncGetMintedSupplyResults) MintedColor() wasmlib.ScImmutableColor {
+func (s ImmutableGetMintedSupplyResults) MintedColor() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxResultMintedColor])
 }
 
-func (s ImmutableFuncGetMintedSupplyResults) MintedSupply() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetMintedSupplyResults) MintedSupply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMintedSupply])
 }
 
-type MutableFuncGetMintedSupplyResults struct {
+type MutableGetMintedSupplyResults struct {
 	id int32
 }
 
-func (s MutableFuncGetMintedSupplyResults) MintedColor() wasmlib.ScMutableColor {
+func (s MutableGetMintedSupplyResults) MintedColor() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxResultMintedColor])
 }
 
-func (s MutableFuncGetMintedSupplyResults) MintedSupply() wasmlib.ScMutableInt64 {
+func (s MutableGetMintedSupplyResults) MintedSupply() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultMintedSupply])
 }
 
-type ImmutableFuncRunRecursionResults struct {
+type ImmutableRunRecursionResults struct {
 	id int32
 }
 
-func (s ImmutableFuncRunRecursionResults) IntValue() wasmlib.ScImmutableInt64 {
+func (s ImmutableRunRecursionResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableFuncRunRecursionResults struct {
+type MutableRunRecursionResults struct {
 	id int32
 }
 
-func (s MutableFuncRunRecursionResults) IntValue() wasmlib.ScMutableInt64 {
+func (s MutableRunRecursionResults) IntValue() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type ImmutableFuncTestChainOwnerIDFullResults struct {
+type ImmutableTestChainOwnerIDFullResults struct {
 	id int32
 }
 
-func (s ImmutableFuncTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScImmutableAgentId {
+func (s ImmutableTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type MutableFuncTestChainOwnerIDFullResults struct {
+type MutableTestChainOwnerIDFullResults struct {
 	id int32
 }
 
-func (s MutableFuncTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScMutableAgentId {
+func (s MutableTestChainOwnerIDFullResults) ChainOwnerId() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type ImmutableViewFibonacciResults struct {
+type ImmutableFibonacciResults struct {
 	id int32
 }
 
-func (s ImmutableViewFibonacciResults) IntValue() wasmlib.ScImmutableInt64 {
+func (s ImmutableFibonacciResults) IntValue() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type MutableViewFibonacciResults struct {
+type MutableFibonacciResults struct {
 	id int32
 }
 
-func (s MutableViewFibonacciResults) IntValue() wasmlib.ScMutableInt64 {
+func (s MutableFibonacciResults) IntValue() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIntValue])
 }
 
-type ImmutableViewGetCounterResults struct {
+type ImmutableGetCounterResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetCounterResults) Counter() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetCounterResults) Counter() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
-type MutableViewGetCounterResults struct {
+type MutableGetCounterResults struct {
 	id int32
 }
 
-func (s MutableViewGetCounterResults) Counter() wasmlib.ScMutableInt64 {
+func (s MutableGetCounterResults) Counter() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
-type ImmutableViewTestChainOwnerIDViewResults struct {
+type ImmutableTestChainOwnerIDViewResults struct {
 	id int32
 }
 
-func (s ImmutableViewTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScImmutableAgentId {
+func (s ImmutableTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type MutableViewTestChainOwnerIDViewResults struct {
+type MutableTestChainOwnerIDViewResults struct {
 	id int32
 }
 
-func (s MutableViewTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScMutableAgentId {
+func (s MutableTestChainOwnerIDViewResults) ChainOwnerId() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultChainOwnerId])
 }
 
-type ImmutableViewTestSandboxCallResults struct {
+type ImmutableTestSandboxCallResults struct {
 	id int32
 }
 
-func (s ImmutableViewTestSandboxCallResults) SandboxCall() wasmlib.ScImmutableString {
+func (s ImmutableTestSandboxCallResults) SandboxCall() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultSandboxCall])
 }
 
-type MutableViewTestSandboxCallResults struct {
+type MutableTestSandboxCallResults struct {
 	id int32
 }
 
-func (s MutableViewTestSandboxCallResults) SandboxCall() wasmlib.ScMutableString {
+func (s MutableTestSandboxCallResults) SandboxCall() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultSandboxCall])
 }

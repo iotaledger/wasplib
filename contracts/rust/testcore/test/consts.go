@@ -13,7 +13,9 @@ const (
 	ScName        = "testcore"
 	ScDescription = "Core test for ISCP wasmlib Rust/Wasm library"
 	HScName       = coretypes.Hname(0x370d33ad)
+)
 
+const (
 	ParamAddress         = "address"
 	ParamAgentId         = "agentID"
 	ParamCaller          = "caller"
@@ -32,19 +34,25 @@ const (
 	ParamName            = "intParamName"
 	ParamString          = "string"
 	ParamStringZero      = "string-0"
+)
 
+const (
 	ResultChainOwnerId = "chainOwnerID"
 	ResultCounter      = "counter"
 	ResultIntValue     = "intParamValue"
 	ResultMintedColor  = "mintedColor"
 	ResultMintedSupply = "mintedSupply"
 	ResultSandboxCall  = "sandboxCall"
+)
 
+const (
 	StateCounter      = "counter"
 	StateHnameEP      = "hnameEP"
 	StateMintedColor  = "mintedColor"
 	StateMintedSupply = "mintedSupply"
+)
 
+const (
 	FuncCallOnChain                 = "callOnChain"
 	FuncCheckContextFromFullEP      = "checkContextFromFullEP"
 	FuncDoNothing                   = "doNothing"
@@ -73,7 +81,9 @@ const (
 	ViewTestChainOwnerIDView        = "testChainOwnerIDView"
 	ViewTestPanicViewEP             = "testPanicViewEP"
 	ViewTestSandboxCall             = "testSandboxCall"
+)
 
+const (
 	HFuncCallOnChain                 = coretypes.Hname(0x95a3d123)
 	HFuncCheckContextFromFullEP      = coretypes.Hname(0xa56c24ba)
 	HFuncDoNothing                   = coretypes.Hname(0xdda4a6de)

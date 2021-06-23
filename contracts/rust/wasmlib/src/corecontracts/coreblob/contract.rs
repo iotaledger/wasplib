@@ -7,81 +7,98 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreblob::*;
 
-pub struct CoreBlobFunc {
-    sc: ScContractFunc,
+pub struct StoreBlobCall {
+    pub func: ScFunc,
+    pub results: ImmutableStoreBlobResults,
 }
 
-impl CoreBlobFunc {
-    pub fn new(ctx: &ScFuncContext) -> CoreBlobFunc {
-        CoreBlobFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut CoreBlobFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreBlobFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut CoreBlobFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut CoreBlobFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn store_blob(&mut self, transfer: ScTransfers) -> ImmutableFuncStoreBlobResults {
-        self.sc.run(HFUNC_STORE_BLOB, 0, Some(transfer));
-        ImmutableFuncStoreBlobResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_blob_field(&mut self, params: MutableViewGetBlobFieldParams) -> ImmutableViewGetBlobFieldResults {
-        self.sc.run(HVIEW_GET_BLOB_FIELD, params.id, None);
-        ImmutableViewGetBlobFieldResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_blob_info(&mut self, params: MutableViewGetBlobInfoParams) {
-        self.sc.run(HVIEW_GET_BLOB_INFO, params.id, None);
-    }
-
-    pub fn list_blobs(&mut self) {
-        self.sc.run(HVIEW_LIST_BLOBS, 0, None);
+impl StoreBlobCall {
+    pub fn new(_ctx: &ScFuncContext) -> StoreBlobCall {
+        let mut f = StoreBlobCall {
+            func: ScFunc::zero(),
+            results: ImmutableStoreBlobResults { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_STORE_BLOB, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }
 
-pub struct CoreBlobView {
-    sc: ScContractView,
+pub struct GetBlobFieldCall {
+    pub func: ScView,
+    pub params: MutableGetBlobFieldParams,
+    pub results: ImmutableGetBlobFieldResults,
 }
 
-impl CoreBlobView {
-    pub fn new(ctx: &ScViewContext) -> CoreBlobView {
-        CoreBlobView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl GetBlobFieldCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetBlobFieldCall {
+        let mut f = GetBlobFieldCall {
+            func: ScView::zero(),
+            params: MutableGetBlobFieldParams { id: 0 },
+            results: ImmutableGetBlobFieldResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_BLOB_FIELD, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut CoreBlobView {
-        self.sc.of_contract(contract);
-        self
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobFieldCall {
+        let mut f = GetBlobFieldCall {
+            func: ScView::zero(),
+            params: MutableGetBlobFieldParams { id: 0 },
+            results: ImmutableGetBlobFieldResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_BLOB_FIELD, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct GetBlobInfoCall {
+    pub func: ScView,
+    pub params: MutableGetBlobInfoParams,
+}
+
+impl GetBlobInfoCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetBlobInfoCall {
+        let mut f = GetBlobInfoCall {
+            func: ScView::zero(),
+            params: MutableGetBlobInfoParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_BLOB_INFO, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn get_blob_field(&mut self, params: MutableViewGetBlobFieldParams) -> ImmutableViewGetBlobFieldResults {
-        self.sc.run(HVIEW_GET_BLOB_FIELD, params.id);
-        ImmutableViewGetBlobFieldResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobInfoCall {
+        let mut f = GetBlobInfoCall {
+            func: ScView::zero(),
+            params: MutableGetBlobInfoParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_BLOB_INFO, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct ListBlobsCall {
+    pub func: ScView,
+}
+
+impl ListBlobsCall {
+    pub fn new(_ctx: &ScFuncContext) -> ListBlobsCall {
+        let mut f = ListBlobsCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_LIST_BLOBS, ptr::null_mut(), ptr::null_mut());
+        f
     }
 
-    pub fn get_blob_info(&mut self, params: MutableViewGetBlobInfoParams) {
-        self.sc.run(HVIEW_GET_BLOB_INFO, params.id);
-    }
-
-    pub fn list_blobs(&mut self) {
-        self.sc.run(HVIEW_LIST_BLOBS, 0);
+    pub fn new_from_view(_ctx: &ScViewContext) -> ListBlobsCall {
+        let mut f = ListBlobsCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_LIST_BLOBS, ptr::null_mut(), ptr::null_mut());
+        f
     }
 }

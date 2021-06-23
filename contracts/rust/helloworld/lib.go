@@ -19,13 +19,13 @@ func OnLoad() {
 	}
 }
 
-type FuncHelloWorldContext struct {
+type HelloWorldContext struct {
 	State MutableHelloWorldState
 }
 
 func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("helloworld.funcHelloWorld")
-	f := &FuncHelloWorldContext{
+	f := &HelloWorldContext{
 		State: MutableHelloWorldState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -34,15 +34,15 @@ func funcHelloWorldThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("helloworld.funcHelloWorld ok")
 }
 
-type ViewGetHelloWorldContext struct {
-	Results MutableViewGetHelloWorldResults
+type GetHelloWorldContext struct {
+	Results MutableGetHelloWorldResults
 	State   ImmutableHelloWorldState
 }
 
 func viewGetHelloWorldThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("helloworld.viewGetHelloWorld")
-	f := &ViewGetHelloWorldContext{
-		Results: MutableViewGetHelloWorldResults{
+	f := &GetHelloWorldContext{
+		Results: MutableGetHelloWorldResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableHelloWorldState{

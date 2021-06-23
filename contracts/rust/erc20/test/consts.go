@@ -13,21 +13,29 @@ const (
 	ScName        = "erc20"
 	ScDescription = "ERC-20 PoC for IOTA Smart Contracts"
 	HScName       = coretypes.Hname(0x200e3733)
+)
 
+const (
 	ParamAccount    = "ac"
 	ParamAmount     = "am"
 	ParamCreator    = "c"
 	ParamDelegation = "d"
 	ParamRecipient  = "r"
 	ParamSupply     = "s"
+)
 
+const (
 	ResultAmount = "am"
 	ResultSupply = "s"
+)
 
+const (
 	StateAllAllowances = "a"
 	StateBalances      = "b"
 	StateSupply        = "s"
+)
 
+const (
 	FuncApprove      = "approve"
 	FuncInit         = "init"
 	FuncTransfer     = "transfer"
@@ -35,7 +43,9 @@ const (
 	ViewAllowance    = "allowance"
 	ViewBalanceOf    = "balanceOf"
 	ViewTotalSupply  = "totalSupply"
+)
 
+const (
 	HFuncApprove      = coretypes.Hname(0xa0661268)
 	HFuncInit         = coretypes.Hname(0x1f44d644)
 	HFuncTransfer     = coretypes.Hname(0xa15da184)

@@ -9,42 +9,34 @@ package coreaccounts
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncDepositParams struct {
+type ImmutableDepositParams struct {
 	id int32
 }
 
-func (s ImmutableFuncDepositParams) AgentID() wasmlib.ScImmutableAgentId {
+func (s ImmutableDepositParams) AgentID() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, ParamAgentID.KeyId())
 }
 
-type MutableFuncDepositParams struct {
+type MutableDepositParams struct {
 	id int32
 }
 
-func NewMutableFuncDepositParams() MutableFuncDepositParams {
-	return MutableFuncDepositParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncDepositParams) AgentID() wasmlib.ScMutableAgentId {
+func (s MutableDepositParams) AgentID() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, ParamAgentID.KeyId())
 }
 
-type ImmutableViewBalanceParams struct {
+type ImmutableBalanceParams struct {
 	id int32
 }
 
-func (s ImmutableViewBalanceParams) AgentID() wasmlib.ScImmutableAgentId {
+func (s ImmutableBalanceParams) AgentID() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, ParamAgentID.KeyId())
 }
 
-type MutableViewBalanceParams struct {
+type MutableBalanceParams struct {
 	id int32
 }
 
-func NewMutableViewBalanceParams() MutableViewBalanceParams {
-	return MutableViewBalanceParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewBalanceParams) AgentID() wasmlib.ScMutableAgentId {
+func (s MutableBalanceParams) AgentID() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, ParamAgentID.KeyId())
 }

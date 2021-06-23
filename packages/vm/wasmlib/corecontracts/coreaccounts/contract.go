@@ -9,75 +9,72 @@ package coreaccounts
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreAccountsFunc struct {
-	sc wasmlib.ScContractFunc
+type DepositCall struct {
+	Func wasmlib.ScFunc
+	Params MutableDepositParams
 }
 
-func NewCoreAccountsFunc(ctx wasmlib.ScFuncContext) *CoreAccountsFunc {
-	return &CoreAccountsFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreAccountsFunc) Delay(seconds int32) *CoreAccountsFunc {
-	f.sc.Delay(seconds)
+func NewDepositCall(ctx wasmlib.ScFuncContext) *DepositCall {
+	f := &DepositCall{}
+	f.Func.Init(HScName, HFuncDeposit, &f.Params.id, nil)
 	return f
 }
 
-func (f *CoreAccountsFunc) OfContract(contract wasmlib.ScHname) *CoreAccountsFunc {
-	f.sc.OfContract(contract)
+type WithdrawCall struct {
+	Func wasmlib.ScFunc
+}
+
+func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
+	f := &WithdrawCall{}
+	f.Func.Init(HScName, HFuncWithdraw, nil, nil)
 	return f
 }
 
-func (f *CoreAccountsFunc) Post() *CoreAccountsFunc {
-	f.sc.Post()
+type AccountsCall struct {
+	Func wasmlib.ScView
+}
+
+func NewAccountsCall(ctx wasmlib.ScFuncContext) *AccountsCall {
+	f := &AccountsCall{}
+	f.Func.Init(HScName, HViewAccounts, nil, nil)
 	return f
 }
 
-func (f *CoreAccountsFunc) PostToChain(chainId wasmlib.ScChainId) *CoreAccountsFunc {
-	f.sc.PostToChain(chainId)
+func NewAccountsCallFromView(ctx wasmlib.ScViewContext) *AccountsCall {
+	f := &AccountsCall{}
+	f.Func.Init(HScName, HViewAccounts, nil, nil)
 	return f
 }
 
-func (f *CoreAccountsFunc) Deposit(params MutableFuncDepositParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncDeposit, params.id, &transfer)
+type BalanceCall struct {
+	Func wasmlib.ScView
+	Params MutableBalanceParams
 }
 
-func (f *CoreAccountsFunc) Withdraw(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncWithdraw, 0, &transfer)
+func NewBalanceCall(ctx wasmlib.ScFuncContext) *BalanceCall {
+	f := &BalanceCall{}
+	f.Func.Init(HScName, HViewBalance, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreAccountsFunc) Accounts() {
-	f.sc.Run(HViewAccounts, 0, nil)
+func NewBalanceCallFromView(ctx wasmlib.ScViewContext) *BalanceCall {
+	f := &BalanceCall{}
+	f.Func.Init(HScName, HViewBalance, &f.Params.id, nil)
+	return f
 }
 
-func (f *CoreAccountsFunc) Balance(params MutableViewBalanceParams) {
-	f.sc.Run(HViewBalance, params.id, nil)
+type TotalAssetsCall struct {
+	Func wasmlib.ScView
 }
 
-func (f *CoreAccountsFunc) TotalAssets() {
-	f.sc.Run(HViewTotalAssets, 0, nil)
+func NewTotalAssetsCall(ctx wasmlib.ScFuncContext) *TotalAssetsCall {
+	f := &TotalAssetsCall{}
+	f.Func.Init(HScName, HViewTotalAssets, nil, nil)
+	return f
 }
 
-type CoreAccountsView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewCoreAccountsView(ctx wasmlib.ScViewContext) *CoreAccountsView {
-	return &CoreAccountsView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *CoreAccountsView) OfContract(contract wasmlib.ScHname) *CoreAccountsView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *CoreAccountsView) Accounts() {
-	v.sc.Run(HViewAccounts, 0)
-}
-
-func (v *CoreAccountsView) Balance(params MutableViewBalanceParams) {
-	v.sc.Run(HViewBalance, params.id)
-}
-
-func (v *CoreAccountsView) TotalAssets() {
-	v.sc.Run(HViewTotalAssets, 0)
+func NewTotalAssetsCallFromView(ctx wasmlib.ScViewContext) *TotalAssetsCall {
+	f := &TotalAssetsCall{}
+	f.Func.Init(HScName, HViewTotalAssets, nil, nil)
+	return f
 }

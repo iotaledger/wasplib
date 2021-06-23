@@ -46,7 +46,7 @@ fn on_load() {
     }
 }
 
-pub struct FuncLockBetsContext {
+pub struct LockBetsContext {
     state: MutableFairRouletteState,
 }
 
@@ -55,7 +55,7 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let f = FuncLockBetsContext {
+    let f = LockBetsContext {
         state: MutableFairRouletteState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -64,7 +64,7 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcLockBets ok");
 }
 
-pub struct FuncPayWinnersContext {
+pub struct PayWinnersContext {
     state: MutableFairRouletteState,
 }
 
@@ -73,7 +73,7 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     // only SC itself can invoke this function
     ctx.require(ctx.caller() == ctx.account_id(), "no permission");
 
-    let f = FuncPayWinnersContext {
+    let f = PayWinnersContext {
         state: MutableFairRouletteState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -82,15 +82,15 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPayWinners ok");
 }
 
-pub struct FuncPlaceBetContext {
-    params: ImmutableFuncPlaceBetParams,
+pub struct PlaceBetContext {
+    params: ImmutablePlaceBetParams,
     state:  MutableFairRouletteState,
 }
 
 fn func_place_bet_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlaceBet");
-    let f = FuncPlaceBetContext {
-        params: ImmutableFuncPlaceBetParams {
+    let f = PlaceBetContext {
+        params: ImmutablePlaceBetParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairRouletteState {
@@ -102,8 +102,8 @@ fn func_place_bet_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlaceBet ok");
 }
 
-pub struct FuncPlayPeriodContext {
-    params: ImmutableFuncPlayPeriodParams,
+pub struct PlayPeriodContext {
+    params: ImmutablePlayPeriodParams,
     state:  MutableFairRouletteState,
 }
 
@@ -112,8 +112,8 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
     // only SC creator can update the play period
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncPlayPeriodContext {
-        params: ImmutableFuncPlayPeriodParams {
+    let f = PlayPeriodContext {
+        params: ImmutablePlayPeriodParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableFairRouletteState {
@@ -125,15 +125,15 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlayPeriod ok");
 }
 
-pub struct ViewLastWinningNumberContext {
-    results: MutableViewLastWinningNumberResults,
+pub struct LastWinningNumberContext {
+    results: MutableLastWinningNumberResults,
     state:   ImmutableFairRouletteState,
 }
 
 fn view_last_winning_number_thunk(ctx: &ScViewContext) {
     ctx.log("fairroulette.viewLastWinningNumber");
-    let f = ViewLastWinningNumberContext {
-        results: MutableViewLastWinningNumberResults {
+    let f = LastWinningNumberContext {
+        results: MutableLastWinningNumberResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableFairRouletteState {

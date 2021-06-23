@@ -9,62 +9,50 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncInitParams struct {
+type ImmutableInitParams struct {
 	id int32
 }
 
-func (s ImmutableFuncInitParams) Counter() wasmlib.ScImmutableInt64 {
+func (s ImmutableInitParams) Counter() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
-type MutableFuncInitParams struct {
+type MutableInitParams struct {
 	id int32
 }
 
-func NewMutableFuncInitParams() MutableFuncInitParams {
-	return MutableFuncInitParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncInitParams) Counter() wasmlib.ScMutableInt64 {
+func (s MutableInitParams) Counter() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamCounter])
 }
 
-type ImmutableFuncRepeatManyParams struct {
+type ImmutableRepeatManyParams struct {
 	id int32
 }
 
-func (s ImmutableFuncRepeatManyParams) NumRepeats() wasmlib.ScImmutableInt64 {
+func (s ImmutableRepeatManyParams) NumRepeats() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamNumRepeats])
 }
 
-type MutableFuncRepeatManyParams struct {
+type MutableRepeatManyParams struct {
 	id int32
 }
 
-func NewMutableFuncRepeatManyParams() MutableFuncRepeatManyParams {
-	return MutableFuncRepeatManyParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncRepeatManyParams) NumRepeats() wasmlib.ScMutableInt64 {
+func (s MutableRepeatManyParams) NumRepeats() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNumRepeats])
 }
 
-type ImmutableFuncWhenMustIncrementParams struct {
+type ImmutableWhenMustIncrementParams struct {
 	id int32
 }
 
-func (s ImmutableFuncWhenMustIncrementParams) Dummy() wasmlib.ScImmutableInt64 {
+func (s ImmutableWhenMustIncrementParams) Dummy() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamDummy])
 }
 
-type MutableFuncWhenMustIncrementParams struct {
+type MutableWhenMustIncrementParams struct {
 	id int32
 }
 
-func NewMutableFuncWhenMustIncrementParams() MutableFuncWhenMustIncrementParams {
-	return MutableFuncWhenMustIncrementParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncWhenMustIncrementParams) Dummy() wasmlib.ScMutableInt64 {
+func (s MutableWhenMustIncrementParams) Dummy() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamDummy])
 }

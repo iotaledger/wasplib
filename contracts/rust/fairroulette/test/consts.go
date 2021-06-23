@@ -12,23 +12,31 @@ import "github.com/iotaledger/wasp/packages/coretypes"
 const (
 	ScName  = "fairroulette"
 	HScName = coretypes.Hname(0xdf79d138)
+)
 
+const (
 	ParamNumber     = "number"
 	ParamPlayPeriod = "playPeriod"
+)
 
-	ResultLastWinningNumber = "lastWinningNumber"
+const ResultLastWinningNumber = "lastWinningNumber"
 
+const (
 	StateBets              = "bets"
 	StateLastWinningNumber = "lastWinningNumber"
 	StateLockedBets        = "lockedBets"
 	StatePlayPeriod        = "playPeriod"
+)
 
+const (
 	FuncLockBets          = "lockBets"
 	FuncPayWinners        = "payWinners"
 	FuncPlaceBet          = "placeBet"
 	FuncPlayPeriod        = "playPeriod"
 	ViewLastWinningNumber = "lastWinningNumber"
+)
 
+const (
 	HFuncLockBets          = coretypes.Hname(0xe163b43c)
 	HFuncPayWinners        = coretypes.Hname(0xfb2b0144)
 	HFuncPlaceBet          = coretypes.Hname(0xdfba7d1b)

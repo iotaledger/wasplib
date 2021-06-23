@@ -13,17 +13,23 @@ const (
 	ScName        = "eventlog"
 	ScDescription = "Core event log contract"
 	HScName       = wasmlib.ScHname(0x661aa7d8)
+)
 
+const (
 	ParamContractHname  = wasmlib.Key("contractHname")
 	ParamFromTs         = wasmlib.Key("fromTs")
 	ParamMaxLastRecords = wasmlib.Key("maxLastRecords")
 	ParamToTs           = wasmlib.Key("toTs")
+)
 
-	ResultNumRecords = wasmlib.Key("numRecords")
+const ResultNumRecords = wasmlib.Key("numRecords")
 
+const (
 	ViewGetNumRecords = "getNumRecords"
 	ViewGetRecords    = "getRecords"
+)
 
+const (
 	HViewGetNumRecords = wasmlib.ScHname(0x2f4b4a8c)
 	HViewGetRecords    = wasmlib.ScHname(0xd01a8085)
 )

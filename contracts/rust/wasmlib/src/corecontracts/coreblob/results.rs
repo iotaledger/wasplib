@@ -13,65 +13,45 @@ use crate::corecontracts::coreblob::*;
 use crate::host::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncStoreBlobResults {
+pub struct ImmutableStoreBlobResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncStoreBlobResults {
+impl ImmutableStoreBlobResults {
     pub fn hash(&self) -> ScImmutableHash {
         ScImmutableHash::new(self.id, RESULT_HASH.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncStoreBlobResults {
+pub struct MutableStoreBlobResults {
     pub(crate) id: i32,
 }
 
-impl MutableFuncStoreBlobResults {
+impl MutableStoreBlobResults {
     pub fn hash(&self) -> ScMutableHash {
         ScMutableHash::new(self.id, RESULT_HASH.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlobFieldResults {
+pub struct ImmutableGetBlobFieldResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetBlobFieldResults {
+impl ImmutableGetBlobFieldResults {
     pub fn bytes(&self) -> ScImmutableBytes {
         ScImmutableBytes::new(self.id, RESULT_BYTES.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetBlobFieldResults {
+pub struct MutableGetBlobFieldResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetBlobFieldResults {
+impl MutableGetBlobFieldResults {
     pub fn bytes(&self) -> ScMutableBytes {
         ScMutableBytes::new(self.id, RESULT_BYTES.get_key_id())
     }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlobInfoResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewGetBlobInfoResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewListBlobsResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewListBlobsResults {
-    pub(crate) id: i32,
 }

@@ -5,7 +5,7 @@ use types::*;
 use wasmlib::*;
 
 use crate::*;
-use crate::contract::FairAuctionFunc;
+use crate::contract::*;
 
 const DURATION_DEFAULT: i32 = 60;
 const DURATION_MIN: i32 = 1;
@@ -15,7 +15,7 @@ const OWNER_MARGIN_DEFAULT: i64 = 50;
 const OWNER_MARGIN_MIN: i64 = 5;
 const OWNER_MARGIN_MAX: i64 = 100;
 
-pub fn func_finalize_auction(ctx: &ScFuncContext, f: &FuncFinalizeAuctionContext) {
+pub fn func_finalize_auction(ctx: &ScFuncContext, f: &FinalizeAuctionContext) {
     let color = f.params.color().value();
     let current_auction = f.state.auctions().get_auction(&color);
     ctx.require(current_auction.exists(), "Missing auction info");
@@ -56,7 +56,7 @@ pub fn func_finalize_auction(ctx: &ScFuncContext, f: &FuncFinalizeAuctionContext
     transfer_tokens(ctx, &auction.creator, &ScColor::IOTA, auction.deposit + auction.highest_bid - owner_fee);
 }
 
-pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
+pub fn func_place_bid(ctx: &ScFuncContext, f: &PlaceBidContext) {
     let mut bid_amount = ctx.incoming().balance(&ScColor::IOTA);
     ctx.require(bid_amount > 0, "Missing bid amount");
 
@@ -96,7 +96,7 @@ pub fn func_place_bid(ctx: &ScFuncContext, f: &FuncPlaceBidContext) {
     }
 }
 
-pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &FuncSetOwnerMarginContext) {
+pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &SetOwnerMarginContext) {
     let mut owner_margin = f.params.owner_margin().value();
     if owner_margin < OWNER_MARGIN_MIN {
         owner_margin = OWNER_MARGIN_MIN;
@@ -107,7 +107,7 @@ pub fn func_set_owner_margin(_ctx: &ScFuncContext, f: &FuncSetOwnerMarginContext
     f.state.owner_margin().set_value(owner_margin);
 }
 
-pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
+pub fn func_start_auction(ctx: &ScFuncContext, f: &StartAuctionContext) {
     let color = f.params.color().value();
     if color == ScColor::IOTA || color == ScColor::MINT {
         ctx.panic("Reserved auction token color");
@@ -175,14 +175,12 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &FuncStartAuctionContext) {
     };
     current_auction.set_value(&auction);
 
-    let mut sc = FairAuctionFunc::new(ctx);
-    let params = MutableFuncFinalizeAuctionParams::new();
-    params.color().set_value(&auction.color);
-    let transfer = ScTransfers::iotas(1);
-    sc.post().delay(duration * 60).finalize_auction(params, transfer);
+    let fa = FinalizeAuctionCall::new(ctx);
+    fa.params.color().set_value(&auction.color);
+    fa.func.delay(duration * 60).transfer_iotas(1).post();
 }
 
-pub fn view_get_info(ctx: &ScViewContext, f: &ViewGetInfoContext) {
+pub fn view_get_info(ctx: &ScViewContext, f: &GetInfoContext) {
     let color = f.params.color().value();
     let current_auction = f.state.auctions().get_auction(&color);
     ctx.require(current_auction.exists(), "Missing auction info");

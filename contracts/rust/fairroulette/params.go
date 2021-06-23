@@ -9,42 +9,34 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncPlaceBetParams struct {
+type ImmutablePlaceBetParams struct {
 	id int32
 }
 
-func (s ImmutableFuncPlaceBetParams) Number() wasmlib.ScImmutableInt64 {
+func (s ImmutablePlaceBetParams) Number() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamNumber])
 }
 
-type MutableFuncPlaceBetParams struct {
+type MutablePlaceBetParams struct {
 	id int32
 }
 
-func NewMutableFuncPlaceBetParams() MutableFuncPlaceBetParams {
-	return MutableFuncPlaceBetParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncPlaceBetParams) Number() wasmlib.ScMutableInt64 {
+func (s MutablePlaceBetParams) Number() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamNumber])
 }
 
-type ImmutableFuncPlayPeriodParams struct {
+type ImmutablePlayPeriodParams struct {
 	id int32
 }
 
-func (s ImmutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScImmutableInt32 {
+func (s ImmutablePlayPeriodParams) PlayPeriod() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamPlayPeriod])
 }
 
-type MutableFuncPlayPeriodParams struct {
+type MutablePlayPeriodParams struct {
 	id int32
 }
 
-func NewMutableFuncPlayPeriodParams() MutableFuncPlayPeriodParams {
-	return MutableFuncPlayPeriodParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncPlayPeriodParams) PlayPeriod() wasmlib.ScMutableInt32 {
+func (s MutablePlayPeriodParams) PlayPeriod() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamPlayPeriod])
 }

@@ -45,15 +45,15 @@ fn on_load() {
     }
 }
 
-pub struct FuncMintSupplyContext {
-    params: ImmutableFuncMintSupplyParams,
+pub struct MintSupplyContext {
+    params: ImmutableMintSupplyParams,
     state:  MutableTokenRegistryState,
 }
 
 fn func_mint_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcMintSupply");
-    let f = FuncMintSupplyContext {
-        params: ImmutableFuncMintSupplyParams {
+    let f = MintSupplyContext {
+        params: ImmutableMintSupplyParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTokenRegistryState {
@@ -64,8 +64,8 @@ fn func_mint_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcMintSupply ok");
 }
 
-pub struct FuncTransferOwnershipContext {
-    params: ImmutableFuncTransferOwnershipParams,
+pub struct TransferOwnershipContext {
+    params: ImmutableTransferOwnershipParams,
     state:  MutableTokenRegistryState,
 }
 
@@ -74,8 +74,8 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
     //TODO the one who can transfer token ownership
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncTransferOwnershipContext {
-        params: ImmutableFuncTransferOwnershipParams {
+    let f = TransferOwnershipContext {
+        params: ImmutableTransferOwnershipParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTokenRegistryState {
@@ -87,8 +87,8 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcTransferOwnership ok");
 }
 
-pub struct FuncUpdateMetadataContext {
-    params: ImmutableFuncUpdateMetadataParams,
+pub struct UpdateMetadataContext {
+    params: ImmutableUpdateMetadataParams,
     state:  MutableTokenRegistryState,
 }
 
@@ -97,8 +97,8 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
     //TODO the one who can change the token info
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncUpdateMetadataContext {
-        params: ImmutableFuncUpdateMetadataParams {
+    let f = UpdateMetadataContext {
+        params: ImmutableUpdateMetadataParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTokenRegistryState {
@@ -110,15 +110,15 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcUpdateMetadata ok");
 }
 
-pub struct ViewGetInfoContext {
-    params: ImmutableViewGetInfoParams,
+pub struct GetInfoContext {
+    params: ImmutableGetInfoParams,
     state:  ImmutableTokenRegistryState,
 }
 
 fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("tokenregistry.viewGetInfo");
-    let f = ViewGetInfoContext {
-        params: ImmutableViewGetInfoParams {
+    let f = GetInfoContext {
+        params: ImmutableGetInfoParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: ImmutableTokenRegistryState {

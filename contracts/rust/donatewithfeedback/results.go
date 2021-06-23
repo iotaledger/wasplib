@@ -9,82 +9,82 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewDonationResults struct {
+type ImmutableDonationResults struct {
 	id int32
 }
 
-func (s ImmutableViewDonationResults) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableDonationResults) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-func (s ImmutableViewDonationResults) Donator() wasmlib.ScImmutableAgentId {
+func (s ImmutableDonationResults) Donator() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxResultDonator])
 }
 
-func (s ImmutableViewDonationResults) Error() wasmlib.ScImmutableString {
+func (s ImmutableDonationResults) Error() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultError])
 }
 
-func (s ImmutableViewDonationResults) Feedback() wasmlib.ScImmutableString {
+func (s ImmutableDonationResults) Feedback() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultFeedback])
 }
 
-func (s ImmutableViewDonationResults) Timestamp() wasmlib.ScImmutableInt64 {
+func (s ImmutableDonationResults) Timestamp() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTimestamp])
 }
 
-type MutableViewDonationResults struct {
+type MutableDonationResults struct {
 	id int32
 }
 
-func (s MutableViewDonationResults) Amount() wasmlib.ScMutableInt64 {
+func (s MutableDonationResults) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-func (s MutableViewDonationResults) Donator() wasmlib.ScMutableAgentId {
+func (s MutableDonationResults) Donator() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxResultDonator])
 }
 
-func (s MutableViewDonationResults) Error() wasmlib.ScMutableString {
+func (s MutableDonationResults) Error() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultError])
 }
 
-func (s MutableViewDonationResults) Feedback() wasmlib.ScMutableString {
+func (s MutableDonationResults) Feedback() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultFeedback])
 }
 
-func (s MutableViewDonationResults) Timestamp() wasmlib.ScMutableInt64 {
+func (s MutableDonationResults) Timestamp() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultTimestamp])
 }
 
-type ImmutableViewDonationInfoResults struct {
+type ImmutableDonationInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewDonationInfoResults) Count() wasmlib.ScImmutableInt64 {
+func (s ImmutableDonationInfoResults) Count() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCount])
 }
 
-func (s ImmutableViewDonationInfoResults) MaxDonation() wasmlib.ScImmutableInt64 {
+func (s ImmutableDonationInfoResults) MaxDonation() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultMaxDonation])
 }
 
-func (s ImmutableViewDonationInfoResults) TotalDonation() wasmlib.ScImmutableInt64 {
+func (s ImmutableDonationInfoResults) TotalDonation() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultTotalDonation])
 }
 
-type MutableViewDonationInfoResults struct {
+type MutableDonationInfoResults struct {
 	id int32
 }
 
-func (s MutableViewDonationInfoResults) Count() wasmlib.ScMutableInt64 {
+func (s MutableDonationInfoResults) Count() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCount])
 }
 
-func (s MutableViewDonationInfoResults) MaxDonation() wasmlib.ScMutableInt64 {
+func (s MutableDonationInfoResults) MaxDonation() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultMaxDonation])
 }
 
-func (s MutableViewDonationInfoResults) TotalDonation() wasmlib.ScMutableInt64 {
+func (s MutableDonationInfoResults) TotalDonation() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultTotalDonation])
 }

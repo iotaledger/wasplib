@@ -7,111 +7,209 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct IncCounterFunc {
-    sc: ScContractFunc,
+pub struct CallIncrementCall {
+    pub func: ScFunc,
 }
 
-impl IncCounterFunc {
-    pub fn new(ctx: &ScFuncContext) -> IncCounterFunc {
-        IncCounterFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut IncCounterFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut IncCounterFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut IncCounterFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut IncCounterFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn call_increment(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_CALL_INCREMENT, 0, Some(transfer));
-    }
-
-    pub fn call_increment_recurse5x(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_CALL_INCREMENT_RECURSE5X, 0, Some(transfer));
-    }
-
-    pub fn endless_loop(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_ENDLESS_LOOP, 0, Some(transfer));
-    }
-
-    pub fn increment(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INCREMENT, 0, Some(transfer));
-    }
-
-    pub fn init(&mut self, params: MutableFuncInitParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INIT, params.id, Some(transfer));
-    }
-
-    pub fn local_state_internal_call(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_LOCAL_STATE_INTERNAL_CALL, 0, Some(transfer));
-    }
-
-    pub fn local_state_post(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_LOCAL_STATE_POST, 0, Some(transfer));
-    }
-
-    pub fn local_state_sandbox_call(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_LOCAL_STATE_SANDBOX_CALL, 0, Some(transfer));
-    }
-
-    pub fn post_increment(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_POST_INCREMENT, 0, Some(transfer));
-    }
-
-    pub fn repeat_many(&mut self, params: MutableFuncRepeatManyParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_REPEAT_MANY, params.id, Some(transfer));
-    }
-
-    pub fn test_leb128(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_LEB128, 0, Some(transfer));
-    }
-
-    pub fn when_must_increment(&mut self, params: MutableFuncWhenMustIncrementParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_WHEN_MUST_INCREMENT, params.id, Some(transfer));
-    }
-
-    pub fn get_counter(&mut self) -> ImmutableViewGetCounterResults {
-        self.sc.run(HVIEW_GET_COUNTER, 0, None);
-        ImmutableViewGetCounterResults { id: self.sc.result_map_id() }
+impl CallIncrementCall {
+    pub fn new(_ctx: &ScFuncContext) -> CallIncrementCall {
+        let mut f = CallIncrementCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT, ptr::null_mut(), ptr::null_mut());
+        f
     }
 }
 
-pub struct IncCounterView {
-    sc: ScContractView,
+pub struct CallIncrementRecurse5xCall {
+    pub func: ScFunc,
 }
 
-impl IncCounterView {
-    pub fn new(ctx: &ScViewContext) -> IncCounterView {
-        IncCounterView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl CallIncrementRecurse5xCall {
+    pub fn new(_ctx: &ScFuncContext) -> CallIncrementRecurse5xCall {
+        let mut f = CallIncrementRecurse5xCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT_RECURSE5X, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct EndlessLoopCall {
+    pub func: ScFunc,
+}
+
+impl EndlessLoopCall {
+    pub fn new(_ctx: &ScFuncContext) -> EndlessLoopCall {
+        let mut f = EndlessLoopCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_ENDLESS_LOOP, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct IncrementCall {
+    pub func: ScFunc,
+}
+
+impl IncrementCall {
+    pub fn new(_ctx: &ScFuncContext) -> IncrementCall {
+        let mut f = IncrementCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INCREMENT, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct InitCall {
+    pub func: ScFunc,
+    pub params: MutableInitParams,
+}
+
+impl InitCall {
+    pub fn new(_ctx: &ScFuncContext) -> InitCall {
+        let mut f = InitCall {
+            func: ScFunc::zero(),
+            params: MutableInitParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct LocalStateInternalCallCall {
+    pub func: ScFunc,
+}
+
+impl LocalStateInternalCallCall {
+    pub fn new(_ctx: &ScFuncContext) -> LocalStateInternalCallCall {
+        let mut f = LocalStateInternalCallCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_INTERNAL_CALL, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct LocalStatePostCall {
+    pub func: ScFunc,
+}
+
+impl LocalStatePostCall {
+    pub fn new(_ctx: &ScFuncContext) -> LocalStatePostCall {
+        let mut f = LocalStatePostCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_POST, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct LocalStateSandboxCallCall {
+    pub func: ScFunc,
+}
+
+impl LocalStateSandboxCallCall {
+    pub fn new(_ctx: &ScFuncContext) -> LocalStateSandboxCallCall {
+        let mut f = LocalStateSandboxCallCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_SANDBOX_CALL, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct PostIncrementCall {
+    pub func: ScFunc,
+}
+
+impl PostIncrementCall {
+    pub fn new(_ctx: &ScFuncContext) -> PostIncrementCall {
+        let mut f = PostIncrementCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_POST_INCREMENT, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct RepeatManyCall {
+    pub func: ScFunc,
+    pub params: MutableRepeatManyParams,
+}
+
+impl RepeatManyCall {
+    pub fn new(_ctx: &ScFuncContext) -> RepeatManyCall {
+        let mut f = RepeatManyCall {
+            func: ScFunc::zero(),
+            params: MutableRepeatManyParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_REPEAT_MANY, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestLeb128Call {
+    pub func: ScFunc,
+}
+
+impl TestLeb128Call {
+    pub fn new(_ctx: &ScFuncContext) -> TestLeb128Call {
+        let mut f = TestLeb128Call {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_LEB128, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct WhenMustIncrementCall {
+    pub func: ScFunc,
+    pub params: MutableWhenMustIncrementParams,
+}
+
+impl WhenMustIncrementCall {
+    pub fn new(_ctx: &ScFuncContext) -> WhenMustIncrementCall {
+        let mut f = WhenMustIncrementCall {
+            func: ScFunc::zero(),
+            params: MutableWhenMustIncrementParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_WHEN_MUST_INCREMENT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetCounterCall {
+    pub func: ScView,
+    pub results: ImmutableGetCounterResults,
+}
+
+impl GetCounterCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetCounterCall {
+        let mut f = GetCounterCall {
+            func: ScView::zero(),
+            results: ImmutableGetCounterResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut IncCounterView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_counter(&mut self) -> ImmutableViewGetCounterResults {
-        self.sc.run(HVIEW_GET_COUNTER, 0);
-        ImmutableViewGetCounterResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetCounterCall {
+        let mut f = GetCounterCall {
+            func: ScView::zero(),
+            results: ImmutableGetCounterResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

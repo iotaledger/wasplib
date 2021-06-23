@@ -15,54 +15,44 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncParamTypesResults {
+pub struct ImmutableBlockRecordResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncParamTypesResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewBlockRecordResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewBlockRecordResults {
+impl ImmutableBlockRecordResults {
     pub fn record(&self) -> ScImmutableBytes {
         ScImmutableBytes::new(self.id, idx_map(IDX_RESULT_RECORD))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewBlockRecordResults {
+pub struct MutableBlockRecordResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewBlockRecordResults {
+impl MutableBlockRecordResults {
     pub fn record(&self) -> ScMutableBytes {
         ScMutableBytes::new(self.id, idx_map(IDX_RESULT_RECORD))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewBlockRecordsResults {
+pub struct ImmutableBlockRecordsResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewBlockRecordsResults {
+impl ImmutableBlockRecordsResults {
     pub fn count(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, idx_map(IDX_RESULT_COUNT))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewBlockRecordsResults {
+pub struct MutableBlockRecordsResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewBlockRecordsResults {
+impl MutableBlockRecordsResults {
     pub fn count(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, idx_map(IDX_RESULT_COUNT))
     }

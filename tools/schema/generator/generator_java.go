@@ -78,8 +78,8 @@ func (s *Schema) GenerateJava() error {
 }
 
 func (s *Schema) GenerateJavaFunc(file *os.File, funcDef *FuncDef) error {
-	funcName := funcDef.FullName
-	funcKind := capitalize(funcDef.FullName[:4])
+	funcName := funcDef.FuncName
+	funcKind := capitalize(funcDef.FuncName[:4])
 	fmt.Fprintf(file, "\npublic static void %s(Sc%sContext ctx, %sParams params) {\n", funcName, funcKind, capitalize(funcName))
 	fmt.Fprintf(file, "}\n")
 	return nil
@@ -115,7 +115,7 @@ func (s *Schema) GenerateJavaFuncs() error {
 
 	// append any new funcs
 	for _, funcDef := range s.Funcs {
-		if existing[funcDef.FullName] == "" {
+		if existing[funcDef.FuncName] == "" {
 			err = s.GenerateJavaFunc(file, funcDef)
 			if err != nil {
 				return err
@@ -203,15 +203,15 @@ func (s *Schema) GenerateJavaLib() error {
 	fmt.Fprintf(file, "    public static void onLoad() {\n")
 	fmt.Fprintf(file, "        ScExports exports = new ScExports();\n")
 	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FullName)
-		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %sThunk::%sThunk);\n", kind, name, s.FullName, funcDef.FullName)
+		name := capitalize(funcDef.FuncName)
+		kind := capitalize(funcDef.FuncName[:4])
+		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %sThunk::%sThunk);\n", kind, name, s.FullName, funcDef.FuncName)
 	}
 	fmt.Fprintf(file, "    }\n")
 
 	// generate parameter structs and thunks to set up and check parameters
 	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FullName)
+		name := capitalize(funcDef.FuncName)
 		params, err := os.Create("lib/" + name + "Params.java")
 		if err != nil {
 			return err
@@ -264,14 +264,14 @@ func (s *Schema) GenerateJavaConsts() error {
 	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FullName)
-			fmt.Fprintf(file, "    public static final String %s = \"%s\";\n", name, funcDef.Name)
+			name := capitalize(funcDef.FuncName)
+			fmt.Fprintf(file, "    public static final String %s = \"%s\";\n", name, funcDef.String)
 		}
 
 		fmt.Fprintln(file)
 		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FullName)
-			hName = coretypes.Hn(funcDef.Name)
+			name := capitalize(funcDef.FuncName)
+			hName = coretypes.Hn(funcDef.String)
 			fmt.Fprintf(file, "    public static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
 		}
 	}
@@ -289,8 +289,8 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 	// calculate padding
 	nameLen, typeLen := calculatePadding(funcDef.Params, javaTypes, false)
 
-	funcName := capitalize(funcDef.FullName)
-	funcKind := capitalize(funcDef.FullName[:4])
+	funcName := capitalize(funcDef.FuncName)
+	funcKind := capitalize(funcDef.FuncName[:4])
 
 	fmt.Fprintln(params, copyright(true))
 	fmt.Fprintf(params, "package org.iota.wasp.contracts.%s.lib;\n", s.Name)
@@ -314,8 +314,8 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		fmt.Fprintf(params, "//@formatter:on\n")
 	}
 
-	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FullName, funcKind)
-	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FullName)
+	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FuncName, funcKind)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FuncName)
 	grant := funcDef.Access
 	if grant != "" {
 		index := strings.Index(grant, "//")
@@ -351,8 +351,8 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 			fmt.Fprintf(file, "        ctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FullName)
-	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, funcDef.FullName)
+	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FuncName)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, funcDef.FuncName)
 	fmt.Fprintf(file, "    }\n")
 }
 

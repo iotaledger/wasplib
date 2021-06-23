@@ -13,35 +13,3 @@ use wasmlib::host::*;
 
 use crate::*;
 use crate::keys::*;
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncHelloWorldParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncHelloWorldParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncHelloWorldParams {
-    pub fn new() -> MutableFuncHelloWorldParams {
-        MutableFuncHelloWorldParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetHelloWorldParams {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewGetHelloWorldParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewGetHelloWorldParams {
-    pub fn new() -> MutableViewGetHelloWorldParams {
-        MutableViewGetHelloWorldParams { id: ScMutableMap::new().map_id() }
-    }
-}

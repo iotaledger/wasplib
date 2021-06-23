@@ -12,13 +12,17 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 const (
 	ScName  = "fairauction"
 	HScName = wasmlib.ScHname(0x1b5c43b1)
+)
 
+const (
 	ParamColor       = wasmlib.Key("color")
 	ParamDescription = wasmlib.Key("description")
 	ParamDuration    = wasmlib.Key("duration")
 	ParamMinimumBid  = wasmlib.Key("minimumBid")
 	ParamOwnerMargin = wasmlib.Key("ownerMargin")
+)
 
+const (
 	ResultBidders       = wasmlib.Key("bidders")
 	ResultColor         = wasmlib.Key("color")
 	ResultCreator       = wasmlib.Key("creator")
@@ -31,18 +35,24 @@ const (
 	ResultNumTokens     = wasmlib.Key("numTokens")
 	ResultOwnerMargin   = wasmlib.Key("ownerMargin")
 	ResultWhenStarted   = wasmlib.Key("whenStarted")
+)
 
+const (
 	StateAuctions    = wasmlib.Key("auctions")
 	StateBidderList  = wasmlib.Key("bidderList")
 	StateBids        = wasmlib.Key("bids")
 	StateOwnerMargin = wasmlib.Key("ownerMargin")
+)
 
+const (
 	FuncFinalizeAuction = "finalizeAuction"
 	FuncPlaceBid        = "placeBid"
 	FuncSetOwnerMargin  = "setOwnerMargin"
 	FuncStartAuction    = "startAuction"
 	ViewGetInfo         = "getInfo"
+)
 
+const (
 	HFuncFinalizeAuction = wasmlib.ScHname(0x8d534ddc)
 	HFuncPlaceBid        = wasmlib.ScHname(0x9bd72fa9)
 	HFuncSetOwnerMargin  = wasmlib.ScHname(0x1774461a)

@@ -9,113 +9,126 @@ package coreblocklog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type CoreBlockLogFunc struct {
-	sc wasmlib.ScContractFunc
+type ControlAddressesCall struct {
+	Func wasmlib.ScView
+	Results ImmutableControlAddressesResults
 }
 
-func NewCoreBlockLogFunc(ctx wasmlib.ScFuncContext) *CoreBlockLogFunc {
-	return &CoreBlockLogFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *CoreBlockLogFunc) Delay(seconds int32) *CoreBlockLogFunc {
-	f.sc.Delay(seconds)
+func NewControlAddressesCall(ctx wasmlib.ScFuncContext) *ControlAddressesCall {
+	f := &ControlAddressesCall{}
+	f.Func.Init(HScName, HViewControlAddresses, nil, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlockLogFunc) OfContract(contract wasmlib.ScHname) *CoreBlockLogFunc {
-	f.sc.OfContract(contract)
+func NewControlAddressesCallFromView(ctx wasmlib.ScViewContext) *ControlAddressesCall {
+	f := &ControlAddressesCall{}
+	f.Func.Init(HScName, HViewControlAddresses, nil, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlockLogFunc) Post() *CoreBlockLogFunc {
-	f.sc.Post()
+type GetBlockInfoCall struct {
+	Func wasmlib.ScView
+	Params MutableGetBlockInfoParams
+	Results ImmutableGetBlockInfoResults
+}
+
+func NewGetBlockInfoCall(ctx wasmlib.ScFuncContext) *GetBlockInfoCall {
+	f := &GetBlockInfoCall{}
+	f.Func.Init(HScName, HViewGetBlockInfo, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlockLogFunc) PostToChain(chainId wasmlib.ScChainId) *CoreBlockLogFunc {
-	f.sc.PostToChain(chainId)
+func NewGetBlockInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlockInfoCall {
+	f := &GetBlockInfoCall{}
+	f.Func.Init(HScName, HViewGetBlockInfo, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *CoreBlockLogFunc) ControlAddresses() ImmutableViewControlAddressesResults {
-	f.sc.Run(HViewControlAddresses, 0, nil)
-	return ImmutableViewControlAddressesResults{id: f.sc.ResultMapId()}
+type GetLatestBlockInfoCall struct {
+	Func wasmlib.ScView
+	Results ImmutableGetLatestBlockInfoResults
 }
 
-func (f *CoreBlockLogFunc) GetBlockInfo(params MutableViewGetBlockInfoParams) ImmutableViewGetBlockInfoResults {
-	f.sc.Run(HViewGetBlockInfo, params.id, nil)
-	return ImmutableViewGetBlockInfoResults{id: f.sc.ResultMapId()}
+func NewGetLatestBlockInfoCall(ctx wasmlib.ScFuncContext) *GetLatestBlockInfoCall {
+	f := &GetLatestBlockInfoCall{}
+	f.Func.Init(HScName, HViewGetLatestBlockInfo, nil, &f.Results.id)
+	return f
 }
 
-func (f *CoreBlockLogFunc) GetLatestBlockInfo() ImmutableViewGetLatestBlockInfoResults {
-	f.sc.Run(HViewGetLatestBlockInfo, 0, nil)
-	return ImmutableViewGetLatestBlockInfoResults{id: f.sc.ResultMapId()}
+func NewGetLatestBlockInfoCallFromView(ctx wasmlib.ScViewContext) *GetLatestBlockInfoCall {
+	f := &GetLatestBlockInfoCall{}
+	f.Func.Init(HScName, HViewGetLatestBlockInfo, nil, &f.Results.id)
+	return f
 }
 
-func (f *CoreBlockLogFunc) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) ImmutableViewGetRequestIDsForBlockResults {
-	f.sc.Run(HViewGetRequestIDsForBlock, params.id, nil)
-	return ImmutableViewGetRequestIDsForBlockResults{id: f.sc.ResultMapId()}
+type GetRequestIDsForBlockCall struct {
+	Func wasmlib.ScView
+	Params MutableGetRequestIDsForBlockParams
+	Results ImmutableGetRequestIDsForBlockResults
 }
 
-func (f *CoreBlockLogFunc) GetRequestLogRecord(params MutableViewGetRequestLogRecordParams) ImmutableViewGetRequestLogRecordResults {
-	f.sc.Run(HViewGetRequestLogRecord, params.id, nil)
-	return ImmutableViewGetRequestLogRecordResults{id: f.sc.ResultMapId()}
+func NewGetRequestIDsForBlockCall(ctx wasmlib.ScFuncContext) *GetRequestIDsForBlockCall {
+	f := &GetRequestIDsForBlockCall{}
+	f.Func.Init(HScName, HViewGetRequestIDsForBlock, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *CoreBlockLogFunc) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) ImmutableViewGetRequestLogRecordsForBlockResults {
-	f.sc.Run(HViewGetRequestLogRecordsForBlock, params.id, nil)
-	return ImmutableViewGetRequestLogRecordsForBlockResults{id: f.sc.ResultMapId()}
+func NewGetRequestIDsForBlockCallFromView(ctx wasmlib.ScViewContext) *GetRequestIDsForBlockCall {
+	f := &GetRequestIDsForBlockCall{}
+	f.Func.Init(HScName, HViewGetRequestIDsForBlock, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *CoreBlockLogFunc) IsRequestProcessed(params MutableViewIsRequestProcessedParams) ImmutableViewIsRequestProcessedResults {
-	f.sc.Run(HViewIsRequestProcessed, params.id, nil)
-	return ImmutableViewIsRequestProcessedResults{id: f.sc.ResultMapId()}
+type GetRequestLogRecordCall struct {
+	Func wasmlib.ScView
+	Params MutableGetRequestLogRecordParams
+	Results ImmutableGetRequestLogRecordResults
 }
 
-type CoreBlockLogView struct {
-	sc wasmlib.ScContractView
+func NewGetRequestLogRecordCall(ctx wasmlib.ScFuncContext) *GetRequestLogRecordCall {
+	f := &GetRequestLogRecordCall{}
+	f.Func.Init(HScName, HViewGetRequestLogRecord, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func NewCoreBlockLogView(ctx wasmlib.ScViewContext) *CoreBlockLogView {
-	return &CoreBlockLogView{sc: wasmlib.NewScContractView(ctx, HScName)}
+func NewGetRequestLogRecordCallFromView(ctx wasmlib.ScViewContext) *GetRequestLogRecordCall {
+	f := &GetRequestLogRecordCall{}
+	f.Func.Init(HScName, HViewGetRequestLogRecord, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (v *CoreBlockLogView) OfContract(contract wasmlib.ScHname) *CoreBlockLogView {
-	v.sc.OfContract(contract)
-	return v
+type GetRequestLogRecordsForBlockCall struct {
+	Func wasmlib.ScView
+	Params MutableGetRequestLogRecordsForBlockParams
+	Results ImmutableGetRequestLogRecordsForBlockResults
 }
 
-func (v *CoreBlockLogView) ControlAddresses() ImmutableViewControlAddressesResults {
-	v.sc.Run(HViewControlAddresses, 0)
-	return ImmutableViewControlAddressesResults{id: v.sc.ResultMapId()}
+func NewGetRequestLogRecordsForBlockCall(ctx wasmlib.ScFuncContext) *GetRequestLogRecordsForBlockCall {
+	f := &GetRequestLogRecordsForBlockCall{}
+	f.Func.Init(HScName, HViewGetRequestLogRecordsForBlock, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (v *CoreBlockLogView) GetBlockInfo(params MutableViewGetBlockInfoParams) ImmutableViewGetBlockInfoResults {
-	v.sc.Run(HViewGetBlockInfo, params.id)
-	return ImmutableViewGetBlockInfoResults{id: v.sc.ResultMapId()}
+func NewGetRequestLogRecordsForBlockCallFromView(ctx wasmlib.ScViewContext) *GetRequestLogRecordsForBlockCall {
+	f := &GetRequestLogRecordsForBlockCall{}
+	f.Func.Init(HScName, HViewGetRequestLogRecordsForBlock, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (v *CoreBlockLogView) GetLatestBlockInfo() ImmutableViewGetLatestBlockInfoResults {
-	v.sc.Run(HViewGetLatestBlockInfo, 0)
-	return ImmutableViewGetLatestBlockInfoResults{id: v.sc.ResultMapId()}
+type IsRequestProcessedCall struct {
+	Func wasmlib.ScView
+	Params MutableIsRequestProcessedParams
+	Results ImmutableIsRequestProcessedResults
 }
 
-func (v *CoreBlockLogView) GetRequestIDsForBlock(params MutableViewGetRequestIDsForBlockParams) ImmutableViewGetRequestIDsForBlockResults {
-	v.sc.Run(HViewGetRequestIDsForBlock, params.id)
-	return ImmutableViewGetRequestIDsForBlockResults{id: v.sc.ResultMapId()}
+func NewIsRequestProcessedCall(ctx wasmlib.ScFuncContext) *IsRequestProcessedCall {
+	f := &IsRequestProcessedCall{}
+	f.Func.Init(HScName, HViewIsRequestProcessed, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (v *CoreBlockLogView) GetRequestLogRecord(params MutableViewGetRequestLogRecordParams) ImmutableViewGetRequestLogRecordResults {
-	v.sc.Run(HViewGetRequestLogRecord, params.id)
-	return ImmutableViewGetRequestLogRecordResults{id: v.sc.ResultMapId()}
-}
-
-func (v *CoreBlockLogView) GetRequestLogRecordsForBlock(params MutableViewGetRequestLogRecordsForBlockParams) ImmutableViewGetRequestLogRecordsForBlockResults {
-	v.sc.Run(HViewGetRequestLogRecordsForBlock, params.id)
-	return ImmutableViewGetRequestLogRecordsForBlockResults{id: v.sc.ResultMapId()}
-}
-
-func (v *CoreBlockLogView) IsRequestProcessed(params MutableViewIsRequestProcessedParams) ImmutableViewIsRequestProcessedResults {
-	v.sc.Run(HViewIsRequestProcessed, params.id)
-	return ImmutableViewIsRequestProcessedResults{id: v.sc.ResultMapId()}
+func NewIsRequestProcessedCallFromView(ctx wasmlib.ScViewContext) *IsRequestProcessedCall {
+	f := &IsRequestProcessedCall{}
+	f.Func.Init(HScName, HViewIsRequestProcessed, &f.Params.id, &f.Results.id)
+	return f
 }

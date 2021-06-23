@@ -13,7 +13,9 @@ const (
 	ScName        = "root"
 	ScDescription = "Core root contract"
 	HScName       = wasmlib.ScHname(0xcebf5908)
+)
 
+const (
 	ParamChainOwner   = wasmlib.Key("$$owner$$")
 	ParamDeployer     = wasmlib.Key("$$deployer$$")
 	ParamDescription  = wasmlib.Key("$$description$$")
@@ -22,7 +24,9 @@ const (
 	ParamOwnerFee     = wasmlib.Key("$$ownerfee$$")
 	ParamProgramHash  = wasmlib.Key("$$proghash$$")
 	ParamValidatorFee = wasmlib.Key("$$validatorfee$$")
+)
 
+const (
 	ResultChainID             = wasmlib.Key("c")
 	ResultChainOwnerID        = wasmlib.Key("o")
 	ResultContractRegistry    = wasmlib.Key("r")
@@ -33,7 +37,9 @@ const (
 	ResultFeeColor            = wasmlib.Key("f")
 	ResultOwnerFee            = wasmlib.Key("of")
 	ResultValidatorFee        = wasmlib.Key("vf")
+)
 
+const (
 	FuncClaimChainOwnership    = "claimChainOwnership"
 	FuncDelegateChainOwnership = "delegateChainOwnership"
 	FuncDeployContract         = "deployContract"
@@ -44,7 +50,9 @@ const (
 	ViewFindContract           = "findContract"
 	ViewGetChainInfo           = "getChainInfo"
 	ViewGetFeeInfo             = "getFeeInfo"
+)
 
+const (
 	HFuncClaimChainOwnership    = wasmlib.ScHname(0x03ff0fc0)
 	HFuncDelegateChainOwnership = wasmlib.ScHname(0x93ecb6ad)
 	HFuncDeployContract         = wasmlib.ScHname(0x28232c27)

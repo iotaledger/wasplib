@@ -9,34 +9,34 @@ package coreblob
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncStoreBlobResults struct {
+type ImmutableStoreBlobResults struct {
 	id int32
 }
 
-func (s ImmutableFuncStoreBlobResults) Hash() wasmlib.ScImmutableHash {
+func (s ImmutableStoreBlobResults) Hash() wasmlib.ScImmutableHash {
 	return wasmlib.NewScImmutableHash(s.id, ResultHash.KeyId())
 }
 
-type MutableFuncStoreBlobResults struct {
+type MutableStoreBlobResults struct {
 	id int32
 }
 
-func (s MutableFuncStoreBlobResults) Hash() wasmlib.ScMutableHash {
+func (s MutableStoreBlobResults) Hash() wasmlib.ScMutableHash {
 	return wasmlib.NewScMutableHash(s.id, ResultHash.KeyId())
 }
 
-type ImmutableViewGetBlobFieldResults struct {
+type ImmutableGetBlobFieldResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetBlobFieldResults) Bytes() wasmlib.ScImmutableBytes {
+func (s ImmutableGetBlobFieldResults) Bytes() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, ResultBytes.KeyId())
 }
 
-type MutableViewGetBlobFieldResults struct {
+type MutableGetBlobFieldResults struct {
 	id int32
 }
 
-func (s MutableViewGetBlobFieldResults) Bytes() wasmlib.ScMutableBytes {
+func (s MutableGetBlobFieldResults) Bytes() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultBytes.KeyId())
 }

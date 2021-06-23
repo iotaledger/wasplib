@@ -9,170 +9,146 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncApproveParams struct {
+type ImmutableApproveParams struct {
 	id int32
 }
 
-func (s ImmutableFuncApproveParams) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableApproveParams) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-func (s ImmutableFuncApproveParams) Delegation() wasmlib.ScImmutableAgentId {
+func (s ImmutableApproveParams) Delegation() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type MutableFuncApproveParams struct {
+type MutableApproveParams struct {
 	id int32
 }
 
-func NewMutableFuncApproveParams() MutableFuncApproveParams {
-	return MutableFuncApproveParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncApproveParams) Amount() wasmlib.ScMutableInt64 {
+func (s MutableApproveParams) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-func (s MutableFuncApproveParams) Delegation() wasmlib.ScMutableAgentId {
+func (s MutableApproveParams) Delegation() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type ImmutableFuncInitParams struct {
+type ImmutableInitParams struct {
 	id int32
 }
 
-func (s ImmutableFuncInitParams) Creator() wasmlib.ScImmutableAgentId {
+func (s ImmutableInitParams) Creator() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamCreator])
 }
 
-func (s ImmutableFuncInitParams) Supply() wasmlib.ScImmutableInt64 {
+func (s ImmutableInitParams) Supply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamSupply])
 }
 
-type MutableFuncInitParams struct {
+type MutableInitParams struct {
 	id int32
 }
 
-func NewMutableFuncInitParams() MutableFuncInitParams {
-	return MutableFuncInitParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncInitParams) Creator() wasmlib.ScMutableAgentId {
+func (s MutableInitParams) Creator() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamCreator])
 }
 
-func (s MutableFuncInitParams) Supply() wasmlib.ScMutableInt64 {
+func (s MutableInitParams) Supply() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamSupply])
 }
 
-type ImmutableFuncTransferParams struct {
+type ImmutableTransferParams struct {
 	id int32
 }
 
-func (s ImmutableFuncTransferParams) Account() wasmlib.ScImmutableAgentId {
+func (s ImmutableTransferParams) Account() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s ImmutableFuncTransferParams) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableTransferParams) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-type MutableFuncTransferParams struct {
+type MutableTransferParams struct {
 	id int32
 }
 
-func NewMutableFuncTransferParams() MutableFuncTransferParams {
-	return MutableFuncTransferParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncTransferParams) Account() wasmlib.ScMutableAgentId {
+func (s MutableTransferParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s MutableFuncTransferParams) Amount() wasmlib.ScMutableInt64 {
+func (s MutableTransferParams) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-type ImmutableFuncTransferFromParams struct {
+type ImmutableTransferFromParams struct {
 	id int32
 }
 
-func (s ImmutableFuncTransferFromParams) Account() wasmlib.ScImmutableAgentId {
+func (s ImmutableTransferFromParams) Account() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s ImmutableFuncTransferFromParams) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableTransferFromParams) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-func (s ImmutableFuncTransferFromParams) Recipient() wasmlib.ScImmutableAgentId {
+func (s ImmutableTransferFromParams) Recipient() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamRecipient])
 }
 
-type MutableFuncTransferFromParams struct {
+type MutableTransferFromParams struct {
 	id int32
 }
 
-func NewMutableFuncTransferFromParams() MutableFuncTransferFromParams {
-	return MutableFuncTransferFromParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncTransferFromParams) Account() wasmlib.ScMutableAgentId {
+func (s MutableTransferFromParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s MutableFuncTransferFromParams) Amount() wasmlib.ScMutableInt64 {
+func (s MutableTransferFromParams) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamAmount])
 }
 
-func (s MutableFuncTransferFromParams) Recipient() wasmlib.ScMutableAgentId {
+func (s MutableTransferFromParams) Recipient() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamRecipient])
 }
 
-type ImmutableViewAllowanceParams struct {
+type ImmutableAllowanceParams struct {
 	id int32
 }
 
-func (s ImmutableViewAllowanceParams) Account() wasmlib.ScImmutableAgentId {
+func (s ImmutableAllowanceParams) Account() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s ImmutableViewAllowanceParams) Delegation() wasmlib.ScImmutableAgentId {
+func (s ImmutableAllowanceParams) Delegation() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type MutableViewAllowanceParams struct {
+type MutableAllowanceParams struct {
 	id int32
 }
 
-func NewMutableViewAllowanceParams() MutableViewAllowanceParams {
-	return MutableViewAllowanceParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewAllowanceParams) Account() wasmlib.ScMutableAgentId {
+func (s MutableAllowanceParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-func (s MutableViewAllowanceParams) Delegation() wasmlib.ScMutableAgentId {
+func (s MutableAllowanceParams) Delegation() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamDelegation])
 }
 
-type ImmutableViewBalanceOfParams struct {
+type ImmutableBalanceOfParams struct {
 	id int32
 }
 
-func (s ImmutableViewBalanceOfParams) Account() wasmlib.ScImmutableAgentId {
+func (s ImmutableBalanceOfParams) Account() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, idxMap[IdxParamAccount])
 }
 
-type MutableViewBalanceOfParams struct {
+type MutableBalanceOfParams struct {
 	id int32
 }
 
-func NewMutableViewBalanceOfParams() MutableViewBalanceOfParams {
-	return MutableViewBalanceOfParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewBalanceOfParams) Account() wasmlib.ScMutableAgentId {
+func (s MutableBalanceOfParams) Account() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, idxMap[IdxParamAccount])
 }

@@ -7,67 +7,49 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct HelloWorldFunc {
-    sc: ScContractFunc,
+pub struct HelloWorldCall {
+    pub func: ScFunc,
 }
 
-impl HelloWorldFunc {
-    pub fn new(ctx: &ScFuncContext) -> HelloWorldFunc {
-        HelloWorldFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut HelloWorldFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut HelloWorldFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut HelloWorldFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut HelloWorldFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn hello_world(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_HELLO_WORLD, 0, Some(transfer));
-    }
-
-    pub fn get_hello_world(&mut self) -> ImmutableViewGetHelloWorldResults {
-        self.sc.run(HVIEW_GET_HELLO_WORLD, 0, None);
-        ImmutableViewGetHelloWorldResults { id: self.sc.result_map_id() }
+impl HelloWorldCall {
+    pub fn new(_ctx: &ScFuncContext) -> HelloWorldCall {
+        let mut f = HelloWorldCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_HELLO_WORLD, ptr::null_mut(), ptr::null_mut());
+        f
     }
 }
 
-pub struct HelloWorldView {
-    sc: ScContractView,
+pub struct GetHelloWorldCall {
+    pub func: ScView,
+    pub results: ImmutableGetHelloWorldResults,
 }
 
-impl HelloWorldView {
-    pub fn new(ctx: &ScViewContext) -> HelloWorldView {
-        HelloWorldView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl GetHelloWorldCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetHelloWorldCall {
+        let mut f = GetHelloWorldCall {
+            func: ScView::zero(),
+            results: ImmutableGetHelloWorldResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut HelloWorldView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_hello_world(&mut self) -> ImmutableViewGetHelloWorldResults {
-        self.sc.run(HVIEW_GET_HELLO_WORLD, 0);
-        ImmutableViewGetHelloWorldResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetHelloWorldCall {
+        let mut f = GetHelloWorldCall {
+            func: ScView::zero(),
+            results: ImmutableGetHelloWorldResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

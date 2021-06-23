@@ -15,62 +15,22 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncLockBetsResults {
+pub struct ImmutableLastWinningNumberResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncLockBetsResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPayWinnersResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncPayWinnersResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPlaceBetResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncPlaceBetResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPlayPeriodResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncPlayPeriodResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewLastWinningNumberResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewLastWinningNumberResults {
+impl ImmutableLastWinningNumberResults {
     pub fn last_winning_number(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_LAST_WINNING_NUMBER))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewLastWinningNumberResults {
+pub struct MutableLastWinningNumberResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewLastWinningNumberResults {
+impl MutableLastWinningNumberResults {
     pub fn last_winning_number(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_LAST_WINNING_NUMBER))
     }

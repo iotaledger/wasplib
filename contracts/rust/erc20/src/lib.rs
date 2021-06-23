@@ -48,15 +48,15 @@ fn on_load() {
     }
 }
 
-pub struct FuncApproveContext {
-    params: ImmutableFuncApproveParams,
+pub struct ApproveContext {
+    params: ImmutableApproveParams,
     state:  MutableErc20State,
 }
 
 fn func_approve_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcApprove");
-    let f = FuncApproveContext {
-        params: ImmutableFuncApproveParams {
+    let f = ApproveContext {
+        params: ImmutableApproveParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableErc20State {
@@ -69,15 +69,15 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcApprove ok");
 }
 
-pub struct FuncInitContext {
-    params: ImmutableFuncInitParams,
+pub struct InitContext {
+    params: ImmutableInitParams,
     state:  MutableErc20State,
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcInit");
-    let f = FuncInitContext {
-        params: ImmutableFuncInitParams {
+    let f = InitContext {
+        params: ImmutableInitParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableErc20State {
@@ -90,15 +90,15 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcInit ok");
 }
 
-pub struct FuncTransferContext {
-    params: ImmutableFuncTransferParams,
+pub struct TransferContext {
+    params: ImmutableTransferParams,
     state:  MutableErc20State,
 }
 
 fn func_transfer_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransfer");
-    let f = FuncTransferContext {
-        params: ImmutableFuncTransferParams {
+    let f = TransferContext {
+        params: ImmutableTransferParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableErc20State {
@@ -111,15 +111,15 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransfer ok");
 }
 
-pub struct FuncTransferFromContext {
-    params: ImmutableFuncTransferFromParams,
+pub struct TransferFromContext {
+    params: ImmutableTransferFromParams,
     state:  MutableErc20State,
 }
 
 fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransferFrom");
-    let f = FuncTransferFromContext {
-        params: ImmutableFuncTransferFromParams {
+    let f = TransferFromContext {
+        params: ImmutableTransferFromParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableErc20State {
@@ -133,19 +133,19 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransferFrom ok");
 }
 
-pub struct ViewAllowanceContext {
-    params:  ImmutableViewAllowanceParams,
-    results: MutableViewAllowanceResults,
+pub struct AllowanceContext {
+    params:  ImmutableAllowanceParams,
+    results: MutableAllowanceResults,
     state:   ImmutableErc20State,
 }
 
 fn view_allowance_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewAllowance");
-    let f = ViewAllowanceContext {
-        params: ImmutableViewAllowanceParams {
+    let f = AllowanceContext {
+        params: ImmutableAllowanceParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewAllowanceResults {
+        results: MutableAllowanceResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableErc20State {
@@ -158,19 +158,19 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewAllowance ok");
 }
 
-pub struct ViewBalanceOfContext {
-    params:  ImmutableViewBalanceOfParams,
-    results: MutableViewBalanceOfResults,
+pub struct BalanceOfContext {
+    params:  ImmutableBalanceOfParams,
+    results: MutableBalanceOfResults,
     state:   ImmutableErc20State,
 }
 
 fn view_balance_of_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewBalanceOf");
-    let f = ViewBalanceOfContext {
-        params: ImmutableViewBalanceOfParams {
+    let f = BalanceOfContext {
+        params: ImmutableBalanceOfParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewBalanceOfResults {
+        results: MutableBalanceOfResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableErc20State {
@@ -182,15 +182,15 @@ fn view_balance_of_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewBalanceOf ok");
 }
 
-pub struct ViewTotalSupplyContext {
-    results: MutableViewTotalSupplyResults,
+pub struct TotalSupplyContext {
+    results: MutableTotalSupplyResults,
     state:   ImmutableErc20State,
 }
 
 fn view_total_supply_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewTotalSupply");
-    let f = ViewTotalSupplyContext {
-        results: MutableViewTotalSupplyResults {
+    let f = TotalSupplyContext {
+        results: MutableTotalSupplyResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableErc20State {

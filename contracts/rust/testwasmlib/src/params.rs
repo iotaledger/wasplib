@@ -15,11 +15,11 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncParamTypesParams {
+pub struct ImmutableParamTypesParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncParamTypesParams {
+impl ImmutableParamTypesParams {
     pub fn address(&self) -> ScImmutableAddress {
         ScImmutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }
@@ -70,15 +70,11 @@ impl ImmutableFuncParamTypesParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncParamTypesParams {
+pub struct MutableParamTypesParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncParamTypesParams {
-    pub fn new() -> MutableFuncParamTypesParams {
-        MutableFuncParamTypesParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableParamTypesParams {
     pub fn address(&self) -> ScMutableAddress {
         ScMutableAddress::new(self.id, idx_map(IDX_PARAM_ADDRESS))
     }
@@ -129,11 +125,11 @@ impl MutableFuncParamTypesParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewBlockRecordParams {
+pub struct ImmutableBlockRecordParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewBlockRecordParams {
+impl ImmutableBlockRecordParams {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
     }
@@ -144,15 +140,11 @@ impl ImmutableViewBlockRecordParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewBlockRecordParams {
+pub struct MutableBlockRecordParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewBlockRecordParams {
-    pub fn new() -> MutableViewBlockRecordParams {
-        MutableViewBlockRecordParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableBlockRecordParams {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
     }
@@ -163,26 +155,22 @@ impl MutableViewBlockRecordParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewBlockRecordsParams {
+pub struct ImmutableBlockRecordsParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewBlockRecordsParams {
+impl ImmutableBlockRecordsParams {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewBlockRecordsParams {
+pub struct MutableBlockRecordsParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewBlockRecordsParams {
-    pub fn new() -> MutableViewBlockRecordsParams {
-        MutableViewBlockRecordsParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableBlockRecordsParams {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, idx_map(IDX_PARAM_BLOCK_INDEX))
     }

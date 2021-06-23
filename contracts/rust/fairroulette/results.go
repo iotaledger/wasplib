@@ -9,18 +9,18 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewLastWinningNumberResults struct {
+type ImmutableLastWinningNumberResults struct {
 	id int32
 }
 
-func (s ImmutableViewLastWinningNumberResults) LastWinningNumber() wasmlib.ScImmutableInt64 {
+func (s ImmutableLastWinningNumberResults) LastWinningNumber() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultLastWinningNumber])
 }
 
-type MutableViewLastWinningNumberResults struct {
+type MutableLastWinningNumberResults struct {
 	id int32
 }
 
-func (s MutableViewLastWinningNumberResults) LastWinningNumber() wasmlib.ScMutableInt64 {
+func (s MutableLastWinningNumberResults) LastWinningNumber() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultLastWinningNumber])
 }

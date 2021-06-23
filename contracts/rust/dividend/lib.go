@@ -22,13 +22,13 @@ func OnLoad() {
 	}
 }
 
-type FuncDivideContext struct {
+type DivideContext struct {
 	State MutableDividendState
 }
 
 func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide")
-	f := &FuncDivideContext{
+	f := &DivideContext{
 		State: MutableDividendState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -37,15 +37,15 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide ok")
 }
 
-type FuncInitContext struct {
-	Params ImmutableFuncInitParams
+type InitContext struct {
+	Params ImmutableInitParams
 	State  MutableDividendState
 }
 
 func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcInit")
-	f := &FuncInitContext{
-		Params: ImmutableFuncInitParams{
+	f := &InitContext{
+		Params: ImmutableInitParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableDividendState{
@@ -56,8 +56,8 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcInit ok")
 }
 
-type FuncMemberContext struct {
-	Params ImmutableFuncMemberParams
+type MemberContext struct {
+	Params ImmutableMemberParams
 	State  MutableDividendState
 }
 
@@ -68,8 +68,8 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(access.Exists(), "access not set: owner")
 	ctx.Require(ctx.Caller() == access.Value(), "no permission")
 
-	f := &FuncMemberContext{
-		Params: ImmutableFuncMemberParams{
+	f := &MemberContext{
+		Params: ImmutableMemberParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableDividendState{
@@ -82,8 +82,8 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcMember ok")
 }
 
-type FuncSetOwnerContext struct {
-	Params ImmutableFuncSetOwnerParams
+type SetOwnerContext struct {
+	Params ImmutableSetOwnerParams
 	State  MutableDividendState
 }
 
@@ -94,8 +94,8 @@ func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(access.Exists(), "access not set: owner")
 	ctx.Require(ctx.Caller() == access.Value(), "no permission")
 
-	f := &FuncSetOwnerContext{
-		Params: ImmutableFuncSetOwnerParams{
+	f := &SetOwnerContext{
+		Params: ImmutableSetOwnerParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableDividendState{
@@ -107,19 +107,19 @@ func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcSetOwner ok")
 }
 
-type ViewGetFactorContext struct {
-	Params  ImmutableViewGetFactorParams
-	Results MutableViewGetFactorResults
+type GetFactorContext struct {
+	Params  ImmutableGetFactorParams
+	Results MutableGetFactorResults
 	State   ImmutableDividendState
 }
 
 func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("dividend.viewGetFactor")
-	f := &ViewGetFactorContext{
-		Params: ImmutableViewGetFactorParams{
+	f := &GetFactorContext{
+		Params: ImmutableGetFactorParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
-		Results: MutableViewGetFactorResults{
+		Results: MutableGetFactorResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableDividendState{

@@ -15,51 +15,11 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncFinalizeAuctionResults {
+pub struct ImmutableGetInfoResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncFinalizeAuctionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncPlaceBidResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncPlaceBidResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncSetOwnerMarginResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncSetOwnerMarginResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncStartAuctionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncStartAuctionResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetInfoResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetInfoResults {
+impl ImmutableGetInfoResults {
     pub fn bidders(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_BIDDERS))
     }
@@ -110,11 +70,11 @@ impl ImmutableViewGetInfoResults {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetInfoResults {
+pub struct MutableGetInfoResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetInfoResults {
+impl MutableGetInfoResults {
     pub fn bidders(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_BIDDERS))
     }

@@ -9,57 +9,29 @@ package helloworld
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type HelloWorldFunc struct {
-	sc wasmlib.ScContractFunc
+type HelloWorldCall struct {
+	Func wasmlib.ScFunc
 }
 
-func NewHelloWorldFunc(ctx wasmlib.ScFuncContext) *HelloWorldFunc {
-	return &HelloWorldFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *HelloWorldFunc) Delay(seconds int32) *HelloWorldFunc {
-	f.sc.Delay(seconds)
+func NewHelloWorldCall(ctx wasmlib.ScFuncContext) *HelloWorldCall {
+	f := &HelloWorldCall{}
+	f.Func.Init(HScName, HFuncHelloWorld, nil, nil)
 	return f
 }
 
-func (f *HelloWorldFunc) OfContract(contract wasmlib.ScHname) *HelloWorldFunc {
-	f.sc.OfContract(contract)
+type GetHelloWorldCall struct {
+	Func wasmlib.ScView
+	Results ImmutableGetHelloWorldResults
+}
+
+func NewGetHelloWorldCall(ctx wasmlib.ScFuncContext) *GetHelloWorldCall {
+	f := &GetHelloWorldCall{}
+	f.Func.Init(HScName, HViewGetHelloWorld, nil, &f.Results.id)
 	return f
 }
 
-func (f *HelloWorldFunc) Post() *HelloWorldFunc {
-	f.sc.Post()
+func NewGetHelloWorldCallFromView(ctx wasmlib.ScViewContext) *GetHelloWorldCall {
+	f := &GetHelloWorldCall{}
+	f.Func.Init(HScName, HViewGetHelloWorld, nil, &f.Results.id)
 	return f
-}
-
-func (f *HelloWorldFunc) PostToChain(chainId wasmlib.ScChainId) *HelloWorldFunc {
-	f.sc.PostToChain(chainId)
-	return f
-}
-
-func (f *HelloWorldFunc) HelloWorld(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncHelloWorld, 0, &transfer)
-}
-
-func (f *HelloWorldFunc) GetHelloWorld() ImmutableViewGetHelloWorldResults {
-	f.sc.Run(HViewGetHelloWorld, 0, nil)
-	return ImmutableViewGetHelloWorldResults{id: f.sc.ResultMapId()}
-}
-
-type HelloWorldView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewHelloWorldView(ctx wasmlib.ScViewContext) *HelloWorldView {
-	return &HelloWorldView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *HelloWorldView) OfContract(contract wasmlib.ScHname) *HelloWorldView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *HelloWorldView) GetHelloWorld() ImmutableViewGetHelloWorldResults {
-	v.sc.Run(HViewGetHelloWorld, 0)
-	return ImmutableViewGetHelloWorldResults{id: v.sc.ResultMapId()}
 }

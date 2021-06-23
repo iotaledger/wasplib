@@ -7,81 +7,95 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct DonateWithFeedbackFunc {
-    sc: ScContractFunc,
+pub struct DonateCall {
+    pub func: ScFunc,
+    pub params: MutableDonateParams,
 }
 
-impl DonateWithFeedbackFunc {
-    pub fn new(ctx: &ScFuncContext) -> DonateWithFeedbackFunc {
-        DonateWithFeedbackFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut DonateWithFeedbackFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut DonateWithFeedbackFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut DonateWithFeedbackFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut DonateWithFeedbackFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn donate(&mut self, params: MutableFuncDonateParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_DONATE, params.id, Some(transfer));
-    }
-
-    pub fn withdraw(&mut self, params: MutableFuncWithdrawParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_WITHDRAW, params.id, Some(transfer));
-    }
-
-    pub fn donation(&mut self, params: MutableViewDonationParams) -> ImmutableViewDonationResults {
-        self.sc.run(HVIEW_DONATION, params.id, None);
-        ImmutableViewDonationResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn donation_info(&mut self) -> ImmutableViewDonationInfoResults {
-        self.sc.run(HVIEW_DONATION_INFO, 0, None);
-        ImmutableViewDonationInfoResults { id: self.sc.result_map_id() }
+impl DonateCall {
+    pub fn new(_ctx: &ScFuncContext) -> DonateCall {
+        let mut f = DonateCall {
+            func: ScFunc::zero(),
+            params: MutableDonateParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_DONATE, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct DonateWithFeedbackView {
-    sc: ScContractView,
+pub struct WithdrawCall {
+    pub func: ScFunc,
+    pub params: MutableWithdrawParams,
 }
 
-impl DonateWithFeedbackView {
-    pub fn new(ctx: &ScViewContext) -> DonateWithFeedbackView {
-        DonateWithFeedbackView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl WithdrawCall {
+    pub fn new(_ctx: &ScFuncContext) -> WithdrawCall {
+        let mut f = WithdrawCall {
+            func: ScFunc::zero(),
+            params: MutableWithdrawParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_WITHDRAW, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct DonationCall {
+    pub func: ScView,
+    pub params: MutableDonationParams,
+    pub results: ImmutableDonationResults,
+}
+
+impl DonationCall {
+    pub fn new(_ctx: &ScFuncContext) -> DonationCall {
+        let mut f = DonationCall {
+            func: ScView::zero(),
+            params: MutableDonationParams { id: 0 },
+            results: ImmutableDonationResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_DONATION, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut DonateWithFeedbackView {
-        self.sc.of_contract(contract);
-        self
+    pub fn new_from_view(_ctx: &ScViewContext) -> DonationCall {
+        let mut f = DonationCall {
+            func: ScView::zero(),
+            params: MutableDonationParams { id: 0 },
+            results: ImmutableDonationResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_DONATION, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct DonationInfoCall {
+    pub func: ScView,
+    pub results: ImmutableDonationInfoResults,
+}
+
+impl DonationInfoCall {
+    pub fn new(_ctx: &ScFuncContext) -> DonationInfoCall {
+        let mut f = DonationInfoCall {
+            func: ScView::zero(),
+            results: ImmutableDonationInfoResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_DONATION_INFO, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn donation(&mut self, params: MutableViewDonationParams) -> ImmutableViewDonationResults {
-        self.sc.run(HVIEW_DONATION, params.id);
-        ImmutableViewDonationResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn donation_info(&mut self) -> ImmutableViewDonationInfoResults {
-        self.sc.run(HVIEW_DONATION_INFO, 0);
-        ImmutableViewDonationInfoResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> DonationInfoCall {
+        let mut f = DonationInfoCall {
+            func: ScView::zero(),
+            results: ImmutableDonationInfoResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_DONATION_INFO, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

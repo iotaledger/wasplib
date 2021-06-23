@@ -9,18 +9,18 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewGetCounterResults struct {
+type ImmutableGetCounterResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetCounterResults) Counter() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetCounterResults) Counter() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
-type MutableViewGetCounterResults struct {
+type MutableGetCounterResults struct {
 	id int32
 }
 
-func (s MutableViewGetCounterResults) Counter() wasmlib.ScMutableInt64 {
+func (s MutableGetCounterResults) Counter() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCounter])
 }

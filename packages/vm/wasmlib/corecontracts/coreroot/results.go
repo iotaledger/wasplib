@@ -9,19 +9,19 @@ package coreroot
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewFindContractResults struct {
+type ImmutableFindContractResults struct {
 	id int32
 }
 
-func (s ImmutableViewFindContractResults) Data() wasmlib.ScImmutableBytes {
+func (s ImmutableFindContractResults) Data() wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(s.id, ResultData.KeyId())
 }
 
-type MutableViewFindContractResults struct {
+type MutableFindContractResults struct {
 	id int32
 }
 
-func (s MutableViewFindContractResults) Data() wasmlib.ScMutableBytes {
+func (s MutableFindContractResults) Data() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultData.KeyId())
 }
 
@@ -33,36 +33,36 @@ func (m MapHnameToImmutableBytes) GetBytes(key wasmlib.ScHname) wasmlib.ScImmuta
 	return wasmlib.NewScImmutableBytes(m.objId, key.KeyId())
 }
 
-type ImmutableViewGetChainInfoResults struct {
+type ImmutableGetChainInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetChainInfoResults) ChainID() wasmlib.ScImmutableChainId {
+func (s ImmutableGetChainInfoResults) ChainID() wasmlib.ScImmutableChainId {
 	return wasmlib.NewScImmutableChainId(s.id, ResultChainID.KeyId())
 }
 
-func (s ImmutableViewGetChainInfoResults) ChainOwnerID() wasmlib.ScImmutableAgentId {
+func (s ImmutableGetChainInfoResults) ChainOwnerID() wasmlib.ScImmutableAgentId {
 	return wasmlib.NewScImmutableAgentId(s.id, ResultChainOwnerID.KeyId())
 }
 
-func (s ImmutableViewGetChainInfoResults) ContractRegistry() MapHnameToImmutableBytes {
+func (s ImmutableGetChainInfoResults) ContractRegistry() MapHnameToImmutableBytes {
 	mapId := wasmlib.GetObjectId(s.id, ResultContractRegistry.KeyId(), wasmlib.TYPE_MAP)
 	return MapHnameToImmutableBytes{objId: mapId}
 }
 
-func (s ImmutableViewGetChainInfoResults) DefaultOwnerFee() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetChainInfoResults) DefaultOwnerFee() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ResultDefaultOwnerFee.KeyId())
 }
 
-func (s ImmutableViewGetChainInfoResults) DefaultValidatorFee() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetChainInfoResults) DefaultValidatorFee() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ResultDefaultValidatorFee.KeyId())
 }
 
-func (s ImmutableViewGetChainInfoResults) Description() wasmlib.ScImmutableString {
+func (s ImmutableGetChainInfoResults) Description() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, ResultDescription.KeyId())
 }
 
-func (s ImmutableViewGetChainInfoResults) FeeColor() wasmlib.ScImmutableColor {
+func (s ImmutableGetChainInfoResults) FeeColor() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, ResultFeeColor.KeyId())
 }
 
@@ -78,67 +78,67 @@ func (m MapHnameToMutableBytes) GetBytes(key wasmlib.ScHname) wasmlib.ScMutableB
 	return wasmlib.NewScMutableBytes(m.objId, key.KeyId())
 }
 
-type MutableViewGetChainInfoResults struct {
+type MutableGetChainInfoResults struct {
 	id int32
 }
 
-func (s MutableViewGetChainInfoResults) ChainID() wasmlib.ScMutableChainId {
+func (s MutableGetChainInfoResults) ChainID() wasmlib.ScMutableChainId {
 	return wasmlib.NewScMutableChainId(s.id, ResultChainID.KeyId())
 }
 
-func (s MutableViewGetChainInfoResults) ChainOwnerID() wasmlib.ScMutableAgentId {
+func (s MutableGetChainInfoResults) ChainOwnerID() wasmlib.ScMutableAgentId {
 	return wasmlib.NewScMutableAgentId(s.id, ResultChainOwnerID.KeyId())
 }
 
-func (s MutableViewGetChainInfoResults) ContractRegistry() MapHnameToMutableBytes {
+func (s MutableGetChainInfoResults) ContractRegistry() MapHnameToMutableBytes {
 	mapId := wasmlib.GetObjectId(s.id, ResultContractRegistry.KeyId(), wasmlib.TYPE_MAP)
 	return MapHnameToMutableBytes{objId: mapId}
 }
 
-func (s MutableViewGetChainInfoResults) DefaultOwnerFee() wasmlib.ScMutableInt64 {
+func (s MutableGetChainInfoResults) DefaultOwnerFee() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultDefaultOwnerFee.KeyId())
 }
 
-func (s MutableViewGetChainInfoResults) DefaultValidatorFee() wasmlib.ScMutableInt64 {
+func (s MutableGetChainInfoResults) DefaultValidatorFee() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultDefaultValidatorFee.KeyId())
 }
 
-func (s MutableViewGetChainInfoResults) Description() wasmlib.ScMutableString {
+func (s MutableGetChainInfoResults) Description() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, ResultDescription.KeyId())
 }
 
-func (s MutableViewGetChainInfoResults) FeeColor() wasmlib.ScMutableColor {
+func (s MutableGetChainInfoResults) FeeColor() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, ResultFeeColor.KeyId())
 }
 
-type ImmutableViewGetFeeInfoResults struct {
+type ImmutableGetFeeInfoResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetFeeInfoResults) FeeColor() wasmlib.ScImmutableColor {
+func (s ImmutableGetFeeInfoResults) FeeColor() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, ResultFeeColor.KeyId())
 }
 
-func (s ImmutableViewGetFeeInfoResults) OwnerFee() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetFeeInfoResults) OwnerFee() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ResultOwnerFee.KeyId())
 }
 
-func (s ImmutableViewGetFeeInfoResults) ValidatorFee() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetFeeInfoResults) ValidatorFee() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ResultValidatorFee.KeyId())
 }
 
-type MutableViewGetFeeInfoResults struct {
+type MutableGetFeeInfoResults struct {
 	id int32
 }
 
-func (s MutableViewGetFeeInfoResults) FeeColor() wasmlib.ScMutableColor {
+func (s MutableGetFeeInfoResults) FeeColor() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, ResultFeeColor.KeyId())
 }
 
-func (s MutableViewGetFeeInfoResults) OwnerFee() wasmlib.ScMutableInt64 {
+func (s MutableGetFeeInfoResults) OwnerFee() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultOwnerFee.KeyId())
 }
 
-func (s MutableViewGetFeeInfoResults) ValidatorFee() wasmlib.ScMutableInt64 {
+func (s MutableGetFeeInfoResults) ValidatorFee() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultValidatorFee.KeyId())
 }

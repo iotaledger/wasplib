@@ -68,19 +68,19 @@ fn on_load() {
     }
 }
 
-pub struct FuncCallOnChainContext {
-    params:  ImmutableFuncCallOnChainParams,
-    results: MutableFuncCallOnChainResults,
+pub struct CallOnChainContext {
+    params:  ImmutableCallOnChainParams,
+    results: MutableCallOnChainResults,
     state:   MutableTestCoreState,
 }
 
 fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCallOnChain");
-    let f = FuncCallOnChainContext {
-        params: ImmutableFuncCallOnChainParams {
+    let f = CallOnChainContext {
+        params: ImmutableCallOnChainParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableFuncCallOnChainResults {
+        results: MutableCallOnChainResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -92,15 +92,15 @@ fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCallOnChain ok");
 }
 
-pub struct FuncCheckContextFromFullEPContext {
-    params: ImmutableFuncCheckContextFromFullEPParams,
+pub struct CheckContextFromFullEPContext {
+    params: ImmutableCheckContextFromFullEPParams,
     state:  MutableTestCoreState,
 }
 
 fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCheckContextFromFullEP");
-    let f = FuncCheckContextFromFullEPContext {
-        params: ImmutableFuncCheckContextFromFullEPParams {
+    let f = CheckContextFromFullEPContext {
+        params: ImmutableCheckContextFromFullEPParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -116,13 +116,13 @@ fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCheckContextFromFullEP ok");
 }
 
-pub struct FuncDoNothingContext {
+pub struct DoNothingContext {
     state: MutableTestCoreState,
 }
 
 fn func_do_nothing_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcDoNothing");
-    let f = FuncDoNothingContext {
+    let f = DoNothingContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -131,15 +131,15 @@ fn func_do_nothing_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcDoNothing ok");
 }
 
-pub struct FuncGetMintedSupplyContext {
-    results: MutableFuncGetMintedSupplyResults,
+pub struct GetMintedSupplyContext {
+    results: MutableGetMintedSupplyResults,
     state:   MutableTestCoreState,
 }
 
 fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcGetMintedSupply");
-    let f = FuncGetMintedSupplyContext {
-        results: MutableFuncGetMintedSupplyResults {
+    let f = GetMintedSupplyContext {
+        results: MutableGetMintedSupplyResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -150,13 +150,13 @@ fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcGetMintedSupply ok");
 }
 
-pub struct FuncIncCounterContext {
+pub struct IncCounterContext {
     state: MutableTestCoreState,
 }
 
 fn func_inc_counter_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcIncCounter");
-    let f = FuncIncCounterContext {
+    let f = IncCounterContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -165,13 +165,13 @@ fn func_inc_counter_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcIncCounter ok");
 }
 
-pub struct FuncInitContext {
+pub struct InitContext {
     state: MutableTestCoreState,
 }
 
 fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcInit");
-    let f = FuncInitContext {
+    let f = InitContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -180,15 +180,15 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcInit ok");
 }
 
-pub struct FuncPassTypesFullContext {
-    params: ImmutableFuncPassTypesFullParams,
+pub struct PassTypesFullContext {
+    params: ImmutablePassTypesFullParams,
     state:  MutableTestCoreState,
 }
 
 fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcPassTypesFull");
-    let f = FuncPassTypesFullContext {
-        params: ImmutableFuncPassTypesFullParams {
+    let f = PassTypesFullContext {
+        params: ImmutablePassTypesFullParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -206,19 +206,19 @@ fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcPassTypesFull ok");
 }
 
-pub struct FuncRunRecursionContext {
-    params:  ImmutableFuncRunRecursionParams,
-    results: MutableFuncRunRecursionResults,
+pub struct RunRecursionContext {
+    params:  ImmutableRunRecursionParams,
+    results: MutableRunRecursionResults,
     state:   MutableTestCoreState,
 }
 
 fn func_run_recursion_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcRunRecursion");
-    let f = FuncRunRecursionContext {
-        params: ImmutableFuncRunRecursionParams {
+    let f = RunRecursionContext {
+        params: ImmutableRunRecursionParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableFuncRunRecursionResults {
+        results: MutableRunRecursionResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -230,8 +230,8 @@ fn func_run_recursion_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcRunRecursion ok");
 }
 
-pub struct FuncSendToAddressContext {
-    params: ImmutableFuncSendToAddressParams,
+pub struct SendToAddressContext {
+    params: ImmutableSendToAddressParams,
     state:  MutableTestCoreState,
 }
 
@@ -239,8 +239,8 @@ fn func_send_to_address_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSendToAddress");
     ctx.require(ctx.caller() == ctx.contract_creator(), "no permission");
 
-    let f = FuncSendToAddressContext {
-        params: ImmutableFuncSendToAddressParams {
+    let f = SendToAddressContext {
+        params: ImmutableSendToAddressParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -252,15 +252,15 @@ fn func_send_to_address_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSendToAddress ok");
 }
 
-pub struct FuncSetIntContext {
-    params: ImmutableFuncSetIntParams,
+pub struct SetIntContext {
+    params: ImmutableSetIntParams,
     state:  MutableTestCoreState,
 }
 
 fn func_set_int_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSetInt");
-    let f = FuncSetIntContext {
-        params: ImmutableFuncSetIntParams {
+    let f = SetIntContext {
+        params: ImmutableSetIntParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -273,13 +273,13 @@ fn func_set_int_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSetInt ok");
 }
 
-pub struct FuncTestCallPanicFullEPContext {
+pub struct TestCallPanicFullEPContext {
     state: MutableTestCoreState,
 }
 
 fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicFullEP");
-    let f = FuncTestCallPanicFullEPContext {
+    let f = TestCallPanicFullEPContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -288,13 +288,13 @@ fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicFullEP ok");
 }
 
-pub struct FuncTestCallPanicViewEPFromFullContext {
+pub struct TestCallPanicViewEPFromFullContext {
     state: MutableTestCoreState,
 }
 
 fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicViewEPFromFull");
-    let f = FuncTestCallPanicViewEPFromFullContext {
+    let f = TestCallPanicViewEPFromFullContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -303,15 +303,15 @@ fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicViewEPFromFull ok");
 }
 
-pub struct FuncTestChainOwnerIDFullContext {
-    results: MutableFuncTestChainOwnerIDFullResults,
+pub struct TestChainOwnerIDFullContext {
+    results: MutableTestChainOwnerIDFullResults,
     state:   MutableTestCoreState,
 }
 
 fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestChainOwnerIDFull");
-    let f = FuncTestChainOwnerIDFullContext {
-        results: MutableFuncTestChainOwnerIDFullResults {
+    let f = TestChainOwnerIDFullContext {
+        results: MutableTestChainOwnerIDFullResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -322,13 +322,13 @@ fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestChainOwnerIDFull ok");
 }
 
-pub struct FuncTestEventLogDeployContext {
+pub struct TestEventLogDeployContext {
     state: MutableTestCoreState,
 }
 
 fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogDeploy");
-    let f = FuncTestEventLogDeployContext {
+    let f = TestEventLogDeployContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -337,13 +337,13 @@ fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogDeploy ok");
 }
 
-pub struct FuncTestEventLogEventDataContext {
+pub struct TestEventLogEventDataContext {
     state: MutableTestCoreState,
 }
 
 fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogEventData");
-    let f = FuncTestEventLogEventDataContext {
+    let f = TestEventLogEventDataContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -352,15 +352,15 @@ fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogEventData ok");
 }
 
-pub struct FuncTestEventLogGenericDataContext {
-    params: ImmutableFuncTestEventLogGenericDataParams,
+pub struct TestEventLogGenericDataContext {
+    params: ImmutableTestEventLogGenericDataParams,
     state:  MutableTestCoreState,
 }
 
 fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogGenericData");
-    let f = FuncTestEventLogGenericDataContext {
-        params: ImmutableFuncTestEventLogGenericDataParams {
+    let f = TestEventLogGenericDataContext {
+        params: ImmutableTestEventLogGenericDataParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -372,13 +372,13 @@ fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogGenericData ok");
 }
 
-pub struct FuncTestPanicFullEPContext {
+pub struct TestPanicFullEPContext {
     state: MutableTestCoreState,
 }
 
 fn func_test_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestPanicFullEP");
-    let f = FuncTestPanicFullEPContext {
+    let f = TestPanicFullEPContext {
         state: MutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -387,15 +387,15 @@ fn func_test_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestPanicFullEP ok");
 }
 
-pub struct FuncWithdrawToChainContext {
-    params: ImmutableFuncWithdrawToChainParams,
+pub struct WithdrawToChainContext {
+    params: ImmutableWithdrawToChainParams,
     state:  MutableTestCoreState,
 }
 
 fn func_withdraw_to_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcWithdrawToChain");
-    let f = FuncWithdrawToChainContext {
-        params: ImmutableFuncWithdrawToChainParams {
+    let f = WithdrawToChainContext {
+        params: ImmutableWithdrawToChainParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: MutableTestCoreState {
@@ -407,15 +407,15 @@ fn func_withdraw_to_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcWithdrawToChain ok");
 }
 
-pub struct ViewCheckContextFromViewEPContext {
-    params: ImmutableViewCheckContextFromViewEPParams,
+pub struct CheckContextFromViewEPContext {
+    params: ImmutableCheckContextFromViewEPParams,
     state:  ImmutableTestCoreState,
 }
 
 fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewCheckContextFromViewEP");
-    let f = ViewCheckContextFromViewEPContext {
-        params: ImmutableViewCheckContextFromViewEPParams {
+    let f = CheckContextFromViewEPContext {
+        params: ImmutableCheckContextFromViewEPParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -430,19 +430,19 @@ fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewCheckContextFromViewEP ok");
 }
 
-pub struct ViewFibonacciContext {
-    params:  ImmutableViewFibonacciParams,
-    results: MutableViewFibonacciResults,
+pub struct FibonacciContext {
+    params:  ImmutableFibonacciParams,
+    results: MutableFibonacciResults,
     state:   ImmutableTestCoreState,
 }
 
 fn view_fibonacci_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewFibonacci");
-    let f = ViewFibonacciContext {
-        params: ImmutableViewFibonacciParams {
+    let f = FibonacciContext {
+        params: ImmutableFibonacciParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
-        results: MutableViewFibonacciResults {
+        results: MutableFibonacciResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -454,15 +454,15 @@ fn view_fibonacci_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewFibonacci ok");
 }
 
-pub struct ViewGetCounterContext {
-    results: MutableViewGetCounterResults,
+pub struct GetCounterContext {
+    results: MutableGetCounterResults,
     state:   ImmutableTestCoreState,
 }
 
 fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetCounter");
-    let f = ViewGetCounterContext {
-        results: MutableViewGetCounterResults {
+    let f = GetCounterContext {
+        results: MutableGetCounterResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -473,15 +473,15 @@ fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetCounter ok");
 }
 
-pub struct ViewGetIntContext {
-    params: ImmutableViewGetIntParams,
+pub struct GetIntContext {
+    params: ImmutableGetIntParams,
     state:  ImmutableTestCoreState,
 }
 
 fn view_get_int_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetInt");
-    let f = ViewGetIntContext {
-        params: ImmutableViewGetIntParams {
+    let f = GetIntContext {
+        params: ImmutableGetIntParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -493,13 +493,13 @@ fn view_get_int_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetInt ok");
 }
 
-pub struct ViewJustViewContext {
+pub struct JustViewContext {
     state: ImmutableTestCoreState,
 }
 
 fn view_just_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewJustView");
-    let f = ViewJustViewContext {
+    let f = JustViewContext {
         state: ImmutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -508,15 +508,15 @@ fn view_just_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewJustView ok");
 }
 
-pub struct ViewPassTypesViewContext {
-    params: ImmutableViewPassTypesViewParams,
+pub struct PassTypesViewContext {
+    params: ImmutablePassTypesViewParams,
     state:  ImmutableTestCoreState,
 }
 
 fn view_pass_types_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewPassTypesView");
-    let f = ViewPassTypesViewContext {
-        params: ImmutableViewPassTypesViewParams {
+    let f = PassTypesViewContext {
+        params: ImmutablePassTypesViewParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -534,13 +534,13 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewPassTypesView ok");
 }
 
-pub struct ViewTestCallPanicViewEPFromViewContext {
+pub struct TestCallPanicViewEPFromViewContext {
     state: ImmutableTestCoreState,
 }
 
 fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestCallPanicViewEPFromView");
-    let f = ViewTestCallPanicViewEPFromViewContext {
+    let f = TestCallPanicViewEPFromViewContext {
         state: ImmutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -549,15 +549,15 @@ fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestCallPanicViewEPFromView ok");
 }
 
-pub struct ViewTestChainOwnerIDViewContext {
-    results: MutableViewTestChainOwnerIDViewResults,
+pub struct TestChainOwnerIDViewContext {
+    results: MutableTestChainOwnerIDViewResults,
     state:   ImmutableTestCoreState,
 }
 
 fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestChainOwnerIDView");
-    let f = ViewTestChainOwnerIDViewContext {
-        results: MutableViewTestChainOwnerIDViewResults {
+    let f = TestChainOwnerIDViewContext {
+        results: MutableTestChainOwnerIDViewResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
@@ -568,13 +568,13 @@ fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestChainOwnerIDView ok");
 }
 
-pub struct ViewTestPanicViewEPContext {
+pub struct TestPanicViewEPContext {
     state: ImmutableTestCoreState,
 }
 
 fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestPanicViewEP");
-    let f = ViewTestPanicViewEPContext {
+    let f = TestPanicViewEPContext {
         state: ImmutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),
         },
@@ -583,15 +583,15 @@ fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestPanicViewEP ok");
 }
 
-pub struct ViewTestSandboxCallContext {
-    results: MutableViewTestSandboxCallResults,
+pub struct TestSandboxCallContext {
+    results: MutableTestSandboxCallResults,
     state:   ImmutableTestCoreState,
 }
 
 fn view_test_sandbox_call_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestSandboxCall");
-    let f = ViewTestSandboxCallContext {
-        results: MutableViewTestSandboxCallResults {
+    let f = TestSandboxCallContext {
+        results: MutableTestSandboxCallResults {
             id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {

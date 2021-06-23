@@ -12,36 +12,6 @@ use crate::*;
 use crate::corecontracts::coregovernance::*;
 use crate::host::*;
 
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncAddAllowedStateControllerAddressResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncAddAllowedStateControllerAddressResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncRemoveAllowedStateControllerAddressResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncRemoveAllowedStateControllerAddressResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncRotateStateControllerResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncRotateStateControllerResults {
-    pub(crate) id: i32,
-}
-
 pub struct ArrayOfImmutableBytes {
     pub(crate) obj_id: i32,
 }
@@ -57,11 +27,11 @@ impl ArrayOfImmutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetAllowedStateControllerAddressesResults {
+pub struct ImmutableGetAllowedStateControllerAddressesResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetAllowedStateControllerAddressesResults {
+impl ImmutableGetAllowedStateControllerAddressesResults {
     pub fn allowed_state_controller_addresses(&self) -> ArrayOfImmutableBytes {
         let arr_id = get_object_id(self.id, RESULT_ALLOWED_STATE_CONTROLLER_ADDRESSES.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfImmutableBytes { obj_id: arr_id }
@@ -87,11 +57,11 @@ impl ArrayOfMutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetAllowedStateControllerAddressesResults {
+pub struct MutableGetAllowedStateControllerAddressesResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetAllowedStateControllerAddressesResults {
+impl MutableGetAllowedStateControllerAddressesResults {
     pub fn allowed_state_controller_addresses(&self) -> ArrayOfMutableBytes {
         let arr_id = get_object_id(self.id, RESULT_ALLOWED_STATE_CONTROLLER_ADDRESSES.get_key_id(), TYPE_ARRAY | TYPE_BYTES);
         ArrayOfMutableBytes { obj_id: arr_id }

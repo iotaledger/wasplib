@@ -15,62 +15,22 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncDivideResults {
+pub struct ImmutableGetFactorResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncDivideResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncInitResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncInitResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncMemberResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncMemberResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncSetOwnerResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableFuncSetOwnerResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetFactorResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetFactorResults {
+impl ImmutableGetFactorResults {
     pub fn factor(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_FACTOR))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetFactorResults {
+pub struct MutableGetFactorResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetFactorResults {
+impl MutableGetFactorResults {
     pub fn factor(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, idx_map(IDX_RESULT_FACTOR))
     }

@@ -13,10 +13,14 @@ const (
 	ScName        = "blocklog"
 	ScDescription = "Core block log contract"
 	HScName       = wasmlib.ScHname(0xf538ef2b)
+)
 
+const (
 	ParamBlockIndex = wasmlib.Key("n")
 	ParamRequestID  = wasmlib.Key("u")
+)
 
+const (
 	ResultBlockIndex             = wasmlib.Key("n")
 	ResultBlockInfo              = wasmlib.Key("i")
 	ResultGoverningAddress       = wasmlib.Key("g")
@@ -25,7 +29,9 @@ const (
 	ResultRequestProcessed       = wasmlib.Key("p")
 	ResultRequestRecord          = wasmlib.Key("d")
 	ResultStateControllerAddress = wasmlib.Key("s")
+)
 
+const (
 	ViewControlAddresses             = "controlAddresses"
 	ViewGetBlockInfo                 = "getBlockInfo"
 	ViewGetLatestBlockInfo           = "getLatestBlockInfo"
@@ -33,7 +39,9 @@ const (
 	ViewGetRequestLogRecord          = "getRequestLogRecord"
 	ViewGetRequestLogRecordsForBlock = "getRequestLogRecordsForBlock"
 	ViewIsRequestProcessed           = "isRequestProcessed"
+)
 
+const (
 	HViewControlAddresses             = wasmlib.ScHname(0x796bd223)
 	HViewGetBlockInfo                 = wasmlib.ScHname(0xbe89f9b3)
 	HViewGetLatestBlockInfo           = wasmlib.ScHname(0x084a1760)

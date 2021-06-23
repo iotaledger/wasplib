@@ -7,79 +7,95 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct FairRouletteFunc {
-    sc: ScContractFunc,
+pub struct LockBetsCall {
+    pub func: ScFunc,
 }
 
-impl FairRouletteFunc {
-    pub fn new(ctx: &ScFuncContext) -> FairRouletteFunc {
-        FairRouletteFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut FairRouletteFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut FairRouletteFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut FairRouletteFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut FairRouletteFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn lock_bets(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_LOCK_BETS, 0, Some(transfer));
-    }
-
-    pub fn pay_winners(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PAY_WINNERS, 0, Some(transfer));
-    }
-
-    pub fn place_bet(&mut self, params: MutableFuncPlaceBetParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PLACE_BET, params.id, Some(transfer));
-    }
-
-    pub fn play_period(&mut self, params: MutableFuncPlayPeriodParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PLAY_PERIOD, params.id, Some(transfer));
-    }
-
-    pub fn last_winning_number(&mut self) -> ImmutableViewLastWinningNumberResults {
-        self.sc.run(HVIEW_LAST_WINNING_NUMBER, 0, None);
-        ImmutableViewLastWinningNumberResults { id: self.sc.result_map_id() }
+impl LockBetsCall {
+    pub fn new(_ctx: &ScFuncContext) -> LockBetsCall {
+        let mut f = LockBetsCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS, ptr::null_mut(), ptr::null_mut());
+        f
     }
 }
 
-pub struct FairRouletteView {
-    sc: ScContractView,
+pub struct PayWinnersCall {
+    pub func: ScFunc,
 }
 
-impl FairRouletteView {
-    pub fn new(ctx: &ScViewContext) -> FairRouletteView {
-        FairRouletteView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl PayWinnersCall {
+    pub fn new(_ctx: &ScFuncContext) -> PayWinnersCall {
+        let mut f = PayWinnersCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct PlaceBetCall {
+    pub func: ScFunc,
+    pub params: MutablePlaceBetParams,
+}
+
+impl PlaceBetCall {
+    pub fn new(_ctx: &ScFuncContext) -> PlaceBetCall {
+        let mut f = PlaceBetCall {
+            func: ScFunc::zero(),
+            params: MutablePlaceBetParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PLACE_BET, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct PlayPeriodCall {
+    pub func: ScFunc,
+    pub params: MutablePlayPeriodParams,
+}
+
+impl PlayPeriodCall {
+    pub fn new(_ctx: &ScFuncContext) -> PlayPeriodCall {
+        let mut f = PlayPeriodCall {
+            func: ScFunc::zero(),
+            params: MutablePlayPeriodParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct LastWinningNumberCall {
+    pub func: ScView,
+    pub results: ImmutableLastWinningNumberResults,
+}
+
+impl LastWinningNumberCall {
+    pub fn new(_ctx: &ScFuncContext) -> LastWinningNumberCall {
+        let mut f = LastWinningNumberCall {
+            func: ScView::zero(),
+            results: ImmutableLastWinningNumberResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut FairRouletteView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn last_winning_number(&mut self) -> ImmutableViewLastWinningNumberResults {
-        self.sc.run(HVIEW_LAST_WINNING_NUMBER, 0);
-        ImmutableViewLastWinningNumberResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> LastWinningNumberCall {
+        let mut f = LastWinningNumberCall {
+            func: ScView::zero(),
+            results: ImmutableLastWinningNumberResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

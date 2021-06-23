@@ -9,126 +9,106 @@ package fairauction
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableFuncFinalizeAuctionParams struct {
+type ImmutableFinalizeAuctionParams struct {
 	id int32
 }
 
-func (s ImmutableFuncFinalizeAuctionParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableFinalizeAuctionParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableFuncFinalizeAuctionParams struct {
+type MutableFinalizeAuctionParams struct {
 	id int32
 }
 
-func NewMutableFuncFinalizeAuctionParams() MutableFuncFinalizeAuctionParams {
-	return MutableFuncFinalizeAuctionParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncFinalizeAuctionParams) Color() wasmlib.ScMutableColor {
+func (s MutableFinalizeAuctionParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type ImmutableFuncPlaceBidParams struct {
+type ImmutablePlaceBidParams struct {
 	id int32
 }
 
-func (s ImmutableFuncPlaceBidParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutablePlaceBidParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableFuncPlaceBidParams struct {
+type MutablePlaceBidParams struct {
 	id int32
 }
 
-func NewMutableFuncPlaceBidParams() MutableFuncPlaceBidParams {
-	return MutableFuncPlaceBidParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncPlaceBidParams) Color() wasmlib.ScMutableColor {
+func (s MutablePlaceBidParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type ImmutableFuncSetOwnerMarginParams struct {
+type ImmutableSetOwnerMarginParams struct {
 	id int32
 }
 
-func (s ImmutableFuncSetOwnerMarginParams) OwnerMargin() wasmlib.ScImmutableInt64 {
+func (s ImmutableSetOwnerMarginParams) OwnerMargin() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamOwnerMargin])
 }
 
-type MutableFuncSetOwnerMarginParams struct {
+type MutableSetOwnerMarginParams struct {
 	id int32
 }
 
-func NewMutableFuncSetOwnerMarginParams() MutableFuncSetOwnerMarginParams {
-	return MutableFuncSetOwnerMarginParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncSetOwnerMarginParams) OwnerMargin() wasmlib.ScMutableInt64 {
+func (s MutableSetOwnerMarginParams) OwnerMargin() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamOwnerMargin])
 }
 
-type ImmutableFuncStartAuctionParams struct {
+type ImmutableStartAuctionParams struct {
 	id int32
 }
 
-func (s ImmutableFuncStartAuctionParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableStartAuctionParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-func (s ImmutableFuncStartAuctionParams) Description() wasmlib.ScImmutableString {
+func (s ImmutableStartAuctionParams) Description() wasmlib.ScImmutableString {
 	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s ImmutableFuncStartAuctionParams) Duration() wasmlib.ScImmutableInt32 {
+func (s ImmutableStartAuctionParams) Duration() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamDuration])
 }
 
-func (s ImmutableFuncStartAuctionParams) MinimumBid() wasmlib.ScImmutableInt64 {
+func (s ImmutableStartAuctionParams) MinimumBid() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxParamMinimumBid])
 }
 
-type MutableFuncStartAuctionParams struct {
+type MutableStartAuctionParams struct {
 	id int32
 }
 
-func NewMutableFuncStartAuctionParams() MutableFuncStartAuctionParams {
-	return MutableFuncStartAuctionParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableFuncStartAuctionParams) Color() wasmlib.ScMutableColor {
+func (s MutableStartAuctionParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }
 
-func (s MutableFuncStartAuctionParams) Description() wasmlib.ScMutableString {
+func (s MutableStartAuctionParams) Description() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamDescription])
 }
 
-func (s MutableFuncStartAuctionParams) Duration() wasmlib.ScMutableInt32 {
+func (s MutableStartAuctionParams) Duration() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamDuration])
 }
 
-func (s MutableFuncStartAuctionParams) MinimumBid() wasmlib.ScMutableInt64 {
+func (s MutableStartAuctionParams) MinimumBid() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamMinimumBid])
 }
 
-type ImmutableViewGetInfoParams struct {
+type ImmutableGetInfoParams struct {
 	id int32
 }
 
-func (s ImmutableViewGetInfoParams) Color() wasmlib.ScImmutableColor {
+func (s ImmutableGetInfoParams) Color() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxParamColor])
 }
 
-type MutableViewGetInfoParams struct {
+type MutableGetInfoParams struct {
 	id int32
 }
 
-func NewMutableViewGetInfoParams() MutableViewGetInfoParams {
-	return MutableViewGetInfoParams{id: wasmlib.NewScMutableMap().MapId()}
-}
-
-func (s MutableViewGetInfoParams) Color() wasmlib.ScMutableColor {
+func (s MutableGetInfoParams) Color() wasmlib.ScMutableColor {
 	return wasmlib.NewScMutableColor(s.id, idxMap[IdxParamColor])
 }

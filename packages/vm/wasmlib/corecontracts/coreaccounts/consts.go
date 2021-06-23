@@ -13,15 +13,19 @@ const (
 	ScName        = "accounts"
 	ScDescription = "Core chain account ledger contract"
 	HScName       = wasmlib.ScHname(0x3c4b5e02)
+)
 
-	ParamAgentID = wasmlib.Key("a")
+const ParamAgentID = wasmlib.Key("a")
 
+const (
 	FuncDeposit     = "deposit"
 	FuncWithdraw    = "withdraw"
 	ViewAccounts    = "accounts"
 	ViewBalance     = "balance"
 	ViewTotalAssets = "totalAssets"
+)
 
+const (
 	HFuncDeposit     = wasmlib.ScHname(0xbdc9102d)
 	HFuncWithdraw    = wasmlib.ScHname(0x9dcc0f41)
 	HViewAccounts    = wasmlib.ScHname(0x3c4b5e02)

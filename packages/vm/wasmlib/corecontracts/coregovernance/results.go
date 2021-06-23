@@ -21,11 +21,11 @@ func (a ArrayOfImmutableBytes) GetBytes(index int32) wasmlib.ScImmutableBytes {
 	return wasmlib.NewScImmutableBytes(a.objId, wasmlib.Key32(index))
 }
 
-type ImmutableViewGetAllowedStateControllerAddressesResults struct {
+type ImmutableGetAllowedStateControllerAddressesResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfImmutableBytes {
+func (s ImmutableGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfImmutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultAllowedStateControllerAddresses.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfImmutableBytes{objId: arrId}
 }
@@ -46,11 +46,11 @@ func (a ArrayOfMutableBytes) GetBytes(index int32) wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(a.objId, wasmlib.Key32(index))
 }
 
-type MutableViewGetAllowedStateControllerAddressesResults struct {
+type MutableGetAllowedStateControllerAddressesResults struct {
 	id int32
 }
 
-func (s MutableViewGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfMutableBytes {
+func (s MutableGetAllowedStateControllerAddressesResults) AllowedStateControllerAddresses() ArrayOfMutableBytes {
 	arrId := wasmlib.GetObjectId(s.id, ResultAllowedStateControllerAddresses.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
 	return ArrayOfMutableBytes{objId: arrId}
 }

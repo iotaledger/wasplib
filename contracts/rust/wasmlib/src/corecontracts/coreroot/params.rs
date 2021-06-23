@@ -12,53 +12,33 @@ use crate::*;
 use crate::corecontracts::coreroot::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncClaimChainOwnershipParams {
+pub struct ImmutableDelegateChainOwnershipParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncClaimChainOwnershipParams {
-    pub(crate) id: i32,
-}
-
-impl MutableFuncClaimChainOwnershipParams {
-    pub fn new() -> MutableFuncClaimChainOwnershipParams {
-        MutableFuncClaimChainOwnershipParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableFuncDelegateChainOwnershipParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableFuncDelegateChainOwnershipParams {
+impl ImmutableDelegateChainOwnershipParams {
     pub fn chain_owner(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, PARAM_CHAIN_OWNER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncDelegateChainOwnershipParams {
+pub struct MutableDelegateChainOwnershipParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncDelegateChainOwnershipParams {
-    pub fn new() -> MutableFuncDelegateChainOwnershipParams {
-        MutableFuncDelegateChainOwnershipParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableDelegateChainOwnershipParams {
     pub fn chain_owner(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, PARAM_CHAIN_OWNER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncDeployContractParams {
+pub struct ImmutableDeployContractParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncDeployContractParams {
+impl ImmutableDeployContractParams {
     pub fn description(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, PARAM_DESCRIPTION.get_key_id())
     }
@@ -73,15 +53,11 @@ impl ImmutableFuncDeployContractParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncDeployContractParams {
+pub struct MutableDeployContractParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncDeployContractParams {
-    pub fn new() -> MutableFuncDeployContractParams {
-        MutableFuncDeployContractParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableDeployContractParams {
     pub fn description(&self) -> ScMutableString {
         ScMutableString::new(self.id, PARAM_DESCRIPTION.get_key_id())
     }
@@ -96,63 +72,55 @@ impl MutableFuncDeployContractParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncGrantDeployPermissionParams {
+pub struct ImmutableGrantDeployPermissionParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncGrantDeployPermissionParams {
+impl ImmutableGrantDeployPermissionParams {
     pub fn deployer(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, PARAM_DEPLOYER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncGrantDeployPermissionParams {
+pub struct MutableGrantDeployPermissionParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncGrantDeployPermissionParams {
-    pub fn new() -> MutableFuncGrantDeployPermissionParams {
-        MutableFuncGrantDeployPermissionParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGrantDeployPermissionParams {
     pub fn deployer(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, PARAM_DEPLOYER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncRevokeDeployPermissionParams {
+pub struct ImmutableRevokeDeployPermissionParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncRevokeDeployPermissionParams {
+impl ImmutableRevokeDeployPermissionParams {
     pub fn deployer(&self) -> ScImmutableAgentId {
         ScImmutableAgentId::new(self.id, PARAM_DEPLOYER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncRevokeDeployPermissionParams {
+pub struct MutableRevokeDeployPermissionParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncRevokeDeployPermissionParams {
-    pub fn new() -> MutableFuncRevokeDeployPermissionParams {
-        MutableFuncRevokeDeployPermissionParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableRevokeDeployPermissionParams {
     pub fn deployer(&self) -> ScMutableAgentId {
         ScMutableAgentId::new(self.id, PARAM_DEPLOYER.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncSetContractFeeParams {
+pub struct ImmutableSetContractFeeParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncSetContractFeeParams {
+impl ImmutableSetContractFeeParams {
     pub fn hname(&self) -> ScImmutableHname {
         ScImmutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }
@@ -167,15 +135,11 @@ impl ImmutableFuncSetContractFeeParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncSetContractFeeParams {
+pub struct MutableSetContractFeeParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncSetContractFeeParams {
-    pub fn new() -> MutableFuncSetContractFeeParams {
-        MutableFuncSetContractFeeParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableSetContractFeeParams {
     pub fn hname(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }
@@ -190,11 +154,11 @@ impl MutableFuncSetContractFeeParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncSetDefaultFeeParams {
+pub struct ImmutableSetDefaultFeeParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableFuncSetDefaultFeeParams {
+impl ImmutableSetDefaultFeeParams {
     pub fn owner_fee(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, PARAM_OWNER_FEE.get_key_id())
     }
@@ -205,15 +169,11 @@ impl ImmutableFuncSetDefaultFeeParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableFuncSetDefaultFeeParams {
+pub struct MutableSetDefaultFeeParams {
     pub(crate) id: i32,
 }
 
-impl MutableFuncSetDefaultFeeParams {
-    pub fn new() -> MutableFuncSetDefaultFeeParams {
-        MutableFuncSetDefaultFeeParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableSetDefaultFeeParams {
     pub fn owner_fee(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, PARAM_OWNER_FEE.get_key_id())
     }
@@ -224,68 +184,44 @@ impl MutableFuncSetDefaultFeeParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewFindContractParams {
+pub struct ImmutableFindContractParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewFindContractParams {
+impl ImmutableFindContractParams {
     pub fn hname(&self) -> ScImmutableHname {
         ScImmutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewFindContractParams {
+pub struct MutableFindContractParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewFindContractParams {
-    pub fn new() -> MutableViewFindContractParams {
-        MutableViewFindContractParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableFindContractParams {
     pub fn hname(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetChainInfoParams {
+pub struct ImmutableGetFeeInfoParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableViewGetChainInfoParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewGetChainInfoParams {
-    pub fn new() -> MutableViewGetChainInfoParams {
-        MutableViewGetChainInfoParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetFeeInfoParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetFeeInfoParams {
+impl ImmutableGetFeeInfoParams {
     pub fn hname(&self) -> ScImmutableHname {
         ScImmutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetFeeInfoParams {
+pub struct MutableGetFeeInfoParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetFeeInfoParams {
-    pub fn new() -> MutableViewGetFeeInfoParams {
-        MutableViewGetFeeInfoParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetFeeInfoParams {
     pub fn hname(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, PARAM_HNAME.get_key_id())
     }

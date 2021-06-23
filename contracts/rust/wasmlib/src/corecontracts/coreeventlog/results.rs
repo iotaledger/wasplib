@@ -13,33 +13,23 @@ use crate::corecontracts::coreeventlog::*;
 use crate::host::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetNumRecordsResults {
+pub struct ImmutableGetNumRecordsResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetNumRecordsResults {
+impl ImmutableGetNumRecordsResults {
     pub fn num_records(&self) -> ScImmutableInt64 {
         ScImmutableInt64::new(self.id, RESULT_NUM_RECORDS.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetNumRecordsResults {
+pub struct MutableGetNumRecordsResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetNumRecordsResults {
+impl MutableGetNumRecordsResults {
     pub fn num_records(&self) -> ScMutableInt64 {
         ScMutableInt64::new(self.id, RESULT_NUM_RECORDS.get_key_id())
     }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetRecordsResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableViewGetRecordsResults {
-    pub(crate) id: i32,
 }

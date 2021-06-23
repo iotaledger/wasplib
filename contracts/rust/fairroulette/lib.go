@@ -22,7 +22,7 @@ func OnLoad() {
 	}
 }
 
-type FuncLockBetsContext struct {
+type LockBetsContext struct {
 	State MutableFairRouletteState
 }
 
@@ -31,7 +31,7 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
 	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
-	f := &FuncLockBetsContext{
+	f := &LockBetsContext{
 		State: MutableFairRouletteState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -40,7 +40,7 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcLockBets ok")
 }
 
-type FuncPayWinnersContext struct {
+type PayWinnersContext struct {
 	State MutableFairRouletteState
 }
 
@@ -49,7 +49,7 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 	// only SC itself can invoke this function
 	ctx.Require(ctx.Caller() == ctx.AccountId(), "no permission")
 
-	f := &FuncPayWinnersContext{
+	f := &PayWinnersContext{
 		State: MutableFairRouletteState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
 		},
@@ -58,15 +58,15 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPayWinners ok")
 }
 
-type FuncPlaceBetContext struct {
-	Params ImmutableFuncPlaceBetParams
+type PlaceBetContext struct {
+	Params ImmutablePlaceBetParams
 	State  MutableFairRouletteState
 }
 
 func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPlaceBet")
-	f := &FuncPlaceBetContext{
-		Params: ImmutableFuncPlaceBetParams{
+	f := &PlaceBetContext{
+		Params: ImmutablePlaceBetParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairRouletteState{
@@ -78,8 +78,8 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPlaceBet ok")
 }
 
-type FuncPlayPeriodContext struct {
-	Params ImmutableFuncPlayPeriodParams
+type PlayPeriodContext struct {
+	Params ImmutablePlayPeriodParams
 	State  MutableFairRouletteState
 }
 
@@ -88,8 +88,8 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 	// only SC creator can update the play period
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
-	f := &FuncPlayPeriodContext{
-		Params: ImmutableFuncPlayPeriodParams{
+	f := &PlayPeriodContext{
+		Params: ImmutablePlayPeriodParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
 		},
 		State: MutableFairRouletteState{
@@ -101,15 +101,15 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPlayPeriod ok")
 }
 
-type ViewLastWinningNumberContext struct {
-	Results MutableViewLastWinningNumberResults
+type LastWinningNumberContext struct {
+	Results MutableLastWinningNumberResults
 	State   ImmutableFairRouletteState
 }
 
 func viewLastWinningNumberThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("fairroulette.viewLastWinningNumber")
-	f := &ViewLastWinningNumberContext{
-		Results: MutableViewLastWinningNumberResults{
+	f := &LastWinningNumberContext{
+		Results: MutableLastWinningNumberResults{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableFairRouletteState{

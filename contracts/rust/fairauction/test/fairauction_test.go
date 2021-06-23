@@ -18,9 +18,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var auctioneer *ed25519.KeyPair
-var auctioneerAddr ledgerstate.Address
-var tokenColor ledgerstate.Color
+var (
+	auctioneer     *ed25519.KeyPair
+	auctioneerAddr ledgerstate.Address
+	tokenColor     ledgerstate.Color
+)
 
 func setupTest(t *testing.T) *solo.Chain {
 	chain := common.StartChainAndDeployWasmContractByName(t, ScName)

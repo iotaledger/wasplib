@@ -9,63 +9,52 @@ package tokenregistry
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type TokenRegistryFunc struct {
-	sc wasmlib.ScContractFunc
+type MintSupplyCall struct {
+	Func wasmlib.ScFunc
+	Params MutableMintSupplyParams
 }
 
-func NewTokenRegistryFunc(ctx wasmlib.ScFuncContext) *TokenRegistryFunc {
-	return &TokenRegistryFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *TokenRegistryFunc) Delay(seconds int32) *TokenRegistryFunc {
-	f.sc.Delay(seconds)
+func NewMintSupplyCall(ctx wasmlib.ScFuncContext) *MintSupplyCall {
+	f := &MintSupplyCall{}
+	f.Func.Init(HScName, HFuncMintSupply, &f.Params.id, nil)
 	return f
 }
 
-func (f *TokenRegistryFunc) OfContract(contract wasmlib.ScHname) *TokenRegistryFunc {
-	f.sc.OfContract(contract)
+type TransferOwnershipCall struct {
+	Func wasmlib.ScFunc
+	Params MutableTransferOwnershipParams
+}
+
+func NewTransferOwnershipCall(ctx wasmlib.ScFuncContext) *TransferOwnershipCall {
+	f := &TransferOwnershipCall{}
+	f.Func.Init(HScName, HFuncTransferOwnership, &f.Params.id, nil)
 	return f
 }
 
-func (f *TokenRegistryFunc) Post() *TokenRegistryFunc {
-	f.sc.Post()
+type UpdateMetadataCall struct {
+	Func wasmlib.ScFunc
+	Params MutableUpdateMetadataParams
+}
+
+func NewUpdateMetadataCall(ctx wasmlib.ScFuncContext) *UpdateMetadataCall {
+	f := &UpdateMetadataCall{}
+	f.Func.Init(HScName, HFuncUpdateMetadata, &f.Params.id, nil)
 	return f
 }
 
-func (f *TokenRegistryFunc) PostToChain(chainId wasmlib.ScChainId) *TokenRegistryFunc {
-	f.sc.PostToChain(chainId)
+type GetInfoCall struct {
+	Func wasmlib.ScView
+	Params MutableGetInfoParams
+}
+
+func NewGetInfoCall(ctx wasmlib.ScFuncContext) *GetInfoCall {
+	f := &GetInfoCall{}
+	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, nil)
 	return f
 }
 
-func (f *TokenRegistryFunc) MintSupply(params MutableFuncMintSupplyParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncMintSupply, params.id, &transfer)
-}
-
-func (f *TokenRegistryFunc) TransferOwnership(params MutableFuncTransferOwnershipParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncTransferOwnership, params.id, &transfer)
-}
-
-func (f *TokenRegistryFunc) UpdateMetadata(params MutableFuncUpdateMetadataParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncUpdateMetadata, params.id, &transfer)
-}
-
-func (f *TokenRegistryFunc) GetInfo(params MutableViewGetInfoParams) {
-	f.sc.Run(HViewGetInfo, params.id, nil)
-}
-
-type TokenRegistryView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewTokenRegistryView(ctx wasmlib.ScViewContext) *TokenRegistryView {
-	return &TokenRegistryView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *TokenRegistryView) OfContract(contract wasmlib.ScHname) *TokenRegistryView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *TokenRegistryView) GetInfo(params MutableViewGetInfoParams) {
-	v.sc.Run(HViewGetInfo, params.id)
+func NewGetInfoCallFromView(ctx wasmlib.ScViewContext) *GetInfoCall {
+	f := &GetInfoCall{}
+	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, nil)
+	return f
 }

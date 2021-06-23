@@ -7,99 +7,155 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct Erc20Func {
-    sc: ScContractFunc,
+pub struct ApproveCall {
+    pub func: ScFunc,
+    pub params: MutableApproveParams,
 }
 
-impl Erc20Func {
-    pub fn new(ctx: &ScFuncContext) -> Erc20Func {
-        Erc20Func { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut Erc20Func {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut Erc20Func {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut Erc20Func {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut Erc20Func {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn approve(&mut self, params: MutableFuncApproveParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_APPROVE, params.id, Some(transfer));
-    }
-
-    pub fn init(&mut self, params: MutableFuncInitParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INIT, params.id, Some(transfer));
-    }
-
-    pub fn transfer(&mut self, params: MutableFuncTransferParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TRANSFER, params.id, Some(transfer));
-    }
-
-    pub fn transfer_from(&mut self, params: MutableFuncTransferFromParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TRANSFER_FROM, params.id, Some(transfer));
-    }
-
-    pub fn allowance(&mut self, params: MutableViewAllowanceParams) -> ImmutableViewAllowanceResults {
-        self.sc.run(HVIEW_ALLOWANCE, params.id, None);
-        ImmutableViewAllowanceResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn balance_of(&mut self, params: MutableViewBalanceOfParams) -> ImmutableViewBalanceOfResults {
-        self.sc.run(HVIEW_BALANCE_OF, params.id, None);
-        ImmutableViewBalanceOfResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn total_supply(&mut self) -> ImmutableViewTotalSupplyResults {
-        self.sc.run(HVIEW_TOTAL_SUPPLY, 0, None);
-        ImmutableViewTotalSupplyResults { id: self.sc.result_map_id() }
+impl ApproveCall {
+    pub fn new(_ctx: &ScFuncContext) -> ApproveCall {
+        let mut f = ApproveCall {
+            func: ScFunc::zero(),
+            params: MutableApproveParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_APPROVE, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct Erc20View {
-    sc: ScContractView,
+pub struct InitCall {
+    pub func: ScFunc,
+    pub params: MutableInitParams,
 }
 
-impl Erc20View {
-    pub fn new(ctx: &ScViewContext) -> Erc20View {
-        Erc20View { sc: ScContractView::new(ctx, HSC_NAME) }
+impl InitCall {
+    pub fn new(_ctx: &ScFuncContext) -> InitCall {
+        let mut f = InitCall {
+            func: ScFunc::zero(),
+            params: MutableInitParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TransferCall {
+    pub func: ScFunc,
+    pub params: MutableTransferParams,
+}
+
+impl TransferCall {
+    pub fn new(_ctx: &ScFuncContext) -> TransferCall {
+        let mut f = TransferCall {
+            func: ScFunc::zero(),
+            params: MutableTransferParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TransferFromCall {
+    pub func: ScFunc,
+    pub params: MutableTransferFromParams,
+}
+
+impl TransferFromCall {
+    pub fn new(_ctx: &ScFuncContext) -> TransferFromCall {
+        let mut f = TransferFromCall {
+            func: ScFunc::zero(),
+            params: MutableTransferFromParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct AllowanceCall {
+    pub func: ScView,
+    pub params: MutableAllowanceParams,
+    pub results: ImmutableAllowanceResults,
+}
+
+impl AllowanceCall {
+    pub fn new(_ctx: &ScFuncContext) -> AllowanceCall {
+        let mut f = AllowanceCall {
+            func: ScView::zero(),
+            params: MutableAllowanceParams { id: 0 },
+            results: ImmutableAllowanceResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_ALLOWANCE, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut Erc20View {
-        self.sc.of_contract(contract);
-        self
+    pub fn new_from_view(_ctx: &ScViewContext) -> AllowanceCall {
+        let mut f = AllowanceCall {
+            func: ScView::zero(),
+            params: MutableAllowanceParams { id: 0 },
+            results: ImmutableAllowanceResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_ALLOWANCE, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct BalanceOfCall {
+    pub func: ScView,
+    pub params: MutableBalanceOfParams,
+    pub results: ImmutableBalanceOfResults,
+}
+
+impl BalanceOfCall {
+    pub fn new(_ctx: &ScFuncContext) -> BalanceOfCall {
+        let mut f = BalanceOfCall {
+            func: ScView::zero(),
+            params: MutableBalanceOfParams { id: 0 },
+            results: ImmutableBalanceOfResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE_OF, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn allowance(&mut self, params: MutableViewAllowanceParams) -> ImmutableViewAllowanceResults {
-        self.sc.run(HVIEW_ALLOWANCE, params.id);
-        ImmutableViewAllowanceResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> BalanceOfCall {
+        let mut f = BalanceOfCall {
+            func: ScView::zero(),
+            params: MutableBalanceOfParams { id: 0 },
+            results: ImmutableBalanceOfResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE_OF, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct TotalSupplyCall {
+    pub func: ScView,
+    pub results: ImmutableTotalSupplyResults,
+}
+
+impl TotalSupplyCall {
+    pub fn new(_ctx: &ScFuncContext) -> TotalSupplyCall {
+        let mut f = TotalSupplyCall {
+            func: ScView::zero(),
+            results: ImmutableTotalSupplyResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn balance_of(&mut self, params: MutableViewBalanceOfParams) -> ImmutableViewBalanceOfResults {
-        self.sc.run(HVIEW_BALANCE_OF, params.id);
-        ImmutableViewBalanceOfResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn total_supply(&mut self) -> ImmutableViewTotalSupplyResults {
-        self.sc.run(HVIEW_TOTAL_SUPPLY, 0);
-        ImmutableViewTotalSupplyResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> TotalSupplyCall {
+        let mut f = TotalSupplyCall {
+            func: ScView::zero(),
+            results: ImmutableTotalSupplyResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

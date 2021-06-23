@@ -12,162 +12,110 @@ use crate::*;
 use crate::corecontracts::coreblocklog::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewControlAddressesParams {
+pub struct ImmutableGetBlockInfoParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableViewControlAddressesParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewControlAddressesParams {
-    pub fn new() -> MutableViewControlAddressesParams {
-        MutableViewControlAddressesParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetBlockInfoParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetBlockInfoParams {
+impl ImmutableGetBlockInfoParams {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetBlockInfoParams {
+pub struct MutableGetBlockInfoParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetBlockInfoParams {
-    pub fn new() -> MutableViewGetBlockInfoParams {
-        MutableViewGetBlockInfoParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetBlockInfoParams {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetLatestBlockInfoParams {
+pub struct ImmutableGetRequestIDsForBlockParams {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableViewGetLatestBlockInfoParams {
-    pub(crate) id: i32,
-}
-
-impl MutableViewGetLatestBlockInfoParams {
-    pub fn new() -> MutableViewGetLatestBlockInfoParams {
-        MutableViewGetLatestBlockInfoParams { id: ScMutableMap::new().map_id() }
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestIDsForBlockParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetRequestIDsForBlockParams {
+impl ImmutableGetRequestIDsForBlockParams {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestIDsForBlockParams {
+pub struct MutableGetRequestIDsForBlockParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestIDsForBlockParams {
-    pub fn new() -> MutableViewGetRequestIDsForBlockParams {
-        MutableViewGetRequestIDsForBlockParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetRequestIDsForBlockParams {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestLogRecordParams {
+pub struct ImmutableGetRequestLogRecordParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRequestLogRecordParams {
+impl ImmutableGetRequestLogRecordParams {
     pub fn request_id(&self) -> ScImmutableRequestId {
         ScImmutableRequestId::new(self.id, PARAM_REQUEST_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestLogRecordParams {
+pub struct MutableGetRequestLogRecordParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestLogRecordParams {
-    pub fn new() -> MutableViewGetRequestLogRecordParams {
-        MutableViewGetRequestLogRecordParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetRequestLogRecordParams {
     pub fn request_id(&self) -> ScMutableRequestId {
         ScMutableRequestId::new(self.id, PARAM_REQUEST_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewGetRequestLogRecordsForBlockParams {
+pub struct ImmutableGetRequestLogRecordsForBlockParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewGetRequestLogRecordsForBlockParams {
+impl ImmutableGetRequestLogRecordsForBlockParams {
     pub fn block_index(&self) -> ScImmutableInt32 {
         ScImmutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetRequestLogRecordsForBlockParams {
+pub struct MutableGetRequestLogRecordsForBlockParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetRequestLogRecordsForBlockParams {
-    pub fn new() -> MutableViewGetRequestLogRecordsForBlockParams {
-        MutableViewGetRequestLogRecordsForBlockParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableGetRequestLogRecordsForBlockParams {
     pub fn block_index(&self) -> ScMutableInt32 {
         ScMutableInt32::new(self.id, PARAM_BLOCK_INDEX.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableViewIsRequestProcessedParams {
+pub struct ImmutableIsRequestProcessedParams {
     pub(crate) id: i32,
 }
 
-impl ImmutableViewIsRequestProcessedParams {
+impl ImmutableIsRequestProcessedParams {
     pub fn request_id(&self) -> ScImmutableRequestId {
         ScImmutableRequestId::new(self.id, PARAM_REQUEST_ID.get_key_id())
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewIsRequestProcessedParams {
+pub struct MutableIsRequestProcessedParams {
     pub(crate) id: i32,
 }
 
-impl MutableViewIsRequestProcessedParams {
-    pub fn new() -> MutableViewIsRequestProcessedParams {
-        MutableViewIsRequestProcessedParams { id: ScMutableMap::new().map_id() }
-    }
-
+impl MutableIsRequestProcessedParams {
     pub fn request_id(&self) -> ScMutableRequestId {
         ScMutableRequestId::new(self.id, PARAM_REQUEST_ID.get_key_id())
     }

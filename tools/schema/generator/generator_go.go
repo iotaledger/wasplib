@@ -116,14 +116,13 @@ func (s *Schema) generateGoConsts(test bool) error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", packageName)
-	fmt.Fprintln(file, importTypes)
+	fmt.Fprint(file, importTypes)
 
 	scName := s.Name
 	if s.CoreContracts {
 		// remove 'core' prefix
 		scName = scName[4:]
 	}
-	fmt.Fprintf(file, "const (\n")
 	s.appendConst("ScName", "\""+scName+"\"")
 	if s.Description != "" {
 		s.appendConst("ScDescription", "\""+s.Description+"\"")
@@ -141,29 +140,25 @@ func (s *Schema) generateGoConsts(test bool) error {
 	s.generateGoConstsFields(file, test, s.StateVars, "State")
 
 	if len(s.Funcs) != 0 {
-		fmt.Fprintln(file)
-		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FullName)
-			s.appendConst(name, "\""+funcDef.Name+"\"")
+		for _, f := range s.Funcs {
+			constName := capitalize(f.FuncName)
+			s.appendConst(constName, "\""+f.String+"\"")
 		}
 		s.flushGoConsts(file)
 
-		fmt.Fprintln(file)
-		for _, funcDef := range s.Funcs {
-			name := "H" + capitalize(funcDef.FullName)
-			hName = coretypes.Hn(funcDef.Name)
-			s.appendConst(name, hNameType+"(0x"+hName.String()+")")
+		for _, f := range s.Funcs {
+			constHname := "H" + capitalize(f.FuncName)
+			hName = coretypes.Hn(f.String)
+			s.appendConst(constHname, hNameType+"(0x"+hName.String()+")")
 		}
 		s.flushGoConsts(file)
 	}
 
-	fmt.Fprintf(file, ")\n")
 	return nil
 }
 
 func (s *Schema) generateGoConstsFields(file *os.File, test bool, fields []*Field, prefix string) {
 	if len(fields) != 0 {
-		fmt.Fprintln(file)
 		for _, field := range fields {
 			name := prefix + capitalize(field.Name)
 			value := "\"" + field.Alias + "\""
@@ -188,108 +183,34 @@ func (s *Schema) generateGoContract() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintf(file, importWasmLib)
 
-	typeName := s.FullName + "Func"
-	fmt.Fprintf(file, "\ntype %s struct {\n", typeName)
-	fmt.Fprintf(file, "\tsc wasmlib.ScContractFunc\n")
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc New%s(ctx wasmlib.ScFuncContext) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\treturn &%s{sc: wasmlib.NewScContractFunc(ctx, HScName)}\n", typeName)
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc (f *%s) Delay(seconds int32) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\tf.sc.Delay(seconds)\n")
-	fmt.Fprintf(file, "\treturn f\n")
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc (f *%s) OfContract(contract wasmlib.ScHname) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\tf.sc.OfContract(contract)\n")
-	fmt.Fprintf(file, "\treturn f\n")
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc (f *%s) Post() *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\tf.sc.Post()\n")
-	fmt.Fprintf(file, "\treturn f\n")
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc (f *%s) PostToChain(chainId wasmlib.ScChainId) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\tf.sc.PostToChain(chainId)\n")
-	fmt.Fprintf(file, "\treturn f\n")
-	fmt.Fprintf(file, "}\n")
-
-	for _, funcDef := range s.Funcs {
-		funcName := capitalize(funcDef.FullName)
-		shortName := funcName[4:]
-		params := ""
-		params2 := "0"
-		if len(funcDef.Params) != 0 {
-			params = "params Mutable" + funcName + "Params"
-			params2 = "params.id"
+	for _, f := range s.Funcs {
+		fmt.Fprintf(file, "\ntype %sCall struct {\n", f.Type)
+		fmt.Fprintf(file, "\tFunc wasmlib.Sc%s\n", f.Kind)
+		paramsId := "nil"
+		if len(f.Params) != 0 {
+			paramsId = "&f.Params.id"
+			fmt.Fprintf(file, "\tParams Mutable%sParams\n", f.Type)
 		}
-		results := ""
-		if len(funcDef.Results) != 0 {
-			results = " Immutable" + funcName + "Results"
+		resultsId := "nil"
+		if len(f.Results) != 0 {
+			resultsId = "&f.Results.id"
+			fmt.Fprintf(file, "\tResults Immutable%sResults\n", f.Type)
 		}
+		fmt.Fprintf(file, "}\n")
 
-		if strings.HasPrefix(funcName, "Func") {
-			if len(funcDef.Params) != 0 {
-				params += ", "
-			}
-			fmt.Fprintf(file, "\nfunc (f *%s) %s(%stransfer wasmlib.ScTransfers)%s {\n", typeName, shortName, params, results)
-			fmt.Fprintf(file, "\tf.sc.Run(H%s, %s, &transfer)\n", funcName, params2)
-			if len(funcDef.Results) != 0 {
-				fmt.Fprintf(file, "\treturn%s{id: f.sc.ResultMapId()}\n", results)
-			}
+		fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.ScFuncContext) *%sCall {\n", f.Type, f.Type)
+		fmt.Fprintf(file, "\tf := &%sCall{}\n", f.Type)
+		fmt.Fprintf(file, "\tf.Func.Init(HScName, H%s%s, %s, %s)\n", f.Kind, f.Type, paramsId, resultsId)
+		fmt.Fprintf(file, "\treturn f\n")
+		fmt.Fprintf(file, "}\n")
+
+		if f.Kind == "View" {
+			fmt.Fprintf(file, "\nfunc New%sCallFromView(ctx wasmlib.ScViewContext) *%sCall {\n", f.Type, f.Type)
+			fmt.Fprintf(file, "\tf := &%sCall{}\n", f.Type)
+			fmt.Fprintf(file, "\tf.Func.Init(HScName, H%s%s, %s, %s)\n", f.Kind, f.Type, paramsId, resultsId)
+			fmt.Fprintf(file, "\treturn f\n")
 			fmt.Fprintf(file, "}\n")
-			continue
 		}
-
-		fmt.Fprintf(file, "\nfunc (f *%s) %s(%s)%s {\n", typeName, shortName, params, results)
-		fmt.Fprintf(file, "\tf.sc.Run(H%s, %s, nil)\n", funcName, params2)
-		if len(funcDef.Results) != 0 {
-			fmt.Fprintf(file, "\treturn%s{id: f.sc.ResultMapId()}\n", results)
-		}
-		fmt.Fprintf(file, "}\n")
-	}
-
-	typeName = s.FullName + "View"
-	fmt.Fprintf(file, "\ntype %s struct {\n", typeName)
-	fmt.Fprintf(file, "\tsc wasmlib.ScContractView\n")
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc New%s(ctx wasmlib.ScViewContext) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\treturn &%s{sc: wasmlib.NewScContractView(ctx, HScName)}\n", typeName)
-	fmt.Fprintf(file, "}\n")
-
-	fmt.Fprintf(file, "\nfunc (v *%s) OfContract(contract wasmlib.ScHname) *%s {\n", typeName, typeName)
-	fmt.Fprintf(file, "\tv.sc.OfContract(contract)\n")
-	fmt.Fprintf(file, "\treturn v\n")
-	fmt.Fprintf(file, "}\n")
-
-	for _, funcDef := range s.Funcs {
-		funcName := capitalize(funcDef.FullName)
-		shortName := funcName[4:]
-		if strings.HasPrefix(funcName, "Func") {
-			continue
-		}
-
-		params := ""
-		params2 := "0"
-		if len(funcDef.Params) != 0 {
-			params = "params Mutable" + funcName + "Params"
-			params2 = "params.id"
-		}
-		results := ""
-		if len(funcDef.Results) != 0 {
-			results = " Immutable" + funcName + "Results"
-		}
-
-		fmt.Fprintf(file, "\nfunc (v *%s) %s(%s)%s {\n", typeName, shortName, params, results)
-		fmt.Fprintf(file, "\tv.sc.Run(H%s, %s)\n", funcName, params2)
-		if len(funcDef.Results) != 0 {
-			fmt.Fprintf(file, "\treturn%s{id: v.sc.ResultMapId()}\n", results)
-		}
-		fmt.Fprintf(file, "}\n")
 	}
 
 	return nil
@@ -328,19 +249,17 @@ func (s *Schema) generateGoFuncs() error {
 	}
 
 	// append any new funcs
-	for _, funcDef := range s.Funcs {
-		if existing[funcDef.FullName] == "" {
-			s.generateGoFuncSignature(file, funcDef)
+	for _, f := range s.Funcs {
+		if existing[f.FuncName] == "" {
+			s.generateGoFuncSignature(file, f)
 		}
 	}
 
 	return os.Remove(scOriginal)
 }
 
-func (s *Schema) generateGoFuncSignature(file *os.File, funcDef *FuncDef) {
-	funcName := funcDef.FullName
-	funcKind := capitalize(funcDef.FullName[:4])
-	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, f *%sContext) {\n", funcName, funcKind, capitalize(funcName))
+func (s *Schema) generateGoFuncSignature(file *os.File, f *FuncDef) {
+	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, f *%sContext) {\n", f.FuncName, f.Kind, f.Type)
 	fmt.Fprintf(file, "}\n")
 }
 
@@ -356,8 +275,8 @@ func (s *Schema) generateGoFuncsNew(scFileName string) error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintln(file, importWasmLib)
 
-	for _, funcDef := range s.Funcs {
-		s.generateGoFuncSignature(file, funcDef)
+	for _, f := range s.Funcs {
+		s.generateGoFuncSignature(file, f)
 	}
 	return nil
 }
@@ -374,13 +293,11 @@ func (s *Schema) generateGoKeys() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintf(file, importWasmLib)
 
-	fmt.Fprintf(file, "\nconst (\n")
 	s.KeyId = 0
 	s.generateGoKeysIndexes(file, s.Params, "Param")
 	s.generateGoKeysIndexes(file, s.Results, "Result")
 	s.generateGoKeysIndexes(file, s.StateVars, "State")
 	s.flushGoConsts(file)
-	fmt.Fprintf(file, ")\n")
 
 	size := len(s.Params) + len(s.Results) + len(s.StateVars)
 	fmt.Fprintf(file, "\nconst keyMapLen = %d\n", size)
@@ -425,10 +342,9 @@ func (s *Schema) generateGoLib() error {
 
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "\texports := wasmlib.NewScExports()\n")
-	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FullName)
-		kind := capitalize(funcDef.FullName[:4])
-		fmt.Fprintf(file, "\texports.Add%s(%s, %sThunk)\n", kind, name, funcDef.FullName)
+	for _, f := range s.Funcs {
+		constName := capitalize(f.FuncName)
+		fmt.Fprintf(file, "\texports.Add%s(%s, %sThunk)\n", f.Kind, constName, f.FuncName)
 	}
 
 	fmt.Fprintf(file, "\n\tfor i, key := range keyMap {\n")
@@ -438,8 +354,8 @@ func (s *Schema) generateGoLib() error {
 	fmt.Fprintf(file, "}\n")
 
 	// generate parameter structs and thunks to set up and check parameters
-	for _, funcDef := range s.Funcs {
-		s.generateGoThunk(file, funcDef)
+	for _, f := range s.Funcs {
+		s.generateGoThunk(file, f)
 	}
 	return nil
 }
@@ -565,8 +481,8 @@ func (s *Schema) generateGoState() error {
 		fmt.Fprintf(file, "\n"+importWasmLib)
 	}
 
-	s.generateGoStruct(file, s.StateVars, "Immutable", s.FullName, "State", false)
-	s.generateGoStruct(file, s.StateVars, "Mutable", s.FullName, "State", false)
+	s.generateGoStruct(file, s.StateVars, "Immutable", s.FullName, "State")
+	s.generateGoStruct(file, s.StateVars, "Mutable", s.FullName, "State")
 	return nil
 }
 
@@ -582,20 +498,19 @@ func (s *Schema) generateGoParams() error {
 	fmt.Fprintf(file, "package %s\n", s.Name)
 
 	params := 0
-	for _, funcDef := range s.Funcs {
-		params += len(funcDef.Params)
+	for _, f := range s.Funcs {
+		params += len(f.Params)
 	}
 	if params != 0 {
 		fmt.Fprintf(file, "\n"+importWasmLib)
 	}
 
-	for _, funcDef := range s.Funcs {
-		if len(funcDef.Params) == 0 {
+	for _, f := range s.Funcs {
+		if len(f.Params) == 0 {
 			continue
 		}
-		typeName := capitalize(funcDef.FullName)
-		s.generateGoStruct(file, funcDef.Params, "Immutable", typeName, "Params", false)
-		s.generateGoStruct(file, funcDef.Params, "Mutable", typeName, "Params", true)
+		s.generateGoStruct(file, f.Params, "Immutable", f.Type, "Params")
+		s.generateGoStruct(file, f.Params, "Mutable", f.Type, "Params")
 	}
 
 	return nil
@@ -613,25 +528,24 @@ func (s *Schema) generateGoResults() error {
 	fmt.Fprintf(file, "package %s\n", s.Name)
 
 	results := 0
-	for _, funcDef := range s.Funcs {
-		results += len(funcDef.Results)
+	for _, f := range s.Funcs {
+		results += len(f.Results)
 	}
 	if results != 0 {
 		fmt.Fprintf(file, "\n"+importWasmLib)
 	}
 
-	for _, funcDef := range s.Funcs {
-		if len(funcDef.Results) == 0 {
+	for _, f := range s.Funcs {
+		if len(f.Results) == 0 {
 			continue
 		}
-		typeName := capitalize(funcDef.FullName)
-		s.generateGoStruct(file, funcDef.Results, "Immutable", typeName, "Results", false)
-		s.generateGoStruct(file, funcDef.Results, "Mutable", typeName, "Results", false)
+		s.generateGoStruct(file, f.Results, "Immutable", f.Type, "Results")
+		s.generateGoStruct(file, f.Results, "Mutable", f.Type, "Results")
 	}
 	return nil
 }
 
-func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string, new bool) {
+func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
 	typeName = mutability + typeName + kind
 	if strings.HasSuffix(kind, "s") {
 		kind = kind[0 : len(kind)-1]
@@ -645,12 +559,6 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability str
 	fmt.Fprintf(file, "\ntype %s struct {\n", typeName)
 	fmt.Fprintf(file, "\tid int32\n")
 	fmt.Fprintf(file, "}\n")
-
-	if new {
-		fmt.Fprintf(file, "\nfunc New%s() %s {\n", typeName, typeName)
-		fmt.Fprintf(file, "\treturn %s{id: wasmlib.NewScMutableMap().MapId()}\n", typeName)
-		fmt.Fprintf(file, "}\n")
-	}
 
 	for _, field := range fields {
 		varName := capitalize(field.Name)
@@ -726,34 +634,32 @@ func (s *Schema) GenerateGoTests() error {
 	return nil
 }
 
-func (s *Schema) generateGoThunk(file *os.File, funcDef *FuncDef) {
-	funcName := capitalize(funcDef.FullName)
-	funcKind := capitalize(funcDef.FullName[:4])
+func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 	nameLen := 5
-	if len(funcDef.Params) != 0 {
+	if len(f.Params) != 0 {
 		nameLen = 6
 	}
-	if len(funcDef.Results) != 0 {
+	if len(f.Results) != 0 {
 		nameLen = 7
 	}
 
-	fmt.Fprintf(file, "\ntype %sContext struct {\n", funcName)
-	if len(funcDef.Params) != 0 {
-		fmt.Fprintf(file, "\t%s Immutable%sParams\n", pad("Params", nameLen), funcName)
+	fmt.Fprintf(file, "\ntype %sContext struct {\n", f.Type)
+	if len(f.Params) != 0 {
+		fmt.Fprintf(file, "\t%s Immutable%sParams\n", pad("Params", nameLen), f.Type)
 	}
-	if len(funcDef.Results) != 0 {
-		fmt.Fprintf(file, "\tResults Mutable%sResults\n", funcName)
+	if len(f.Results) != 0 {
+		fmt.Fprintf(file, "\tResults Mutable%sResults\n", f.Type)
 	}
 	mutability := "Mutable"
-	if funcKind == "View" {
+	if f.Kind == "View" {
 		mutability = "Immutable"
 	}
 	fmt.Fprintf(file, "\t%s %s%sState\n", pad("State", nameLen), mutability, s.FullName)
 	fmt.Fprintf(file, "}\n")
 
-	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", funcDef.FullName, funcKind)
-	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, funcDef.FullName)
-	grant := funcDef.Access
+	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", f.FuncName, f.Kind)
+	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, f.FuncName)
+	grant := f.Access
 	if grant != "" {
 		index := strings.Index(grant, "//")
 		if index >= 0 {
@@ -775,16 +681,16 @@ func (s *Schema) generateGoThunk(file *os.File, funcDef *FuncDef) {
 		fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
 	}
 
-	fmt.Fprintf(file, "\tf := &%sContext{\n", funcName)
+	fmt.Fprintf(file, "\tf := &%sContext{\n", f.Type)
 
-	if len(funcDef.Params) != 0 {
-		fmt.Fprintf(file, "\t\tParams: Immutable%sParams{\n", funcName)
+	if len(f.Params) != 0 {
+		fmt.Fprintf(file, "\t\tParams: Immutable%sParams{\n", f.Type)
 		fmt.Fprintf(file, "\t\t\tid: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),\n")
 		fmt.Fprintf(file, "\t\t},\n")
 	}
 
-	if len(funcDef.Results) != 0 {
-		fmt.Fprintf(file, "\t\tResults: Mutable%sResults{\n", funcName)
+	if len(f.Results) != 0 {
+		fmt.Fprintf(file, "\t\tResults: Mutable%sResults{\n", f.Type)
 		fmt.Fprintf(file, "\t\t\tid: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),\n")
 		fmt.Fprintf(file, "\t\t},\n")
 	}
@@ -795,15 +701,15 @@ func (s *Schema) generateGoThunk(file *os.File, funcDef *FuncDef) {
 
 	fmt.Fprintf(file, "\t}\n")
 
-	for _, param := range funcDef.Params {
+	for _, param := range f.Params {
 		if !param.Optional {
 			name := capitalize(param.Name)
 			fmt.Fprintf(file, "\tctx.Require(f.Params.%s().Exists(), \"missing mandatory %s\")\n", name, param.Name)
 		}
 	}
 
-	fmt.Fprintf(file, "\t%s(ctx, f)\n", funcDef.FullName)
-	fmt.Fprintf(file, "\tctx.Log(\"%s.%s ok\")\n", s.Name, funcDef.FullName)
+	fmt.Fprintf(file, "\t%s(ctx, f)\n", f.FuncName)
+	fmt.Fprintf(file, "\tctx.Log(\"%s.%s ok\")\n", s.Name, f.FuncName)
 	fmt.Fprintf(file, "}\n")
 }
 
@@ -925,7 +831,21 @@ func (s *Schema) generateGoWasmMain() error {
 }
 
 func (s *Schema) flushGoConsts(file *os.File) {
+	if len(s.ConstNames) == 0 {
+		return
+	}
+
+	if len(s.ConstNames) == 1 {
+		name := s.ConstNames[0]
+		value := s.ConstValues[0]
+		fmt.Fprintf(file, "\nconst %s = %s\n", name, value)
+		s.flushConsts(file, func(name string, value string, padLen int) {})
+		return
+	}
+
+	fmt.Fprintf(file, "\nconst (\n")
 	s.flushConsts(file, func(name string, value string, padLen int) {
 		fmt.Fprintf(file, "\t%s = %s\n", pad(name, padLen), value)
 	})
+	fmt.Fprintf(file, ")\n")
 }

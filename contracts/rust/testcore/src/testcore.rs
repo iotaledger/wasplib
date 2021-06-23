@@ -12,7 +12,7 @@ const CONTRACT_NAME_DEPLOYED: &str = "exampleDeployTR";
 const MSG_FULL_PANIC: &str = "========== panic FULL ENTRY POINT =========";
 const MSG_VIEW_PANIC: &str = "========== panic VIEW =========";
 
-pub fn func_call_on_chain(ctx: &ScFuncContext, f: &FuncCallOnChainContext) {
+pub fn func_call_on_chain(ctx: &ScFuncContext, f: &CallOnChainContext) {
     let param_int = f.params.int_value().value();
 
     let mut hname_contract = ctx.contract();
@@ -41,7 +41,7 @@ pub fn func_call_on_chain(ctx: &ScFuncContext, f: &FuncCallOnChainContext) {
     f.results.int_value().set_value(ret_val.value());
 }
 
-pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, f: &FuncCheckContextFromFullEPContext) {
+pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, f: &CheckContextFromFullEPContext) {
     ctx.require(f.params.agent_id().value() == ctx.account_id(), "fail: agentID");
     ctx.require(f.params.caller().value() == ctx.caller(), "fail: caller");
     ctx.require(f.params.chain_id().value() == ctx.chain_id(), "fail: chainID");
@@ -49,11 +49,11 @@ pub fn func_check_context_from_full_ep(ctx: &ScFuncContext, f: &FuncCheckContext
     ctx.require(f.params.contract_creator().value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
-pub fn func_do_nothing(ctx: &ScFuncContext, _f: &FuncDoNothingContext) {
+pub fn func_do_nothing(ctx: &ScFuncContext, _f: &DoNothingContext) {
     ctx.log("doing nothing...");
 }
 
-pub fn func_get_minted_supply(ctx: &ScFuncContext, f: &FuncGetMintedSupplyContext) {
+pub fn func_get_minted_supply(ctx: &ScFuncContext, f: &GetMintedSupplyContext) {
     let minted = ctx.minted();
     let minted_colors = minted.colors();
     ctx.require(minted_colors.length() == 1, "test only supports one minted color");
@@ -63,16 +63,16 @@ pub fn func_get_minted_supply(ctx: &ScFuncContext, f: &FuncGetMintedSupplyContex
     f.results.minted_color().set_value(&color);
 }
 
-pub fn func_inc_counter(_ctx: &ScFuncContext, f: &FuncIncCounterContext) {
+pub fn func_inc_counter(_ctx: &ScFuncContext, f: &IncCounterContext) {
     let counter = f.state.counter();
     counter.set_value(counter.value() + 1);
 }
 
-pub fn func_init(ctx: &ScFuncContext, _f: &FuncInitContext) {
+pub fn func_init(ctx: &ScFuncContext, _f: &InitContext) {
     ctx.log("doing nothing...");
 }
 
-pub fn func_pass_types_full(ctx: &ScFuncContext, f: &FuncPassTypesFullContext) {
+pub fn func_pass_types_full(ctx: &ScFuncContext, f: &PassTypesFullContext) {
     let hash = ctx.utility().hash_blake2b(PARAM_HASH.as_bytes());
     ctx.require(f.params.hash().value() == hash, "Hash wrong");
     ctx.require(f.params.int64().value() == 42, "int64 wrong");
@@ -83,113 +83,106 @@ pub fn func_pass_types_full(ctx: &ScFuncContext, f: &FuncPassTypesFullContext) {
     ctx.require(f.params.hname_zero().value() == ScHname(0), "Hname-0 wrong");
 }
 
-pub fn func_run_recursion(ctx: &ScFuncContext, f: &FuncRunRecursionContext) {
+pub fn func_run_recursion(ctx: &ScFuncContext, f: &RunRecursionContext) {
     let depth = f.params.int_value().value();
     if depth <= 0 {
         return;
     }
 
-    let mut sc = TestCoreFunc::new(ctx);
-    let parms = MutableFuncCallOnChainParams::new();
-    parms.int_value().set_value(depth - 1);
-    parms.hname_ep().set_value(HFUNC_RUN_RECURSION);
-    let results = sc.call_on_chain(parms, ScTransfers::none());
-    let ret_val = results.int_value().value();
+    let call_on_chain = CallOnChainCall::new(ctx);
+    call_on_chain.params.int_value().set_value(depth - 1);
+    call_on_chain.params.hname_ep().set_value(HFUNC_RUN_RECURSION);
+    call_on_chain.func.call();
+    let ret_val = call_on_chain.results.int_value().value();
     f.results.int_value().set_value(ret_val);
 }
 
-pub fn func_send_to_address(ctx: &ScFuncContext, f: &FuncSendToAddressContext) {
+pub fn func_send_to_address(ctx: &ScFuncContext, f: &SendToAddressContext) {
     let balances = ScTransfers::new_transfers_from_balances(ctx.balances());
     ctx.transfer_to_address(&f.params.address().value(), balances);
 }
 
-pub fn func_set_int(ctx: &ScFuncContext, f: &FuncSetIntContext) {
+pub fn func_set_int(ctx: &ScFuncContext, f: &SetIntContext) {
     ctx.state().get_int64(&f.params.name().value()).set_value(f.params.int_value().value());
 }
 
-pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _f: &FuncTestCallPanicFullEPContext) {
-    let mut sc = TestCoreFunc::new(ctx);
-    sc.test_panic_full_ep(ScTransfers::none());
+pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _f: &TestCallPanicFullEPContext) {
+    TestPanicFullEPCall::new(ctx).func.call();
 }
 
-pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _f: &FuncTestCallPanicViewEPFromFullContext) {
-    let mut sc = TestCoreFunc::new(ctx);
-    sc.test_panic_view_ep();
+pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _f: &TestCallPanicViewEPFromFullContext) {
+    TestPanicViewEPCall::new(ctx).func.call();
 }
 
-pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, f: &FuncTestChainOwnerIDFullContext) {
+pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, f: &TestChainOwnerIDFullContext) {
     f.results.chain_owner_id().set_value(&ctx.chain_owner_id());
 }
 
-pub fn func_test_event_log_deploy(ctx: &ScFuncContext, _f: &FuncTestEventLogDeployContext) {
+pub fn func_test_event_log_deploy(ctx: &ScFuncContext, _f: &TestEventLogDeployContext) {
     // deploy the same contract with another name
     let program_hash = ctx.utility().hash_blake2b("testcore".as_bytes());
     ctx.deploy(&program_hash, CONTRACT_NAME_DEPLOYED, "test contract deploy log", None);
 }
 
-pub fn func_test_event_log_event_data(ctx: &ScFuncContext, _f: &FuncTestEventLogEventDataContext) {
+pub fn func_test_event_log_event_data(ctx: &ScFuncContext, _f: &TestEventLogEventDataContext) {
     ctx.event("[Event] - Testing Event...");
 }
 
-pub fn func_test_event_log_generic_data(ctx: &ScFuncContext, f: &FuncTestEventLogGenericDataContext) {
+pub fn func_test_event_log_generic_data(ctx: &ScFuncContext, f: &TestEventLogGenericDataContext) {
     let event = "[GenericData] Counter Number: ".to_string() + &f.params.counter().to_string();
     ctx.event(&event);
 }
 
-pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _f: &FuncTestPanicFullEPContext) {
+pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _f: &TestPanicFullEPContext) {
     ctx.panic(MSG_FULL_PANIC);
 }
 
-pub fn func_withdraw_to_chain(ctx: &ScFuncContext, f: &FuncWithdrawToChainContext) {
-    let transfer = ScTransfers::iotas(1);
-    let mut sc = CoreAccountsFunc::new(ctx);
-    sc.post_to_chain(f.params.chain_id().value()).withdraw(transfer);
+pub fn func_withdraw_to_chain(ctx: &ScFuncContext, f: &WithdrawToChainContext) {
+    WithdrawCall::new(ctx).func.transfer_iotas(1).post_to_chain(f.params.chain_id().value());
 }
 
-pub fn view_check_context_from_view_ep(ctx: &ScViewContext, f: &ViewCheckContextFromViewEPContext) {
+pub fn view_check_context_from_view_ep(ctx: &ScViewContext, f: &CheckContextFromViewEPContext) {
     ctx.require(f.params.agent_id().value() == ctx.account_id(), "fail: agentID");
     ctx.require(f.params.chain_id().value() == ctx.chain_id(), "fail: chainID");
     ctx.require(f.params.chain_owner_id().value() == ctx.chain_owner_id(), "fail: chainOwnerID");
     ctx.require(f.params.contract_creator().value() == ctx.contract_creator(), "fail: contractCreator");
 }
 
-pub fn view_fibonacci(ctx: &ScViewContext, f: &ViewFibonacciContext) {
+pub fn view_fibonacci(ctx: &ScViewContext, f: &FibonacciContext) {
     let n = f.params.int_value().value();
     if n == 0 || n == 1 {
         f.results.int_value().set_value(n);
         return;
     }
 
-    let mut sc = TestCoreView::new(ctx);
-    let parms1 = MutableViewFibonacciParams::new();
-    parms1.int_value().set_value(n - 1);
-    let results1 = sc.fibonacci(parms1);
-    let n1 = results1.int_value().value();
+    let fib = FibonacciCall::new_from_view(ctx);
+    fib.params.int_value().set_value(n - 1);
+    fib.func.call();
+    let n1 = fib.results.int_value().value();
 
-    let parms2 = MutableViewFibonacciParams::new();
-    parms2.int_value().set_value(n - 2);
-    let results2 = sc.fibonacci(parms2);
-    let n2 = results2.int_value().value();
+    fib.params.int_value().set_value(n - 2);
+    fib.func.call();
+    let n2 = fib.results.int_value().value();
 
     f.results.int_value().set_value(n1 + n2);
 }
 
-pub fn view_get_counter(_ctx: &ScViewContext, f: &ViewGetCounterContext) {
+pub fn view_get_counter(_ctx: &ScViewContext, f: &GetCounterContext) {
     f.results.counter().set_value(f.state.counter().value());
 }
 
-pub fn view_get_int(ctx: &ScViewContext, f: &ViewGetIntContext) {
+pub fn view_get_int(ctx: &ScViewContext, f: &GetIntContext) {
     let name = f.params.name().value();
     let value = ctx.state().get_int64(&name);
     ctx.require(value.exists(), "param 'value' not found");
     ctx.results().get_int64(&name).set_value(value.value());
 }
 
-pub fn view_just_view(ctx: &ScViewContext, _f: &ViewJustViewContext) {
+pub fn view_just_view(ctx: &ScViewContext, _f: &JustViewContext) {
     ctx.log("doing nothing...");
 }
 
-pub fn view_pass_types_view(ctx: &ScViewContext, f: &ViewPassTypesViewContext) {
+pub fn view_pass_types_view(ctx: &ScViewContext, f: &PassTypesViewContext) {
     let hash = ctx.utility().hash_blake2b(PARAM_HASH.as_bytes());
     ctx.require(f.params.hash().value() == hash, "Hash wrong");
     ctx.require(f.params.int64().value() == 42, "int64 wrong");
@@ -200,21 +193,20 @@ pub fn view_pass_types_view(ctx: &ScViewContext, f: &ViewPassTypesViewContext) {
     ctx.require(f.params.hname_zero().value() == ScHname(0), "Hname-0 wrong");
 }
 
-pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _f: &ViewTestCallPanicViewEPFromViewContext) {
-    let mut sc = TestCoreView::new(ctx);
-    sc.test_panic_view_ep();
+pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _f: &TestCallPanicViewEPFromViewContext) {
+    TestPanicViewEPCall::new_from_view(ctx).func.call();
 }
 
-pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, f: &ViewTestChainOwnerIDViewContext) {
+pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, f: &TestChainOwnerIDViewContext) {
     f.results.chain_owner_id().set_value(&ctx.chain_owner_id());
 }
 
-pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &ViewTestPanicViewEPContext) {
+pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &TestPanicViewEPContext) {
     ctx.panic(MSG_VIEW_PANIC);
 }
 
-pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &ViewTestSandboxCallContext) {
-    let mut sc = CoreRootView::new(ctx);
-    let ret = sc.get_chain_info();
-    f.results.sandbox_call().set_value(&ret.description().value());
+pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &TestSandboxCallContext) {
+    let get_chain_info = GetChainInfoCall::new_from_view(ctx);
+    get_chain_info.func.call();
+    f.results.sandbox_call().set_value(&get_chain_info.results.description().value());
 }

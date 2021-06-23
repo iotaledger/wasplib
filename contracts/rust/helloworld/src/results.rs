@@ -15,32 +15,22 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
-pub struct ImmutableFuncHelloWorldResults {
+pub struct ImmutableGetHelloWorldResults {
     pub(crate) id: i32,
 }
 
-#[derive(Clone, Copy)]
-pub struct MutableFuncHelloWorldResults {
-    pub(crate) id: i32,
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableViewGetHelloWorldResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableViewGetHelloWorldResults {
+impl ImmutableGetHelloWorldResults {
     pub fn hello_world(&self) -> ScImmutableString {
         ScImmutableString::new(self.id, idx_map(IDX_RESULT_HELLO_WORLD))
     }
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableViewGetHelloWorldResults {
+pub struct MutableGetHelloWorldResults {
     pub(crate) id: i32,
 }
 
-impl MutableViewGetHelloWorldResults {
+impl MutableGetHelloWorldResults {
     pub fn hello_world(&self) -> ScMutableString {
         ScMutableString::new(self.id, idx_map(IDX_RESULT_HELLO_WORLD))
     }

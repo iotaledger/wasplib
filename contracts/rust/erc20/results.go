@@ -9,50 +9,50 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewAllowanceResults struct {
+type ImmutableAllowanceResults struct {
 	id int32
 }
 
-func (s ImmutableViewAllowanceResults) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableAllowanceResults) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type MutableViewAllowanceResults struct {
+type MutableAllowanceResults struct {
 	id int32
 }
 
-func (s MutableViewAllowanceResults) Amount() wasmlib.ScMutableInt64 {
+func (s MutableAllowanceResults) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type ImmutableViewBalanceOfResults struct {
+type ImmutableBalanceOfResults struct {
 	id int32
 }
 
-func (s ImmutableViewBalanceOfResults) Amount() wasmlib.ScImmutableInt64 {
+func (s ImmutableBalanceOfResults) Amount() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type MutableViewBalanceOfResults struct {
+type MutableBalanceOfResults struct {
 	id int32
 }
 
-func (s MutableViewBalanceOfResults) Amount() wasmlib.ScMutableInt64 {
+func (s MutableBalanceOfResults) Amount() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultAmount])
 }
 
-type ImmutableViewTotalSupplyResults struct {
+type ImmutableTotalSupplyResults struct {
 	id int32
 }
 
-func (s ImmutableViewTotalSupplyResults) Supply() wasmlib.ScImmutableInt64 {
+func (s ImmutableTotalSupplyResults) Supply() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultSupply])
 }
 
-type MutableViewTotalSupplyResults struct {
+type MutableTotalSupplyResults struct {
 	id int32
 }
 
-func (s MutableViewTotalSupplyResults) Supply() wasmlib.ScMutableInt64 {
+func (s MutableTotalSupplyResults) Supply() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultSupply])
 }

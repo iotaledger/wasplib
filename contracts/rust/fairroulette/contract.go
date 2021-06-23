@@ -9,69 +9,61 @@ package fairroulette
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type FairRouletteFunc struct {
-	sc wasmlib.ScContractFunc
+type LockBetsCall struct {
+	Func wasmlib.ScFunc
 }
 
-func NewFairRouletteFunc(ctx wasmlib.ScFuncContext) *FairRouletteFunc {
-	return &FairRouletteFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *FairRouletteFunc) Delay(seconds int32) *FairRouletteFunc {
-	f.sc.Delay(seconds)
+func NewLockBetsCall(ctx wasmlib.ScFuncContext) *LockBetsCall {
+	f := &LockBetsCall{}
+	f.Func.Init(HScName, HFuncLockBets, nil, nil)
 	return f
 }
 
-func (f *FairRouletteFunc) OfContract(contract wasmlib.ScHname) *FairRouletteFunc {
-	f.sc.OfContract(contract)
+type PayWinnersCall struct {
+	Func wasmlib.ScFunc
+}
+
+func NewPayWinnersCall(ctx wasmlib.ScFuncContext) *PayWinnersCall {
+	f := &PayWinnersCall{}
+	f.Func.Init(HScName, HFuncPayWinners, nil, nil)
 	return f
 }
 
-func (f *FairRouletteFunc) Post() *FairRouletteFunc {
-	f.sc.Post()
+type PlaceBetCall struct {
+	Func wasmlib.ScFunc
+	Params MutablePlaceBetParams
+}
+
+func NewPlaceBetCall(ctx wasmlib.ScFuncContext) *PlaceBetCall {
+	f := &PlaceBetCall{}
+	f.Func.Init(HScName, HFuncPlaceBet, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairRouletteFunc) PostToChain(chainId wasmlib.ScChainId) *FairRouletteFunc {
-	f.sc.PostToChain(chainId)
+type PlayPeriodCall struct {
+	Func wasmlib.ScFunc
+	Params MutablePlayPeriodParams
+}
+
+func NewPlayPeriodCall(ctx wasmlib.ScFuncContext) *PlayPeriodCall {
+	f := &PlayPeriodCall{}
+	f.Func.Init(HScName, HFuncPlayPeriod, &f.Params.id, nil)
 	return f
 }
 
-func (f *FairRouletteFunc) LockBets(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncLockBets, 0, &transfer)
+type LastWinningNumberCall struct {
+	Func wasmlib.ScView
+	Results ImmutableLastWinningNumberResults
 }
 
-func (f *FairRouletteFunc) PayWinners(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncPayWinners, 0, &transfer)
+func NewLastWinningNumberCall(ctx wasmlib.ScFuncContext) *LastWinningNumberCall {
+	f := &LastWinningNumberCall{}
+	f.Func.Init(HScName, HViewLastWinningNumber, nil, &f.Results.id)
+	return f
 }
 
-func (f *FairRouletteFunc) PlaceBet(params MutableFuncPlaceBetParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncPlaceBet, params.id, &transfer)
-}
-
-func (f *FairRouletteFunc) PlayPeriod(params MutableFuncPlayPeriodParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncPlayPeriod, params.id, &transfer)
-}
-
-func (f *FairRouletteFunc) LastWinningNumber() ImmutableViewLastWinningNumberResults {
-	f.sc.Run(HViewLastWinningNumber, 0, nil)
-	return ImmutableViewLastWinningNumberResults{id: f.sc.ResultMapId()}
-}
-
-type FairRouletteView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewFairRouletteView(ctx wasmlib.ScViewContext) *FairRouletteView {
-	return &FairRouletteView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *FairRouletteView) OfContract(contract wasmlib.ScHname) *FairRouletteView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *FairRouletteView) LastWinningNumber() ImmutableViewLastWinningNumberResults {
-	v.sc.Run(HViewLastWinningNumber, 0)
-	return ImmutableViewLastWinningNumberResults{id: v.sc.ResultMapId()}
+func NewLastWinningNumberCallFromView(ctx wasmlib.ScViewContext) *LastWinningNumberCall {
+	f := &LastWinningNumberCall{}
+	f.Func.Init(HScName, HViewLastWinningNumber, nil, &f.Results.id)
+	return f
 }

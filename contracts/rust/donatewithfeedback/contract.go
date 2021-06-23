@@ -9,71 +9,59 @@ package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type DonateWithFeedbackFunc struct {
-	sc wasmlib.ScContractFunc
+type DonateCall struct {
+	Func wasmlib.ScFunc
+	Params MutableDonateParams
 }
 
-func NewDonateWithFeedbackFunc(ctx wasmlib.ScFuncContext) *DonateWithFeedbackFunc {
-	return &DonateWithFeedbackFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *DonateWithFeedbackFunc) Delay(seconds int32) *DonateWithFeedbackFunc {
-	f.sc.Delay(seconds)
+func NewDonateCall(ctx wasmlib.ScFuncContext) *DonateCall {
+	f := &DonateCall{}
+	f.Func.Init(HScName, HFuncDonate, &f.Params.id, nil)
 	return f
 }
 
-func (f *DonateWithFeedbackFunc) OfContract(contract wasmlib.ScHname) *DonateWithFeedbackFunc {
-	f.sc.OfContract(contract)
+type WithdrawCall struct {
+	Func wasmlib.ScFunc
+	Params MutableWithdrawParams
+}
+
+func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
+	f := &WithdrawCall{}
+	f.Func.Init(HScName, HFuncWithdraw, &f.Params.id, nil)
 	return f
 }
 
-func (f *DonateWithFeedbackFunc) Post() *DonateWithFeedbackFunc {
-	f.sc.Post()
+type DonationCall struct {
+	Func wasmlib.ScView
+	Params MutableDonationParams
+	Results ImmutableDonationResults
+}
+
+func NewDonationCall(ctx wasmlib.ScFuncContext) *DonationCall {
+	f := &DonationCall{}
+	f.Func.Init(HScName, HViewDonation, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *DonateWithFeedbackFunc) PostToChain(chainId wasmlib.ScChainId) *DonateWithFeedbackFunc {
-	f.sc.PostToChain(chainId)
+func NewDonationCallFromView(ctx wasmlib.ScViewContext) *DonationCall {
+	f := &DonationCall{}
+	f.Func.Init(HScName, HViewDonation, &f.Params.id, &f.Results.id)
 	return f
 }
 
-func (f *DonateWithFeedbackFunc) Donate(params MutableFuncDonateParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncDonate, params.id, &transfer)
+type DonationInfoCall struct {
+	Func wasmlib.ScView
+	Results ImmutableDonationInfoResults
 }
 
-func (f *DonateWithFeedbackFunc) Withdraw(params MutableFuncWithdrawParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncWithdraw, params.id, &transfer)
+func NewDonationInfoCall(ctx wasmlib.ScFuncContext) *DonationInfoCall {
+	f := &DonationInfoCall{}
+	f.Func.Init(HScName, HViewDonationInfo, nil, &f.Results.id)
+	return f
 }
 
-func (f *DonateWithFeedbackFunc) Donation(params MutableViewDonationParams) ImmutableViewDonationResults {
-	f.sc.Run(HViewDonation, params.id, nil)
-	return ImmutableViewDonationResults{id: f.sc.ResultMapId()}
-}
-
-func (f *DonateWithFeedbackFunc) DonationInfo() ImmutableViewDonationInfoResults {
-	f.sc.Run(HViewDonationInfo, 0, nil)
-	return ImmutableViewDonationInfoResults{id: f.sc.ResultMapId()}
-}
-
-type DonateWithFeedbackView struct {
-	sc wasmlib.ScContractView
-}
-
-func NewDonateWithFeedbackView(ctx wasmlib.ScViewContext) *DonateWithFeedbackView {
-	return &DonateWithFeedbackView{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *DonateWithFeedbackView) OfContract(contract wasmlib.ScHname) *DonateWithFeedbackView {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *DonateWithFeedbackView) Donation(params MutableViewDonationParams) ImmutableViewDonationResults {
-	v.sc.Run(HViewDonation, params.id)
-	return ImmutableViewDonationResults{id: v.sc.ResultMapId()}
-}
-
-func (v *DonateWithFeedbackView) DonationInfo() ImmutableViewDonationInfoResults {
-	v.sc.Run(HViewDonationInfo, 0)
-	return ImmutableViewDonationInfoResults{id: v.sc.ResultMapId()}
+func NewDonationInfoCallFromView(ctx wasmlib.ScViewContext) *DonationInfoCall {
+	f := &DonationInfoCall{}
+	f.Func.Init(HScName, HViewDonationInfo, nil, &f.Results.id)
+	return f
 }

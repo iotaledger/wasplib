@@ -7,73 +7,83 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct TokenRegistryFunc {
-    sc: ScContractFunc,
+pub struct MintSupplyCall {
+    pub func: ScFunc,
+    pub params: MutableMintSupplyParams,
 }
 
-impl TokenRegistryFunc {
-    pub fn new(ctx: &ScFuncContext) -> TokenRegistryFunc {
-        TokenRegistryFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut TokenRegistryFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TokenRegistryFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut TokenRegistryFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut TokenRegistryFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn mint_supply(&mut self, params: MutableFuncMintSupplyParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_MINT_SUPPLY, params.id, Some(transfer));
-    }
-
-    pub fn transfer_ownership(&mut self, params: MutableFuncTransferOwnershipParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TRANSFER_OWNERSHIP, params.id, Some(transfer));
-    }
-
-    pub fn update_metadata(&mut self, params: MutableFuncUpdateMetadataParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_UPDATE_METADATA, params.id, Some(transfer));
-    }
-
-    pub fn get_info(&mut self, params: MutableViewGetInfoParams) {
-        self.sc.run(HVIEW_GET_INFO, params.id, None);
+impl MintSupplyCall {
+    pub fn new(_ctx: &ScFuncContext) -> MintSupplyCall {
+        let mut f = MintSupplyCall {
+            func: ScFunc::zero(),
+            params: MutableMintSupplyParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_MINT_SUPPLY, &mut f.params.id, ptr::null_mut());
+        f
     }
 }
 
-pub struct TokenRegistryView {
-    sc: ScContractView,
+pub struct TransferOwnershipCall {
+    pub func: ScFunc,
+    pub params: MutableTransferOwnershipParams,
 }
 
-impl TokenRegistryView {
-    pub fn new(ctx: &ScViewContext) -> TokenRegistryView {
-        TokenRegistryView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl TransferOwnershipCall {
+    pub fn new(_ctx: &ScFuncContext) -> TransferOwnershipCall {
+        let mut f = TransferOwnershipCall {
+            func: ScFunc::zero(),
+            params: MutableTransferOwnershipParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER_OWNERSHIP, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct UpdateMetadataCall {
+    pub func: ScFunc,
+    pub params: MutableUpdateMetadataParams,
+}
+
+impl UpdateMetadataCall {
+    pub fn new(_ctx: &ScFuncContext) -> UpdateMetadataCall {
+        let mut f = UpdateMetadataCall {
+            func: ScFunc::zero(),
+            params: MutableUpdateMetadataParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_UPDATE_METADATA, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetInfoCall {
+    pub func: ScView,
+    pub params: MutableGetInfoParams,
+}
+
+impl GetInfoCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetInfoCall {
+        let mut f = GetInfoCall {
+            func: ScView::zero(),
+            params: MutableGetInfoParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TokenRegistryView {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn get_info(&mut self, params: MutableViewGetInfoParams) {
-        self.sc.run(HVIEW_GET_INFO, params.id);
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
+        let mut f = GetInfoCall {
+            func: ScView::zero(),
+            params: MutableGetInfoParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, ptr::null_mut());
+        f
     }
 }

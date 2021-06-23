@@ -7,217 +7,530 @@
 
 #![allow(dead_code)]
 
+use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
 use crate::params::*;
 use crate::results::*;
 
-pub struct TestCoreFunc {
-    sc: ScContractFunc,
+pub struct CallOnChainCall {
+    pub func: ScFunc,
+    pub params: MutableCallOnChainParams,
+    pub results: ImmutableCallOnChainResults,
 }
 
-impl TestCoreFunc {
-    pub fn new(ctx: &ScFuncContext) -> TestCoreFunc {
-        TestCoreFunc { sc: ScContractFunc::new(ctx, HSC_NAME) }
-    }
-
-    pub fn delay(&mut self, seconds: i32) -> &mut TestCoreFunc {
-        self.sc.delay(seconds);
-        self
-    }
-
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TestCoreFunc {
-        self.sc.of_contract(contract);
-        self
-    }
-
-    pub fn post(&mut self) -> &mut TestCoreFunc {
-        self.sc.post();
-        self
-    }
-
-    pub fn post_to_chain(&mut self, chain_id: ScChainId) -> &mut TestCoreFunc {
-        self.sc.post_to_chain(chain_id);
-        self
-    }
-
-    pub fn call_on_chain(&mut self, params: MutableFuncCallOnChainParams, transfer: ScTransfers) -> ImmutableFuncCallOnChainResults {
-        self.sc.run(HFUNC_CALL_ON_CHAIN, params.id, Some(transfer));
-        ImmutableFuncCallOnChainResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn check_context_from_full_ep(&mut self, params: MutableFuncCheckContextFromFullEPParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_CHECK_CONTEXT_FROM_FULL_EP, params.id, Some(transfer));
-    }
-
-    pub fn do_nothing(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_DO_NOTHING, 0, Some(transfer));
-    }
-
-    pub fn get_minted_supply(&mut self, transfer: ScTransfers) -> ImmutableFuncGetMintedSupplyResults {
-        self.sc.run(HFUNC_GET_MINTED_SUPPLY, 0, Some(transfer));
-        ImmutableFuncGetMintedSupplyResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn inc_counter(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INC_COUNTER, 0, Some(transfer));
-    }
-
-    pub fn init(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_INIT, 0, Some(transfer));
-    }
-
-    pub fn pass_types_full(&mut self, params: MutableFuncPassTypesFullParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_PASS_TYPES_FULL, params.id, Some(transfer));
-    }
-
-    pub fn run_recursion(&mut self, params: MutableFuncRunRecursionParams, transfer: ScTransfers) -> ImmutableFuncRunRecursionResults {
-        self.sc.run(HFUNC_RUN_RECURSION, params.id, Some(transfer));
-        ImmutableFuncRunRecursionResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn send_to_address(&mut self, params: MutableFuncSendToAddressParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_SEND_TO_ADDRESS, params.id, Some(transfer));
-    }
-
-    pub fn set_int(&mut self, params: MutableFuncSetIntParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_SET_INT, params.id, Some(transfer));
-    }
-
-    pub fn test_call_panic_full_ep(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_CALL_PANIC_FULL_EP, 0, Some(transfer));
-    }
-
-    pub fn test_call_panic_view_ep_from_full(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL, 0, Some(transfer));
-    }
-
-    pub fn test_chain_owner_id_full(&mut self, transfer: ScTransfers) -> ImmutableFuncTestChainOwnerIDFullResults {
-        self.sc.run(HFUNC_TEST_CHAIN_OWNER_ID_FULL, 0, Some(transfer));
-        ImmutableFuncTestChainOwnerIDFullResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn test_event_log_deploy(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_EVENT_LOG_DEPLOY, 0, Some(transfer));
-    }
-
-    pub fn test_event_log_event_data(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_EVENT_LOG_EVENT_DATA, 0, Some(transfer));
-    }
-
-    pub fn test_event_log_generic_data(&mut self, params: MutableFuncTestEventLogGenericDataParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_EVENT_LOG_GENERIC_DATA, params.id, Some(transfer));
-    }
-
-    pub fn test_panic_full_ep(&mut self, transfer: ScTransfers) {
-        self.sc.run(HFUNC_TEST_PANIC_FULL_EP, 0, Some(transfer));
-    }
-
-    pub fn withdraw_to_chain(&mut self, params: MutableFuncWithdrawToChainParams, transfer: ScTransfers) {
-        self.sc.run(HFUNC_WITHDRAW_TO_CHAIN, params.id, Some(transfer));
-    }
-
-    pub fn check_context_from_view_ep(&mut self, params: MutableViewCheckContextFromViewEPParams) {
-        self.sc.run(HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, params.id, None);
-    }
-
-    pub fn fibonacci(&mut self, params: MutableViewFibonacciParams) -> ImmutableViewFibonacciResults {
-        self.sc.run(HVIEW_FIBONACCI, params.id, None);
-        ImmutableViewFibonacciResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_counter(&mut self) -> ImmutableViewGetCounterResults {
-        self.sc.run(HVIEW_GET_COUNTER, 0, None);
-        ImmutableViewGetCounterResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn get_int(&mut self, params: MutableViewGetIntParams) {
-        self.sc.run(HVIEW_GET_INT, params.id, None);
-    }
-
-    pub fn just_view(&mut self) {
-        self.sc.run(HVIEW_JUST_VIEW, 0, None);
-    }
-
-    pub fn pass_types_view(&mut self, params: MutableViewPassTypesViewParams) {
-        self.sc.run(HVIEW_PASS_TYPES_VIEW, params.id, None);
-    }
-
-    pub fn test_call_panic_view_ep_from_view(&mut self) {
-        self.sc.run(HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, 0, None);
-    }
-
-    pub fn test_chain_owner_id_view(&mut self) -> ImmutableViewTestChainOwnerIDViewResults {
-        self.sc.run(HVIEW_TEST_CHAIN_OWNER_ID_VIEW, 0, None);
-        ImmutableViewTestChainOwnerIDViewResults { id: self.sc.result_map_id() }
-    }
-
-    pub fn test_panic_view_ep(&mut self) {
-        self.sc.run(HVIEW_TEST_PANIC_VIEW_EP, 0, None);
-    }
-
-    pub fn test_sandbox_call(&mut self) -> ImmutableViewTestSandboxCallResults {
-        self.sc.run(HVIEW_TEST_SANDBOX_CALL, 0, None);
-        ImmutableViewTestSandboxCallResults { id: self.sc.result_map_id() }
+impl CallOnChainCall {
+    pub fn new(_ctx: &ScFuncContext) -> CallOnChainCall {
+        let mut f = CallOnChainCall {
+            func: ScFunc::zero(),
+            params: MutableCallOnChainParams { id: 0 },
+            results: ImmutableCallOnChainResults { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_ON_CHAIN, &mut f.params.id, &mut f.results.id);
+        f
     }
 }
 
-pub struct TestCoreView {
-    sc: ScContractView,
+pub struct CheckContextFromFullEPCall {
+    pub func: ScFunc,
+    pub params: MutableCheckContextFromFullEPParams,
 }
 
-impl TestCoreView {
-    pub fn new(ctx: &ScViewContext) -> TestCoreView {
-        TestCoreView { sc: ScContractView::new(ctx, HSC_NAME) }
+impl CheckContextFromFullEPCall {
+    pub fn new(_ctx: &ScFuncContext) -> CheckContextFromFullEPCall {
+        let mut f = CheckContextFromFullEPCall {
+            func: ScFunc::zero(),
+            params: MutableCheckContextFromFullEPParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_CHECK_CONTEXT_FROM_FULL_EP, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct DoNothingCall {
+    pub func: ScFunc,
+}
+
+impl DoNothingCall {
+    pub fn new(_ctx: &ScFuncContext) -> DoNothingCall {
+        let mut f = DoNothingCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_DO_NOTHING, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct GetMintedSupplyCall {
+    pub func: ScFunc,
+    pub results: ImmutableGetMintedSupplyResults,
+}
+
+impl GetMintedSupplyCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetMintedSupplyCall {
+        let mut f = GetMintedSupplyCall {
+            func: ScFunc::zero(),
+            results: ImmutableGetMintedSupplyResults { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_GET_MINTED_SUPPLY, ptr::null_mut(), &mut f.results.id);
+        f
+    }
+}
+
+pub struct IncCounterCall {
+    pub func: ScFunc,
+}
+
+impl IncCounterCall {
+    pub fn new(_ctx: &ScFuncContext) -> IncCounterCall {
+        let mut f = IncCounterCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INC_COUNTER, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct InitCall {
+    pub func: ScFunc,
+}
+
+impl InitCall {
+    pub fn new(_ctx: &ScFuncContext) -> InitCall {
+        let mut f = InitCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct PassTypesFullCall {
+    pub func: ScFunc,
+    pub params: MutablePassTypesFullParams,
+}
+
+impl PassTypesFullCall {
+    pub fn new(_ctx: &ScFuncContext) -> PassTypesFullCall {
+        let mut f = PassTypesFullCall {
+            func: ScFunc::zero(),
+            params: MutablePassTypesFullParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_PASS_TYPES_FULL, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct RunRecursionCall {
+    pub func: ScFunc,
+    pub params: MutableRunRecursionParams,
+    pub results: ImmutableRunRecursionResults,
+}
+
+impl RunRecursionCall {
+    pub fn new(_ctx: &ScFuncContext) -> RunRecursionCall {
+        let mut f = RunRecursionCall {
+            func: ScFunc::zero(),
+            params: MutableRunRecursionParams { id: 0 },
+            results: ImmutableRunRecursionResults { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_RUN_RECURSION, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct SendToAddressCall {
+    pub func: ScFunc,
+    pub params: MutableSendToAddressParams,
+}
+
+impl SendToAddressCall {
+    pub fn new(_ctx: &ScFuncContext) -> SendToAddressCall {
+        let mut f = SendToAddressCall {
+            func: ScFunc::zero(),
+            params: MutableSendToAddressParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_SEND_TO_ADDRESS, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct SetIntCall {
+    pub func: ScFunc,
+    pub params: MutableSetIntParams,
+}
+
+impl SetIntCall {
+    pub fn new(_ctx: &ScFuncContext) -> SetIntCall {
+        let mut f = SetIntCall {
+            func: ScFunc::zero(),
+            params: MutableSetIntParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_INT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestCallPanicFullEPCall {
+    pub func: ScFunc,
+}
+
+impl TestCallPanicFullEPCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestCallPanicFullEPCall {
+        let mut f = TestCallPanicFullEPCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_FULL_EP, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestCallPanicViewEPFromFullCall {
+    pub func: ScFunc,
+}
+
+impl TestCallPanicViewEPFromFullCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestCallPanicViewEPFromFullCall {
+        let mut f = TestCallPanicViewEPFromFullCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestChainOwnerIDFullCall {
+    pub func: ScFunc,
+    pub results: ImmutableTestChainOwnerIDFullResults,
+}
+
+impl TestChainOwnerIDFullCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestChainOwnerIDFullCall {
+        let mut f = TestChainOwnerIDFullCall {
+            func: ScFunc::zero(),
+            results: ImmutableTestChainOwnerIDFullResults { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CHAIN_OWNER_ID_FULL, ptr::null_mut(), &mut f.results.id);
+        f
+    }
+}
+
+pub struct TestEventLogDeployCall {
+    pub func: ScFunc,
+}
+
+impl TestEventLogDeployCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestEventLogDeployCall {
+        let mut f = TestEventLogDeployCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_DEPLOY, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestEventLogEventDataCall {
+    pub func: ScFunc,
+}
+
+impl TestEventLogEventDataCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestEventLogEventDataCall {
+        let mut f = TestEventLogEventDataCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_EVENT_DATA, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestEventLogGenericDataCall {
+    pub func: ScFunc,
+    pub params: MutableTestEventLogGenericDataParams,
+}
+
+impl TestEventLogGenericDataCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestEventLogGenericDataCall {
+        let mut f = TestEventLogGenericDataCall {
+            func: ScFunc::zero(),
+            params: MutableTestEventLogGenericDataParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_GENERIC_DATA, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestPanicFullEPCall {
+    pub func: ScFunc,
+}
+
+impl TestPanicFullEPCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestPanicFullEPCall {
+        let mut f = TestPanicFullEPCall {
+            func: ScFunc::zero(),
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_PANIC_FULL_EP, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct WithdrawToChainCall {
+    pub func: ScFunc,
+    pub params: MutableWithdrawToChainParams,
+}
+
+impl WithdrawToChainCall {
+    pub fn new(_ctx: &ScFuncContext) -> WithdrawToChainCall {
+        let mut f = WithdrawToChainCall {
+            func: ScFunc::zero(),
+            params: MutableWithdrawToChainParams { id: 0 },
+        };
+        f.func = ScFunc::new(HSC_NAME, HFUNC_WITHDRAW_TO_CHAIN, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct CheckContextFromViewEPCall {
+    pub func: ScView,
+    pub params: MutableCheckContextFromViewEPParams,
+}
+
+impl CheckContextFromViewEPCall {
+    pub fn new(_ctx: &ScFuncContext) -> CheckContextFromViewEPCall {
+        let mut f = CheckContextFromViewEPCall {
+            func: ScView::zero(),
+            params: MutableCheckContextFromViewEPParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn of_contract(&mut self, contract: ScHname) -> &mut TestCoreView {
-        self.sc.of_contract(contract);
-        self
+    pub fn new_from_view(_ctx: &ScViewContext) -> CheckContextFromViewEPCall {
+        let mut f = CheckContextFromViewEPCall {
+            func: ScView::zero(),
+            params: MutableCheckContextFromViewEPParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct FibonacciCall {
+    pub func: ScView,
+    pub params: MutableFibonacciParams,
+    pub results: ImmutableFibonacciResults,
+}
+
+impl FibonacciCall {
+    pub fn new(_ctx: &ScFuncContext) -> FibonacciCall {
+        let mut f = FibonacciCall {
+            func: ScView::zero(),
+            params: MutableFibonacciParams { id: 0 },
+            results: ImmutableFibonacciResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_FIBONACCI, &mut f.params.id, &mut f.results.id);
+        f
     }
 
-    pub fn check_context_from_view_ep(&mut self, params: MutableViewCheckContextFromViewEPParams) {
-        self.sc.run(HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, params.id);
+    pub fn new_from_view(_ctx: &ScViewContext) -> FibonacciCall {
+        let mut f = FibonacciCall {
+            func: ScView::zero(),
+            params: MutableFibonacciParams { id: 0 },
+            results: ImmutableFibonacciResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_FIBONACCI, &mut f.params.id, &mut f.results.id);
+        f
+    }
+}
+
+pub struct GetCounterCall {
+    pub func: ScView,
+    pub results: ImmutableGetCounterResults,
+}
+
+impl GetCounterCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetCounterCall {
+        let mut f = GetCounterCall {
+            func: ScView::zero(),
+            results: ImmutableGetCounterResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn fibonacci(&mut self, params: MutableViewFibonacciParams) -> ImmutableViewFibonacciResults {
-        self.sc.run(HVIEW_FIBONACCI, params.id);
-        ImmutableViewFibonacciResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetCounterCall {
+        let mut f = GetCounterCall {
+            func: ScView::zero(),
+            results: ImmutableGetCounterResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f
+    }
+}
+
+pub struct GetIntCall {
+    pub func: ScView,
+    pub params: MutableGetIntParams,
+}
+
+impl GetIntCall {
+    pub fn new(_ctx: &ScFuncContext) -> GetIntCall {
+        let mut f = GetIntCall {
+            func: ScView::zero(),
+            params: MutableGetIntParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INT, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn get_counter(&mut self) -> ImmutableViewGetCounterResults {
-        self.sc.run(HVIEW_GET_COUNTER, 0);
-        ImmutableViewGetCounterResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> GetIntCall {
+        let mut f = GetIntCall {
+            func: ScView::zero(),
+            params: MutableGetIntParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_GET_INT, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct JustViewCall {
+    pub func: ScView,
+}
+
+impl JustViewCall {
+    pub fn new(_ctx: &ScFuncContext) -> JustViewCall {
+        let mut f = JustViewCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_JUST_VIEW, ptr::null_mut(), ptr::null_mut());
+        f
     }
 
-    pub fn get_int(&mut self, params: MutableViewGetIntParams) {
-        self.sc.run(HVIEW_GET_INT, params.id);
+    pub fn new_from_view(_ctx: &ScViewContext) -> JustViewCall {
+        let mut f = JustViewCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_JUST_VIEW, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct PassTypesViewCall {
+    pub func: ScView,
+    pub params: MutablePassTypesViewParams,
+}
+
+impl PassTypesViewCall {
+    pub fn new(_ctx: &ScFuncContext) -> PassTypesViewCall {
+        let mut f = PassTypesViewCall {
+            func: ScView::zero(),
+            params: MutablePassTypesViewParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_PASS_TYPES_VIEW, &mut f.params.id, ptr::null_mut());
+        f
     }
 
-    pub fn just_view(&mut self) {
-        self.sc.run(HVIEW_JUST_VIEW, 0);
+    pub fn new_from_view(_ctx: &ScViewContext) -> PassTypesViewCall {
+        let mut f = PassTypesViewCall {
+            func: ScView::zero(),
+            params: MutablePassTypesViewParams { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_PASS_TYPES_VIEW, &mut f.params.id, ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestCallPanicViewEPFromViewCall {
+    pub func: ScView,
+}
+
+impl TestCallPanicViewEPFromViewCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestCallPanicViewEPFromViewCall {
+        let mut f = TestCallPanicViewEPFromViewCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, ptr::null_mut(), ptr::null_mut());
+        f
     }
 
-    pub fn pass_types_view(&mut self, params: MutableViewPassTypesViewParams) {
-        self.sc.run(HVIEW_PASS_TYPES_VIEW, params.id);
+    pub fn new_from_view(_ctx: &ScViewContext) -> TestCallPanicViewEPFromViewCall {
+        let mut f = TestCallPanicViewEPFromViewCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestChainOwnerIDViewCall {
+    pub func: ScView,
+    pub results: ImmutableTestChainOwnerIDViewResults,
+}
+
+impl TestChainOwnerIDViewCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestChainOwnerIDViewCall {
+        let mut f = TestChainOwnerIDViewCall {
+            func: ScView::zero(),
+            results: ImmutableTestChainOwnerIDViewResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CHAIN_OWNER_ID_VIEW, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn test_call_panic_view_ep_from_view(&mut self) {
-        self.sc.run(HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, 0);
+    pub fn new_from_view(_ctx: &ScViewContext) -> TestChainOwnerIDViewCall {
+        let mut f = TestChainOwnerIDViewCall {
+            func: ScView::zero(),
+            results: ImmutableTestChainOwnerIDViewResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CHAIN_OWNER_ID_VIEW, ptr::null_mut(), &mut f.results.id);
+        f
+    }
+}
+
+pub struct TestPanicViewEPCall {
+    pub func: ScView,
+}
+
+impl TestPanicViewEPCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestPanicViewEPCall {
+        let mut f = TestPanicViewEPCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_PANIC_VIEW_EP, ptr::null_mut(), ptr::null_mut());
+        f
     }
 
-    pub fn test_chain_owner_id_view(&mut self) -> ImmutableViewTestChainOwnerIDViewResults {
-        self.sc.run(HVIEW_TEST_CHAIN_OWNER_ID_VIEW, 0);
-        ImmutableViewTestChainOwnerIDViewResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> TestPanicViewEPCall {
+        let mut f = TestPanicViewEPCall {
+            func: ScView::zero(),
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_PANIC_VIEW_EP, ptr::null_mut(), ptr::null_mut());
+        f
+    }
+}
+
+pub struct TestSandboxCallCall {
+    pub func: ScView,
+    pub results: ImmutableTestSandboxCallResults,
+}
+
+impl TestSandboxCallCall {
+    pub fn new(_ctx: &ScFuncContext) -> TestSandboxCallCall {
+        let mut f = TestSandboxCallCall {
+            func: ScView::zero(),
+            results: ImmutableTestSandboxCallResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_SANDBOX_CALL, ptr::null_mut(), &mut f.results.id);
+        f
     }
 
-    pub fn test_panic_view_ep(&mut self) {
-        self.sc.run(HVIEW_TEST_PANIC_VIEW_EP, 0);
-    }
-
-    pub fn test_sandbox_call(&mut self) -> ImmutableViewTestSandboxCallResults {
-        self.sc.run(HVIEW_TEST_SANDBOX_CALL, 0);
-        ImmutableViewTestSandboxCallResults { id: self.sc.result_map_id() }
+    pub fn new_from_view(_ctx: &ScViewContext) -> TestSandboxCallCall {
+        let mut f = TestSandboxCallCall {
+            func: ScView::zero(),
+            results: ImmutableTestSandboxCallResults { id: 0 },
+        };
+        f.func = ScView::new(HSC_NAME, HVIEW_TEST_SANDBOX_CALL, ptr::null_mut(), &mut f.results.id);
+        f
     }
 }

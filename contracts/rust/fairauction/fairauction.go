@@ -15,7 +15,7 @@ const OwnerMarginDefault = 50
 const OwnerMarginMin = 5
 const OwnerMarginMax = 100
 
-func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FuncFinalizeAuctionContext) {
+func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FinalizeAuctionContext) {
 	color := f.Params.Color().Value()
 	currentAuction := f.State.Auctions().GetAuction(color)
 	ctx.Require(currentAuction.Exists(), "Missing auction info")
@@ -56,7 +56,7 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FuncFinalizeAuctionContex
 	transferTokens(ctx, auction.Creator, wasmlib.IOTA, auction.Deposit+auction.HighestBid-ownerFee)
 }
 
-func funcPlaceBid(ctx wasmlib.ScFuncContext, f *FuncPlaceBidContext) {
+func funcPlaceBid(ctx wasmlib.ScFuncContext, f *PlaceBidContext) {
 	bidAmount := ctx.Incoming().Balance(wasmlib.IOTA)
 	ctx.Require(bidAmount > 0, "Missing bid amount")
 
@@ -96,7 +96,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, f *FuncPlaceBidContext) {
 	}
 }
 
-func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, f *FuncSetOwnerMarginContext) {
+func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, f *SetOwnerMarginContext) {
 	ownerMargin := f.Params.OwnerMargin().Value()
 	if ownerMargin < OwnerMarginMin {
 		ownerMargin = OwnerMarginMin
@@ -107,7 +107,7 @@ func funcSetOwnerMargin(ctx wasmlib.ScFuncContext, f *FuncSetOwnerMarginContext)
 	f.State.OwnerMargin().SetValue(ownerMargin)
 }
 
-func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
+func funcStartAuction(ctx wasmlib.ScFuncContext, f *StartAuctionContext) {
 	color := f.Params.Color().Value()
 	if color == wasmlib.IOTA || color == wasmlib.MINT {
 		ctx.Panic("Reserved auction token color")
@@ -175,13 +175,12 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *FuncStartAuctionContext) {
 	}
 	currentAuction.SetValue(auction)
 
-	params := NewMutableFuncFinalizeAuctionParams()
-	params.Color().SetValue(auction.Color)
-	transfer := wasmlib.NewScTransferIotas(1)
-	NewFairAuctionFunc(ctx).Post().Delay(duration*60).FinalizeAuction(params, transfer)
+	fa := NewFinalizeAuctionCall(ctx)
+	fa.Params.Color().SetValue(auction.Color)
+	fa.Func.Delay(duration*60).TransferIotas(1).Post()
 }
 
-func viewGetInfo(ctx wasmlib.ScViewContext, f *ViewGetInfoContext) {
+func viewGetInfo(ctx wasmlib.ScViewContext, f *GetInfoContext) {
 	color := f.Params.Color().Value()
 	currentAuction := f.State.Auctions().GetAuction(color)
 	if !currentAuction.Exists() {

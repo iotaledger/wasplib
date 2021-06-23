@@ -39,7 +39,7 @@ impl ScBalances {
 // passes token transfer information to a function call
 #[derive(Clone, Copy)]
 pub struct ScTransfers {
-    transfers: ScMutableMap,
+    pub(crate) transfers: ScMutableMap,
 }
 
 impl ScTransfers {

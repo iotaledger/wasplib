@@ -9,18 +9,18 @@ package coreeventlog
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableViewGetNumRecordsResults struct {
+type ImmutableGetNumRecordsResults struct {
 	id int32
 }
 
-func (s ImmutableViewGetNumRecordsResults) NumRecords() wasmlib.ScImmutableInt64 {
+func (s ImmutableGetNumRecordsResults) NumRecords() wasmlib.ScImmutableInt64 {
 	return wasmlib.NewScImmutableInt64(s.id, ResultNumRecords.KeyId())
 }
 
-type MutableViewGetNumRecordsResults struct {
+type MutableGetNumRecordsResults struct {
 	id int32
 }
 
-func (s MutableViewGetNumRecordsResults) NumRecords() wasmlib.ScMutableInt64 {
+func (s MutableGetNumRecordsResults) NumRecords() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultNumRecords.KeyId())
 }

@@ -9,101 +9,142 @@ package inccounter
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type IncCounterFunc struct {
-	sc wasmlib.ScContractFunc
+type CallIncrementCall struct {
+	Func wasmlib.ScFunc
 }
 
-func NewIncCounterFunc(ctx wasmlib.ScFuncContext) *IncCounterFunc {
-	return &IncCounterFunc{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *IncCounterFunc) Delay(seconds int32) *IncCounterFunc {
-	f.sc.Delay(seconds)
+func NewCallIncrementCall(ctx wasmlib.ScFuncContext) *CallIncrementCall {
+	f := &CallIncrementCall{}
+	f.Func.Init(HScName, HFuncCallIncrement, nil, nil)
 	return f
 }
 
-func (f *IncCounterFunc) OfContract(contract wasmlib.ScHname) *IncCounterFunc {
-	f.sc.OfContract(contract)
+type CallIncrementRecurse5xCall struct {
+	Func wasmlib.ScFunc
+}
+
+func NewCallIncrementRecurse5xCall(ctx wasmlib.ScFuncContext) *CallIncrementRecurse5xCall {
+	f := &CallIncrementRecurse5xCall{}
+	f.Func.Init(HScName, HFuncCallIncrementRecurse5x, nil, nil)
 	return f
 }
 
-func (f *IncCounterFunc) Post() *IncCounterFunc {
-	f.sc.Post()
+type EndlessLoopCall struct {
+	Func wasmlib.ScFunc
+}
+
+func NewEndlessLoopCall(ctx wasmlib.ScFuncContext) *EndlessLoopCall {
+	f := &EndlessLoopCall{}
+	f.Func.Init(HScName, HFuncEndlessLoop, nil, nil)
 	return f
 }
 
-func (f *IncCounterFunc) PostToChain(chainId wasmlib.ScChainId) *IncCounterFunc {
-	f.sc.PostToChain(chainId)
+type IncrementCall struct {
+	Func wasmlib.ScFunc
+}
+
+func NewIncrementCall(ctx wasmlib.ScFuncContext) *IncrementCall {
+	f := &IncrementCall{}
+	f.Func.Init(HScName, HFuncIncrement, nil, nil)
 	return f
 }
 
-func (f *IncCounterFunc) CallIncrement(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncCallIncrement, 0, &transfer)
+type InitCall struct {
+	Func wasmlib.ScFunc
+	Params MutableInitParams
 }
 
-func (f *IncCounterFunc) CallIncrementRecurse5x(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncCallIncrementRecurse5x, 0, &transfer)
+func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
+	f := &InitCall{}
+	f.Func.Init(HScName, HFuncInit, &f.Params.id, nil)
+	return f
 }
 
-func (f *IncCounterFunc) EndlessLoop(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncEndlessLoop, 0, &transfer)
+type LocalStateInternalCallCall struct {
+	Func wasmlib.ScFunc
 }
 
-func (f *IncCounterFunc) Increment(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncIncrement, 0, &transfer)
+func NewLocalStateInternalCallCall(ctx wasmlib.ScFuncContext) *LocalStateInternalCallCall {
+	f := &LocalStateInternalCallCall{}
+	f.Func.Init(HScName, HFuncLocalStateInternalCall, nil, nil)
+	return f
 }
 
-func (f *IncCounterFunc) Init(params MutableFuncInitParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncInit, params.id, &transfer)
+type LocalStatePostCall struct {
+	Func wasmlib.ScFunc
 }
 
-func (f *IncCounterFunc) LocalStateInternalCall(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncLocalStateInternalCall, 0, &transfer)
+func NewLocalStatePostCall(ctx wasmlib.ScFuncContext) *LocalStatePostCall {
+	f := &LocalStatePostCall{}
+	f.Func.Init(HScName, HFuncLocalStatePost, nil, nil)
+	return f
 }
 
-func (f *IncCounterFunc) LocalStatePost(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncLocalStatePost, 0, &transfer)
+type LocalStateSandboxCallCall struct {
+	Func wasmlib.ScFunc
 }
 
-func (f *IncCounterFunc) LocalStateSandboxCall(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncLocalStateSandboxCall, 0, &transfer)
+func NewLocalStateSandboxCallCall(ctx wasmlib.ScFuncContext) *LocalStateSandboxCallCall {
+	f := &LocalStateSandboxCallCall{}
+	f.Func.Init(HScName, HFuncLocalStateSandboxCall, nil, nil)
+	return f
 }
 
-func (f *IncCounterFunc) PostIncrement(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncPostIncrement, 0, &transfer)
+type PostIncrementCall struct {
+	Func wasmlib.ScFunc
 }
 
-func (f *IncCounterFunc) RepeatMany(params MutableFuncRepeatManyParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncRepeatMany, params.id, &transfer)
+func NewPostIncrementCall(ctx wasmlib.ScFuncContext) *PostIncrementCall {
+	f := &PostIncrementCall{}
+	f.Func.Init(HScName, HFuncPostIncrement, nil, nil)
+	return f
 }
 
-func (f *IncCounterFunc) TestLeb128(transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncTestLeb128, 0, &transfer)
+type RepeatManyCall struct {
+	Func wasmlib.ScFunc
+	Params MutableRepeatManyParams
 }
 
-func (f *IncCounterFunc) WhenMustIncrement(params MutableFuncWhenMustIncrementParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncWhenMustIncrement, params.id, &transfer)
+func NewRepeatManyCall(ctx wasmlib.ScFuncContext) *RepeatManyCall {
+	f := &RepeatManyCall{}
+	f.Func.Init(HScName, HFuncRepeatMany, &f.Params.id, nil)
+	return f
 }
 
-func (f *IncCounterFunc) GetCounter() ImmutableViewGetCounterResults {
-	f.sc.Run(HViewGetCounter, 0, nil)
-	return ImmutableViewGetCounterResults{id: f.sc.ResultMapId()}
+type TestLeb128Call struct {
+	Func wasmlib.ScFunc
 }
 
-type IncCounterView struct {
-	sc wasmlib.ScContractView
+func NewTestLeb128Call(ctx wasmlib.ScFuncContext) *TestLeb128Call {
+	f := &TestLeb128Call{}
+	f.Func.Init(HScName, HFuncTestLeb128, nil, nil)
+	return f
 }
 
-func NewIncCounterView(ctx wasmlib.ScViewContext) *IncCounterView {
-	return &IncCounterView{sc: wasmlib.NewScContractView(ctx, HScName)}
+type WhenMustIncrementCall struct {
+	Func wasmlib.ScFunc
+	Params MutableWhenMustIncrementParams
 }
 
-func (v *IncCounterView) OfContract(contract wasmlib.ScHname) *IncCounterView {
-	v.sc.OfContract(contract)
-	return v
+func NewWhenMustIncrementCall(ctx wasmlib.ScFuncContext) *WhenMustIncrementCall {
+	f := &WhenMustIncrementCall{}
+	f.Func.Init(HScName, HFuncWhenMustIncrement, &f.Params.id, nil)
+	return f
 }
 
-func (v *IncCounterView) GetCounter() ImmutableViewGetCounterResults {
-	v.sc.Run(HViewGetCounter, 0)
-	return ImmutableViewGetCounterResults{id: v.sc.ResultMapId()}
+type GetCounterCall struct {
+	Func wasmlib.ScView
+	Results ImmutableGetCounterResults
+}
+
+func NewGetCounterCall(ctx wasmlib.ScFuncContext) *GetCounterCall {
+	f := &GetCounterCall{}
+	f.Func.Init(HScName, HViewGetCounter, nil, &f.Results.id)
+	return f
+}
+
+func NewGetCounterCallFromView(ctx wasmlib.ScViewContext) *GetCounterCall {
+	f := &GetCounterCall{}
+	f.Func.Init(HScName, HViewGetCounter, nil, &f.Results.id)
+	return f
 }

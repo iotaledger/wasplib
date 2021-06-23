@@ -12,11 +12,15 @@ import "github.com/iotaledger/wasp/packages/coretypes"
 const (
 	ScName  = "donatewithfeedback"
 	HScName = coretypes.Hname(0x696d7f66)
+)
 
+const (
 	ParamAmount   = "amount"
 	ParamFeedback = "feedback"
 	ParamNr       = "nr"
+)
 
+const (
 	ResultAmount        = "amount"
 	ResultCount         = "count"
 	ResultDonator       = "donator"
@@ -25,16 +29,22 @@ const (
 	ResultMaxDonation   = "maxDonation"
 	ResultTimestamp     = "timestamp"
 	ResultTotalDonation = "totalDonation"
+)
 
+const (
 	StateLog           = "log"
 	StateMaxDonation   = "maxDonation"
 	StateTotalDonation = "totalDonation"
+)
 
+const (
 	FuncDonate       = "donate"
 	FuncWithdraw     = "withdraw"
 	ViewDonation     = "donation"
 	ViewDonationInfo = "donationInfo"
+)
 
+const (
 	HFuncDonate       = coretypes.Hname(0xdc9b133a)
 	HFuncWithdraw     = coretypes.Hname(0x9dcc0f41)
 	HViewDonation     = coretypes.Hname(0xbdb245ba)

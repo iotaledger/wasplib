@@ -9,89 +9,99 @@ package erc20
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type Erc20Func struct {
-	sc wasmlib.ScContractFunc
+type ApproveCall struct {
+	Func wasmlib.ScFunc
+	Params MutableApproveParams
 }
 
-func NewErc20Func(ctx wasmlib.ScFuncContext) *Erc20Func {
-	return &Erc20Func{sc: wasmlib.NewScContractFunc(ctx, HScName)}
-}
-
-func (f *Erc20Func) Delay(seconds int32) *Erc20Func {
-	f.sc.Delay(seconds)
+func NewApproveCall(ctx wasmlib.ScFuncContext) *ApproveCall {
+	f := &ApproveCall{}
+	f.Func.Init(HScName, HFuncApprove, &f.Params.id, nil)
 	return f
 }
 
-func (f *Erc20Func) OfContract(contract wasmlib.ScHname) *Erc20Func {
-	f.sc.OfContract(contract)
+type InitCall struct {
+	Func wasmlib.ScFunc
+	Params MutableInitParams
+}
+
+func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
+	f := &InitCall{}
+	f.Func.Init(HScName, HFuncInit, &f.Params.id, nil)
 	return f
 }
 
-func (f *Erc20Func) Post() *Erc20Func {
-	f.sc.Post()
+type TransferCall struct {
+	Func wasmlib.ScFunc
+	Params MutableTransferParams
+}
+
+func NewTransferCall(ctx wasmlib.ScFuncContext) *TransferCall {
+	f := &TransferCall{}
+	f.Func.Init(HScName, HFuncTransfer, &f.Params.id, nil)
 	return f
 }
 
-func (f *Erc20Func) PostToChain(chainId wasmlib.ScChainId) *Erc20Func {
-	f.sc.PostToChain(chainId)
+type TransferFromCall struct {
+	Func wasmlib.ScFunc
+	Params MutableTransferFromParams
+}
+
+func NewTransferFromCall(ctx wasmlib.ScFuncContext) *TransferFromCall {
+	f := &TransferFromCall{}
+	f.Func.Init(HScName, HFuncTransferFrom, &f.Params.id, nil)
 	return f
 }
 
-func (f *Erc20Func) Approve(params MutableFuncApproveParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncApprove, params.id, &transfer)
+type AllowanceCall struct {
+	Func wasmlib.ScView
+	Params MutableAllowanceParams
+	Results ImmutableAllowanceResults
 }
 
-func (f *Erc20Func) Init(params MutableFuncInitParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncInit, params.id, &transfer)
+func NewAllowanceCall(ctx wasmlib.ScFuncContext) *AllowanceCall {
+	f := &AllowanceCall{}
+	f.Func.Init(HScName, HViewAllowance, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *Erc20Func) Transfer(params MutableFuncTransferParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncTransfer, params.id, &transfer)
+func NewAllowanceCallFromView(ctx wasmlib.ScViewContext) *AllowanceCall {
+	f := &AllowanceCall{}
+	f.Func.Init(HScName, HViewAllowance, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *Erc20Func) TransferFrom(params MutableFuncTransferFromParams, transfer wasmlib.ScTransfers) {
-	f.sc.Run(HFuncTransferFrom, params.id, &transfer)
+type BalanceOfCall struct {
+	Func wasmlib.ScView
+	Params MutableBalanceOfParams
+	Results ImmutableBalanceOfResults
 }
 
-func (f *Erc20Func) Allowance(params MutableViewAllowanceParams) ImmutableViewAllowanceResults {
-	f.sc.Run(HViewAllowance, params.id, nil)
-	return ImmutableViewAllowanceResults{id: f.sc.ResultMapId()}
+func NewBalanceOfCall(ctx wasmlib.ScFuncContext) *BalanceOfCall {
+	f := &BalanceOfCall{}
+	f.Func.Init(HScName, HViewBalanceOf, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *Erc20Func) BalanceOf(params MutableViewBalanceOfParams) ImmutableViewBalanceOfResults {
-	f.sc.Run(HViewBalanceOf, params.id, nil)
-	return ImmutableViewBalanceOfResults{id: f.sc.ResultMapId()}
+func NewBalanceOfCallFromView(ctx wasmlib.ScViewContext) *BalanceOfCall {
+	f := &BalanceOfCall{}
+	f.Func.Init(HScName, HViewBalanceOf, &f.Params.id, &f.Results.id)
+	return f
 }
 
-func (f *Erc20Func) TotalSupply() ImmutableViewTotalSupplyResults {
-	f.sc.Run(HViewTotalSupply, 0, nil)
-	return ImmutableViewTotalSupplyResults{id: f.sc.ResultMapId()}
+type TotalSupplyCall struct {
+	Func wasmlib.ScView
+	Results ImmutableTotalSupplyResults
 }
 
-type Erc20View struct {
-	sc wasmlib.ScContractView
+func NewTotalSupplyCall(ctx wasmlib.ScFuncContext) *TotalSupplyCall {
+	f := &TotalSupplyCall{}
+	f.Func.Init(HScName, HViewTotalSupply, nil, &f.Results.id)
+	return f
 }
 
-func NewErc20View(ctx wasmlib.ScViewContext) *Erc20View {
-	return &Erc20View{sc: wasmlib.NewScContractView(ctx, HScName)}
-}
-
-func (v *Erc20View) OfContract(contract wasmlib.ScHname) *Erc20View {
-	v.sc.OfContract(contract)
-	return v
-}
-
-func (v *Erc20View) Allowance(params MutableViewAllowanceParams) ImmutableViewAllowanceResults {
-	v.sc.Run(HViewAllowance, params.id)
-	return ImmutableViewAllowanceResults{id: v.sc.ResultMapId()}
-}
-
-func (v *Erc20View) BalanceOf(params MutableViewBalanceOfParams) ImmutableViewBalanceOfResults {
-	v.sc.Run(HViewBalanceOf, params.id)
-	return ImmutableViewBalanceOfResults{id: v.sc.ResultMapId()}
-}
-
-func (v *Erc20View) TotalSupply() ImmutableViewTotalSupplyResults {
-	v.sc.Run(HViewTotalSupply, 0)
-	return ImmutableViewTotalSupplyResults{id: v.sc.ResultMapId()}
+func NewTotalSupplyCallFromView(ctx wasmlib.ScViewContext) *TotalSupplyCall {
+	f := &TotalSupplyCall{}
+	f.Func.Init(HScName, HViewTotalSupply, nil, &f.Results.id)
+	return f
 }
