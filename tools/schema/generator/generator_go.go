@@ -33,6 +33,20 @@ var goTypes = StringMap{
 	"String":    "string",
 }
 
+var goKeys = StringMap{
+	"Address":   "key",
+	"AgentId":   "key",
+	"ChainId":   "key",
+	"Color":     "key",
+	"Hash":      "key",
+	"Hname":     "key",
+	"Int16":     "??TODO",
+	"Int32":     "wasmlib.Key32(int32)",
+	"Int64":     "??TODO",
+	"RequestId": "key",
+	"String":    "wasmlib.Key(key)",
+}
+
 var goTypeIds = StringMap{
 	"Address":   "wasmlib.TYPE_ADDRESS",
 	"AgentId":   "wasmlib.TYPE_AGENT_ID",
@@ -160,6 +174,9 @@ func (s *Schema) generateGoConsts(test bool) error {
 func (s *Schema) generateGoConstsFields(file *os.File, test bool, fields []*Field, prefix string) {
 	if len(fields) != 0 {
 		for _, field := range fields {
+			if field.Alias == "this" {
+				continue
+			}
 			name := prefix + capitalize(field.Name)
 			value := "\"" + field.Alias + "\""
 			if !test {
@@ -312,6 +329,9 @@ func (s *Schema) generateGoKeys() error {
 
 func (s *Schema) generateGoKeysArray(file *os.File, fields []*Field, prefix string) {
 	for _, field := range fields {
+		if field.Alias == "this" {
+			continue
+		}
 		name := prefix + capitalize(field.Name)
 		fmt.Fprintf(file, "\t%s,\n", name)
 		s.KeyId++
@@ -320,6 +340,9 @@ func (s *Schema) generateGoKeysArray(file *os.File, fields []*Field, prefix stri
 
 func (s *Schema) generateGoKeysIndexes(file *os.File, fields []*Field, prefix string) {
 	for _, field := range fields {
+		if field.Alias == "this" {
+			continue
+		}
 		name := "Idx" + prefix + capitalize(field.Name)
 		field.KeyId = s.KeyId
 		value := strconv.Itoa(field.KeyId)
@@ -372,6 +395,7 @@ func (s *Schema) generateGoProxy(file *os.File, field *Field, mutability string)
 			return
 		}
 		s.NewTypes[arrayType] = true
+
 		fmt.Fprintf(file, "\ntype %s struct {\n", arrayType)
 		fmt.Fprintf(file, "\tobjId int32\n")
 		fmt.Fprintf(file, "}\n")
@@ -427,6 +451,10 @@ func (s *Schema) generateGoProxy(file *os.File, field *Field, mutability string)
 			return
 		}
 		s.NewTypes[mapType] = true
+
+		keyType := goTypes[field.MapKey]
+		keyValue := goKeys[field.MapKey]
+
 		fmt.Fprintf(file, "\ntype %s struct {\n", mapType)
 		fmt.Fprintf(file, "\tobjId int32\n")
 		fmt.Fprintf(file, "}\n")
@@ -448,21 +476,21 @@ func (s *Schema) generateGoProxy(file *os.File, field *Field, mutability string)
 						}
 						varType = "wasmlib.TYPE_ARRAY|" + varType
 					}
-					fmt.Fprintf(file, "\nfunc (m %s) Get%s(key wasmlib.Sc%s) %s {\n", mapType, field.Type, field.MapKey, proxyType)
-					fmt.Fprintf(file, "\tsubId := wasmlib.GetObjectId(m.objId, key.KeyId(), %s)\n", varType)
+					fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
+					fmt.Fprintf(file, "\tsubId := wasmlib.GetObjectId(m.objId, %s.KeyId(), %s)\n", keyValue, varType)
 					fmt.Fprintf(file, "\treturn %s{objId: subId}\n", proxyType)
 					fmt.Fprintf(file, "}\n")
 					return
 				}
 			}
-			fmt.Fprintf(file, "\nfunc (m %s) Get%s(key wasmlib.Sc%s) %s {\n", mapType, field.Type, field.MapKey, proxyType)
-			fmt.Fprintf(file, "\treturn %s{objId: m.objId, keyId: key.KeyId()}\n", proxyType)
+			fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
+			fmt.Fprintf(file, "\treturn %s{objId: m.objId, keyId: %s.KeyId()}\n", proxyType, keyValue)
 			fmt.Fprintf(file, "}\n")
 			return
 		}
 
-		fmt.Fprintf(file, "\nfunc (m %s) Get%s(key wasmlib.Sc%s) wasmlib.Sc%s {\n", mapType, field.Type, field.MapKey, proxyType)
-		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(m.objId, key.KeyId())\n", proxyType)
+		fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) wasmlib.Sc%s {\n", mapType, field.Type, keyType, proxyType)
+		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(m.objId, %s.KeyId())\n", proxyType, keyValue)
 		fmt.Fprintf(file, "}\n")
 	}
 }
@@ -583,8 +611,12 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability str
 			varType = "wasmlib.TYPE_MAP"
 			mapType := "Map" + field.MapKey + "To" + mutability + field.Type
 			fmt.Fprintf(file, "\nfunc (s %s) %s() %s {\n", typeName, varName, mapType)
-			fmt.Fprintf(file, "\tmapId := wasmlib.GetObjectId(s.id, %s, %s)\n", varId, varType)
-			fmt.Fprintf(file, "\treturn %s{objId: mapId}\n", mapType)
+			mapId := "s.id"
+			if field.Alias != "this" {
+				mapId = "mapId"
+				fmt.Fprintf(file, "\tmapId := wasmlib.GetObjectId(s.id, %s, %s)\n", varId, varType)
+			}
+			fmt.Fprintf(file, "\treturn %s{objId: %s}\n", mapType, mapId)
 			fmt.Fprintf(file, "}\n")
 			continue
 		}

@@ -10,6 +10,7 @@
 
 use crate::*;
 use crate::corecontracts::coreroot::*;
+use crate::host::*;
 
 #[derive(Clone, Copy)]
 pub struct ImmutableDelegateChainOwnershipParams {

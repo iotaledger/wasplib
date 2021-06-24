@@ -55,3 +55,95 @@ impl MutableGetBlobFieldResults {
         ScMutableBytes::new(self.id, RESULT_BYTES.get_key_id())
     }
 }
+
+pub struct MapStringToImmutableInt32 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToImmutableInt32 {
+    pub fn get_int32(&self, key: &str) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableGetBlobInfoResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableGetBlobInfoResults {
+    pub fn blob_sizes(&self) -> MapStringToImmutableInt32 {
+        MapStringToImmutableInt32 { obj_id: self.id }
+    }
+}
+
+pub struct MapStringToMutableInt32 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToMutableInt32 {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_int32(&self, key: &str) -> ScMutableInt32 {
+        ScMutableInt32::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableGetBlobInfoResults {
+    pub(crate) id: i32,
+}
+
+impl MutableGetBlobInfoResults {
+    pub fn blob_sizes(&self) -> MapStringToMutableInt32 {
+        MapStringToMutableInt32 { obj_id: self.id }
+    }
+}
+
+pub struct MapHashToImmutableInt32 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapHashToImmutableInt32 {
+    pub fn get_int32(&self, key: &ScHash) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableListBlobsResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableListBlobsResults {
+    pub fn blob_sizes(&self) -> MapHashToImmutableInt32 {
+        MapHashToImmutableInt32 { obj_id: self.id }
+    }
+}
+
+pub struct MapHashToMutableInt32 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapHashToMutableInt32 {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_int32(&self, key: &ScHash) -> ScMutableInt32 {
+        ScMutableInt32::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableListBlobsResults {
+    pub(crate) id: i32,
+}
+
+impl MutableListBlobsResults {
+    pub fn blob_sizes(&self) -> MapHashToMutableInt32 {
+        MapHashToMutableInt32 { obj_id: self.id }
+    }
+}

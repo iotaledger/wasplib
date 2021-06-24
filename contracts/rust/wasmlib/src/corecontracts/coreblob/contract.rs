@@ -13,6 +13,7 @@ use crate::corecontracts::coreblob::*;
 
 pub struct StoreBlobCall {
     pub func: ScFunc,
+    pub params: MutableStoreBlobParams,
     pub results: ImmutableStoreBlobResults,
 }
 
@@ -20,9 +21,10 @@ impl StoreBlobCall {
     pub fn new(_ctx: &ScFuncContext) -> StoreBlobCall {
         let mut f = StoreBlobCall {
             func: ScFunc::new(HSC_NAME, HFUNC_STORE_BLOB),
+            params: MutableStoreBlobParams { id: 0 },
             results: ImmutableStoreBlobResults { id: 0 },
         };
-        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 }
@@ -52,6 +54,7 @@ impl GetBlobFieldCall {
 pub struct GetBlobInfoCall {
     pub func: ScView,
     pub params: MutableGetBlobInfoParams,
+    pub results: ImmutableGetBlobInfoResults,
 }
 
 impl GetBlobInfoCall {
@@ -59,8 +62,9 @@ impl GetBlobInfoCall {
         let mut f = GetBlobInfoCall {
             func: ScView::new(HSC_NAME, HVIEW_GET_BLOB_INFO),
             params: MutableGetBlobInfoParams { id: 0 },
+            results: ImmutableGetBlobInfoResults { id: 0 },
         };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
@@ -71,13 +75,17 @@ impl GetBlobInfoCall {
 
 pub struct ListBlobsCall {
     pub func: ScView,
+    pub results: ImmutableListBlobsResults,
 }
 
 impl ListBlobsCall {
     pub fn new(_ctx: &ScFuncContext) -> ListBlobsCall {
-        ListBlobsCall {
+        let mut f = ListBlobsCall {
             func: ScView::new(HSC_NAME, HVIEW_LIST_BLOBS),
-        }
+            results: ImmutableListBlobsResults { id: 0 },
+        };
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
+        f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> ListBlobsCall {

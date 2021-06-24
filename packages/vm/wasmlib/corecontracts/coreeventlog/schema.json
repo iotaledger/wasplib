@@ -19,7 +19,9 @@
         "fromTs": "?Int64 // default 0",
         "toTs": "?Int64 // default now"
       },
-      "resultsMap": "[]Bytes //TODO records Array16"
+      "results": {
+        "records": "[]Bytes //TODO Array16"
+      }
     }
   }
 }

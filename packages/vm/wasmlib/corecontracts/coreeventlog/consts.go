@@ -22,7 +22,10 @@ const (
 	ParamToTs           = wasmlib.Key("toTs")
 )
 
-const ResultNumRecords = wasmlib.Key("numRecords")
+const (
+	ResultNumRecords = wasmlib.Key("numRecords")
+	ResultRecords    = wasmlib.Key("records")
+)
 
 const (
 	ViewGetNumRecords = "getNumRecords"

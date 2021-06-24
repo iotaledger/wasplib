@@ -30,16 +30,17 @@ func NewGetNumRecordsCallFromView(ctx wasmlib.ScViewContext) *GetNumRecordsCall 
 type GetRecordsCall struct {
 	Func wasmlib.ScView
 	Params MutableGetRecordsParams
+	Results ImmutableGetRecordsResults
 }
 
 func NewGetRecordsCall(ctx wasmlib.ScFuncContext) *GetRecordsCall {
 	f := &GetRecordsCall{}
-	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, nil)
+	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetRecordsCallFromView(ctx wasmlib.ScViewContext) *GetRecordsCall {
 	f := &GetRecordsCall{}
-	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, nil)
+	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, &f.Results.id)
 	return f
 }

@@ -24,3 +24,49 @@ type MutableGetNumRecordsResults struct {
 func (s MutableGetNumRecordsResults) NumRecords() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, ResultNumRecords.KeyId())
 }
+
+type ArrayOfImmutableBytes struct {
+	objId int32
+}
+
+func (a ArrayOfImmutableBytes) Length() int32 {
+	return wasmlib.GetLength(a.objId)
+}
+
+func (a ArrayOfImmutableBytes) GetBytes(index int32) wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(a.objId, wasmlib.Key32(index))
+}
+
+type ImmutableGetRecordsResults struct {
+	id int32
+}
+
+func (s ImmutableGetRecordsResults) Records() ArrayOfImmutableBytes {
+	arrId := wasmlib.GetObjectId(s.id, ResultRecords.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	return ArrayOfImmutableBytes{objId: arrId}
+}
+
+type ArrayOfMutableBytes struct {
+	objId int32
+}
+
+func (a ArrayOfMutableBytes) Clear() {
+	wasmlib.Clear(a.objId)
+}
+
+func (a ArrayOfMutableBytes) Length() int32 {
+	return wasmlib.GetLength(a.objId)
+}
+
+func (a ArrayOfMutableBytes) GetBytes(index int32) wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(a.objId, wasmlib.Key32(index))
+}
+
+type MutableGetRecordsResults struct {
+	id int32
+}
+
+func (s MutableGetRecordsResults) Records() ArrayOfMutableBytes {
+	arrId := wasmlib.GetObjectId(s.id, ResultRecords.KeyId(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_BYTES)
+	return ArrayOfMutableBytes{objId: arrId}
+}

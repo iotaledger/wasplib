@@ -32,49 +32,52 @@ func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
 
 type AccountsCall struct {
 	Func wasmlib.ScView
+	Results ImmutableAccountsResults
 }
 
 func NewAccountsCall(ctx wasmlib.ScFuncContext) *AccountsCall {
 	f := &AccountsCall{}
-	f.Func.Init(HScName, HViewAccounts, nil, nil)
+	f.Func.Init(HScName, HViewAccounts, nil, &f.Results.id)
 	return f
 }
 
 func NewAccountsCallFromView(ctx wasmlib.ScViewContext) *AccountsCall {
 	f := &AccountsCall{}
-	f.Func.Init(HScName, HViewAccounts, nil, nil)
+	f.Func.Init(HScName, HViewAccounts, nil, &f.Results.id)
 	return f
 }
 
 type BalanceCall struct {
 	Func wasmlib.ScView
 	Params MutableBalanceParams
+	Results ImmutableBalanceResults
 }
 
 func NewBalanceCall(ctx wasmlib.ScFuncContext) *BalanceCall {
 	f := &BalanceCall{}
-	f.Func.Init(HScName, HViewBalance, &f.Params.id, nil)
+	f.Func.Init(HScName, HViewBalance, &f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewBalanceCallFromView(ctx wasmlib.ScViewContext) *BalanceCall {
 	f := &BalanceCall{}
-	f.Func.Init(HScName, HViewBalance, &f.Params.id, nil)
+	f.Func.Init(HScName, HViewBalance, &f.Params.id, &f.Results.id)
 	return f
 }
 
 type TotalAssetsCall struct {
 	Func wasmlib.ScView
+	Results ImmutableTotalAssetsResults
 }
 
 func NewTotalAssetsCall(ctx wasmlib.ScFuncContext) *TotalAssetsCall {
 	f := &TotalAssetsCall{}
-	f.Func.Init(HScName, HViewTotalAssets, nil, nil)
+	f.Func.Init(HScName, HViewTotalAssets, nil, &f.Results.id)
 	return f
 }
 
 func NewTotalAssetsCallFromView(ctx wasmlib.ScViewContext) *TotalAssetsCall {
 	f := &TotalAssetsCall{}
-	f.Func.Init(HScName, HViewTotalAssets, nil, nil)
+	f.Func.Init(HScName, HViewTotalAssets, nil, &f.Results.id)
 	return f
 }

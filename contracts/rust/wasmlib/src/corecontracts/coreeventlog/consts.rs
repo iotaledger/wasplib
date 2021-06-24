@@ -21,6 +21,7 @@ pub const PARAM_MAX_LAST_RECORDS: &str = "maxLastRecords";
 pub const PARAM_TO_TS:            &str = "toTs";
 
 pub const RESULT_NUM_RECORDS: &str = "numRecords";
+pub const RESULT_RECORDS:     &str = "records";
 
 pub const VIEW_GET_NUM_RECORDS: &str = "getNumRecords";
 pub const VIEW_GET_RECORDS:     &str = "getRecords";

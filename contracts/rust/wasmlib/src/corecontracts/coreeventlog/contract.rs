@@ -36,6 +36,7 @@ impl GetNumRecordsCall {
 pub struct GetRecordsCall {
     pub func: ScView,
     pub params: MutableGetRecordsParams,
+    pub results: ImmutableGetRecordsResults,
 }
 
 impl GetRecordsCall {
@@ -43,8 +44,9 @@ impl GetRecordsCall {
         let mut f = GetRecordsCall {
             func: ScView::new(HSC_NAME, HVIEW_GET_RECORDS),
             params: MutableGetRecordsParams { id: 0 },
+            results: ImmutableGetRecordsResults { id: 0 },
         };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 

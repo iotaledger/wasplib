@@ -3,7 +3,9 @@
   "description": "Core blob contract",
   "funcs": {
     "storeBlob": {
-      "paramsMap": "[String]Bytes // set of named blobs",
+      "params": {
+        "blobs=this": "[String]Bytes // set of named blobs"
+      },
       "results": {
         "hash": "Hash // calculated hash of blob set"
       }
@@ -23,10 +25,14 @@
       "params": {
         "hash": "Hash // blob set"
       },
-      "resultsMap": "[String]Int32 // size for each named blob"
+      "results": {
+        "blobSizes=this": "[String]Int32 // size for each named blob"
+      }
     },
     "listBlobs": {
-      "resultsMap": "[Hash]Int32 // total size for each blob set"
+      "results": {
+        "blobSizes=this": "[Hash]Int32 // total size for each blob set"
+      }
     }
   }
 }

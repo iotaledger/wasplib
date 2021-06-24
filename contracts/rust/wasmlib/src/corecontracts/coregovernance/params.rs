@@ -10,6 +10,7 @@
 
 use crate::*;
 use crate::corecontracts::coregovernance::*;
+use crate::host::*;
 
 #[derive(Clone, Copy)]
 pub struct ImmutableAddAllowedStateControllerAddressParams {

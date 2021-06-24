@@ -11,3 +11,117 @@
 use crate::*;
 use crate::corecontracts::coreaccounts::*;
 use crate::host::*;
+
+pub struct MapAgentIdToImmutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl MapAgentIdToImmutableBytes {
+    pub fn get_bytes(&self, key: &ScAgentId) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableAccountsResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableAccountsResults {
+    pub fn agents(&self) -> MapAgentIdToImmutableBytes {
+        MapAgentIdToImmutableBytes { obj_id: self.id }
+    }
+}
+
+pub struct MapAgentIdToMutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl MapAgentIdToMutableBytes {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, key: &ScAgentId) -> ScMutableBytes {
+        ScMutableBytes::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableAccountsResults {
+    pub(crate) id: i32,
+}
+
+impl MutableAccountsResults {
+    pub fn agents(&self) -> MapAgentIdToMutableBytes {
+        MapAgentIdToMutableBytes { obj_id: self.id }
+    }
+}
+
+pub struct MapColorToImmutableInt64 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapColorToImmutableInt64 {
+    pub fn get_int64(&self, key: &ScColor) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableBalanceResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableBalanceResults {
+    pub fn balances(&self) -> MapColorToImmutableInt64 {
+        MapColorToImmutableInt64 { obj_id: self.id }
+    }
+}
+
+pub struct MapColorToMutableInt64 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapColorToMutableInt64 {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_int64(&self, key: &ScColor) -> ScMutableInt64 {
+        ScMutableInt64::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableBalanceResults {
+    pub(crate) id: i32,
+}
+
+impl MutableBalanceResults {
+    pub fn balances(&self) -> MapColorToMutableInt64 {
+        MapColorToMutableInt64 { obj_id: self.id }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableTotalAssetsResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableTotalAssetsResults {
+    pub fn balances(&self) -> MapColorToImmutableInt64 {
+        MapColorToImmutableInt64 { obj_id: self.id }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableTotalAssetsResults {
+    pub(crate) id: i32,
+}
+
+impl MutableTotalAssetsResults {
+    pub fn balances(&self) -> MapColorToMutableInt64 {
+        MapColorToMutableInt64 { obj_id: self.id }
+    }
+}

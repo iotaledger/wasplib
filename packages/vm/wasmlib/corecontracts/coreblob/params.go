@@ -9,6 +9,42 @@ package coreblob
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type MapStringToImmutableBytes struct {
+	objId int32
+}
+
+func (m MapStringToImmutableBytes) GetBytes(key string) wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type ImmutableStoreBlobParams struct {
+	id int32
+}
+
+func (s ImmutableStoreBlobParams) Blobs() MapStringToImmutableBytes {
+	return MapStringToImmutableBytes{objId: s.id}
+}
+
+type MapStringToMutableBytes struct {
+	objId int32
+}
+
+func (m MapStringToMutableBytes) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapStringToMutableBytes) GetBytes(key string) wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type MutableStoreBlobParams struct {
+	id int32
+}
+
+func (s MutableStoreBlobParams) Blobs() MapStringToMutableBytes {
+	return MapStringToMutableBytes{objId: s.id}
+}
+
 type ImmutableGetBlobFieldParams struct {
 	id int32
 }

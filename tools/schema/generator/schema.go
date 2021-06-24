@@ -18,9 +18,9 @@ type StringMap map[string]string
 type StringMapMap map[string]StringMap
 
 type FuncDesc struct {
-	Access  string    `json:"access,omitempty"`
-	Params  StringMap `json:"params"`
-	Results StringMap `json:"results"`
+	Access     string    `json:"access,omitempty"`
+	Params     StringMap `json:"params"`
+	Results    StringMap `json:"results"`
 }
 type FuncDescMap map[string]*FuncDesc
 
@@ -125,21 +125,21 @@ func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results 
 			return fmt.Errorf("duplicate func/view name")
 		}
 		funcDesc := jsonFuncs[funcName]
-		funcDef := &FuncDef{}
-		funcDef.String = funcName
-		funcDef.Kind = capitalize(kind)
-		funcDef.Type = capitalize(funcName)
-		funcDef.FuncName = kind + funcDef.Type
-		funcDef.Access = funcDesc.Access
-		funcDef.Params, err = s.compileFuncFields(funcDesc.Params, params, "param")
+		f := &FuncDef{}
+		f.String = funcName
+		f.Kind = capitalize(kind)
+		f.Type = capitalize(funcName)
+		f.FuncName = kind + f.Type
+		f.Access = funcDesc.Access
+		f.Params, err = s.compileFuncFields(funcDesc.Params, params, "param")
 		if err != nil {
 			return err
 		}
-		funcDef.Results, err = s.compileFuncFields(funcDesc.Results, results, "result")
+		f.Results, err = s.compileFuncFields(funcDesc.Results, results, "result")
 		if err != nil {
 			return err
 		}
-		s.Funcs = append(s.Funcs, funcDef)
+		s.Funcs = append(s.Funcs, f)
 	}
 	return nil
 }
@@ -301,5 +301,9 @@ func (s *Schema) crateOrWasmLib(withContract bool, withHost bool) string {
 		}
 		return retVal
 	}
-	return useWasmLib
+	retVal := useWasmLib
+	if withHost {
+		retVal += useWasmLibHost
+	}
+	return retVal
 }

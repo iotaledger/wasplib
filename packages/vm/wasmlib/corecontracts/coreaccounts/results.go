@@ -6,3 +6,93 @@
 // Change the json schema instead
 
 package coreaccounts
+
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+
+type MapAgentIdToImmutableBytes struct {
+	objId int32
+}
+
+func (m MapAgentIdToImmutableBytes) GetBytes(key wasmlib.ScAgentId) wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(m.objId, key.KeyId())
+}
+
+type ImmutableAccountsResults struct {
+	id int32
+}
+
+func (s ImmutableAccountsResults) Agents() MapAgentIdToImmutableBytes {
+	return MapAgentIdToImmutableBytes{objId: s.id}
+}
+
+type MapAgentIdToMutableBytes struct {
+	objId int32
+}
+
+func (m MapAgentIdToMutableBytes) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapAgentIdToMutableBytes) GetBytes(key wasmlib.ScAgentId) wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(m.objId, key.KeyId())
+}
+
+type MutableAccountsResults struct {
+	id int32
+}
+
+func (s MutableAccountsResults) Agents() MapAgentIdToMutableBytes {
+	return MapAgentIdToMutableBytes{objId: s.id}
+}
+
+type MapColorToImmutableInt64 struct {
+	objId int32
+}
+
+func (m MapColorToImmutableInt64) GetInt64(key wasmlib.ScColor) wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(m.objId, key.KeyId())
+}
+
+type ImmutableBalanceResults struct {
+	id int32
+}
+
+func (s ImmutableBalanceResults) Balances() MapColorToImmutableInt64 {
+	return MapColorToImmutableInt64{objId: s.id}
+}
+
+type MapColorToMutableInt64 struct {
+	objId int32
+}
+
+func (m MapColorToMutableInt64) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapColorToMutableInt64) GetInt64(key wasmlib.ScColor) wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(m.objId, key.KeyId())
+}
+
+type MutableBalanceResults struct {
+	id int32
+}
+
+func (s MutableBalanceResults) Balances() MapColorToMutableInt64 {
+	return MapColorToMutableInt64{objId: s.id}
+}
+
+type ImmutableTotalAssetsResults struct {
+	id int32
+}
+
+func (s ImmutableTotalAssetsResults) Balances() MapColorToImmutableInt64 {
+	return MapColorToImmutableInt64{objId: s.id}
+}
+
+type MutableTotalAssetsResults struct {
+	id int32
+}
+
+func (s MutableTotalAssetsResults) Balances() MapColorToMutableInt64 {
+	return MapColorToMutableInt64{objId: s.id}
+}

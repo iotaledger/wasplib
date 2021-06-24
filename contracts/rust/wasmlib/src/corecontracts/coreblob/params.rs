@@ -10,6 +10,53 @@
 
 use crate::*;
 use crate::corecontracts::coreblob::*;
+use crate::host::*;
+
+pub struct MapStringToImmutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToImmutableBytes {
+    pub fn get_bytes(&self, key: &str) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableStoreBlobParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableStoreBlobParams {
+    pub fn blobs(&self) -> MapStringToImmutableBytes {
+        MapStringToImmutableBytes { obj_id: self.id }
+    }
+}
+
+pub struct MapStringToMutableBytes {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToMutableBytes {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_bytes(&self, key: &str) -> ScMutableBytes {
+        ScMutableBytes::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableStoreBlobParams {
+    pub(crate) id: i32,
+}
+
+impl MutableStoreBlobParams {
+    pub fn blobs(&self) -> MapStringToMutableBytes {
+        MapStringToMutableBytes { obj_id: self.id }
+    }
+}
 
 #[derive(Clone, Copy)]
 pub struct ImmutableGetBlobFieldParams {

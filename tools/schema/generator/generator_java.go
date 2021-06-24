@@ -77,9 +77,9 @@ func (s *Schema) GenerateJava() error {
 	return s.GenerateJavaTests()
 }
 
-func (s *Schema) GenerateJavaFunc(file *os.File, funcDef *FuncDef) error {
-	funcName := funcDef.FuncName
-	funcKind := capitalize(funcDef.FuncName[:4])
+func (s *Schema) GenerateJavaFunc(file *os.File, f *FuncDef) error {
+	funcName := f.FuncName
+	funcKind := capitalize(f.FuncName[:4])
 	fmt.Fprintf(file, "\npublic static void %s(Sc%sContext ctx, %sParams params) {\n", funcName, funcKind, capitalize(funcName))
 	fmt.Fprintf(file, "}\n")
 	return nil
@@ -114,9 +114,9 @@ func (s *Schema) GenerateJavaFuncs() error {
 	}
 
 	// append any new funcs
-	for _, funcDef := range s.Funcs {
-		if existing[funcDef.FuncName] == "" {
-			err = s.GenerateJavaFunc(file, funcDef)
+	for _, f := range s.Funcs {
+		if existing[f.FuncName] == "" {
+			err = s.GenerateJavaFunc(file, f)
 			if err != nil {
 				return err
 			}
@@ -164,8 +164,8 @@ func (s *Schema) GenerateJavaFuncsNew(scFileName string) error {
 	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.mutable.*;\n\n")
 
 	fmt.Fprintf(file, "public class %s {\n", s.FullName)
-	for _, funcDef := range s.Funcs {
-		err = s.GenerateJavaFunc(file, funcDef)
+	for _, f := range s.Funcs {
+		err = s.GenerateJavaFunc(file, f)
 		if err != nil {
 			return err
 		}
@@ -202,22 +202,22 @@ func (s *Schema) GenerateJavaLib() error {
 	fmt.Fprintf(file, "    @Export(\"on_load\")\n")
 	fmt.Fprintf(file, "    public static void onLoad() {\n")
 	fmt.Fprintf(file, "        ScExports exports = new ScExports();\n")
-	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FuncName)
-		kind := capitalize(funcDef.FuncName[:4])
-		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %sThunk::%sThunk);\n", kind, name, s.FullName, funcDef.FuncName)
+	for _, f := range s.Funcs {
+		name := capitalize(f.FuncName)
+		kind := capitalize(f.FuncName[:4])
+		fmt.Fprintf(file, "        exports.Add%s(Consts.%s, %sThunk::%sThunk);\n", kind, name, s.FullName, f.FuncName)
 	}
 	fmt.Fprintf(file, "    }\n")
 
 	// generate parameter structs and thunks to set up and check parameters
-	for _, funcDef := range s.Funcs {
-		name := capitalize(funcDef.FuncName)
+	for _, f := range s.Funcs {
+		name := capitalize(f.FuncName)
 		params, err := os.Create("lib/" + name + "Params.java")
 		if err != nil {
 			return err
 		}
 		defer params.Close()
-		s.GenerateJavaThunk(file, params, funcDef)
+		s.GenerateJavaThunk(file, params, f)
 	}
 
 	fmt.Fprintf(file, "}\n")
@@ -263,15 +263,15 @@ func (s *Schema) GenerateJavaConsts() error {
 
 	if len(s.Funcs) != 0 {
 		fmt.Fprintln(file)
-		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FuncName)
-			fmt.Fprintf(file, "    public static final String %s = \"%s\";\n", name, funcDef.String)
+		for _, f := range s.Funcs {
+			name := capitalize(f.FuncName)
+			fmt.Fprintf(file, "    public static final String %s = \"%s\";\n", name, f.String)
 		}
 
 		fmt.Fprintln(file)
-		for _, funcDef := range s.Funcs {
-			name := capitalize(funcDef.FuncName)
-			hName = coretypes.Hn(funcDef.String)
+		for _, f := range s.Funcs {
+			name := capitalize(f.FuncName)
+			hName = coretypes.Hn(f.String)
 			fmt.Fprintf(file, "    public static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
 		}
 	}
@@ -285,23 +285,23 @@ func (s *Schema) GenerateJavaTests() error {
 	return nil
 }
 
-func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *FuncDef) {
+func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 	// calculate padding
-	nameLen, typeLen := calculatePadding(funcDef.Params, javaTypes, false)
+	nameLen, typeLen := calculatePadding(f.Params, javaTypes, false)
 
-	funcName := capitalize(funcDef.FuncName)
-	funcKind := capitalize(funcDef.FuncName[:4])
+	funcName := capitalize(f.FuncName)
+	funcKind := capitalize(f.FuncName[:4])
 
 	fmt.Fprintln(params, copyright(true))
 	fmt.Fprintf(params, "package org.iota.wasp.contracts.%s.lib;\n", s.Name)
-	if len(funcDef.Params) != 0 {
+	if len(f.Params) != 0 {
 		fmt.Fprintf(params, "\nimport org.iota.wasp.wasmlib.immutable.*;\n")
 	}
-	if len(funcDef.Params) > 1 {
+	if len(f.Params) > 1 {
 		fmt.Fprintf(params, "\n//@formatter:off")
 	}
 	fmt.Fprintf(params, "\npublic class %sParams {\n", funcName)
-	for _, param := range funcDef.Params {
+	for _, param := range f.Params {
 		fldName := capitalize(param.Name) + ";"
 		if param.Comment != "" {
 			fldName = pad(fldName, nameLen+1)
@@ -310,13 +310,13 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		fmt.Fprintf(params, "    public ScImmutable%s %s%s\n", fldType, fldName, param.Comment)
 	}
 	fmt.Fprintf(params, "}\n")
-	if len(funcDef.Params) > 1 {
+	if len(f.Params) > 1 {
 		fmt.Fprintf(params, "//@formatter:on\n")
 	}
 
-	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", funcDef.FuncName, funcKind)
-	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, funcDef.FuncName)
-	grant := funcDef.Access
+	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", f.FuncName, funcKind)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, f.FuncName)
+	grant := f.Access
 	if grant != "" {
 		index := strings.Index(grant, "//")
 		if index >= 0 {
@@ -337,22 +337,22 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, funcDef *Func
 		}
 		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}
-	if len(funcDef.Params) != 0 {
+	if len(f.Params) != 0 {
 		fmt.Fprintf(file, "        var p = ctx.Params();\n")
 	}
 	fmt.Fprintf(file, "        var params = new %sParams();\n", funcName)
-	for _, param := range funcDef.Params {
+	for _, param := range f.Params {
 		name := capitalize(param.Name)
 		fmt.Fprintf(file, "        params.%s = p.Get%s(Consts.Param%s);\n", name, param.Type, name)
 	}
-	for _, param := range funcDef.Params {
+	for _, param := range f.Params {
 		if !param.Optional {
 			name := capitalize(param.Name)
 			fmt.Fprintf(file, "        ctx.Require(params.%s.Exists(), \"missing mandatory %s\");\n", name, param.Name)
 		}
 	}
-	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, funcDef.FuncName)
-	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, funcDef.FuncName)
+	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, f.FuncName)
+	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, f.FuncName)
 	fmt.Fprintf(file, "    }\n")
 }
 

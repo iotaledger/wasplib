@@ -40,3 +40,75 @@ type MutableGetBlobFieldResults struct {
 func (s MutableGetBlobFieldResults) Bytes() wasmlib.ScMutableBytes {
 	return wasmlib.NewScMutableBytes(s.id, ResultBytes.KeyId())
 }
+
+type MapStringToImmutableInt32 struct {
+	objId int32
+}
+
+func (m MapStringToImmutableInt32) GetInt32(key string) wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type ImmutableGetBlobInfoResults struct {
+	id int32
+}
+
+func (s ImmutableGetBlobInfoResults) BlobSizes() MapStringToImmutableInt32 {
+	return MapStringToImmutableInt32{objId: s.id}
+}
+
+type MapStringToMutableInt32 struct {
+	objId int32
+}
+
+func (m MapStringToMutableInt32) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapStringToMutableInt32) GetInt32(key string) wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type MutableGetBlobInfoResults struct {
+	id int32
+}
+
+func (s MutableGetBlobInfoResults) BlobSizes() MapStringToMutableInt32 {
+	return MapStringToMutableInt32{objId: s.id}
+}
+
+type MapHashToImmutableInt32 struct {
+	objId int32
+}
+
+func (m MapHashToImmutableInt32) GetInt32(key wasmlib.ScHash) wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(m.objId, key.KeyId())
+}
+
+type ImmutableListBlobsResults struct {
+	id int32
+}
+
+func (s ImmutableListBlobsResults) BlobSizes() MapHashToImmutableInt32 {
+	return MapHashToImmutableInt32{objId: s.id}
+}
+
+type MapHashToMutableInt32 struct {
+	objId int32
+}
+
+func (m MapHashToMutableInt32) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapHashToMutableInt32) GetInt32(key wasmlib.ScHash) wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(m.objId, key.KeyId())
+}
+
+type MutableListBlobsResults struct {
+	id int32
+}
+
+func (s MutableListBlobsResults) BlobSizes() MapHashToMutableInt32 {
+	return MapHashToMutableInt32{objId: s.id}
+}

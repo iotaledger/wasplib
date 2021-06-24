@@ -12,16 +12,22 @@
   },
   "views": {
     "accounts": {
-      "resultsMap": "[AgentId]Bytes // bytes are always empty"
+      "results": {
+        "agents=this": "[AgentId]Bytes // bytes are always empty"
+      }
     },
     "balance": {
       "params": {
         "agentID=a": "AgentId"
       },
-      "resultsMap": "[Color]Int64"
+      "results": {
+        "balances=this": "[Color]Int64"
+      }
     },
     "totalAssets": {
-      "resultsMap": "[Color]Int64"
+      "results": {
+        "balances=this": "[Color]Int64"
+      }
     }
   }
 }
