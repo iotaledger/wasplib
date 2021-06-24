@@ -22,10 +22,10 @@ pub struct MintSupplyCall {
 impl MintSupplyCall {
     pub fn new(_ctx: &ScFuncContext) -> MintSupplyCall {
         let mut f = MintSupplyCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_MINT_SUPPLY),
             params: MutableMintSupplyParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_MINT_SUPPLY, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -38,10 +38,10 @@ pub struct TransferOwnershipCall {
 impl TransferOwnershipCall {
     pub fn new(_ctx: &ScFuncContext) -> TransferOwnershipCall {
         let mut f = TransferOwnershipCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_TRANSFER_OWNERSHIP),
             params: MutableTransferOwnershipParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER_OWNERSHIP, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -54,10 +54,10 @@ pub struct UpdateMetadataCall {
 impl UpdateMetadataCall {
     pub fn new(_ctx: &ScFuncContext) -> UpdateMetadataCall {
         let mut f = UpdateMetadataCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_UPDATE_METADATA),
             params: MutableUpdateMetadataParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_UPDATE_METADATA, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -70,19 +70,14 @@ pub struct GetInfoCall {
 impl GetInfoCall {
     pub fn new(_ctx: &ScFuncContext) -> GetInfoCall {
         let mut f = GetInfoCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_INFO),
             params: MutableGetInfoParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
-        let mut f = GetInfoCall {
-            func: ScView::zero(),
-            params: MutableGetInfoParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_INFO, &mut f.params.id, ptr::null_mut());
-        f
+        GetInfoCall::new(&ScFuncContext{})
     }
 }

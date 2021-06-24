@@ -252,8 +252,9 @@ func (s *Schema) generateRustContract() error {
 		fmt.Fprintf(file, "\nimpl %sCall {\n", f.Type)
 		s.generateRustContractFunc(file, f, "new", "Func")
 		if f.Kind == "View" {
-			fmt.Fprintln(file)
-			s.generateRustContractFunc(file, f, "new_from_view", "View")
+			fmt.Fprintf(file, "\n    pub fn new_from_view(_ctx: &ScViewContext) -> %sCall {\n", f.Type)
+			fmt.Fprintf(file, "        %sCall::new(&ScFuncContext{})\n", f.Type)
+			fmt.Fprintf(file, "    }\n")
 		}
 
 		fmt.Fprintf(file, "}\n")
@@ -264,9 +265,13 @@ func (s *Schema) generateRustContract() error {
 
 func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef, funcName string, funcKind string) {
 	constName := upper(snake(f.FuncName))
+	letMut := ""
+	if len(f.Params) != 0 || len(f.Results) != 0 {
+		letMut = "let mut f = "
+	}
 	fmt.Fprintf(file, "    pub fn %s(_ctx: &Sc%sContext) -> %sCall {\n", funcName, funcKind, f.Type)
-	fmt.Fprintf(file, "        let mut f = %sCall {\n", f.Type)
-	fmt.Fprintf(file, "            func: Sc%s::zero(),\n", f.Kind)
+	fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
+	fmt.Fprintf(file, "            func: Sc%s::new(HSC_NAME, H%s),\n", f.Kind, constName)
 	paramsId := "ptr::null_mut()"
 	if len(f.Params) != 0 {
 		paramsId = "&mut f.params.id"
@@ -277,10 +282,13 @@ func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef, funcName st
 		resultsId = "&mut f.results.id"
 		fmt.Fprintf(file, "            results: Immutable%sResults { id: 0 },\n", f.Type)
 	}
-	fmt.Fprintf(file, "        };\n")
-	fmt.Fprintf(file, "        f.func = Sc%s::new(HSC_NAME, H%s, %s, %s);\n", f.Kind, constName, paramsId, resultsId)
-	fmt.Fprintf(file, "        f\n")
-	fmt.Fprintf(file, "    }\n")
+	fmt.Fprintf(file, "        }")
+	if len(f.Params) != 0 || len(f.Results) != 0 {
+		fmt.Fprintf(file, ";\n")
+		fmt.Fprintf(file, "        f.func.set_ptrs(%s, %s);\n", paramsId, resultsId)
+		fmt.Fprintf(file, "        f")
+	}
+	fmt.Fprintf(file, "\n    }\n")
 }
 
 func (s *Schema) generateRustFuncs() error {

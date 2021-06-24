@@ -20,11 +20,9 @@ pub struct LockBetsCall {
 
 impl LockBetsCall {
     pub fn new(_ctx: &ScFuncContext) -> LockBetsCall {
-        let mut f = LockBetsCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS, ptr::null_mut(), ptr::null_mut());
-        f
+        LockBetsCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS),
+        }
     }
 }
 
@@ -34,11 +32,9 @@ pub struct PayWinnersCall {
 
 impl PayWinnersCall {
     pub fn new(_ctx: &ScFuncContext) -> PayWinnersCall {
-        let mut f = PayWinnersCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS, ptr::null_mut(), ptr::null_mut());
-        f
+        PayWinnersCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS),
+        }
     }
 }
 
@@ -50,10 +46,10 @@ pub struct PlaceBetCall {
 impl PlaceBetCall {
     pub fn new(_ctx: &ScFuncContext) -> PlaceBetCall {
         let mut f = PlaceBetCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
             params: MutablePlaceBetParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_PLACE_BET, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -66,10 +62,10 @@ pub struct PlayPeriodCall {
 impl PlayPeriodCall {
     pub fn new(_ctx: &ScFuncContext) -> PlayPeriodCall {
         let mut f = PlayPeriodCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
             params: MutablePlayPeriodParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -82,19 +78,14 @@ pub struct LastWinningNumberCall {
 impl LastWinningNumberCall {
     pub fn new(_ctx: &ScFuncContext) -> LastWinningNumberCall {
         let mut f = LastWinningNumberCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER),
             results: ImmutableLastWinningNumberResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> LastWinningNumberCall {
-        let mut f = LastWinningNumberCall {
-            func: ScView::zero(),
-            results: ImmutableLastWinningNumberResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER, ptr::null_mut(), &mut f.results.id);
-        f
+        LastWinningNumberCall::new(&ScFuncContext{})
     }
 }

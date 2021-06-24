@@ -19,10 +19,10 @@ pub struct DepositCall {
 impl DepositCall {
     pub fn new(_ctx: &ScFuncContext) -> DepositCall {
         let mut f = DepositCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_DEPOSIT),
             params: MutableDepositParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_DEPOSIT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -33,11 +33,9 @@ pub struct WithdrawCall {
 
 impl WithdrawCall {
     pub fn new(_ctx: &ScFuncContext) -> WithdrawCall {
-        let mut f = WithdrawCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_WITHDRAW, ptr::null_mut(), ptr::null_mut());
-        f
+        WithdrawCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_WITHDRAW),
+        }
     }
 }
 
@@ -47,19 +45,13 @@ pub struct AccountsCall {
 
 impl AccountsCall {
     pub fn new(_ctx: &ScFuncContext) -> AccountsCall {
-        let mut f = AccountsCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_ACCOUNTS, ptr::null_mut(), ptr::null_mut());
-        f
+        AccountsCall {
+            func: ScView::new(HSC_NAME, HVIEW_ACCOUNTS),
+        }
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> AccountsCall {
-        let mut f = AccountsCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_ACCOUNTS, ptr::null_mut(), ptr::null_mut());
-        f
+        AccountsCall::new(&ScFuncContext{})
     }
 }
 
@@ -71,20 +63,15 @@ pub struct BalanceCall {
 impl BalanceCall {
     pub fn new(_ctx: &ScFuncContext) -> BalanceCall {
         let mut f = BalanceCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_BALANCE),
             params: MutableBalanceParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BalanceCall {
-        let mut f = BalanceCall {
-            func: ScView::zero(),
-            params: MutableBalanceParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE, &mut f.params.id, ptr::null_mut());
-        f
+        BalanceCall::new(&ScFuncContext{})
     }
 }
 
@@ -94,18 +81,12 @@ pub struct TotalAssetsCall {
 
 impl TotalAssetsCall {
     pub fn new(_ctx: &ScFuncContext) -> TotalAssetsCall {
-        let mut f = TotalAssetsCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS, ptr::null_mut(), ptr::null_mut());
-        f
+        TotalAssetsCall {
+            func: ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS),
+        }
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TotalAssetsCall {
-        let mut f = TotalAssetsCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS, ptr::null_mut(), ptr::null_mut());
-        f
+        TotalAssetsCall::new(&ScFuncContext{})
     }
 }

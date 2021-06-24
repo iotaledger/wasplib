@@ -22,10 +22,10 @@ pub struct ApproveCall {
 impl ApproveCall {
     pub fn new(_ctx: &ScFuncContext) -> ApproveCall {
         let mut f = ApproveCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_APPROVE),
             params: MutableApproveParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_APPROVE, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -38,10 +38,10 @@ pub struct InitCall {
 impl InitCall {
     pub fn new(_ctx: &ScFuncContext) -> InitCall {
         let mut f = InitCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_INIT),
             params: MutableInitParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -54,10 +54,10 @@ pub struct TransferCall {
 impl TransferCall {
     pub fn new(_ctx: &ScFuncContext) -> TransferCall {
         let mut f = TransferCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_TRANSFER),
             params: MutableTransferParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -70,10 +70,10 @@ pub struct TransferFromCall {
 impl TransferFromCall {
     pub fn new(_ctx: &ScFuncContext) -> TransferFromCall {
         let mut f = TransferFromCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM),
             params: MutableTransferFromParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -87,22 +87,16 @@ pub struct AllowanceCall {
 impl AllowanceCall {
     pub fn new(_ctx: &ScFuncContext) -> AllowanceCall {
         let mut f = AllowanceCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_ALLOWANCE),
             params: MutableAllowanceParams { id: 0 },
             results: ImmutableAllowanceResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_ALLOWANCE, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> AllowanceCall {
-        let mut f = AllowanceCall {
-            func: ScView::zero(),
-            params: MutableAllowanceParams { id: 0 },
-            results: ImmutableAllowanceResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_ALLOWANCE, &mut f.params.id, &mut f.results.id);
-        f
+        AllowanceCall::new(&ScFuncContext{})
     }
 }
 
@@ -115,22 +109,16 @@ pub struct BalanceOfCall {
 impl BalanceOfCall {
     pub fn new(_ctx: &ScFuncContext) -> BalanceOfCall {
         let mut f = BalanceOfCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_BALANCE_OF),
             params: MutableBalanceOfParams { id: 0 },
             results: ImmutableBalanceOfResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE_OF, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BalanceOfCall {
-        let mut f = BalanceOfCall {
-            func: ScView::zero(),
-            params: MutableBalanceOfParams { id: 0 },
-            results: ImmutableBalanceOfResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_BALANCE_OF, &mut f.params.id, &mut f.results.id);
-        f
+        BalanceOfCall::new(&ScFuncContext{})
     }
 }
 
@@ -142,19 +130,14 @@ pub struct TotalSupplyCall {
 impl TotalSupplyCall {
     pub fn new(_ctx: &ScFuncContext) -> TotalSupplyCall {
         let mut f = TotalSupplyCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY),
             results: ImmutableTotalSupplyResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TotalSupplyCall {
-        let mut f = TotalSupplyCall {
-            func: ScView::zero(),
-            results: ImmutableTotalSupplyResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY, ptr::null_mut(), &mut f.results.id);
-        f
+        TotalSupplyCall::new(&ScFuncContext{})
     }
 }

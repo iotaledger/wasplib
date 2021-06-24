@@ -20,11 +20,9 @@ pub struct CallIncrementCall {
 
 impl CallIncrementCall {
     pub fn new(_ctx: &ScFuncContext) -> CallIncrementCall {
-        let mut f = CallIncrementCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT, ptr::null_mut(), ptr::null_mut());
-        f
+        CallIncrementCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT),
+        }
     }
 }
 
@@ -34,11 +32,9 @@ pub struct CallIncrementRecurse5xCall {
 
 impl CallIncrementRecurse5xCall {
     pub fn new(_ctx: &ScFuncContext) -> CallIncrementRecurse5xCall {
-        let mut f = CallIncrementRecurse5xCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT_RECURSE5X, ptr::null_mut(), ptr::null_mut());
-        f
+        CallIncrementRecurse5xCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_CALL_INCREMENT_RECURSE5X),
+        }
     }
 }
 
@@ -48,11 +44,9 @@ pub struct EndlessLoopCall {
 
 impl EndlessLoopCall {
     pub fn new(_ctx: &ScFuncContext) -> EndlessLoopCall {
-        let mut f = EndlessLoopCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_ENDLESS_LOOP, ptr::null_mut(), ptr::null_mut());
-        f
+        EndlessLoopCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_ENDLESS_LOOP),
+        }
     }
 }
 
@@ -62,11 +56,9 @@ pub struct IncrementCall {
 
 impl IncrementCall {
     pub fn new(_ctx: &ScFuncContext) -> IncrementCall {
-        let mut f = IncrementCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_INCREMENT, ptr::null_mut(), ptr::null_mut());
-        f
+        IncrementCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_INCREMENT),
+        }
     }
 }
 
@@ -78,10 +70,10 @@ pub struct InitCall {
 impl InitCall {
     pub fn new(_ctx: &ScFuncContext) -> InitCall {
         let mut f = InitCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_INIT),
             params: MutableInitParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -92,11 +84,9 @@ pub struct LocalStateInternalCallCall {
 
 impl LocalStateInternalCallCall {
     pub fn new(_ctx: &ScFuncContext) -> LocalStateInternalCallCall {
-        let mut f = LocalStateInternalCallCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_INTERNAL_CALL, ptr::null_mut(), ptr::null_mut());
-        f
+        LocalStateInternalCallCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_INTERNAL_CALL),
+        }
     }
 }
 
@@ -106,11 +96,9 @@ pub struct LocalStatePostCall {
 
 impl LocalStatePostCall {
     pub fn new(_ctx: &ScFuncContext) -> LocalStatePostCall {
-        let mut f = LocalStatePostCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_POST, ptr::null_mut(), ptr::null_mut());
-        f
+        LocalStatePostCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_POST),
+        }
     }
 }
 
@@ -120,11 +108,9 @@ pub struct LocalStateSandboxCallCall {
 
 impl LocalStateSandboxCallCall {
     pub fn new(_ctx: &ScFuncContext) -> LocalStateSandboxCallCall {
-        let mut f = LocalStateSandboxCallCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_SANDBOX_CALL, ptr::null_mut(), ptr::null_mut());
-        f
+        LocalStateSandboxCallCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_LOCAL_STATE_SANDBOX_CALL),
+        }
     }
 }
 
@@ -134,11 +120,9 @@ pub struct PostIncrementCall {
 
 impl PostIncrementCall {
     pub fn new(_ctx: &ScFuncContext) -> PostIncrementCall {
-        let mut f = PostIncrementCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_POST_INCREMENT, ptr::null_mut(), ptr::null_mut());
-        f
+        PostIncrementCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_POST_INCREMENT),
+        }
     }
 }
 
@@ -150,10 +134,10 @@ pub struct RepeatManyCall {
 impl RepeatManyCall {
     pub fn new(_ctx: &ScFuncContext) -> RepeatManyCall {
         let mut f = RepeatManyCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_REPEAT_MANY),
             params: MutableRepeatManyParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_REPEAT_MANY, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -164,11 +148,9 @@ pub struct TestLeb128Call {
 
 impl TestLeb128Call {
     pub fn new(_ctx: &ScFuncContext) -> TestLeb128Call {
-        let mut f = TestLeb128Call {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_LEB128, ptr::null_mut(), ptr::null_mut());
-        f
+        TestLeb128Call {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_LEB128),
+        }
     }
 }
 
@@ -180,10 +162,10 @@ pub struct WhenMustIncrementCall {
 impl WhenMustIncrementCall {
     pub fn new(_ctx: &ScFuncContext) -> WhenMustIncrementCall {
         let mut f = WhenMustIncrementCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_WHEN_MUST_INCREMENT),
             params: MutableWhenMustIncrementParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_WHEN_MUST_INCREMENT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -196,19 +178,14 @@ pub struct GetCounterCall {
 impl GetCounterCall {
     pub fn new(_ctx: &ScFuncContext) -> GetCounterCall {
         let mut f = GetCounterCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_COUNTER),
             results: ImmutableGetCounterResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetCounterCall {
-        let mut f = GetCounterCall {
-            func: ScView::zero(),
-            results: ImmutableGetCounterResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
-        f
+        GetCounterCall::new(&ScFuncContext{})
     }
 }

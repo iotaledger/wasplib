@@ -17,11 +17,9 @@ pub struct ClaimChainOwnershipCall {
 
 impl ClaimChainOwnershipCall {
     pub fn new(_ctx: &ScFuncContext) -> ClaimChainOwnershipCall {
-        let mut f = ClaimChainOwnershipCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_CLAIM_CHAIN_OWNERSHIP, ptr::null_mut(), ptr::null_mut());
-        f
+        ClaimChainOwnershipCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_CLAIM_CHAIN_OWNERSHIP),
+        }
     }
 }
 
@@ -33,10 +31,10 @@ pub struct DelegateChainOwnershipCall {
 impl DelegateChainOwnershipCall {
     pub fn new(_ctx: &ScFuncContext) -> DelegateChainOwnershipCall {
         let mut f = DelegateChainOwnershipCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_DELEGATE_CHAIN_OWNERSHIP),
             params: MutableDelegateChainOwnershipParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_DELEGATE_CHAIN_OWNERSHIP, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -49,10 +47,10 @@ pub struct DeployContractCall {
 impl DeployContractCall {
     pub fn new(_ctx: &ScFuncContext) -> DeployContractCall {
         let mut f = DeployContractCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_DEPLOY_CONTRACT),
             params: MutableDeployContractParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_DEPLOY_CONTRACT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -65,10 +63,10 @@ pub struct GrantDeployPermissionCall {
 impl GrantDeployPermissionCall {
     pub fn new(_ctx: &ScFuncContext) -> GrantDeployPermissionCall {
         let mut f = GrantDeployPermissionCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_GRANT_DEPLOY_PERMISSION),
             params: MutableGrantDeployPermissionParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_GRANT_DEPLOY_PERMISSION, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -81,10 +79,10 @@ pub struct RevokeDeployPermissionCall {
 impl RevokeDeployPermissionCall {
     pub fn new(_ctx: &ScFuncContext) -> RevokeDeployPermissionCall {
         let mut f = RevokeDeployPermissionCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_REVOKE_DEPLOY_PERMISSION),
             params: MutableRevokeDeployPermissionParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_REVOKE_DEPLOY_PERMISSION, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -97,10 +95,10 @@ pub struct SetContractFeeCall {
 impl SetContractFeeCall {
     pub fn new(_ctx: &ScFuncContext) -> SetContractFeeCall {
         let mut f = SetContractFeeCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_SET_CONTRACT_FEE),
             params: MutableSetContractFeeParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_CONTRACT_FEE, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -113,10 +111,10 @@ pub struct SetDefaultFeeCall {
 impl SetDefaultFeeCall {
     pub fn new(_ctx: &ScFuncContext) -> SetDefaultFeeCall {
         let mut f = SetDefaultFeeCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_SET_DEFAULT_FEE),
             params: MutableSetDefaultFeeParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_DEFAULT_FEE, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -130,22 +128,16 @@ pub struct FindContractCall {
 impl FindContractCall {
     pub fn new(_ctx: &ScFuncContext) -> FindContractCall {
         let mut f = FindContractCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_FIND_CONTRACT),
             params: MutableFindContractParams { id: 0 },
             results: ImmutableFindContractResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_FIND_CONTRACT, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> FindContractCall {
-        let mut f = FindContractCall {
-            func: ScView::zero(),
-            params: MutableFindContractParams { id: 0 },
-            results: ImmutableFindContractResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_FIND_CONTRACT, &mut f.params.id, &mut f.results.id);
-        f
+        FindContractCall::new(&ScFuncContext{})
     }
 }
 
@@ -157,20 +149,15 @@ pub struct GetChainInfoCall {
 impl GetChainInfoCall {
     pub fn new(_ctx: &ScFuncContext) -> GetChainInfoCall {
         let mut f = GetChainInfoCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_CHAIN_INFO),
             results: ImmutableGetChainInfoResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_CHAIN_INFO, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetChainInfoCall {
-        let mut f = GetChainInfoCall {
-            func: ScView::zero(),
-            results: ImmutableGetChainInfoResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_CHAIN_INFO, ptr::null_mut(), &mut f.results.id);
-        f
+        GetChainInfoCall::new(&ScFuncContext{})
     }
 }
 
@@ -183,21 +170,15 @@ pub struct GetFeeInfoCall {
 impl GetFeeInfoCall {
     pub fn new(_ctx: &ScFuncContext) -> GetFeeInfoCall {
         let mut f = GetFeeInfoCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_FEE_INFO),
             params: MutableGetFeeInfoParams { id: 0 },
             results: ImmutableGetFeeInfoResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_FEE_INFO, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetFeeInfoCall {
-        let mut f = GetFeeInfoCall {
-            func: ScView::zero(),
-            params: MutableGetFeeInfoParams { id: 0 },
-            results: ImmutableGetFeeInfoResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_FEE_INFO, &mut f.params.id, &mut f.results.id);
-        f
+        GetFeeInfoCall::new(&ScFuncContext{})
     }
 }

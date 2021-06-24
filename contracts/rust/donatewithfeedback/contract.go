@@ -10,7 +10,7 @@ package donatewithfeedback
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type DonateCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutableDonateParams
 }
 
@@ -21,7 +21,7 @@ func NewDonateCall(ctx wasmlib.ScFuncContext) *DonateCall {
 }
 
 type WithdrawCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutableWithdrawParams
 }
 
@@ -32,8 +32,8 @@ func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
 }
 
 type DonationCall struct {
-	Func    wasmlib.ScView
-	Params  MutableDonationParams
+	Func wasmlib.ScView
+	Params MutableDonationParams
 	Results ImmutableDonationResults
 }
 
@@ -50,7 +50,7 @@ func NewDonationCallFromView(ctx wasmlib.ScViewContext) *DonationCall {
 }
 
 type DonationInfoCall struct {
-	Func    wasmlib.ScView
+	Func wasmlib.ScView
 	Results ImmutableDonationInfoResults
 }
 

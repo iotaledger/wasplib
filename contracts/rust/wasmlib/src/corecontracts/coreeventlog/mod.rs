@@ -4,7 +4,7 @@
 #![allow(unused_imports)]
 
 use consts::*;
-use contract::*;
+pub use contract::*;
 use params::*;
 use results::*;
 

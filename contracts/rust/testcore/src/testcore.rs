@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use wasmlib::*;
-use wasmlib::corecontracts::coreaccounts::contract::*;
-use wasmlib::corecontracts::coreroot::contract::*;
+use wasmlib::corecontracts::*;
 
 use crate::*;
 use crate::contract::*;
@@ -138,7 +137,8 @@ pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _f: &TestPanicFullEPContext)
 }
 
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, f: &WithdrawToChainContext) {
-    WithdrawCall::new(ctx).func.transfer_iotas(1).post_to_chain(f.params.chain_id().value());
+    let xx = coreaccounts::WithdrawCall::new(ctx);
+    xx.func.transfer_iotas(1).post_to_chain(f.params.chain_id().value());
 }
 
 pub fn view_check_context_from_view_ep(ctx: &ScViewContext, f: &CheckContextFromViewEPContext) {
@@ -206,7 +206,7 @@ pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &TestPanicViewEPContext)
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &TestSandboxCallContext) {
-    let get_chain_info = GetChainInfoCall::new_from_view(ctx);
+    let get_chain_info = coreroot::GetChainInfoCall::new_from_view(ctx);
     get_chain_info.func.call();
     f.results.sandbox_call().set_value(&get_chain_info.results.description().value());
 }

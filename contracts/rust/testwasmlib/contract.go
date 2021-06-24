@@ -10,7 +10,7 @@ package testwasmlib
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type ParamTypesCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutableParamTypesParams
 }
 
@@ -21,8 +21,8 @@ func NewParamTypesCall(ctx wasmlib.ScFuncContext) *ParamTypesCall {
 }
 
 type BlockRecordCall struct {
-	Func    wasmlib.ScView
-	Params  MutableBlockRecordParams
+	Func wasmlib.ScView
+	Params MutableBlockRecordParams
 	Results ImmutableBlockRecordResults
 }
 
@@ -39,8 +39,8 @@ func NewBlockRecordCallFromView(ctx wasmlib.ScViewContext) *BlockRecordCall {
 }
 
 type BlockRecordsCall struct {
-	Func    wasmlib.ScView
-	Params  MutableBlockRecordsParams
+	Func wasmlib.ScView
+	Params MutableBlockRecordsParams
 	Results ImmutableBlockRecordsResults
 }
 

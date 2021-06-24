@@ -20,11 +20,9 @@ pub struct HelloWorldCall {
 
 impl HelloWorldCall {
     pub fn new(_ctx: &ScFuncContext) -> HelloWorldCall {
-        let mut f = HelloWorldCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_HELLO_WORLD, ptr::null_mut(), ptr::null_mut());
-        f
+        HelloWorldCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_HELLO_WORLD),
+        }
     }
 }
 
@@ -36,19 +34,14 @@ pub struct GetHelloWorldCall {
 impl GetHelloWorldCall {
     pub fn new(_ctx: &ScFuncContext) -> GetHelloWorldCall {
         let mut f = GetHelloWorldCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD),
             results: ImmutableGetHelloWorldResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetHelloWorldCall {
-        let mut f = GetHelloWorldCall {
-            func: ScView::zero(),
-            results: ImmutableGetHelloWorldResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD, ptr::null_mut(), &mut f.results.id);
-        f
+        GetHelloWorldCall::new(&ScFuncContext{})
     }
 }

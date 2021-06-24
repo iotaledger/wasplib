@@ -20,22 +20,16 @@ pub struct GetNumRecordsCall {
 impl GetNumRecordsCall {
     pub fn new(_ctx: &ScFuncContext) -> GetNumRecordsCall {
         let mut f = GetNumRecordsCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS),
             params: MutableGetNumRecordsParams { id: 0 },
             results: ImmutableGetNumRecordsResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetNumRecordsCall {
-        let mut f = GetNumRecordsCall {
-            func: ScView::zero(),
-            params: MutableGetNumRecordsParams { id: 0 },
-            results: ImmutableGetNumRecordsResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS, &mut f.params.id, &mut f.results.id);
-        f
+        GetNumRecordsCall::new(&ScFuncContext{})
     }
 }
 
@@ -47,19 +41,14 @@ pub struct GetRecordsCall {
 impl GetRecordsCall {
     pub fn new(_ctx: &ScFuncContext) -> GetRecordsCall {
         let mut f = GetRecordsCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_RECORDS),
             params: MutableGetRecordsParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_RECORDS, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetRecordsCall {
-        let mut f = GetRecordsCall {
-            func: ScView::zero(),
-            params: MutableGetRecordsParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_RECORDS, &mut f.params.id, ptr::null_mut());
-        f
+        GetRecordsCall::new(&ScFuncContext{})
     }
 }

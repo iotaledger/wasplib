@@ -23,11 +23,11 @@ pub struct CallOnChainCall {
 impl CallOnChainCall {
     pub fn new(_ctx: &ScFuncContext) -> CallOnChainCall {
         let mut f = CallOnChainCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_CALL_ON_CHAIN),
             params: MutableCallOnChainParams { id: 0 },
             results: ImmutableCallOnChainResults { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_CALL_ON_CHAIN, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 }
@@ -40,10 +40,10 @@ pub struct CheckContextFromFullEPCall {
 impl CheckContextFromFullEPCall {
     pub fn new(_ctx: &ScFuncContext) -> CheckContextFromFullEPCall {
         let mut f = CheckContextFromFullEPCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_CHECK_CONTEXT_FROM_FULL_EP),
             params: MutableCheckContextFromFullEPParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_CHECK_CONTEXT_FROM_FULL_EP, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -54,11 +54,9 @@ pub struct DoNothingCall {
 
 impl DoNothingCall {
     pub fn new(_ctx: &ScFuncContext) -> DoNothingCall {
-        let mut f = DoNothingCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_DO_NOTHING, ptr::null_mut(), ptr::null_mut());
-        f
+        DoNothingCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_DO_NOTHING),
+        }
     }
 }
 
@@ -70,10 +68,10 @@ pub struct GetMintedSupplyCall {
 impl GetMintedSupplyCall {
     pub fn new(_ctx: &ScFuncContext) -> GetMintedSupplyCall {
         let mut f = GetMintedSupplyCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_GET_MINTED_SUPPLY),
             results: ImmutableGetMintedSupplyResults { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_GET_MINTED_SUPPLY, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 }
@@ -84,11 +82,9 @@ pub struct IncCounterCall {
 
 impl IncCounterCall {
     pub fn new(_ctx: &ScFuncContext) -> IncCounterCall {
-        let mut f = IncCounterCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_INC_COUNTER, ptr::null_mut(), ptr::null_mut());
-        f
+        IncCounterCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_INC_COUNTER),
+        }
     }
 }
 
@@ -98,11 +94,9 @@ pub struct InitCall {
 
 impl InitCall {
     pub fn new(_ctx: &ScFuncContext) -> InitCall {
-        let mut f = InitCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_INIT, ptr::null_mut(), ptr::null_mut());
-        f
+        InitCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_INIT),
+        }
     }
 }
 
@@ -114,10 +108,10 @@ pub struct PassTypesFullCall {
 impl PassTypesFullCall {
     pub fn new(_ctx: &ScFuncContext) -> PassTypesFullCall {
         let mut f = PassTypesFullCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_PASS_TYPES_FULL),
             params: MutablePassTypesFullParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_PASS_TYPES_FULL, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -131,11 +125,11 @@ pub struct RunRecursionCall {
 impl RunRecursionCall {
     pub fn new(_ctx: &ScFuncContext) -> RunRecursionCall {
         let mut f = RunRecursionCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_RUN_RECURSION),
             params: MutableRunRecursionParams { id: 0 },
             results: ImmutableRunRecursionResults { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_RUN_RECURSION, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 }
@@ -148,10 +142,10 @@ pub struct SendToAddressCall {
 impl SendToAddressCall {
     pub fn new(_ctx: &ScFuncContext) -> SendToAddressCall {
         let mut f = SendToAddressCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_SEND_TO_ADDRESS),
             params: MutableSendToAddressParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_SEND_TO_ADDRESS, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -164,10 +158,10 @@ pub struct SetIntCall {
 impl SetIntCall {
     pub fn new(_ctx: &ScFuncContext) -> SetIntCall {
         let mut f = SetIntCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_SET_INT),
             params: MutableSetIntParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_SET_INT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -178,11 +172,9 @@ pub struct TestCallPanicFullEPCall {
 
 impl TestCallPanicFullEPCall {
     pub fn new(_ctx: &ScFuncContext) -> TestCallPanicFullEPCall {
-        let mut f = TestCallPanicFullEPCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_FULL_EP, ptr::null_mut(), ptr::null_mut());
-        f
+        TestCallPanicFullEPCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_FULL_EP),
+        }
     }
 }
 
@@ -192,11 +184,9 @@ pub struct TestCallPanicViewEPFromFullCall {
 
 impl TestCallPanicViewEPFromFullCall {
     pub fn new(_ctx: &ScFuncContext) -> TestCallPanicViewEPFromFullCall {
-        let mut f = TestCallPanicViewEPFromFullCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL, ptr::null_mut(), ptr::null_mut());
-        f
+        TestCallPanicViewEPFromFullCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_CALL_PANIC_VIEW_EP_FROM_FULL),
+        }
     }
 }
 
@@ -208,10 +198,10 @@ pub struct TestChainOwnerIDFullCall {
 impl TestChainOwnerIDFullCall {
     pub fn new(_ctx: &ScFuncContext) -> TestChainOwnerIDFullCall {
         let mut f = TestChainOwnerIDFullCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_CHAIN_OWNER_ID_FULL),
             results: ImmutableTestChainOwnerIDFullResults { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_CHAIN_OWNER_ID_FULL, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 }
@@ -222,11 +212,9 @@ pub struct TestEventLogDeployCall {
 
 impl TestEventLogDeployCall {
     pub fn new(_ctx: &ScFuncContext) -> TestEventLogDeployCall {
-        let mut f = TestEventLogDeployCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_DEPLOY, ptr::null_mut(), ptr::null_mut());
-        f
+        TestEventLogDeployCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_DEPLOY),
+        }
     }
 }
 
@@ -236,11 +224,9 @@ pub struct TestEventLogEventDataCall {
 
 impl TestEventLogEventDataCall {
     pub fn new(_ctx: &ScFuncContext) -> TestEventLogEventDataCall {
-        let mut f = TestEventLogEventDataCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_EVENT_DATA, ptr::null_mut(), ptr::null_mut());
-        f
+        TestEventLogEventDataCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_EVENT_DATA),
+        }
     }
 }
 
@@ -252,10 +238,10 @@ pub struct TestEventLogGenericDataCall {
 impl TestEventLogGenericDataCall {
     pub fn new(_ctx: &ScFuncContext) -> TestEventLogGenericDataCall {
         let mut f = TestEventLogGenericDataCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_GENERIC_DATA),
             params: MutableTestEventLogGenericDataParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_EVENT_LOG_GENERIC_DATA, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -266,11 +252,9 @@ pub struct TestPanicFullEPCall {
 
 impl TestPanicFullEPCall {
     pub fn new(_ctx: &ScFuncContext) -> TestPanicFullEPCall {
-        let mut f = TestPanicFullEPCall {
-            func: ScFunc::zero(),
-        };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_TEST_PANIC_FULL_EP, ptr::null_mut(), ptr::null_mut());
-        f
+        TestPanicFullEPCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_TEST_PANIC_FULL_EP),
+        }
     }
 }
 
@@ -282,10 +266,10 @@ pub struct WithdrawToChainCall {
 impl WithdrawToChainCall {
     pub fn new(_ctx: &ScFuncContext) -> WithdrawToChainCall {
         let mut f = WithdrawToChainCall {
-            func: ScFunc::zero(),
+            func: ScFunc::new(HSC_NAME, HFUNC_WITHDRAW_TO_CHAIN),
             params: MutableWithdrawToChainParams { id: 0 },
         };
-        f.func = ScFunc::new(HSC_NAME, HFUNC_WITHDRAW_TO_CHAIN, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 }
@@ -298,20 +282,15 @@ pub struct CheckContextFromViewEPCall {
 impl CheckContextFromViewEPCall {
     pub fn new(_ctx: &ScFuncContext) -> CheckContextFromViewEPCall {
         let mut f = CheckContextFromViewEPCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_CHECK_CONTEXT_FROM_VIEW_EP),
             params: MutableCheckContextFromViewEPParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> CheckContextFromViewEPCall {
-        let mut f = CheckContextFromViewEPCall {
-            func: ScView::zero(),
-            params: MutableCheckContextFromViewEPParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_CHECK_CONTEXT_FROM_VIEW_EP, &mut f.params.id, ptr::null_mut());
-        f
+        CheckContextFromViewEPCall::new(&ScFuncContext{})
     }
 }
 
@@ -324,22 +303,16 @@ pub struct FibonacciCall {
 impl FibonacciCall {
     pub fn new(_ctx: &ScFuncContext) -> FibonacciCall {
         let mut f = FibonacciCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_FIBONACCI),
             params: MutableFibonacciParams { id: 0 },
             results: ImmutableFibonacciResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_FIBONACCI, &mut f.params.id, &mut f.results.id);
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> FibonacciCall {
-        let mut f = FibonacciCall {
-            func: ScView::zero(),
-            params: MutableFibonacciParams { id: 0 },
-            results: ImmutableFibonacciResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_FIBONACCI, &mut f.params.id, &mut f.results.id);
-        f
+        FibonacciCall::new(&ScFuncContext{})
     }
 }
 
@@ -351,20 +324,15 @@ pub struct GetCounterCall {
 impl GetCounterCall {
     pub fn new(_ctx: &ScFuncContext) -> GetCounterCall {
         let mut f = GetCounterCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_COUNTER),
             results: ImmutableGetCounterResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetCounterCall {
-        let mut f = GetCounterCall {
-            func: ScView::zero(),
-            results: ImmutableGetCounterResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_COUNTER, ptr::null_mut(), &mut f.results.id);
-        f
+        GetCounterCall::new(&ScFuncContext{})
     }
 }
 
@@ -376,20 +344,15 @@ pub struct GetIntCall {
 impl GetIntCall {
     pub fn new(_ctx: &ScFuncContext) -> GetIntCall {
         let mut f = GetIntCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_GET_INT),
             params: MutableGetIntParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_INT, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetIntCall {
-        let mut f = GetIntCall {
-            func: ScView::zero(),
-            params: MutableGetIntParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_GET_INT, &mut f.params.id, ptr::null_mut());
-        f
+        GetIntCall::new(&ScFuncContext{})
     }
 }
 
@@ -399,19 +362,13 @@ pub struct JustViewCall {
 
 impl JustViewCall {
     pub fn new(_ctx: &ScFuncContext) -> JustViewCall {
-        let mut f = JustViewCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_JUST_VIEW, ptr::null_mut(), ptr::null_mut());
-        f
+        JustViewCall {
+            func: ScView::new(HSC_NAME, HVIEW_JUST_VIEW),
+        }
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> JustViewCall {
-        let mut f = JustViewCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_JUST_VIEW, ptr::null_mut(), ptr::null_mut());
-        f
+        JustViewCall::new(&ScFuncContext{})
     }
 }
 
@@ -423,20 +380,15 @@ pub struct PassTypesViewCall {
 impl PassTypesViewCall {
     pub fn new(_ctx: &ScFuncContext) -> PassTypesViewCall {
         let mut f = PassTypesViewCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_PASS_TYPES_VIEW),
             params: MutablePassTypesViewParams { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_PASS_TYPES_VIEW, &mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> PassTypesViewCall {
-        let mut f = PassTypesViewCall {
-            func: ScView::zero(),
-            params: MutablePassTypesViewParams { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_PASS_TYPES_VIEW, &mut f.params.id, ptr::null_mut());
-        f
+        PassTypesViewCall::new(&ScFuncContext{})
     }
 }
 
@@ -446,19 +398,13 @@ pub struct TestCallPanicViewEPFromViewCall {
 
 impl TestCallPanicViewEPFromViewCall {
     pub fn new(_ctx: &ScFuncContext) -> TestCallPanicViewEPFromViewCall {
-        let mut f = TestCallPanicViewEPFromViewCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, ptr::null_mut(), ptr::null_mut());
-        f
+        TestCallPanicViewEPFromViewCall {
+            func: ScView::new(HSC_NAME, HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW),
+        }
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestCallPanicViewEPFromViewCall {
-        let mut f = TestCallPanicViewEPFromViewCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CALL_PANIC_VIEW_EP_FROM_VIEW, ptr::null_mut(), ptr::null_mut());
-        f
+        TestCallPanicViewEPFromViewCall::new(&ScFuncContext{})
     }
 }
 
@@ -470,20 +416,15 @@ pub struct TestChainOwnerIDViewCall {
 impl TestChainOwnerIDViewCall {
     pub fn new(_ctx: &ScFuncContext) -> TestChainOwnerIDViewCall {
         let mut f = TestChainOwnerIDViewCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_TEST_CHAIN_OWNER_ID_VIEW),
             results: ImmutableTestChainOwnerIDViewResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CHAIN_OWNER_ID_VIEW, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestChainOwnerIDViewCall {
-        let mut f = TestChainOwnerIDViewCall {
-            func: ScView::zero(),
-            results: ImmutableTestChainOwnerIDViewResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_CHAIN_OWNER_ID_VIEW, ptr::null_mut(), &mut f.results.id);
-        f
+        TestChainOwnerIDViewCall::new(&ScFuncContext{})
     }
 }
 
@@ -493,19 +434,13 @@ pub struct TestPanicViewEPCall {
 
 impl TestPanicViewEPCall {
     pub fn new(_ctx: &ScFuncContext) -> TestPanicViewEPCall {
-        let mut f = TestPanicViewEPCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_PANIC_VIEW_EP, ptr::null_mut(), ptr::null_mut());
-        f
+        TestPanicViewEPCall {
+            func: ScView::new(HSC_NAME, HVIEW_TEST_PANIC_VIEW_EP),
+        }
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestPanicViewEPCall {
-        let mut f = TestPanicViewEPCall {
-            func: ScView::zero(),
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_PANIC_VIEW_EP, ptr::null_mut(), ptr::null_mut());
-        f
+        TestPanicViewEPCall::new(&ScFuncContext{})
     }
 }
 
@@ -517,19 +452,14 @@ pub struct TestSandboxCallCall {
 impl TestSandboxCallCall {
     pub fn new(_ctx: &ScFuncContext) -> TestSandboxCallCall {
         let mut f = TestSandboxCallCall {
-            func: ScView::zero(),
+            func: ScView::new(HSC_NAME, HVIEW_TEST_SANDBOX_CALL),
             results: ImmutableTestSandboxCallResults { id: 0 },
         };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_SANDBOX_CALL, ptr::null_mut(), &mut f.results.id);
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestSandboxCallCall {
-        let mut f = TestSandboxCallCall {
-            func: ScView::zero(),
-            results: ImmutableTestSandboxCallResults { id: 0 },
-        };
-        f.func = ScView::new(HSC_NAME, HVIEW_TEST_SANDBOX_CALL, ptr::null_mut(), &mut f.results.id);
-        f
+        TestSandboxCallCall::new(&ScFuncContext{})
     }
 }
