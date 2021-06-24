@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -92,6 +93,6 @@ impl GetFactorCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetFactorCall {
-        GetFactorCall::new(&ScFuncContext{})
+        GetFactorCall::new(&ScFuncContext {})
     }
 }

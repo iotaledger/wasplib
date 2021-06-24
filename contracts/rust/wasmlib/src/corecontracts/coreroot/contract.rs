@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreroot::*;
 
@@ -137,7 +138,7 @@ impl FindContractCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> FindContractCall {
-        FindContractCall::new(&ScFuncContext{})
+        FindContractCall::new(&ScFuncContext {})
     }
 }
 
@@ -157,7 +158,7 @@ impl GetChainInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetChainInfoCall {
-        GetChainInfoCall::new(&ScFuncContext{})
+        GetChainInfoCall::new(&ScFuncContext {})
     }
 }
 
@@ -179,6 +180,6 @@ impl GetFeeInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetFeeInfoCall {
-        GetFeeInfoCall::new(&ScFuncContext{})
+        GetFeeInfoCall::new(&ScFuncContext {})
     }
 }

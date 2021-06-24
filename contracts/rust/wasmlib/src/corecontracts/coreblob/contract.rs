@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreblob::*;
 
@@ -47,7 +48,7 @@ impl GetBlobFieldCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobFieldCall {
-        GetBlobFieldCall::new(&ScFuncContext{})
+        GetBlobFieldCall::new(&ScFuncContext {})
     }
 }
 
@@ -69,7 +70,7 @@ impl GetBlobInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobInfoCall {
-        GetBlobInfoCall::new(&ScFuncContext{})
+        GetBlobInfoCall::new(&ScFuncContext {})
     }
 }
 
@@ -89,6 +90,6 @@ impl ListBlobsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> ListBlobsCall {
-        ListBlobsCall::new(&ScFuncContext{})
+        ListBlobsCall::new(&ScFuncContext {})
     }
 }

@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreaccounts::*;
 
@@ -55,7 +56,7 @@ impl AccountsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> AccountsCall {
-        AccountsCall::new(&ScFuncContext{})
+        AccountsCall::new(&ScFuncContext {})
     }
 }
 
@@ -77,7 +78,7 @@ impl BalanceCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BalanceCall {
-        BalanceCall::new(&ScFuncContext{})
+        BalanceCall::new(&ScFuncContext {})
     }
 }
 
@@ -97,6 +98,6 @@ impl TotalAssetsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TotalAssetsCall {
-        TotalAssetsCall::new(&ScFuncContext{})
+        TotalAssetsCall::new(&ScFuncContext {})
     }
 }

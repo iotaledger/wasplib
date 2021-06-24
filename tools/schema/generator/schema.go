@@ -18,9 +18,9 @@ type StringMap map[string]string
 type StringMapMap map[string]StringMap
 
 type FuncDesc struct {
-	Access     string    `json:"access,omitempty"`
-	Params     StringMap `json:"params"`
-	Results    StringMap `json:"results"`
+	Access  string    `json:"access,omitempty"`
+	Params  StringMap `json:"params"`
+	Results StringMap `json:"results"`
 }
 type FuncDescMap map[string]*FuncDesc
 

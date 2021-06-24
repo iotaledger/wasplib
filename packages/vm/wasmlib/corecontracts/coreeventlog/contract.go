@@ -10,8 +10,8 @@ package coreeventlog
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type GetNumRecordsCall struct {
-	Func wasmlib.ScView
-	Params MutableGetNumRecordsParams
+	Func    wasmlib.ScView
+	Params  MutableGetNumRecordsParams
 	Results ImmutableGetNumRecordsResults
 }
 
@@ -28,8 +28,8 @@ func NewGetNumRecordsCallFromView(ctx wasmlib.ScViewContext) *GetNumRecordsCall 
 }
 
 type GetRecordsCall struct {
-	Func wasmlib.ScView
-	Params MutableGetRecordsParams
+	Func    wasmlib.ScView
+	Params  MutableGetRecordsParams
 	Results ImmutableGetRecordsResults
 }
 

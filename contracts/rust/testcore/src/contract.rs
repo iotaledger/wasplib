@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -290,7 +291,7 @@ impl CheckContextFromViewEPCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> CheckContextFromViewEPCall {
-        CheckContextFromViewEPCall::new(&ScFuncContext{})
+        CheckContextFromViewEPCall::new(&ScFuncContext {})
     }
 }
 
@@ -312,7 +313,7 @@ impl FibonacciCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> FibonacciCall {
-        FibonacciCall::new(&ScFuncContext{})
+        FibonacciCall::new(&ScFuncContext {})
     }
 }
 
@@ -332,7 +333,7 @@ impl GetCounterCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetCounterCall {
-        GetCounterCall::new(&ScFuncContext{})
+        GetCounterCall::new(&ScFuncContext {})
     }
 }
 
@@ -352,7 +353,7 @@ impl GetIntCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetIntCall {
-        GetIntCall::new(&ScFuncContext{})
+        GetIntCall::new(&ScFuncContext {})
     }
 }
 
@@ -368,7 +369,7 @@ impl JustViewCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> JustViewCall {
-        JustViewCall::new(&ScFuncContext{})
+        JustViewCall::new(&ScFuncContext {})
     }
 }
 
@@ -388,7 +389,7 @@ impl PassTypesViewCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> PassTypesViewCall {
-        PassTypesViewCall::new(&ScFuncContext{})
+        PassTypesViewCall::new(&ScFuncContext {})
     }
 }
 
@@ -404,7 +405,7 @@ impl TestCallPanicViewEPFromViewCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestCallPanicViewEPFromViewCall {
-        TestCallPanicViewEPFromViewCall::new(&ScFuncContext{})
+        TestCallPanicViewEPFromViewCall::new(&ScFuncContext {})
     }
 }
 
@@ -424,7 +425,7 @@ impl TestChainOwnerIDViewCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestChainOwnerIDViewCall {
-        TestChainOwnerIDViewCall::new(&ScFuncContext{})
+        TestChainOwnerIDViewCall::new(&ScFuncContext {})
     }
 }
 
@@ -440,7 +441,7 @@ impl TestPanicViewEPCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestPanicViewEPCall {
-        TestPanicViewEPCall::new(&ScFuncContext{})
+        TestPanicViewEPCall::new(&ScFuncContext {})
     }
 }
 
@@ -460,6 +461,6 @@ impl TestSandboxCallCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TestSandboxCallCall {
-        TestSandboxCallCall::new(&ScFuncContext{})
+        TestSandboxCallCall::new(&ScFuncContext {})
     }
 }

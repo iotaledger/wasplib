@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreblocklog::*;
 
@@ -27,7 +28,7 @@ impl ControlAddressesCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> ControlAddressesCall {
-        ControlAddressesCall::new(&ScFuncContext{})
+        ControlAddressesCall::new(&ScFuncContext {})
     }
 }
 
@@ -49,7 +50,7 @@ impl GetBlockInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetBlockInfoCall {
-        GetBlockInfoCall::new(&ScFuncContext{})
+        GetBlockInfoCall::new(&ScFuncContext {})
     }
 }
 
@@ -69,7 +70,7 @@ impl GetLatestBlockInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetLatestBlockInfoCall {
-        GetLatestBlockInfoCall::new(&ScFuncContext{})
+        GetLatestBlockInfoCall::new(&ScFuncContext {})
     }
 }
 
@@ -91,7 +92,7 @@ impl GetRequestIDsForBlockCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetRequestIDsForBlockCall {
-        GetRequestIDsForBlockCall::new(&ScFuncContext{})
+        GetRequestIDsForBlockCall::new(&ScFuncContext {})
     }
 }
 
@@ -113,7 +114,7 @@ impl GetRequestLogRecordCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetRequestLogRecordCall {
-        GetRequestLogRecordCall::new(&ScFuncContext{})
+        GetRequestLogRecordCall::new(&ScFuncContext {})
     }
 }
 
@@ -135,7 +136,7 @@ impl GetRequestLogRecordsForBlockCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetRequestLogRecordsForBlockCall {
-        GetRequestLogRecordsForBlockCall::new(&ScFuncContext{})
+        GetRequestLogRecordsForBlockCall::new(&ScFuncContext {})
     }
 }
 
@@ -157,6 +158,6 @@ impl IsRequestProcessedCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> IsRequestProcessedCall {
-        IsRequestProcessedCall::new(&ScFuncContext{})
+        IsRequestProcessedCall::new(&ScFuncContext {})
     }
 }

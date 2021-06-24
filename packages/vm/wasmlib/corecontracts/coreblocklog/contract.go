@@ -10,7 +10,7 @@ package coreblocklog
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type ControlAddressesCall struct {
-	Func wasmlib.ScView
+	Func    wasmlib.ScView
 	Results ImmutableControlAddressesResults
 }
 
@@ -27,8 +27,8 @@ func NewControlAddressesCallFromView(ctx wasmlib.ScViewContext) *ControlAddresse
 }
 
 type GetBlockInfoCall struct {
-	Func wasmlib.ScView
-	Params MutableGetBlockInfoParams
+	Func    wasmlib.ScView
+	Params  MutableGetBlockInfoParams
 	Results ImmutableGetBlockInfoResults
 }
 
@@ -45,7 +45,7 @@ func NewGetBlockInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlockInfoCall {
 }
 
 type GetLatestBlockInfoCall struct {
-	Func wasmlib.ScView
+	Func    wasmlib.ScView
 	Results ImmutableGetLatestBlockInfoResults
 }
 
@@ -62,8 +62,8 @@ func NewGetLatestBlockInfoCallFromView(ctx wasmlib.ScViewContext) *GetLatestBloc
 }
 
 type GetRequestIDsForBlockCall struct {
-	Func wasmlib.ScView
-	Params MutableGetRequestIDsForBlockParams
+	Func    wasmlib.ScView
+	Params  MutableGetRequestIDsForBlockParams
 	Results ImmutableGetRequestIDsForBlockResults
 }
 
@@ -80,8 +80,8 @@ func NewGetRequestIDsForBlockCallFromView(ctx wasmlib.ScViewContext) *GetRequest
 }
 
 type GetRequestLogRecordCall struct {
-	Func wasmlib.ScView
-	Params MutableGetRequestLogRecordParams
+	Func    wasmlib.ScView
+	Params  MutableGetRequestLogRecordParams
 	Results ImmutableGetRequestLogRecordResults
 }
 
@@ -98,8 +98,8 @@ func NewGetRequestLogRecordCallFromView(ctx wasmlib.ScViewContext) *GetRequestLo
 }
 
 type GetRequestLogRecordsForBlockCall struct {
-	Func wasmlib.ScView
-	Params MutableGetRequestLogRecordsForBlockParams
+	Func    wasmlib.ScView
+	Params  MutableGetRequestLogRecordsForBlockParams
 	Results ImmutableGetRequestLogRecordsForBlockResults
 }
 
@@ -116,8 +116,8 @@ func NewGetRequestLogRecordsForBlockCallFromView(ctx wasmlib.ScViewContext) *Get
 }
 
 type IsRequestProcessedCall struct {
-	Func wasmlib.ScView
-	Params MutableIsRequestProcessedParams
+	Func    wasmlib.ScView
+	Params  MutableIsRequestProcessedParams
 	Results ImmutableIsRequestProcessedResults
 }
 

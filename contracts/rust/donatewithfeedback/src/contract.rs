@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -64,7 +65,7 @@ impl DonationCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> DonationCall {
-        DonationCall::new(&ScFuncContext{})
+        DonationCall::new(&ScFuncContext {})
     }
 }
 
@@ -84,6 +85,6 @@ impl DonationInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> DonationInfoCall {
-        DonationInfoCall::new(&ScFuncContext{})
+        DonationInfoCall::new(&ScFuncContext {})
     }
 }

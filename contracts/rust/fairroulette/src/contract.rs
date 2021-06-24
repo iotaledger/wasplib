@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -86,6 +87,6 @@ impl LastWinningNumberCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> LastWinningNumberCall {
-        LastWinningNumberCall::new(&ScFuncContext{})
+        LastWinningNumberCall::new(&ScFuncContext {})
     }
 }

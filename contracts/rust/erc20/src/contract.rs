@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -96,7 +97,7 @@ impl AllowanceCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> AllowanceCall {
-        AllowanceCall::new(&ScFuncContext{})
+        AllowanceCall::new(&ScFuncContext {})
     }
 }
 
@@ -118,7 +119,7 @@ impl BalanceOfCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BalanceOfCall {
-        BalanceOfCall::new(&ScFuncContext{})
+        BalanceOfCall::new(&ScFuncContext {})
     }
 }
 
@@ -138,6 +139,6 @@ impl TotalSupplyCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> TotalSupplyCall {
-        TotalSupplyCall::new(&ScFuncContext{})
+        TotalSupplyCall::new(&ScFuncContext {})
     }
 }

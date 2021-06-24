@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -48,7 +49,7 @@ impl BlockRecordCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordCall {
-        BlockRecordCall::new(&ScFuncContext{})
+        BlockRecordCall::new(&ScFuncContext {})
     }
 }
 
@@ -70,6 +71,6 @@ impl BlockRecordsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordsCall {
-        BlockRecordsCall::new(&ScFuncContext{})
+        BlockRecordsCall::new(&ScFuncContext {})
     }
 }

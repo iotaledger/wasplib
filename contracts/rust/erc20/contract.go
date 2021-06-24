@@ -10,7 +10,7 @@ package erc20
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type ApproveCall struct {
-	Func wasmlib.ScFunc
+	Func   wasmlib.ScFunc
 	Params MutableApproveParams
 }
 
@@ -21,7 +21,7 @@ func NewApproveCall(ctx wasmlib.ScFuncContext) *ApproveCall {
 }
 
 type InitCall struct {
-	Func wasmlib.ScFunc
+	Func   wasmlib.ScFunc
 	Params MutableInitParams
 }
 
@@ -32,7 +32,7 @@ func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
 }
 
 type TransferCall struct {
-	Func wasmlib.ScFunc
+	Func   wasmlib.ScFunc
 	Params MutableTransferParams
 }
 
@@ -43,7 +43,7 @@ func NewTransferCall(ctx wasmlib.ScFuncContext) *TransferCall {
 }
 
 type TransferFromCall struct {
-	Func wasmlib.ScFunc
+	Func   wasmlib.ScFunc
 	Params MutableTransferFromParams
 }
 
@@ -54,8 +54,8 @@ func NewTransferFromCall(ctx wasmlib.ScFuncContext) *TransferFromCall {
 }
 
 type AllowanceCall struct {
-	Func wasmlib.ScView
-	Params MutableAllowanceParams
+	Func    wasmlib.ScView
+	Params  MutableAllowanceParams
 	Results ImmutableAllowanceResults
 }
 
@@ -72,8 +72,8 @@ func NewAllowanceCallFromView(ctx wasmlib.ScViewContext) *AllowanceCall {
 }
 
 type BalanceOfCall struct {
-	Func wasmlib.ScView
-	Params MutableBalanceOfParams
+	Func    wasmlib.ScView
+	Params  MutableBalanceOfParams
 	Results ImmutableBalanceOfResults
 }
 
@@ -90,7 +90,7 @@ func NewBalanceOfCallFromView(ctx wasmlib.ScViewContext) *BalanceOfCall {
 }
 
 type TotalSupplyCall struct {
-	Func wasmlib.ScView
+	Func    wasmlib.ScView
 	Results ImmutableTotalSupplyResults
 }
 

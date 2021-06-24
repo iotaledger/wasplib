@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -78,6 +79,6 @@ impl GetInfoCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
-        GetInfoCall::new(&ScFuncContext{})
+        GetInfoCall::new(&ScFuncContext {})
     }
 }

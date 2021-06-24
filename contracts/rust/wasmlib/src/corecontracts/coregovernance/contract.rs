@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coregovernance::*;
 
@@ -75,6 +76,6 @@ impl GetAllowedStateControllerAddressesCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetAllowedStateControllerAddressesCall {
-        GetAllowedStateControllerAddressesCall::new(&ScFuncContext{})
+        GetAllowedStateControllerAddressesCall::new(&ScFuncContext {})
     }
 }

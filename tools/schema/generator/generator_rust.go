@@ -261,7 +261,7 @@ func (s *Schema) generateRustContract() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintln(file, allowDeadCode)
-	fmt.Fprint(file, useStdPtr)
+	fmt.Fprintln(file, useStdPtr)
 	fmt.Fprint(file, s.crateOrWasmLib(true, false))
 	if !s.CoreContracts {
 		fmt.Fprint(file, "\n"+useConsts)
@@ -284,7 +284,7 @@ func (s *Schema) generateRustContract() error {
 		s.generateRustContractFunc(file, f, "new", "Func")
 		if f.Kind == "View" {
 			fmt.Fprintf(file, "\n    pub fn new_from_view(_ctx: &ScViewContext) -> %sCall {\n", f.Type)
-			fmt.Fprintf(file, "        %sCall::new(&ScFuncContext{})\n", f.Type)
+			fmt.Fprintf(file, "        %sCall::new(&ScFuncContext {})\n", f.Type)
 			fmt.Fprintf(file, "    }\n")
 		}
 

@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use crate::*;
 use crate::corecontracts::coreeventlog::*;
 
@@ -29,7 +30,7 @@ impl GetNumRecordsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetNumRecordsCall {
-        GetNumRecordsCall::new(&ScFuncContext{})
+        GetNumRecordsCall::new(&ScFuncContext {})
     }
 }
 
@@ -51,6 +52,6 @@ impl GetRecordsCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetRecordsCall {
-        GetRecordsCall::new(&ScFuncContext{})
+        GetRecordsCall::new(&ScFuncContext {})
     }
 }

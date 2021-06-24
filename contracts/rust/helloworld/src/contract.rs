@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 use std::ptr;
+
 use wasmlib::*;
 
 use crate::consts::*;
@@ -42,6 +43,6 @@ impl GetHelloWorldCall {
     }
 
     pub fn new_from_view(_ctx: &ScViewContext) -> GetHelloWorldCall {
-        GetHelloWorldCall::new(&ScFuncContext{})
+        GetHelloWorldCall::new(&ScFuncContext {})
     }
 }
