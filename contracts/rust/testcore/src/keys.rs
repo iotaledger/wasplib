@@ -39,10 +39,11 @@ pub const IDX_RESULT_MINTED_SUPPLY:   usize = 22;
 pub const IDX_RESULT_SANDBOX_CALL:    usize = 23;
 pub const IDX_STATE_COUNTER:          usize = 24;
 pub const IDX_STATE_HNAME_EP:         usize = 25;
-pub const IDX_STATE_MINTED_COLOR:     usize = 26;
-pub const IDX_STATE_MINTED_SUPPLY:    usize = 27;
+pub const IDX_STATE_INTS:             usize = 26;
+pub const IDX_STATE_MINTED_COLOR:     usize = 27;
+pub const IDX_STATE_MINTED_SUPPLY:    usize = 28;
 
-pub const KEY_MAP_LEN: usize = 28;
+pub const KEY_MAP_LEN: usize = 29;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_ADDRESS,
@@ -71,6 +72,7 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     RESULT_SANDBOX_CALL,
     STATE_COUNTER,
     STATE_HNAME_EP,
+    STATE_INTS,
     STATE_MINTED_COLOR,
     STATE_MINTED_SUPPLY,
 ];

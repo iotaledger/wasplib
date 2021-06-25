@@ -10,7 +10,7 @@ package coreaccounts
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type DepositCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutableDepositParams
 }
 
@@ -31,7 +31,7 @@ func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
 }
 
 type AccountsCall struct {
-	Func    wasmlib.ScView
+	Func wasmlib.ScView
 	Results ImmutableAccountsResults
 }
 
@@ -48,8 +48,8 @@ func NewAccountsCallFromView(ctx wasmlib.ScViewContext) *AccountsCall {
 }
 
 type BalanceCall struct {
-	Func    wasmlib.ScView
-	Params  MutableBalanceParams
+	Func wasmlib.ScView
+	Params MutableBalanceParams
 	Results ImmutableBalanceResults
 }
 
@@ -66,7 +66,7 @@ func NewBalanceCallFromView(ctx wasmlib.ScViewContext) *BalanceCall {
 }
 
 type TotalAssetsCall struct {
-	Func    wasmlib.ScView
+	Func wasmlib.ScView
 	Results ImmutableTotalAssetsResults
 }
 

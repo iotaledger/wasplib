@@ -30,7 +30,7 @@ func NewPayWinnersCall(ctx wasmlib.ScFuncContext) *PayWinnersCall {
 }
 
 type PlaceBetCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutablePlaceBetParams
 }
 
@@ -41,7 +41,7 @@ func NewPlaceBetCall(ctx wasmlib.ScFuncContext) *PlaceBetCall {
 }
 
 type PlayPeriodCall struct {
-	Func   wasmlib.ScFunc
+	Func wasmlib.ScFunc
 	Params MutablePlayPeriodParams
 }
 
@@ -52,7 +52,7 @@ func NewPlayPeriodCall(ctx wasmlib.ScFuncContext) *PlayPeriodCall {
 }
 
 type LastWinningNumberCall struct {
-	Func    wasmlib.ScView
+	Func wasmlib.ScView
 	Results ImmutableLastWinningNumberResults
 }
 

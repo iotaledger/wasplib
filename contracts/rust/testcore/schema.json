@@ -4,6 +4,7 @@
   "types": {
   },
   "state": {
+    "ints": "[String]Int64",
     "counter": "Int64",
     "hnameEP": "Hname",
     "mintedColor": "Color",
@@ -123,6 +124,9 @@
     "getInt": {
       "params": {
         "name=intParamName": "String"
+      },
+      "results": {
+        "values=this": "[String]Int64"
       }
     },
     "justView": {

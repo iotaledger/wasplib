@@ -104,7 +104,7 @@ func funcSendToAddress(ctx wasmlib.ScFuncContext, f *SendToAddressContext) {
 }
 
 func funcSetInt(ctx wasmlib.ScFuncContext, f *SetIntContext) {
-	ctx.State().GetInt64(wasmlib.Key(f.Params.Name().Value())).SetValue(f.Params.IntValue().Value())
+	f.State.Ints().GetInt64(f.Params.Name().Value()).SetValue(f.Params.IntValue().Value())
 }
 
 func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, f *TestCallPanicFullEPContext) {
@@ -174,9 +174,9 @@ func viewGetCounter(ctx wasmlib.ScViewContext, f *GetCounterContext) {
 
 func viewGetInt(ctx wasmlib.ScViewContext, f *GetIntContext) {
 	name := f.Params.Name().Value()
-	value := ctx.State().GetInt64(wasmlib.Key(name))
+	value := f.State.Ints().GetInt64(name)
 	ctx.Require(value.Exists(), "param 'value' not found")
-	ctx.Results().GetInt64(wasmlib.Key(name)).SetValue(value.Value())
+	f.Results.Values().GetInt64(name).SetValue(value.Value())
 }
 
 func viewJustView(ctx wasmlib.ScViewContext, f *JustViewContext) {

@@ -474,8 +474,9 @@ fn view_get_counter_thunk(ctx: &ScViewContext) {
 }
 
 pub struct GetIntContext {
-    params: ImmutableGetIntParams,
-    state:  ImmutableTestCoreState,
+    params:  ImmutableGetIntParams,
+    results: MutableGetIntResults,
+    state:   ImmutableTestCoreState,
 }
 
 fn view_get_int_thunk(ctx: &ScViewContext) {
@@ -483,6 +484,9 @@ fn view_get_int_thunk(ctx: &ScViewContext) {
     let f = GetIntContext {
         params: ImmutableGetIntParams {
             id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+        },
+        results: MutableGetIntResults {
+            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
         },
         state: ImmutableTestCoreState {
             id: get_object_id(1, KEY_STATE, TYPE_MAP),

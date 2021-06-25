@@ -451,8 +451,9 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 }
 
 type GetIntContext struct {
-	Params ImmutableGetIntParams
-	State  ImmutableTestCoreState
+	Params  ImmutableGetIntParams
+	Results MutableGetIntResults
+	State   ImmutableTestCoreState
 }
 
 func viewGetIntThunk(ctx wasmlib.ScViewContext) {
@@ -460,6 +461,9 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	f := &GetIntContext{
 		Params: ImmutableGetIntParams{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+		},
+		Results: MutableGetIntResults{
+			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
 		},
 		State: ImmutableTestCoreState{
 			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),

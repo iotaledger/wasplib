@@ -154,6 +154,52 @@ impl MutableGetCounterResults {
     }
 }
 
+pub struct MapStringToImmutableInt64 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToImmutableInt64 {
+    pub fn get_int64(&self, key: &str) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableGetIntResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableGetIntResults {
+    pub fn values(&self) -> MapStringToImmutableInt64 {
+        MapStringToImmutableInt64 { obj_id: self.id }
+    }
+}
+
+pub struct MapStringToMutableInt64 {
+    pub(crate) obj_id: i32,
+}
+
+impl MapStringToMutableInt64 {
+    pub fn clear(&self) {
+        clear(self.obj_id)
+    }
+
+    pub fn get_int64(&self, key: &str) -> ScMutableInt64 {
+        ScMutableInt64::new(self.obj_id, key.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableGetIntResults {
+    pub(crate) id: i32,
+}
+
+impl MutableGetIntResults {
+    pub fn values(&self) -> MapStringToMutableInt64 {
+        MapStringToMutableInt64 { obj_id: self.id }
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct ImmutableTestChainOwnerIDViewResults {
     pub(crate) id: i32,

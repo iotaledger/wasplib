@@ -316,7 +316,7 @@ func (s *Schema) generateGoKeys() error {
 	s.generateGoKeysIndexes(file, s.StateVars, "State")
 	s.flushGoConsts(file)
 
-	size := len(s.Params) + len(s.Results) + len(s.StateVars)
+	size := s.KeyId
 	fmt.Fprintf(file, "\nconst keyMapLen = %d\n", size)
 	fmt.Fprintf(file, "\nvar keyMap = [keyMapLen]wasmlib.Key{\n")
 	s.generateGoKeysArray(file, s.Params, "Param")

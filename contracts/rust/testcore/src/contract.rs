@@ -340,6 +340,7 @@ impl GetCounterCall {
 pub struct GetIntCall {
     pub func: ScView,
     pub params: MutableGetIntParams,
+    pub results: ImmutableGetIntResults,
 }
 
 impl GetIntCall {
@@ -347,8 +348,9 @@ impl GetIntCall {
         let mut f = GetIntCall {
             func: ScView::new(HSC_NAME, HVIEW_GET_INT),
             params: MutableGetIntParams { id: 0 },
+            results: ImmutableGetIntResults { id: 0 },
         };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
 

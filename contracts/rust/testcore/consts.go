@@ -48,6 +48,7 @@ const (
 const (
 	StateCounter      = wasmlib.Key("counter")
 	StateHnameEP      = wasmlib.Key("hnameEP")
+	StateInts         = wasmlib.Key("ints")
 	StateMintedColor  = wasmlib.Key("mintedColor")
 	StateMintedSupply = wasmlib.Key("mintedSupply")
 )

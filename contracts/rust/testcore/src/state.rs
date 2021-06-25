@@ -28,6 +28,11 @@ impl ImmutableTestCoreState {
         ScImmutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
     }
 
+    pub fn ints(&self) -> MapStringToImmutableInt64 {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_INTS), TYPE_MAP);
+        MapStringToImmutableInt64 { obj_id: map_id }
+    }
+
     pub fn minted_color(&self) -> ScImmutableColor {
         ScImmutableColor::new(self.id, idx_map(IDX_STATE_MINTED_COLOR))
     }
@@ -49,6 +54,11 @@ impl MutableTestCoreState {
 
     pub fn hname_ep(&self) -> ScMutableHname {
         ScMutableHname::new(self.id, idx_map(IDX_STATE_HNAME_EP))
+    }
+
+    pub fn ints(&self) -> MapStringToMutableInt64 {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_INTS), TYPE_MAP);
+        MapStringToMutableInt64 { obj_id: map_id }
     }
 
     pub fn minted_color(&self) -> ScMutableColor {

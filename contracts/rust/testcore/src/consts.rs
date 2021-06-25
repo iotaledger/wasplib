@@ -43,6 +43,7 @@ pub const RESULT_SANDBOX_CALL:   &str = "sandboxCall";
 
 pub const STATE_COUNTER:       &str = "counter";
 pub const STATE_HNAME_EP:      &str = "hnameEP";
+pub const STATE_INTS:          &str = "ints";
 pub const STATE_MINTED_COLOR:  &str = "mintedColor";
 pub const STATE_MINTED_SUPPLY: &str = "mintedSupply";
 

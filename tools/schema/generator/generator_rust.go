@@ -415,7 +415,7 @@ func (s *Schema) generateRustKeys() error {
 	s.generateRustKeysIndexes(file, s.StateVars, "STATE_")
 	s.flushRustConsts(file)
 
-	size := len(s.Params) + len(s.Results) + len(s.StateVars)
+	size := s.KeyId
 	fmt.Fprintf(file, "\npub const KEY_MAP_LEN: usize = %d;\n", size)
 	fmt.Fprintf(file, "\npub const KEY_MAP: [&str; KEY_MAP_LEN] = [\n")
 	s.generateRustKeysArray(file, s.Params, "PARAM_")

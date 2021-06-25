@@ -21,6 +21,11 @@ func (s ImmutableTestCoreState) HnameEP() wasmlib.ScImmutableHname {
 	return wasmlib.NewScImmutableHname(s.id, idxMap[IdxStateHnameEP])
 }
 
+func (s ImmutableTestCoreState) Ints() MapStringToImmutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateInts], wasmlib.TYPE_MAP)
+	return MapStringToImmutableInt64{objId: mapId}
+}
+
 func (s ImmutableTestCoreState) MintedColor() wasmlib.ScImmutableColor {
 	return wasmlib.NewScImmutableColor(s.id, idxMap[IdxStateMintedColor])
 }
@@ -39,6 +44,11 @@ func (s MutableTestCoreState) Counter() wasmlib.ScMutableInt64 {
 
 func (s MutableTestCoreState) HnameEP() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, idxMap[IdxStateHnameEP])
+}
+
+func (s MutableTestCoreState) Ints() MapStringToMutableInt64 {
+	mapId := wasmlib.GetObjectId(s.id, idxMap[IdxStateInts], wasmlib.TYPE_MAP)
+	return MapStringToMutableInt64{objId: mapId}
 }
 
 func (s MutableTestCoreState) MintedColor() wasmlib.ScMutableColor {

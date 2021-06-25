@@ -113,6 +113,42 @@ func (s MutableGetCounterResults) Counter() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultCounter])
 }
 
+type MapStringToImmutableInt64 struct {
+	objId int32
+}
+
+func (m MapStringToImmutableInt64) GetInt64(key string) wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type ImmutableGetIntResults struct {
+	id int32
+}
+
+func (s ImmutableGetIntResults) Values() MapStringToImmutableInt64 {
+	return MapStringToImmutableInt64{objId: s.id}
+}
+
+type MapStringToMutableInt64 struct {
+	objId int32
+}
+
+func (m MapStringToMutableInt64) Clear() {
+	wasmlib.Clear(m.objId)
+}
+
+func (m MapStringToMutableInt64) GetInt64(key string) wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(m.objId, wasmlib.Key(key).KeyId())
+}
+
+type MutableGetIntResults struct {
+	id int32
+}
+
+func (s MutableGetIntResults) Values() MapStringToMutableInt64 {
+	return MapStringToMutableInt64{objId: s.id}
+}
+
 type ImmutableTestChainOwnerIDViewResults struct {
 	id int32
 }

@@ -36,11 +36,12 @@ const (
 	IdxResultSandboxCall    = 23
 	IdxStateCounter         = 24
 	IdxStateHnameEP         = 25
-	IdxStateMintedColor     = 26
-	IdxStateMintedSupply    = 27
+	IdxStateInts            = 26
+	IdxStateMintedColor     = 27
+	IdxStateMintedSupply    = 28
 )
 
-const keyMapLen = 28
+const keyMapLen = 29
 
 var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
@@ -69,6 +70,7 @@ var keyMap = [keyMapLen]wasmlib.Key{
 	ResultSandboxCall,
 	StateCounter,
 	StateHnameEP,
+	StateInts,
 	StateMintedColor,
 	StateMintedSupply,
 }

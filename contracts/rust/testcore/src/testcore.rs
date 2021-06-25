@@ -102,7 +102,7 @@ pub fn func_send_to_address(ctx: &ScFuncContext, f: &SendToAddressContext) {
 }
 
 pub fn func_set_int(ctx: &ScFuncContext, f: &SetIntContext) {
-    ctx.state().get_int64(&f.params.name().value()).set_value(f.params.int_value().value());
+    f.state.ints().get_int64(&f.params.name().value()).set_value(f.params.int_value().value());
 }
 
 pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _f: &TestCallPanicFullEPContext) {
@@ -173,9 +173,9 @@ pub fn view_get_counter(_ctx: &ScViewContext, f: &GetCounterContext) {
 
 pub fn view_get_int(ctx: &ScViewContext, f: &GetIntContext) {
     let name = f.params.name().value();
-    let value = ctx.state().get_int64(&name);
+    let value = f.state.ints().get_int64(&name);
     ctx.require(value.exists(), "param 'value' not found");
-    ctx.results().get_int64(&name).set_value(value.value());
+    f.results.values().get_int64(&name).set_value(value.value());
 }
 
 pub fn view_just_view(ctx: &ScViewContext, _f: &JustViewContext) {

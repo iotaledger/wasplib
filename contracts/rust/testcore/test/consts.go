@@ -48,6 +48,7 @@ const (
 const (
 	StateCounter      = "counter"
 	StateHnameEP      = "hnameEP"
+	StateInts         = "ints"
 	StateMintedColor  = "mintedColor"
 	StateMintedSupply = "mintedSupply"
 )
