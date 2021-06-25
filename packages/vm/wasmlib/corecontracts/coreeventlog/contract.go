@@ -10,37 +10,33 @@ package coreeventlog
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type GetNumRecordsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetNumRecordsParams
 	Results ImmutableGetNumRecordsResults
 }
 
 func NewGetNumRecordsCall(ctx wasmlib.ScFuncContext) *GetNumRecordsCall {
-	f := &GetNumRecordsCall{}
-	f.Func.Init(HScName, HViewGetNumRecords, &f.Params.id, &f.Results.id)
+	f := &GetNumRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetNumRecords)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetNumRecordsCallFromView(ctx wasmlib.ScViewContext) *GetNumRecordsCall {
-	f := &GetNumRecordsCall{}
-	f.Func.Init(HScName, HViewGetNumRecords, &f.Params.id, &f.Results.id)
-	return f
+	return NewGetNumRecordsCall(wasmlib.ScFuncContext{})
 }
 
 type GetRecordsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetRecordsParams
 	Results ImmutableGetRecordsResults
 }
 
 func NewGetRecordsCall(ctx wasmlib.ScFuncContext) *GetRecordsCall {
-	f := &GetRecordsCall{}
-	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, &f.Results.id)
+	f := &GetRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetRecords)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetRecordsCallFromView(ctx wasmlib.ScViewContext) *GetRecordsCall {
-	f := &GetRecordsCall{}
-	f.Func.Init(HScName, HViewGetRecords, &f.Params.id, &f.Results.id)
-	return f
+	return NewGetRecordsCall(wasmlib.ScFuncContext{})
 }

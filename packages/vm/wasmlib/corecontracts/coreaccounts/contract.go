@@ -10,74 +10,66 @@ package coreaccounts
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type DepositCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableDepositParams
 }
 
 func NewDepositCall(ctx wasmlib.ScFuncContext) *DepositCall {
-	f := &DepositCall{}
-	f.Func.Init(HScName, HFuncDeposit, &f.Params.id, nil)
+	f := &DepositCall{Func: wasmlib.NewScFunc(HScName, HFuncDeposit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type WithdrawCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 }
 
 func NewWithdrawCall(ctx wasmlib.ScFuncContext) *WithdrawCall {
-	f := &WithdrawCall{}
-	f.Func.Init(HScName, HFuncWithdraw, nil, nil)
-	return f
+	return &WithdrawCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdraw)}
 }
 
 type AccountsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableAccountsResults
 }
 
 func NewAccountsCall(ctx wasmlib.ScFuncContext) *AccountsCall {
-	f := &AccountsCall{}
-	f.Func.Init(HScName, HViewAccounts, nil, &f.Results.id)
+	f := &AccountsCall{Func: wasmlib.NewScView(HScName, HViewAccounts)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewAccountsCallFromView(ctx wasmlib.ScViewContext) *AccountsCall {
-	f := &AccountsCall{}
-	f.Func.Init(HScName, HViewAccounts, nil, &f.Results.id)
-	return f
+	return NewAccountsCall(wasmlib.ScFuncContext{})
 }
 
 type BalanceCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableBalanceParams
 	Results ImmutableBalanceResults
 }
 
 func NewBalanceCall(ctx wasmlib.ScFuncContext) *BalanceCall {
-	f := &BalanceCall{}
-	f.Func.Init(HScName, HViewBalance, &f.Params.id, &f.Results.id)
+	f := &BalanceCall{Func: wasmlib.NewScView(HScName, HViewBalance)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewBalanceCallFromView(ctx wasmlib.ScViewContext) *BalanceCall {
-	f := &BalanceCall{}
-	f.Func.Init(HScName, HViewBalance, &f.Params.id, &f.Results.id)
-	return f
+	return NewBalanceCall(wasmlib.ScFuncContext{})
 }
 
 type TotalAssetsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableTotalAssetsResults
 }
 
 func NewTotalAssetsCall(ctx wasmlib.ScFuncContext) *TotalAssetsCall {
-	f := &TotalAssetsCall{}
-	f.Func.Init(HScName, HViewTotalAssets, nil, &f.Results.id)
+	f := &TotalAssetsCall{Func: wasmlib.NewScView(HScName, HViewTotalAssets)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewTotalAssetsCallFromView(ctx wasmlib.ScViewContext) *TotalAssetsCall {
-	f := &TotalAssetsCall{}
-	f.Func.Init(HScName, HViewTotalAssets, nil, &f.Results.id)
-	return f
+	return NewTotalAssetsCall(wasmlib.ScFuncContext{})
 }

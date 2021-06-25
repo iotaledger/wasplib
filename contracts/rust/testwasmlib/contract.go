@@ -10,48 +10,44 @@ package testwasmlib
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type ParamTypesCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableParamTypesParams
 }
 
 func NewParamTypesCall(ctx wasmlib.ScFuncContext) *ParamTypesCall {
-	f := &ParamTypesCall{}
-	f.Func.Init(HScName, HFuncParamTypes, &f.Params.id, nil)
+	f := &ParamTypesCall{Func: wasmlib.NewScFunc(HScName, HFuncParamTypes)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type BlockRecordCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableBlockRecordParams
 	Results ImmutableBlockRecordResults
 }
 
 func NewBlockRecordCall(ctx wasmlib.ScFuncContext) *BlockRecordCall {
-	f := &BlockRecordCall{}
-	f.Func.Init(HScName, HViewBlockRecord, &f.Params.id, &f.Results.id)
+	f := &BlockRecordCall{Func: wasmlib.NewScView(HScName, HViewBlockRecord)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewBlockRecordCallFromView(ctx wasmlib.ScViewContext) *BlockRecordCall {
-	f := &BlockRecordCall{}
-	f.Func.Init(HScName, HViewBlockRecord, &f.Params.id, &f.Results.id)
-	return f
+	return NewBlockRecordCall(wasmlib.ScFuncContext{})
 }
 
 type BlockRecordsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableBlockRecordsParams
 	Results ImmutableBlockRecordsResults
 }
 
 func NewBlockRecordsCall(ctx wasmlib.ScFuncContext) *BlockRecordsCall {
-	f := &BlockRecordsCall{}
-	f.Func.Init(HScName, HViewBlockRecords, &f.Params.id, &f.Results.id)
+	f := &BlockRecordsCall{Func: wasmlib.NewScView(HScName, HViewBlockRecords)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewBlockRecordsCallFromView(ctx wasmlib.ScViewContext) *BlockRecordsCall {
-	f := &BlockRecordsCall{}
-	f.Func.Init(HScName, HViewBlockRecords, &f.Params.id, &f.Results.id)
-	return f
+	return NewBlockRecordsCall(wasmlib.ScFuncContext{})
 }

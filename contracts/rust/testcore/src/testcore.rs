@@ -101,7 +101,7 @@ pub fn func_send_to_address(ctx: &ScFuncContext, f: &SendToAddressContext) {
     ctx.transfer_to_address(&f.params.address().value(), balances);
 }
 
-pub fn func_set_int(ctx: &ScFuncContext, f: &SetIntContext) {
+pub fn func_set_int(_ctx: &ScFuncContext, f: &SetIntContext) {
     f.state.ints().get_int64(&f.params.name().value()).set_value(f.params.int_value().value());
 }
 

@@ -9,9 +9,11 @@ type ScView struct {
 	resultsId *int32
 }
 
-func (v *ScView) Init(hContract ScHname, hFunction ScHname, paramsId *int32, resultsId *int32) {
-	v.hContract = hContract
-	v.hFunction = hFunction
+func NewScView(hContract ScHname, hFunction ScHname) *ScView {
+	return &ScView{hContract, hFunction, nil, nil}
+}
+
+func (v *ScView) SetPtrs(paramsId *int32, resultsId *int32) {
 	v.paramsId = paramsId
 	v.resultsId = resultsId
 	if paramsId != nil {
@@ -53,6 +55,10 @@ type ScFunc struct {
 	ScView
 	delay      int32
 	transferId int32
+}
+
+func NewScFunc(hContract ScHname, hFunction ScHname) *ScFunc {
+	return &ScFunc{ScView{hContract, hFunction, nil, nil}, 0, 0}
 }
 
 func (f *ScFunc) Call() {

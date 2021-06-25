@@ -202,35 +202,45 @@ func (s *Schema) generateGoContract() error {
 
 	for _, f := range s.Funcs {
 		fmt.Fprintf(file, "\ntype %sCall struct {\n", f.Type)
-		fmt.Fprintf(file, "\tFunc wasmlib.Sc%s\n", f.Kind)
-		paramsId := "nil"
+		fmt.Fprintf(file, "\tFunc *wasmlib.Sc%s\n", f.Kind)
 		if len(f.Params) != 0 {
-			paramsId = "&f.Params.id"
 			fmt.Fprintf(file, "\tParams Mutable%sParams\n", f.Type)
 		}
-		resultsId := "nil"
 		if len(f.Results) != 0 {
-			resultsId = "&f.Results.id"
 			fmt.Fprintf(file, "\tResults Immutable%sResults\n", f.Type)
 		}
 		fmt.Fprintf(file, "}\n")
 
-		fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.ScFuncContext) *%sCall {\n", f.Type, f.Type)
-		fmt.Fprintf(file, "\tf := &%sCall{}\n", f.Type)
-		fmt.Fprintf(file, "\tf.Func.Init(HScName, H%s%s, %s, %s)\n", f.Kind, f.Type, paramsId, resultsId)
-		fmt.Fprintf(file, "\treturn f\n")
-		fmt.Fprintf(file, "}\n")
-
+		s.generateGoContractFunc(file, f)
 		if f.Kind == "View" {
 			fmt.Fprintf(file, "\nfunc New%sCallFromView(ctx wasmlib.ScViewContext) *%sCall {\n", f.Type, f.Type)
-			fmt.Fprintf(file, "\tf := &%sCall{}\n", f.Type)
-			fmt.Fprintf(file, "\tf.Func.Init(HScName, H%s%s, %s, %s)\n", f.Kind, f.Type, paramsId, resultsId)
-			fmt.Fprintf(file, "\treturn f\n")
+			fmt.Fprintf(file, "\treturn New%sCall(wasmlib.ScFuncContext{})\n", f.Type)
 			fmt.Fprintf(file, "}\n")
 		}
 	}
 
 	return nil
+}
+
+func (s *Schema) generateGoContractFunc(file *os.File, f *FuncDef) {
+	assign := "return"
+	paramsId := "nil"
+	if len(f.Params) != 0 {
+		assign = "f :="
+		paramsId = "&f.Params.id"
+	}
+	resultsId := "nil"
+	if len(f.Results) != 0 {
+		assign = "f :="
+		resultsId = "&f.Results.id"
+	}
+	fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.ScFuncContext) *%sCall {\n", f.Type, f.Type)
+	fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
+	if len(f.Params) != 0 || len(f.Results) != 0 {
+		fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsId, resultsId)
+		fmt.Fprintf(file, "\treturn f\n")
+	}
+	fmt.Fprintf(file, "}\n")
 }
 
 func (s *Schema) generateGoFuncs() error {

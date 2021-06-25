@@ -10,51 +10,49 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type MintSupplyCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableMintSupplyParams
 }
 
 func NewMintSupplyCall(ctx wasmlib.ScFuncContext) *MintSupplyCall {
-	f := &MintSupplyCall{}
-	f.Func.Init(HScName, HFuncMintSupply, &f.Params.id, nil)
+	f := &MintSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncMintSupply)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type TransferOwnershipCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableTransferOwnershipParams
 }
 
 func NewTransferOwnershipCall(ctx wasmlib.ScFuncContext) *TransferOwnershipCall {
-	f := &TransferOwnershipCall{}
-	f.Func.Init(HScName, HFuncTransferOwnership, &f.Params.id, nil)
+	f := &TransferOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferOwnership)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type UpdateMetadataCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableUpdateMetadataParams
 }
 
 func NewUpdateMetadataCall(ctx wasmlib.ScFuncContext) *UpdateMetadataCall {
-	f := &UpdateMetadataCall{}
-	f.Func.Init(HScName, HFuncUpdateMetadata, &f.Params.id, nil)
+	f := &UpdateMetadataCall{Func: wasmlib.NewScFunc(HScName, HFuncUpdateMetadata)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type GetInfoCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetInfoParams
 }
 
 func NewGetInfoCall(ctx wasmlib.ScFuncContext) *GetInfoCall {
-	f := &GetInfoCall{}
-	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, nil)
+	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 func NewGetInfoCallFromView(ctx wasmlib.ScViewContext) *GetInfoCall {
-	f := &GetInfoCall{}
-	f.Func.Init(HScName, HViewGetInfo, &f.Params.id, nil)
-	return f
+	return NewGetInfoCall(wasmlib.ScFuncContext{})
 }

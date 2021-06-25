@@ -10,60 +10,54 @@ package fairroulette
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type LockBetsCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 }
 
 func NewLockBetsCall(ctx wasmlib.ScFuncContext) *LockBetsCall {
-	f := &LockBetsCall{}
-	f.Func.Init(HScName, HFuncLockBets, nil, nil)
-	return f
+	return &LockBetsCall{Func: wasmlib.NewScFunc(HScName, HFuncLockBets)}
 }
 
 type PayWinnersCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 }
 
 func NewPayWinnersCall(ctx wasmlib.ScFuncContext) *PayWinnersCall {
-	f := &PayWinnersCall{}
-	f.Func.Init(HScName, HFuncPayWinners, nil, nil)
-	return f
+	return &PayWinnersCall{Func: wasmlib.NewScFunc(HScName, HFuncPayWinners)}
 }
 
 type PlaceBetCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutablePlaceBetParams
 }
 
 func NewPlaceBetCall(ctx wasmlib.ScFuncContext) *PlaceBetCall {
-	f := &PlaceBetCall{}
-	f.Func.Init(HScName, HFuncPlaceBet, &f.Params.id, nil)
+	f := &PlaceBetCall{Func: wasmlib.NewScFunc(HScName, HFuncPlaceBet)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type PlayPeriodCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutablePlayPeriodParams
 }
 
 func NewPlayPeriodCall(ctx wasmlib.ScFuncContext) *PlayPeriodCall {
-	f := &PlayPeriodCall{}
-	f.Func.Init(HScName, HFuncPlayPeriod, &f.Params.id, nil)
+	f := &PlayPeriodCall{Func: wasmlib.NewScFunc(HScName, HFuncPlayPeriod)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type LastWinningNumberCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableLastWinningNumberResults
 }
 
 func NewLastWinningNumberCall(ctx wasmlib.ScFuncContext) *LastWinningNumberCall {
-	f := &LastWinningNumberCall{}
-	f.Func.Init(HScName, HViewLastWinningNumber, nil, &f.Results.id)
+	f := &LastWinningNumberCall{Func: wasmlib.NewScView(HScName, HViewLastWinningNumber)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewLastWinningNumberCallFromView(ctx wasmlib.ScViewContext) *LastWinningNumberCall {
-	f := &LastWinningNumberCall{}
-	f.Func.Init(HScName, HViewLastWinningNumber, nil, &f.Results.id)
-	return f
+	return NewLastWinningNumberCall(wasmlib.ScFuncContext{})
 }

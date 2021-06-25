@@ -10,51 +10,49 @@ package coregovernance
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type AddAllowedStateControllerAddressCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableAddAllowedStateControllerAddressParams
 }
 
 func NewAddAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *AddAllowedStateControllerAddressCall {
-	f := &AddAllowedStateControllerAddressCall{}
-	f.Func.Init(HScName, HFuncAddAllowedStateControllerAddress, &f.Params.id, nil)
+	f := &AddAllowedStateControllerAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncAddAllowedStateControllerAddress)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type RemoveAllowedStateControllerAddressCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableRemoveAllowedStateControllerAddressParams
 }
 
 func NewRemoveAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *RemoveAllowedStateControllerAddressCall {
-	f := &RemoveAllowedStateControllerAddressCall{}
-	f.Func.Init(HScName, HFuncRemoveAllowedStateControllerAddress, &f.Params.id, nil)
+	f := &RemoveAllowedStateControllerAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncRemoveAllowedStateControllerAddress)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type RotateStateControllerCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableRotateStateControllerParams
 }
 
 func NewRotateStateControllerCall(ctx wasmlib.ScFuncContext) *RotateStateControllerCall {
-	f := &RotateStateControllerCall{}
-	f.Func.Init(HScName, HFuncRotateStateController, &f.Params.id, nil)
+	f := &RotateStateControllerCall{Func: wasmlib.NewScFunc(HScName, HFuncRotateStateController)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type GetAllowedStateControllerAddressesCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableGetAllowedStateControllerAddressesResults
 }
 
 func NewGetAllowedStateControllerAddressesCall(ctx wasmlib.ScFuncContext) *GetAllowedStateControllerAddressesCall {
-	f := &GetAllowedStateControllerAddressesCall{}
-	f.Func.Init(HScName, HViewGetAllowedStateControllerAddresses, nil, &f.Results.id)
+	f := &GetAllowedStateControllerAddressesCall{Func: wasmlib.NewScView(HScName, HViewGetAllowedStateControllerAddresses)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewGetAllowedStateControllerAddressesCallFromView(ctx wasmlib.ScViewContext) *GetAllowedStateControllerAddressesCall {
-	f := &GetAllowedStateControllerAddressesCall{}
-	f.Func.Init(HScName, HViewGetAllowedStateControllerAddresses, nil, &f.Results.id)
-	return f
+	return NewGetAllowedStateControllerAddressesCall(wasmlib.ScFuncContext{})
 }

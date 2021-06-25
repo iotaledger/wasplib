@@ -10,66 +10,60 @@ package coreblob
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type StoreBlobCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableStoreBlobParams
 	Results ImmutableStoreBlobResults
 }
 
 func NewStoreBlobCall(ctx wasmlib.ScFuncContext) *StoreBlobCall {
-	f := &StoreBlobCall{}
-	f.Func.Init(HScName, HFuncStoreBlob, &f.Params.id, &f.Results.id)
+	f := &StoreBlobCall{Func: wasmlib.NewScFunc(HScName, HFuncStoreBlob)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 type GetBlobFieldCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetBlobFieldParams
 	Results ImmutableGetBlobFieldResults
 }
 
 func NewGetBlobFieldCall(ctx wasmlib.ScFuncContext) *GetBlobFieldCall {
-	f := &GetBlobFieldCall{}
-	f.Func.Init(HScName, HViewGetBlobField, &f.Params.id, &f.Results.id)
+	f := &GetBlobFieldCall{Func: wasmlib.NewScView(HScName, HViewGetBlobField)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetBlobFieldCallFromView(ctx wasmlib.ScViewContext) *GetBlobFieldCall {
-	f := &GetBlobFieldCall{}
-	f.Func.Init(HScName, HViewGetBlobField, &f.Params.id, &f.Results.id)
-	return f
+	return NewGetBlobFieldCall(wasmlib.ScFuncContext{})
 }
 
 type GetBlobInfoCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetBlobInfoParams
 	Results ImmutableGetBlobInfoResults
 }
 
 func NewGetBlobInfoCall(ctx wasmlib.ScFuncContext) *GetBlobInfoCall {
-	f := &GetBlobInfoCall{}
-	f.Func.Init(HScName, HViewGetBlobInfo, &f.Params.id, &f.Results.id)
+	f := &GetBlobInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlobInfo)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetBlobInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlobInfoCall {
-	f := &GetBlobInfoCall{}
-	f.Func.Init(HScName, HViewGetBlobInfo, &f.Params.id, &f.Results.id)
-	return f
+	return NewGetBlobInfoCall(wasmlib.ScFuncContext{})
 }
 
 type ListBlobsCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableListBlobsResults
 }
 
 func NewListBlobsCall(ctx wasmlib.ScFuncContext) *ListBlobsCall {
-	f := &ListBlobsCall{}
-	f.Func.Init(HScName, HViewListBlobs, nil, &f.Results.id)
+	f := &ListBlobsCall{Func: wasmlib.NewScView(HScName, HViewListBlobs)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewListBlobsCallFromView(ctx wasmlib.ScViewContext) *ListBlobsCall {
-	f := &ListBlobsCall{}
-	f.Func.Init(HScName, HViewListBlobs, nil, &f.Results.id)
-	return f
+	return NewListBlobsCall(wasmlib.ScFuncContext{})
 }

@@ -10,62 +10,58 @@ package dividend
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type DivideCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 }
 
 func NewDivideCall(ctx wasmlib.ScFuncContext) *DivideCall {
-	f := &DivideCall{}
-	f.Func.Init(HScName, HFuncDivide, nil, nil)
-	return f
+	return &DivideCall{Func: wasmlib.NewScFunc(HScName, HFuncDivide)}
 }
 
 type InitCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableInitParams
 }
 
 func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
-	f := &InitCall{}
-	f.Func.Init(HScName, HFuncInit, &f.Params.id, nil)
+	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type MemberCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableMemberParams
 }
 
 func NewMemberCall(ctx wasmlib.ScFuncContext) *MemberCall {
-	f := &MemberCall{}
-	f.Func.Init(HScName, HFuncMember, &f.Params.id, nil)
+	f := &MemberCall{Func: wasmlib.NewScFunc(HScName, HFuncMember)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type SetOwnerCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 	Params MutableSetOwnerParams
 }
 
 func NewSetOwnerCall(ctx wasmlib.ScFuncContext) *SetOwnerCall {
-	f := &SetOwnerCall{}
-	f.Func.Init(HScName, HFuncSetOwner, &f.Params.id, nil)
+	f := &SetOwnerCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwner)}
+	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
 type GetFactorCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Params MutableGetFactorParams
 	Results ImmutableGetFactorResults
 }
 
 func NewGetFactorCall(ctx wasmlib.ScFuncContext) *GetFactorCall {
-	f := &GetFactorCall{}
-	f.Func.Init(HScName, HViewGetFactor, &f.Params.id, &f.Results.id)
+	f := &GetFactorCall{Func: wasmlib.NewScView(HScName, HViewGetFactor)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
 func NewGetFactorCallFromView(ctx wasmlib.ScViewContext) *GetFactorCall {
-	f := &GetFactorCall{}
-	f.Func.Init(HScName, HViewGetFactor, &f.Params.id, &f.Results.id)
-	return f
+	return NewGetFactorCall(wasmlib.ScFuncContext{})
 }

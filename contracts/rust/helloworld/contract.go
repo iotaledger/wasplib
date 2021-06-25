@@ -10,28 +10,24 @@ package helloworld
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type HelloWorldCall struct {
-	Func wasmlib.ScFunc
+	Func *wasmlib.ScFunc
 }
 
 func NewHelloWorldCall(ctx wasmlib.ScFuncContext) *HelloWorldCall {
-	f := &HelloWorldCall{}
-	f.Func.Init(HScName, HFuncHelloWorld, nil, nil)
-	return f
+	return &HelloWorldCall{Func: wasmlib.NewScFunc(HScName, HFuncHelloWorld)}
 }
 
 type GetHelloWorldCall struct {
-	Func wasmlib.ScView
+	Func *wasmlib.ScView
 	Results ImmutableGetHelloWorldResults
 }
 
 func NewGetHelloWorldCall(ctx wasmlib.ScFuncContext) *GetHelloWorldCall {
-	f := &GetHelloWorldCall{}
-	f.Func.Init(HScName, HViewGetHelloWorld, nil, &f.Results.id)
+	f := &GetHelloWorldCall{Func: wasmlib.NewScView(HScName, HViewGetHelloWorld)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
 func NewGetHelloWorldCallFromView(ctx wasmlib.ScViewContext) *GetHelloWorldCall {
-	f := &GetHelloWorldCall{}
-	f.Func.Init(HScName, HViewGetHelloWorld, nil, &f.Results.id)
-	return f
+	return NewGetHelloWorldCall(wasmlib.ScFuncContext{})
 }
