@@ -10,7 +10,7 @@ package tokenregistry
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type MintSupplyCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableMintSupplyParams
 }
 
@@ -21,7 +21,7 @@ func NewMintSupplyCall(ctx wasmlib.ScFuncContext) *MintSupplyCall {
 }
 
 type TransferOwnershipCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableTransferOwnershipParams
 }
 
@@ -32,7 +32,7 @@ func NewTransferOwnershipCall(ctx wasmlib.ScFuncContext) *TransferOwnershipCall 
 }
 
 type UpdateMetadataCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableUpdateMetadataParams
 }
 
@@ -43,7 +43,7 @@ func NewUpdateMetadataCall(ctx wasmlib.ScFuncContext) *UpdateMetadataCall {
 }
 
 type GetInfoCall struct {
-	Func *wasmlib.ScView
+	Func   *wasmlib.ScView
 	Params MutableGetInfoParams
 }
 

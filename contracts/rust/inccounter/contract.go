@@ -42,7 +42,7 @@ func NewIncrementCall(ctx wasmlib.ScFuncContext) *IncrementCall {
 }
 
 type InitCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableInitParams
 }
 
@@ -85,7 +85,7 @@ func NewPostIncrementCall(ctx wasmlib.ScFuncContext) *PostIncrementCall {
 }
 
 type RepeatManyCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableRepeatManyParams
 }
 
@@ -104,7 +104,7 @@ func NewTestLeb128Call(ctx wasmlib.ScFuncContext) *TestLeb128Call {
 }
 
 type WhenMustIncrementCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableWhenMustIncrementParams
 }
 
@@ -115,7 +115,7 @@ func NewWhenMustIncrementCall(ctx wasmlib.ScFuncContext) *WhenMustIncrementCall 
 }
 
 type GetCounterCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableGetCounterResults
 }
 

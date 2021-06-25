@@ -10,8 +10,8 @@ package coreblob
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type StoreBlobCall struct {
-	Func *wasmlib.ScFunc
-	Params MutableStoreBlobParams
+	Func    *wasmlib.ScFunc
+	Params  MutableStoreBlobParams
 	Results ImmutableStoreBlobResults
 }
 
@@ -22,8 +22,8 @@ func NewStoreBlobCall(ctx wasmlib.ScFuncContext) *StoreBlobCall {
 }
 
 type GetBlobFieldCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetBlobFieldParams
+	Func    *wasmlib.ScView
+	Params  MutableGetBlobFieldParams
 	Results ImmutableGetBlobFieldResults
 }
 
@@ -38,8 +38,8 @@ func NewGetBlobFieldCallFromView(ctx wasmlib.ScViewContext) *GetBlobFieldCall {
 }
 
 type GetBlobInfoCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetBlobInfoParams
+	Func    *wasmlib.ScView
+	Params  MutableGetBlobInfoParams
 	Results ImmutableGetBlobInfoResults
 }
 
@@ -54,7 +54,7 @@ func NewGetBlobInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlobInfoCall {
 }
 
 type ListBlobsCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableListBlobsResults
 }
 

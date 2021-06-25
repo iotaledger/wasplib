@@ -18,7 +18,7 @@ func NewDivideCall(ctx wasmlib.ScFuncContext) *DivideCall {
 }
 
 type InitCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableInitParams
 }
 
@@ -29,7 +29,7 @@ func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
 }
 
 type MemberCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableMemberParams
 }
 
@@ -40,7 +40,7 @@ func NewMemberCall(ctx wasmlib.ScFuncContext) *MemberCall {
 }
 
 type SetOwnerCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSetOwnerParams
 }
 
@@ -51,8 +51,8 @@ func NewSetOwnerCall(ctx wasmlib.ScFuncContext) *SetOwnerCall {
 }
 
 type GetFactorCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetFactorParams
+	Func    *wasmlib.ScView
+	Params  MutableGetFactorParams
 	Results ImmutableGetFactorResults
 }
 

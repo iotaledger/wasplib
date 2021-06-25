@@ -18,7 +18,7 @@ func NewHelloWorldCall(ctx wasmlib.ScFuncContext) *HelloWorldCall {
 }
 
 type GetHelloWorldCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableGetHelloWorldResults
 }
 

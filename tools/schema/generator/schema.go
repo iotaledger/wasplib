@@ -44,6 +44,16 @@ type FuncDef struct {
 	Type     string
 }
 
+func (f *FuncDef) nameLen(smallest int) int {
+	if len(f.Results) != 0 {
+		return 7
+	}
+	if len(f.Params) != 0 {
+		return 6
+	}
+	return smallest
+}
+
 type Schema struct {
 	Name          string
 	FullName      string

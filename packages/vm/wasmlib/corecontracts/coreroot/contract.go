@@ -18,7 +18,7 @@ func NewClaimChainOwnershipCall(ctx wasmlib.ScFuncContext) *ClaimChainOwnershipC
 }
 
 type DelegateChainOwnershipCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableDelegateChainOwnershipParams
 }
 
@@ -29,7 +29,7 @@ func NewDelegateChainOwnershipCall(ctx wasmlib.ScFuncContext) *DelegateChainOwne
 }
 
 type DeployContractCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableDeployContractParams
 }
 
@@ -40,7 +40,7 @@ func NewDeployContractCall(ctx wasmlib.ScFuncContext) *DeployContractCall {
 }
 
 type GrantDeployPermissionCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableGrantDeployPermissionParams
 }
 
@@ -51,7 +51,7 @@ func NewGrantDeployPermissionCall(ctx wasmlib.ScFuncContext) *GrantDeployPermiss
 }
 
 type RevokeDeployPermissionCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableRevokeDeployPermissionParams
 }
 
@@ -62,7 +62,7 @@ func NewRevokeDeployPermissionCall(ctx wasmlib.ScFuncContext) *RevokeDeployPermi
 }
 
 type SetContractFeeCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSetContractFeeParams
 }
 
@@ -73,7 +73,7 @@ func NewSetContractFeeCall(ctx wasmlib.ScFuncContext) *SetContractFeeCall {
 }
 
 type SetDefaultFeeCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSetDefaultFeeParams
 }
 
@@ -84,8 +84,8 @@ func NewSetDefaultFeeCall(ctx wasmlib.ScFuncContext) *SetDefaultFeeCall {
 }
 
 type FindContractCall struct {
-	Func *wasmlib.ScView
-	Params MutableFindContractParams
+	Func    *wasmlib.ScView
+	Params  MutableFindContractParams
 	Results ImmutableFindContractResults
 }
 
@@ -100,7 +100,7 @@ func NewFindContractCallFromView(ctx wasmlib.ScViewContext) *FindContractCall {
 }
 
 type GetChainInfoCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableGetChainInfoResults
 }
 
@@ -115,8 +115,8 @@ func NewGetChainInfoCallFromView(ctx wasmlib.ScViewContext) *GetChainInfoCall {
 }
 
 type GetFeeInfoCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetFeeInfoParams
+	Func    *wasmlib.ScView
+	Params  MutableGetFeeInfoParams
 	Results ImmutableGetFeeInfoResults
 }
 

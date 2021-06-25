@@ -10,8 +10,8 @@ package testcore
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type CallOnChainCall struct {
-	Func *wasmlib.ScFunc
-	Params MutableCallOnChainParams
+	Func    *wasmlib.ScFunc
+	Params  MutableCallOnChainParams
 	Results ImmutableCallOnChainResults
 }
 
@@ -22,7 +22,7 @@ func NewCallOnChainCall(ctx wasmlib.ScFuncContext) *CallOnChainCall {
 }
 
 type CheckContextFromFullEPCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableCheckContextFromFullEPParams
 }
 
@@ -41,7 +41,7 @@ func NewDoNothingCall(ctx wasmlib.ScFuncContext) *DoNothingCall {
 }
 
 type GetMintedSupplyCall struct {
-	Func *wasmlib.ScFunc
+	Func    *wasmlib.ScFunc
 	Results ImmutableGetMintedSupplyResults
 }
 
@@ -68,7 +68,7 @@ func NewInitCall(ctx wasmlib.ScFuncContext) *InitCall {
 }
 
 type PassTypesFullCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutablePassTypesFullParams
 }
 
@@ -79,8 +79,8 @@ func NewPassTypesFullCall(ctx wasmlib.ScFuncContext) *PassTypesFullCall {
 }
 
 type RunRecursionCall struct {
-	Func *wasmlib.ScFunc
-	Params MutableRunRecursionParams
+	Func    *wasmlib.ScFunc
+	Params  MutableRunRecursionParams
 	Results ImmutableRunRecursionResults
 }
 
@@ -91,7 +91,7 @@ func NewRunRecursionCall(ctx wasmlib.ScFuncContext) *RunRecursionCall {
 }
 
 type SendToAddressCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSendToAddressParams
 }
 
@@ -102,7 +102,7 @@ func NewSendToAddressCall(ctx wasmlib.ScFuncContext) *SendToAddressCall {
 }
 
 type SetIntCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSetIntParams
 }
 
@@ -129,7 +129,7 @@ func NewTestCallPanicViewEPFromFullCall(ctx wasmlib.ScFuncContext) *TestCallPani
 }
 
 type TestChainOwnerIDFullCall struct {
-	Func *wasmlib.ScFunc
+	Func    *wasmlib.ScFunc
 	Results ImmutableTestChainOwnerIDFullResults
 }
 
@@ -156,7 +156,7 @@ func NewTestEventLogEventDataCall(ctx wasmlib.ScFuncContext) *TestEventLogEventD
 }
 
 type TestEventLogGenericDataCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableTestEventLogGenericDataParams
 }
 
@@ -175,7 +175,7 @@ func NewTestPanicFullEPCall(ctx wasmlib.ScFuncContext) *TestPanicFullEPCall {
 }
 
 type WithdrawToChainCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableWithdrawToChainParams
 }
 
@@ -186,7 +186,7 @@ func NewWithdrawToChainCall(ctx wasmlib.ScFuncContext) *WithdrawToChainCall {
 }
 
 type CheckContextFromViewEPCall struct {
-	Func *wasmlib.ScView
+	Func   *wasmlib.ScView
 	Params MutableCheckContextFromViewEPParams
 }
 
@@ -201,8 +201,8 @@ func NewCheckContextFromViewEPCallFromView(ctx wasmlib.ScViewContext) *CheckCont
 }
 
 type FibonacciCall struct {
-	Func *wasmlib.ScView
-	Params MutableFibonacciParams
+	Func    *wasmlib.ScView
+	Params  MutableFibonacciParams
 	Results ImmutableFibonacciResults
 }
 
@@ -217,7 +217,7 @@ func NewFibonacciCallFromView(ctx wasmlib.ScViewContext) *FibonacciCall {
 }
 
 type GetCounterCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableGetCounterResults
 }
 
@@ -232,8 +232,8 @@ func NewGetCounterCallFromView(ctx wasmlib.ScViewContext) *GetCounterCall {
 }
 
 type GetIntCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetIntParams
+	Func    *wasmlib.ScView
+	Params  MutableGetIntParams
 	Results ImmutableGetIntResults
 }
 
@@ -260,7 +260,7 @@ func NewJustViewCallFromView(ctx wasmlib.ScViewContext) *JustViewCall {
 }
 
 type PassTypesViewCall struct {
-	Func *wasmlib.ScView
+	Func   *wasmlib.ScView
 	Params MutablePassTypesViewParams
 }
 
@@ -287,7 +287,7 @@ func NewTestCallPanicViewEPFromViewCallFromView(ctx wasmlib.ScViewContext) *Test
 }
 
 type TestChainOwnerIDViewCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableTestChainOwnerIDViewResults
 }
 
@@ -314,7 +314,7 @@ func NewTestPanicViewEPCallFromView(ctx wasmlib.ScViewContext) *TestPanicViewEPC
 }
 
 type TestSandboxCallCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableTestSandboxCallResults
 }
 

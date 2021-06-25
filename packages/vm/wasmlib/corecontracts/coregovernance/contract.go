@@ -10,7 +10,7 @@ package coregovernance
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type AddAllowedStateControllerAddressCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableAddAllowedStateControllerAddressParams
 }
 
@@ -21,7 +21,7 @@ func NewAddAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *AddAllo
 }
 
 type RemoveAllowedStateControllerAddressCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableRemoveAllowedStateControllerAddressParams
 }
 
@@ -32,7 +32,7 @@ func NewRemoveAllowedStateControllerAddressCall(ctx wasmlib.ScFuncContext) *Remo
 }
 
 type RotateStateControllerCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableRotateStateControllerParams
 }
 
@@ -43,7 +43,7 @@ func NewRotateStateControllerCall(ctx wasmlib.ScFuncContext) *RotateStateControl
 }
 
 type GetAllowedStateControllerAddressesCall struct {
-	Func *wasmlib.ScView
+	Func    *wasmlib.ScView
 	Results ImmutableGetAllowedStateControllerAddressesResults
 }
 

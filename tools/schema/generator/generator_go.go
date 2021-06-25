@@ -201,10 +201,11 @@ func (s *Schema) generateGoContract() error {
 	fmt.Fprintf(file, importWasmLib)
 
 	for _, f := range s.Funcs {
+		nameLen := f.nameLen(4)
 		fmt.Fprintf(file, "\ntype %sCall struct {\n", f.Type)
-		fmt.Fprintf(file, "\tFunc *wasmlib.Sc%s\n", f.Kind)
+		fmt.Fprintf(file, "\t%s *wasmlib.Sc%s\n", pad("Func", nameLen), f.Kind)
 		if len(f.Params) != 0 {
-			fmt.Fprintf(file, "\tParams Mutable%sParams\n", f.Type)
+			fmt.Fprintf(file, "\t%s Mutable%sParams\n", pad("Params", nameLen), f.Type)
 		}
 		if len(f.Results) != 0 {
 			fmt.Fprintf(file, "\tResults Immutable%sResults\n", f.Type)
@@ -677,13 +678,7 @@ func (s *Schema) GenerateGoTests() error {
 }
 
 func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
-	nameLen := 5
-	if len(f.Params) != 0 {
-		nameLen = 6
-	}
-	if len(f.Results) != 0 {
-		nameLen = 7
-	}
+	nameLen := f.nameLen(5)
 
 	fmt.Fprintf(file, "\ntype %sContext struct {\n", f.Type)
 	if len(f.Params) != 0 {

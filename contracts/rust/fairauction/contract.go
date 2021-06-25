@@ -10,7 +10,7 @@ package fairauction
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 type FinalizeAuctionCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableFinalizeAuctionParams
 }
 
@@ -21,7 +21,7 @@ func NewFinalizeAuctionCall(ctx wasmlib.ScFuncContext) *FinalizeAuctionCall {
 }
 
 type PlaceBidCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutablePlaceBidParams
 }
 
@@ -32,7 +32,7 @@ func NewPlaceBidCall(ctx wasmlib.ScFuncContext) *PlaceBidCall {
 }
 
 type SetOwnerMarginCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableSetOwnerMarginParams
 }
 
@@ -43,7 +43,7 @@ func NewSetOwnerMarginCall(ctx wasmlib.ScFuncContext) *SetOwnerMarginCall {
 }
 
 type StartAuctionCall struct {
-	Func *wasmlib.ScFunc
+	Func   *wasmlib.ScFunc
 	Params MutableStartAuctionParams
 }
 
@@ -54,8 +54,8 @@ func NewStartAuctionCall(ctx wasmlib.ScFuncContext) *StartAuctionCall {
 }
 
 type GetInfoCall struct {
-	Func *wasmlib.ScView
-	Params MutableGetInfoParams
+	Func    *wasmlib.ScView
+	Params  MutableGetInfoParams
 	Results ImmutableGetInfoResults
 }
 
