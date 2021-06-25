@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use std::ptr;
@@ -28,14 +30,14 @@ impl HelloWorldCall {
 }
 
 pub struct GetHelloWorldCall {
-    pub func: ScView,
+    pub func:    ScView,
     pub results: ImmutableGetHelloWorldResults,
 }
 
 impl GetHelloWorldCall {
     pub fn new(_ctx: &ScFuncContext) -> GetHelloWorldCall {
         let mut f = GetHelloWorldCall {
-            func: ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD),
+            func:    ScView::new(HSC_NAME, HVIEW_GET_HELLO_WORLD),
             results: ImmutableGetHelloWorldResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
@@ -46,3 +48,5 @@ impl GetHelloWorldCall {
         GetHelloWorldCall::new(&ScFuncContext {})
     }
 }
+
+//@formatter:on

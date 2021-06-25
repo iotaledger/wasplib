@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use std::ptr;
@@ -40,14 +42,14 @@ impl PayWinnersCall {
 }
 
 pub struct PlaceBetCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutablePlaceBetParams,
 }
 
 impl PlaceBetCall {
     pub fn new(_ctx: &ScFuncContext) -> PlaceBetCall {
         let mut f = PlaceBetCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
+            func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
             params: MutablePlaceBetParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -56,14 +58,14 @@ impl PlaceBetCall {
 }
 
 pub struct PlayPeriodCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutablePlayPeriodParams,
 }
 
 impl PlayPeriodCall {
     pub fn new(_ctx: &ScFuncContext) -> PlayPeriodCall {
         let mut f = PlayPeriodCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
+            func:   ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
             params: MutablePlayPeriodParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -72,14 +74,14 @@ impl PlayPeriodCall {
 }
 
 pub struct LastWinningNumberCall {
-    pub func: ScView,
+    pub func:    ScView,
     pub results: ImmutableLastWinningNumberResults,
 }
 
 impl LastWinningNumberCall {
     pub fn new(_ctx: &ScFuncContext) -> LastWinningNumberCall {
         let mut f = LastWinningNumberCall {
-            func: ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER),
+            func:    ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER),
             results: ImmutableLastWinningNumberResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
@@ -90,3 +92,5 @@ impl LastWinningNumberCall {
         LastWinningNumberCall::new(&ScFuncContext {})
     }
 }
+
+//@formatter:on

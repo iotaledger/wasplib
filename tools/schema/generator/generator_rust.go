@@ -260,6 +260,7 @@ func (s *Schema) generateRustContract() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
+	formatter(file, false)
 	fmt.Fprintln(file, allowDeadCode)
 	fmt.Fprintln(file, useStdPtr)
 	fmt.Fprint(file, s.crateOrWasmLib(true, false))
@@ -270,10 +271,11 @@ func (s *Schema) generateRustContract() error {
 	}
 
 	for _, f := range s.Funcs {
+		nameLen := f.nameLen(4) + 1
 		fmt.Fprintf(file, "\npub struct %sCall {\n", f.Type)
-		fmt.Fprintf(file, "    pub func: Sc%s,\n", f.Kind)
+		fmt.Fprintf(file, "    pub %s Sc%s,\n", pad("func:", nameLen), f.Kind)
 		if len(f.Params) != 0 {
-			fmt.Fprintf(file, "    pub params: Mutable%sParams,\n", f.Type)
+			fmt.Fprintf(file, "    pub %s Mutable%sParams,\n", pad("params:", nameLen), f.Type)
 		}
 		if len(f.Results) != 0 {
 			fmt.Fprintf(file, "    pub results: Immutable%sResults,\n", f.Type)
@@ -291,10 +293,12 @@ func (s *Schema) generateRustContract() error {
 		fmt.Fprintf(file, "}\n")
 	}
 
+	formatter(file, true)
 	return nil
 }
 
 func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef) {
+	nameLen := f.nameLen(4) + 1
 	constName := upper(snake(f.FuncName))
 	letMut := ""
 	if len(f.Params) != 0 || len(f.Results) != 0 {
@@ -302,11 +306,11 @@ func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef) {
 	}
 	fmt.Fprintf(file, "    pub fn new(_ctx: &ScFuncContext) -> %sCall {\n", f.Type)
 	fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
-	fmt.Fprintf(file, "            func: Sc%s::new(HSC_NAME, H%s),\n", f.Kind, constName)
+	fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
 	paramsId := "ptr::null_mut()"
 	if len(f.Params) != 0 {
 		paramsId = "&mut f.params.id"
-		fmt.Fprintf(file, "            params: Mutable%sParams { id: 0 },\n", f.Type)
+		fmt.Fprintf(file, "            %s Mutable%sParams { id: 0 },\n", pad("params:", nameLen), f.Type)
 	}
 	resultsId := "ptr::null_mut()"
 	if len(f.Results) != 0 {
@@ -812,17 +816,10 @@ func (s *Schema) generateRustSubtypes() error {
 }
 
 func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
-	nameLen := 5
-	if len(f.Params) != 0 {
-		nameLen = 6
-	}
-	if len(f.Results) != 0 {
-		nameLen = 7
-	}
-
+	nameLen := f.nameLen(5) + 1
 	fmt.Fprintf(file, "\npub struct %sContext {\n", f.Type)
 	if len(f.Params) != 0 {
-		fmt.Fprintf(file, "    %s Immutable%sParams,\n", pad("params:", nameLen+1), f.Type)
+		fmt.Fprintf(file, "    %s Immutable%sParams,\n", pad("params:", nameLen), f.Type)
 	}
 	if len(f.Results) != 0 {
 		fmt.Fprintf(file, "    results: Mutable%sResults,\n", f.Type)
@@ -831,7 +828,7 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 	if f.Kind == "View" {
 		mutability = "Immutable"
 	}
-	fmt.Fprintf(file, "    %s %s%sState,\n", pad("state:", nameLen+1), mutability, s.FullName)
+	fmt.Fprintf(file, "    %s %s%sState,\n", pad("state:", nameLen), mutability, s.FullName)
 	fmt.Fprintf(file, "}\n")
 
 	fmt.Fprintf(file, "\nfn %s_thunk(ctx: &Sc%sContext) {\n", snake(f.FuncName), f.Kind)

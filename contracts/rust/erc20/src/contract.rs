@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use std::ptr;
@@ -16,14 +18,14 @@ use crate::params::*;
 use crate::results::*;
 
 pub struct ApproveCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutableApproveParams,
 }
 
 impl ApproveCall {
     pub fn new(_ctx: &ScFuncContext) -> ApproveCall {
         let mut f = ApproveCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_APPROVE),
+            func:   ScFunc::new(HSC_NAME, HFUNC_APPROVE),
             params: MutableApproveParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -32,14 +34,14 @@ impl ApproveCall {
 }
 
 pub struct InitCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutableInitParams,
 }
 
 impl InitCall {
     pub fn new(_ctx: &ScFuncContext) -> InitCall {
         let mut f = InitCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_INIT),
+            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
             params: MutableInitParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -48,14 +50,14 @@ impl InitCall {
 }
 
 pub struct TransferCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutableTransferParams,
 }
 
 impl TransferCall {
     pub fn new(_ctx: &ScFuncContext) -> TransferCall {
         let mut f = TransferCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_TRANSFER),
+            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER),
             params: MutableTransferParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -64,14 +66,14 @@ impl TransferCall {
 }
 
 pub struct TransferFromCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutableTransferFromParams,
 }
 
 impl TransferFromCall {
     pub fn new(_ctx: &ScFuncContext) -> TransferFromCall {
         let mut f = TransferFromCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM),
+            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM),
             params: MutableTransferFromParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -80,16 +82,16 @@ impl TransferFromCall {
 }
 
 pub struct AllowanceCall {
-    pub func: ScView,
-    pub params: MutableAllowanceParams,
+    pub func:    ScView,
+    pub params:  MutableAllowanceParams,
     pub results: ImmutableAllowanceResults,
 }
 
 impl AllowanceCall {
     pub fn new(_ctx: &ScFuncContext) -> AllowanceCall {
         let mut f = AllowanceCall {
-            func: ScView::new(HSC_NAME, HVIEW_ALLOWANCE),
-            params: MutableAllowanceParams { id: 0 },
+            func:    ScView::new(HSC_NAME, HVIEW_ALLOWANCE),
+            params:  MutableAllowanceParams { id: 0 },
             results: ImmutableAllowanceResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
@@ -102,16 +104,16 @@ impl AllowanceCall {
 }
 
 pub struct BalanceOfCall {
-    pub func: ScView,
-    pub params: MutableBalanceOfParams,
+    pub func:    ScView,
+    pub params:  MutableBalanceOfParams,
     pub results: ImmutableBalanceOfResults,
 }
 
 impl BalanceOfCall {
     pub fn new(_ctx: &ScFuncContext) -> BalanceOfCall {
         let mut f = BalanceOfCall {
-            func: ScView::new(HSC_NAME, HVIEW_BALANCE_OF),
-            params: MutableBalanceOfParams { id: 0 },
+            func:    ScView::new(HSC_NAME, HVIEW_BALANCE_OF),
+            params:  MutableBalanceOfParams { id: 0 },
             results: ImmutableBalanceOfResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
@@ -124,14 +126,14 @@ impl BalanceOfCall {
 }
 
 pub struct TotalSupplyCall {
-    pub func: ScView,
+    pub func:    ScView,
     pub results: ImmutableTotalSupplyResults,
 }
 
 impl TotalSupplyCall {
     pub fn new(_ctx: &ScFuncContext) -> TotalSupplyCall {
         let mut f = TotalSupplyCall {
-            func: ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY),
+            func:    ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY),
             results: ImmutableTotalSupplyResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
@@ -142,3 +144,5 @@ impl TotalSupplyCall {
         TotalSupplyCall::new(&ScFuncContext {})
     }
 }
+
+//@formatter:on

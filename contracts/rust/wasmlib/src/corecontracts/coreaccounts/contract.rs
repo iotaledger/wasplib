@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use std::ptr;
@@ -13,14 +15,14 @@ use crate::*;
 use crate::corecontracts::coreaccounts::*;
 
 pub struct DepositCall {
-    pub func: ScFunc,
+    pub func:   ScFunc,
     pub params: MutableDepositParams,
 }
 
 impl DepositCall {
     pub fn new(_ctx: &ScFuncContext) -> DepositCall {
         let mut f = DepositCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_DEPOSIT),
+            func:   ScFunc::new(HSC_NAME, HFUNC_DEPOSIT),
             params: MutableDepositParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
@@ -41,14 +43,14 @@ impl WithdrawCall {
 }
 
 pub struct AccountsCall {
-    pub func: ScView,
+    pub func:    ScView,
     pub results: ImmutableAccountsResults,
 }
 
 impl AccountsCall {
     pub fn new(_ctx: &ScFuncContext) -> AccountsCall {
         let mut f = AccountsCall {
-            func: ScView::new(HSC_NAME, HVIEW_ACCOUNTS),
+            func:    ScView::new(HSC_NAME, HVIEW_ACCOUNTS),
             results: ImmutableAccountsResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
@@ -61,16 +63,16 @@ impl AccountsCall {
 }
 
 pub struct BalanceCall {
-    pub func: ScView,
-    pub params: MutableBalanceParams,
+    pub func:    ScView,
+    pub params:  MutableBalanceParams,
     pub results: ImmutableBalanceResults,
 }
 
 impl BalanceCall {
     pub fn new(_ctx: &ScFuncContext) -> BalanceCall {
         let mut f = BalanceCall {
-            func: ScView::new(HSC_NAME, HVIEW_BALANCE),
-            params: MutableBalanceParams { id: 0 },
+            func:    ScView::new(HSC_NAME, HVIEW_BALANCE),
+            params:  MutableBalanceParams { id: 0 },
             results: ImmutableBalanceResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
@@ -83,14 +85,14 @@ impl BalanceCall {
 }
 
 pub struct TotalAssetsCall {
-    pub func: ScView,
+    pub func:    ScView,
     pub results: ImmutableTotalAssetsResults,
 }
 
 impl TotalAssetsCall {
     pub fn new(_ctx: &ScFuncContext) -> TotalAssetsCall {
         let mut f = TotalAssetsCall {
-            func: ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS),
+            func:    ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS),
             results: ImmutableTotalAssetsResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
@@ -101,3 +103,5 @@ impl TotalAssetsCall {
         TotalAssetsCall::new(&ScFuncContext {})
     }
 }
+
+//@formatter:on

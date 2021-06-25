@@ -5,6 +5,8 @@
 //////// DO NOT CHANGE THIS FILE! ////////
 // Change the json schema instead
 
+//@formatter:off
+
 #![allow(dead_code)]
 
 use std::ptr;
@@ -13,16 +15,16 @@ use crate::*;
 use crate::corecontracts::coreeventlog::*;
 
 pub struct GetNumRecordsCall {
-    pub func: ScView,
-    pub params: MutableGetNumRecordsParams,
+    pub func:    ScView,
+    pub params:  MutableGetNumRecordsParams,
     pub results: ImmutableGetNumRecordsResults,
 }
 
 impl GetNumRecordsCall {
     pub fn new(_ctx: &ScFuncContext) -> GetNumRecordsCall {
         let mut f = GetNumRecordsCall {
-            func: ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS),
-            params: MutableGetNumRecordsParams { id: 0 },
+            func:    ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS),
+            params:  MutableGetNumRecordsParams { id: 0 },
             results: ImmutableGetNumRecordsResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
@@ -35,16 +37,16 @@ impl GetNumRecordsCall {
 }
 
 pub struct GetRecordsCall {
-    pub func: ScView,
-    pub params: MutableGetRecordsParams,
+    pub func:    ScView,
+    pub params:  MutableGetRecordsParams,
     pub results: ImmutableGetRecordsResults,
 }
 
 impl GetRecordsCall {
     pub fn new(_ctx: &ScFuncContext) -> GetRecordsCall {
         let mut f = GetRecordsCall {
-            func: ScView::new(HSC_NAME, HVIEW_GET_RECORDS),
-            params: MutableGetRecordsParams { id: 0 },
+            func:    ScView::new(HSC_NAME, HVIEW_GET_RECORDS),
+            params:  MutableGetRecordsParams { id: 0 },
             results: ImmutableGetRecordsResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
@@ -55,3 +57,5 @@ impl GetRecordsCall {
         GetRecordsCall::new(&ScFuncContext {})
     }
 }
+
+//@formatter:on

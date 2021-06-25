@@ -679,7 +679,6 @@ func (s *Schema) GenerateGoTests() error {
 
 func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 	nameLen := f.nameLen(5)
-
 	fmt.Fprintf(file, "\ntype %sContext struct {\n", f.Type)
 	if len(f.Params) != 0 {
 		fmt.Fprintf(file, "\t%s Immutable%sParams\n", pad("Params", nameLen), f.Type)
