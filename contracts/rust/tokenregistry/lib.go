@@ -30,10 +30,10 @@ func funcMintSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcMintSupply")
 	f := &MintSupplyContext{
 		Params: ImmutableMintSupplyParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTokenRegistryState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcMintSupply(ctx, f)
@@ -52,10 +52,10 @@ func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &TransferOwnershipContext{
 		Params: ImmutableTransferOwnershipParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTokenRegistryState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
@@ -75,10 +75,10 @@ func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &UpdateMetadataContext{
 		Params: ImmutableUpdateMetadataParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTokenRegistryState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
@@ -95,10 +95,10 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("tokenregistry.viewGetInfo")
 	f := &GetInfoContext{
 		Params: ImmutableGetInfoParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: ImmutableTokenRegistryState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")

@@ -57,7 +57,7 @@ fn func_lock_bets_thunk(ctx: &ScFuncContext) {
 
     let f = LockBetsContext {
         state: MutableFairRouletteState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_lock_bets(ctx, &f);
@@ -75,7 +75,7 @@ fn func_pay_winners_thunk(ctx: &ScFuncContext) {
 
     let f = PayWinnersContext {
         state: MutableFairRouletteState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_pay_winners(ctx, &f);
@@ -91,10 +91,10 @@ fn func_place_bet_thunk(ctx: &ScFuncContext) {
     ctx.log("fairroulette.funcPlaceBet");
     let f = PlaceBetContext {
         params: ImmutablePlaceBetParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairRouletteState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.number().exists(), "missing mandatory number");
@@ -114,10 +114,10 @@ fn func_play_period_thunk(ctx: &ScFuncContext) {
 
     let f = PlayPeriodContext {
         params: ImmutablePlayPeriodParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairRouletteState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.play_period().exists(), "missing mandatory playPeriod");
@@ -134,10 +134,10 @@ fn view_last_winning_number_thunk(ctx: &ScViewContext) {
     ctx.log("fairroulette.viewLastWinningNumber");
     let f = LastWinningNumberContext {
         results: MutableLastWinningNumberResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableFairRouletteState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_last_winning_number(ctx, &f);

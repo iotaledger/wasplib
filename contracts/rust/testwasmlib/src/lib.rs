@@ -52,10 +52,10 @@ fn func_param_types_thunk(ctx: &ScFuncContext) {
     ctx.log("testwasmlib.funcParamTypes");
     let f = ParamTypesContext {
         params: ImmutableParamTypesParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestWasmLibState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_param_types(ctx, &f);
@@ -72,13 +72,13 @@ fn view_block_record_thunk(ctx: &ScViewContext) {
     ctx.log("testwasmlib.viewBlockRecord");
     let f = BlockRecordContext {
         params: ImmutableBlockRecordParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableBlockRecordResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestWasmLibState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.block_index().exists(), "missing mandatory blockIndex");
@@ -97,13 +97,13 @@ fn view_block_records_thunk(ctx: &ScViewContext) {
     ctx.log("testwasmlib.viewBlockRecords");
     let f = BlockRecordsContext {
         params: ImmutableBlockRecordsParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableBlockRecordsResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestWasmLibState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.block_index().exists(), "missing mandatory blockIndex");

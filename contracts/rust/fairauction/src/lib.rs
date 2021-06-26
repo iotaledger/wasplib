@@ -59,10 +59,10 @@ fn func_finalize_auction_thunk(ctx: &ScFuncContext) {
 
     let f = FinalizeAuctionContext {
         params: ImmutableFinalizeAuctionParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairAuctionState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");
@@ -79,10 +79,10 @@ fn func_place_bid_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcPlaceBid");
     let f = PlaceBidContext {
         params: ImmutablePlaceBidParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairAuctionState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");
@@ -102,10 +102,10 @@ fn func_set_owner_margin_thunk(ctx: &ScFuncContext) {
 
     let f = SetOwnerMarginContext {
         params: ImmutableSetOwnerMarginParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairAuctionState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.owner_margin().exists(), "missing mandatory ownerMargin");
@@ -122,10 +122,10 @@ fn func_start_auction_thunk(ctx: &ScFuncContext) {
     ctx.log("fairauction.funcStartAuction");
     let f = StartAuctionContext {
         params: ImmutableStartAuctionParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableFairAuctionState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");
@@ -144,13 +144,13 @@ fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("fairauction.viewGetInfo");
     let f = GetInfoContext {
         params: ImmutableGetInfoParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableGetInfoResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableFairAuctionState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");

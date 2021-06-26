@@ -57,10 +57,10 @@ fn func_approve_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcApprove");
     let f = ApproveContext {
         params: ImmutableApproveParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.amount().exists(), "missing mandatory amount");
@@ -78,10 +78,10 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcInit");
     let f = InitContext {
         params: ImmutableInitParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.creator().exists(), "missing mandatory creator");
@@ -99,10 +99,10 @@ fn func_transfer_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransfer");
     let f = TransferContext {
         params: ImmutableTransferParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.account().exists(), "missing mandatory account");
@@ -120,10 +120,10 @@ fn func_transfer_from_thunk(ctx: &ScFuncContext) {
     ctx.log("erc20.funcTransferFrom");
     let f = TransferFromContext {
         params: ImmutableTransferFromParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.account().exists(), "missing mandatory account");
@@ -143,13 +143,13 @@ fn view_allowance_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewAllowance");
     let f = AllowanceContext {
         params: ImmutableAllowanceParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableAllowanceResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.account().exists(), "missing mandatory account");
@@ -168,13 +168,13 @@ fn view_balance_of_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewBalanceOf");
     let f = BalanceOfContext {
         params: ImmutableBalanceOfParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableBalanceOfResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.account().exists(), "missing mandatory account");
@@ -191,10 +191,10 @@ fn view_total_supply_thunk(ctx: &ScViewContext) {
     ctx.log("erc20.viewTotalSupply");
     let f = TotalSupplyContext {
         results: MutableTotalSupplyResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableErc20State {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_total_supply(ctx, &f);

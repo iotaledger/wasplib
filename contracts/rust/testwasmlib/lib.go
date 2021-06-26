@@ -29,10 +29,10 @@ func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testwasmlib.funcParamTypes")
 	f := &ParamTypesContext{
 		Params: ImmutableParamTypesParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestWasmLibState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcParamTypes(ctx, f)
@@ -49,13 +49,13 @@ func viewBlockRecordThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testwasmlib.viewBlockRecord")
 	f := &BlockRecordContext{
 		Params: ImmutableBlockRecordParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableBlockRecordResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestWasmLibState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.BlockIndex().Exists(), "missing mandatory blockIndex")
@@ -74,13 +74,13 @@ func viewBlockRecordsThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testwasmlib.viewBlockRecords")
 	f := &BlockRecordsContext{
 		Params: ImmutableBlockRecordsParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableBlockRecordsResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestWasmLibState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.BlockIndex().Exists(), "missing mandatory blockIndex")

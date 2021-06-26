@@ -78,13 +78,13 @@ fn func_call_on_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCallOnChain");
     let f = CallOnChainContext {
         params: ImmutableCallOnChainParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableCallOnChainResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
@@ -101,10 +101,10 @@ fn func_check_context_from_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcCheckContextFromFullEP");
     let f = CheckContextFromFullEPContext {
         params: ImmutableCheckContextFromFullEPParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.agent_id().exists(), "missing mandatory agentId");
@@ -124,7 +124,7 @@ fn func_do_nothing_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcDoNothing");
     let f = DoNothingContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_do_nothing(ctx, &f);
@@ -140,10 +140,10 @@ fn func_get_minted_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcGetMintedSupply");
     let f = GetMintedSupplyContext {
         results: MutableGetMintedSupplyResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_get_minted_supply(ctx, &f);
@@ -158,7 +158,7 @@ fn func_inc_counter_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcIncCounter");
     let f = IncCounterContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_inc_counter(ctx, &f);
@@ -173,7 +173,7 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcInit");
     let f = InitContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_init(ctx, &f);
@@ -189,10 +189,10 @@ fn func_pass_types_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcPassTypesFull");
     let f = PassTypesFullContext {
         params: ImmutablePassTypesFullParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.hash().exists(), "missing mandatory hash");
@@ -216,13 +216,13 @@ fn func_run_recursion_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcRunRecursion");
     let f = RunRecursionContext {
         params: ImmutableRunRecursionParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableRunRecursionResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
@@ -241,10 +241,10 @@ fn func_send_to_address_thunk(ctx: &ScFuncContext) {
 
     let f = SendToAddressContext {
         params: ImmutableSendToAddressParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.address().exists(), "missing mandatory address");
@@ -261,10 +261,10 @@ fn func_set_int_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcSetInt");
     let f = SetIntContext {
         params: ImmutableSetIntParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
@@ -281,7 +281,7 @@ fn func_test_call_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicFullEP");
     let f = TestCallPanicFullEPContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_call_panic_full_ep(ctx, &f);
@@ -296,7 +296,7 @@ fn func_test_call_panic_view_ep_from_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestCallPanicViewEPFromFull");
     let f = TestCallPanicViewEPFromFullContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_call_panic_view_ep_from_full(ctx, &f);
@@ -312,10 +312,10 @@ fn func_test_chain_owner_id_full_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestChainOwnerIDFull");
     let f = TestChainOwnerIDFullContext {
         results: MutableTestChainOwnerIDFullResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_chain_owner_id_full(ctx, &f);
@@ -330,7 +330,7 @@ fn func_test_event_log_deploy_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogDeploy");
     let f = TestEventLogDeployContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_event_log_deploy(ctx, &f);
@@ -345,7 +345,7 @@ fn func_test_event_log_event_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogEventData");
     let f = TestEventLogEventDataContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_event_log_event_data(ctx, &f);
@@ -361,10 +361,10 @@ fn func_test_event_log_generic_data_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestEventLogGenericData");
     let f = TestEventLogGenericDataContext {
         params: ImmutableTestEventLogGenericDataParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.counter().exists(), "missing mandatory counter");
@@ -380,7 +380,7 @@ fn func_test_panic_full_ep_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcTestPanicFullEP");
     let f = TestPanicFullEPContext {
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_panic_full_ep(ctx, &f);
@@ -396,10 +396,10 @@ fn func_withdraw_to_chain_thunk(ctx: &ScFuncContext) {
     ctx.log("testcore.funcWithdrawToChain");
     let f = WithdrawToChainContext {
         params: ImmutableWithdrawToChainParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.chain_id().exists(), "missing mandatory chainId");
@@ -416,10 +416,10 @@ fn view_check_context_from_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewCheckContextFromViewEP");
     let f = CheckContextFromViewEPContext {
         params: ImmutableCheckContextFromViewEPParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.agent_id().exists(), "missing mandatory agentId");
@@ -440,13 +440,13 @@ fn view_fibonacci_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewFibonacci");
     let f = FibonacciContext {
         params: ImmutableFibonacciParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableFibonacciResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.int_value().exists(), "missing mandatory intValue");
@@ -463,10 +463,10 @@ fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetCounter");
     let f = GetCounterContext {
         results: MutableGetCounterResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_get_counter(ctx, &f);
@@ -483,13 +483,13 @@ fn view_get_int_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewGetInt");
     let f = GetIntContext {
         params: ImmutableGetIntParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableGetIntResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.name().exists(), "missing mandatory name");
@@ -505,7 +505,7 @@ fn view_just_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewJustView");
     let f = JustViewContext {
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_just_view(ctx, &f);
@@ -521,10 +521,10 @@ fn view_pass_types_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewPassTypesView");
     let f = PassTypesViewContext {
         params: ImmutablePassTypesViewParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.hash().exists(), "missing mandatory hash");
@@ -546,7 +546,7 @@ fn view_test_call_panic_view_ep_from_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestCallPanicViewEPFromView");
     let f = TestCallPanicViewEPFromViewContext {
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_test_call_panic_view_ep_from_view(ctx, &f);
@@ -562,10 +562,10 @@ fn view_test_chain_owner_id_view_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestChainOwnerIDView");
     let f = TestChainOwnerIDViewContext {
         results: MutableTestChainOwnerIDViewResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_test_chain_owner_id_view(ctx, &f);
@@ -580,7 +580,7 @@ fn view_test_panic_view_ep_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestPanicViewEP");
     let f = TestPanicViewEPContext {
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_test_panic_view_ep(ctx, &f);
@@ -596,10 +596,10 @@ fn view_test_sandbox_call_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestSandboxCall");
     let f = TestSandboxCallContext {
         results: MutableTestSandboxCallResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableTestCoreState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_test_sandbox_call(ctx, &f);

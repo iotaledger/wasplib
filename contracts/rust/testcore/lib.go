@@ -55,13 +55,13 @@ func funcCallOnChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCallOnChain")
 	f := &CallOnChainContext{
 		Params: ImmutableCallOnChainParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableCallOnChainResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.IntValue().Exists(), "missing mandatory intValue")
@@ -78,10 +78,10 @@ func funcCheckContextFromFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcCheckContextFromFullEP")
 	f := &CheckContextFromFullEPContext{
 		Params: ImmutableCheckContextFromFullEPParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.AgentId().Exists(), "missing mandatory agentId")
@@ -101,7 +101,7 @@ func funcDoNothingThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcDoNothing")
 	f := &DoNothingContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcDoNothing(ctx, f)
@@ -117,10 +117,10 @@ func funcGetMintedSupplyThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcGetMintedSupply")
 	f := &GetMintedSupplyContext{
 		Results: MutableGetMintedSupplyResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcGetMintedSupply(ctx, f)
@@ -135,7 +135,7 @@ func funcIncCounterThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcIncCounter")
 	f := &IncCounterContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcIncCounter(ctx, f)
@@ -150,7 +150,7 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcInit")
 	f := &InitContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcInit(ctx, f)
@@ -166,10 +166,10 @@ func funcPassTypesFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcPassTypesFull")
 	f := &PassTypesFullContext{
 		Params: ImmutablePassTypesFullParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Hash().Exists(), "missing mandatory hash")
@@ -193,13 +193,13 @@ func funcRunRecursionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcRunRecursion")
 	f := &RunRecursionContext{
 		Params: ImmutableRunRecursionParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableRunRecursionResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.IntValue().Exists(), "missing mandatory intValue")
@@ -218,10 +218,10 @@ func funcSendToAddressThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &SendToAddressContext{
 		Params: ImmutableSendToAddressParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Address().Exists(), "missing mandatory address")
@@ -238,10 +238,10 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcSetInt")
 	f := &SetIntContext{
 		Params: ImmutableSetIntParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.IntValue().Exists(), "missing mandatory intValue")
@@ -258,7 +258,7 @@ func funcTestCallPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicFullEP")
 	f := &TestCallPanicFullEPContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestCallPanicFullEP(ctx, f)
@@ -273,7 +273,7 @@ func funcTestCallPanicViewEPFromFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestCallPanicViewEPFromFull")
 	f := &TestCallPanicViewEPFromFullContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestCallPanicViewEPFromFull(ctx, f)
@@ -289,10 +289,10 @@ func funcTestChainOwnerIDFullThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestChainOwnerIDFull")
 	f := &TestChainOwnerIDFullContext{
 		Results: MutableTestChainOwnerIDFullResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestChainOwnerIDFull(ctx, f)
@@ -307,7 +307,7 @@ func funcTestEventLogDeployThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogDeploy")
 	f := &TestEventLogDeployContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestEventLogDeploy(ctx, f)
@@ -322,7 +322,7 @@ func funcTestEventLogEventDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogEventData")
 	f := &TestEventLogEventDataContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestEventLogEventData(ctx, f)
@@ -338,10 +338,10 @@ func funcTestEventLogGenericDataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestEventLogGenericData")
 	f := &TestEventLogGenericDataContext{
 		Params: ImmutableTestEventLogGenericDataParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Counter().Exists(), "missing mandatory counter")
@@ -357,7 +357,7 @@ func funcTestPanicFullEPThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcTestPanicFullEP")
 	f := &TestPanicFullEPContext{
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcTestPanicFullEP(ctx, f)
@@ -373,10 +373,10 @@ func funcWithdrawToChainThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("testcore.funcWithdrawToChain")
 	f := &WithdrawToChainContext{
 		Params: ImmutableWithdrawToChainParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.ChainId().Exists(), "missing mandatory chainId")
@@ -393,10 +393,10 @@ func viewCheckContextFromViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewCheckContextFromViewEP")
 	f := &CheckContextFromViewEPContext{
 		Params: ImmutableCheckContextFromViewEPParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.AgentId().Exists(), "missing mandatory agentId")
@@ -417,13 +417,13 @@ func viewFibonacciThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewFibonacci")
 	f := &FibonacciContext{
 		Params: ImmutableFibonacciParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableFibonacciResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.IntValue().Exists(), "missing mandatory intValue")
@@ -440,10 +440,10 @@ func viewGetCounterThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetCounter")
 	f := &GetCounterContext{
 		Results: MutableGetCounterResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewGetCounter(ctx, f)
@@ -460,13 +460,13 @@ func viewGetIntThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewGetInt")
 	f := &GetIntContext{
 		Params: ImmutableGetIntParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableGetIntResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
@@ -482,7 +482,7 @@ func viewJustViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewJustView")
 	f := &JustViewContext{
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewJustView(ctx, f)
@@ -498,10 +498,10 @@ func viewPassTypesViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewPassTypesView")
 	f := &PassTypesViewContext{
 		Params: ImmutablePassTypesViewParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Hash().Exists(), "missing mandatory hash")
@@ -523,7 +523,7 @@ func viewTestCallPanicViewEPFromViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestCallPanicViewEPFromView")
 	f := &TestCallPanicViewEPFromViewContext{
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewTestCallPanicViewEPFromView(ctx, f)
@@ -539,10 +539,10 @@ func viewTestChainOwnerIDViewThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestChainOwnerIDView")
 	f := &TestChainOwnerIDViewContext{
 		Results: MutableTestChainOwnerIDViewResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewTestChainOwnerIDView(ctx, f)
@@ -557,7 +557,7 @@ func viewTestPanicViewEPThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestPanicViewEP")
 	f := &TestPanicViewEPContext{
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewTestPanicViewEP(ctx, f)
@@ -573,10 +573,10 @@ func viewTestSandboxCallThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("testcore.viewTestSandboxCall")
 	f := &TestSandboxCallContext{
 		Results: MutableTestSandboxCallResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableTestCoreState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewTestSandboxCall(ctx, f)

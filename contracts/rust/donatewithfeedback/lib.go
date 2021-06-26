@@ -30,10 +30,10 @@ func funcDonateThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("donatewithfeedback.funcDonate")
 	f := &DonateContext{
 		Params: ImmutableDonateParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableDonateWithFeedbackState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcDonate(ctx, f)
@@ -52,10 +52,10 @@ func funcWithdrawThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &WithdrawContext{
 		Params: ImmutableWithdrawParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableDonateWithFeedbackState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcWithdraw(ctx, f)
@@ -72,13 +72,13 @@ func viewDonationThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("donatewithfeedback.viewDonation")
 	f := &DonationContext{
 		Params: ImmutableDonationParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableDonationResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableDonateWithFeedbackState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Nr().Exists(), "missing mandatory nr")
@@ -95,10 +95,10 @@ func viewDonationInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("donatewithfeedback.viewDonationInfo")
 	f := &DonationInfoContext{
 		Results: MutableDonationInfoResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableDonateWithFeedbackState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewDonationInfo(ctx, f)

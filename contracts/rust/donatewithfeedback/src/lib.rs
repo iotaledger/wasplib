@@ -54,10 +54,10 @@ fn func_donate_thunk(ctx: &ScFuncContext) {
     ctx.log("donatewithfeedback.funcDonate");
     let f = DonateContext {
         params: ImmutableDonateParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableDonateWithFeedbackState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_donate(ctx, &f);
@@ -76,10 +76,10 @@ fn func_withdraw_thunk(ctx: &ScFuncContext) {
 
     let f = WithdrawContext {
         params: ImmutableWithdrawParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableDonateWithFeedbackState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_withdraw(ctx, &f);
@@ -96,13 +96,13 @@ fn view_donation_thunk(ctx: &ScViewContext) {
     ctx.log("donatewithfeedback.viewDonation");
     let f = DonationContext {
         params: ImmutableDonationParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableDonationResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableDonateWithFeedbackState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.nr().exists(), "missing mandatory nr");
@@ -119,10 +119,10 @@ fn view_donation_info_thunk(ctx: &ScViewContext) {
     ctx.log("donatewithfeedback.viewDonationInfo");
     let f = DonationInfoContext {
         results: MutableDonationInfoResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableDonateWithFeedbackState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_donation_info(ctx, &f);

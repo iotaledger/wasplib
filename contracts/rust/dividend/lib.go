@@ -30,7 +30,7 @@ func funcDivideThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcDivide")
 	f := &DivideContext{
 		State: MutableDividendState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcDivide(ctx, f)
@@ -46,10 +46,10 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("dividend.funcInit")
 	f := &InitContext{
 		Params: ImmutableInitParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableDividendState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcInit(ctx, f)
@@ -70,10 +70,10 @@ func funcMemberThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &MemberContext{
 		Params: ImmutableMemberParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableDividendState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Address().Exists(), "missing mandatory address")
@@ -96,10 +96,10 @@ func funcSetOwnerThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &SetOwnerContext{
 		Params: ImmutableSetOwnerParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableDividendState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Owner().Exists(), "missing mandatory owner")
@@ -117,13 +117,13 @@ func viewGetFactorThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("dividend.viewGetFactor")
 	f := &GetFactorContext{
 		Params: ImmutableGetFactorParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableGetFactorResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableDividendState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Address().Exists(), "missing mandatory address")

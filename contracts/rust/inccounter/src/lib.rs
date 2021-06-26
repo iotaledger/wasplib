@@ -61,7 +61,7 @@ fn func_call_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrement");
     let f = CallIncrementContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_call_increment(ctx, &f);
@@ -76,7 +76,7 @@ fn func_call_increment_recurse5x_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcCallIncrementRecurse5x");
     let f = CallIncrementRecurse5xContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_call_increment_recurse5x(ctx, &f);
@@ -91,7 +91,7 @@ fn func_endless_loop_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcEndlessLoop");
     let f = EndlessLoopContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_endless_loop(ctx, &f);
@@ -106,7 +106,7 @@ fn func_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcIncrement");
     let f = IncrementContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_increment(ctx, &f);
@@ -122,10 +122,10 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcInit");
     let f = InitContext {
         params: ImmutableInitParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_init(ctx, &f);
@@ -140,7 +140,7 @@ fn func_local_state_internal_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateInternalCall");
     let f = LocalStateInternalCallContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_local_state_internal_call(ctx, &f);
@@ -155,7 +155,7 @@ fn func_local_state_post_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStatePost");
     let f = LocalStatePostContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_local_state_post(ctx, &f);
@@ -170,7 +170,7 @@ fn func_local_state_sandbox_call_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcLocalStateSandboxCall");
     let f = LocalStateSandboxCallContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_local_state_sandbox_call(ctx, &f);
@@ -185,7 +185,7 @@ fn func_post_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcPostIncrement");
     let f = PostIncrementContext {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_post_increment(ctx, &f);
@@ -201,10 +201,10 @@ fn func_repeat_many_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcRepeatMany");
     let f = RepeatManyContext {
         params: ImmutableRepeatManyParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_repeat_many(ctx, &f);
@@ -219,7 +219,7 @@ fn func_test_leb128_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcTestLeb128");
     let f = TestLeb128Context {
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_test_leb128(ctx, &f);
@@ -235,10 +235,10 @@ fn func_when_must_increment_thunk(ctx: &ScFuncContext) {
     ctx.log("inccounter.funcWhenMustIncrement");
     let f = WhenMustIncrementContext {
         params: ImmutableWhenMustIncrementParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_when_must_increment(ctx, &f);
@@ -254,10 +254,10 @@ fn view_get_counter_thunk(ctx: &ScViewContext) {
     ctx.log("inccounter.viewGetCounter");
     let f = GetCounterContext {
         results: MutableGetCounterResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableIncCounterState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_get_counter(ctx, &f);

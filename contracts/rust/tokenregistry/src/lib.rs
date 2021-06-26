@@ -54,10 +54,10 @@ fn func_mint_supply_thunk(ctx: &ScFuncContext) {
     ctx.log("tokenregistry.funcMintSupply");
     let f = MintSupplyContext {
         params: ImmutableMintSupplyParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTokenRegistryState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_mint_supply(ctx, &f);
@@ -76,10 +76,10 @@ fn func_transfer_ownership_thunk(ctx: &ScFuncContext) {
 
     let f = TransferOwnershipContext {
         params: ImmutableTransferOwnershipParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTokenRegistryState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");
@@ -99,10 +99,10 @@ fn func_update_metadata_thunk(ctx: &ScFuncContext) {
 
     let f = UpdateMetadataContext {
         params: ImmutableUpdateMetadataParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableTokenRegistryState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");
@@ -119,10 +119,10 @@ fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("tokenregistry.viewGetInfo");
     let f = GetInfoContext {
         params: ImmutableGetInfoParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: ImmutableTokenRegistryState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.color().exists(), "missing mandatory color");

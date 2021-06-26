@@ -721,18 +721,18 @@ func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 
 	if len(f.Params) != 0 {
 		fmt.Fprintf(file, "\t\tParams: Immutable%sParams{\n", f.Type)
-		fmt.Fprintf(file, "\t\t\tid: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),\n")
+		fmt.Fprintf(file, "\t\t\tid: wasmlib.OBJ_ID_PARAMS,\n")
 		fmt.Fprintf(file, "\t\t},\n")
 	}
 
 	if len(f.Results) != 0 {
 		fmt.Fprintf(file, "\t\tResults: Mutable%sResults{\n", f.Type)
-		fmt.Fprintf(file, "\t\t\tid: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),\n")
+		fmt.Fprintf(file, "\t\t\tid: wasmlib.OBJ_ID_RESULTS,\n")
 		fmt.Fprintf(file, "\t\t},\n")
 	}
 
 	fmt.Fprintf(file, "\t\tState: %s%sState{\n", mutability, s.FullName)
-	fmt.Fprintf(file, "\t\t\tid: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),\n")
+	fmt.Fprintf(file, "\t\t\tid: wasmlib.OBJ_ID_STATE,\n")
 	fmt.Fprintf(file, "\t\t},\n")
 
 	fmt.Fprintf(file, "\t}\n")

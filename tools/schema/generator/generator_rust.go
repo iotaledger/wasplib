@@ -859,17 +859,18 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 
 	if len(f.Params) != 0 {
 		fmt.Fprintf(file, "        params: Immutable%sParams {\n", f.Type)
-		fmt.Fprintf(file, "            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),\n")
+		fmt.Fprintf(file, "            id: OBJ_ID_PARAMS,\n")
 		fmt.Fprintf(file, "        },\n")
 	}
+
 	if len(f.Results) != 0 {
 		fmt.Fprintf(file, "        results: Mutable%sResults {\n", f.Type)
-		fmt.Fprintf(file, "            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),\n")
+		fmt.Fprintf(file, "            id: OBJ_ID_RESULTS,\n")
 		fmt.Fprintf(file, "        },\n")
 	}
 
 	fmt.Fprintf(file, "        state: %s%sState {\n", mutability, s.FullName)
-	fmt.Fprintf(file, "            id: get_object_id(1, KEY_STATE, TYPE_MAP),\n")
+	fmt.Fprintf(file, "            id: OBJ_ID_STATE,\n")
 	fmt.Fprintf(file, "        },\n")
 
 	fmt.Fprintf(file, "    };\n")

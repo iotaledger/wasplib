@@ -23,6 +23,12 @@ const (
 	TYPE_MAP        int32 = 11
 	TYPE_REQUEST_ID int32 = 12
 	TYPE_STRING     int32 = 13
+
+	OBJ_ID_NULL    int32 = 0
+	OBJ_ID_ROOT    int32 = 1
+	OBJ_ID_STATE   int32 = 2
+	OBJ_ID_PARAMS  int32 = 3
+	OBJ_ID_RESULTS int32 = 4
 )
 
 var TypeSizes = [...]uint8{0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0}

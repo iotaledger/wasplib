@@ -4,6 +4,7 @@
 // Provide host with details about funcs and views in this smart contract
 
 use crate::context::*;
+use crate::host::*;
 use crate::keys::*;
 use crate::mutable::*;
 
@@ -24,6 +25,11 @@ static mut VIEWS: Vec<fn(&ScViewContext)> = vec![];
 // the host will pass the index of one of the entrypoints
 // that was provided by on_load during SC initialization
 fn on_call(index: i32) {
+    let ctx = ScFuncContext{};
+    ctx.require(get_object_id(OBJ_ID_ROOT, KEY_STATE, TYPE_MAP) == OBJ_ID_STATE, "object id mismatch");
+    ctx.require(get_object_id(OBJ_ID_ROOT, KEY_PARAMS, TYPE_MAP) == OBJ_ID_PARAMS, "object id mismatch");
+    ctx.require(get_object_id(OBJ_ID_ROOT, KEY_RESULTS, TYPE_MAP) == OBJ_ID_RESULTS, "object id mismatch");
+
     unsafe {
         if (index & 0x8000) != 0 {
             // immutable view function, invoke with a view context
@@ -32,7 +38,7 @@ fn on_call(index: i32) {
         }
 
         // mutable full function, invoke with a func context
-        FUNCS[index as usize](&ScFuncContext {});
+        FUNCS[index as usize](&ctx);
     }
 }
 

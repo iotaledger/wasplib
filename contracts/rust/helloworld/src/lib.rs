@@ -50,7 +50,7 @@ fn func_hello_world_thunk(ctx: &ScFuncContext) {
     ctx.log("helloworld.funcHelloWorld");
     let f = HelloWorldContext {
         state: MutableHelloWorldState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_hello_world(ctx, &f);
@@ -66,10 +66,10 @@ fn view_get_hello_world_thunk(ctx: &ScViewContext) {
     ctx.log("helloworld.viewGetHelloWorld");
     let f = GetHelloWorldContext {
         results: MutableGetHelloWorldResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableHelloWorldState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     view_get_hello_world(ctx, &f);

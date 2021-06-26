@@ -34,10 +34,10 @@ func funcFinalizeAuctionThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &FinalizeAuctionContext{
 		Params: ImmutableFinalizeAuctionParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairAuctionState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
@@ -54,10 +54,10 @@ func funcPlaceBidThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcPlaceBid")
 	f := &PlaceBidContext{
 		Params: ImmutablePlaceBidParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairAuctionState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
@@ -77,10 +77,10 @@ func funcSetOwnerMarginThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &SetOwnerMarginContext{
 		Params: ImmutableSetOwnerMarginParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairAuctionState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.OwnerMargin().Exists(), "missing mandatory ownerMargin")
@@ -97,10 +97,10 @@ func funcStartAuctionThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairauction.funcStartAuction")
 	f := &StartAuctionContext{
 		Params: ImmutableStartAuctionParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairAuctionState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")
@@ -119,13 +119,13 @@ func viewGetInfoThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("fairauction.viewGetInfo")
 	f := &GetInfoContext{
 		Params: ImmutableGetInfoParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableGetInfoResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableFairAuctionState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Color().Exists(), "missing mandatory color")

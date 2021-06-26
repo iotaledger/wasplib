@@ -33,7 +33,7 @@ func funcLockBetsThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &LockBetsContext{
 		State: MutableFairRouletteState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcLockBets(ctx, f)
@@ -51,7 +51,7 @@ func funcPayWinnersThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &PayWinnersContext{
 		State: MutableFairRouletteState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	funcPayWinners(ctx, f)
@@ -67,10 +67,10 @@ func funcPlaceBetThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("fairroulette.funcPlaceBet")
 	f := &PlaceBetContext{
 		Params: ImmutablePlaceBetParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairRouletteState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Number().Exists(), "missing mandatory number")
@@ -90,10 +90,10 @@ func funcPlayPeriodThunk(ctx wasmlib.ScFuncContext) {
 
 	f := &PlayPeriodContext{
 		Params: ImmutablePlayPeriodParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableFairRouletteState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.PlayPeriod().Exists(), "missing mandatory playPeriod")
@@ -110,10 +110,10 @@ func viewLastWinningNumberThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("fairroulette.viewLastWinningNumber")
 	f := &LastWinningNumberContext{
 		Results: MutableLastWinningNumberResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableFairRouletteState{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewLastWinningNumber(ctx, f)

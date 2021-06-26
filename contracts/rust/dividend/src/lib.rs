@@ -53,7 +53,7 @@ fn func_divide_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcDivide");
     let f = DivideContext {
         state: MutableDividendState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_divide(ctx, &f);
@@ -69,10 +69,10 @@ fn func_init_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcInit");
     let f = InitContext {
         params: ImmutableInitParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableDividendState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     func_init(ctx, &f);
@@ -93,10 +93,10 @@ fn func_member_thunk(ctx: &ScFuncContext) {
 
     let f = MemberContext {
         params: ImmutableMemberParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableDividendState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.address().exists(), "missing mandatory address");
@@ -119,10 +119,10 @@ fn func_set_owner_thunk(ctx: &ScFuncContext) {
 
     let f = SetOwnerContext {
         params: ImmutableSetOwnerParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         state: MutableDividendState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.owner().exists(), "missing mandatory owner");
@@ -140,13 +140,13 @@ fn view_get_factor_thunk(ctx: &ScViewContext) {
     ctx.log("dividend.viewGetFactor");
     let f = GetFactorContext {
         params: ImmutableGetFactorParams {
-            id: get_object_id(1, KEY_PARAMS, TYPE_MAP),
+            id: OBJ_ID_PARAMS,
         },
         results: MutableGetFactorResults {
-            id: get_object_id(1, KEY_RESULTS, TYPE_MAP),
+            id: OBJ_ID_RESULTS,
         },
         state: ImmutableDividendState {
-            id: get_object_id(1, KEY_STATE, TYPE_MAP),
+            id: OBJ_ID_STATE,
         },
     };
     ctx.require(f.params.address().exists(), "missing mandatory address");

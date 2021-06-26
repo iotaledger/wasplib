@@ -33,10 +33,10 @@ func funcApproveThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcApprove")
 	f := &ApproveContext{
 		Params: ImmutableApproveParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Amount().Exists(), "missing mandatory amount")
@@ -54,10 +54,10 @@ func funcInitThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcInit")
 	f := &InitContext{
 		Params: ImmutableInitParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Creator().Exists(), "missing mandatory creator")
@@ -75,10 +75,10 @@ func funcTransferThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransfer")
 	f := &TransferContext{
 		Params: ImmutableTransferParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Account().Exists(), "missing mandatory account")
@@ -96,10 +96,10 @@ func funcTransferFromThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("erc20.funcTransferFrom")
 	f := &TransferFromContext{
 		Params: ImmutableTransferFromParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		State: MutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Account().Exists(), "missing mandatory account")
@@ -119,13 +119,13 @@ func viewAllowanceThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewAllowance")
 	f := &AllowanceContext{
 		Params: ImmutableAllowanceParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableAllowanceResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Account().Exists(), "missing mandatory account")
@@ -144,13 +144,13 @@ func viewBalanceOfThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewBalanceOf")
 	f := &BalanceOfContext{
 		Params: ImmutableBalanceOfParams{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyParams, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_PARAMS,
 		},
 		Results: MutableBalanceOfResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	ctx.Require(f.Params.Account().Exists(), "missing mandatory account")
@@ -167,10 +167,10 @@ func viewTotalSupplyThunk(ctx wasmlib.ScViewContext) {
 	ctx.Log("erc20.viewTotalSupply")
 	f := &TotalSupplyContext{
 		Results: MutableTotalSupplyResults{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyResults, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_RESULTS,
 		},
 		State: ImmutableErc20State{
-			id: wasmlib.GetObjectId(1, wasmlib.KeyState, wasmlib.TYPE_MAP),
+			id: wasmlib.OBJ_ID_STATE,
 		},
 	}
 	viewTotalSupply(ctx, f)

@@ -33,7 +33,7 @@ func (v *ScView) call(transferId int32) {
 	encode.Int32(transferId)
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
 	if v.resultsId != nil {
-		*v.resultsId = GetObjectId(1, KeyReturn, TYPE_MAP)
+		*v.resultsId = GetObjectId(OBJ_ID_ROOT, KeyReturn, TYPE_MAP)
 	}
 }
 

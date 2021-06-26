@@ -25,6 +25,12 @@ pub const TYPE_MAP: i32 = 11;
 pub const TYPE_REQUEST_ID: i32 = 12;
 pub const TYPE_STRING: i32 = 13;
 
+pub const OBJ_ID_NULL: i32 = 0;
+pub const OBJ_ID_ROOT: i32 = 1;
+pub const OBJ_ID_STATE: i32 = 2;
+pub const OBJ_ID_PARAMS: i32 = 3;
+pub const OBJ_ID_RESULTS: i32 = 4;
+
 // size in bytes of predefined types, indexed by the TYPE_* consts
 const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0];
 
