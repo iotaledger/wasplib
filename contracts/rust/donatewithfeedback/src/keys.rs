@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -55,4 +55,4 @@ pub fn idx_map(idx: usize) -> Key32 {
     }
 }
 
-//@formatter:on
+// @formatter:on

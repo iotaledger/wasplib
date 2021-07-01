@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -130,4 +130,4 @@ fn view_get_info_thunk(ctx: &ScViewContext) {
     ctx.log("tokenregistry.viewGetInfo ok");
 }
 
-//@formatter:on
+// @formatter:on

@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -41,4 +41,4 @@ pub const HFUNC_PARAM_TYPES:   ScHname = ScHname(0x6921c4cd);
 pub const HVIEW_BLOCK_RECORD:  ScHname = ScHname(0xad13b2f8);
 pub const HVIEW_BLOCK_RECORDS: ScHname = ScHname(0x16e249ea);
 
-//@formatter:on
+// @formatter:on

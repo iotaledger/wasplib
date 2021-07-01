@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -105,4 +105,4 @@ pub const HVIEW_TEST_CHAIN_OWNER_ID_VIEW:          ScHname = ScHname(0x26586c33)
 pub const HVIEW_TEST_PANIC_VIEW_EP:                ScHname = ScHname(0x22bc4d72);
 pub const HVIEW_TEST_SANDBOX_CALL:                 ScHname = ScHname(0x42d72b63);
 
-//@formatter:on
+// @formatter:on

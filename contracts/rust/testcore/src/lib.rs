@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -606,4 +606,4 @@ fn view_test_sandbox_call_thunk(ctx: &ScViewContext) {
     ctx.log("testcore.viewTestSandboxCall ok");
 }
 
-//@formatter:on
+// @formatter:on

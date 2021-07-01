@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -50,4 +50,4 @@ pub const HFUNC_SET_OWNER_MARGIN: ScHname = ScHname(0x1774461a);
 pub const HFUNC_START_AUCTION:    ScHname = ScHname(0xd5b7bacb);
 pub const HVIEW_GET_INFO:         ScHname = ScHname(0xcfedba5f);
 
-//@formatter:on
+// @formatter:on

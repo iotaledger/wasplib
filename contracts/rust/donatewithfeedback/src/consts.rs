@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -41,4 +41,4 @@ pub const HFUNC_WITHDRAW:      ScHname = ScHname(0x9dcc0f41);
 pub const HVIEW_DONATION:      ScHname = ScHname(0xbdb245ba);
 pub const HVIEW_DONATION_INFO: ScHname = ScHname(0xc8f7c726);
 
-//@formatter:on
+// @formatter:on

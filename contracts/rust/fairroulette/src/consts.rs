@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -36,4 +36,4 @@ pub const HFUNC_PLACE_BET:           ScHname = ScHname(0xdfba7d1b);
 pub const HFUNC_PLAY_PERIOD:         ScHname = ScHname(0xcb94b293);
 pub const HVIEW_LAST_WINNING_NUMBER: ScHname = ScHname(0x2f5f09fe);
 
-//@formatter:on
+// @formatter:on
