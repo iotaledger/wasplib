@@ -8,7 +8,7 @@ var (
 	views []func(ctx ScViewContext)
 )
 
-// export on_call
+//export on_call
 func OnCall(index int32) {
 	ctx := ScFuncContext{}
 	ctx.Require(GetObjectID(OBJ_ID_ROOT, KeyState, TYPE_MAP) == OBJ_ID_STATE, "object id mismatch")

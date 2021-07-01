@@ -7,20 +7,20 @@ package wasmclient
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-// go:wasm-module WasmLib
-// export hostGetBytes
+//go:wasm-module WasmLib
+//export hostGetBytes
 func hostGetBytes(objID, keyID, typeID int32, value *byte, size int32) int32
 
-// go:wasm-module WasmLib
-// export hostGetKeyID
+//go:wasm-module WasmLib
+//export hostGetKeyID
 func hostGetKeyID(key *byte, size int32) int32
 
-// go:wasm-module WasmLib
-// export hostGetObjectID
+//go:wasm-module WasmLib
+//export hostGetObjectID
 func hostGetObjectID(objID, keyID, typeID int32) int32
 
-// go:wasm-module WasmLib
-// export hostSetBytes
+//go:wasm-module WasmLib
+//export hostSetBytes
 func hostSetBytes(objID, keyID, typeID int32, value *byte, size int32)
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\

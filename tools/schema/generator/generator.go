@@ -19,9 +19,10 @@ var ModuleCwd string
 var ModuleName string
 var ModulePath string
 
-var camelRegExp = regexp.MustCompile("_[a-z]")
-var snakeRegExp = regexp.MustCompile("[a-z0-9][A-Z]")
-var snakeRegExp2 = regexp.MustCompile("[A-Z][A-Z]+[a-z]")
+//nolint:unused
+var camelRegExp = regexp.MustCompile(`_[a-z]`)
+var snakeRegExp = regexp.MustCompile(`[a-z0-9][A-Z]`)
+var snakeRegExp2 = regexp.MustCompile(`[A-Z][A-Z]+[a-z]`)
 
 func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen int, typeLen int) {
 	for _, param := range fields {
@@ -44,6 +45,7 @@ func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen
 }
 
 // convert lowercase snake case to camel case
+//nolint:deadcode,unused
 func camel(name string) string {
 	return camelRegExp.ReplaceAllStringFunc(name, func(sub string) string {
 		return strings.ToUpper(sub[1:])
@@ -86,7 +88,9 @@ func FindModulePath() error {
 	}
 	// we're going to walk up the path, make sure to restore
 	ModuleCwd = cwd
-	defer os.Chdir(ModuleCwd)
+	defer func(){
+		_ = os.Chdir(ModuleCwd)
+	}()
 
 	file, err := os.Open("go.mod")
 	for err != nil {

@@ -99,7 +99,7 @@ func RustToJavaVarNames(line string) string {
 	return line
 }
 
-var matchJavaConst = regexp.MustCompile("^[^a-zA-Z_](Param|Var|HFunc|HView)[A-Z]")
+var matchJavaConst = regexp.MustCompile(`^[^a-zA-Z_](Param|Var|HFunc|HView)[A-Z]`)
 
 func replaceJavaConst(m string) string {
 	// "[^a-zA-Z_][A-Z][A-Z_]+"

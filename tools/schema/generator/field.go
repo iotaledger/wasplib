@@ -11,9 +11,9 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-var fldNameRegexp = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9]*$")
-var fldAliasRegexp = regexp.MustCompile("^[a-zA-Z0-9_$#@*%\\-]+$")
-var fldTypeRegexp = regexp.MustCompile("^[A-Z][a-zA-Z0-9]+$")
+var fldNameRegexp = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9]*$`)
+var fldAliasRegexp = regexp.MustCompile(`^[a-zA-Z0-9_$#@*%\-]+$`)
+var fldTypeRegexp = regexp.MustCompile(`^[A-Z][a-zA-Z0-9]+$`)
 
 var FieldTypes = map[string]int32{
 	"Address":   wasmlib.TYPE_ADDRESS,
@@ -76,7 +76,7 @@ func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
 			fldType = strings.TrimSpace(fldType[index+1:])
 		}
 	}
-	index = strings.Index(fldType, "// ")
+	index = strings.Index(fldType, "//")
 	if index >= 0 {
 		f.Comment = " " + fldType[index:]
 		fldType = strings.TrimSpace(fldType[:index])

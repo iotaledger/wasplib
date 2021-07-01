@@ -29,7 +29,7 @@ const (
 	useWasmLibHost     = "use wasmlib::host::*;\n"
 )
 
-var rustFuncRegexp = regexp.MustCompile("^pub fn (\\w+).+$")
+var rustFuncRegexp = regexp.MustCompile(`^pub fn (\w+).+$`)
 
 var rustTypes = StringMap{
 	"Address":   "ScAddress",
@@ -99,7 +99,9 @@ func (s *Schema) GenerateRust() error {
 		if err != nil {
 			return err
 		}
-		defer os.Chdir("..")
+		defer func() {
+			_ = os.Chdir("..")
+		}()
 	}
 
 	err := s.generateRustConsts()
@@ -173,13 +175,13 @@ func (s *Schema) generateRustCargo() error {
 	fmt.Fprintf(file, "version = \"0.1.0\"\n")
 	fmt.Fprintf(file, "authors = [\"Eric Hop <eric@iota.org>\"]\n")
 	fmt.Fprintf(file, "edition = \"2018\"\n")
-	fmt.Fprintf(file, "repository = \"https:// %s\"\n", ModuleName)
+	fmt.Fprintf(file, "repository = \"https://%s\"\n", ModuleName)
 	fmt.Fprintf(file, "\n[lib]\n")
 	fmt.Fprintf(file, "crate-type = [\"cdylib\", \"rlib\"]\n")
 	fmt.Fprintf(file, "\n[features]\n")
 	fmt.Fprintf(file, "default = [\"console_error_panic_hook\"]\n")
 	fmt.Fprintf(file, "\n[dependencies]\n")
-	fmt.Fprintf(file, "wasmlib = { git = \"https:// github.com/iotaledger/wasp\", branch = \"develop\" }\n")
+	fmt.Fprintf(file, "wasmlib = { git = \"https://github.com/iotaledger/wasp\", branch = \"develop\" }\n")
 	fmt.Fprintf(file, "console_error_panic_hook = { version = \"0.1.6\", optional = true }\n")
 	fmt.Fprintf(file, "wee_alloc = { version = \"0.4.5\", optional = true }\n")
 	fmt.Fprintf(file, "\n[dev-dependencies]\n")
@@ -726,9 +728,7 @@ func (s *Schema) generateRustResults() error {
 
 func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
 	typeName = mutability + typeName + kind
-	if strings.HasSuffix(kind, "s") {
-		kind = kind[0 : len(kind)-1]
-	}
+	kind = strings.TrimSuffix(kind, "s")
 	kind = upper(kind) + "_"
 
 	// first generate necessary array and map types
@@ -835,7 +835,7 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "    ctx.log(\"%s.%s\");\n", s.Name, f.FuncName)
 	grant := f.Access
 	if grant != "" {
-		index := strings.Index(grant, "// ")
+		index := strings.Index(grant, "//")
 		if index >= 0 {
 			fmt.Fprintf(file, "    %s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
@@ -850,7 +850,7 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 		default:
 			fmt.Fprintf(file, "    let access = ctx.state().get_agent_id(\"%s\");\n", grant)
 			fmt.Fprintf(file, "    ctx.require(access.exists(), \"access not set: %s\");\n", grant)
-			grant = fmt.Sprintf("access.value()")
+			grant = "access.value()"
 		}
 		fmt.Fprintf(file, "    ctx.require(ctx.caller() == %s, \"no permission\");\n\n", grant)
 	}

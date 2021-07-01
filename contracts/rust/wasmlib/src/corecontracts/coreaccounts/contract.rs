@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -104,4 +104,4 @@ impl TotalAssetsCall {
     }
 }
 
-//@formatter:on
+// @formatter:on

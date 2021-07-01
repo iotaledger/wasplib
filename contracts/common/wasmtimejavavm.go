@@ -177,6 +177,10 @@ func (vm *WasmTimeJavaVM) linkHostJava() error {
 func (vm *WasmTimeJavaVM) linkHostJavaSymbols() error {
 	for i := 0; i < len(javaImports); i += 3 {
 		module := javaImports[i]
+		if module == "WasmLib" {
+			// should have already been defined
+			continue
+		}
 		name := javaImports[i+1]
 		typeNr, _ := strconv.Atoi(javaImports[i+2])
 		types := javaTypes[typeNr]

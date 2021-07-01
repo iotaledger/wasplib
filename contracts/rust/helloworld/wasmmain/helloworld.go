@@ -15,7 +15,7 @@ import "github.com/iotaledger/wasplib/contracts/rust/helloworld"
 func main() {
 }
 
-// export on_load
+//export on_load
 func OnLoad() {
 	wasmclient.ConnectWasmHost()
 	helloworld.OnLoad()

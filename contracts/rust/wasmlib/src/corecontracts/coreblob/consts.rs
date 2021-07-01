@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -31,4 +31,4 @@ pub const HVIEW_GET_BLOB_FIELD: ScHname = ScHname(0x1f448130);
 pub const HVIEW_GET_BLOB_INFO:  ScHname = ScHname(0xfde4ab46);
 pub const HVIEW_LIST_BLOBS:     ScHname = ScHname(0x62ca7990);
 
-//@formatter:on
+// @formatter:on

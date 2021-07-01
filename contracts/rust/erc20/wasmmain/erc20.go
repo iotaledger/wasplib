@@ -15,7 +15,7 @@ import "github.com/iotaledger/wasplib/contracts/rust/erc20"
 func main() {
 }
 
-// export on_load
+//export on_load
 func OnLoad() {
 	wasmclient.ConnectWasmHost()
 	erc20.OnLoad()

@@ -52,7 +52,7 @@ func (o ScMutableAddressArray) GetAddress(index int32) ScMutableAddress {
 }
 
 func (o ScMutableAddressArray) Immutable() ScImmutableAddressArray {
-	return ScImmutableAddressArray{objID: o.objID}
+	return ScImmutableAddressArray(o)
 }
 
 func (o ScMutableAddressArray) Length() int32 {
@@ -101,7 +101,7 @@ func (o ScMutableAgentIDArray) GetAgentID(index int32) ScMutableAgentID {
 }
 
 func (o ScMutableAgentIDArray) Immutable() ScImmutableAgentIDArray {
-	return ScImmutableAgentIDArray{objID: o.objID}
+	return ScImmutableAgentIDArray(o)
 }
 
 func (o ScMutableAgentIDArray) Length() int32 {
@@ -150,7 +150,7 @@ func (o ScMutableBytesArray) GetBytes(index int32) ScMutableBytes {
 }
 
 func (o ScMutableBytesArray) Immutable() ScImmutableBytesArray {
-	return ScImmutableBytesArray{objID: o.objID}
+	return ScImmutableBytesArray(o)
 }
 
 func (o ScMutableBytesArray) Length() int32 {
@@ -199,7 +199,7 @@ func (o ScMutableChainIDArray) GetChainID(index int32) ScMutableChainID {
 }
 
 func (o ScMutableChainIDArray) Immutable() ScImmutableChainIDArray {
-	return ScImmutableChainIDArray{objID: o.objID}
+	return ScImmutableChainIDArray(o)
 }
 
 func (o ScMutableChainIDArray) Length() int32 {
@@ -248,7 +248,7 @@ func (o ScMutableColorArray) GetColor(index int32) ScMutableColor {
 }
 
 func (o ScMutableColorArray) Immutable() ScImmutableColorArray {
-	return ScImmutableColorArray{objID: o.objID}
+	return ScImmutableColorArray(o)
 }
 
 func (o ScMutableColorArray) Length() int32 {
@@ -297,7 +297,7 @@ func (o ScMutableHashArray) GetHash(index int32) ScMutableHash {
 }
 
 func (o ScMutableHashArray) Immutable() ScImmutableHashArray {
-	return ScImmutableHashArray{objID: o.objID}
+	return ScImmutableHashArray(o)
 }
 
 func (o ScMutableHashArray) Length() int32 {
@@ -346,7 +346,7 @@ func (o ScMutableHnameArray) GetHname(index int32) ScMutableHname {
 }
 
 func (o ScMutableHnameArray) Immutable() ScImmutableHnameArray {
-	return ScImmutableHnameArray{objID: o.objID}
+	return ScImmutableHnameArray(o)
 }
 
 func (o ScMutableHnameArray) Length() int32 {
@@ -398,7 +398,7 @@ func (o ScMutableInt16Array) GetInt16(index int32) ScMutableInt16 {
 }
 
 func (o ScMutableInt16Array) Immutable() ScImmutableInt16Array {
-	return ScImmutableInt16Array{objID: o.objID}
+	return ScImmutableInt16Array(o)
 }
 
 func (o ScMutableInt16Array) Length() int32 {
@@ -450,7 +450,7 @@ func (o ScMutableInt32Array) GetInt32(index int32) ScMutableInt32 {
 }
 
 func (o ScMutableInt32Array) Immutable() ScImmutableInt32Array {
-	return ScImmutableInt32Array{objID: o.objID}
+	return ScImmutableInt32Array(o)
 }
 
 func (o ScMutableInt32Array) Length() int32 {
@@ -502,7 +502,7 @@ func (o ScMutableInt64Array) GetInt64(index int32) ScMutableInt64 {
 }
 
 func (o ScMutableInt64Array) Immutable() ScImmutableInt64Array {
-	return ScImmutableInt64Array{objID: o.objID}
+	return ScImmutableInt64Array(o)
 }
 
 func (o ScMutableInt64Array) Length() int32 {
@@ -647,7 +647,7 @@ func (o ScMutableMap) GetStringArray(key MapKey) ScMutableStringArray {
 }
 
 func (o ScMutableMap) Immutable() ScImmutableMap {
-	return ScImmutableMap{objID: o.objID}
+	return ScImmutableMap(o)
 }
 
 func (o ScMutableMap) MapID() int32 {
@@ -670,7 +670,7 @@ func (o ScMutableMapArray) GetMap(index int32) ScMutableMap {
 }
 
 func (o ScMutableMapArray) Immutable() ScImmutableMapArray {
-	return ScImmutableMapArray{objID: o.objID}
+	return ScImmutableMapArray(o)
 }
 
 func (o ScMutableMapArray) Length() int32 {
@@ -719,7 +719,7 @@ func (o ScMutableRequestIDArray) GetRequestID(index int32) ScMutableRequestID {
 }
 
 func (o ScMutableRequestIDArray) Immutable() ScImmutableRequestIDArray {
-	return ScImmutableRequestIDArray{objID: o.objID}
+	return ScImmutableRequestIDArray(o)
 }
 
 func (o ScMutableRequestIDArray) Length() int32 {
@@ -772,7 +772,7 @@ func (o ScMutableStringArray) GetString(index int32) ScMutableString {
 }
 
 func (o ScMutableStringArray) Immutable() ScImmutableStringArray {
-	return ScImmutableStringArray{objID: o.objID}
+	return ScImmutableStringArray(o)
 }
 
 func (o ScMutableStringArray) Length() int32 {

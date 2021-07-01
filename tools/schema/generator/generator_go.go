@@ -13,11 +13,14 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
-const importCoreTypes = "import \"github.com/iotaledger/wasp/packages/coretypes\"\n"
-const importWasmLib = "import \"github.com/iotaledger/wasplib/packages/vm/wasmlib\"\n"
-const importWasmClient = "import \"github.com/iotaledger/wasplib/packages/vm/wasmclient\"\n"
+const importCoreTypes = `import "github.com/iotaledger/wasp/packages/coretypes"
+`
+const importWasmLib = `import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+`
+const importWasmClient = `import "github.com/iotaledger/wasplib/packages/vm/wasmclient"
+`
 
-var goFuncRegexp = regexp.MustCompile("^func (\\w+).+$")
+var goFuncRegexp = regexp.MustCompile(`^func (\w+).+$`)
 
 var goTypes = StringMap{
 	"Address":   "wasmlib.ScAddress",
@@ -198,7 +201,7 @@ func (s *Schema) generateGoContract() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintf(file, importWasmLib)
+	fmt.Fprint(file, importWasmLib)
 
 	for _, f := range s.Funcs {
 		nameLen := f.nameLen(4)
@@ -319,7 +322,7 @@ func (s *Schema) generateGoKeys() error {
 	// write file header
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintf(file, importWasmLib)
+	fmt.Fprint(file, importWasmLib)
 
 	s.KeyID = 0
 	s.generateGoKeysIndexes(file, s.Params, "Param")
@@ -586,9 +589,7 @@ func (s *Schema) generateGoResults() error {
 
 func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
 	typeName = mutability + typeName + kind
-	if strings.HasSuffix(kind, "s") {
-		kind = kind[0 : len(kind)-1]
-	}
+	kind = strings.TrimSuffix(kind, "s")
 
 	// first generate necessary array and map types
 	for _, field := range fields {
@@ -652,7 +653,7 @@ func (s *Schema) generateGoSubtypes() error {
 
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintf(file, importWasmLib)
+	fmt.Fprint(file, importWasmLib)
 
 	for _, subtype := range s.Subtypes {
 		s.generateGoProxy(file, subtype, "Immutable")
@@ -671,10 +672,11 @@ func (s *Schema) GenerateGoTests() error {
 	if err != nil {
 		return err
 	}
-	defer os.Chdir("..")
+	defer func() {
+		_ = os.Chdir("..")
+	}()
 	// TODO <scname>_test.go
-	s.generateGoConsts(true)
-	return nil
+	return s.generateGoConsts(true)
 }
 
 func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
@@ -697,7 +699,7 @@ func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, f.FuncName)
 	grant := f.Access
 	if grant != "" {
-		index := strings.Index(grant, "// ")
+		index := strings.Index(grant, "//")
 		if index >= 0 {
 			fmt.Fprintf(file, "\t%s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
@@ -712,7 +714,7 @@ func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 		default:
 			fmt.Fprintf(file, "\taccess := ctx.State().GetAgentID(wasmlib.Key(\"%s\"))\n", grant)
 			fmt.Fprintf(file, "\tctx.Require(access.Exists(), \"access not set: %s\")\n", grant)
-			grant = fmt.Sprintf("access.Value()")
+			grant = "access.Value()"
 		}
 		fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
 	}
@@ -762,7 +764,7 @@ func (s *Schema) generateGoTypes() error {
 
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
-	fmt.Fprintf(file, importWasmLib)
+	fmt.Fprint(file, importWasmLib)
 
 	for _, typeDef := range s.Types {
 		s.generateGoType(file, typeDef)
@@ -849,15 +851,15 @@ func (s *Schema) generateGoWasmMain() error {
 	importname := ModuleName + strings.Replace(ModuleCwd[len(ModulePath):], "\\", "/", -1)
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "// +build wasm\n\n")
-	fmt.Fprintf(file, "package main\n\n")
-	fmt.Fprintf(file, importWasmClient)
+	fmt.Fprint(file, "// +build wasm\n\n")
+	fmt.Fprint(file, "package main\n\n")
+	fmt.Fprint(file, importWasmClient)
 	fmt.Fprintf(file, "import \"%s\"\n\n", importname)
 
 	fmt.Fprintf(file, "func main() {\n")
 	fmt.Fprintf(file, "}\n\n")
 
-	fmt.Fprintf(file, "// export on_load\n")
+	fmt.Fprintf(file, "//export on_load\n")
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "\twasmclient.ConnectWasmHost()\n")
 	fmt.Fprintf(file, "\t%s.OnLoad()\n", s.Name)

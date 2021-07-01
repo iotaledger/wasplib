@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -43,4 +43,4 @@ pub const HVIEW_GET_REQUEST_LOG_RECORD:            ScHname = ScHname(0x31e07e48)
 pub const HVIEW_GET_REQUEST_LOG_RECORDS_FOR_BLOCK: ScHname = ScHname(0x7210e621);
 pub const HVIEW_IS_REQUEST_PROCESSED:              ScHname = ScHname(0xd57d50a9);
 
-//@formatter:on
+// @formatter:on

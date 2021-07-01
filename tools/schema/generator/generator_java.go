@@ -13,7 +13,7 @@ import (
 	"github.com/iotaledger/wasp/packages/coretypes"
 )
 
-var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
+var javaFuncRegexp = regexp.MustCompile(`public static void (\w+).+$`)
 
 var javaTypes = StringMap{
 	"Address":   "ScAddress",
@@ -43,7 +43,9 @@ func (s *Schema) GenerateJava() error {
 	if err != nil {
 		return err
 	}
-	defer os.Chdir(currentPath)
+	defer func() {
+		_ = os.Chdir(currentPath)
+	}()
 
 	err = os.MkdirAll("test", 0755)
 	if err != nil {
@@ -318,7 +320,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, f.FuncName)
 	grant := f.Access
 	if grant != "" {
-		index := strings.Index(grant, "// ")
+		index := strings.Index(grant, "//")
 		if index >= 0 {
 			fmt.Fprintf(file, "        %s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
@@ -333,7 +335,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 		default:
 			fmt.Fprintf(file, "        var access = ctx.State().GetAgentID(new Key(\"%s\"));\n", grant)
 			fmt.Fprintf(file, "        ctx.Require(access.Exists(), \"access not set: %s\");\n", grant)
-			grant = fmt.Sprintf("access.Value()")
+			grant = "access.Value()"
 		}
 		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 	}
@@ -368,7 +370,10 @@ func (s *Schema) GenerateJavaTypes() error {
 
 	// write structs
 	for _, typeDef := range s.Types {
-		typeDef.GenerateJavaType(s.Name)
+		err = typeDef.GenerateJavaType(s.Name)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -384,15 +389,15 @@ func (s *Schema) GenerateJavaWasmMain() error {
 	importname := ModuleName + strings.Replace(ModuleCwd[len(ModulePath):], "\\", "/", -1)
 	// write file header
 	fmt.Fprintln(file, copyright(true))
-	fmt.Fprintf(file, "// +build wasm\n\n")
-	fmt.Fprintf(file, "package main\n\n")
-	fmt.Fprintf(file, importWasmClient)
+	fmt.Fprint(file, "// +build wasm\n\n")
+	fmt.Fprint(file, "package main\n\n")
+	fmt.Fprint(file, importWasmClient)
 	fmt.Fprintf(file, "import \"%s\"\n\n", importname)
 
 	fmt.Fprintf(file, "func main() {\n")
 	fmt.Fprintf(file, "}\n\n")
 
-	fmt.Fprintf(file, "// export on_load\n")
+	fmt.Fprintf(file, "//export on_load\n")
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "    wasmclient.ConnectWasmHost()\n")
 	fmt.Fprintf(file, "    %s.OnLoad()\n", s.Name)

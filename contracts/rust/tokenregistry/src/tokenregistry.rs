@@ -34,13 +34,13 @@ pub fn func_mint_supply(ctx: &ScFuncContext, f: &MintSupplyContext) {
 }
 
 pub fn func_transfer_ownership(_ctx: &ScFuncContext, _f: &TransferOwnershipContext) {
-    //TODO
+    // TODO
 }
 
 pub fn func_update_metadata(_ctx: &ScFuncContext, _f: &UpdateMetadataContext) {
-    //TODO
+    // TODO
 }
 
 pub fn view_get_info(_ctx: &ScViewContext, _f: &GetInfoContext) {
-    //TODO
+    // TODO
 }

@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -57,4 +57,4 @@ pub const HVIEW_FIND_CONTRACT:            ScHname = ScHname(0xc145ca00);
 pub const HVIEW_GET_CHAIN_INFO:           ScHname = ScHname(0x434477e2);
 pub const HVIEW_GET_FEE_INFO:             ScHname = ScHname(0x9fe54b48);
 
-//@formatter:on
+// @formatter:on

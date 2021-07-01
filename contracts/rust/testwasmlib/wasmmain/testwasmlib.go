@@ -15,7 +15,7 @@ import "github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 func main() {
 }
 
-// export on_load
+//export on_load
 func OnLoad() {
 	wasmclient.ConnectWasmHost()
 	testwasmlib.OnLoad()

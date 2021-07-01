@@ -5,7 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-//@formatter:off
+// @formatter:off
 
 #![allow(dead_code)]
 
@@ -29,4 +29,4 @@ pub const VIEW_GET_RECORDS:     &str = "getRecords";
 pub const HVIEW_GET_NUM_RECORDS: ScHname = ScHname(0x2f4b4a8c);
 pub const HVIEW_GET_RECORDS:     ScHname = ScHname(0xd01a8085);
 
-//@formatter:on
+// @formatter:on

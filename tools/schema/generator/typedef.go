@@ -21,16 +21,16 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 	nameLen, typeLen := calculatePadding(td.Fields, javaTypes, false)
 
 	// write file header
-	fmt.Fprintf(file, copyright(true))
+	fmt.Fprint(file, copyright(true))
 	fmt.Fprintf(file, "\npackage org.iota.wasp.contracts.%s.types;\n\n", contract)
-	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.bytes.*;\n")
-	fmt.Fprintf(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n\n")
+	fmt.Fprint(file, "import org.iota.wasp.wasmlib.bytes.*;\n")
+	fmt.Fprint(file, "import org.iota.wasp.wasmlib.hashtypes.*;\n\n")
 
 	fmt.Fprintf(file, "public class %s {\n", td.Name)
 
 	// write struct layout
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "    // @formatter:off\n")
+		fmt.Fprint(file, "    // @formatter:off\n")
 	}
 	for _, field := range td.Fields {
 		fldName := capitalize(field.Name) + ";"
@@ -41,7 +41,7 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		fmt.Fprintf(file, "    public %s %s%s\n", fldType, fldName, field.Comment)
 	}
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "    // @formatter:on\n")
+		fmt.Fprint(file, "    // @formatter:on\n")
 	}
 
 	// write default constructor
