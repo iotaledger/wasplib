@@ -24,15 +24,14 @@ const (
 	Debug      = true
 	StackTrace = false
 	TraceHost  = false
+
+	// WasmRunner set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
+	WasmRunner = 0
 )
 
-//TODO update contracts/readme
-//TODO figure out how to interrupt wasmtime VM
+// TODO update contracts/readme
 
-// WasmRunner set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
-const WasmRunner = 0
-
-//TODO remove hardcoded dependency
+// TODO remove hardcoded dependency
 var ScForGoVM = map[string]func(){
 	"dividend":           dividend.OnLoad,
 	"donatewithfeedback": donatewithfeedback.OnLoad,
@@ -56,8 +55,8 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 		return chain.DeployContract(nil, scName, hprog, params...)
 	}
 
-	//wasmproc.GoWasmVM = NewWasmTimeJavaVM()
-	//wasmproc.GoWasmVM = NewWartVM()
+	// wasmproc.GoWasmVM = NewWasmTimeJavaVM()
+	// wasmproc.GoWasmVM = NewWartVM()
 	wasmFile := scName + "_bg.wasm"
 	exists, _ := util.ExistsFilePath("../pkg/" + wasmFile)
 	if exists {
@@ -68,7 +67,7 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 
 func StartChain(t *testing.T, scName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
-	//wasmhost.ExtendedHostTracing = TraceHost
+	// wasmhost.ExtendedHostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
 	return env.NewChain(nil, "chain1")
 }

@@ -3,7 +3,7 @@
   "types": {
     "Donation": {
       "amount": "Int64 // amount donated",
-      "donator": "AgentId // who donated",
+      "donator": "AgentID // who donated",
       "error": "String // error to be reported to donator if anything goes wrong",
       "feedback": "String // the feedback for the person donated to",
       "timestamp": "Int64 // when the donation took place"
@@ -34,7 +34,7 @@
       },
       "results": {
         "amount": "Int64 // amount donated",
-        "donator": "AgentId // who donated",
+        "donator": "AgentID // who donated",
         "error": "String // error to be reported to donator if anything goes wrong",
         "feedback": "String // the feedback for the person donated to",
         "timestamp": "Int64 // when the donation took place"

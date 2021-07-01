@@ -12,7 +12,7 @@ import (
 )
 
 type WasmTimeJavaVM struct {
-	wasmhost.WasmVmBase
+	wasmhost.WasmVMBase
 	instance   *wasmtime.Instance
 	interrupt  *wasmtime.InterruptHandle
 	isJavaWasm bool
@@ -70,8 +70,8 @@ var javaImports = []string{
 	"fileoutputstream", "close0INT", "7",
 	"unixfilesystem", "getBooleanAttributes0String", "0",
 	"double", "doubleToRawLongBitsDOUBLE", "4",
-	"WasmLib", "javaGetObjectId", "3",
-	"WasmLib", "javaGetKeyId", "8",
+	"WasmLib", "javaGetObjectID", "3",
+	"WasmLib", "javaGetKeyID", "8",
 	"WasmLib", "javaSetBytes", "9",
 	"WasmLib", "javaGetBytes", "10",
 	"memorymanager", "isUsedAsCallbackINT", "0",
@@ -93,39 +93,39 @@ func (vm *WasmTimeJavaVM) Interrupt() {
 }
 
 func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error {
-	_ = vm.WasmVmBase.LinkHost(impl, host)
+	_ = vm.WasmVMBase.LinkHost(impl, host)
 
 	err := vm.linker.DefineFunc("WasmLib", "hostGetBytes",
-		func(objId int32, keyId int32, typeId int32, stringRef int32, size int32) int32 {
-			return vm.HostGetBytes(objId, keyId, typeId, stringRef, size)
+		func(objID, keyID int32, typeID, stringRef, size int32) int32 {
+			return vm.HostGetBytes(objID, keyID, typeID, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
-	err = vm.linker.DefineFunc("WasmLib", "hostGetKeyId",
-		func(keyRef int32, size int32) int32 {
-			return vm.HostGetKeyId(keyRef, size)
+	err = vm.linker.DefineFunc("WasmLib", "hostGetKeyID",
+		func(keyRef, size int32) int32 {
+			return vm.HostGetKeyID(keyRef, size)
 		})
 	if err != nil {
 		return err
 	}
-	err = vm.linker.DefineFunc("WasmLib", "hostGetObjectId",
-		func(objId int32, keyId int32, typeId int32) int32 {
-			return vm.HostGetObjectId(objId, keyId, typeId)
+	err = vm.linker.DefineFunc("WasmLib", "hostGetObjectID",
+		func(objID, keyID, typeID int32) int32 {
+			return vm.HostGetObjectID(objID, keyID, typeID)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("WasmLib", "hostSetBytes",
-		func(objId int32, keyId int32, typeId int32, stringRef int32, size int32) {
-			vm.HostSetBytes(objId, keyId, typeId, stringRef, size)
+		func(objID, keyID int32, typeID, stringRef, size int32) {
+			vm.HostSetBytes(objID, keyID, typeID, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 
 	// TinyGo Wasm versions uses this one to write panic message to console
-	fdWrite := func(fd int32, iovs int32, size int32, written int32) int32 {
+	fdWrite := func(fd, iovs, size, written int32) int32 {
 		return vm.HostFdWrite(fd, iovs, size, written)
 	}
 	err = vm.linker.DefineFunc("wasi_unstable", "fd_write", fdWrite)
@@ -137,36 +137,44 @@ func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost
 		return err
 	}
 
+	return vm.linkHostJava()
+}
+
+func (vm *WasmTimeJavaVM) linkHostJava() error {
 	// java versions of host functions have one extra dummy parameter
-	err = vm.linker.DefineFunc("WasmLib", "javaGetBytes",
-		func(dummy int32, objId int32, keyId int32, typeId int32, stringRef int32, size int32) int32 {
-			return vm.HostGetBytes(objId, keyId, typeId, stringRef, size)
+	err := vm.linker.DefineFunc("WasmLib", "javaGetBytes",
+		func(dummy, objID int32, keyID, typeID, stringRef, size int32) int32 {
+			return vm.HostGetBytes(objID, keyID, typeID, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
-	err = vm.linker.DefineFunc("WasmLib", "javaGetKeyId",
-		func(dummy int32, keyRef int32, size int32) int32 {
-			return vm.HostGetKeyId(keyRef, size)
+	err = vm.linker.DefineFunc("WasmLib", "javaGetKeyID",
+		func(dummy, keyRef, size int32) int32 {
+			return vm.HostGetKeyID(keyRef, size)
 		})
 	if err != nil {
 		return err
 	}
-	err = vm.linker.DefineFunc("WasmLib", "javaGetObjectId",
-		func(dummy int32, objId int32, keyId int32, typeId int32) int32 {
-			return vm.HostGetObjectId(objId, keyId, typeId)
+	err = vm.linker.DefineFunc("WasmLib", "javaGetObjectID",
+		func(dummy, objID, keyID, typeID int32) int32 {
+			return vm.HostGetObjectID(objID, keyID, typeID)
 		})
 	if err != nil {
 		return err
 	}
 	err = vm.linker.DefineFunc("WasmLib", "javaSetBytes",
-		func(dummy int32, objId int32, keyId int32, typeId int32, stringRef int32, size int32) {
-			vm.HostSetBytes(objId, keyId, typeId, stringRef, size)
+		func(dummy, objID int32, keyID, typeID, stringRef, size int32) {
+			vm.HostSetBytes(objID, keyID, typeID, stringRef, size)
 		})
 	if err != nil {
 		return err
 	}
 
+	return vm.linkHostJavaSymbols()
+}
+
+func (vm *WasmTimeJavaVM) linkHostJavaSymbols() error {
 	for i := 0; i < len(javaImports); i += 3 {
 		module := javaImports[i]
 		name := javaImports[i+1]
@@ -191,10 +199,13 @@ func (vm *WasmTimeJavaVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost
 			}
 		}
 		funcType := wasmtime.NewFuncType(params, results)
-		vm.linker.Define(module, name, wasmtime.NewFunc(vm.store, funcType,
+		err := vm.linker.Define(module, name, wasmtime.NewFunc(vm.store, funcType,
 			func(caller *wasmtime.Caller, vals []wasmtime.Val) ([]wasmtime.Val, *wasmtime.Trap) {
 				panic("java called " + module + "." + name)
 			}))
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -211,7 +222,7 @@ func (vm *WasmTimeJavaVM) LoadWasm(wasmData []byte) error {
 	}
 	err = vm.RunFunction("initMemory", 0)
 	if err == nil {
-		vm.RunFunction("bootstrap")
+		err = vm.RunFunction("bootstrap")
 		if err != nil {
 			return err
 		}
@@ -275,7 +286,7 @@ func (vm *WasmTimeJavaVM) UnsafeMemory() []byte {
 	return vm.memory.UnsafeData()
 }
 
-func (vm *WasmTimeJavaVM) VmGetBytes(offset int32, size int32) []byte {
+func (vm *WasmTimeJavaVM) VMGetBytes(offset, size int32) []byte {
 	ptr := vm.UnsafeMemory()
 	bytes := make([]byte, size)
 	if vm.isJavaWasm {
@@ -290,7 +301,7 @@ func (vm *WasmTimeJavaVM) VmGetBytes(offset int32, size int32) []byte {
 	return bytes
 }
 
-func (vm *WasmTimeJavaVM) VmSetBytes(offset int32, size int32, bytes []byte) int32 {
+func (vm *WasmTimeJavaVM) VMSetBytes(offset, size int32, bytes []byte) int32 {
 	if size != 0 {
 		ptr := vm.UnsafeMemory()
 		if vm.isJavaWasm {

@@ -3,12 +3,12 @@
   "types": {
     "Auction": {
       "color": "Color // color of tokens for sale",
-      "creator": "AgentId // issuer of start_auction transaction",
+      "creator": "AgentID // issuer of start_auction transaction",
       "deposit": "Int64 // deposit by auction owner to cover the SC fees",
       "description": "String // auction description",
       "duration": "Int32 // auction duration in minutes",
       "highestBid": "Int64 // the current highest bid amount",
-      "highestBidder": "AgentId // the current highest bidder",
+      "highestBidder": "AgentID // the current highest bidder",
       "minimumBid": "Int64 // minimum bid amount",
       "numTokens": "Int64 // number of tokens for sale",
       "ownerMargin": "Int64 // auction owner's margin in promilles",
@@ -21,8 +21,8 @@
     }
   },
   "subtypes": {
-    "BidderList": "[]AgentId",
-    "Bids": "[AgentId]Bid"
+    "BidderList": "[]AgentID",
+    "Bids": "[AgentID]Bid"
   },
   "state": {
     "auctions": "[Color]Auction",
@@ -64,12 +64,12 @@
       },
       "results": {
         "color": "Color // color of tokens for sale",
-        "creator": "AgentId // issuer of start_auction transaction",
+        "creator": "AgentID // issuer of start_auction transaction",
         "deposit": "Int64 // deposit by auction owner to cover the SC fees",
         "description": "String // auction description",
         "duration": "Int32 // auction duration in minutes",
         "highestBid": "Int64 // the current highest bid amount",
-        "highestBidder": "AgentId // the current highest bidder",
+        "highestBidder": "AgentID // the current highest bidder",
         "minimumBid": "Int64 // minimum bid amount",
         "numTokens": "Int64 // number of tokens for sale",
         "ownerMargin": "Int64 // auction owner's margin in promilles",

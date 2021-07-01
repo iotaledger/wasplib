@@ -30,7 +30,7 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 
 	// write struct layout
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "    //@formatter:off\n")
+		fmt.Fprintf(file, "    // @formatter:off\n")
 	}
 	for _, field := range td.Fields {
 		fldName := capitalize(field.Name) + ";"
@@ -41,7 +41,7 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		fmt.Fprintf(file, "    public %s %s%s\n", fldType, fldName, field.Comment)
 	}
 	if len(td.Fields) > 1 {
-		fmt.Fprintf(file, "    //@formatter:on\n")
+		fmt.Fprintf(file, "    // @formatter:on\n")
 	}
 
 	// write default constructor

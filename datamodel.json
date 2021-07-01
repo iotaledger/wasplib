@@ -26,9 +26,9 @@
     }
   ],
   "contract": {
-    "chain": "base58HashOfSmartContractChainId",
+    "chain": "base58HashOfSmartContractChainID",
     "description": "descriptionOfSmartContract",
-    "id": "base58HashOfSmartContractId",
+    "id": "base58HashOfSmartContractID",
     "name": "nameOfSmartContract",
     "owner": "base58HashOfChainOwner"
   },
@@ -51,7 +51,7 @@
   },
   "posts": [
     {
-      "chain": "base58HashOfSmartContractChainIdOrEmpty",
+      "chain": "base58HashOfSmartContractChainIDOrEmpty",
       "contract": "contractNameOrEmpty",
       "function": "function_name",
       "delay": 3600,

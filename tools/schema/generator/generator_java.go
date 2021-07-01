@@ -17,15 +17,15 @@ var javaFuncRegexp = regexp.MustCompile("public static void (\\w+).+$")
 
 var javaTypes = StringMap{
 	"Address":   "ScAddress",
-	"AgentId":   "ScAgentId",
-	"ChainId":   "ScChainId",
+	"AgentID":   "ScAgentID",
+	"ChainID":   "ScChainID",
 	"Color":     "ScColor",
 	"Hash":      "ScHash",
 	"Hname":     "Hname",
 	"Int16":     "short",
 	"Int32":     "int",
 	"Int64":     "long",
-	"RequestId": "ScRequestId",
+	"RequestID": "ScRequestID",
 	"String":    "String",
 }
 
@@ -49,15 +49,15 @@ func (s *Schema) GenerateJava() error {
 	if err != nil {
 		return err
 	}
-	//err = os.MkdirAll("wasmmain", 0755)
-	//if err != nil {
-	//	return err
-	//}
+	// err = os.MkdirAll("wasmmain", 0755)
+	// if err != nil {
+	// 	return err
+	// }
 
-	//err = s.GenerateJavaWasmMain()
-	//if err != nil {
-	//	return err
-	//}
+	// err = s.GenerateJavaWasmMain()
+	// if err != nil {
+	// 	return err
+	// }
 	err = s.GenerateJavaLib()
 	if err != nil {
 		return err
@@ -70,10 +70,10 @@ func (s *Schema) GenerateJava() error {
 	if err != nil {
 		return err
 	}
-	//err = s.GenerateJavaFuncs()
-	//if err != nil {
-	//	return err
-	//}
+	// err = s.GenerateJavaFuncs()
+	// if err != nil {
+	// 	return err
+	// }
 	return s.GenerateJavaTests()
 }
 
@@ -281,7 +281,7 @@ func (s *Schema) GenerateJavaConsts() error {
 }
 
 func (s *Schema) GenerateJavaTests() error {
-	//TODO
+	// TODO
 	return nil
 }
 
@@ -298,7 +298,7 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 		fmt.Fprintf(params, "\nimport org.iota.wasp.wasmlib.immutable.*;\n")
 	}
 	if len(f.Params) > 1 {
-		fmt.Fprintf(params, "\n//@formatter:off")
+		fmt.Fprintf(params, "\n// @formatter:off")
 	}
 	fmt.Fprintf(params, "\npublic class %sParams {\n", funcName)
 	for _, param := range f.Params {
@@ -311,27 +311,27 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 	}
 	fmt.Fprintf(params, "}\n")
 	if len(f.Params) > 1 {
-		fmt.Fprintf(params, "//@formatter:on\n")
+		fmt.Fprintf(params, "// @formatter:on\n")
 	}
 
 	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", f.FuncName, funcKind)
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, f.FuncName)
 	grant := f.Access
 	if grant != "" {
-		index := strings.Index(grant, "//")
+		index := strings.Index(grant, "// ")
 		if index >= 0 {
 			fmt.Fprintf(file, "        %s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])
 		}
 		switch grant {
 		case "self":
-			grant = "ctx.AccountId()"
+			grant = "ctx.AccountID()"
 		case "chain":
-			grant = "ctx.ChainOwnerId()"
+			grant = "ctx.ChainOwnerID()"
 		case "creator":
 			grant = "ctx.ContractCreator()"
 		default:
-			fmt.Fprintf(file, "        var access = ctx.State().GetAgentId(new Key(\"%s\"));\n", grant)
+			fmt.Fprintf(file, "        var access = ctx.State().GetAgentID(new Key(\"%s\"));\n", grant)
 			fmt.Fprintf(file, "        ctx.Require(access.Exists(), \"access not set: %s\");\n", grant)
 			grant = fmt.Sprintf("access.Value()")
 		}
@@ -392,7 +392,7 @@ func (s *Schema) GenerateJavaWasmMain() error {
 	fmt.Fprintf(file, "func main() {\n")
 	fmt.Fprintf(file, "}\n\n")
 
-	fmt.Fprintf(file, "//export on_load\n")
+	fmt.Fprintf(file, "// export on_load\n")
 	fmt.Fprintf(file, "func OnLoad() {\n")
 	fmt.Fprintf(file, "    wasmclient.ConnectWasmHost()\n")
 	fmt.Fprintf(file, "    %s.OnLoad()\n", s.Name)

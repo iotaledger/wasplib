@@ -6,9 +6,9 @@
         "name": "inccounter",
         "description": "Test basic functionality"
       },
-      "id": "@scId",
+      "id": "@scID",
       "creator": "@scCreator",
-      "chain": "$chainId",
+      "chain": "$chainID",
       "balances": {"#iota": 100},
       "caller": "@caller",
       "timestamp": 20201027172138

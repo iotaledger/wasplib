@@ -24,8 +24,8 @@ impl ScAddress {
     }
 
     // returns agent id representation of this Tangle address
-    pub fn as_agent_id(&self) -> ScAgentId {
-        let mut agent_id = ScAgentId { id: [0; 37] };
+    pub fn as_agent_id(&self) -> ScAgentID {
+        let mut agent_id = ScAgentID { id: [0; 37] };
         agent_id.id[..33].copy_from_slice(&self.id[..33]);
         agent_id
     }
@@ -52,22 +52,22 @@ impl MapKey for ScAddress {
 
 // value object for 37-byte agent ids
 #[derive(PartialEq, Clone)]
-pub struct ScAgentId {
+pub struct ScAgentID {
     id: [u8; 37],
 }
 
-impl ScAgentId {
+impl ScAgentID {
     // construct from chain id and contract name hash
-    pub fn new(chain_id: &ScChainId, hname: &ScHname) -> ScAgentId {
-        let mut agent_id = ScAgentId { id: [0; 37] };
+    pub fn new(chain_id: &ScChainID, hname: &ScHname) -> ScAgentID {
+        let mut agent_id = ScAgentID { id: [0; 37] };
         agent_id.id[..33].copy_from_slice(&chain_id.to_bytes());
         agent_id.id[33..].copy_from_slice(&hname.to_bytes());
         agent_id
     }
 
     // construct from byte array
-    pub fn from_bytes(bytes: &[u8]) -> ScAgentId {
-        ScAgentId { id: bytes.try_into().expect("invalid agent id lengths") }
+    pub fn from_bytes(bytes: &[u8]) -> ScAgentID {
+        ScAgentID { id: bytes.try_into().expect("invalid agent id lengths") }
     }
 
     // gets Tangle address from agent id
@@ -99,7 +99,7 @@ impl ScAgentId {
 }
 
 // can be used as key in maps
-impl MapKey for ScAgentId {
+impl MapKey for ScAgentID {
     fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
@@ -109,14 +109,14 @@ impl MapKey for ScAgentId {
 
 // value object for 33-byte chain ids
 #[derive(PartialEq, Clone)]
-pub struct ScChainId {
+pub struct ScChainID {
     id: [u8; 33],
 }
 
-impl ScChainId {
+impl ScChainID {
     // construct from byte array
-    pub fn from_bytes(bytes: &[u8]) -> ScChainId {
-        ScChainId { id: bytes.try_into().expect("invalid chain id length") }
+    pub fn from_bytes(bytes: &[u8]) -> ScChainID {
+        ScChainID { id: bytes.try_into().expect("invalid chain id length") }
     }
 
     // convert to byte array representation
@@ -131,7 +131,7 @@ impl ScChainId {
 }
 
 // can be used as key in maps
-impl MapKey for ScChainId {
+impl MapKey for ScChainID {
     fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }
@@ -156,7 +156,7 @@ impl ScColor {
     }
 
     // construct from request id, this will return newly minted color
-    pub fn from_request_id(request_id: &ScRequestId) -> ScColor {
+    pub fn from_request_id(request_id: &ScRequestID) -> ScColor {
         let mut color = ScColor { id: [0x00; 32] };
         color.id[..].copy_from_slice(&request_id.id[..]);
         color
@@ -252,14 +252,14 @@ impl MapKey for ScHname {
 
 // value object for 34-byte transaction request ids
 #[derive(PartialEq, Clone)]
-pub struct ScRequestId {
+pub struct ScRequestID {
     id: [u8; 34],
 }
 
-impl ScRequestId {
+impl ScRequestID {
     // construct from byte array
-    pub fn from_bytes(bytes: &[u8]) -> ScRequestId {
-        ScRequestId { id: bytes.try_into().expect("invalid request id length") }
+    pub fn from_bytes(bytes: &[u8]) -> ScRequestID {
+        ScRequestID { id: bytes.try_into().expect("invalid request id length") }
     }
 
     // convert to byte array representation
@@ -274,7 +274,7 @@ impl ScRequestId {
 }
 
 // can be used as key in maps
-impl MapKey for ScRequestId {
+impl MapKey for ScRequestID {
     fn get_key_id(&self) -> Key32 {
         get_key_id_from_bytes(self.to_bytes())
     }

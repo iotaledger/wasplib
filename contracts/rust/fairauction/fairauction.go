@@ -43,7 +43,7 @@ func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FinalizeAuctionContext) {
 	bidderList := f.State.BidderList().GetBidderList(color)
 	size := bidderList.Length()
 	for i := int32(0); i < size; i++ {
-		loser := bidderList.GetAgentId(i).Value()
+		loser := bidderList.GetAgentID(i).Value()
 		if loser != auction.HighestBidder {
 			bid := bids.GetBid(loser).Value()
 			transferTokens(ctx, loser, wasmlib.IOTA, bid.Amount)
@@ -80,7 +80,7 @@ func funcPlaceBid(ctx wasmlib.ScFuncContext, f *PlaceBidContext) {
 		ctx.Require(bidAmount >= auction.MinimumBid, "Insufficient bid amount")
 		ctx.Log("New bid from: " + caller.String())
 		index := bidderList.Length()
-		bidderList.GetAgentId(index).SetValue(caller)
+		bidderList.GetAgentID(index).SetValue(caller)
 		bid := &Bid{
 			Index:     index,
 			Amount:    bidAmount,
@@ -167,7 +167,7 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *StartAuctionContext) {
 		Description:   description,
 		Duration:      duration,
 		HighestBid:    -1,
-		HighestBidder: wasmlib.ScAgentId{},
+		HighestBidder: wasmlib.ScAgentID{},
 		MinimumBid:    minimumBid,
 		NumTokens:     numTokens,
 		OwnerMargin:   ownerMargin,
@@ -204,7 +204,7 @@ func viewGetInfo(ctx wasmlib.ScViewContext, f *GetInfoContext) {
 	f.Results.Bidders().SetValue(int64(bidderList.Length()))
 }
 
-func transferTokens(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentId, color wasmlib.ScColor, amount int64) {
+func transferTokens(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentID, color wasmlib.ScColor, amount int64) {
 	if agent.IsAddress() {
 		// send back to original Tangle address
 		ctx.TransferToAddress(agent.Address(), wasmlib.NewScTransfer(color, amount))

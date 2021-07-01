@@ -16,7 +16,7 @@ func Test2Chains(t *testing.T) { run2(t, test2Chains) }
 func test2Chains(t *testing.T, w bool) {
 	core.PrintWellKnownHnames()
 
-	env := solo.New(t, false, false)
+	env := solo.New(t, false, false).WithNativeContract(sbtestsc.Interface)
 	chain1 := env.NewChain(nil, "ch1")
 	chain2 := env.NewChain(nil, "ch2")
 	chain1.CheckAccountLedger()
@@ -31,12 +31,12 @@ func test2Chains(t *testing.T, w bool) {
 
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 0)
-	chain1.AssertOwnersIotas(2 + extraToken1)
+	chain1.AssertCommonAccountIotas(2 + extraToken1)
 	chain1.AssertTotalIotas(3 + extraToken1)
 
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 1)
-	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertCommonAccountIotas(2 + extraToken2)
 	chain2.AssertTotalIotas(3 + extraToken2)
 
 	req := solo.NewCallParams(accounts.Interface.Name, accounts.FuncDeposit,
@@ -50,13 +50,13 @@ func test2Chains(t *testing.T, w bool) {
 	chain1.AssertIotas(userAgentID, 0)
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 42)
-	chain1.AssertOwnersIotas(2 + extraToken1)
+	chain1.AssertCommonAccountIotas(2 + extraToken1)
 	chain1.AssertTotalIotas(45 + extraToken1)
 
 	chain2.AssertIotas(userAgentID, 0)
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 1)
-	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertCommonAccountIotas(2 + extraToken2)
 	chain2.AssertTotalIotas(3 + extraToken2)
 
 	req = solo.NewCallParams(ScName, sbtestsc.FuncWithdrawToChain,
@@ -78,12 +78,12 @@ func test2Chains(t *testing.T, w bool) {
 	chain1.AssertIotas(userAgentID, 0)
 	chain1.AssertIotas(contractAgentID1, 1)
 	chain1.AssertIotas(contractAgentID2, 0)
-	chain1.AssertOwnersIotas(3 + extraToken1)
+	chain1.AssertCommonAccountIotas(3 + extraToken1)
 	chain1.AssertTotalIotas(4 + extraToken1)
 
 	chain2.AssertIotas(userAgentID, 0)
 	chain2.AssertIotas(contractAgentID1, 0)
 	chain2.AssertIotas(contractAgentID2, 43)
-	chain2.AssertOwnersIotas(2 + extraToken2)
+	chain2.AssertCommonAccountIotas(2 + extraToken2)
 	chain2.AssertTotalIotas(45 + extraToken2)
 }

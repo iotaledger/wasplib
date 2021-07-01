@@ -33,57 +33,57 @@ var rustFuncRegexp = regexp.MustCompile("^pub fn (\\w+).+$")
 
 var rustTypes = StringMap{
 	"Address":   "ScAddress",
-	"AgentId":   "ScAgentId",
-	"ChainId":   "ScChainId",
+	"AgentID":   "ScAgentID",
+	"ChainID":   "ScChainID",
 	"Color":     "ScColor",
 	"Hash":      "ScHash",
 	"Hname":     "ScHname",
 	"Int16":     "i16",
 	"Int32":     "i32",
 	"Int64":     "i64",
-	"RequestId": "ScRequestId",
+	"RequestID": "ScRequestID",
 	"String":    "String",
 }
 
 var rustKeyTypes = StringMap{
 	"Address":   "&ScAddress",
-	"AgentId":   "&ScAgentId",
-	"ChainId":   "&ScChainId",
+	"AgentID":   "&ScAgentID",
+	"ChainID":   "&ScChainID",
 	"Color":     "&ScColor",
 	"Hash":      "&ScHash",
 	"Hname":     "&ScHname",
 	"Int16":     "??TODO",
 	"Int32":     "i32",
 	"Int64":     "??TODO",
-	"RequestId": "&ScRequestId",
+	"RequestID": "&ScRequestID",
 	"String":    "&str",
 }
 
 var rustKeys = StringMap{
 	"Address":   "key",
-	"AgentId":   "key",
-	"ChainId":   "key",
+	"AgentID":   "key",
+	"ChainID":   "key",
 	"Color":     "key",
 	"Hash":      "key",
 	"Hname":     "key",
 	"Int16":     "??TODO",
 	"Int32":     "Key32(int32)",
 	"Int64":     "??TODO",
-	"RequestId": "key",
+	"RequestID": "key",
 	"String":    "key",
 }
 
 var rustTypeIds = StringMap{
 	"Address":   "TYPE_ADDRESS",
-	"AgentId":   "TYPE_AGENT_ID",
-	"ChainId":   "TYPE_CHAIN_ID",
+	"AgentID":   "TYPE_AGENT_ID",
+	"ChainID":   "TYPE_CHAIN_ID",
 	"Color":     "TYPE_COLOR",
 	"Hash":      "TYPE_HASH",
 	"Hname":     "TYPE_HNAME",
 	"Int16":     "TYPE_INT16",
 	"Int32":     "TYPE_INT32",
 	"Int64":     "TYPE_INT64",
-	"RequestId": "TYPE_REQUEST_ID",
+	"RequestID": "TYPE_REQUEST_ID",
 	"String":    "TYPE_STRING",
 }
 
@@ -173,13 +173,13 @@ func (s *Schema) generateRustCargo() error {
 	fmt.Fprintf(file, "version = \"0.1.0\"\n")
 	fmt.Fprintf(file, "authors = [\"Eric Hop <eric@iota.org>\"]\n")
 	fmt.Fprintf(file, "edition = \"2018\"\n")
-	fmt.Fprintf(file, "repository = \"https://%s\"\n", ModuleName)
+	fmt.Fprintf(file, "repository = \"https:// %s\"\n", ModuleName)
 	fmt.Fprintf(file, "\n[lib]\n")
 	fmt.Fprintf(file, "crate-type = [\"cdylib\", \"rlib\"]\n")
 	fmt.Fprintf(file, "\n[features]\n")
 	fmt.Fprintf(file, "default = [\"console_error_panic_hook\"]\n")
 	fmt.Fprintf(file, "\n[dependencies]\n")
-	fmt.Fprintf(file, "wasmlib = { git = \"https://github.com/iotaledger/wasp\", branch = \"develop\" }\n")
+	fmt.Fprintf(file, "wasmlib = { git = \"https:// github.com/iotaledger/wasp\", branch = \"develop\" }\n")
 	fmt.Fprintf(file, "console_error_panic_hook = { version = \"0.1.6\", optional = true }\n")
 	fmt.Fprintf(file, "wee_alloc = { version = \"0.4.5\", optional = true }\n")
 	fmt.Fprintf(file, "\n[dev-dependencies]\n")
@@ -307,20 +307,20 @@ func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "    pub fn new(_ctx: &ScFuncContext) -> %sCall {\n", f.Type)
 	fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
 	fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
-	paramsId := "ptr::null_mut()"
+	paramsID := "ptr::null_mut()"
 	if len(f.Params) != 0 {
-		paramsId = "&mut f.params.id"
+		paramsID = "&mut f.params.id"
 		fmt.Fprintf(file, "            %s Mutable%sParams { id: 0 },\n", pad("params:", nameLen), f.Type)
 	}
-	resultsId := "ptr::null_mut()"
+	resultsID := "ptr::null_mut()"
 	if len(f.Results) != 0 {
-		resultsId = "&mut f.results.id"
+		resultsID = "&mut f.results.id"
 		fmt.Fprintf(file, "            results: Immutable%sResults { id: 0 },\n", f.Type)
 	}
 	fmt.Fprintf(file, "        }")
 	if len(f.Params) != 0 || len(f.Results) != 0 {
 		fmt.Fprintf(file, ";\n")
-		fmt.Fprintf(file, "        f.func.set_ptrs(%s, %s);\n", paramsId, resultsId)
+		fmt.Fprintf(file, "        f.func.set_ptrs(%s, %s);\n", paramsID, resultsID)
 		fmt.Fprintf(file, "        f")
 	}
 	fmt.Fprintf(file, "\n    }\n")
@@ -413,13 +413,13 @@ func (s *Schema) generateRustKeys() error {
 	fmt.Fprintln(file, useWasmLib)
 	fmt.Fprint(file, useCrate)
 
-	s.KeyId = 0
+	s.KeyID = 0
 	s.generateRustKeysIndexes(file, s.Params, "PARAM_")
 	s.generateRustKeysIndexes(file, s.Results, "RESULT_")
 	s.generateRustKeysIndexes(file, s.StateVars, "STATE_")
 	s.flushRustConsts(file)
 
-	size := s.KeyId
+	size := s.KeyID
 	fmt.Fprintf(file, "\npub const KEY_MAP_LEN: usize = %d;\n", size)
 	fmt.Fprintf(file, "\npub const KEY_MAP: [&str; KEY_MAP_LEN] = [\n")
 	s.generateRustKeysArray(file, s.Params, "PARAM_")
@@ -446,7 +446,7 @@ func (s *Schema) generateRustKeysArray(file *os.File, fields []*Field, prefix st
 		}
 		name := prefix + upper(snake(field.Name))
 		fmt.Fprintf(file, "    %s,\n", name)
-		s.KeyId++
+		s.KeyID++
 	}
 }
 
@@ -456,9 +456,9 @@ func (s *Schema) generateRustKeysIndexes(file *os.File, fields []*Field, prefix 
 			continue
 		}
 		name := "IDX_" + prefix + upper(snake(field.Name))
-		field.KeyId = s.KeyId
-		value := "usize = " + strconv.Itoa(field.KeyId)
-		s.KeyId++
+		field.KeyID = s.KeyID
+		value := "usize = " + strconv.Itoa(field.KeyID)
+		s.KeyID++
 		s.appendConst(name, value)
 	}
 }
@@ -555,7 +555,7 @@ func (s *Schema) generateRustProxy(file *os.File, field *Field, mutability strin
 		fmt.Fprintf(file, "        get_length(self.obj_id)\n")
 		fmt.Fprintf(file, "    }\n")
 
-		if field.TypeId == 0 {
+		if field.TypeID == 0 {
 			for _, subtype := range s.Subtypes {
 				if subtype.Name == field.Type {
 					varType := "TYPE_MAP"
@@ -613,7 +613,7 @@ func (s *Schema) generateRustProxy(file *os.File, field *Field, mutability strin
 			fmt.Fprintf(file, "    }\n")
 		}
 
-		if field.TypeId == 0 {
+		if field.TypeID == 0 {
 			for _, subtype := range s.Subtypes {
 				if subtype.Name == field.Type {
 					varType := "TYPE_MAP"
@@ -748,9 +748,9 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 
 	for _, field := range fields {
 		varName := snake(field.Name)
-		varId := "idx_map(IDX_" + kind + upper(varName) + ")"
+		varID := "idx_map(IDX_" + kind + upper(varName) + ")"
 		if s.CoreContracts {
-			varId = kind + upper(varName) + ".get_key_id()"
+			varID = kind + upper(varName) + ".get_key_id()"
 		}
 		varType := rustTypeIds[field.Type]
 		if len(varType) == 0 {
@@ -760,7 +760,7 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 			varType = "TYPE_ARRAY | " + varType
 			arrayType := "ArrayOf" + mutability + field.Type
 			fmt.Fprintf(file, "\n    pub fn %s(&self) -> %s {\n", varName, arrayType)
-			fmt.Fprintf(file, "        let arr_id = get_object_id(self.id, %s, %s);\n", varId, varType)
+			fmt.Fprintf(file, "        let arr_id = get_object_id(self.id, %s, %s);\n", varID, varType)
 			fmt.Fprintf(file, "        %s { obj_id: arr_id }\n", arrayType)
 			fmt.Fprintf(file, "    }\n")
 			continue
@@ -769,19 +769,19 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 			varType = "TYPE_MAP"
 			mapType := "Map" + field.MapKey + "To" + mutability + field.Type
 			fmt.Fprintf(file, "\n    pub fn %s(&self) -> %s {\n", varName, mapType)
-			mapId := "self.id"
+			mapID := "self.id"
 			if field.Alias != "this" {
-				mapId = "map_id"
-				fmt.Fprintf(file, "        let map_id = get_object_id(self.id, %s, %s);\n", varId, varType)
+				mapID = "map_id"
+				fmt.Fprintf(file, "        let map_id = get_object_id(self.id, %s, %s);\n", varID, varType)
 			}
-			fmt.Fprintf(file, "        %s { obj_id: %s }\n", mapType, mapId)
+			fmt.Fprintf(file, "        %s { obj_id: %s }\n", mapType, mapID)
 			fmt.Fprintf(file, "    }\n")
 			continue
 		}
 
 		proxyType := mutability + field.Type
 		fmt.Fprintf(file, "\n    pub fn %s(&self) -> Sc%s {\n", varName, proxyType)
-		fmt.Fprintf(file, "        Sc%s::new(self.id, %s)\n", proxyType, varId)
+		fmt.Fprintf(file, "        Sc%s::new(self.id, %s)\n", proxyType, varID)
 		fmt.Fprintf(file, "    }\n")
 	}
 }
@@ -835,7 +835,7 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "    ctx.log(\"%s.%s\");\n", s.Name, f.FuncName)
 	grant := f.Access
 	if grant != "" {
-		index := strings.Index(grant, "//")
+		index := strings.Index(grant, "// ")
 		if index >= 0 {
 			fmt.Fprintf(file, "    %s\n", grant[index:])
 			grant = strings.TrimSpace(grant[:index])

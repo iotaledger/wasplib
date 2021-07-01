@@ -17,16 +17,16 @@ var fldTypeRegexp = regexp.MustCompile("^[A-Z][a-zA-Z0-9]+$")
 
 var FieldTypes = map[string]int32{
 	"Address":   wasmlib.TYPE_ADDRESS,
-	"AgentId":   wasmlib.TYPE_AGENT_ID,
+	"AgentID":   wasmlib.TYPE_AGENT_ID,
 	"Bytes":     wasmlib.TYPE_BYTES,
-	"ChainId":   wasmlib.TYPE_CHAIN_ID,
+	"ChainID":   wasmlib.TYPE_CHAIN_ID,
 	"Color":     wasmlib.TYPE_COLOR,
 	"Hash":      wasmlib.TYPE_HASH,
 	"Hname":     wasmlib.TYPE_HNAME,
 	"Int16":     wasmlib.TYPE_INT16,
 	"Int32":     wasmlib.TYPE_INT32,
 	"Int64":     wasmlib.TYPE_INT64,
-	"RequestId": wasmlib.TYPE_REQUEST_ID,
+	"RequestID": wasmlib.TYPE_REQUEST_ID,
 	"String":    wasmlib.TYPE_STRING,
 }
 
@@ -35,11 +35,11 @@ type Field struct {
 	Alias    string // internal name alias, can be different from Name
 	Array    bool
 	Comment  string
-	KeyId    int
+	KeyID    int
 	MapKey   string
 	Optional bool
 	Type     string
-	TypeId   int32
+	TypeID   int32
 }
 
 func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
@@ -76,7 +76,7 @@ func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
 			fldType = strings.TrimSpace(fldType[index+1:])
 		}
 	}
-	index = strings.Index(fldType, "//")
+	index = strings.Index(fldType, "// ")
 	if index >= 0 {
 		f.Comment = " " + fldType[index:]
 		fldType = strings.TrimSpace(fldType[:index])
@@ -85,9 +85,9 @@ func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
 	if !fldTypeRegexp.MatchString(f.Type) {
 		return fmt.Errorf("invalid field type: %s", f.Type)
 	}
-	typeId, ok := FieldTypes[f.Type]
+	typeID, ok := FieldTypes[f.Type]
 	if ok {
-		f.TypeId = typeId
+		f.TypeID = typeID
 		return nil
 	}
 	for _, typeDef := range schema.Types {

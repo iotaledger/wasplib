@@ -115,7 +115,7 @@ func generateSchemaNew() error {
 	funcInit := &generator.FuncDesc{}
 	funcInit.Params = make(generator.StringMap)
 	funcInit.Results = make(generator.StringMap)
-	funcInit.Params["owner"] = "?AgentId // optional owner of this smart contract"
+	funcInit.Params["owner"] = "?AgentID // optional owner of this smart contract"
 	jsonSchema.Funcs["init"] = funcInit
 
 	b, err := json.Marshal(jsonSchema)

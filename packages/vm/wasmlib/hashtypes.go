@@ -23,8 +23,8 @@ func NewScAddressFromBytes(bytes []byte) ScAddress {
 	return o
 }
 
-func (o ScAddress) AsAgentId() ScAgentId {
-	a := ScAgentId{}
+func (o ScAddress) AsAgentID() ScAgentID {
+	a := ScAgentID{}
 	// agent id is address padded with zeroes
 	copy(a.id[:], o.id[:])
 	return a
@@ -34,8 +34,8 @@ func (o ScAddress) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScAddress) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScAddress) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
 func (o ScAddress) String() string {
@@ -44,19 +44,19 @@ func (o ScAddress) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScAgentId struct {
+type ScAgentID struct {
 	id [37]byte
 }
 
-func NewScAgentId(chainId ScChainId, hContract ScHname) ScAgentId {
-	o := ScAgentId{}
-	copy(o.id[:], chainId.Bytes())
+func NewScAgentID(chainID ScChainID, hContract ScHname) ScAgentID {
+	o := ScAgentID{}
+	copy(o.id[:], chainID.Bytes())
 	copy(o.id[33:], hContract.Bytes())
 	return o
 }
 
-func NewScAgentIdFromBytes(bytes []byte) ScAgentId {
-	o := ScAgentId{}
+func NewScAgentIDFromBytes(bytes []byte) ScAgentID {
+	o := ScAgentID{}
 	if len(bytes) != len(o.id) {
 		Panic("invalid agent id length")
 	}
@@ -64,40 +64,40 @@ func NewScAgentIdFromBytes(bytes []byte) ScAgentId {
 	return o
 }
 
-func (o ScAgentId) Address() ScAddress {
+func (o ScAgentID) Address() ScAddress {
 	a := ScAddress{}
 	copy(a.id[:], o.id[:])
 	return a
 }
 
-func (o ScAgentId) Bytes() []byte {
+func (o ScAgentID) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScAgentId) Hname() ScHname {
+func (o ScAgentID) Hname() ScHname {
 	return NewScHnameFromBytes(o.id[33:])
 }
 
-func (o ScAgentId) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScAgentID) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
-func (o ScAgentId) IsAddress() bool {
-	return o.Address().AsAgentId() == o
+func (o ScAgentID) IsAddress() bool {
+	return o.Address().AsAgentID() == o
 }
 
-func (o ScAgentId) String() string {
+func (o ScAgentID) String() string {
 	return base58Encode(o.id[:])
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScChainId struct {
+type ScChainID struct {
 	id [33]byte
 }
 
-func NewScChainIdFromBytes(bytes []byte) ScChainId {
-	o := ScChainId{}
+func NewScChainIDFromBytes(bytes []byte) ScChainID {
+	o := ScChainID{}
 	if len(bytes) != len(o.id) {
 		Panic("invalid chain id length")
 	}
@@ -105,15 +105,15 @@ func NewScChainIdFromBytes(bytes []byte) ScChainId {
 	return o
 }
 
-func (o ScChainId) Bytes() []byte {
+func (o ScChainID) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScChainId) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScChainID) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
-func (o ScChainId) String() string {
+func (o ScChainID) String() string {
 	return base58Encode(o.id[:])
 }
 
@@ -141,9 +141,9 @@ func NewScColorFromBytes(bytes []byte) ScColor {
 	return o
 }
 
-func NewScColorFromRequestId(requestId ScRequestId) ScColor {
+func NewScColorFromRequestID(requestID ScRequestID) ScColor {
 	o := ScColor{}
-	copy(o.id[:], requestId.Bytes())
+	copy(o.id[:], requestID.Bytes())
 	return o
 }
 
@@ -151,8 +151,8 @@ func (o ScColor) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScColor) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScColor) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
 func (o ScColor) String() string {
@@ -178,8 +178,8 @@ func (o ScHash) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScHash) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScHash) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
 func (o ScHash) String() string {
@@ -204,8 +204,8 @@ func (hn ScHname) Bytes() []byte {
 	return bytes
 }
 
-func (hn ScHname) KeyId() Key32 {
-	return GetKeyIdFromBytes(hn.Bytes())
+func (hn ScHname) KeyID() Key32 {
+	return GetKeyIDFromBytes(hn.Bytes())
 }
 
 func (hn ScHname) String() string {
@@ -214,12 +214,12 @@ func (hn ScHname) String() string {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-type ScRequestId struct {
+type ScRequestID struct {
 	id [34]byte
 }
 
-func NewScRequestIdFromBytes(bytes []byte) ScRequestId {
-	o := ScRequestId{}
+func NewScRequestIDFromBytes(bytes []byte) ScRequestID {
+	o := ScRequestID{}
 	if len(bytes) != len(o.id) {
 		Panic("invalid request id length")
 	}
@@ -227,14 +227,14 @@ func NewScRequestIdFromBytes(bytes []byte) ScRequestId {
 	return o
 }
 
-func (o ScRequestId) Bytes() []byte {
+func (o ScRequestID) Bytes() []byte {
 	return o.id[:]
 }
 
-func (o ScRequestId) KeyId() Key32 {
-	return GetKeyIdFromBytes(o.Bytes())
+func (o ScRequestID) KeyID() Key32 {
+	return GetKeyIDFromBytes(o.Bytes())
 }
 
-func (o ScRequestId) String() string {
+func (o ScRequestID) String() string {
 	return base58Encode(o.id[:])
 }

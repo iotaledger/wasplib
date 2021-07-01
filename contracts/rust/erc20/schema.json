@@ -4,36 +4,36 @@
   "types": {
   },
   "subtypes": {
-    "AllowancesForAgent": "[AgentId]Int64"
+    "AllowancesForAgent": "[AgentID]Int64"
   },
   "state": {
-    "allAllowances=a": "[AgentId]AllowancesForAgent",
-    "balances=b": "[AgentId]Int64 // balances per account",
+    "allAllowances=a": "[AgentID]AllowancesForAgent",
+    "balances=b": "[AgentID]Int64 // balances per account",
     "supply=s": "Int64 // total supply of the token"
   },
   "funcs": {
     "approve": {
       "params": {
-        "delegation=d": "AgentId // delegated account",
+        "delegation=d": "AgentID // delegated account",
         "amount=am": "Int64 // allowance value for delegated account"
       }
     },
     "init": {
       "params": {
         "supply=s": "Int64 // initial token supply",
-        "creator=c": "AgentId // creator/owner of the initial supply"
+        "creator=c": "AgentID // creator/owner of the initial supply"
       }
     },
     "transfer": {
       "params": {
-        "account=ac": "AgentId // target account",
+        "account=ac": "AgentID // target account",
         "amount=am": "Int64 // amount of tokens to transfer"
       }
     },
     "transferFrom": {
       "params": {
-        "account=ac": "AgentId // sender account",
-        "recipient=r": "AgentId // recipient account",
+        "account=ac": "AgentID // sender account",
+        "recipient=r": "AgentID // recipient account",
         "amount=am": "Int64 // amount of tokens to transfer"
       }
     }
@@ -41,8 +41,8 @@
   "views": {
     "allowance": {
       "params": {
-        "account=ac": "AgentId // sender account",
-        "delegation=d": "AgentId // delegated account"
+        "account=ac": "AgentID // sender account",
+        "delegation=d": "AgentID // delegated account"
       },
       "results": {
         "amount=am": "Int64"
@@ -50,7 +50,7 @@
     },
     "balanceOf": {
       "params": {
-        "account=ac": "AgentId // sender account"
+        "account=ac": "AgentID // sender account"
       },
       "results": {
         "amount=am": "Int64"

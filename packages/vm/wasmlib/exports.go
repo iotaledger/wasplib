@@ -8,12 +8,12 @@ var (
 	views []func(ctx ScViewContext)
 )
 
-//export on_call
+// export on_call
 func OnCall(index int32) {
 	ctx := ScFuncContext{}
-	ctx.Require(GetObjectId(OBJ_ID_ROOT, KeyState, TYPE_MAP) == OBJ_ID_STATE, "object id mismatch")
-	ctx.Require(GetObjectId(OBJ_ID_ROOT, KeyParams, TYPE_MAP) == OBJ_ID_PARAMS, "object id mismatch")
-	ctx.Require(GetObjectId(OBJ_ID_ROOT, KeyResults, TYPE_MAP) == OBJ_ID_RESULTS, "object id mismatch")
+	ctx.Require(GetObjectID(OBJ_ID_ROOT, KeyState, TYPE_MAP) == OBJ_ID_STATE, "object id mismatch")
+	ctx.Require(GetObjectID(OBJ_ID_ROOT, KeyParams, TYPE_MAP) == OBJ_ID_PARAMS, "object id mismatch")
+	ctx.Require(GetObjectID(OBJ_ID_ROOT, KeyResults, TYPE_MAP) == OBJ_ID_RESULTS, "object id mismatch")
 
 	if (index & 0x8000) != 0 {
 		views[index&0x7fff](ScViewContext{})

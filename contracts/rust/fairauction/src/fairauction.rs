@@ -167,7 +167,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &StartAuctionContext) {
         description: description,
         duration: duration,
         highest_bid: -1,
-        highest_bidder: ScAgentId::from_bytes(&[0; 37]),
+        highest_bidder: ScAgentID::from_bytes(&[0; 37]),
         minimum_bid: minimum_bid,
         num_tokens: num_tokens,
         owner_margin: owner_margin,
@@ -202,7 +202,7 @@ pub fn view_get_info(ctx: &ScViewContext, f: &GetInfoContext) {
     f.results.bidders().set_value(bidder_list.length() as i64);
 }
 
-fn transfer_tokens(ctx: &ScFuncContext, agent: &ScAgentId, color: &ScColor, amount: i64) {
+fn transfer_tokens(ctx: &ScFuncContext, agent: &ScAgentID, color: &ScColor, amount: i64) {
     if agent.is_address() {
         // send back to original Tangle address
         ctx.transfer_to_address(&agent.address(), ScTransfers::new(color, amount));

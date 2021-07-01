@@ -12,7 +12,7 @@ import (
 )
 
 type WasmGoVM struct {
-	wasmhost.WasmVmBase
+	wasmhost.WasmVMBase
 	contract string
 	onLoad   map[string]func()
 }
@@ -27,11 +27,11 @@ func NewWasmGoVM(onLoad map[string]func()) *WasmGoVM {
 
 func (vm *WasmGoVM) Interrupt() {
 	// disabled for now
-	//panic("implement me")
+	// panic("implement me")
 }
 
 func (vm *WasmGoVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) error {
-	vm.WasmVmBase.LinkHost(impl, host)
+	_ = vm.WasmVMBase.LinkHost(impl, host)
 	wasmlib.ConnectHost(host)
 	return nil
 }

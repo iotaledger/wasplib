@@ -19,7 +19,7 @@
     },
     "getRequestLogRecord": {
       "params": {
-        "requestID=u": "RequestId"
+        "requestID=u": "RequestID"
       },
       "results": {
         "requestRecord=d": "Bytes",
@@ -45,7 +45,7 @@
     },
     "isRequestProcessed": {
       "params": {
-        "requestID=u": "RequestId"
+        "requestID=u": "RequestID"
       },
       "results": {
         "requestProcessed=p": "String"

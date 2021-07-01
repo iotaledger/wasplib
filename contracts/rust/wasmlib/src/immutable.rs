@@ -58,15 +58,15 @@ impl ScImmutableAddressArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// value proxy for immutable ScAgentId in host container
-pub struct ScImmutableAgentId {
+// value proxy for immutable ScAgentID in host container
+pub struct ScImmutableAgentID {
     obj_id: i32,
     key_id: Key32,
 }
 
-impl ScImmutableAgentId {
-    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableAgentId {
-        ScImmutableAgentId { obj_id, key_id }
+impl ScImmutableAgentID {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableAgentID {
+        ScImmutableAgentID { obj_id, key_id }
     }
 
     // check if value exists in host container
@@ -80,22 +80,22 @@ impl ScImmutableAgentId {
     }
 
     // get value from host container
-    pub fn value(&self) -> ScAgentId {
-        ScAgentId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT_ID))
+    pub fn value(&self) -> ScAgentID {
+        ScAgentID::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_AGENT_ID))
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// array proxy for immutable array of ScAgentId
-pub struct ScImmutableAgentIdArray {
+// array proxy for immutable array of ScAgentID
+pub struct ScImmutableAgentIDArray {
     pub(crate) obj_id: i32,
 }
 
-impl ScImmutableAgentIdArray {
+impl ScImmutableAgentIDArray {
     // get value proxy for item at index, index can be 0..length()-1
-    pub fn get_agent_id(&self, index: i32) -> ScImmutableAgentId {
-        ScImmutableAgentId { obj_id: self.obj_id, key_id: Key32(index) }
+    pub fn get_agent_id(&self, index: i32) -> ScImmutableAgentID {
+        ScImmutableAgentID { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     // number of items in array
@@ -154,15 +154,15 @@ impl ScImmutableBytesArray {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// value proxy for immutable ScChainId in host container
-pub struct ScImmutableChainId {
+// value proxy for immutable ScChainID in host container
+pub struct ScImmutableChainID {
     obj_id: i32,
     key_id: Key32,
 }
 
-impl ScImmutableChainId {
-    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableChainId {
-        ScImmutableChainId { obj_id, key_id }
+impl ScImmutableChainID {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableChainID {
+        ScImmutableChainID { obj_id, key_id }
     }
 
     // check if value exists in host container
@@ -176,22 +176,22 @@ impl ScImmutableChainId {
     }
 
     // get value from host container
-    pub fn value(&self) -> ScChainId {
-        ScChainId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN_ID))
+    pub fn value(&self) -> ScChainID {
+        ScChainID::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_CHAIN_ID))
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// array proxy for immutable array of ScChainId
-pub struct ScImmutableChainIdArray {
+// array proxy for immutable array of ScChainID
+pub struct ScImmutableChainIDArray {
     pub(crate) obj_id: i32,
 }
 
-impl ScImmutableChainIdArray {
+impl ScImmutableChainIDArray {
     // get value proxy for item at index, index can be 0..length()-1
-    pub fn get_chain_id(&self, index: i32) -> ScImmutableChainId {
-        ScImmutableChainId { obj_id: self.obj_id, key_id: Key32(index) }
+    pub fn get_chain_id(&self, index: i32) -> ScImmutableChainID {
+        ScImmutableChainID { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     // number of items in array
@@ -514,15 +514,15 @@ impl ScImmutableMap {
         ScImmutableAddressArray { obj_id: arr_id }
     }
 
-    // get value proxy for immutable ScAgentId field specified by key
-    pub fn get_agent_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgentId {
-        ScImmutableAgentId { obj_id: self.obj_id, key_id: key.get_key_id() }
+    // get value proxy for immutable ScAgentID field specified by key
+    pub fn get_agent_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgentID {
+        ScImmutableAgentID { obj_id: self.obj_id, key_id: key.get_key_id() }
     }
 
-    // get array proxy for ScImmutableAgentIdArray specified by key
-    pub fn get_agent_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgentIdArray {
+    // get array proxy for ScImmutableAgentIDArray specified by key
+    pub fn get_agent_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableAgentIDArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_AGENT_ID | TYPE_ARRAY);
-        ScImmutableAgentIdArray { obj_id: arr_id }
+        ScImmutableAgentIDArray { obj_id: arr_id }
     }
 
     // get value proxy for immutable bytes array field specified by key
@@ -536,15 +536,15 @@ impl ScImmutableMap {
         ScImmutableBytesArray { obj_id: arr_id }
     }
 
-    // get value proxy for immutable ScChainId field specified by key
-    pub fn get_chain_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableChainId {
-        ScImmutableChainId { obj_id: self.obj_id, key_id: key.get_key_id() }
+    // get value proxy for immutable ScChainID field specified by key
+    pub fn get_chain_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableChainID {
+        ScImmutableChainID { obj_id: self.obj_id, key_id: key.get_key_id() }
     }
 
-    // get array proxy for ScImmutableChainIdArray specified by key
-    pub fn get_chain_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableChainIdArray {
+    // get array proxy for ScImmutableChainIDArray specified by key
+    pub fn get_chain_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableChainIDArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_CHAIN_ID | TYPE_ARRAY);
-        ScImmutableChainIdArray { obj_id: arr_id }
+        ScImmutableChainIDArray { obj_id: arr_id }
     }
 
     // get value proxy for immutable ScColor field specified by key
@@ -625,15 +625,15 @@ impl ScImmutableMap {
         ScImmutableMapArray { obj_id: arr_id }
     }
 
-    // get value proxy for immutable ScRequestId field specified by key
-    pub fn get_request_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id: self.obj_id, key_id: key.get_key_id() }
+    // get value proxy for immutable ScRequestID field specified by key
+    pub fn get_request_id<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableRequestID {
+        ScImmutableRequestID { obj_id: self.obj_id, key_id: key.get_key_id() }
     }
 
-    // get array proxy for ScImmutableRequestIdArray specified by key
-    pub fn get_request_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableRequestIdArray {
+    // get array proxy for ScImmutableRequestIDArray specified by key
+    pub fn get_request_id_array<T: MapKey + ?Sized>(&self, key: &T) -> ScImmutableRequestIDArray {
         let arr_id = get_object_id(self.obj_id, key.get_key_id(), TYPE_REQUEST_ID | TYPE_ARRAY);
-        ScImmutableRequestIdArray { obj_id: arr_id }
+        ScImmutableRequestIDArray { obj_id: arr_id }
     }
 
     // get value proxy for immutable UTF-8 text string field specified by key
@@ -672,15 +672,15 @@ impl ScImmutableMapArray {
     }
 }
 
-// value proxy for immutable ScRequestId in host container
-pub struct ScImmutableRequestId {
+// value proxy for immutable ScRequestID in host container
+pub struct ScImmutableRequestID {
     obj_id: i32,
     key_id: Key32,
 }
 
-impl ScImmutableRequestId {
-    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id, key_id }
+impl ScImmutableRequestID {
+    pub fn new(obj_id: i32, key_id: Key32) -> ScImmutableRequestID {
+        ScImmutableRequestID { obj_id, key_id }
     }
 
     // check if value exists in host container
@@ -694,22 +694,22 @@ impl ScImmutableRequestId {
     }
 
     // get value from host container
-    pub fn value(&self) -> ScRequestId {
-        ScRequestId::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_REQUEST_ID))
+    pub fn value(&self) -> ScRequestID {
+        ScRequestID::from_bytes(&get_bytes(self.obj_id, self.key_id, TYPE_REQUEST_ID))
     }
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
-// array proxy for immutable array of ScRequestId
-pub struct ScImmutableRequestIdArray {
+// array proxy for immutable array of ScRequestID
+pub struct ScImmutableRequestIDArray {
     pub(crate) obj_id: i32,
 }
 
-impl ScImmutableRequestIdArray {
+impl ScImmutableRequestIDArray {
     // get value proxy for item at index, index can be 0..length()-1
-    pub fn get_request_id(&self, index: i32) -> ScImmutableRequestId {
-        ScImmutableRequestId { obj_id: self.obj_id, key_id: Key32(index) }
+    pub fn get_request_id(&self, index: i32) -> ScImmutableRequestID {
+        ScImmutableRequestID { obj_id: self.obj_id, key_id: Key32(index) }
     }
 
     // number of items in array

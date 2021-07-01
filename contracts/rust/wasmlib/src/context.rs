@@ -185,7 +185,7 @@ pub(crate) fn base58_encode(bytes: &[u8]) -> String {
 // shared interface part of ScFuncContext and ScViewContext
 pub trait ScBaseContext {
     // retrieve the agent id of this contract account
-    fn account_id(&self) -> ScAgentId {
+    fn account_id(&self) -> ScAgentID {
         ROOT.get_agent_id(&KEY_ACCOUNT_ID).value()
     }
 
@@ -195,12 +195,12 @@ pub trait ScBaseContext {
     }
 
     // retrieve the chain id of the chain this contract lives on
-    fn chain_id(&self) -> ScChainId {
+    fn chain_id(&self) -> ScChainID {
         ROOT.get_chain_id(&KEY_CHAIN_ID).value()
     }
 
     // retrieve the agent id of the owner of the chain this contract lives on
-    fn chain_owner_id(&self) -> ScAgentId {
+    fn chain_owner_id(&self) -> ScAgentID {
         ROOT.get_agent_id(&KEY_CHAIN_OWNER_ID).value()
     }
 
@@ -210,7 +210,7 @@ pub trait ScBaseContext {
     }
 
     // retrieve the agent id of the creator of this contract
-    fn contract_creator(&self) -> ScAgentId {
+    fn contract_creator(&self) -> ScAgentID {
         ROOT.get_agent_id(&KEY_CONTRACT_CREATOR).value()
     }
 
@@ -294,7 +294,7 @@ impl ScFuncContext {
     }
 
     // retrieve the agent id of the caller of the smart contract
-    pub fn caller(&self) -> ScAgentId { ROOT.get_agent_id(&KEY_CALLER).value() }
+    pub fn caller(&self) -> ScAgentID { ROOT.get_agent_id(&KEY_CALLER).value() }
 
     // deploys a new instance of the specified smart contract on the current chain
     // the provided parameters are passed to the smart contract "init" function
@@ -329,7 +329,7 @@ impl ScFuncContext {
     // asynchronously calls the specified smart contract function,
     // passing the provided parameters and token transfers to it
     // it is possible to schedule the call for a later execution by specifying a delay
-    pub fn post(&self, chain_id: &ScChainId, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i32) {
+    pub fn post(&self, chain_id: &ScChainID, hcontract: ScHname, hfunction: ScHname, params: Option<ScMutableMap>, transfer: ScTransfers, delay: i32) {
         let mut encode = BytesEncoder::new();
         encode.chain_id(chain_id);
         encode.hname(&hcontract);
@@ -350,7 +350,7 @@ impl ScFuncContext {
     }
 
     // retrieve the request id of this transaction
-    pub fn request_id(&self) -> ScRequestId {
+    pub fn request_id(&self) -> ScRequestID {
         ROOT.get_request_id(&KEY_REQUEST_ID).value()
     }
 

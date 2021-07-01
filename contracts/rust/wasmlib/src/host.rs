@@ -38,7 +38,7 @@ const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0];
 // to their counterparts on the host.
 #[link(wasm_import_module = "WasmLib")]
 extern {
-    // Copy the value data bytes of type <type_id> stored in the host container object <obj_Id>,
+    // Copy the value data bytes of type <type_id> stored in the host container object <obj_ID>,
     // under key <key_id>, into the pre-allocated <buffer> which can hold len bytes.
     // Returns the actual length of the value data bytes on the host.
     pub fn hostGetBytes(obj_id: i32, key_id: i32, type_id: i32, buffer: *const u8, len: i32) -> i32;
@@ -46,11 +46,11 @@ extern {
     // Retrieve the key id associated with the <key> data bytes of length <len>.
     // A negative length indicates a bytes key, positive indicates a string key
     // We discern between the two for better readable logging purposes
-    pub fn hostGetKeyId(key: *const u8, len: i32) -> i32;
+    pub fn hostGetKeyID(key: *const u8, len: i32) -> i32;
 
     // Retrieve the id of the container sub-object of type <type_id> stored in
-    // the host container object <obj_Id>, under key <key_id>.
-    pub fn hostGetObjectId(obj_id: i32, key_id: i32, type_id: i32) -> i32;
+    // the host container object <obj_ID>, under key <key_id>.
+    pub fn hostGetObjectID(obj_id: i32, key_id: i32, type_id: i32) -> i32;
 
     // copy the <len> value data bytes of type <type_id> from the <buffer>
     // into the host container object <obj_id>, under key <key_id>.
@@ -91,7 +91,7 @@ pub fn clear(obj_id: i32) {
 pub fn exists(obj_id: i32, key_id: Key32, type_id: i32) -> bool {
     unsafe {
         // negative length (-1) means only test for existence
-        // returned size -1 indicates keyId not found (or error)
+        // returned size -1 indicates keyID not found (or error)
         // this removes the need for a separate hostExists function
         hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), -1) >= 0
     }
@@ -125,7 +125,7 @@ pub fn get_key_id_from_bytes(bytes: &[u8]) -> Key32 {
     unsafe {
         let size = bytes.len() as i32;
         // negative size indicates this is a bytes key
-        Key32(hostGetKeyId(bytes.as_ptr(), -size - 1))
+        Key32(hostGetKeyID(bytes.as_ptr(), -size - 1))
     }
 }
 
@@ -134,7 +134,7 @@ pub fn get_key_id_from_string(key: &str) -> Key32 {
     let bytes = key.as_bytes();
     unsafe {
         // non-negative size indicates this is a string key
-        Key32(hostGetKeyId(bytes.as_ptr(), bytes.len() as i32))
+        Key32(hostGetKeyID(bytes.as_ptr(), bytes.len() as i32))
     }
 }
 
@@ -148,7 +148,7 @@ pub fn get_length(obj_id: i32) -> i32 {
 // Retrieve the id of the specified container sub-object
 pub fn get_object_id(obj_id: i32, key_id: Key32, type_id: i32) -> i32 {
     unsafe {
-        hostGetObjectId(obj_id, key_id.0, type_id)
+        hostGetObjectID(obj_id, key_id.0, type_id)
     }
 }
 

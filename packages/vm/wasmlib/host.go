@@ -34,17 +34,20 @@ const (
 var TypeSizes = [...]uint8{0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0}
 
 type ScHost interface {
-	CallFunc(objId int32, keyId int32, params []byte) []byte
-	Exists(objId int32, keyId int32, typeId int32) bool
-	GetBytes(objId int32, keyId int32, typeId int32) []byte
-	GetKeyIdFromBytes(bytes []byte) int32
-	GetKeyIdFromString(key string) int32
-	GetObjectId(objId int32, keyId int32, typeId int32) int32
-	SetBytes(objId int32, keyId int32, typeId int32, value []byte)
+	CallFunc(objID, keyID int32, params []byte) []byte
+	Exists(objID, keyID, typeID int32) bool
+	GetBytes(objID, keyID, typeID int32) []byte
+	GetKeyIDFromBytes(bytes []byte) int32
+	GetKeyIDFromString(key string) int32
+	GetObjectID(objID, keyID, typeID int32) int32
+	SetBytes(objID, keyID, typeID int32, value []byte)
+}
+
+type ScHostContext interface {
+	Host() ScHost
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
-
 var host ScHost
 
 func ConnectHost(h ScHost) ScHost {
@@ -53,42 +56,42 @@ func ConnectHost(h ScHost) ScHost {
 	return oldHost
 }
 
-func CallFunc(objId int32, keyId Key32, params []byte) []byte {
-	return host.CallFunc(objId, int32(keyId), params)
+func CallFunc(objID int32, keyID Key32, params []byte) []byte {
+	return host.CallFunc(objID, int32(keyID), params)
 }
 
-func Clear(objId int32) {
+func Clear(objID int32) {
 	var zero [4]byte
-	SetBytes(objId, KeyLength, TYPE_INT32, zero[:])
+	SetBytes(objID, KeyLength, TYPE_INT32, zero[:])
 }
 
-func Exists(objId int32, keyId Key32, typeId int32) bool {
-	return host.Exists(objId, int32(keyId), typeId)
+func Exists(objID int32, keyID Key32, typeID int32) bool {
+	return host.Exists(objID, int32(keyID), typeID)
 }
 
-func GetBytes(objId int32, keyId Key32, typeId int32) []byte {
-	bytes := host.GetBytes(objId, int32(keyId), typeId)
+func GetBytes(objID int32, keyID Key32, typeID int32) []byte {
+	bytes := host.GetBytes(objID, int32(keyID), typeID)
 	if len(bytes) == 0 {
-		return make([]byte, TypeSizes[typeId])
+		return make([]byte, TypeSizes[typeID])
 	}
 	return bytes
 }
 
-func GetKeyIdFromBytes(bytes []byte) Key32 {
-	return Key32(host.GetKeyIdFromBytes(bytes))
+func GetKeyIDFromBytes(bytes []byte) Key32 {
+	return Key32(host.GetKeyIDFromBytes(bytes))
 }
 
-func GetKeyIdFromString(key string) Key32 {
-	return Key32(host.GetKeyIdFromString(key))
+func GetKeyIDFromString(key string) Key32 {
+	return Key32(host.GetKeyIDFromString(key))
 }
 
-func GetLength(objId int32) int32 {
-	bytes := GetBytes(objId, KeyLength, TYPE_INT32)
+func GetLength(objID int32) int32 {
+	bytes := GetBytes(objID, KeyLength, TYPE_INT32)
 	return int32(binary.LittleEndian.Uint32(bytes))
 }
 
-func GetObjectId(objId int32, keyId Key32, typeId int32) int32 {
-	return host.GetObjectId(objId, int32(keyId), typeId)
+func GetObjectID(objID int32, keyID Key32, typeID int32) int32 {
+	return host.GetObjectID(objID, int32(keyID), typeID)
 }
 
 func Log(text string) {
@@ -99,8 +102,8 @@ func Panic(text string) {
 	SetBytes(1, KeyPanic, TYPE_STRING, []byte(text))
 }
 
-func SetBytes(objId int32, keyId Key32, typeId int32, value []byte) {
-	host.SetBytes(objId, int32(keyId), typeId, value)
+func SetBytes(objID int32, keyID Key32, typeID int32, value []byte) {
+	host.SetBytes(objID, int32(keyID), typeID, value)
 }
 
 func Trace(text string) {

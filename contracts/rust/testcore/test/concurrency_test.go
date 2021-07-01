@@ -34,7 +34,7 @@ func testCounter(t *testing.T, w bool) {
 
 func TestConcurrency(t *testing.T) { run2(t, testConcurrency) }
 func testConcurrency(t *testing.T, w bool) {
-	//t.SkipNow()
+	// t.SkipNow()
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
@@ -50,7 +50,7 @@ func testConcurrency(t *testing.T, w bool) {
 		sum += i
 	}
 	for r, n := range repeats {
-		go func(r, n int) {
+		go func(_, n int) {
 			for i := 0; i < n; i++ {
 				tx, err := chain.RequestFromParamsToLedger(req, nil)
 				require.NoError(t, err)
@@ -72,14 +72,14 @@ func testConcurrency(t *testing.T, w bool) {
 		extraIota = 1
 	}
 	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertOwnersIotas(extraIota + 2)
+	chain.AssertCommonAccountIotas(extraIota + 2)
 	agentID := coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName)
 	chain.AssertIotas(agentID, uint64(sum)+1)
 }
 
 func TestConcurrency2(t *testing.T) { run2(t, testConcurrency2) }
 func testConcurrency2(t *testing.T, w bool) {
-	//t.SkipNow()
+	// t.SkipNow()
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
@@ -125,7 +125,7 @@ func testConcurrency2(t *testing.T, w bool) {
 		extraIota = 1
 	}
 	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertOwnersIotas(extraIota + 2)
+	chain.AssertCommonAccountIotas(extraIota + 2)
 	agentID := coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName)
 	chain.AssertIotas(agentID, uint64(sum)+1)
 }

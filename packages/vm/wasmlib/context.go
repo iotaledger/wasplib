@@ -162,8 +162,8 @@ type ScBaseContext struct {
 }
 
 // retrieve the agent id of this contract account
-func (ctx ScBaseContext) AccountId() ScAgentId {
-	return Root.GetAgentId(KeyAccountId).Value()
+func (ctx ScBaseContext) AccountID() ScAgentID {
+	return Root.GetAgentID(KeyAccountID).Value()
 }
 
 // access the current balances for all token colors
@@ -172,13 +172,13 @@ func (ctx ScBaseContext) Balances() ScBalances {
 }
 
 // retrieve the chain id of the chain this contract lives on
-func (ctx ScBaseContext) ChainId() ScChainId {
-	return Root.GetChainId(KeyChainId).Value()
+func (ctx ScBaseContext) ChainID() ScChainID {
+	return Root.GetChainID(KeyChainID).Value()
 }
 
 // retrieve the agent id of the owner of the chain this contract lives on
-func (ctx ScBaseContext) ChainOwnerId() ScAgentId {
-	return Root.GetAgentId(KeyChainOwnerId).Value()
+func (ctx ScBaseContext) ChainOwnerID() ScAgentID {
+	return Root.GetAgentID(KeyChainOwnerID).Value()
 }
 
 // retrieve the hname of this contract
@@ -187,8 +187,8 @@ func (ctx ScBaseContext) Contract() ScHname {
 }
 
 // retrieve the agent id of the creator of this contract
-func (ctx ScBaseContext) ContractCreator() ScAgentId {
-	return Root.GetAgentId(KeyContractCreator).Value()
+func (ctx ScBaseContext) ContractCreator() ScAgentID {
+	return Root.GetAgentID(KeyContractCreator).Value()
 }
 
 // logs informational text message
@@ -240,18 +240,21 @@ type ScFuncContext struct {
 	ScBaseContext
 }
 
+// implements wasmlib.ScFuncContext interface
+var _ ScHostContext = &ScFuncContext{}
+
 // calls a smart contract function
 func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
 	encode := NewBytesEncoder()
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
 	if params != nil {
-		encode.Int32(params.objId)
+		encode.Int32(params.objID)
 	} else {
 		encode.Int32(0)
 	}
 	if transfer != nil {
-		encode.Int32(transfer.transfers.objId)
+		encode.Int32(transfer.transfers.objID)
 	} else {
 		encode.Int32(0)
 	}
@@ -260,8 +263,8 @@ func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMu
 }
 
 // retrieve the agent id of the caller of the smart contract
-func (ctx ScFuncContext) Caller() ScAgentId {
-	return Root.GetAgentId(KeyCaller).Value()
+func (ctx ScFuncContext) Caller() ScAgentID {
+	return Root.GetAgentID(KeyCaller).Value()
 }
 
 // calls a smart contract function on the current contract
@@ -276,7 +279,7 @@ func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description str
 	encode.String(name)
 	encode.String(description)
 	if params != nil {
-		encode.Int32(params.objId)
+		encode.Int32(params.objID)
 	} else {
 		encode.Int32(0)
 	}
@@ -284,8 +287,12 @@ func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description str
 }
 
 // signals an event on the node that external entities can subscribe to
-func (ctx ScBaseContext) Event(text string) {
+func (ctx ScFuncContext) Event(text string) {
 	Root.GetString(KeyEvent).SetValue(text)
+}
+
+func (ctx ScFuncContext) Host() ScHost {
+	return nil
 }
 
 // access the incoming balances for all token colors
@@ -299,28 +306,28 @@ func (ctx ScFuncContext) Minted() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(chainId ScChainId, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
+func (ctx ScFuncContext) Post(chainID ScChainID, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
 	encode := NewBytesEncoder()
-	encode.ChainId(chainId)
+	encode.ChainID(chainID)
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
 	if params != nil {
-		encode.Int32(params.objId)
+		encode.Int32(params.objID)
 	} else {
 		encode.Int32(0)
 	}
-	encode.Int32(transfer.transfers.objId)
+	encode.Int32(transfer.transfers.objID)
 	encode.Int32(delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 
 func (ctx ScFuncContext) PostSelf(hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
-	ctx.Post(ctx.ChainId(), ctx.Contract(), hFunction, params, transfer, delay)
+	ctx.Post(ctx.ChainID(), ctx.Contract(), hFunction, params, transfer, delay)
 }
 
 // retrieve the request id of this transaction
-func (ctx ScFuncContext) RequestId() ScRequestId {
-	return Root.GetRequestId(KeyRequestId).Value()
+func (ctx ScFuncContext) RequestID() ScRequestID {
+	return Root.GetRequestID(KeyRequestID).Value()
 }
 
 // access to mutable state storage
@@ -333,7 +340,7 @@ func (ctx ScFuncContext) TransferToAddress(address ScAddress, transfer ScTransfe
 	transfers := Root.GetMapArray(KeyTransfers)
 	tx := transfers.GetMap(transfers.Length())
 	tx.GetAddress(KeyAddress).SetValue(address)
-	tx.GetInt32(KeyBalances).SetValue(transfer.transfers.objId)
+	tx.GetInt32(KeyBalances).SetValue(transfer.transfers.objID)
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
@@ -349,7 +356,7 @@ func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMuta
 	encode.Hname(contract)
 	encode.Hname(function)
 	if params != nil {
-		encode.Int32(params.objId)
+		encode.Int32(params.objID)
 	} else {
 		encode.Int32(0)
 	}

@@ -23,11 +23,11 @@
     },
     "checkContextFromFullEP": {
       "params": {
-        "agentId=agentID": "AgentId",
-        "caller": "AgentId",
-        "chainId=chainID": "ChainId",
-        "chainOwnerId=chainOwnerID": "AgentId",
-        "contractCreator": "AgentId"
+        "agentID=agentID": "AgentID",
+        "caller": "AgentID",
+        "chainID=chainID": "ChainID",
+        "chainOwnerID=chainOwnerID": "AgentID",
+        "contractCreator": "AgentID"
       }
     },
     "doNothing": {
@@ -79,7 +79,7 @@
     },
     "testChainOwnerIDFull": {
       "results": {
-        "chainOwnerId=chainOwnerID": "AgentId"
+        "chainOwnerID=chainOwnerID": "AgentID"
       }
     },
     "testEventLogDeploy": {
@@ -95,17 +95,17 @@
     },
     "withdrawToChain": {
       "params": {
-        "chainId=chainID": "ChainId"
+        "chainID=chainID": "ChainID"
       }
     }
   },
   "views": {
     "checkContextFromViewEP": {
       "params": {
-        "agentId=agentID": "AgentId",
-        "chainId=chainID": "ChainId",
-        "chainOwnerId=chainOwnerID": "AgentId",
-        "contractCreator": "AgentId"
+        "agentID=agentID": "AgentID",
+        "chainID=chainID": "ChainID",
+        "chainOwnerID=chainOwnerID": "AgentID",
+        "contractCreator": "AgentID"
       }
     },
     "fibonacci": {
@@ -146,7 +146,7 @@
     },
     "testChainOwnerIDView": {
       "results": {
-        "chainOwnerId=chainOwnerID": "AgentId"
+        "chainOwnerID=chainOwnerID": "AgentID"
       }
     },
     "testPanicViewEP": {

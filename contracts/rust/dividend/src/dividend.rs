@@ -25,7 +25,7 @@ pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
 
     // First we set up a default value for the owner in case the optional
     // 'owner' parameter was omitted.
-    let mut owner: ScAgentId = ctx.contract_creator();
+    let mut owner: ScAgentID = ctx.contract_creator();
 
     // Now we check if the optional 'owner' parameter is present in the params map.
     if f.params.owner().exists() {
@@ -38,8 +38,8 @@ pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
     // we will save this value in the state storage on the host. First we create
     // an ScMutableMap proxy that refers to the state storage map on the host.
 
-    // Then we create an ScMutableAgentId proxy to an 'owner' variable in state storage.
-    let state_owner: ScMutableAgentId = f.state.owner();
+    // Then we create an ScMutableAgentID proxy to an 'owner' variable in state storage.
+    let state_owner: ScMutableAgentID = f.state.owner();
 
     // And then we save the owner value in the 'owner' variable in state storage.
     state_owner.set_value(&owner);
@@ -222,7 +222,7 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
 pub fn func_set_owner(_ctx: &ScFuncContext, f: &SetOwnerContext) {
 
     // Get a proxy to the 'owner' variable in state storage.
-    let state_owner: ScMutableAgentId = f.state.owner();
+    let state_owner: ScMutableAgentID = f.state.owner();
 
     // Save the new owner parameter value in the 'owner' variable in state storage.
     state_owner.set_value(&f.params.owner().value());

@@ -15,8 +15,8 @@ func (d *BytesDecoder) Address() ScAddress {
 	return NewScAddressFromBytes(d.Bytes())
 }
 
-func (d *BytesDecoder) AgentId() ScAgentId {
-	return NewScAgentIdFromBytes(d.Bytes())
+func (d *BytesDecoder) AgentID() ScAgentID {
+	return NewScAgentIDFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Bytes() []byte {
@@ -29,8 +29,8 @@ func (d *BytesDecoder) Bytes() []byte {
 	return value
 }
 
-func (d *BytesDecoder) ChainId() ScChainId {
-	return NewScChainIdFromBytes(d.Bytes())
+func (d *BytesDecoder) ChainID() ScChainID {
+	return NewScChainIDFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) Color() ScColor {
@@ -92,8 +92,8 @@ func (d *BytesDecoder) leb128Decode(bits int) int64 {
 	}
 }
 
-func (d *BytesDecoder) RequestId() ScRequestId {
-	return NewScRequestIdFromBytes(d.Bytes())
+func (d *BytesDecoder) RequestID() ScRequestID {
+	return NewScRequestIDFromBytes(d.Bytes())
 }
 
 func (d *BytesDecoder) String() string {
@@ -114,7 +114,7 @@ func (e *BytesEncoder) Address(value ScAddress) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
-func (e *BytesEncoder) AgentId(value ScAgentId) *BytesEncoder {
+func (e *BytesEncoder) AgentID(value ScAgentID) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -124,7 +124,7 @@ func (e *BytesEncoder) Bytes(value []byte) *BytesEncoder {
 	return e
 }
 
-func (e *BytesEncoder) ChainId(value ScChainId) *BytesEncoder {
+func (e *BytesEncoder) ChainID(value ScChainID) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 
@@ -170,7 +170,7 @@ func (e *BytesEncoder) leb128Encode(value int64) *BytesEncoder {
 	}
 }
 
-func (e *BytesEncoder) RequestId(value ScRequestId) *BytesEncoder {
+func (e *BytesEncoder) RequestID(value ScRequestID) *BytesEncoder {
 	return e.Bytes(value.Bytes())
 }
 

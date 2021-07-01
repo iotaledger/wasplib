@@ -19,6 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// nolint:revive
 const (
 	DEBUG        = false
 	ERC20_NAME   = "erc20"
@@ -30,8 +31,8 @@ const (
 )
 
 var (
-//WasmFileTestcore = "sbtestsc/testcore_bg.wasm"
-//WasmFileErc20    = "sbtestsc/erc20_bg.wasm"
+// WasmFileTestcore = "sbtestsc/testcore_bg.wasm"
+// WasmFileErc20    = "sbtestsc/erc20_bg.wasm"
 )
 
 // deploy the specified contract on the chain
@@ -66,7 +67,7 @@ func setupChain(t *testing.T, keyPairOriginator *ed25519.KeyPair) (*solo.Solo, *
 	wasmhost.HostTracing = DEBUG
 	wasmhost.ExtendedHostTracing = DEBUG
 	core.PrintWellKnownHnames()
-	env := solo.New(t, DEBUG, false)
+	env := solo.New(t, DEBUG, false).WithNativeContract(sbtestsc.Interface)
 	chain := env.NewChain(keyPairOriginator, "ch1")
 	return env, chain
 }
@@ -116,17 +117,18 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, 
 	return deployed, extraToken
 }
 
+// nolint:deadcode,unused
 func setupERC20(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) *coretypes.AgentID {
 	var err error
 	if !runWasm {
 		t.Logf("skipped %s. Only for Wasm tests, always loads %s", t.Name(), ERC20_NAME)
 		return nil
 	}
-	userAddr := ledgerstate.NewED25519Address(user.PublicKey)
 	var userAgentID *coretypes.AgentID
 	if user == nil {
 		userAgentID = &chain.OriginatorAgentID
 	} else {
+		userAddr := ledgerstate.NewED25519Address(user.PublicKey)
 		userAgentID = coretypes.NewAgentID(userAddr, 0)
 	}
 	err = DeployGoContract(chain, user, ERC20_NAME, ERC20_NAME,

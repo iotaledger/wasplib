@@ -4,7 +4,7 @@
   "funcs": {
     "deposit": {
       "params": {
-        "agentID=a": "?AgentId // default is caller"
+        "agentID=a": "?AgentID // default is caller"
       }
     },
     "withdraw": {
@@ -13,12 +13,12 @@
   "views": {
     "accounts": {
       "results": {
-        "agents=this": "[AgentId]Bytes // bytes are always empty"
+        "agents=this": "[AgentID]Bytes // bytes are always empty"
       }
     },
     "balance": {
       "params": {
-        "agentID=a": "AgentId"
+        "agentID=a": "AgentID"
       },
       "results": {
         "balances=this": "[Color]Int64"

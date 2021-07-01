@@ -4,25 +4,25 @@
 package wasmlib
 
 type MapKey interface {
-	KeyId() Key32
+	KeyID() Key32
 }
 
 type Key string
 
-func (key Key) KeyId() Key32 {
-	return GetKeyIdFromString(string(key))
+func (key Key) KeyID() Key32 {
+	return GetKeyIDFromString(string(key))
 }
 
 type Key32 int32
 
-func (key Key32) KeyId() Key32 {
+func (key Key32) KeyID() Key32 {
 	return key
 }
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 const (
-	KeyAccountId       = Key32(-1)
+	KeyAccountID       = Key32(-1)
 	KeyAddress         = Key32(-2)
 	KeyBalances        = Key32(-3)
 	KeyBase58Decode    = Key32(-4)
@@ -32,8 +32,8 @@ const (
 	KeyBlsValid        = Key32(-8)
 	KeyCall            = Key32(-9)
 	KeyCaller          = Key32(-10)
-	KeyChainId         = Key32(-11)
-	KeyChainOwnerId    = Key32(-12)
+	KeyChainID         = Key32(-11)
+	KeyChainOwnerID    = Key32(-12)
 	KeyColor           = Key32(-13)
 	KeyContract        = Key32(-14)
 	KeyContractCreator = Key32(-15)
@@ -55,7 +55,7 @@ const (
 	KeyParams          = Key32(-31)
 	KeyPost            = Key32(-32)
 	KeyRandom          = Key32(-33)
-	KeyRequestId       = Key32(-34)
+	KeyRequestID       = Key32(-34)
 	KeyResults         = Key32(-35)
 	KeyReturn          = Key32(-36)
 	KeyState           = Key32(-37)

@@ -9,16 +9,16 @@
     "paramTypes": {
       "params": {
         "address": "?Address",
-        "agentId": "?AgentId",
+        "agentID": "?AgentID",
         "bytes": "?Bytes",
-        "chainId": "?ChainId",
+        "chainID": "?ChainID",
         "color": "?Color",
         "hash": "?Hash",
         "hname": "?Hname",
         "int16": "?Int16",
         "int32": "?Int32",
         "int64": "?Int64",
-        "requestId": "?RequestId",
+        "requestID": "?RequestID",
         "string": "?String"
       }
     }

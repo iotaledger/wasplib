@@ -43,10 +43,10 @@ func funcCallOnChain(ctx wasmlib.ScFuncContext, f *CallOnChainContext) {
 }
 
 func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, f *CheckContextFromFullEPContext) {
-	ctx.Require(f.Params.AgentId().Value() == ctx.AccountId(), "fail: agentID")
+	ctx.Require(f.Params.AgentID().Value() == ctx.AccountID(), "fail: agentID")
 	ctx.Require(f.Params.Caller().Value() == ctx.Caller(), "fail: caller")
-	ctx.Require(f.Params.ChainId().Value() == ctx.ChainId(), "fail: chainID")
-	ctx.Require(f.Params.ChainOwnerId().Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
+	ctx.Require(f.Params.ChainID().Value() == ctx.ChainID(), "fail: chainID")
+	ctx.Require(f.Params.ChainOwnerID().Value() == ctx.ChainOwnerID(), "fail: chainOwnerID")
 	ctx.Require(f.Params.ContractCreator().Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
@@ -116,7 +116,7 @@ func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, f *TestCallPanic
 }
 
 func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *TestChainOwnerIDFullContext) {
-	f.Results.ChainOwnerId().SetValue(ctx.ChainOwnerId())
+	f.Results.ChainOwnerID().SetValue(ctx.ChainOwnerID())
 }
 
 func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, f *TestEventLogDeployContext) {
@@ -139,13 +139,13 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, f *TestPanicFullEPContext) {
 }
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, f *WithdrawToChainContext) {
-	coreaccounts.NewWithdrawCall(ctx).Func.TransferIotas(1).PostToChain(f.Params.ChainId().Value())
+	coreaccounts.NewWithdrawCall(ctx).Func.TransferIotas(1).PostToChain(f.Params.ChainID().Value())
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, f *CheckContextFromViewEPContext) {
-	ctx.Require(f.Params.AgentId().Value() == ctx.AccountId(), "fail: agentID")
-	ctx.Require(f.Params.ChainId().Value() == ctx.ChainId(), "fail: chainID")
-	ctx.Require(f.Params.ChainOwnerId().Value() == ctx.ChainOwnerId(), "fail: chainOwnerID")
+	ctx.Require(f.Params.AgentID().Value() == ctx.AccountID(), "fail: agentID")
+	ctx.Require(f.Params.ChainID().Value() == ctx.ChainID(), "fail: chainID")
+	ctx.Require(f.Params.ChainOwnerID().Value() == ctx.ChainOwnerID(), "fail: chainOwnerID")
 	ctx.Require(f.Params.ContractCreator().Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
@@ -199,7 +199,7 @@ func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *TestCallPanic
 }
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *TestChainOwnerIDViewContext) {
-	f.Results.ChainOwnerId().SetValue(ctx.ChainOwnerId())
+	f.Results.ChainOwnerID().SetValue(ctx.ChainOwnerID())
 }
 
 func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *TestPanicViewEPContext) {

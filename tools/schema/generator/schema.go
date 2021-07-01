@@ -58,7 +58,7 @@ type Schema struct {
 	Name          string
 	FullName      string
 	Description   string
-	KeyId         int
+	KeyID         int
 	ConstLen      int
 	ConstNames    []string
 	ConstValues   []string
@@ -122,7 +122,7 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 }
 
 func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results *FieldMap, views bool) (err error) {
-	//TODO check for clashing Hnames
+	// TODO check for clashing Hnames
 
 	kind := "func"
 	jsonFuncs := jsonSchema.Funcs

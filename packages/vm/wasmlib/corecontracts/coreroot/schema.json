@@ -6,7 +6,7 @@
     },
     "delegateChainOwnership": {
       "params": {
-        "chainOwner=$$owner$$": "AgentId"
+        "chainOwner=$$owner$$": "AgentID"
       }
     },
     "deployContract": {
@@ -18,12 +18,12 @@
     },
     "grantDeployPermission": {
       "params": {
-        "deployer=$$deployer$$": "AgentId"
+        "deployer=$$deployer$$": "AgentID"
       }
     },
     "revokeDeployPermission": {
       "params": {
-        "deployer=$$deployer$$": "AgentId"
+        "deployer=$$deployer$$": "AgentID"
       }
     },
     "setContractFee": {
@@ -51,8 +51,8 @@
     },
     "getChainInfo": {
       "results": {
-        "chainID=c": "ChainId",
-        "chainOwnerID=o": "AgentId",
+        "chainID=c": "ChainID",
+        "chainOwnerID=o": "AgentID",
         "description=d": "String",
         "feeColor=f": "Color",
         "defaultOwnerFee=do": "Int64",

@@ -7,13 +7,13 @@
     "factor": "Int64 // relative division factor",
     "memberList": "[]Address // all the recipients of this dividend",
     "members": "[Address]Int64 // all the recipient factors of this dividend",
-    "owner": "AgentId // owner, only one who can call 'member' func",
+    "owner": "AgentID // owner, only one who can call 'member' func",
     "totalFactor": "Int64 // sum of all recipient factors"
   },
   "funcs": {
     "init": {
       "params": {
-        "owner": "?AgentId // optional owner, defaults to contract creator"
+        "owner": "?AgentID // optional owner, defaults to contract creator"
       }
     },
     "member": {
@@ -28,7 +28,7 @@
     "setOwner": {
       "access": "owner // only defined owner can change owner",
       "params": {
-        "owner": "AgentId // new owner of smart contract"
+        "owner": "AgentID // new owner of smart contract"
       }
     }
   },

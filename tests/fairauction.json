@@ -27,9 +27,9 @@
       },
       "balances": {"#iota": 100},
       "caller": "@caller",
-      "chain": "$chainId",
+      "chain": "$chainID",
       "creator": "@scCreator",
-      "id": "@scId",
+      "id": "@scID",
       "timestamp": 20201027172138
     }
   },

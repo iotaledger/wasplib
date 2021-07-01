@@ -14,7 +14,7 @@ var javaReplacements = []string{
 	"None", "null",
 	"ScColor::Iota", "ScColor.IOTA",
 	"ScColor::Mint", "ScColor.MINT",
-	"ScAgentId::new", "new ScAgentId",
+	"ScAgentID::new", "new ScAgentID",
 	"ScHname::new", "new ScHname",
 	"ScMutableMap::new", "new ScMutableMap",
 	"ScTransfers::new", "new ScTransfers",

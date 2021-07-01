@@ -120,7 +120,7 @@ impl ScFunc {
         self.post_to_chain(ROOT.get_chain_id(&KEY_CHAIN_ID).value())
     }
 
-    pub fn post_to_chain(&self, chain_id: ScChainId) {
+    pub fn post_to_chain(&self, chain_id: ScChainID) {
         if self.transfer_id == 0 {
             panic("transfer is required for post")
         }

@@ -20,9 +20,9 @@ impl BytesDecoder<'_> {
         ScAddress::from_bytes(self.bytes())
     }
 
-    // decodes an ScAgentId from the byte buffer
-    pub fn agent_id(&mut self) -> ScAgentId {
-        ScAgentId::from_bytes(self.bytes())
+    // decodes an ScAgentID from the byte buffer
+    pub fn agent_id(&mut self) -> ScAgentID {
+        ScAgentID::from_bytes(self.bytes())
     }
 
     // decodes the next substring of bytes from the byte buffer
@@ -36,9 +36,9 @@ impl BytesDecoder<'_> {
         value
     }
 
-    // decodes an ScChainId from the byte buffer
-    pub fn chain_id(&mut self) -> ScChainId {
-        ScChainId::from_bytes(self.bytes())
+    // decodes an ScChainID from the byte buffer
+    pub fn chain_id(&mut self) -> ScChainID {
+        ScChainID::from_bytes(self.bytes())
     }
 
     // decodes an ScColor from the byte buffer
@@ -105,9 +105,9 @@ impl BytesDecoder<'_> {
         }
     }
 
-    // decodes an ScRequestId from the byte buffer
-    pub fn request_id(&mut self) -> ScRequestId {
-        ScRequestId::from_bytes(self.bytes())
+    // decodes an ScRequestID from the byte buffer
+    pub fn request_id(&mut self) -> ScRequestID {
+        ScRequestID::from_bytes(self.bytes())
     }
 
     // decodes an UTF-8 text string from the byte buffer
@@ -143,8 +143,8 @@ impl BytesEncoder {
         self
     }
 
-    // encodes an ScAgentId into the byte buffer
-    pub fn agent_id(&mut self, value: &ScAgentId) -> &BytesEncoder {
+    // encodes an ScAgentID into the byte buffer
+    pub fn agent_id(&mut self, value: &ScAgentID) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }
@@ -156,8 +156,8 @@ impl BytesEncoder {
         self
     }
 
-    // encodes an ScChainId into the byte buffer
-    pub fn chain_id(&mut self, value: &ScChainId) -> &BytesEncoder {
+    // encodes an ScChainID into the byte buffer
+    pub fn chain_id(&mut self, value: &ScChainID) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }
@@ -217,8 +217,8 @@ impl BytesEncoder {
         }
     }
 
-    // encodes an ScRequestId into the byte buffer
-    pub fn request_id(&mut self, value: &ScRequestId) -> &BytesEncoder {
+    // encodes an ScRequestID into the byte buffer
+    pub fn request_id(&mut self, value: &ScRequestID) -> &BytesEncoder {
         self.bytes(value.to_bytes());
         self
     }

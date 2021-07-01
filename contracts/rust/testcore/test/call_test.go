@@ -37,7 +37,7 @@ func testCallRecursive(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	cID, _ := setupTestSandboxSC(t, chain, nil, w)
 
-	//TODO currently TinyGo only goes up to 9 deep,
+	// TODO currently TinyGo only goes up to 9 deep,
 	// need to modify globalVar to >65536 and memory.minPages
 	// accordingly before executing any code
 
@@ -46,10 +46,10 @@ func testCallRecursive(t *testing.T, w bool) {
 		sbtestsc.ParamHnameContract, cID.Hname(),
 		sbtestsc.ParamHnameEP, coretypes.Hn(sbtestsc.FuncRunRecursion),
 	).WithIotas(1)
-	ret, err := chain.PostRequestSync(req, nil)
+	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	ret, err = chain.CallView(ScName, sbtestsc.FuncGetCounter)
+	ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter)
 	require.NoError(t, err)
 
 	r, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.VarCounter))

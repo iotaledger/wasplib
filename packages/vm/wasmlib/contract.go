@@ -5,19 +5,19 @@ package wasmlib
 type ScView struct {
 	hContract ScHname
 	hFunction ScHname
-	paramsId  *int32
-	resultsId *int32
+	paramsID  *int32
+	resultsID *int32
 }
 
 func NewScView(hContract ScHname, hFunction ScHname) *ScView {
 	return &ScView{hContract, hFunction, nil, nil}
 }
 
-func (v *ScView) SetPtrs(paramsId *int32, resultsId *int32) {
-	v.paramsId = paramsId
-	v.resultsId = resultsId
-	if paramsId != nil {
-		*paramsId = NewScMutableMap().MapId()
+func (v *ScView) SetPtrs(paramsID *int32, resultsID *int32) {
+	v.paramsID = paramsID
+	v.resultsID = resultsID
+	if paramsID != nil {
+		*paramsID = NewScMutableMap().MapID()
 	}
 }
 
@@ -25,15 +25,15 @@ func (v *ScView) Call() {
 	v.call(0)
 }
 
-func (v *ScView) call(transferId int32) {
+func (v *ScView) call(transferID int32) {
 	encode := NewBytesEncoder()
 	encode.Hname(v.hContract)
 	encode.Hname(v.hFunction)
-	encode.Int32(paramsId(v.paramsId))
-	encode.Int32(transferId)
+	encode.Int32(paramsID(v.paramsID))
+	encode.Int32(transferID)
 	Root.GetBytes(KeyCall).SetValue(encode.Data())
-	if v.resultsId != nil {
-		*v.resultsId = GetObjectId(OBJ_ID_ROOT, KeyReturn, TYPE_MAP)
+	if v.resultsID != nil {
+		*v.resultsID = GetObjectID(OBJ_ID_ROOT, KeyReturn, TYPE_MAP)
 	}
 }
 
@@ -42,7 +42,7 @@ func (v *ScView) OfContract(hContract ScHname) *ScView {
 	return v
 }
 
-func paramsId(id *int32) int32 {
+func paramsID(id *int32) int32 {
 	if id == nil {
 		return 0
 	}
@@ -54,7 +54,7 @@ func paramsId(id *int32) int32 {
 type ScFunc struct {
 	ScView
 	delay      int32
-	transferId int32
+	transferID int32
 }
 
 func NewScFunc(hContract ScHname, hFunction ScHname) *ScFunc {
@@ -65,7 +65,7 @@ func (f *ScFunc) Call() {
 	if f.delay != 0 {
 		Panic("cannot delay a call")
 	}
-	f.call(f.transferId)
+	f.call(f.transferID)
 }
 
 func (f *ScFunc) Delay(seconds int32) *ScFunc {
@@ -74,25 +74,25 @@ func (f *ScFunc) Delay(seconds int32) *ScFunc {
 }
 
 func (f *ScFunc) Post() {
-	f.PostToChain(Root.GetChainId(KeyChainId).Value())
+	f.PostToChain(Root.GetChainID(KeyChainID).Value())
 }
 
-func (f *ScFunc) PostToChain(chainId ScChainId) {
-	if f.transferId == 0 {
+func (f *ScFunc) PostToChain(chainID ScChainID) {
+	if f.transferID == 0 {
 		Panic("transfer is required for post")
 	}
 	encode := NewBytesEncoder()
-	encode.ChainId(chainId)
+	encode.ChainID(chainID)
 	encode.Hname(f.hContract)
 	encode.Hname(f.hFunction)
-	encode.Int32(paramsId(f.paramsId))
-	encode.Int32(f.transferId)
+	encode.Int32(paramsID(f.paramsID))
+	encode.Int32(f.transferID)
 	encode.Int32(f.delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
 }
 
 func (f *ScFunc) Transfer(transfer ScTransfers) *ScFunc {
-	f.transferId = transfer.transfers.MapId()
+	f.transferID = transfer.transfers.MapID()
 	return f
 }
 
