@@ -15,16 +15,31 @@ import (
 // TODO generate initial folders and schema.json
 // TODO generate initial tests
 
-var ModuleCwd string
-var ModuleName string
-var ModulePath string
+const (
+	AccessChain   = "chain"
+	AccessCreator = "creator"
+	AccessSelf    = "self"
+	AliasThis     = "this"
+	KindFunc      = "Func"
+	KindView      = "View"
+	PropImmutable = "Immutable"
+	PropMutable   = "Mutable"
+)
+
+var (
+	ModuleCwd  string
+	ModuleName string
+	ModulePath string
+)
 
 //nolint:unused
-var camelRegExp = regexp.MustCompile(`_[a-z]`)
-var snakeRegExp = regexp.MustCompile(`[a-z0-9][A-Z]`)
-var snakeRegExp2 = regexp.MustCompile(`[A-Z][A-Z]+[a-z]`)
+var (
+	camelRegExp  = regexp.MustCompile(`_[a-z]`)
+	snakeRegExp  = regexp.MustCompile(`[a-z0-9][A-Z]`)
+	snakeRegExp2 = regexp.MustCompile(`[A-Z][A-Z]+[a-z]`)
+)
 
-func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen int, typeLen int) {
+func calculatePadding(fields []*Field, types StringMap, snakeName bool) (nameLen, typeLen int) {
 	for _, param := range fields {
 		fldName := param.Name
 		if snakeName {
@@ -88,7 +103,7 @@ func FindModulePath() error {
 	}
 	// we're going to walk up the path, make sure to restore
 	ModuleCwd = cwd
-	defer func(){
+	defer func() {
 		_ = os.Chdir(ModuleCwd)
 	}()
 

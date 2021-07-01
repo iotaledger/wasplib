@@ -11,9 +11,11 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-var fldNameRegexp = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9]*$`)
-var fldAliasRegexp = regexp.MustCompile(`^[a-zA-Z0-9_$#@*%\-]+$`)
-var fldTypeRegexp = regexp.MustCompile(`^[A-Z][a-zA-Z0-9]+$`)
+var (
+	fldNameRegexp  = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9]*$`)
+	fldAliasRegexp = regexp.MustCompile(`^[a-zA-Z0-9_$#@*%\-]+$`)
+	fldTypeRegexp  = regexp.MustCompile(`^[A-Z][a-zA-Z0-9]+$`)
+)
 
 var FieldTypes = map[string]int32{
 	"Address":   wasmlib.TYPE_ADDRESS,
@@ -42,7 +44,7 @@ type Field struct {
 	TypeID   int32
 }
 
-func (f *Field) Compile(schema *Schema, fldName string, fldType string) error {
+func (f *Field) Compile(schema *Schema, fldName, fldType string) error {
 	fldName = strings.TrimSpace(fldName)
 	f.Name = fldName
 	f.Alias = fldName

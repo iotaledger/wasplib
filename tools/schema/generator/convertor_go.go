@@ -49,7 +49,7 @@ var goReplacements = []string{
 	"\u001A", "",
 }
 
-func RustToGoLine(line string, contract string) string {
+func RustToGoLine(line, contract string) string {
 	if matchComment.MatchString(line) {
 		return line
 	}

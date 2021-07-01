@@ -7,13 +7,15 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
-const DurationDefault = 60
-const DurationMin = 1
-const DurationMax = 120
-const MaxDescriptionLength = 150
-const OwnerMarginDefault = 50
-const OwnerMarginMin = 5
-const OwnerMarginMax = 100
+const (
+	DurationDefault      = 60
+	DurationMin          = 1
+	DurationMax          = 120
+	MaxDescriptionLength = 150
+	OwnerMarginDefault   = 50
+	OwnerMarginMin       = 5
+	OwnerMarginMax       = 100
+)
 
 func funcFinalizeAuction(ctx wasmlib.ScFuncContext, f *FinalizeAuctionContext) {
 	color := f.Params.Color().Value()

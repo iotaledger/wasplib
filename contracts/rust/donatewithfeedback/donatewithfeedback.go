@@ -15,7 +15,7 @@ func funcDonate(ctx wasmlib.ScFuncContext, f *DonateContext) {
 		Feedback:  f.Params.Feedback().Value(),
 		Timestamp: ctx.Timestamp(),
 	}
-	if donation.Amount == 0 || len(donation.Feedback) == 0 {
+	if donation.Amount == 0 || donation.Feedback == "" {
 		donation.Error = "error: empty feedback or donated amount = 0"
 		if donation.Amount > 0 {
 			ctx.TransferToAddress(donation.Donator.Address(), wasmlib.NewScTransferIotas(donation.Amount))

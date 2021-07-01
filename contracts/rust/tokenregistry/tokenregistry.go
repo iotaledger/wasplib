@@ -26,7 +26,7 @@ func funcMintSupply(ctx wasmlib.ScFuncContext, f *MintSupplyContext) {
 		Description: f.Params.Description().Value(),
 		UserDefined: f.Params.UserDefined().Value(),
 	}
-	if len(token.Description) == 0 {
+	if token.Description == "" {
 		token.Description += "no dscr"
 	}
 	currentToken.SetValue(token)

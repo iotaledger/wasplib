@@ -30,7 +30,6 @@ const DefaultPlayPeriod = 120
 // The 'member' function will save the number together with the address of the better and
 // the amount of incoming iotas as the bet amount in its state.
 func funcPlaceBet(ctx wasmlib.ScFuncContext, f *PlaceBetContext) {
-
 	// Since we are sure that the 'number' parameter actually exists we can
 	// retrieve its actual value into an i64.
 	number := f.Params.Number().Value()
@@ -100,7 +99,6 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *PlaceBetContext) {
 // function to be run. Note that any bets coming in after that moment will start the cycle from
 // scratch, with the first incoming bet triggering a new delayed execution of 'lockBets'.
 func funcLockBets(ctx wasmlib.ScFuncContext, f *LockBetsContext) {
-
 	// Create an ScMutableMap proxy to the state storage map on the host.
 	// Create an ScMutableBytesArray proxy to the bytes array named 'bets' in state storage.
 	bets := f.State.Bets()
@@ -114,7 +112,6 @@ func funcLockBets(ctx wasmlib.ScFuncContext, f *LockBetsContext) {
 	// Copy all bet data from the 'bets' array to the 'lockedBets' array by
 	// looping through all indexes of the array and copying the best one by one.
 	for i := int32(0); i < nrBets; i++ {
-
 		// Get the bytes stored at the next index in the 'bets' array.
 		// Save the bytes at the next index in the 'lockedBets' array.
 		lockedBets.GetBet(i).SetValue(bets.GetBet(i).Value())
@@ -141,11 +138,10 @@ func funcLockBets(ctx wasmlib.ScFuncContext, f *LockBetsContext) {
 // the committee will be using the same pseudo-random value sequence, which in turn makes sure
 // that all nodes can agree on the outcome.
 func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
-
 	// Use the built-in random number generator which has been automatically initialized by
 	// using the transaction hash as initial entropy data. Note that the pseudo-random number
 	// generator will use the next 8 bytes from the hash as its random Int64 number and once
-	// it runs out of data it simply hashes the previous hash for a next psuedo-random sequence.
+	// it runs out of data it simply hashes the previous hash for a next pseudo-random sequence.
 	// Here we determine the winning number for this round in the range of 1 thru 5 (inclusive).
 	winningNumber := ctx.Utility().Random(5) + 1
 
@@ -175,7 +171,7 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 		// Deserialize the bytes into the original Bet structure
 		bet := lockedBets.GetBet(i).Value()
 
-		// Add this bet amount to the running total bet ammount
+		// Add this bet amount to the running total bet amount
 		totalBetAmount += bet.Amount
 
 		// Did this better bet on the winning number?
@@ -192,6 +188,10 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 	// the 'lockedBets' array is available for the next betting round.
 	lockedBets.Clear()
 
+	payWinnersProportionally(ctx, winners, totalBetAmount, totalWinAmount)
+}
+
+func payWinnersProportionally(ctx wasmlib.ScFuncContext, winners []*Bet, totalBetAmount, totalWinAmount int64) {
 	// Did we have any winners at all?
 	if len(winners) == 0 {
 		// No winners, log this fact to the log on the host.
@@ -207,7 +207,6 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 	// Loop through all winners
 	size := len(winners)
 	for i := 0; i < size; i++ {
-
 		// Get the next winner
 		bet := winners[i]
 
@@ -253,7 +252,6 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 // 'playPeriod' can be used by the contract creator to set the length of a betting round
 // to a different value than the default value, which is 120 seconds..
 func funcPlayPeriod(ctx wasmlib.ScFuncContext, f *PlayPeriodContext) {
-
 	// Since we are sure that the 'playPeriod' parameter actually exists we can
 	// retrieve its actual value into an i64 value.
 	playPeriod := f.Params.PlayPeriod().Value()
@@ -268,7 +266,6 @@ func funcPlayPeriod(ctx wasmlib.ScFuncContext, f *PlayPeriodContext) {
 }
 
 func viewLastWinningNumber(ctx wasmlib.ScViewContext, f *LastWinningNumberContext) {
-
 	// Create an ScImmutableMap proxy to the state storage map on the host.
 
 	// Get the 'lastWinningNumber' int64 value from state storage through

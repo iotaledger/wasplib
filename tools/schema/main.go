@@ -17,9 +17,11 @@ var flagCore = flag.Bool("core", false, "generate core contract interface")
 
 var flagInit = flag.String("init", "", "generate Go code")
 
-var flagGo = flag.Bool("go", false, "generate Go code")
-var flagJava = flag.Bool("java", false, "generate Java code")
-var flagRust = flag.Bool("rust", false, "generate Rust code")
+var (
+	flagGo   = flag.Bool("go", false, "generate Go code")
+	flagJava = flag.Bool("java", false, "generate Java code")
+	flagRust = flag.Bool("rust", false, "generate Rust code")
+)
 
 func main() {
 	flag.Parse()
@@ -104,7 +106,7 @@ func generateSchemaNew() error {
 	}
 	defer file.Close()
 
-	jsonSchema := &generator.JsonSchema{}
+	jsonSchema := &generator.JSONSchema{}
 	jsonSchema.Name = *flagInit
 	jsonSchema.Description = *flagInit + " description"
 	jsonSchema.Types = make(generator.StringMapMap)
@@ -124,14 +126,18 @@ func generateSchemaNew() error {
 	}
 
 	var out bytes.Buffer
-	json.Indent(&out, b, "", "\t")
+	err = json.Indent(&out, b, "", "\t")
+	if err != nil {
+		return err
+	}
+
 	_, err = out.WriteTo(file)
 	return err
 }
 
 func loadSchema(file *os.File) (*generator.Schema, error) {
 	fmt.Println("loading schema.json")
-	jsonSchema := &generator.JsonSchema{}
+	jsonSchema := &generator.JSONSchema{}
 	err := json.NewDecoder(file).Decode(jsonSchema)
 	if err != nil {
 		return nil, err

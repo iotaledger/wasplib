@@ -287,7 +287,7 @@ func (s *Schema) GenerateJavaTests() error {
 	return nil
 }
 
-func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
+func (s *Schema) GenerateJavaThunk(file, params *os.File, f *FuncDef) {
 	// calculate padding
 	nameLen, typeLen := calculatePadding(f.Params, javaTypes, false)
 
@@ -318,27 +318,11 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 
 	fmt.Fprintf(file, "\n    private static void %sThunk(Sc%sContext ctx) {\n", f.FuncName, funcKind)
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s\");\n", s.Name, f.FuncName)
-	grant := f.Access
-	if grant != "" {
-		index := strings.Index(grant, "//")
-		if index >= 0 {
-			fmt.Fprintf(file, "        %s\n", grant[index:])
-			grant = strings.TrimSpace(grant[:index])
-		}
-		switch grant {
-		case "self":
-			grant = "ctx.AccountID()"
-		case "chain":
-			grant = "ctx.ChainOwnerID()"
-		case "creator":
-			grant = "ctx.ContractCreator()"
-		default:
-			fmt.Fprintf(file, "        var access = ctx.State().GetAgentID(new Key(\"%s\"));\n", grant)
-			fmt.Fprintf(file, "        ctx.Require(access.Exists(), \"access not set: %s\");\n", grant)
-			grant = "access.Value()"
-		}
-		fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
+
+	if f.Access != "" {
+		s.generateJavaThunkAccessCheck(file, f)
 	}
+
 	if len(f.Params) != 0 {
 		fmt.Fprintf(file, "        var p = ctx.Params();\n")
 	}
@@ -356,6 +340,28 @@ func (s *Schema) GenerateJavaThunk(file *os.File, params *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "        %s.%s(ctx, params);\n", s.FullName, f.FuncName)
 	fmt.Fprintf(file, "        ctx.Log(\"%s.%s ok\");\n", s.Name, f.FuncName)
 	fmt.Fprintf(file, "    }\n")
+}
+
+func (s *Schema) generateJavaThunkAccessCheck(file *os.File, f *FuncDef) {
+	grant := f.Access
+	index := strings.Index(grant, "//")
+	if index >= 0 {
+		fmt.Fprintf(file, "        %s\n", grant[index:])
+		grant = strings.TrimSpace(grant[:index])
+	}
+	switch grant {
+	case AccessSelf:
+		grant = "ctx.AccountID()"
+	case AccessChain:
+		grant = "ctx.ChainOwnerID()"
+	case AccessCreator:
+		grant = "ctx.ContractCreator()"
+	default:
+		fmt.Fprintf(file, "        var access = ctx.State().GetAgentID(new Key(\"%s\"));\n", grant)
+		fmt.Fprintf(file, "        ctx.Require(access.Exists(), \"access not set: %s\");\n", grant)
+		grant = "access.Value()"
+	}
+	fmt.Fprintf(file, "        ctx.Require(ctx.Caller().equals(%s), \"no permission\");\n\n", grant)
 }
 
 func (s *Schema) GenerateJavaTypes() error {

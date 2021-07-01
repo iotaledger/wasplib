@@ -123,8 +123,10 @@ type ScColor struct {
 	id [32]byte
 }
 
-var IOTA = ScColor{}
-var MINT = ScColor{}
+var (
+	IOTA = ScColor{}
+	MINT = ScColor{}
+)
 
 func init() {
 	for i := range MINT.id {

@@ -15,8 +15,10 @@ import (
 
 const importCoreTypes = `import "github.com/iotaledger/wasp/packages/coretypes"
 `
+
 const importWasmLib = `import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 `
+
 const importWasmClient = `import "github.com/iotaledger/wasplib/packages/vm/wasmclient"
 `
 
@@ -63,6 +65,11 @@ var goTypeIds = StringMap{
 	"RequestID": "wasmlib.TYPE_REQUEST_ID",
 	"String":    "wasmlib.TYPE_STRING",
 }
+
+const (
+	goTypeBytes = "wasmlib.TYPE_BYTES"
+	goTypeMap   = "wasmlib.TYPE_MAP"
+)
 
 func (s *Schema) GenerateGo() error {
 	s.NewTypes = make(map[string]bool)
@@ -177,7 +184,7 @@ func (s *Schema) generateGoConsts(test bool) error {
 func (s *Schema) generateGoConstsFields(file *os.File, test bool, fields []*Field, prefix string) {
 	if len(fields) != 0 {
 		for _, field := range fields {
-			if field.Alias == "this" {
+			if field.Alias == AliasThis {
 				continue
 			}
 			name := prefix + capitalize(field.Name)
@@ -206,7 +213,7 @@ func (s *Schema) generateGoContract() error {
 	for _, f := range s.Funcs {
 		nameLen := f.nameLen(4)
 		fmt.Fprintf(file, "\ntype %sCall struct {\n", f.Type)
-		fmt.Fprintf(file, "\t%s *wasmlib.Sc%s\n", pad("Func", nameLen), f.Kind)
+		fmt.Fprintf(file, "\t%s *wasmlib.Sc%s\n", pad(KindFunc, nameLen), f.Kind)
 		if len(f.Params) != 0 {
 			fmt.Fprintf(file, "\t%s Mutable%sParams\n", pad("Params", nameLen), f.Type)
 		}
@@ -216,7 +223,7 @@ func (s *Schema) generateGoContract() error {
 		fmt.Fprintf(file, "}\n")
 
 		s.generateGoContractFunc(file, f)
-		if f.Kind == "View" {
+		if f.Kind == KindView {
 			fmt.Fprintf(file, "\nfunc New%sCallFromView(ctx wasmlib.ScViewContext) *%sCall {\n", f.Type, f.Type)
 			fmt.Fprintf(file, "\treturn New%sCall(wasmlib.ScFuncContext{})\n", f.Type)
 			fmt.Fprintf(file, "}\n")
@@ -325,9 +332,9 @@ func (s *Schema) generateGoKeys() error {
 	fmt.Fprint(file, importWasmLib)
 
 	s.KeyID = 0
-	s.generateGoKeysIndexes(file, s.Params, "Param")
-	s.generateGoKeysIndexes(file, s.Results, "Result")
-	s.generateGoKeysIndexes(file, s.StateVars, "State")
+	s.generateGoKeysIndexes(s.Params, "Param")
+	s.generateGoKeysIndexes(s.Results, "Result")
+	s.generateGoKeysIndexes(s.StateVars, "State")
 	s.flushGoConsts(file)
 
 	size := s.KeyID
@@ -343,7 +350,7 @@ func (s *Schema) generateGoKeys() error {
 
 func (s *Schema) generateGoKeysArray(file *os.File, fields []*Field, prefix string) {
 	for _, field := range fields {
-		if field.Alias == "this" {
+		if field.Alias == AliasThis {
 			continue
 		}
 		name := prefix + capitalize(field.Name)
@@ -352,9 +359,9 @@ func (s *Schema) generateGoKeysArray(file *os.File, fields []*Field, prefix stri
 	}
 }
 
-func (s *Schema) generateGoKeysIndexes(file *os.File, fields []*Field, prefix string) {
+func (s *Schema) generateGoKeysIndexes(fields []*Field, prefix string) {
 	for _, field := range fields {
-		if field.Alias == "this" {
+		if field.Alias == AliasThis {
 			continue
 		}
 		name := "Idx" + prefix + capitalize(field.Name)
@@ -399,114 +406,136 @@ func (s *Schema) generateGoLib() error {
 
 func (s *Schema) generateGoProxy(file *os.File, field *Field, mutability string) {
 	if field.Array {
-		proxyType := mutability + field.Type
-		arrayType := "ArrayOf" + proxyType
-		if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
-			fmt.Fprintf(file, "\ntype %s%s = %s\n", mutability, field.Name, arrayType)
-		}
-		if s.NewTypes[arrayType] {
-			// already generated this array
-			return
-		}
-		s.NewTypes[arrayType] = true
+		s.generateGoProxyArray(file, field, mutability)
+		return
+	}
 
-		fmt.Fprintf(file, "\ntype %s struct {\n", arrayType)
-		fmt.Fprintf(file, "\tobjID int32\n")
+	if field.MapKey != "" {
+		s.generateGoProxyMap(file, field, mutability)
+	}
+}
+
+func (s *Schema) generateGoProxyArray(file *os.File, field *Field, mutability string) {
+	proxyType := mutability + field.Type
+	arrayType := "ArrayOf" + proxyType
+	if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
+		fmt.Fprintf(file, "\ntype %s%s = %s\n", mutability, field.Name, arrayType)
+	}
+	if s.NewTypes[arrayType] {
+		// already generated this array
+		return
+	}
+	s.NewTypes[arrayType] = true
+
+	fmt.Fprintf(file, "\ntype %s struct {\n", arrayType)
+	fmt.Fprintf(file, "\tobjID int32\n")
+	fmt.Fprintf(file, "}\n")
+
+	if mutability == PropMutable {
+		fmt.Fprintf(file, "\nfunc (a %s) Clear() {\n", arrayType)
+		fmt.Fprintf(file, "\twasmlib.Clear(a.objID)\n")
 		fmt.Fprintf(file, "}\n")
+	}
 
-		if mutability == "Mutable" {
-			fmt.Fprintf(file, "\nfunc (a %s) Clear() {\n", arrayType)
-			fmt.Fprintf(file, "\twasmlib.Clear(a.objID)\n")
-			fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\nfunc (a %s) Length() int32 {\n", arrayType)
+	fmt.Fprintf(file, "\treturn wasmlib.GetLength(a.objID)\n")
+	fmt.Fprintf(file, "}\n")
+
+	if field.TypeID == 0 {
+		s.generateGoProxyArrayNewType(file, field, proxyType, arrayType)
+		return
+	}
+
+	// array of predefined type
+	fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) wasmlib.Sc%s {\n", arrayType, field.Type, proxyType)
+	fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(a.objID, wasmlib.Key32(index))\n", proxyType)
+	fmt.Fprintf(file, "}\n")
+}
+
+func (s *Schema) generateGoProxyArrayNewType(file *os.File, field *Field, proxyType, arrayType string) {
+	for _, subtype := range s.Subtypes {
+		if subtype.Name != field.Type {
+			continue
 		}
-
-		fmt.Fprintf(file, "\nfunc (a %s) Length() int32 {\n", arrayType)
-		fmt.Fprintf(file, "\treturn wasmlib.GetLength(a.objID)\n")
-		fmt.Fprintf(file, "}\n")
-
-		if field.TypeID == 0 {
-			for _, subtype := range s.Subtypes {
-				if subtype.Name == field.Type {
-					varType := "wasmlib.TYPE_MAP"
-					if subtype.Array {
-						varType = goTypeIds[subtype.Type]
-						if len(varType) == 0 {
-							varType = "wasmlib.TYPE_BYTES"
-						}
-						varType = "wasmlib.TYPE_ARRAY|" + varType
-					}
-					fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) %s {\n", arrayType, field.Type, proxyType)
-					fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(m.objID, wasmlib.Key32(index), %s)\n", varType)
-					fmt.Fprintf(file, "\treturn %s{objID: subID}\n", proxyType)
-					fmt.Fprintf(file, "}\n")
-					return
-				}
+		varType := goTypeMap
+		if subtype.Array {
+			varType = goTypeIds[subtype.Type]
+			if varType == "" {
+				varType = goTypeBytes
 			}
-			fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) %s {\n", arrayType, field.Type, proxyType)
-			fmt.Fprintf(file, "\treturn %s{objID: a.objID, keyID: wasmlib.Key32(index)}\n", proxyType)
-			fmt.Fprintf(file, "}\n")
-			return
+			varType = "wasmlib.TYPE_ARRAY|" + varType
 		}
-
-		fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) wasmlib.Sc%s {\n", arrayType, field.Type, proxyType)
-		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(a.objID, wasmlib.Key32(index))\n", proxyType)
+		fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) %s {\n", arrayType, field.Type, proxyType)
+		fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(m.objID, wasmlib.Key32(index), %s)\n", varType)
+		fmt.Fprintf(file, "\treturn %s{objID: subID}\n", proxyType)
 		fmt.Fprintf(file, "}\n")
 		return
 	}
 
-	if len(field.MapKey) != 0 {
-		proxyType := mutability + field.Type
-		mapType := "Map" + field.MapKey + "To" + proxyType
-		if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
-			fmt.Fprintf(file, "\ntype %s%s = %s\n", mutability, field.Name, mapType)
-		}
-		if s.NewTypes[mapType] {
-			// already generated this map
-			return
-		}
-		s.NewTypes[mapType] = true
+	fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) %s {\n", arrayType, field.Type, proxyType)
+	fmt.Fprintf(file, "\treturn %s{objID: a.objID, keyID: wasmlib.Key32(index)}\n", proxyType)
+	fmt.Fprintf(file, "}\n")
+}
 
-		keyType := goTypes[field.MapKey]
-		keyValue := goKeys[field.MapKey]
+func (s *Schema) generateGoProxyMap(file *os.File, field *Field, mutability string) {
+	proxyType := mutability + field.Type
+	mapType := "Map" + field.MapKey + "To" + proxyType
+	if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
+		fmt.Fprintf(file, "\ntype %s%s = %s\n", mutability, field.Name, mapType)
+	}
+	if s.NewTypes[mapType] {
+		// already generated this map
+		return
+	}
+	s.NewTypes[mapType] = true
 
-		fmt.Fprintf(file, "\ntype %s struct {\n", mapType)
-		fmt.Fprintf(file, "\tobjID int32\n")
-		fmt.Fprintf(file, "}\n")
+	keyType := goTypes[field.MapKey]
+	keyValue := goKeys[field.MapKey]
 
-		if mutability == "Mutable" {
-			fmt.Fprintf(file, "\nfunc (m %s) Clear() {\n", mapType)
-			fmt.Fprintf(file, "\twasmlib.Clear(m.objID)\n")
-			fmt.Fprintf(file, "}\n")
-		}
+	fmt.Fprintf(file, "\ntype %s struct {\n", mapType)
+	fmt.Fprintf(file, "\tobjID int32\n")
+	fmt.Fprintf(file, "}\n")
 
-		if field.TypeID == 0 {
-			for _, subtype := range s.Subtypes {
-				if subtype.Name == field.Type {
-					varType := "wasmlib.TYPE_MAP"
-					if subtype.Array {
-						varType = goTypeIds[subtype.Type]
-						if len(varType) == 0 {
-							varType = "wasmlib.TYPE_BYTES"
-						}
-						varType = "wasmlib.TYPE_ARRAY|" + varType
-					}
-					fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
-					fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(m.objID, %s.KeyID(), %s)\n", keyValue, varType)
-					fmt.Fprintf(file, "\treturn %s{objID: subID}\n", proxyType)
-					fmt.Fprintf(file, "}\n")
-					return
-				}
-			}
-			fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
-			fmt.Fprintf(file, "\treturn %s{objID: m.objID, keyID: %s.KeyID()}\n", proxyType, keyValue)
-			fmt.Fprintf(file, "}\n")
-			return
-		}
-
-		fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) wasmlib.Sc%s {\n", mapType, field.Type, keyType, proxyType)
-		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(m.objID, %s.KeyID())\n", proxyType, keyValue)
+	if mutability == PropMutable {
+		fmt.Fprintf(file, "\nfunc (m %s) Clear() {\n", mapType)
+		fmt.Fprintf(file, "\twasmlib.Clear(m.objID)\n")
 		fmt.Fprintf(file, "}\n")
 	}
+
+	if field.TypeID == 0 {
+		s.generateGoProxyMapNewType(file, field, proxyType, mapType, keyType, keyValue)
+		return
+	}
+
+	// map of predefined type
+	fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) wasmlib.Sc%s {\n", mapType, field.Type, keyType, proxyType)
+	fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(m.objID, %s.KeyID())\n", proxyType, keyValue)
+	fmt.Fprintf(file, "}\n")
+}
+
+func (s *Schema) generateGoProxyMapNewType(file *os.File, field *Field, proxyType, mapType, keyType, keyValue string) {
+	for _, subtype := range s.Subtypes {
+		if subtype.Name != field.Type {
+			continue
+		}
+		varType := goTypeMap
+		if subtype.Array {
+			varType = goTypeIds[subtype.Type]
+			if varType == "" {
+				varType = goTypeBytes
+			}
+			varType = "wasmlib.TYPE_ARRAY|" + varType
+		}
+		fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
+		fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(m.objID, %s.KeyID(), %s)\n", keyValue, varType)
+		fmt.Fprintf(file, "\treturn %s{objID: subID}\n", proxyType)
+		fmt.Fprintf(file, "}\n")
+		return
+	}
+
+	fmt.Fprintf(file, "\nfunc (m %s) Get%s(key %s) %s {\n", mapType, field.Type, keyType, proxyType)
+	fmt.Fprintf(file, "\treturn %s{objID: m.objID, keyID: %s.KeyID()}\n", proxyType, keyValue)
+	fmt.Fprintf(file, "}\n")
 }
 
 func (s *Schema) generateGoState() error {
@@ -523,8 +552,8 @@ func (s *Schema) generateGoState() error {
 		fmt.Fprintf(file, "\n"+importWasmLib)
 	}
 
-	s.generateGoStruct(file, s.StateVars, "Immutable", s.FullName, "State")
-	s.generateGoStruct(file, s.StateVars, "Mutable", s.FullName, "State")
+	s.generateGoStruct(file, s.StateVars, PropImmutable, s.FullName, "State")
+	s.generateGoStruct(file, s.StateVars, PropMutable, s.FullName, "State")
 	return nil
 }
 
@@ -551,8 +580,8 @@ func (s *Schema) generateGoParams() error {
 		if len(f.Params) == 0 {
 			continue
 		}
-		s.generateGoStruct(file, f.Params, "Immutable", f.Type, "Params")
-		s.generateGoStruct(file, f.Params, "Mutable", f.Type, "Params")
+		s.generateGoStruct(file, f.Params, PropImmutable, f.Type, "Params")
+		s.generateGoStruct(file, f.Params, PropMutable, f.Type, "Params")
 	}
 
 	return nil
@@ -581,13 +610,13 @@ func (s *Schema) generateGoResults() error {
 		if len(f.Results) == 0 {
 			continue
 		}
-		s.generateGoStruct(file, f.Results, "Immutable", f.Type, "Results")
-		s.generateGoStruct(file, f.Results, "Mutable", f.Type, "Results")
+		s.generateGoStruct(file, f.Results, PropImmutable, f.Type, "Results")
+		s.generateGoStruct(file, f.Results, PropMutable, f.Type, "Results")
 	}
 	return nil
 }
 
-func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
+func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability, typeName, kind string) {
 	typeName = mutability + typeName + kind
 	kind = strings.TrimSuffix(kind, "s")
 
@@ -607,8 +636,8 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability str
 			varID = kind + varName + ".KeyID()"
 		}
 		varType := goTypeIds[field.Type]
-		if len(varType) == 0 {
-			varType = "wasmlib.TYPE_BYTES"
+		if varType == "" {
+			varType = goTypeBytes
 		}
 		if field.Array {
 			varType = "wasmlib.TYPE_ARRAY|" + varType
@@ -619,12 +648,12 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability str
 			fmt.Fprintf(file, "}\n")
 			continue
 		}
-		if len(field.MapKey) != 0 {
-			varType = "wasmlib.TYPE_MAP"
+		if field.MapKey != "" {
+			varType = goTypeMap
 			mapType := "Map" + field.MapKey + "To" + mutability + field.Type
 			fmt.Fprintf(file, "\nfunc (s %s) %s() %s {\n", typeName, varName, mapType)
 			mapID := "s.id"
-			if field.Alias != "this" {
+			if field.Alias != AliasThis {
 				mapID = "mapID"
 				fmt.Fprintf(file, "\tmapID := wasmlib.GetObjectID(s.id, %s, %s)\n", varID, varType)
 			}
@@ -656,8 +685,8 @@ func (s *Schema) generateGoSubtypes() error {
 	fmt.Fprint(file, importWasmLib)
 
 	for _, subtype := range s.Subtypes {
-		s.generateGoProxy(file, subtype, "Immutable")
-		s.generateGoProxy(file, subtype, "Mutable")
+		s.generateGoProxy(file, subtype, PropImmutable)
+		s.generateGoProxy(file, subtype, PropMutable)
 	}
 
 	return nil
@@ -688,35 +717,18 @@ func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 	if len(f.Results) != 0 {
 		fmt.Fprintf(file, "\tResults Mutable%sResults\n", f.Type)
 	}
-	mutability := "Mutable"
-	if f.Kind == "View" {
-		mutability = "Immutable"
+	mutability := PropMutable
+	if f.Kind == KindView {
+		mutability = PropImmutable
 	}
 	fmt.Fprintf(file, "\t%s %s%sState\n", pad("State", nameLen), mutability, s.FullName)
 	fmt.Fprintf(file, "}\n")
 
 	fmt.Fprintf(file, "\nfunc %sThunk(ctx wasmlib.Sc%sContext) {\n", f.FuncName, f.Kind)
 	fmt.Fprintf(file, "\tctx.Log(\"%s.%s\")\n", s.Name, f.FuncName)
-	grant := f.Access
-	if grant != "" {
-		index := strings.Index(grant, "//")
-		if index >= 0 {
-			fmt.Fprintf(file, "\t%s\n", grant[index:])
-			grant = strings.TrimSpace(grant[:index])
-		}
-		switch grant {
-		case "self":
-			grant = "ctx.AccountID()"
-		case "chain":
-			grant = "ctx.ChainOwnerID()"
-		case "creator":
-			grant = "ctx.ContractCreator()"
-		default:
-			fmt.Fprintf(file, "\taccess := ctx.State().GetAgentID(wasmlib.Key(\"%s\"))\n", grant)
-			fmt.Fprintf(file, "\tctx.Require(access.Exists(), \"access not set: %s\")\n", grant)
-			grant = "access.Value()"
-		}
-		fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
+
+	if f.Access != "" {
+		s.generateGoThunkAccessCheck(file, f)
 	}
 
 	fmt.Fprintf(file, "\tf := &%sContext{\n", f.Type)
@@ -749,6 +761,28 @@ func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "\t%s(ctx, f)\n", f.FuncName)
 	fmt.Fprintf(file, "\tctx.Log(\"%s.%s ok\")\n", s.Name, f.FuncName)
 	fmt.Fprintf(file, "}\n")
+}
+
+func (s *Schema) generateGoThunkAccessCheck(file *os.File, f *FuncDef) {
+	grant := f.Access
+	index := strings.Index(grant, "//")
+	if index >= 0 {
+		fmt.Fprintf(file, "\t%s\n", grant[index:])
+		grant = strings.TrimSpace(grant[:index])
+	}
+	switch grant {
+	case AccessSelf:
+		grant = "ctx.AccountID()"
+	case AccessChain:
+		grant = "ctx.ChainOwnerID()"
+	case AccessCreator:
+		grant = "ctx.ContractCreator()"
+	default:
+		fmt.Fprintf(file, "\taccess := ctx.State().GetAgentID(wasmlib.Key(\"%s\"))\n", grant)
+		fmt.Fprintf(file, "\tctx.Require(access.Exists(), \"access not set: %s\")\n", grant)
+		grant = "access.Value()"
+	}
+	fmt.Fprintf(file, "\tctx.Require(ctx.Caller() == %s, \"no permission\")\n\n", grant)
 }
 
 func (s *Schema) generateGoTypes() error {
@@ -811,9 +845,9 @@ func (s *Schema) generateGoType(file *os.File, typeDef *TypeDef) {
 }
 
 func (s *Schema) generateGoTypeProxy(file *os.File, typeDef *TypeDef, mutable bool) {
-	typeName := "Immutable" + typeDef.Name
+	typeName := PropImmutable + typeDef.Name
 	if mutable {
-		typeName = "Mutable" + typeDef.Name
+		typeName = PropMutable + typeDef.Name
 	}
 
 	fmt.Fprintf(file, "\ntype %s struct {\n", typeName)
@@ -877,12 +911,12 @@ func (s *Schema) flushGoConsts(file *os.File) {
 		name := s.ConstNames[0]
 		value := s.ConstValues[0]
 		fmt.Fprintf(file, "\nconst %s = %s\n", name, value)
-		s.flushConsts(file, func(name string, value string, padLen int) {})
+		s.flushConsts(func(name string, value string, padLen int) {})
 		return
 	}
 
 	fmt.Fprintf(file, "\nconst (\n")
-	s.flushConsts(file, func(name string, value string, padLen int) {
+	s.flushConsts(func(name string, value string, padLen int) {
 		fmt.Fprintf(file, "\t%s = %s\n", pad(name, padLen), value)
 	})
 	fmt.Fprintf(file, ")\n")

@@ -5,6 +5,7 @@ package wasmlib
 
 import "encoding/binary"
 
+//nolint:revive
 const (
 	// all TYPE_* values should exactly match the counterpart OBJTYPE_* values on the host!
 	TYPE_ARRAY int32 = 0x20

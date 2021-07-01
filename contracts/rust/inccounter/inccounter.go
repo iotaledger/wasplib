@@ -34,8 +34,11 @@ func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f *CallIncrementRecur
 	}
 }
 
+//nolint:unparam
 func funcEndlessLoop(ctx wasmlib.ScFuncContext, f *EndlessLoopContext) {
+	//nolint:staticcheck
 	for {
+		// intentional endless loop to see if Wasm VM can be interrupted
 	}
 }
 
@@ -53,6 +56,7 @@ func funcLocalStateInternalCall(ctx wasmlib.ScFuncContext, f *LocalStateInternal
 	// counter ends up as 2
 }
 
+//nolint:unparam
 func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *LocalStatePostContext) {
 	LocalStateMustIncrement = false
 	// prevent multiple identical posts, need a dummy param to differentiate them
@@ -63,6 +67,7 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *LocalStatePostContext) {
 	// counter ends up as 0
 }
 
+//nolint:unparam
 func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f *LocalStateSandboxCallContext) {
 	LocalStateMustIncrement = false
 	NewWhenMustIncrementCall(ctx).Func.Call()
@@ -103,6 +108,7 @@ func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f *WhenMustIncrementContex
 
 // note that get_counter mirrors the state of the 'counter' state variable
 // which means that if the state variable was not present it also will not be present in the result
+
 func viewGetCounter(ctx wasmlib.ScViewContext, f *GetCounterContext) {
 	counter := f.State.Counter()
 	if counter.Exists() {
@@ -110,6 +116,7 @@ func viewGetCounter(ctx wasmlib.ScViewContext, f *GetCounterContext) {
 	}
 }
 
+//nolint:unparam
 func funcTestLeb128(ctx wasmlib.ScFuncContext, f *TestLeb128Context) {
 	leb128Save(ctx, "v-1", -1)
 	leb128Save(ctx, "v-2", -2)
@@ -150,10 +157,8 @@ func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
 
 func whenMustIncrementState(ctx wasmlib.ScFuncContext, state MutableIncCounterState) {
 	ctx.Log("when_must_increment called")
-	{
-		if !LocalStateMustIncrement {
-			return
-		}
+	if !LocalStateMustIncrement {
+		return
 	}
 	counter := state.Counter()
 	counter.SetValue(counter.Value() + 1)

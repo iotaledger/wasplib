@@ -11,11 +11,15 @@ import (
 	"strings"
 )
 
-type FieldMap map[string]*Field
-type FieldMapMap map[string]FieldMap
+type (
+	FieldMap    map[string]*Field
+	FieldMapMap map[string]FieldMap
+)
 
-type StringMap map[string]string
-type StringMapMap map[string]StringMap
+type (
+	StringMap    map[string]string
+	StringMapMap map[string]StringMap
+)
 
 type FuncDesc struct {
 	Access  string    `json:"access,omitempty"`
@@ -24,7 +28,7 @@ type FuncDesc struct {
 }
 type FuncDescMap map[string]*FuncDesc
 
-type JsonSchema struct {
+type JSONSchema struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	Types       StringMapMap `json:"types"`
@@ -77,7 +81,7 @@ func NewSchema() *Schema {
 	return &Schema{}
 }
 
-func (s *Schema) Compile(jsonSchema *JsonSchema) error {
+func (s *Schema) Compile(jsonSchema *JSONSchema) error {
 	s.FullName = strings.TrimSpace(jsonSchema.Name)
 	if s.FullName == "" {
 		return fmt.Errorf("missing contract name")
@@ -112,7 +116,7 @@ func (s *Schema) Compile(jsonSchema *JsonSchema) error {
 	return s.compileStateVars(jsonSchema)
 }
 
-func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
+func (s *Schema) CompileField(fldName, fldType string) (*Field, error) {
 	field := &Field{}
 	err := field.Compile(s, fldName, fldType)
 	if err != nil {
@@ -121,7 +125,7 @@ func (s *Schema) CompileField(fldName string, fldType string) (*Field, error) {
 	return field, nil
 }
 
-func (s *Schema) compileFuncs(jsonSchema *JsonSchema, params *FieldMap, results *FieldMap, views bool) (err error) {
+func (s *Schema) compileFuncs(jsonSchema *JSONSchema, params, results *FieldMap, views bool) (err error) {
 	// TODO check for clashing Hnames
 
 	kind := "func"
@@ -188,7 +192,7 @@ func (s *Schema) compileFuncFields(fieldMap StringMap, allFieldMap *FieldMap, wh
 	return fields, nil
 }
 
-func (s *Schema) compileStateVars(jsonSchema *JsonSchema) error {
+func (s *Schema) compileStateVars(jsonSchema *JSONSchema) error {
 	varNames := make(StringMap)
 	varAliases := make(StringMap)
 	for _, varName := range sortedKeys(jsonSchema.State) {
@@ -210,7 +214,7 @@ func (s *Schema) compileStateVars(jsonSchema *JsonSchema) error {
 	return nil
 }
 
-func (s *Schema) compileSubtypes(jsonSchema *JsonSchema) error {
+func (s *Schema) compileSubtypes(jsonSchema *JSONSchema) error {
 	varNames := make(StringMap)
 	varAliases := make(StringMap)
 	for _, varName := range sortedKeys(jsonSchema.Subtypes) {
@@ -232,7 +236,7 @@ func (s *Schema) compileSubtypes(jsonSchema *JsonSchema) error {
 	return nil
 }
 
-func (s *Schema) compileTypes(jsonSchema *JsonSchema) error {
+func (s *Schema) compileTypes(jsonSchema *JSONSchema) error {
 	for _, typeName := range sortedMaps(jsonSchema.Types) {
 		fieldMap := jsonSchema.Types[typeName]
 		typeDef := &TypeDef{}
@@ -283,7 +287,7 @@ func (s *Schema) scanExistingCode(file *os.File, funcRegexp *regexp.Regexp) ([]s
 	return lines, existing, nil
 }
 
-func (s *Schema) appendConst(name string, value string) {
+func (s *Schema) appendConst(name, value string) {
 	if s.ConstLen < len(name) {
 		s.ConstLen = len(name)
 	}
@@ -291,7 +295,7 @@ func (s *Schema) appendConst(name string, value string) {
 	s.ConstValues = append(s.ConstValues, value)
 }
 
-func (s *Schema) flushConsts(file *os.File, printer func(name string, value string, padLen int)) {
+func (s *Schema) flushConsts(printer func(name string, value string, padLen int)) {
 	for i, name := range s.ConstNames {
 		printer(name, s.ConstValues[i], s.ConstLen)
 	}
@@ -300,7 +304,7 @@ func (s *Schema) flushConsts(file *os.File, printer func(name string, value stri
 	s.ConstValues = nil
 }
 
-func (s *Schema) crateOrWasmLib(withContract bool, withHost bool) string {
+func (s *Schema) crateOrWasmLib(withContract, withHost bool) string {
 	if s.CoreContracts {
 		retVal := useCrate
 		if withContract {

@@ -53,7 +53,7 @@ func checkErc20Balance(e *solo.Chain, account *coretypes.AgentID, amount uint64)
 	require.EqualValues(e.Env.T, sup, amount)
 }
 
-func checkErc20Allowance(e *solo.Chain, account *coretypes.AgentID, delegation *coretypes.AgentID, amount int64) {
+func checkErc20Allowance(e *solo.Chain, account, delegation *coretypes.AgentID, amount int64) {
 	res, err := e.CallView(ScName, ViewAllowance,
 		ParamAccount, account,
 		ParamDelegation, delegation,

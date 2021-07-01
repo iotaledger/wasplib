@@ -12,26 +12,28 @@ import (
 	"strings"
 )
 
-var matchCodec = regexp.MustCompile(`(encode|decode)(\w+)`)
-var matchComment = regexp.MustCompile(`^\s*//`)
-var matchConst = regexp.MustCompile(`[^a-zA-Z_]H?[A-Z][A-Z_0-9]+`)
-var matchConstInt = regexp.MustCompile(`const ([A-Z])([A-Z_0-9]+): \\w+ = ([0-9]+)`)
-var matchConstStr = regexp.MustCompile(`const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = ("[^"]+")`)
-var matchConstStr2 = regexp.MustCompile(`const ([A-Z_0-9]+): &str = ("[^"]+")`)
-var matchCore = regexp.MustCompile(`([^a-zA-Z_])Core([A-Z])`)
-var matchExtraBraces = regexp.MustCompile(`\((\([^)]+\))\)`)
-var matchFieldName = regexp.MustCompile(`\.[a-z][a-z_0-9]+`)
-var matchForLoop = regexp.MustCompile(`for (\w+) in ([0-9+])\.\.(\w+)`)
-var matchFromBytes = regexp.MustCompile(`(\w+)::from_bytes`)
-var matchFuncCall = regexp.MustCompile(`\.[a-z][a-z_0-9]+\(`)
-var matchIf = regexp.MustCompile(`if (.+) {`)
-var matchInitializer = regexp.MustCompile(`(\w+): (.+),$`)
-var matchInitializerHeader = regexp.MustCompile(`(\w+) :?= &?(\w+) {`)
-var matchLet = regexp.MustCompile(`let (mut )?(\w+)(: &?\w+)? =`)
-var matchParam = regexp.MustCompile(`(\(|, ?)(\w+): &?(\w+)`)
-var matchSome = regexp.MustCompile(`Some\(([^)]+)\)`)
-var matchToString = regexp.MustCompile(`\+ &([^ ]+)\.ToString\(\)`)
-var matchVarName = regexp.MustCompile(`[^a-zA-Z_][a-z][a-z_0-9]+`)
+var (
+	matchCodec             = regexp.MustCompile(`(encode|decode)(\w+)`)
+	matchComment           = regexp.MustCompile(`^\s*//`)
+	matchConst             = regexp.MustCompile(`[^a-zA-Z_]H?[A-Z][A-Z_0-9]+`)
+	matchConstInt          = regexp.MustCompile(`const ([A-Z])([A-Z_0-9]+): \\w+ = (\d+)`)
+	matchConstStr          = regexp.MustCompile(`const (PARAM|VAR|KEY)([A-Z_0-9]+): &str = ("[^"]+")`)
+	matchConstStr2         = regexp.MustCompile(`const ([A-Z_0-9]+): &str = ("[^"]+")`)
+	matchCore              = regexp.MustCompile(`([^a-zA-Z_])Core([A-Z])`)
+	matchExtraBraces       = regexp.MustCompile(`\((\([^)]+\))\)`)
+	matchFieldName         = regexp.MustCompile(`\.[a-z][a-z_0-9]+`)
+	matchForLoop           = regexp.MustCompile(`for (\w+) in ([0-9+])\.\.(\w+)`)
+	matchFromBytes         = regexp.MustCompile(`(\w+)::from_bytes`)
+	matchFuncCall          = regexp.MustCompile(`\.[a-z][a-z_0-9]+\(`)
+	matchIf                = regexp.MustCompile(`if (.+) {`)
+	matchInitializer       = regexp.MustCompile(`(\w+): (.+),$`)
+	matchInitializerHeader = regexp.MustCompile(`(\w+) :?= &?(\w+) {`)
+	matchLet               = regexp.MustCompile(`let (mut )?(\w+)(: &?\w+)? =`)
+	matchParam             = regexp.MustCompile(`(\(|, ?)(\w+): &?(\w+)`)
+	matchSome              = regexp.MustCompile(`Some\(([^)]+)\)`)
+	matchToString          = regexp.MustCompile(`\+ &([^ ]+)\.ToString\(\)`)
+	matchVarName           = regexp.MustCompile(`[^a-zA-Z_][a-z][a-z_0-9]+`)
+)
 
 var lastInit string
 
@@ -79,7 +81,8 @@ func RustConvertor(convertLine func(string, string) string, outPath string) erro
 	})
 }
 
-func walker(convertLine func(string, string) string, outPath string, path string, info os.FileInfo, err error) error {
+//nolint:unparam
+func walker(convertLine func(string, string) string, outPath, path string, info os.FileInfo, err error) error {
 	if err != nil {
 		return err
 	}

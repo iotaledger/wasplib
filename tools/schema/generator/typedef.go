@@ -36,7 +36,7 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 		fldName := capitalize(field.Name) + ";"
 		fldType := pad(javaTypes[field.Type], typeLen)
 		if field.Comment != "" {
-			fldName = pad(fldName, nameLen + 1)
+			fldName = pad(fldName, nameLen+1)
 		}
 		fmt.Fprintf(file, "    public %s %s%s\n", fldType, fldName, field.Comment)
 	}
@@ -69,5 +69,4 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 	fmt.Fprintf(file, "}\n")
 	return nil
 }
-
 

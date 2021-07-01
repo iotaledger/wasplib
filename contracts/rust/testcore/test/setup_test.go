@@ -36,7 +36,7 @@ var (
 )
 
 // deploy the specified contract on the chain
-func DeployGoContract(chain *solo.Chain, keyPair *ed25519.KeyPair, name string, contractName string, params ...interface{}) error {
+func DeployGoContract(chain *solo.Chain, keyPair *ed25519.KeyPair, name, contractName string, params ...interface{}) error {
 	if common.WasmRunner == 1 {
 		wasmproc.GoWasmVM = common.NewWasmGoVM(common.ScForGoVM)
 		hprog, err := chain.UploadWasm(keyPair, []byte("go:"+contractName))
@@ -55,9 +55,8 @@ func DeployGoContract(chain *solo.Chain, keyPair *ed25519.KeyPair, name string, 
 // filters wasmlib.Key parameters and replaces them with their proper string equivalent
 func filterKeys(params ...interface{}) []interface{} {
 	for i, param := range params {
-		switch param.(type) {
-		case wasmlib.Key:
-			params[i] = string(param.(wasmlib.Key))
+		if par, ok := param.(wasmlib.Key); ok {
+			params[i] = string(par)
 		}
 	}
 	return params
@@ -117,7 +116,6 @@ func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, 
 	return deployed, extraToken
 }
 
-// nolint:deadcode,unused
 func setupERC20(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) *coretypes.AgentID {
 	var err error
 	if !runWasm {

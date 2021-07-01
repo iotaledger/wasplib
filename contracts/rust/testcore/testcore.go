@@ -1,6 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
+//nolint:dupl
 package testcore
 
 import (
@@ -9,9 +10,11 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreroot"
 )
 
-const ContractNameDeployed = "exampleDeployTR"
-const MsgFullPanic = "========== panic FULL ENTRY POINT ========="
-const MsgViewPanic = "========== panic VIEW ========="
+const (
+	ContractNameDeployed = "exampleDeployTR"
+	MsgFullPanic         = "========== panic FULL ENTRY POINT ========="
+	MsgViewPanic         = "========== panic VIEW ========="
+)
 
 func funcCallOnChain(ctx wasmlib.ScFuncContext, f *CallOnChainContext) {
 	paramIn := f.Params.IntValue().Value()
@@ -50,6 +53,7 @@ func funcCheckContextFromFullEP(ctx wasmlib.ScFuncContext, f *CheckContextFromFu
 	ctx.Require(f.Params.ContractCreator().Value() == ctx.ContractCreator(), "fail: contractCreator")
 }
 
+//nolint:unparam
 func funcDoNothing(ctx wasmlib.ScFuncContext, f *DoNothingContext) {
 	ctx.Log("doing nothing...")
 }
@@ -69,6 +73,7 @@ func funcIncCounter(ctx wasmlib.ScFuncContext, f *IncCounterContext) {
 	counter.SetValue(counter.Value() + 1)
 }
 
+//nolint:unparam
 func funcInit(ctx wasmlib.ScFuncContext, f *InitContext) {
 	ctx.Log("doing nothing...")
 }
@@ -107,10 +112,12 @@ func funcSetInt(ctx wasmlib.ScFuncContext, f *SetIntContext) {
 	f.State.Ints().GetInt64(f.Params.Name().Value()).SetValue(f.Params.IntValue().Value())
 }
 
+//nolint:unparam
 func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, f *TestCallPanicFullEPContext) {
 	NewTestPanicFullEPCall(ctx).Func.Call()
 }
 
+//nolint:unparam
 func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, f *TestCallPanicViewEPFromFullContext) {
 	NewTestPanicViewEPCall(ctx).Func.Call()
 }
@@ -119,12 +126,14 @@ func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *TestChainOwnerIDFull
 	f.Results.ChainOwnerID().SetValue(ctx.ChainOwnerID())
 }
 
+//nolint:unparam
 func funcTestEventLogDeploy(ctx wasmlib.ScFuncContext, f *TestEventLogDeployContext) {
 	// deploy the same contract with another name
 	programHash := ctx.Utility().HashBlake2b([]byte("testcore"))
 	ctx.Deploy(programHash, ContractNameDeployed, "test contract deploy log", nil)
 }
 
+//nolint:unparam
 func funcTestEventLogEventData(ctx wasmlib.ScFuncContext, f *TestEventLogEventDataContext) {
 	ctx.Event("[Event] - Testing Event...")
 }
@@ -134,6 +143,7 @@ func funcTestEventLogGenericData(ctx wasmlib.ScFuncContext, f *TestEventLogGener
 	ctx.Event(event)
 }
 
+//nolint:unparam
 func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, f *TestPanicFullEPContext) {
 	ctx.Panic(MsgFullPanic)
 }
@@ -179,6 +189,7 @@ func viewGetInt(ctx wasmlib.ScViewContext, f *GetIntContext) {
 	f.Results.Values().GetInt64(name).SetValue(value.Value())
 }
 
+//nolint:unparam
 func viewJustView(ctx wasmlib.ScViewContext, f *JustViewContext) {
 	ctx.Log("doing nothing...")
 }
@@ -194,6 +205,7 @@ func viewPassTypesView(ctx wasmlib.ScViewContext, f *PassTypesViewContext) {
 	ctx.Require(f.Params.HnameZero().Value() == wasmlib.ScHname(0), "Hname-0 wrong")
 }
 
+//nolint:unparam
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *TestCallPanicViewEPFromViewContext) {
 	NewTestPanicViewEPCallFromView(ctx).Func.Call()
 }
@@ -202,6 +214,7 @@ func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *TestChainOwnerIDView
 	f.Results.ChainOwnerID().SetValue(ctx.ChainOwnerID())
 }
 
+//nolint:unparam
 func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *TestPanicViewEPContext) {
 	ctx.Panic(MsgViewPanic)
 }

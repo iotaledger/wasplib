@@ -16,7 +16,7 @@ func setupTest(t *testing.T) *solo.Chain {
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
+	chain := setupTest(t)
 	_, err := chain.FindContract(ScName)
 	require.NoError(t, err)
 }

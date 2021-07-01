@@ -87,6 +87,11 @@ var rustTypeIds = StringMap{
 	"String":    "TYPE_STRING",
 }
 
+const (
+	rustTypeBytes = "TYPE_BYTES"
+	rustTypeMap   = "TYPE_MAP"
+)
+
 func (s *Schema) GenerateRust() error {
 	s.NewTypes = make(map[string]bool)
 
@@ -242,7 +247,7 @@ func (s *Schema) generateRustConsts() error {
 func (s *Schema) generateRustConstsFields(file *os.File, fields []*Field, prefix string) {
 	if len(fields) != 0 {
 		for _, field := range fields {
-			if field.Alias == "this" {
+			if field.Alias == AliasThis {
 				continue
 			}
 			name := prefix + upper(snake(field.Name))
@@ -286,7 +291,7 @@ func (s *Schema) generateRustContract() error {
 
 		fmt.Fprintf(file, "\nimpl %sCall {\n", f.Type)
 		s.generateRustContractFunc(file, f)
-		if f.Kind == "View" {
+		if f.Kind == KindView {
 			fmt.Fprintf(file, "\n    pub fn new_from_view(_ctx: &ScViewContext) -> %sCall {\n", f.Type)
 			fmt.Fprintf(file, "        %sCall::new(&ScFuncContext {})\n", f.Type)
 			fmt.Fprintf(file, "    }\n")
@@ -416,9 +421,9 @@ func (s *Schema) generateRustKeys() error {
 	fmt.Fprint(file, useCrate)
 
 	s.KeyID = 0
-	s.generateRustKeysIndexes(file, s.Params, "PARAM_")
-	s.generateRustKeysIndexes(file, s.Results, "RESULT_")
-	s.generateRustKeysIndexes(file, s.StateVars, "STATE_")
+	s.generateRustKeysIndexes(s.Params, "PARAM_")
+	s.generateRustKeysIndexes(s.Results, "RESULT_")
+	s.generateRustKeysIndexes(s.StateVars, "STATE_")
 	s.flushRustConsts(file)
 
 	size := s.KeyID
@@ -443,7 +448,7 @@ func (s *Schema) generateRustKeys() error {
 
 func (s *Schema) generateRustKeysArray(file *os.File, fields []*Field, prefix string) {
 	for _, field := range fields {
-		if field.Alias == "this" {
+		if field.Alias == AliasThis {
 			continue
 		}
 		name := prefix + upper(snake(field.Name))
@@ -452,9 +457,9 @@ func (s *Schema) generateRustKeysArray(file *os.File, fields []*Field, prefix st
 	}
 }
 
-func (s *Schema) generateRustKeysIndexes(file *os.File, fields []*Field, prefix string) {
+func (s *Schema) generateRustKeysIndexes(fields []*Field, prefix string) {
 	for _, field := range fields {
-		if field.Alias == "this" {
+		if field.Alias == AliasThis {
 			continue
 		}
 		name := "IDX_" + prefix + upper(snake(field.Name))
@@ -529,120 +534,142 @@ func (s *Schema) generateRustLib() error {
 
 func (s *Schema) generateRustProxy(file *os.File, field *Field, mutability string) {
 	if field.Array {
-		proxyType := mutability + field.Type
-		arrayType := "ArrayOf" + proxyType
-		if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
-			fmt.Fprintf(file, "\npub type %s%s = %s;\n", mutability, field.Name, arrayType)
-		}
-		if s.NewTypes[arrayType] {
-			// already generated this array
-			return
-		}
-		s.NewTypes[arrayType] = true
+		s.generateRustProxyArray(file, field, mutability)
+		return
+	}
 
-		fmt.Fprintf(file, "\npub struct %s {\n", arrayType)
-		fmt.Fprintf(file, "    pub(crate) obj_id: i32,\n")
-		fmt.Fprintf(file, "}\n")
+	if field.MapKey != "" {
+		s.generateRustProxyMap(file, field, mutability)
+	}
+}
 
-		fmt.Fprintf(file, "\nimpl %s {", arrayType)
-		defer fmt.Fprintf(file, "}\n")
+func (s *Schema) generateRustProxyArray(file *os.File, field *Field, mutability string) {
+	proxyType := mutability + field.Type
+	arrayType := "ArrayOf" + proxyType
+	if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
+		fmt.Fprintf(file, "\npub type %s%s = %s;\n", mutability, field.Name, arrayType)
+	}
+	if s.NewTypes[arrayType] {
+		// already generated this array
+		return
+	}
+	s.NewTypes[arrayType] = true
 
-		if mutability == "Mutable" {
-			fmt.Fprintf(file, "\n    pub fn clear(&self) {\n")
-			fmt.Fprintf(file, "        clear(self.obj_id);\n")
-			fmt.Fprintf(file, "    }\n")
-		}
+	fmt.Fprintf(file, "\npub struct %s {\n", arrayType)
+	fmt.Fprintf(file, "    pub(crate) obj_id: i32,\n")
+	fmt.Fprintf(file, "}\n")
 
-		fmt.Fprintf(file, "\n    pub fn length(&self) -> i32 {\n")
-		fmt.Fprintf(file, "        get_length(self.obj_id)\n")
+	fmt.Fprintf(file, "\nimpl %s {", arrayType)
+	defer fmt.Fprintf(file, "}\n")
+
+	if mutability == PropMutable {
+		fmt.Fprintf(file, "\n    pub fn clear(&self) {\n")
+		fmt.Fprintf(file, "        clear(self.obj_id);\n")
 		fmt.Fprintf(file, "    }\n")
+	}
 
-		if field.TypeID == 0 {
-			for _, subtype := range s.Subtypes {
-				if subtype.Name == field.Type {
-					varType := "TYPE_MAP"
-					if subtype.Array {
-						varType = rustTypeIds[subtype.Type]
-						if len(varType) == 0 {
-							varType = "TYPE_BYTES"
-						}
-						varType = "TYPE_ARRAY | " + varType
-					}
-					fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> %s {\n", snake(field.Type), proxyType)
-					fmt.Fprintf(file, "        let sub_id = get_object_id(self.obj_id, Key32(index), %s)\n", varType)
-					fmt.Fprintf(file, "        %s { obj_id: sub_id }\n", proxyType)
-					fmt.Fprintf(file, "    }\n")
-					return
-				}
-			}
-			fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> %s {\n", snake(field.Type), proxyType)
-			fmt.Fprintf(file, "        %s { obj_id: self.obj_id, key_id: Key32(index) }\n", proxyType)
-			fmt.Fprintf(file, "    }\n")
-			return
+	fmt.Fprintf(file, "\n    pub fn length(&self) -> i32 {\n")
+	fmt.Fprintf(file, "        get_length(self.obj_id)\n")
+	fmt.Fprintf(file, "    }\n")
+
+	if field.TypeID == 0 {
+		s.generateRustProxyArrayNewType(file, field, proxyType)
+		return
+	}
+
+	// array of predefined type
+	fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> Sc%s {\n", snake(field.Type), proxyType)
+	fmt.Fprintf(file, "        Sc%s::new(self.obj_id, Key32(index))\n", proxyType)
+	fmt.Fprintf(file, "    }\n")
+}
+
+func (s *Schema) generateRustProxyArrayNewType(file *os.File, field *Field, proxyType string) {
+	for _, subtype := range s.Subtypes {
+		if subtype.Name != field.Type {
+			continue
 		}
-
-		fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> Sc%s {\n", snake(field.Type), proxyType)
-		fmt.Fprintf(file, "        Sc%s::new(self.obj_id, Key32(index))\n", proxyType)
+		varType := rustTypeMap
+		if subtype.Array {
+			varType = rustTypeIds[subtype.Type]
+			if varType == "" {
+				varType = rustTypeBytes
+			}
+			varType = "TYPE_ARRAY | " + varType
+		}
+		fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> %s {\n", snake(field.Type), proxyType)
+		fmt.Fprintf(file, "        let sub_id = get_object_id(self.obj_id, Key32(index), %s)\n", varType)
+		fmt.Fprintf(file, "        %s { obj_id: sub_id }\n", proxyType)
 		fmt.Fprintf(file, "    }\n")
 		return
 	}
 
-	if len(field.MapKey) != 0 {
-		proxyType := mutability + field.Type
-		mapType := "Map" + field.MapKey + "To" + proxyType
-		if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
-			fmt.Fprintf(file, "\npub type %s%s = %s;\n", mutability, field.Name, mapType)
-		}
-		if s.NewTypes[mapType] {
-			// already generated this map
-			return
-		}
-		s.NewTypes[mapType] = true
+	fmt.Fprintf(file, "\n    pub fn get_%s(&self, index: i32) -> %s {\n", snake(field.Type), proxyType)
+	fmt.Fprintf(file, "        %s { obj_id: self.obj_id, key_id: Key32(index) }\n", proxyType)
+	fmt.Fprintf(file, "    }\n")
+}
 
-		keyType := rustKeyTypes[field.MapKey]
-		keyValue := rustKeys[field.MapKey]
+func (s *Schema) generateRustProxyMap(file *os.File, field *Field, mutability string) {
+	proxyType := mutability + field.Type
+	mapType := "Map" + field.MapKey + "To" + proxyType
+	if field.Name[0] >= 'A' && field.Name[0] <= 'Z' {
+		fmt.Fprintf(file, "\npub type %s%s = %s;\n", mutability, field.Name, mapType)
+	}
+	if s.NewTypes[mapType] {
+		// already generated this map
+		return
+	}
+	s.NewTypes[mapType] = true
 
-		fmt.Fprintf(file, "\npub struct %s {\n", mapType)
-		fmt.Fprintf(file, "    pub(crate) obj_id: i32,\n")
-		fmt.Fprintf(file, "}\n")
+	keyType := rustKeyTypes[field.MapKey]
+	keyValue := rustKeys[field.MapKey]
 
-		fmt.Fprintf(file, "\nimpl %s {", mapType)
-		defer fmt.Fprintf(file, "}\n")
+	fmt.Fprintf(file, "\npub struct %s {\n", mapType)
+	fmt.Fprintf(file, "    pub(crate) obj_id: i32,\n")
+	fmt.Fprintf(file, "}\n")
 
-		if mutability == "Mutable" {
-			fmt.Fprintf(file, "\n    pub fn clear(&self) {\n")
-			fmt.Fprintf(file, "        clear(self.obj_id)\n")
-			fmt.Fprintf(file, "    }\n")
-		}
+	fmt.Fprintf(file, "\nimpl %s {", mapType)
+	defer fmt.Fprintf(file, "}\n")
 
-		if field.TypeID == 0 {
-			for _, subtype := range s.Subtypes {
-				if subtype.Name == field.Type {
-					varType := "TYPE_MAP"
-					if subtype.Array {
-						varType = rustTypeIds[subtype.Type]
-						if len(varType) == 0 {
-							varType = "TYPE_BYTES"
-						}
-						varType = "TYPE_ARRAY | " + varType
-					}
-					fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> %s {\n", snake(field.Type), keyType, proxyType)
-					fmt.Fprintf(file, "        let sub_id = get_object_id(self.obj_id, %s.get_key_id(), %s);\n", keyValue, varType)
-					fmt.Fprintf(file, "        %s { obj_id: sub_id }\n", proxyType)
-					fmt.Fprintf(file, "    }\n")
-					return
-				}
-			}
-			fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> %s {\n", snake(field.Type), keyType, proxyType)
-			fmt.Fprintf(file, "        %s { obj_id: self.obj_id, key_id: %s.get_key_id() }\n", proxyType, keyValue)
-			fmt.Fprintf(file, "    }\n")
-			return
-		}
-
-		fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> Sc%s {\n", snake(field.Type), keyType, proxyType)
-		fmt.Fprintf(file, "        Sc%s::new(self.obj_id, %s.get_key_id())\n", proxyType, keyValue)
+	if mutability == PropMutable {
+		fmt.Fprintf(file, "\n    pub fn clear(&self) {\n")
+		fmt.Fprintf(file, "        clear(self.obj_id)\n")
 		fmt.Fprintf(file, "    }\n")
 	}
+
+	if field.TypeID == 0 {
+		s.generateRustProxyMapNewType(file, field, proxyType, keyType, keyValue)
+		return
+	}
+
+	// map of predefined type
+	fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> Sc%s {\n", snake(field.Type), keyType, proxyType)
+	fmt.Fprintf(file, "        Sc%s::new(self.obj_id, %s.get_key_id())\n", proxyType, keyValue)
+	fmt.Fprintf(file, "    }\n")
+}
+
+func (s *Schema) generateRustProxyMapNewType(file *os.File, field *Field, proxyType, keyType, keyValue string) {
+	for _, subtype := range s.Subtypes {
+		if subtype.Name != field.Type {
+			continue
+		}
+		varType := rustTypeMap
+		if subtype.Array {
+			varType = rustTypeIds[subtype.Type]
+			if varType == "" {
+				varType = rustTypeBytes
+			}
+			varType = "TYPE_ARRAY | " + varType
+		}
+		fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> %s {\n", snake(field.Type), keyType, proxyType)
+		fmt.Fprintf(file, "        let sub_id = get_object_id(self.obj_id, %s.get_key_id(), %s);\n", keyValue, varType)
+		fmt.Fprintf(file, "        %s { obj_id: sub_id }\n", proxyType)
+		fmt.Fprintf(file, "    }\n")
+		return
+	}
+
+	fmt.Fprintf(file, "\n    pub fn get_%s(&self, key: %s) -> %s {\n", snake(field.Type), keyType, proxyType)
+	fmt.Fprintf(file, "        %s { obj_id: self.obj_id, key_id: %s.get_key_id() }\n", proxyType, keyValue)
+	fmt.Fprintf(file, "    }\n")
 }
 
 func (s *Schema) generateRustState() error {
@@ -667,8 +694,8 @@ func (s *Schema) generateRustState() error {
 		fmt.Fprint(file, useTypes)
 	}
 
-	s.generateRustStruct(file, s.StateVars, "Immutable", s.FullName, "State")
-	s.generateRustStruct(file, s.StateVars, "Mutable", s.FullName, "State")
+	s.generateRustStruct(file, s.StateVars, PropImmutable, s.FullName, "State")
+	s.generateRustStruct(file, s.StateVars, PropMutable, s.FullName, "State")
 	return nil
 }
 
@@ -693,8 +720,8 @@ func (s *Schema) generateRustParams() error {
 		if len(f.Params) == 0 {
 			continue
 		}
-		s.generateRustStruct(file, f.Params, "Immutable", f.Type, "Params")
-		s.generateRustStruct(file, f.Params, "Mutable", f.Type, "Params")
+		s.generateRustStruct(file, f.Params, PropImmutable, f.Type, "Params")
+		s.generateRustStruct(file, f.Params, PropMutable, f.Type, "Params")
 	}
 	return nil
 }
@@ -720,13 +747,13 @@ func (s *Schema) generateRustResults() error {
 		if len(f.Results) == 0 {
 			continue
 		}
-		s.generateRustStruct(file, f.Results, "Immutable", f.Type, "Results")
-		s.generateRustStruct(file, f.Results, "Mutable", f.Type, "Results")
+		s.generateRustStruct(file, f.Results, PropImmutable, f.Type, "Results")
+		s.generateRustStruct(file, f.Results, PropMutable, f.Type, "Results")
 	}
 	return nil
 }
 
-func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability string, typeName string, kind string) {
+func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability, typeName, kind string) {
 	typeName = mutability + typeName + kind
 	kind = strings.TrimSuffix(kind, "s")
 	kind = upper(kind) + "_"
@@ -753,8 +780,8 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 			varID = kind + upper(varName) + ".get_key_id()"
 		}
 		varType := rustTypeIds[field.Type]
-		if len(varType) == 0 {
-			varType = "TYPE_BYTES"
+		if varType == "" {
+			varType = rustTypeBytes
 		}
 		if field.Array {
 			varType = "TYPE_ARRAY | " + varType
@@ -765,12 +792,12 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability s
 			fmt.Fprintf(file, "    }\n")
 			continue
 		}
-		if len(field.MapKey) != 0 {
-			varType = "TYPE_MAP"
+		if field.MapKey != "" {
+			varType = rustTypeMap
 			mapType := "Map" + field.MapKey + "To" + mutability + field.Type
 			fmt.Fprintf(file, "\n    pub fn %s(&self) -> %s {\n", varName, mapType)
 			mapID := "self.id"
-			if field.Alias != "this" {
+			if field.Alias != AliasThis {
 				mapID = "map_id"
 				fmt.Fprintf(file, "        let map_id = get_object_id(self.id, %s, %s);\n", varID, varType)
 			}
@@ -807,8 +834,8 @@ func (s *Schema) generateRustSubtypes() error {
 	}
 
 	for _, subtype := range s.Subtypes {
-		s.generateRustProxy(file, subtype, "Immutable")
-		s.generateRustProxy(file, subtype, "Mutable")
+		s.generateRustProxy(file, subtype, PropImmutable)
+		s.generateRustProxy(file, subtype, PropMutable)
 	}
 
 	formatter(file, true)
@@ -824,35 +851,18 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 	if len(f.Results) != 0 {
 		fmt.Fprintf(file, "    results: Mutable%sResults,\n", f.Type)
 	}
-	mutability := "Mutable"
-	if f.Kind == "View" {
-		mutability = "Immutable"
+	mutability := PropMutable
+	if f.Kind == KindView {
+		mutability = PropImmutable
 	}
 	fmt.Fprintf(file, "    %s %s%sState,\n", pad("state:", nameLen), mutability, s.FullName)
 	fmt.Fprintf(file, "}\n")
 
 	fmt.Fprintf(file, "\nfn %s_thunk(ctx: &Sc%sContext) {\n", snake(f.FuncName), f.Kind)
 	fmt.Fprintf(file, "    ctx.log(\"%s.%s\");\n", s.Name, f.FuncName)
-	grant := f.Access
-	if grant != "" {
-		index := strings.Index(grant, "//")
-		if index >= 0 {
-			fmt.Fprintf(file, "    %s\n", grant[index:])
-			grant = strings.TrimSpace(grant[:index])
-		}
-		switch grant {
-		case "self":
-			grant = "ctx.account_id()"
-		case "chain":
-			grant = "ctx.chain_owner_id()"
-		case "creator":
-			grant = "ctx.contract_creator()"
-		default:
-			fmt.Fprintf(file, "    let access = ctx.state().get_agent_id(\"%s\");\n", grant)
-			fmt.Fprintf(file, "    ctx.require(access.exists(), \"access not set: %s\");\n", grant)
-			grant = "access.value()"
-		}
-		fmt.Fprintf(file, "    ctx.require(ctx.caller() == %s, \"no permission\");\n\n", grant)
+
+	if f.Access != "" {
+		s.generateRustThunkAccessCheck(file, f)
 	}
 
 	fmt.Fprintf(file, "    let f = %sContext {\n", f.Type)
@@ -885,6 +895,28 @@ func (s *Schema) generateRustThunk(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "    %s(ctx, &f);\n", snake(f.FuncName))
 	fmt.Fprintf(file, "    ctx.log(\"%s.%s ok\");\n", s.Name, f.FuncName)
 	fmt.Fprintf(file, "}\n")
+}
+
+func (s *Schema) generateRustThunkAccessCheck(file *os.File, f *FuncDef) {
+	grant := f.Access
+	index := strings.Index(grant, "//")
+	if index >= 0 {
+		fmt.Fprintf(file, "    %s\n", grant[index:])
+		grant = strings.TrimSpace(grant[:index])
+	}
+	switch grant {
+	case AccessSelf:
+		grant = "ctx.account_id()"
+	case AccessChain:
+		grant = "ctx.chain_owner_id()"
+	case AccessCreator:
+		grant = "ctx.contract_creator()"
+	default:
+		fmt.Fprintf(file, "    let access = ctx.state().get_agent_id(\"%s\");\n", grant)
+		fmt.Fprintf(file, "    ctx.require(access.exists(), \"access not set: %s\");\n", grant)
+		grant = "access.value()"
+	}
+	fmt.Fprintf(file, "    ctx.require(ctx.caller() == %s, \"no permission\");\n\n", grant)
 }
 
 func (s *Schema) generateRustTypes() error {
@@ -960,9 +992,9 @@ func (s *Schema) generateRustType(file *os.File, typeDef *TypeDef) {
 }
 
 func (s *Schema) generateRustTypeProxy(file *os.File, typeDef *TypeDef, mutable bool) {
-	typeName := "Immutable" + typeDef.Name
+	typeName := PropImmutable + typeDef.Name
 	if mutable {
-		typeName = "Mutable" + typeDef.Name
+		typeName = PropMutable + typeDef.Name
 	}
 
 	fmt.Fprintf(file, "\npub struct %s {\n", typeName)
@@ -995,7 +1027,7 @@ func (s *Schema) flushRustConsts(file *os.File) {
 	}
 
 	fmt.Fprintln(file)
-	s.flushConsts(file, func(name string, value string, padLen int) {
+	s.flushConsts(func(name string, value string, padLen int) {
 		fmt.Fprintf(file, "pub const %s %s;\n", pad(name+":", padLen+1), value)
 	})
 }

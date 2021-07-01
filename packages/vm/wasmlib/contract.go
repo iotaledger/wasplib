@@ -9,11 +9,11 @@ type ScView struct {
 	resultsID *int32
 }
 
-func NewScView(hContract ScHname, hFunction ScHname) *ScView {
+func NewScView(hContract, hFunction ScHname) *ScView {
 	return &ScView{hContract, hFunction, nil, nil}
 }
 
-func (v *ScView) SetPtrs(paramsID *int32, resultsID *int32) {
+func (v *ScView) SetPtrs(paramsID, resultsID *int32) {
 	v.paramsID = paramsID
 	v.resultsID = resultsID
 	if paramsID != nil {
@@ -57,7 +57,7 @@ type ScFunc struct {
 	transferID int32
 }
 
-func NewScFunc(hContract ScHname, hFunction ScHname) *ScFunc {
+func NewScFunc(hContract, hFunction ScHname) *ScFunc {
 	return &ScFunc{ScView{hContract, hFunction, nil, nil}, 0, 0}
 }
 

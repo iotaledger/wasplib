@@ -88,7 +88,7 @@ func (ctx ScUtility) BlsAddressFromPubKey(pubKey []byte) ScAddress {
 	return NewScAddressFromBytes(result)
 }
 
-func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]byte, []byte) {
+func (ctx ScUtility) BlsAggregateSignatures(pubKeys, sigs [][]byte) ([]byte, []byte) {
 	encode := NewBytesEncoder()
 	encode.Int32(int32(len(pubKeys)))
 	for _, pubKey := range pubKeys {
@@ -103,7 +103,7 @@ func (ctx ScUtility) BlsAggregateSignatures(pubKeys [][]byte, sigs [][]byte) ([]
 	return decode.Bytes(), decode.Bytes()
 }
 
-func (ctx ScUtility) BlsValidSignature(data []byte, pubKey []byte, signature []byte) bool {
+func (ctx ScUtility) BlsValidSignature(data, pubKey, signature []byte) bool {
 	encode := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature)
 	result := ctx.utility.CallFunc(KeyBlsValid, encode.Data())
 	return len(result) != 0
@@ -114,7 +114,7 @@ func (ctx ScUtility) Ed25519AddressFromPubKey(pubKey []byte) ScAddress {
 	return NewScAddressFromBytes(result)
 }
 
-func (ctx ScUtility) Ed25519ValidSignature(data []byte, pubKey []byte, signature []byte) bool {
+func (ctx ScUtility) Ed25519ValidSignature(data, pubKey, signature []byte) bool {
 	encode := NewBytesEncoder().Bytes(data).Bytes(pubKey).Bytes(signature)
 	result := ctx.utility.CallFunc(KeyEd25519Valid, encode.Data())
 	return len(result) != 0
@@ -158,8 +158,7 @@ func base58Encode(bytes []byte) string {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 // shared interface part of ScFuncContext and ScViewContext
-type ScBaseContext struct {
-}
+type ScBaseContext struct{}
 
 // retrieve the agent id of this contract account
 func (ctx ScBaseContext) AccountID() ScAgentID {
@@ -244,7 +243,7 @@ type ScFuncContext struct {
 var _ ScHostContext = &ScFuncContext{}
 
 // calls a smart contract function
-func (ctx ScFuncContext) Call(hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
+func (ctx ScFuncContext) Call(hContract, hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
 	encode := NewBytesEncoder()
 	encode.Hname(hContract)
 	encode.Hname(hFunction)
@@ -273,7 +272,7 @@ func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, trans
 }
 
 // deploys a smart contract
-func (ctx ScFuncContext) Deploy(programHash ScHash, name string, description string, params *ScMutableMap) {
+func (ctx ScFuncContext) Deploy(programHash ScHash, name, description string, params *ScMutableMap) {
 	encode := NewBytesEncoder()
 	encode.Hash(programHash)
 	encode.String(name)
@@ -306,7 +305,7 @@ func (ctx ScFuncContext) Minted() ScBalances {
 }
 
 // (delayed) posts a smart contract function
-func (ctx ScFuncContext) Post(chainID ScChainID, hContract ScHname, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
+func (ctx ScFuncContext) Post(chainID ScChainID, hContract, hFunction ScHname, params *ScMutableMap, transfer ScTransfers, delay int32) {
 	encode := NewBytesEncoder()
 	encode.ChainID(chainID)
 	encode.Hname(hContract)
@@ -351,7 +350,7 @@ type ScViewContext struct {
 }
 
 // calls a smart contract function
-func (ctx ScViewContext) Call(contract ScHname, function ScHname, params *ScMutableMap) ScImmutableMap {
+func (ctx ScViewContext) Call(contract, function ScHname, params *ScMutableMap) ScImmutableMap {
 	encode := NewBytesEncoder()
 	encode.Hname(contract)
 	encode.Hname(function)

@@ -7,6 +7,7 @@ import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 )
 
+//nolint:unparam
 func funcHelloWorld(ctx wasmlib.ScFuncContext, f *HelloWorldContext) {
 	ctx.Log("Hello, world!")
 }

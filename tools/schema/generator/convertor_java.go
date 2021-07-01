@@ -46,7 +46,7 @@ var javaReplacements = []string{
 	"\u001A", "}",
 }
 
-func RustToJavaLine(line string, contract string) string {
+func RustToJavaLine(line, contract string) string {
 	if matchComment.MatchString(line) {
 		return line
 	}
