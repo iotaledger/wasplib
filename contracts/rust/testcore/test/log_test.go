@@ -243,14 +243,14 @@ func testChainLogMultiple(t *testing.T, w bool) {
 	_, err = chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
-	// /// Should return 4 logs records// ///
+	/////Should return 4 logs records/////
 	res, err := chain.CallView(eventlog.Interface.Name, eventlog.FuncGetRecords,
 		eventlog.ParamContractHname, HScName,
 	)
 	require.NoError(t, err)
 	array := collections.NewArray16ReadOnly(res, eventlog.ParamRecords)
 	require.EqualValues(t, 2, array.MustLen())
-	// /// /// /// /// /// /// /// /// /// /// /// ///
+	//////////////////////////////////////
 
 	strRoot, err := chain.GetEventLogRecordsString(root.Interface.Name)
 	require.NoError(t, err)

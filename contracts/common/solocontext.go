@@ -2,6 +2,7 @@ package common
 
 import (
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
+	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
 	"github.com/iotaledger/wasp/packages/coretypes/chainid"
 	"github.com/iotaledger/wasp/packages/hashing"
@@ -12,27 +13,37 @@ import (
 )
 
 type SoloContext struct {
-	address ledgerstate.Address
-	chain   *solo.Chain
-	Err     error
-	host    wasmlib.ScHost
-	kvHost  wasmhost.KvStoreHost
+	chain    *solo.Chain
+	contract string
+	Err      error
+	keyPair  *ed25519.KeyPair
+	wasmHost wasmhost.WasmHost
 }
 
 // implements wasmlib.ScFuncContext interface
-var _ wasmlib.ScHostContext = &SoloContext{}
+var (
+	_        wasmlib.ScHostContext = &SoloContext{}
+	soloHost wasmlib.ScHost
+)
 
-func NewSoloContext(chain *solo.Chain, address ledgerstate.Address) *SoloContext {
-	ctx := &SoloContext{chain: chain, address: address}
-	ctx.kvHost.Init(chain.Log)
-	ctx.kvHost.TrackObject(wasmproc.NewNullObject(&ctx.kvHost))
-	// TODO ctx.kvHost.TrackObject(wasmproc.NewScContext(nil, &ctx.kvHost))
-	ctx.host = wasmlib.ConnectHost(&ctx.kvHost)
+func NewSoloContext(contract string, onLoad func(), chain *solo.Chain, keyPair *ed25519.KeyPair) *SoloContext {
+	ctx := &SoloContext{contract: contract, chain: chain, keyPair: keyPair}
+	ctx.wasmHost.Init(chain.Log)
+	ctx.wasmHost.TrackObject(wasmproc.NewNullObject(&ctx.wasmHost.KvStoreHost))
+	ctx.wasmHost.TrackObject(NewSoloScContext(ctx))
+	if soloHost == nil {
+		soloHost = wasmlib.ConnectHost(&ctx.wasmHost)
+	}
+	_ = wasmlib.ConnectHost(&ctx.wasmHost)
+	onLoad()
 	return ctx
 }
 
 func (s *SoloContext) Address() wasmlib.ScAddress {
-	return s.ScAddress(s.address)
+	if s.keyPair == nil {
+		return s.ScAddress(s.chain.OriginatorAddress)
+	}
+	return s.ScAddress(ledgerstate.NewED25519Address(s.keyPair.PublicKey))
 }
 
 func (s *SoloContext) Host() wasmlib.ScHost {

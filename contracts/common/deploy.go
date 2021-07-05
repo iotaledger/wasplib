@@ -46,6 +46,7 @@ var ScForGoVM = map[string]func(){
 }
 
 func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interface{}) error {
+	soloHost = nil
 	if WasmRunner == 1 {
 		wasmproc.GoWasmVM = NewWasmGoVM(ScForGoVM)
 		hprog, err := chain.UploadWasm(nil, []byte("go:"+scName))

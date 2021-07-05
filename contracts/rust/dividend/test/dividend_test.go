@@ -26,10 +26,10 @@ func TestDeploy(t *testing.T) {
 func TestAddMemberOk(t *testing.T) {
 	chain := setupTest(t)
 	_, member1Addr := chain.Env.NewKeyPairWithFunds()
-	ctx := common.NewSoloContext(chain, member1Addr)
+	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
 	f := dividend.NewMemberCall(ctx)
-	f.Params.Address().SetValue(ctx.Address())
+	f.Params.Address().SetValue(ctx.ScAddress(member1Addr))
 	f.Params.Factor().SetValue(100)
 	f.Func.TransferIotas(1).Post()
 	// req := solo.NewCallParams(ScName, FuncMember,
@@ -43,7 +43,7 @@ func TestAddMemberOk(t *testing.T) {
 
 func TestAddMemberFailMissingAddress(t *testing.T) {
 	chain := setupTest(t)
-	ctx := common.NewSoloContext(chain, nil)
+	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
 	f := dividend.NewMemberCall(ctx)
 	f.Params.Factor().SetValue(100)
@@ -60,11 +60,10 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 func TestAddMemberFailMissingFactor(t *testing.T) {
 	chain := setupTest(t)
 	_, member1Addr := chain.Env.NewKeyPairWithFunds()
-	ctx := common.NewSoloContext(chain, member1Addr)
+	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
 	f := dividend.NewMemberCall(ctx)
-	f.Params.Address().SetValue(ctx.Address())
-	f.Params.Factor().SetValue(100)
+	f.Params.Address().SetValue(ctx.ScAddress(member1Addr))
 	f.Func.TransferIotas(1).Post()
 	// req := solo.NewCallParams(ScName, FuncMember,
 	// 	ParamAddress, member1Addr,

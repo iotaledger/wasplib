@@ -74,7 +74,7 @@
         "numTokens": "Int64 // number of tokens for sale",
         "ownerMargin": "Int64 // auction owner's margin in promilles",
         "whenStarted": "Int64 // timestamp when auction started",
-        "bidders": "Int64 // nr of bidders"
+        "bidders": "Int32 // nr of bidders"
       }
     }
   }

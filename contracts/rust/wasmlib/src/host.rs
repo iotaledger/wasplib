@@ -38,7 +38,7 @@ const TYPE_SIZES: &[u8] = &[0, 33, 37, 0, 33, 32, 32, 4, 2, 4, 8, 0, 34, 0];
 // to their counterparts on the host.
 #[link(wasm_import_module = "WasmLib")]
 extern {
-    // Copy the value data bytes of type <type_id> stored in the host container object <obj_ID>,
+    // Copy the value data bytes of type <type_id> stored in the host container object <obj_id>,
     // under key <key_id>, into the pre-allocated <buffer> which can hold len bytes.
     // Returns the actual length of the value data bytes on the host.
     pub fn hostGetBytes(obj_id: i32, key_id: i32, type_id: i32, buffer: *const u8, len: i32) -> i32;
@@ -49,7 +49,7 @@ extern {
     pub fn hostGetKeyID(key: *const u8, len: i32) -> i32;
 
     // Retrieve the id of the container sub-object of type <type_id> stored in
-    // the host container object <obj_ID>, under key <key_id>.
+    // the host container object <obj_id>, under key <key_id>.
     pub fn hostGetObjectID(obj_id: i32, key_id: i32, type_id: i32) -> i32;
 
     // copy the <len> value data bytes of type <type_id> from the <buffer>
@@ -70,7 +70,9 @@ pub fn call_func(obj_id: i32, key_id: Key32, params: &[u8]) -> Vec<u8> {
         size = hostGetBytes(obj_id, key_id.0, TYPE_CALL, args, size);
 
         // -1 means non-existent, so return default value for type
-        if size <= 0 { return vec![0_u8; 0]; }
+        if size <= 0 {
+            return vec![0_u8; 0];
+        }
 
         // allocate a sufficient length byte array in Wasm memory
         // and let the host copy the actual data bytes into this Wasm byte array
@@ -109,7 +111,9 @@ pub fn get_bytes(obj_id: i32, key_id: Key32, type_id: i32) -> Vec<u8> {
             size = hostGetBytes(obj_id, key_id.0, type_id, std::ptr::null_mut(), 0);
 
             // -1 means non-existent, so return default value for type
-            if size < 0 { return vec![0_u8; 0]; }
+            if size < 0 {
+                return vec![0_u8; 0];
+            }
         }
 
         // allocate a sufficient length byte array in Wasm memory

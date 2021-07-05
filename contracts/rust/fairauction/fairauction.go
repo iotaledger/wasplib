@@ -203,7 +203,7 @@ func viewGetInfo(ctx wasmlib.ScViewContext, f *GetInfoContext) {
 	f.Results.WhenStarted().SetValue(auction.WhenStarted)
 
 	bidderList := f.State.BidderList().GetBidderList(color)
-	f.Results.Bidders().SetValue(int64(bidderList.Length()))
+	f.Results.Bidders().SetValue(bidderList.Length())
 }
 
 func transferTokens(ctx wasmlib.ScFuncContext, agent wasmlib.ScAgentID, color wasmlib.ScColor, amount int64) {

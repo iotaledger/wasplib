@@ -26,10 +26,10 @@ func TestOffLedgerFailNoAccount(t *testing.T) {
 		chain.AssertIotas(cAID, 1)
 
 		// NOTE: NO deposit into owner account
-		// req := solo.NewCallParams(accounts.Interface.Name, accounts.FuncDeposit,
-		// ).WithIotas(10)
-		// _, err := chain.PostRequestSync(req, owner)
-		// require.NoError(t, err)
+		//req := solo.NewCallParams(accounts.Interface.Name, accounts.FuncDeposit,
+		//).WithIotas(10)
+		//_, err := chain.PostRequestSync(req, owner)
+		//require.NoError(t, err)
 
 		chain.AssertIotas(ownerAgentID, 0)
 		chain.AssertIotas(cAID, 1)

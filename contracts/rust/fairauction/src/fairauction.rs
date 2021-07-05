@@ -199,7 +199,7 @@ pub fn view_get_info(ctx: &ScViewContext, f: &GetInfoContext) {
     f.results.when_started().set_value(auction.when_started);
 
     let bidder_list = f.state.bidder_list().get_bidder_list(&color);
-    f.results.bidders().set_value(bidder_list.length() as i64);
+    f.results.bidders().set_value(bidder_list.length());
 }
 
 fn transfer_tokens(ctx: &ScFuncContext, agent: &ScAgentID, color: &ScColor, amount: i64) {

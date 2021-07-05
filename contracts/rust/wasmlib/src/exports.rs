@@ -25,7 +25,7 @@ static mut VIEWS: Vec<fn(&ScViewContext)> = vec![];
 // the host will pass the index of one of the entrypoints
 // that was provided by on_load during SC initialization
 fn on_call(index: i32) {
-    let ctx = ScFuncContext{};
+    let ctx = ScFuncContext {};
     ctx.require(get_object_id(OBJ_ID_ROOT, KEY_STATE, TYPE_MAP) == OBJ_ID_STATE, "object id mismatch");
     ctx.require(get_object_id(OBJ_ID_ROOT, KEY_PARAMS, TYPE_MAP) == OBJ_ID_PARAMS, "object id mismatch");
     ctx.require(get_object_id(OBJ_ID_ROOT, KEY_RESULTS, TYPE_MAP) == OBJ_ID_RESULTS, "object id mismatch");
