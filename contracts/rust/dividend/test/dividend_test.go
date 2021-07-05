@@ -28,16 +28,11 @@ func TestAddMemberOk(t *testing.T) {
 	_, member1Addr := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
-	f := dividend.NewMemberCall(ctx)
-	f.Params.Address().SetValue(ctx.ScAddress(member1Addr))
-	f.Params.Factor().SetValue(100)
-	f.Func.TransferIotas(1).Post()
-	// req := solo.NewCallParams(ScName, FuncMember,
-	// 	ParamAddress, member1Addr,
-	// 	ParamFactor, 100,
-	// )
-	// req.WithIotas(1)
-	// _, err := chain.PostRequestSync(req, nil)
+	newMember := dividend.NewMemberCall(ctx)
+	newMember.Params.Address().SetValue(ctx.ScAddress(member1Addr))
+	newMember.Params.Factor().SetValue(100)
+	newMember.Func.TransferIotas(1).Post()
+
 	require.NoError(t, ctx.Err)
 }
 
@@ -45,14 +40,10 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 	chain := setupTest(t)
 	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
-	f := dividend.NewMemberCall(ctx)
-	f.Params.Factor().SetValue(100)
-	f.Func.TransferIotas(1).Post()
-	// req := solo.NewCallParams(ScName, FuncMember,
-	// 	ParamFactor, 100,
-	// )
-	// req.WithIotas(1)
-	// _, err := chain.PostRequestSync(req, nil)
+	newMember := dividend.NewMemberCall(ctx)
+	newMember.Params.Factor().SetValue(100)
+	newMember.Func.TransferIotas(1).Post()
+
 	require.Error(t, ctx.Err)
 	require.True(t, strings.HasSuffix(ctx.Err.Error(), "missing mandatory address"))
 }
@@ -62,14 +53,10 @@ func TestAddMemberFailMissingFactor(t *testing.T) {
 	_, member1Addr := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
 
-	f := dividend.NewMemberCall(ctx)
-	f.Params.Address().SetValue(ctx.ScAddress(member1Addr))
-	f.Func.TransferIotas(1).Post()
-	// req := solo.NewCallParams(ScName, FuncMember,
-	// 	ParamAddress, member1Addr,
-	// )
-	// req.WithIotas(1)
-	// _, err := chain.PostRequestSync(req, nil)
+	newMember := dividend.NewMemberCall(ctx)
+	newMember.Params.Address().SetValue(ctx.ScAddress(member1Addr))
+	newMember.Func.TransferIotas(1).Post()
+
 	require.Error(t, ctx.Err)
 	require.True(t, strings.HasSuffix(ctx.Err.Error(), "missing mandatory factor"))
 }

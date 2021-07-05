@@ -34,27 +34,16 @@ func setupTest(t *testing.T) *solo.Chain {
 	chain.Env.AssertAddressBalance(auctioneerAddr, newColor, 10)
 
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, auctioneer)
-	tokenColor = newColor
+	auctionColor := ctx.ScColor(newColor)
 
-	f := fairauction.NewStartAuctionCall(ctx)
-	auctionColor := ctx.ScColor(tokenColor)
-	f.Params.Color().SetValue(auctionColor)
-	f.Params.MinimumBid().SetValue(500)
-	f.Params.Description().SetValue("Cool tokens for sale!")
+	startAuction := fairauction.NewStartAuctionCall(ctx)
+	startAuction.Params.Color().SetValue(auctionColor)
+	startAuction.Params.MinimumBid().SetValue(500)
+	startAuction.Params.Description().SetValue("Cool tokens for sale!")
 	transfer := ctx.Transfer()
 	transfer.Set(wasmlib.IOTA, 25) // deposit, must be >=minimum*margin
 	transfer.Set(auctionColor, 10) // the tokens to auction
-	f.Func.Transfer(transfer).Post()
-	// // start auction
-	// req := solo.NewCallParams(ScName, FuncStartAuction,
-	// 	ParamColor, tokenColor,
-	// 	ParamMinimumBid, 500,
-	// 	ParamDescription, "Cool tokens for sale!",
-	// ).WithTransfers(map[ledgerstate.Color]uint64{
-	// 	ledgerstate.ColorIOTA: 25, // deposit, must be >=minimum*margin
-	// 	tokenColor:            10, // the tokens to auction
-	// })
-	// _, err = chain.PostRequestSync(req, auctioneer)
+	startAuction.Func.Transfer(transfer).Post()
 	require.NoError(t, ctx.Err)
 	return chain
 }
@@ -87,12 +76,13 @@ func TestFaAuctionInfo(t *testing.T) {
 	chain := setupTest(t)
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, nil)
 
-	f := fairauction.NewGetInfoCall(ctx)
-	f.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	f.Func.Call()
+	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	getInfo.Func.Call()
+
 	require.NoError(t, ctx.Err)
-	require.EqualValues(t, ctx.ScAddress(auctioneerAddr).AsAgentID(), f.Results.Creator().Value())
-	require.EqualValues(t, 0, f.Results.Bidders().Value())
+	require.EqualValues(t, ctx.ScAddress(auctioneerAddr).AsAgentID(), getInfo.Results.Creator().Value())
+	require.EqualValues(t, 0, getInfo.Results.Bidders().Value())
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)
@@ -107,11 +97,12 @@ func TestFaNoBids(t *testing.T) {
 	chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, chain.WaitForRequestsThrough(5))
 
-	f := fairauction.NewGetInfoCall(ctx)
-	f.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	f.Func.Call()
+	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	getInfo.Func.Call()
+
 	require.NoError(t, ctx.Err)
-	require.EqualValues(t, 0, f.Results.Bidders().Value())
+	require.EqualValues(t, 0, getInfo.Results.Bidders().Value())
 }
 
 func TestFaOneBidTooLow(t *testing.T) {
@@ -119,21 +110,22 @@ func TestFaOneBidTooLow(t *testing.T) {
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, bidder)
 
-	f := fairauction.NewPlaceBidCall(ctx)
-	f.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	f.Func.TransferIotas(100).Post()
+	placeBid := fairauction.NewPlaceBidCall(ctx)
+	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	placeBid.Func.TransferIotas(100).Post()
 	require.Error(t, ctx.Err)
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, chain.WaitForRequestsThrough(6))
 
-	i := fairauction.NewGetInfoCall(ctx)
-	i.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	i.Func.Call()
+	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	getInfo.Func.Call()
+
 	require.NoError(t, ctx.Err)
-	require.EqualValues(t, 0, i.Results.Bidders().Value())
-	require.EqualValues(t, -1, i.Results.HighestBid().Value())
+	require.EqualValues(t, 0, getInfo.Results.Bidders().Value())
+	require.EqualValues(t, -1, getInfo.Results.HighestBid().Value())
 }
 
 func TestFaOneBid(t *testing.T) {
@@ -142,20 +134,21 @@ func TestFaOneBid(t *testing.T) {
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, bidder)
 
-	f := fairauction.NewPlaceBidCall(ctx)
-	f.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	f.Func.TransferIotas(500).Post()
+	placeBid := fairauction.NewPlaceBidCall(ctx)
+	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	placeBid.Func.TransferIotas(500).Post()
 	require.NoError(t, ctx.Err)
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, chain.WaitForRequestsThrough(6))
 
-	i := fairauction.NewGetInfoCall(ctx)
-	i.Params.Color().SetValue(ctx.ScColor(tokenColor))
-	i.Func.Call()
+	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
+	getInfo.Func.Call()
+
 	require.NoError(t, ctx.Err)
-	require.EqualValues(t, 1, i.Results.Bidders().Value())
-	require.EqualValues(t, 500, i.Results.HighestBid().Value())
-	require.Equal(t, ctx.Address().AsAgentID(), i.Results.HighestBidder().Value())
+	require.EqualValues(t, 1, getInfo.Results.Bidders().Value())
+	require.EqualValues(t, 500, getInfo.Results.HighestBid().Value())
+	require.Equal(t, ctx.Address().AsAgentID(), getInfo.Results.HighestBidder().Value())
 }
