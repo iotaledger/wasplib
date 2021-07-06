@@ -18,18 +18,18 @@ func setupTest(t *testing.T) *solo.Chain {
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, dividend.ScName)
+	chain := setupTest(t)
 	_, err := chain.FindContract(dividend.ScName)
 	require.NoError(t, err)
 }
 
 func TestAddMemberOk(t *testing.T) {
 	chain := setupTest(t)
-	_, member1Addr := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
+	_, memberAddr := chain.Env.NewKeyPair()
 
 	newMember := dividend.NewMemberCall(ctx)
-	newMember.Params.Address().SetValue(ctx.ScAddress(member1Addr))
+	newMember.Params.Address().SetValue(ctx.ScAddress(memberAddr))
 	newMember.Params.Factor().SetValue(100)
 	newMember.Func.TransferIotas(1).Post()
 
@@ -50,11 +50,11 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 
 func TestAddMemberFailMissingFactor(t *testing.T) {
 	chain := setupTest(t)
-	_, member1Addr := chain.Env.NewKeyPairWithFunds()
 	ctx := common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain, nil)
+	_, memberAddr := chain.Env.NewKeyPair()
 
 	newMember := dividend.NewMemberCall(ctx)
-	newMember.Params.Address().SetValue(ctx.ScAddress(member1Addr))
+	newMember.Params.Address().SetValue(ctx.ScAddress(memberAddr))
 	newMember.Func.TransferIotas(1).Post()
 
 	require.Error(t, ctx.Err)

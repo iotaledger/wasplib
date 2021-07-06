@@ -29,7 +29,7 @@ func (o *SoloScContext) Exists(keyID, typeID int32) bool {
 func (o *SoloScContext) GetBytes(keyID, typeID int32) []byte {
 	switch keyID {
 	case wasmhost.KeyChainID:
-		return o.ctx.chain.ChainID.Bytes()
+		return o.ctx.Chain.ChainID.Bytes()
 	default:
 		o.InvalidKey(keyID)
 		return nil
@@ -88,7 +88,7 @@ func (o *SoloScContext) processCall(bytes []byte) {
 	o.Tracef("CALL %s.%s", o.ctx.contract, funcName)
 	params := o.getParams(paramsID)
 	_ = wasmlib.ConnectHost(soloHost)
-	res, err := o.ctx.chain.CallView(o.ctx.contract, funcName, params)
+	res, err := o.ctx.Chain.CallView(o.ctx.contract, funcName, params)
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err
 	if err != nil {
@@ -104,7 +104,7 @@ func (o *SoloScContext) processPost(bytes []byte) {
 	if err != nil {
 		o.Panic(err.Error())
 	}
-	if !chainID.Equals(&o.ctx.chain.ChainID) {
+	if !chainID.Equals(&o.ctx.Chain.ChainID) {
 		o.Panic("invalid chainID")
 	}
 	contract, err := coretypes.HnameFromBytes(decode.Bytes())
@@ -199,7 +199,7 @@ func (o *SoloScContext) postSync(contract, function coretypes.Hname, paramsID, t
 		req.WithTransfers(transfer.Map())
 	}
 	_ = wasmlib.ConnectHost(soloHost)
-	res, err := o.ctx.chain.PostRequestSync(req, o.ctx.keyPair)
+	res, err := o.ctx.Chain.PostRequestSync(req, o.ctx.keyPair)
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err
 	if err != nil {

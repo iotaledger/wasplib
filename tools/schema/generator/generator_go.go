@@ -381,6 +381,7 @@ func (s *Schema) generateGoLib() error {
 
 	// write file header
 	fmt.Fprintln(file, copyright(true))
+	fmt.Fprintln(file, "//nolint:dupl")
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprintln(file, importWasmLib)
 

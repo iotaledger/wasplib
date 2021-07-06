@@ -6,38 +6,37 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
+	"github.com/iotaledger/wasplib/contracts/rust/helloworld"
 	"github.com/stretchr/testify/require"
 )
 
 func setupTest(t *testing.T) *solo.Chain {
-	return common.StartChainAndDeployWasmContractByName(t, ScName)
+	return common.StartChainAndDeployWasmContractByName(t, helloworld.ScName)
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
-	_, err := chain.FindContract(ScName)
+	chain := setupTest(t)
+	_, err := chain.FindContract(helloworld.ScName)
 	require.NoError(t, err)
 }
 
 func TestFuncHelloWorld(t *testing.T) {
 	chain := setupTest(t)
+	ctx := common.NewSoloContext(helloworld.ScName, helloworld.OnLoad, chain, nil)
 
-	req := solo.NewCallParams(ScName, FuncHelloWorld).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	helloWorld := helloworld.NewHelloWorldCall(ctx)
+	helloWorld.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 }
 
 func TestViewGetHelloWorld(t *testing.T) {
 	chain := setupTest(t)
+	ctx := common.NewSoloContext(helloworld.ScName, helloworld.OnLoad, chain, nil)
 
-	res, err := chain.CallView(
-		ScName, ViewGetHelloWorld,
-	)
-	require.NoError(t, err)
-	hw, _, err := codec.DecodeString(res[ResultHelloWorld])
-	require.NoError(t, err)
-	require.EqualValues(t, "Hello, world!", hw)
+	getHelloWorld := helloworld.NewGetHelloWorldCall(ctx)
+	getHelloWorld.Func.Call()
+	require.NoError(t, ctx.Err)
+	require.EqualValues(t, "Hello, world!", getHelloWorld.Results.HelloWorld().Value())
 }

@@ -15,7 +15,7 @@ import (
 
 var flagCore = flag.Bool("core", false, "generate core contract interface")
 
-var flagInit = flag.String("init", "", "generate Go code")
+var flagInit = flag.String("init", "", "generate new schema")
 
 var (
 	flagGo   = flag.Bool("go", false, "generate Go code")

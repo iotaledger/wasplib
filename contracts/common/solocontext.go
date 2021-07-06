@@ -1,6 +1,8 @@
 package common
 
 import (
+	"time"
+
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
 	"github.com/iotaledger/wasp/packages/coretypes"
@@ -13,7 +15,7 @@ import (
 )
 
 type SoloContext struct {
-	chain    *solo.Chain
+	Chain    *solo.Chain
 	contract string
 	Err      error
 	keyPair  *ed25519.KeyPair
@@ -27,7 +29,7 @@ var (
 )
 
 func NewSoloContext(contract string, onLoad func(), chain *solo.Chain, keyPair *ed25519.KeyPair) *SoloContext {
-	ctx := &SoloContext{contract: contract, chain: chain, keyPair: keyPair}
+	ctx := &SoloContext{contract: contract, Chain: chain, keyPair: keyPair}
 	ctx.wasmHost.Init(chain.Log)
 	ctx.wasmHost.TrackObject(wasmproc.NewNullObject(&ctx.wasmHost.KvStoreHost))
 	ctx.wasmHost.TrackObject(NewSoloScContext(ctx))
@@ -41,7 +43,7 @@ func NewSoloContext(contract string, onLoad func(), chain *solo.Chain, keyPair *
 
 func (s *SoloContext) Address() wasmlib.ScAddress {
 	if s.keyPair == nil {
-		return s.ScAddress(s.chain.OriginatorAddress)
+		return s.ScAddress(s.Chain.OriginatorAddress)
 	}
 	return s.ScAddress(ledgerstate.NewED25519Address(s.keyPair.PublicKey))
 }
@@ -80,4 +82,11 @@ func (s *SoloContext) ScRequestID(requestID coretypes.RequestID) wasmlib.ScReque
 
 func (s *SoloContext) Transfer() wasmlib.ScTransfers {
 	return wasmlib.NewScTransfers()
+}
+
+func (s *SoloContext) WaitForRequestsThrough(numReq int, maxWait ...time.Duration) bool {
+	_ = wasmlib.ConnectHost(soloHost)
+	result := s.Chain.WaitForRequestsThrough(numReq, maxWait...)
+	_ = wasmlib.ConnectHost(&s.wasmHost)
+	return result
 }

@@ -5,6 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
+//nolint:dupl
 package testcore
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"

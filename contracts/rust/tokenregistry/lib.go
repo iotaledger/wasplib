@@ -5,6 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
+
 package tokenregistry
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
@@ -47,7 +48,7 @@ type TransferOwnershipContext struct {
 
 func funcTransferOwnershipThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcTransferOwnership")
-	//TODO the one who can transfer token ownership
+	// TODO the one who can transfer token ownership
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	f := &TransferOwnershipContext{
@@ -70,7 +71,7 @@ type UpdateMetadataContext struct {
 
 func funcUpdateMetadataThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Log("tokenregistry.funcUpdateMetadata")
-	//TODO the one who can change the token info
+	// TODO the one who can change the token info
 	ctx.Require(ctx.Caller() == ctx.ContractCreator(), "no permission")
 
 	f := &UpdateMetadataContext{

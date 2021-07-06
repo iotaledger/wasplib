@@ -5,6 +5,7 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
+
 package donatewithfeedback
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
