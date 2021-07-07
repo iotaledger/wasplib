@@ -20,7 +20,7 @@ pub fn func_call_increment(ctx: &ScFuncContext, f: &CallIncrementContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        CallIncrementCall::new(ctx).func.call();
+        ScFuncs::call_increment(ctx).func.call();
     }
 }
 
@@ -29,7 +29,7 @@ pub fn func_call_increment_recurse5x(ctx: &ScFuncContext, f: &CallIncrementRecur
     let value = counter.value();
     counter.set_value(value + 1);
     if value < 5 {
-        CallIncrementRecurse5xCall::new(ctx).func.call();
+        ScFuncs::call_increment_recurse5x(ctx).func.call();
     }
 }
 
@@ -73,12 +73,12 @@ pub fn func_local_state_sandbox_call(ctx: &ScFuncContext, _f: &LocalStateSandbox
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = false;
     }
-    WhenMustIncrementCall::new(ctx).func.call();
+    ScFuncs::when_must_increment(ctx).func.call();
     unsafe {
         LOCAL_STATE_MUST_INCREMENT = true;
     }
-    WhenMustIncrementCall::new(ctx).func.call();
-    WhenMustIncrementCall::new(ctx).func.call();
+    ScFuncs::when_must_increment(ctx).func.call();
+    ScFuncs::when_must_increment(ctx).func.call();
     // counter ends up as 0
 }
 
@@ -87,7 +87,7 @@ pub fn func_post_increment(ctx: &ScFuncContext, f: &PostIncrementContext) {
     let value = counter.value();
     counter.set_value(value + 1);
     if value == 0 {
-        IncrementCall::new(ctx).func.transfer_iotas(1).post();
+        ScFuncs::increment(ctx).func.transfer_iotas(1).post();
     }
 }
 
@@ -104,7 +104,7 @@ pub fn func_repeat_many(ctx: &ScFuncContext, f: &RepeatManyContext) {
         }
     }
     state_repeats.set_value(repeats - 1);
-    RepeatManyCall::new(ctx).func.transfer_iotas(1).post();
+    ScFuncs::repeat_many(ctx).func.transfer_iotas(1).post();
 }
 
 pub fn func_test_leb128(ctx: &ScFuncContext, _f: &TestLeb128Context) {
@@ -153,7 +153,7 @@ fn leb128_save(ctx: &ScFuncContext, name: &str, value: i64) {
 
 fn local_state_post(ctx: &ScFuncContext, nr: i64) {
     //note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
-    let f = WhenMustIncrementCall::new(ctx);
+    let f = ScFuncs::when_must_increment(ctx);
     f.params.dummy().set_value(nr);
     f.func.transfer_iotas(1).post();
 }

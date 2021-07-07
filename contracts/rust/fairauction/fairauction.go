@@ -177,7 +177,7 @@ func funcStartAuction(ctx wasmlib.ScFuncContext, f *StartAuctionContext) {
 	}
 	currentAuction.SetValue(auction)
 
-	fa := NewFinalizeAuctionCall(ctx)
+	fa := ScFuncs.FinalizeAuction(ctx)
 	fa.Params.Color().SetValue(auction.Color)
 	fa.Func.Delay(duration * 60).TransferIotas(1).Post()
 }

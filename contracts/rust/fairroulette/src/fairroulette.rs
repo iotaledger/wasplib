@@ -87,7 +87,7 @@ pub fn func_place_bet(ctx: &ScFuncContext, f: &PlaceBetContext) {
         // amount of seconds. This will lock in the playing period, during which more bets can
         // be placed. Once the 'lockBets' function gets triggered by the ISCP it will gather all
         // bets up to that moment as the ones to consider for determining the winner.
-        LockBetsCall::new(ctx).func.delay(play_period).transfer_iotas(1).post();
+        ScFuncs::lock_bets(ctx).func.delay(play_period).transfer_iotas(1).post();
     }
 }
 
@@ -128,7 +128,7 @@ pub fn func_lock_bets(ctx: &ScFuncContext, f: &LockBetsContext) {
 
     // Next we trigger an immediate request to the 'payWinners' function
     // See more explanation of the why below.
-    PayWinnersCall::new(ctx).func.transfer_iotas(1).post();
+    ScFuncs::pay_winners(ctx).func.transfer_iotas(1).post();
 }
 
 // 'payWinners' is a function whose execution gets initiated by the 'lockBets' function.

@@ -15,19 +15,23 @@ type GetNumRecordsCall struct {
 	Results ImmutableGetNumRecordsResults
 }
 
-func NewGetNumRecordsCall(ctx wasmlib.ScViewCallContext) *GetNumRecordsCall {
-	f := &GetNumRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetNumRecords)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type GetRecordsCall struct {
 	Func    *wasmlib.ScView
 	Params  MutableGetRecordsParams
 	Results ImmutableGetRecordsResults
 }
 
-func NewGetRecordsCall(ctx wasmlib.ScViewCallContext) *GetRecordsCall {
+type coreeventlogFuncs struct{}
+
+var ScFuncs coreeventlogFuncs
+
+func (sc coreeventlogFuncs) GetNumRecords(ctx wasmlib.ScViewCallContext) *GetNumRecordsCall {
+	f := &GetNumRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetNumRecords)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreeventlogFuncs) GetRecords(ctx wasmlib.ScViewCallContext) *GetRecordsCall {
 	f := &GetRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetRecords)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

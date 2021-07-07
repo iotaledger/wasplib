@@ -21,28 +21,9 @@ pub struct DivideCall {
     pub func: ScFunc,
 }
 
-impl DivideCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> DivideCall {
-        DivideCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_DIVIDE),
-        }
-    }
-}
-
 pub struct InitCall {
     pub func:   ScFunc,
     pub params: MutableInitParams,
-}
-
-impl InitCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> InitCall {
-        let mut f = InitCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
-            params: MutableInitParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct MemberCall {
@@ -50,31 +31,9 @@ pub struct MemberCall {
     pub params: MutableMemberParams,
 }
 
-impl MemberCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> MemberCall {
-        let mut f = MemberCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_MEMBER),
-            params: MutableMemberParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct SetOwnerCall {
     pub func:   ScFunc,
     pub params: MutableSetOwnerParams,
-}
-
-impl SetOwnerCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> SetOwnerCall {
-        let mut f = SetOwnerCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER),
-            params: MutableSetOwnerParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct GetFactorCall {
@@ -83,8 +42,40 @@ pub struct GetFactorCall {
     pub results: ImmutableGetFactorResults,
 }
 
-impl GetFactorCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> GetFactorCall {
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn divide(_ctx: & dyn ScFuncCallContext) -> DivideCall {
+        DivideCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_DIVIDE),
+        }
+    }
+    pub fn init(_ctx: & dyn ScFuncCallContext) -> InitCall {
+        let mut f = InitCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
+            params: MutableInitParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn member(_ctx: & dyn ScFuncCallContext) -> MemberCall {
+        let mut f = MemberCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_MEMBER),
+            params: MutableMemberParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn set_owner(_ctx: & dyn ScFuncCallContext) -> SetOwnerCall {
+        let mut f = SetOwnerCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER),
+            params: MutableSetOwnerParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn get_factor(_ctx: & dyn ScViewCallContext) -> GetFactorCall {
         let mut f = GetFactorCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_FACTOR),
             params:  MutableGetFactorParams { id: 0 },

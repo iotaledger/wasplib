@@ -22,31 +22,9 @@ pub struct FinalizeAuctionCall {
     pub params: MutableFinalizeAuctionParams,
 }
 
-impl FinalizeAuctionCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> FinalizeAuctionCall {
-        let mut f = FinalizeAuctionCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_FINALIZE_AUCTION),
-            params: MutableFinalizeAuctionParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct PlaceBidCall {
     pub func:   ScFunc,
     pub params: MutablePlaceBidParams,
-}
-
-impl PlaceBidCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlaceBidCall {
-        let mut f = PlaceBidCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BID),
-            params: MutablePlaceBidParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct SetOwnerMarginCall {
@@ -54,31 +32,9 @@ pub struct SetOwnerMarginCall {
     pub params: MutableSetOwnerMarginParams,
 }
 
-impl SetOwnerMarginCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> SetOwnerMarginCall {
-        let mut f = SetOwnerMarginCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER_MARGIN),
-            params: MutableSetOwnerMarginParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct StartAuctionCall {
     pub func:   ScFunc,
     pub params: MutableStartAuctionParams,
-}
-
-impl StartAuctionCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> StartAuctionCall {
-        let mut f = StartAuctionCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_START_AUCTION),
-            params: MutableStartAuctionParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct GetInfoCall {
@@ -87,8 +43,43 @@ pub struct GetInfoCall {
     pub results: ImmutableGetInfoResults,
 }
 
-impl GetInfoCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> GetInfoCall {
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn finalize_auction(_ctx: & dyn ScFuncCallContext) -> FinalizeAuctionCall {
+        let mut f = FinalizeAuctionCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_FINALIZE_AUCTION),
+            params: MutableFinalizeAuctionParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn place_bid(_ctx: & dyn ScFuncCallContext) -> PlaceBidCall {
+        let mut f = PlaceBidCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BID),
+            params: MutablePlaceBidParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn set_owner_margin(_ctx: & dyn ScFuncCallContext) -> SetOwnerMarginCall {
+        let mut f = SetOwnerMarginCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER_MARGIN),
+            params: MutableSetOwnerMarginParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn start_auction(_ctx: & dyn ScFuncCallContext) -> StartAuctionCall {
+        let mut f = StartAuctionCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_START_AUCTION),
+            params: MutableStartAuctionParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn get_info(_ctx: & dyn ScViewCallContext) -> GetInfoCall {
         let mut f = GetInfoCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_INFO),
             params:  MutableGetInfoParams { id: 0 },

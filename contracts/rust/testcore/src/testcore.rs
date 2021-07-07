@@ -87,7 +87,7 @@ pub fn func_run_recursion(ctx: &ScFuncContext, f: &RunRecursionContext) {
         return;
     }
 
-    let call_on_chain = CallOnChainCall::new(ctx);
+    let call_on_chain = ScFuncs::call_on_chain(ctx);
     call_on_chain.params.int_value().set_value(depth - 1);
     call_on_chain.params.hname_ep().set_value(HFUNC_RUN_RECURSION);
     call_on_chain.func.call();
@@ -105,11 +105,11 @@ pub fn func_set_int(_ctx: &ScFuncContext, f: &SetIntContext) {
 }
 
 pub fn func_test_call_panic_full_ep(ctx: &ScFuncContext, _f: &TestCallPanicFullEPContext) {
-    TestPanicFullEPCall::new(ctx).func.call();
+    ScFuncs::test_panic_full_ep(ctx).func.call();
 }
 
 pub fn func_test_call_panic_view_ep_from_full(ctx: &ScFuncContext, _f: &TestCallPanicViewEPFromFullContext) {
-    TestPanicViewEPCall::new(ctx).func.call();
+    ScFuncs::test_panic_view_ep(ctx).func.call();
 }
 
 pub fn func_test_chain_owner_id_full(ctx: &ScFuncContext, f: &TestChainOwnerIDFullContext) {
@@ -136,7 +136,7 @@ pub fn func_test_panic_full_ep(ctx: &ScFuncContext, _f: &TestPanicFullEPContext)
 }
 
 pub fn func_withdraw_to_chain(ctx: &ScFuncContext, f: &WithdrawToChainContext) {
-    let xx = corecontracts::coreaccounts::WithdrawCall::new(ctx);
+    let xx = corecontracts::coreaccounts::ScFuncs::withdraw(ctx);
     xx.func.transfer_iotas(1).post_to_chain(f.params.chain_id().value());
 }
 
@@ -154,7 +154,7 @@ pub fn view_fibonacci(ctx: &ScViewContext, f: &FibonacciContext) {
         return;
     }
 
-    let fib = FibonacciCall::new(ctx);
+    let fib = ScFuncs::fibonacci(ctx);
     fib.params.int_value().set_value(n - 1);
     fib.func.call();
     let n1 = fib.results.int_value().value();
@@ -193,7 +193,7 @@ pub fn view_pass_types_view(ctx: &ScViewContext, f: &PassTypesViewContext) {
 }
 
 pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _f: &TestCallPanicViewEPFromViewContext) {
-    TestPanicViewEPCall::new(ctx).func.call();
+    ScFuncs::test_panic_view_ep(ctx).func.call();
 }
 
 pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, f: &TestChainOwnerIDViewContext) {
@@ -205,7 +205,7 @@ pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &TestPanicViewEPContext)
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &TestSandboxCallContext) {
-    let get_chain_info = corecontracts::coreroot::GetChainInfoCall::new(ctx);
+    let get_chain_info = corecontracts::coreroot::ScFuncs::get_chain_info(ctx);
     get_chain_info.func.call();
     f.results.sandbox_call().set_value(&get_chain_info.results.description().value());
 }

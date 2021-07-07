@@ -19,31 +19,9 @@ pub struct AddAllowedStateControllerAddressCall {
     pub params: MutableAddAllowedStateControllerAddressParams,
 }
 
-impl AddAllowedStateControllerAddressCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> AddAllowedStateControllerAddressCall {
-        let mut f = AddAllowedStateControllerAddressCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS),
-            params: MutableAddAllowedStateControllerAddressParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct RemoveAllowedStateControllerAddressCall {
     pub func:   ScFunc,
     pub params: MutableRemoveAllowedStateControllerAddressParams,
-}
-
-impl RemoveAllowedStateControllerAddressCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> RemoveAllowedStateControllerAddressCall {
-        let mut f = RemoveAllowedStateControllerAddressCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS),
-            params: MutableRemoveAllowedStateControllerAddressParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct RotateStateControllerCall {
@@ -51,8 +29,32 @@ pub struct RotateStateControllerCall {
     pub params: MutableRotateStateControllerParams,
 }
 
-impl RotateStateControllerCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> RotateStateControllerCall {
+pub struct GetAllowedStateControllerAddressesCall {
+    pub func:    ScView,
+    pub results: ImmutableGetAllowedStateControllerAddressesResults,
+}
+
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn add_allowed_state_controller_address(_ctx: & dyn ScFuncCallContext) -> AddAllowedStateControllerAddressCall {
+        let mut f = AddAllowedStateControllerAddressCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS),
+            params: MutableAddAllowedStateControllerAddressParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn remove_allowed_state_controller_address(_ctx: & dyn ScFuncCallContext) -> RemoveAllowedStateControllerAddressCall {
+        let mut f = RemoveAllowedStateControllerAddressCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS),
+            params: MutableRemoveAllowedStateControllerAddressParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn rotate_state_controller(_ctx: & dyn ScFuncCallContext) -> RotateStateControllerCall {
         let mut f = RotateStateControllerCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_ROTATE_STATE_CONTROLLER),
             params: MutableRotateStateControllerParams { id: 0 },
@@ -60,15 +62,7 @@ impl RotateStateControllerCall {
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
     }
-}
-
-pub struct GetAllowedStateControllerAddressesCall {
-    pub func:    ScView,
-    pub results: ImmutableGetAllowedStateControllerAddressesResults,
-}
-
-impl GetAllowedStateControllerAddressesCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> GetAllowedStateControllerAddressesCall {
+    pub fn get_allowed_state_controller_addresses(_ctx: & dyn ScViewCallContext) -> GetAllowedStateControllerAddressesCall {
         let mut f = GetAllowedStateControllerAddressesCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES),
             results: ImmutableGetAllowedStateControllerAddressesResults { id: 0 },

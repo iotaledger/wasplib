@@ -28,7 +28,7 @@ func TestDeploy(t *testing.T) {
 func TestStateAfterDeploy(t *testing.T) {
 	ctx := setupTest(t)
 
-	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx)
+	donationInfo := donatewithfeedback.ScFuncs.DonationInfo(ctx)
 	donationInfo.Func.Call()
 
 	require.EqualValues(t, 0, donationInfo.Results.Count().Value())
@@ -40,12 +40,12 @@ func TestDonateOnce(t *testing.T) {
 	ctx := setupTest(t)
 
 	donator1, donator1Addr := ctx.Chain.Env.NewKeyPairWithFunds()
-	donate := donatewithfeedback.NewDonateCall(ctx.SignWith(donator1))
+	donate := donatewithfeedback.ScFuncs.Donate(ctx.SignWith(donator1))
 	donate.Params.Feedback().SetValue("Nice work!")
 	donate.Func.TransferIotas(42).Post()
 	require.NoError(t, ctx.Err)
 
-	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx)
+	donationInfo := donatewithfeedback.ScFuncs.DonationInfo(ctx)
 	donationInfo.Func.Call()
 
 	require.EqualValues(t, 1, donationInfo.Results.Count().Value())
@@ -65,18 +65,18 @@ func TestDonateTwice(t *testing.T) {
 	ctx := setupTest(t)
 
 	donator1, donator1Addr := ctx.Chain.Env.NewKeyPairWithFunds()
-	donate1 := donatewithfeedback.NewDonateCall(ctx.SignWith(donator1))
+	donate1 := donatewithfeedback.ScFuncs.Donate(ctx.SignWith(donator1))
 	donate1.Params.Feedback().SetValue("Nice work!")
 	donate1.Func.TransferIotas(42).Post()
 	require.NoError(t, ctx.Err)
 
 	donator2, donator2Addr := ctx.Chain.Env.NewKeyPairWithFunds()
-	donate2 := donatewithfeedback.NewDonateCall(ctx.SignWith(donator2))
+	donate2 := donatewithfeedback.ScFuncs.Donate(ctx.SignWith(donator2))
 	donate2.Params.Feedback().SetValue("Exactly what I needed!")
 	donate2.Func.TransferIotas(69).Post()
 	require.NoError(t, ctx.Err)
 
-	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx)
+	donationInfo := donatewithfeedback.ScFuncs.DonationInfo(ctx)
 	donationInfo.Func.Call()
 
 	require.EqualValues(t, 2, donationInfo.Results.Count().Value())

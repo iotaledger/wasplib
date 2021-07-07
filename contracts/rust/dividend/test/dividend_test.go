@@ -27,10 +27,10 @@ func TestAddMemberOk(t *testing.T) {
 	ctx := setupTest(t)
 	_, memberAddr := ctx.Chain.Env.NewKeyPair()
 
-	newMember := dividend.NewMemberCall(ctx)
-	newMember.Params.Address().SetValue(ctx.ScAddress(memberAddr))
-	newMember.Params.Factor().SetValue(100)
-	newMember.Func.TransferIotas(1).Post()
+	member := dividend.ScFuncs.Member(ctx)
+	member.Params.Address().SetValue(ctx.ScAddress(memberAddr))
+	member.Params.Factor().SetValue(100)
+	member.Func.TransferIotas(1).Post()
 
 	require.NoError(t, ctx.Err)
 }
@@ -38,9 +38,9 @@ func TestAddMemberOk(t *testing.T) {
 func TestAddMemberFailMissingAddress(t *testing.T) {
 	ctx := setupTest(t)
 
-	newMember := dividend.NewMemberCall(ctx)
-	newMember.Params.Factor().SetValue(100)
-	newMember.Func.TransferIotas(1).Post()
+	member := dividend.ScFuncs.Member(ctx)
+	member.Params.Factor().SetValue(100)
+	member.Func.TransferIotas(1).Post()
 
 	require.Error(t, ctx.Err)
 	require.True(t, strings.HasSuffix(ctx.Err.Error(), "missing mandatory address"))
@@ -50,9 +50,9 @@ func TestAddMemberFailMissingFactor(t *testing.T) {
 	ctx := setupTest(t)
 	_, memberAddr := ctx.Chain.Env.NewKeyPair()
 
-	newMember := dividend.NewMemberCall(ctx)
-	newMember.Params.Address().SetValue(ctx.ScAddress(memberAddr))
-	newMember.Func.TransferIotas(1).Post()
+	member := dividend.ScFuncs.Member(ctx)
+	member.Params.Address().SetValue(ctx.ScAddress(memberAddr))
+	member.Func.TransferIotas(1).Post()
 
 	require.Error(t, ctx.Err)
 	require.True(t, strings.HasSuffix(ctx.Err.Error(), "missing mandatory factor"))

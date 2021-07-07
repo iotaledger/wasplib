@@ -25,7 +25,7 @@ func TestDeploy(t *testing.T) {
 func TestFuncHelloWorld(t *testing.T) {
 	ctx := setupTest(t)
 
-	helloWorld := helloworld.NewHelloWorldCall(ctx)
+	helloWorld := helloworld.ScFuncs.HelloWorld(ctx)
 	helloWorld.Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 }
@@ -33,7 +33,7 @@ func TestFuncHelloWorld(t *testing.T) {
 func TestViewGetHelloWorld(t *testing.T) {
 	ctx := setupTest(t)
 
-	getHelloWorld := helloworld.NewGetHelloWorldCall(ctx)
+	getHelloWorld := helloworld.ScFuncs.GetHelloWorld(ctx)
 	getHelloWorld.Func.Call()
 	require.NoError(t, ctx.Err)
 	require.EqualValues(t, "Hello, world!", getHelloWorld.Results.HelloWorld().Value())

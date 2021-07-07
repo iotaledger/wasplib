@@ -21,7 +21,7 @@ func funcCallIncrement(ctx wasmlib.ScFuncContext, f *CallIncrementContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		NewCallIncrementCall(ctx).Func.Call()
+		ScFuncs.CallIncrement(ctx).Func.Call()
 	}
 }
 
@@ -30,7 +30,7 @@ func funcCallIncrementRecurse5x(ctx wasmlib.ScFuncContext, f *CallIncrementRecur
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value < 5 {
-		NewCallIncrementRecurse5xCall(ctx).Func.Call()
+		ScFuncs.CallIncrementRecurse5x(ctx).Func.Call()
 	}
 }
 
@@ -70,10 +70,10 @@ func funcLocalStatePost(ctx wasmlib.ScFuncContext, f *LocalStatePostContext) {
 //nolint:unparam
 func funcLocalStateSandboxCall(ctx wasmlib.ScFuncContext, f *LocalStateSandboxCallContext) {
 	LocalStateMustIncrement = false
-	NewWhenMustIncrementCall(ctx).Func.Call()
+	ScFuncs.WhenMustIncrement(ctx).Func.Call()
 	LocalStateMustIncrement = true
-	NewWhenMustIncrementCall(ctx).Func.Call()
-	NewWhenMustIncrementCall(ctx).Func.Call()
+	ScFuncs.WhenMustIncrement(ctx).Func.Call()
+	ScFuncs.WhenMustIncrement(ctx).Func.Call()
 	// counter ends up as 0
 }
 
@@ -82,7 +82,7 @@ func funcPostIncrement(ctx wasmlib.ScFuncContext, f *PostIncrementContext) {
 	value := counter.Value()
 	counter.SetValue(value + 1)
 	if value == 0 {
-		NewPostIncrementCall(ctx).Func.TransferIotas(1).Post()
+		ScFuncs.PostIncrement(ctx).Func.TransferIotas(1).Post()
 	}
 }
 
@@ -99,7 +99,7 @@ func funcRepeatMany(ctx wasmlib.ScFuncContext, f *RepeatManyContext) {
 		}
 	}
 	stateRepeats.SetValue(repeats - 1)
-	NewRepeatManyCall(ctx).Func.TransferIotas(1).Post()
+	ScFuncs.RepeatMany(ctx).Func.TransferIotas(1).Post()
 }
 
 func funcWhenMustIncrement(ctx wasmlib.ScFuncContext, f *WhenMustIncrementContext) {
@@ -150,7 +150,7 @@ func leb128Save(ctx wasmlib.ScFuncContext, name string, value int64) {
 
 func localStatePost(ctx wasmlib.ScFuncContext, nr int64) {
 	// note: we add a dummy parameter here to prevent "duplicate outputs not allowed" error
-	f := NewWhenMustIncrementCall(ctx)
+	f := ScFuncs.WhenMustIncrement(ctx)
 	f.Params.Dummy().SetValue(nr)
 	f.Func.TransferIotas(1).Post()
 }

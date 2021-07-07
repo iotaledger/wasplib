@@ -221,32 +221,36 @@ func (s *Schema) generateGoContract() error {
 			fmt.Fprintf(file, "\tResults Immutable%sResults\n", f.Type)
 		}
 		fmt.Fprintf(file, "}\n")
-
-		s.generateGoContractFunc(file, f)
 	}
 
+	s.generateGoContractFuncs(file)
 	return nil
 }
 
-func (s *Schema) generateGoContractFunc(file *os.File, f *FuncDef) {
-	assign := "return"
-	paramsID := "nil"
-	if len(f.Params) != 0 {
-		assign = "f :="
-		paramsID = "&f.Params.id"
+func (s *Schema) generateGoContractFuncs(file *os.File) {
+	fmt.Fprintf(file, "\ntype %sFuncs struct {\n", s.Name)
+	fmt.Fprint(file, "}\n")
+	fmt.Fprintf(file, "\nvar ScFuncs %sFuncs\n", s.Name)
+	for _, f := range s.Funcs {
+		assign := "return"
+		paramsID := "nil"
+		if len(f.Params) != 0 {
+			assign = "f :="
+			paramsID = "&f.Params.id"
+		}
+		resultsID := "nil"
+		if len(f.Results) != 0 {
+			assign = "f :="
+			resultsID = "&f.Results.id"
+		}
+		fmt.Fprintf(file, "\nfunc (sc %sFuncs) %s(ctx wasmlib.Sc%sCallContext) *%sCall {\n", s.Name, f.Type, f.Kind, f.Type)
+		fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
+		if len(f.Params) != 0 || len(f.Results) != 0 {
+			fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsID, resultsID)
+			fmt.Fprintf(file, "\treturn f\n")
+		}
+		fmt.Fprintf(file, "}\n")
 	}
-	resultsID := "nil"
-	if len(f.Results) != 0 {
-		assign = "f :="
-		resultsID = "&f.Results.id"
-	}
-	fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.Sc%sCallContext) *%sCall {\n", f.Type, f.Kind, f.Type)
-	fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
-	if len(f.Params) != 0 || len(f.Results) != 0 {
-		fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsID, resultsID)
-		fmt.Fprintf(file, "\treturn f\n")
-	}
-	fmt.Fprintf(file, "}\n")
 }
 
 func (s *Schema) generateGoFuncs() error {

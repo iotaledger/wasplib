@@ -14,21 +14,9 @@ type MintSupplyCall struct {
 	Params MutableMintSupplyParams
 }
 
-func NewMintSupplyCall(ctx wasmlib.ScFuncCallContext) *MintSupplyCall {
-	f := &MintSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncMintSupply)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type TransferOwnershipCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableTransferOwnershipParams
-}
-
-func NewTransferOwnershipCall(ctx wasmlib.ScFuncCallContext) *TransferOwnershipCall {
-	f := &TransferOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferOwnership)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type UpdateMetadataCall struct {
@@ -36,18 +24,34 @@ type UpdateMetadataCall struct {
 	Params MutableUpdateMetadataParams
 }
 
-func NewUpdateMetadataCall(ctx wasmlib.ScFuncCallContext) *UpdateMetadataCall {
-	f := &UpdateMetadataCall{Func: wasmlib.NewScFunc(HScName, HFuncUpdateMetadata)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type GetInfoCall struct {
 	Func   *wasmlib.ScView
 	Params MutableGetInfoParams
 }
 
-func NewGetInfoCall(ctx wasmlib.ScViewCallContext) *GetInfoCall {
+type tokenregistryFuncs struct{}
+
+var ScFuncs tokenregistryFuncs
+
+func (sc tokenregistryFuncs) MintSupply(ctx wasmlib.ScFuncCallContext) *MintSupplyCall {
+	f := &MintSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncMintSupply)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc tokenregistryFuncs) TransferOwnership(ctx wasmlib.ScFuncCallContext) *TransferOwnershipCall {
+	f := &TransferOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferOwnership)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc tokenregistryFuncs) UpdateMetadata(ctx wasmlib.ScFuncCallContext) *UpdateMetadataCall {
+	f := &UpdateMetadataCall{Func: wasmlib.NewScFunc(HScName, HFuncUpdateMetadata)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc tokenregistryFuncs) GetInfo(ctx wasmlib.ScViewCallContext) *GetInfoCall {
 	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f

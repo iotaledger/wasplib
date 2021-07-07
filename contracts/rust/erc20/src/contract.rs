@@ -22,31 +22,9 @@ pub struct ApproveCall {
     pub params: MutableApproveParams,
 }
 
-impl ApproveCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> ApproveCall {
-        let mut f = ApproveCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_APPROVE),
-            params: MutableApproveParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct InitCall {
     pub func:   ScFunc,
     pub params: MutableInitParams,
-}
-
-impl InitCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> InitCall {
-        let mut f = InitCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
-            params: MutableInitParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct TransferCall {
@@ -54,31 +32,9 @@ pub struct TransferCall {
     pub params: MutableTransferParams,
 }
 
-impl TransferCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> TransferCall {
-        let mut f = TransferCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER),
-            params: MutableTransferParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct TransferFromCall {
     pub func:   ScFunc,
     pub params: MutableTransferFromParams,
-}
-
-impl TransferFromCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> TransferFromCall {
-        let mut f = TransferFromCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM),
-            params: MutableTransferFromParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct AllowanceCall {
@@ -87,8 +43,54 @@ pub struct AllowanceCall {
     pub results: ImmutableAllowanceResults,
 }
 
-impl AllowanceCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> AllowanceCall {
+pub struct BalanceOfCall {
+    pub func:    ScView,
+    pub params:  MutableBalanceOfParams,
+    pub results: ImmutableBalanceOfResults,
+}
+
+pub struct TotalSupplyCall {
+    pub func:    ScView,
+    pub results: ImmutableTotalSupplyResults,
+}
+
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn approve(_ctx: & dyn ScFuncCallContext) -> ApproveCall {
+        let mut f = ApproveCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_APPROVE),
+            params: MutableApproveParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn init(_ctx: & dyn ScFuncCallContext) -> InitCall {
+        let mut f = InitCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
+            params: MutableInitParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn transfer(_ctx: & dyn ScFuncCallContext) -> TransferCall {
+        let mut f = TransferCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER),
+            params: MutableTransferParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn transfer_from(_ctx: & dyn ScFuncCallContext) -> TransferFromCall {
+        let mut f = TransferFromCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER_FROM),
+            params: MutableTransferFromParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn allowance(_ctx: & dyn ScViewCallContext) -> AllowanceCall {
         let mut f = AllowanceCall {
             func:    ScView::new(HSC_NAME, HVIEW_ALLOWANCE),
             params:  MutableAllowanceParams { id: 0 },
@@ -97,16 +99,7 @@ impl AllowanceCall {
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
-}
-
-pub struct BalanceOfCall {
-    pub func:    ScView,
-    pub params:  MutableBalanceOfParams,
-    pub results: ImmutableBalanceOfResults,
-}
-
-impl BalanceOfCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> BalanceOfCall {
+    pub fn balance_of(_ctx: & dyn ScViewCallContext) -> BalanceOfCall {
         let mut f = BalanceOfCall {
             func:    ScView::new(HSC_NAME, HVIEW_BALANCE_OF),
             params:  MutableBalanceOfParams { id: 0 },
@@ -115,15 +108,7 @@ impl BalanceOfCall {
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
-}
-
-pub struct TotalSupplyCall {
-    pub func:    ScView,
-    pub results: ImmutableTotalSupplyResults,
-}
-
-impl TotalSupplyCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> TotalSupplyCall {
+    pub fn total_supply(_ctx: & dyn ScViewCallContext) -> TotalSupplyCall {
         let mut f = TotalSupplyCall {
             func:    ScView::new(HSC_NAME, HVIEW_TOTAL_SUPPLY),
             results: ImmutableTotalSupplyResults { id: 0 },

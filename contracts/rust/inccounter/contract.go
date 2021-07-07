@@ -13,32 +13,16 @@ type CallIncrementCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewCallIncrementCall(ctx wasmlib.ScFuncCallContext) *CallIncrementCall {
-	return &CallIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrement)}
-}
-
 type CallIncrementRecurse5xCall struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewCallIncrementRecurse5xCall(ctx wasmlib.ScFuncCallContext) *CallIncrementRecurse5xCall {
-	return &CallIncrementRecurse5xCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrementRecurse5x)}
 }
 
 type EndlessLoopCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewEndlessLoopCall(ctx wasmlib.ScFuncCallContext) *EndlessLoopCall {
-	return &EndlessLoopCall{Func: wasmlib.NewScFunc(HScName, HFuncEndlessLoop)}
-}
-
 type IncrementCall struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewIncrementCall(ctx wasmlib.ScFuncCallContext) *IncrementCall {
-	return &IncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncIncrement)}
 }
 
 type InitCall struct {
@@ -46,42 +30,20 @@ type InitCall struct {
 	Params MutableInitParams
 }
 
-func NewInitCall(ctx wasmlib.ScFuncCallContext) *InitCall {
-	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type LocalStateInternalCallCall struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewLocalStateInternalCallCall(ctx wasmlib.ScFuncCallContext) *LocalStateInternalCallCall {
-	return &LocalStateInternalCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateInternalCall)}
 }
 
 type LocalStatePostCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewLocalStatePostCall(ctx wasmlib.ScFuncCallContext) *LocalStatePostCall {
-	return &LocalStatePostCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStatePost)}
-}
-
 type LocalStateSandboxCallCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewLocalStateSandboxCallCall(ctx wasmlib.ScFuncCallContext) *LocalStateSandboxCallCall {
-	return &LocalStateSandboxCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateSandboxCall)}
-}
-
 type PostIncrementCall struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewPostIncrementCall(ctx wasmlib.ScFuncCallContext) *PostIncrementCall {
-	return &PostIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncPostIncrement)}
 }
 
 type RepeatManyCall struct {
@@ -89,18 +51,8 @@ type RepeatManyCall struct {
 	Params MutableRepeatManyParams
 }
 
-func NewRepeatManyCall(ctx wasmlib.ScFuncCallContext) *RepeatManyCall {
-	f := &RepeatManyCall{Func: wasmlib.NewScFunc(HScName, HFuncRepeatMany)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type TestLeb128Call struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewTestLeb128Call(ctx wasmlib.ScFuncCallContext) *TestLeb128Call {
-	return &TestLeb128Call{Func: wasmlib.NewScFunc(HScName, HFuncTestLeb128)}
 }
 
 type WhenMustIncrementCall struct {
@@ -108,18 +60,70 @@ type WhenMustIncrementCall struct {
 	Params MutableWhenMustIncrementParams
 }
 
-func NewWhenMustIncrementCall(ctx wasmlib.ScFuncCallContext) *WhenMustIncrementCall {
-	f := &WhenMustIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncWhenMustIncrement)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type GetCounterCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableGetCounterResults
 }
 
-func NewGetCounterCall(ctx wasmlib.ScViewCallContext) *GetCounterCall {
+type inccounterFuncs struct{}
+
+var ScFuncs inccounterFuncs
+
+func (sc inccounterFuncs) CallIncrement(ctx wasmlib.ScFuncCallContext) *CallIncrementCall {
+	return &CallIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrement)}
+}
+
+func (sc inccounterFuncs) CallIncrementRecurse5x(ctx wasmlib.ScFuncCallContext) *CallIncrementRecurse5xCall {
+	return &CallIncrementRecurse5xCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrementRecurse5x)}
+}
+
+func (sc inccounterFuncs) EndlessLoop(ctx wasmlib.ScFuncCallContext) *EndlessLoopCall {
+	return &EndlessLoopCall{Func: wasmlib.NewScFunc(HScName, HFuncEndlessLoop)}
+}
+
+func (sc inccounterFuncs) Increment(ctx wasmlib.ScFuncCallContext) *IncrementCall {
+	return &IncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncIncrement)}
+}
+
+func (sc inccounterFuncs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
+	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc inccounterFuncs) LocalStateInternalCall(ctx wasmlib.ScFuncCallContext) *LocalStateInternalCallCall {
+	return &LocalStateInternalCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateInternalCall)}
+}
+
+func (sc inccounterFuncs) LocalStatePost(ctx wasmlib.ScFuncCallContext) *LocalStatePostCall {
+	return &LocalStatePostCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStatePost)}
+}
+
+func (sc inccounterFuncs) LocalStateSandboxCall(ctx wasmlib.ScFuncCallContext) *LocalStateSandboxCallCall {
+	return &LocalStateSandboxCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateSandboxCall)}
+}
+
+func (sc inccounterFuncs) PostIncrement(ctx wasmlib.ScFuncCallContext) *PostIncrementCall {
+	return &PostIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncPostIncrement)}
+}
+
+func (sc inccounterFuncs) RepeatMany(ctx wasmlib.ScFuncCallContext) *RepeatManyCall {
+	f := &RepeatManyCall{Func: wasmlib.NewScFunc(HScName, HFuncRepeatMany)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc inccounterFuncs) TestLeb128(ctx wasmlib.ScFuncCallContext) *TestLeb128Call {
+	return &TestLeb128Call{Func: wasmlib.NewScFunc(HScName, HFuncTestLeb128)}
+}
+
+func (sc inccounterFuncs) WhenMustIncrement(ctx wasmlib.ScFuncCallContext) *WhenMustIncrementCall {
+	f := &WhenMustIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncWhenMustIncrement)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc inccounterFuncs) GetCounter(ctx wasmlib.ScViewCallContext) *GetCounterCall {
 	f := &GetCounterCall{Func: wasmlib.NewScView(HScName, HViewGetCounter)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

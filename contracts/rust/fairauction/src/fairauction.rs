@@ -175,7 +175,7 @@ pub fn func_start_auction(ctx: &ScFuncContext, f: &StartAuctionContext) {
     };
     current_auction.set_value(&auction);
 
-    let fa = FinalizeAuctionCall::new(ctx);
+    let fa = ScFuncs::finalize_auction(ctx);
     fa.params.color().set_value(&auction.color);
     fa.func.delay(duration * 60).transfer_iotas(1).post();
 }

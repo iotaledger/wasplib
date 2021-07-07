@@ -13,19 +13,9 @@ type ClaimChainOwnershipCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewClaimChainOwnershipCall(ctx wasmlib.ScFuncCallContext) *ClaimChainOwnershipCall {
-	return &ClaimChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncClaimChainOwnership)}
-}
-
 type DelegateChainOwnershipCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableDelegateChainOwnershipParams
-}
-
-func NewDelegateChainOwnershipCall(ctx wasmlib.ScFuncCallContext) *DelegateChainOwnershipCall {
-	f := &DelegateChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncDelegateChainOwnership)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type DeployContractCall struct {
@@ -33,21 +23,9 @@ type DeployContractCall struct {
 	Params MutableDeployContractParams
 }
 
-func NewDeployContractCall(ctx wasmlib.ScFuncCallContext) *DeployContractCall {
-	f := &DeployContractCall{Func: wasmlib.NewScFunc(HScName, HFuncDeployContract)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type GrantDeployPermissionCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableGrantDeployPermissionParams
-}
-
-func NewGrantDeployPermissionCall(ctx wasmlib.ScFuncCallContext) *GrantDeployPermissionCall {
-	f := &GrantDeployPermissionCall{Func: wasmlib.NewScFunc(HScName, HFuncGrantDeployPermission)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type RevokeDeployPermissionCall struct {
@@ -55,32 +33,14 @@ type RevokeDeployPermissionCall struct {
 	Params MutableRevokeDeployPermissionParams
 }
 
-func NewRevokeDeployPermissionCall(ctx wasmlib.ScFuncCallContext) *RevokeDeployPermissionCall {
-	f := &RevokeDeployPermissionCall{Func: wasmlib.NewScFunc(HScName, HFuncRevokeDeployPermission)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type SetContractFeeCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableSetContractFeeParams
 }
 
-func NewSetContractFeeCall(ctx wasmlib.ScFuncCallContext) *SetContractFeeCall {
-	f := &SetContractFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetContractFee)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type SetDefaultFeeCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableSetDefaultFeeParams
-}
-
-func NewSetDefaultFeeCall(ctx wasmlib.ScFuncCallContext) *SetDefaultFeeCall {
-	f := &SetDefaultFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetDefaultFee)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type FindContractCall struct {
@@ -89,21 +49,9 @@ type FindContractCall struct {
 	Results ImmutableFindContractResults
 }
 
-func NewFindContractCall(ctx wasmlib.ScViewCallContext) *FindContractCall {
-	f := &FindContractCall{Func: wasmlib.NewScView(HScName, HViewFindContract)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type GetChainInfoCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableGetChainInfoResults
-}
-
-func NewGetChainInfoCall(ctx wasmlib.ScViewCallContext) *GetChainInfoCall {
-	f := &GetChainInfoCall{Func: wasmlib.NewScView(HScName, HViewGetChainInfo)}
-	f.Func.SetPtrs(nil, &f.Results.id)
-	return f
 }
 
 type GetFeeInfoCall struct {
@@ -112,7 +60,63 @@ type GetFeeInfoCall struct {
 	Results ImmutableGetFeeInfoResults
 }
 
-func NewGetFeeInfoCall(ctx wasmlib.ScViewCallContext) *GetFeeInfoCall {
+type corerootFuncs struct{}
+
+var ScFuncs corerootFuncs
+
+func (sc corerootFuncs) ClaimChainOwnership(ctx wasmlib.ScFuncCallContext) *ClaimChainOwnershipCall {
+	return &ClaimChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncClaimChainOwnership)}
+}
+
+func (sc corerootFuncs) DelegateChainOwnership(ctx wasmlib.ScFuncCallContext) *DelegateChainOwnershipCall {
+	f := &DelegateChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncDelegateChainOwnership)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) DeployContract(ctx wasmlib.ScFuncCallContext) *DeployContractCall {
+	f := &DeployContractCall{Func: wasmlib.NewScFunc(HScName, HFuncDeployContract)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) GrantDeployPermission(ctx wasmlib.ScFuncCallContext) *GrantDeployPermissionCall {
+	f := &GrantDeployPermissionCall{Func: wasmlib.NewScFunc(HScName, HFuncGrantDeployPermission)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) RevokeDeployPermission(ctx wasmlib.ScFuncCallContext) *RevokeDeployPermissionCall {
+	f := &RevokeDeployPermissionCall{Func: wasmlib.NewScFunc(HScName, HFuncRevokeDeployPermission)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) SetContractFee(ctx wasmlib.ScFuncCallContext) *SetContractFeeCall {
+	f := &SetContractFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetContractFee)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) SetDefaultFee(ctx wasmlib.ScFuncCallContext) *SetDefaultFeeCall {
+	f := &SetDefaultFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetDefaultFee)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc corerootFuncs) FindContract(ctx wasmlib.ScViewCallContext) *FindContractCall {
+	f := &FindContractCall{Func: wasmlib.NewScView(HScName, HViewFindContract)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc corerootFuncs) GetChainInfo(ctx wasmlib.ScViewCallContext) *GetChainInfoCall {
+	f := &GetChainInfoCall{Func: wasmlib.NewScView(HScName, HViewGetChainInfo)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc corerootFuncs) GetFeeInfo(ctx wasmlib.ScViewCallContext) *GetFeeInfoCall {
 	f := &GetFeeInfoCall{Func: wasmlib.NewScView(HScName, HViewGetFeeInfo)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

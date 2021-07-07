@@ -22,33 +22,10 @@ pub struct ParamTypesCall {
     pub params: MutableParamTypesParams,
 }
 
-impl ParamTypesCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> ParamTypesCall {
-        let mut f = ParamTypesCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_PARAM_TYPES),
-            params: MutableParamTypesParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct BlockRecordCall {
     pub func:    ScView,
     pub params:  MutableBlockRecordParams,
     pub results: ImmutableBlockRecordResults,
-}
-
-impl BlockRecordCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> BlockRecordCall {
-        let mut f = BlockRecordCall {
-            func:    ScView::new(HSC_NAME, HVIEW_BLOCK_RECORD),
-            params:  MutableBlockRecordParams { id: 0 },
-            results: ImmutableBlockRecordResults { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
-        f
-    }
 }
 
 pub struct BlockRecordsCall {
@@ -57,8 +34,28 @@ pub struct BlockRecordsCall {
     pub results: ImmutableBlockRecordsResults,
 }
 
-impl BlockRecordsCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> BlockRecordsCall {
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn param_types(_ctx: & dyn ScFuncCallContext) -> ParamTypesCall {
+        let mut f = ParamTypesCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_PARAM_TYPES),
+            params: MutableParamTypesParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn block_record(_ctx: & dyn ScViewCallContext) -> BlockRecordCall {
+        let mut f = BlockRecordCall {
+            func:    ScView::new(HSC_NAME, HVIEW_BLOCK_RECORD),
+            params:  MutableBlockRecordParams { id: 0 },
+            results: ImmutableBlockRecordResults { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
+        f
+    }
+    pub fn block_records(_ctx: & dyn ScViewCallContext) -> BlockRecordsCall {
         let mut f = BlockRecordsCall {
             func:    ScView::new(HSC_NAME, HVIEW_BLOCK_RECORDS),
             params:  MutableBlockRecordsParams { id: 0 },

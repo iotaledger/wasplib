@@ -22,31 +22,9 @@ pub struct DonateCall {
     pub params: MutableDonateParams,
 }
 
-impl DonateCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> DonateCall {
-        let mut f = DonateCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_DONATE),
-            params: MutableDonateParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct WithdrawCall {
     pub func:   ScFunc,
     pub params: MutableWithdrawParams,
-}
-
-impl WithdrawCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> WithdrawCall {
-        let mut f = WithdrawCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_WITHDRAW),
-            params: MutableWithdrawParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct DonationCall {
@@ -55,8 +33,32 @@ pub struct DonationCall {
     pub results: ImmutableDonationResults,
 }
 
-impl DonationCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> DonationCall {
+pub struct DonationInfoCall {
+    pub func:    ScView,
+    pub results: ImmutableDonationInfoResults,
+}
+
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn donate(_ctx: & dyn ScFuncCallContext) -> DonateCall {
+        let mut f = DonateCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_DONATE),
+            params: MutableDonateParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn withdraw(_ctx: & dyn ScFuncCallContext) -> WithdrawCall {
+        let mut f = WithdrawCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_WITHDRAW),
+            params: MutableWithdrawParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn donation(_ctx: & dyn ScViewCallContext) -> DonationCall {
         let mut f = DonationCall {
             func:    ScView::new(HSC_NAME, HVIEW_DONATION),
             params:  MutableDonationParams { id: 0 },
@@ -65,15 +67,7 @@ impl DonationCall {
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
-}
-
-pub struct DonationInfoCall {
-    pub func:    ScView,
-    pub results: ImmutableDonationInfoResults,
-}
-
-impl DonationInfoCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> DonationInfoCall {
+    pub fn donation_info(_ctx: & dyn ScViewCallContext) -> DonationInfoCall {
         let mut f = DonationInfoCall {
             func:    ScView::new(HSC_NAME, HVIEW_DONATION_INFO),
             results: ImmutableDonationInfoResults { id: 0 },

@@ -14,33 +14,15 @@ type ControlAddressesCall struct {
 	Results ImmutableControlAddressesResults
 }
 
-func NewControlAddressesCall(ctx wasmlib.ScViewCallContext) *ControlAddressesCall {
-	f := &ControlAddressesCall{Func: wasmlib.NewScView(HScName, HViewControlAddresses)}
-	f.Func.SetPtrs(nil, &f.Results.id)
-	return f
-}
-
 type GetBlockInfoCall struct {
 	Func    *wasmlib.ScView
 	Params  MutableGetBlockInfoParams
 	Results ImmutableGetBlockInfoResults
 }
 
-func NewGetBlockInfoCall(ctx wasmlib.ScViewCallContext) *GetBlockInfoCall {
-	f := &GetBlockInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlockInfo)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type GetLatestBlockInfoCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableGetLatestBlockInfoResults
-}
-
-func NewGetLatestBlockInfoCall(ctx wasmlib.ScViewCallContext) *GetLatestBlockInfoCall {
-	f := &GetLatestBlockInfoCall{Func: wasmlib.NewScView(HScName, HViewGetLatestBlockInfo)}
-	f.Func.SetPtrs(nil, &f.Results.id)
-	return f
 }
 
 type GetRequestIDsForBlockCall struct {
@@ -49,22 +31,10 @@ type GetRequestIDsForBlockCall struct {
 	Results ImmutableGetRequestIDsForBlockResults
 }
 
-func NewGetRequestIDsForBlockCall(ctx wasmlib.ScViewCallContext) *GetRequestIDsForBlockCall {
-	f := &GetRequestIDsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestIDsForBlock)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type GetRequestLogRecordCall struct {
 	Func    *wasmlib.ScView
 	Params  MutableGetRequestLogRecordParams
 	Results ImmutableGetRequestLogRecordResults
-}
-
-func NewGetRequestLogRecordCall(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordCall {
-	f := &GetRequestLogRecordCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecord)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
 }
 
 type GetRequestLogRecordsForBlockCall struct {
@@ -73,19 +43,53 @@ type GetRequestLogRecordsForBlockCall struct {
 	Results ImmutableGetRequestLogRecordsForBlockResults
 }
 
-func NewGetRequestLogRecordsForBlockCall(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordsForBlockCall {
-	f := &GetRequestLogRecordsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecordsForBlock)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type IsRequestProcessedCall struct {
 	Func    *wasmlib.ScView
 	Params  MutableIsRequestProcessedParams
 	Results ImmutableIsRequestProcessedResults
 }
 
-func NewIsRequestProcessedCall(ctx wasmlib.ScViewCallContext) *IsRequestProcessedCall {
+type coreblocklogFuncs struct{}
+
+var ScFuncs coreblocklogFuncs
+
+func (sc coreblocklogFuncs) ControlAddresses(ctx wasmlib.ScViewCallContext) *ControlAddressesCall {
+	f := &ControlAddressesCall{Func: wasmlib.NewScView(HScName, HViewControlAddresses)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) GetBlockInfo(ctx wasmlib.ScViewCallContext) *GetBlockInfoCall {
+	f := &GetBlockInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlockInfo)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) GetLatestBlockInfo(ctx wasmlib.ScViewCallContext) *GetLatestBlockInfoCall {
+	f := &GetLatestBlockInfoCall{Func: wasmlib.NewScView(HScName, HViewGetLatestBlockInfo)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) GetRequestIDsForBlock(ctx wasmlib.ScViewCallContext) *GetRequestIDsForBlockCall {
+	f := &GetRequestIDsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestIDsForBlock)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) GetRequestLogRecord(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordCall {
+	f := &GetRequestLogRecordCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecord)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) GetRequestLogRecordsForBlock(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordsForBlockCall {
+	f := &GetRequestLogRecordsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecordsForBlock)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblocklogFuncs) IsRequestProcessed(ctx wasmlib.ScViewCallContext) *IsRequestProcessedCall {
 	f := &IsRequestProcessedCall{Func: wasmlib.NewScView(HScName, HViewIsRequestProcessed)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

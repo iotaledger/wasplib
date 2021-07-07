@@ -15,22 +15,10 @@ type StoreBlobCall struct {
 	Results ImmutableStoreBlobResults
 }
 
-func NewStoreBlobCall(ctx wasmlib.ScFuncCallContext) *StoreBlobCall {
-	f := &StoreBlobCall{Func: wasmlib.NewScFunc(HScName, HFuncStoreBlob)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type GetBlobFieldCall struct {
 	Func    *wasmlib.ScView
 	Params  MutableGetBlobFieldParams
 	Results ImmutableGetBlobFieldResults
-}
-
-func NewGetBlobFieldCall(ctx wasmlib.ScViewCallContext) *GetBlobFieldCall {
-	f := &GetBlobFieldCall{Func: wasmlib.NewScView(HScName, HViewGetBlobField)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
 }
 
 type GetBlobInfoCall struct {
@@ -39,18 +27,34 @@ type GetBlobInfoCall struct {
 	Results ImmutableGetBlobInfoResults
 }
 
-func NewGetBlobInfoCall(ctx wasmlib.ScViewCallContext) *GetBlobInfoCall {
-	f := &GetBlobInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlobInfo)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type ListBlobsCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableListBlobsResults
 }
 
-func NewListBlobsCall(ctx wasmlib.ScViewCallContext) *ListBlobsCall {
+type coreblobFuncs struct{}
+
+var ScFuncs coreblobFuncs
+
+func (sc coreblobFuncs) StoreBlob(ctx wasmlib.ScFuncCallContext) *StoreBlobCall {
+	f := &StoreBlobCall{Func: wasmlib.NewScFunc(HScName, HFuncStoreBlob)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblobFuncs) GetBlobField(ctx wasmlib.ScViewCallContext) *GetBlobFieldCall {
+	f := &GetBlobFieldCall{Func: wasmlib.NewScView(HScName, HViewGetBlobField)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblobFuncs) GetBlobInfo(ctx wasmlib.ScViewCallContext) *GetBlobInfoCall {
+	f := &GetBlobInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlobInfo)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreblobFuncs) ListBlobs(ctx wasmlib.ScViewCallContext) *ListBlobsCall {
 	f := &ListBlobsCall{Func: wasmlib.NewScView(HScName, HViewListBlobs)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

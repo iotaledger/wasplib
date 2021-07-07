@@ -288,43 +288,48 @@ func (s *Schema) generateRustContract() error {
 			fmt.Fprintf(file, "    pub results: Immutable%sResults,\n", f.Type)
 		}
 		fmt.Fprintf(file, "}\n")
-
-		fmt.Fprintf(file, "\nimpl %sCall {\n", f.Type)
-		s.generateRustContractFunc(file, f)
-		fmt.Fprintf(file, "}\n")
 	}
 
+	s.generateRustContractFuncs(file)
 	formatter(file, true)
 	return nil
 }
 
-func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef) {
-	nameLen := f.nameLen(4) + 1
-	constName := upper(snake(f.FuncName))
-	letMut := ""
-	if len(f.Params) != 0 || len(f.Results) != 0 {
-		letMut = "let mut f = "
+func (s *Schema) generateRustContractFuncs(file *os.File) {
+	fmt.Fprint(file, "\npub struct ScFuncs {\n")
+	fmt.Fprint(file, "}\n")
+	fmt.Fprint(file, "\nimpl ScFuncs {\n")
+
+	for _, f := range s.Funcs {
+		nameLen := f.nameLen(4) + 1
+		funcName := snake(f.FuncName)
+		constName := upper(funcName)
+		letMut := ""
+		if len(f.Params) != 0 || len(f.Results) != 0 {
+			letMut = "let mut f = "
+		}
+		fmt.Fprintf(file, "    pub fn %s(_ctx: & dyn Sc%sCallContext) -> %sCall {\n", funcName[5:], f.Kind, f.Type)
+		fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
+		fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
+		paramsID := "ptr::null_mut()"
+		if len(f.Params) != 0 {
+			paramsID = "&mut f.params.id"
+			fmt.Fprintf(file, "            %s Mutable%sParams { id: 0 },\n", pad("params:", nameLen), f.Type)
+		}
+		resultsID := "ptr::null_mut()"
+		if len(f.Results) != 0 {
+			resultsID = "&mut f.results.id"
+			fmt.Fprintf(file, "            results: Immutable%sResults { id: 0 },\n", f.Type)
+		}
+		fmt.Fprintf(file, "        }")
+		if len(f.Params) != 0 || len(f.Results) != 0 {
+			fmt.Fprintf(file, ";\n")
+			fmt.Fprintf(file, "        f.func.set_ptrs(%s, %s);\n", paramsID, resultsID)
+			fmt.Fprintf(file, "        f")
+		}
+		fmt.Fprintf(file, "\n    }\n")
 	}
-	fmt.Fprintf(file, "    pub fn new(_ctx: & dyn Sc%sCallContext) -> %sCall {\n", f.Kind, f.Type)
-	fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
-	fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
-	paramsID := "ptr::null_mut()"
-	if len(f.Params) != 0 {
-		paramsID = "&mut f.params.id"
-		fmt.Fprintf(file, "            %s Mutable%sParams { id: 0 },\n", pad("params:", nameLen), f.Type)
-	}
-	resultsID := "ptr::null_mut()"
-	if len(f.Results) != 0 {
-		resultsID = "&mut f.results.id"
-		fmt.Fprintf(file, "            results: Immutable%sResults { id: 0 },\n", f.Type)
-	}
-	fmt.Fprintf(file, "        }")
-	if len(f.Params) != 0 || len(f.Results) != 0 {
-		fmt.Fprintf(file, ";\n")
-		fmt.Fprintf(file, "        f.func.set_ptrs(%s, %s);\n", paramsID, resultsID)
-		fmt.Fprintf(file, "        f")
-	}
-	fmt.Fprintf(file, "\n    }\n")
+	fmt.Fprintf(file, "}\n")
 }
 
 func (s *Schema) generateRustFuncs() error {

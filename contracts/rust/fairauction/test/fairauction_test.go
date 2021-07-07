@@ -37,7 +37,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain)
 	auctionColor := ctx.ScColor(tokenColor)
 
-	startAuction := fairauction.NewStartAuctionCall(ctx.SignWith(auctioneer))
+	startAuction := fairauction.ScFuncs.StartAuction(ctx.SignWith(auctioneer))
 	startAuction.Params.Color().SetValue(auctionColor)
 	startAuction.Params.MinimumBid().SetValue(500)
 	startAuction.Params.Description().SetValue("Cool tokens for sale!")
@@ -77,7 +77,7 @@ func TestFaStartAuction(t *testing.T) {
 func TestFaAuctionInfo(t *testing.T) {
 	ctx := setupTest(t)
 
-	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	getInfo.Func.Call()
 
@@ -97,7 +97,7 @@ func TestFaNoBids(t *testing.T) {
 	ctx.Chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(5))
 
-	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	getInfo.Func.Call()
 
@@ -110,7 +110,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 	chain := ctx.Chain
 
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
-	placeBid := fairauction.NewPlaceBidCall(ctx.SignWith(bidder))
+	placeBid := fairauction.ScFuncs.PlaceBid(ctx.SignWith(bidder))
 	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	placeBid.Func.TransferIotas(100).Post()
 	require.Error(t, ctx.Err)
@@ -119,7 +119,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 	chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(6))
 
-	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	getInfo.Func.Call()
 
@@ -133,7 +133,7 @@ func TestFaOneBid(t *testing.T) {
 	chain := ctx.Chain
 
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
-	placeBid := fairauction.NewPlaceBidCall(ctx.SignWith(bidder))
+	placeBid := fairauction.ScFuncs.PlaceBid(ctx.SignWith(bidder))
 	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	placeBid.Func.TransferIotas(500).Post()
 	require.NoError(t, ctx.Err)
@@ -142,7 +142,7 @@ func TestFaOneBid(t *testing.T) {
 	chain.Env.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(6))
 
-	getInfo := fairauction.NewGetInfoCall(ctx)
+	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	getInfo.Func.Call()
 

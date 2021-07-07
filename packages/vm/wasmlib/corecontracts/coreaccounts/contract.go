@@ -14,29 +14,13 @@ type DepositCall struct {
 	Params MutableDepositParams
 }
 
-func NewDepositCall(ctx wasmlib.ScFuncCallContext) *DepositCall {
-	f := &DepositCall{Func: wasmlib.NewScFunc(HScName, HFuncDeposit)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type WithdrawCall struct {
 	Func *wasmlib.ScFunc
-}
-
-func NewWithdrawCall(ctx wasmlib.ScFuncCallContext) *WithdrawCall {
-	return &WithdrawCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdraw)}
 }
 
 type AccountsCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableAccountsResults
-}
-
-func NewAccountsCall(ctx wasmlib.ScViewCallContext) *AccountsCall {
-	f := &AccountsCall{Func: wasmlib.NewScView(HScName, HViewAccounts)}
-	f.Func.SetPtrs(nil, &f.Results.id)
-	return f
 }
 
 type BalanceCall struct {
@@ -45,18 +29,38 @@ type BalanceCall struct {
 	Results ImmutableBalanceResults
 }
 
-func NewBalanceCall(ctx wasmlib.ScViewCallContext) *BalanceCall {
-	f := &BalanceCall{Func: wasmlib.NewScView(HScName, HViewBalance)}
-	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
-	return f
-}
-
 type TotalAssetsCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableTotalAssetsResults
 }
 
-func NewTotalAssetsCall(ctx wasmlib.ScViewCallContext) *TotalAssetsCall {
+type coreaccountsFuncs struct{}
+
+var ScFuncs coreaccountsFuncs
+
+func (sc coreaccountsFuncs) Deposit(ctx wasmlib.ScFuncCallContext) *DepositCall {
+	f := &DepositCall{Func: wasmlib.NewScFunc(HScName, HFuncDeposit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc coreaccountsFuncs) Withdraw(ctx wasmlib.ScFuncCallContext) *WithdrawCall {
+	return &WithdrawCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdraw)}
+}
+
+func (sc coreaccountsFuncs) Accounts(ctx wasmlib.ScViewCallContext) *AccountsCall {
+	f := &AccountsCall{Func: wasmlib.NewScView(HScName, HViewAccounts)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc coreaccountsFuncs) Balance(ctx wasmlib.ScViewCallContext) *BalanceCall {
+	f := &BalanceCall{Func: wasmlib.NewScView(HScName, HViewBalance)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc coreaccountsFuncs) TotalAssets(ctx wasmlib.ScViewCallContext) *TotalAssetsCall {
 	f := &TotalAssetsCall{Func: wasmlib.NewScView(HScName, HViewTotalAssets)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

@@ -69,4 +69,3 @@ func (td *TypeDef) GenerateJavaType(contract string) error {
 	fmt.Fprintf(file, "}\n")
 	return nil
 }
-

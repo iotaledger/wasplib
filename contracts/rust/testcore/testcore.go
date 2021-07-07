@@ -95,7 +95,7 @@ func funcRunRecursion(ctx wasmlib.ScFuncContext, f *RunRecursionContext) {
 		return
 	}
 
-	callOnChain := NewCallOnChainCall(ctx)
+	callOnChain := ScFuncs.CallOnChain(ctx)
 	callOnChain.Params.IntValue().SetValue(depth - 1)
 	callOnChain.Params.HnameEP().SetValue(HFuncRunRecursion)
 	callOnChain.Func.Call()
@@ -114,12 +114,12 @@ func funcSetInt(ctx wasmlib.ScFuncContext, f *SetIntContext) {
 
 //nolint:unparam
 func funcTestCallPanicFullEP(ctx wasmlib.ScFuncContext, f *TestCallPanicFullEPContext) {
-	NewTestPanicFullEPCall(ctx).Func.Call()
+	ScFuncs.TestPanicFullEP(ctx).Func.Call()
 }
 
 //nolint:unparam
 func funcTestCallPanicViewEPFromFull(ctx wasmlib.ScFuncContext, f *TestCallPanicViewEPFromFullContext) {
-	NewTestPanicViewEPCall(ctx).Func.Call()
+	ScFuncs.TestPanicViewEP(ctx).Func.Call()
 }
 
 func funcTestChainOwnerIDFull(ctx wasmlib.ScFuncContext, f *TestChainOwnerIDFullContext) {
@@ -149,7 +149,7 @@ func funcTestPanicFullEP(ctx wasmlib.ScFuncContext, f *TestPanicFullEPContext) {
 }
 
 func funcWithdrawToChain(ctx wasmlib.ScFuncContext, f *WithdrawToChainContext) {
-	coreaccounts.NewWithdrawCall(ctx).Func.TransferIotas(1).PostToChain(f.Params.ChainID().Value())
+	coreaccounts.ScFuncs.Withdraw(ctx).Func.TransferIotas(1).PostToChain(f.Params.ChainID().Value())
 }
 
 func viewCheckContextFromViewEP(ctx wasmlib.ScViewContext, f *CheckContextFromViewEPContext) {
@@ -166,7 +166,7 @@ func viewFibonacci(ctx wasmlib.ScViewContext, f *FibonacciContext) {
 		return
 	}
 
-	fib := NewFibonacciCall(ctx)
+	fib := ScFuncs.Fibonacci(ctx)
 	fib.Params.IntValue().SetValue(n - 1)
 	fib.Func.Call()
 	n1 := fib.Results.IntValue().Value()
@@ -207,7 +207,7 @@ func viewPassTypesView(ctx wasmlib.ScViewContext, f *PassTypesViewContext) {
 
 //nolint:unparam
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *TestCallPanicViewEPFromViewContext) {
-	NewTestPanicViewEPCall(ctx).Func.Call()
+	ScFuncs.TestPanicViewEP(ctx).Func.Call()
 }
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *TestChainOwnerIDViewContext) {
@@ -220,7 +220,7 @@ func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *TestPanicViewEPContext) {
 }
 
 func viewTestSandboxCall(ctx wasmlib.ScViewContext, f *TestSandboxCallContext) {
-	getChainInfo := coreroot.NewGetChainInfoCall(ctx)
+	getChainInfo := coreroot.ScFuncs.GetChainInfo(ctx)
 	getChainInfo.Func.Call()
 	f.Results.SandboxCall().SetValue(getChainInfo.Results.Description().Value())
 }

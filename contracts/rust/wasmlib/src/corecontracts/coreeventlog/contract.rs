@@ -20,8 +20,17 @@ pub struct GetNumRecordsCall {
     pub results: ImmutableGetNumRecordsResults,
 }
 
-impl GetNumRecordsCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> GetNumRecordsCall {
+pub struct GetRecordsCall {
+    pub func:    ScView,
+    pub params:  MutableGetRecordsParams,
+    pub results: ImmutableGetRecordsResults,
+}
+
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn get_num_records(_ctx: & dyn ScViewCallContext) -> GetNumRecordsCall {
         let mut f = GetNumRecordsCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_NUM_RECORDS),
             params:  MutableGetNumRecordsParams { id: 0 },
@@ -30,16 +39,7 @@ impl GetNumRecordsCall {
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
     }
-}
-
-pub struct GetRecordsCall {
-    pub func:    ScView,
-    pub params:  MutableGetRecordsParams,
-    pub results: ImmutableGetRecordsResults,
-}
-
-impl GetRecordsCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> GetRecordsCall {
+    pub fn get_records(_ctx: & dyn ScViewCallContext) -> GetRecordsCall {
         let mut f = GetRecordsCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_RECORDS),
             params:  MutableGetRecordsParams { id: 0 },

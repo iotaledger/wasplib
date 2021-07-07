@@ -13,19 +13,9 @@ type DivideCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewDivideCall(ctx wasmlib.ScFuncCallContext) *DivideCall {
-	return &DivideCall{Func: wasmlib.NewScFunc(HScName, HFuncDivide)}
-}
-
 type InitCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableInitParams
-}
-
-func NewInitCall(ctx wasmlib.ScFuncCallContext) *InitCall {
-	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type MemberCall struct {
@@ -33,21 +23,9 @@ type MemberCall struct {
 	Params MutableMemberParams
 }
 
-func NewMemberCall(ctx wasmlib.ScFuncCallContext) *MemberCall {
-	f := &MemberCall{Func: wasmlib.NewScFunc(HScName, HFuncMember)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
 type SetOwnerCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableSetOwnerParams
-}
-
-func NewSetOwnerCall(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
-	f := &SetOwnerCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwner)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
 }
 
 type GetFactorCall struct {
@@ -56,7 +34,33 @@ type GetFactorCall struct {
 	Results ImmutableGetFactorResults
 }
 
-func NewGetFactorCall(ctx wasmlib.ScViewCallContext) *GetFactorCall {
+type dividendFuncs struct{}
+
+var ScFuncs dividendFuncs
+
+func (sc dividendFuncs) Divide(ctx wasmlib.ScFuncCallContext) *DivideCall {
+	return &DivideCall{Func: wasmlib.NewScFunc(HScName, HFuncDivide)}
+}
+
+func (sc dividendFuncs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
+	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc dividendFuncs) Member(ctx wasmlib.ScFuncCallContext) *MemberCall {
+	f := &MemberCall{Func: wasmlib.NewScFunc(HScName, HFuncMember)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc dividendFuncs) SetOwner(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
+	f := &SetOwnerCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwner)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc dividendFuncs) GetFactor(ctx wasmlib.ScViewCallContext) *GetFactorCall {
 	f := &GetFactorCall{Func: wasmlib.NewScView(HScName, HViewGetFactor)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

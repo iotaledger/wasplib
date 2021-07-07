@@ -21,24 +21,8 @@ pub struct LockBetsCall {
     pub func: ScFunc,
 }
 
-impl LockBetsCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> LockBetsCall {
-        LockBetsCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS),
-        }
-    }
-}
-
 pub struct PayWinnersCall {
     pub func: ScFunc,
-}
-
-impl PayWinnersCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> PayWinnersCall {
-        PayWinnersCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS),
-        }
-    }
 }
 
 pub struct PlaceBetCall {
@@ -46,31 +30,9 @@ pub struct PlaceBetCall {
     pub params: MutablePlaceBetParams,
 }
 
-impl PlaceBetCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlaceBetCall {
-        let mut f = PlaceBetCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
-            params: MutablePlaceBetParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-}
-
 pub struct PlayPeriodCall {
     pub func:   ScFunc,
     pub params: MutablePlayPeriodParams,
-}
-
-impl PlayPeriodCall {
-    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlayPeriodCall {
-        let mut f = PlayPeriodCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
-            params: MutablePlayPeriodParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
 }
 
 pub struct LastWinningNumberCall {
@@ -78,8 +40,37 @@ pub struct LastWinningNumberCall {
     pub results: ImmutableLastWinningNumberResults,
 }
 
-impl LastWinningNumberCall {
-    pub fn new(_ctx: & dyn ScViewCallContext) -> LastWinningNumberCall {
+pub struct ScFuncs {
+}
+
+impl ScFuncs {
+    pub fn lock_bets(_ctx: & dyn ScFuncCallContext) -> LockBetsCall {
+        LockBetsCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS),
+        }
+    }
+    pub fn pay_winners(_ctx: & dyn ScFuncCallContext) -> PayWinnersCall {
+        PayWinnersCall {
+            func: ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS),
+        }
+    }
+    pub fn place_bet(_ctx: & dyn ScFuncCallContext) -> PlaceBetCall {
+        let mut f = PlaceBetCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
+            params: MutablePlaceBetParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn play_period(_ctx: & dyn ScFuncCallContext) -> PlayPeriodCall {
+        let mut f = PlayPeriodCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
+            params: MutablePlayPeriodParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn last_winning_number(_ctx: & dyn ScViewCallContext) -> LastWinningNumberCall {
         let mut f = LastWinningNumberCall {
             func:    ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER),
             results: ImmutableLastWinningNumberResults { id: 0 },
