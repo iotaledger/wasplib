@@ -6,6 +6,7 @@
 use std::convert::TryInto;
 
 use crate::bytes::*;
+use crate::contract::*;
 use crate::hashtypes::*;
 use crate::host::*;
 use crate::immutable::*;
@@ -267,6 +268,18 @@ pub struct ScFuncContext {}
 // reuse shared part of interface
 impl ScBaseContext for ScFuncContext {}
 
+impl ScFuncCallContext for ScFuncContext {
+    fn can_call_func(&self) {
+        panic!("can_call_func");
+    }
+}
+
+impl ScViewCallContext for ScFuncContext {
+    fn can_call_view(&self) {
+        panic!("can_call_view");
+    }
+}
+
 impl ScFuncContext {
     // synchronously calls the specified smart contract function,
     // passing the provided parameters and token transfers to it
@@ -376,6 +389,12 @@ pub struct ScViewContext {}
 
 // reuse shared part of interface
 impl ScBaseContext for ScViewContext {}
+
+impl ScViewCallContext for ScViewContext {
+    fn can_call_view(&self) {
+        panic!("can_call_view");
+    }
+}
 
 impl ScViewContext {
     // synchronously calls the specified smart contract view,

@@ -15,7 +15,7 @@ type StoreBlobCall struct {
 	Results ImmutableStoreBlobResults
 }
 
-func NewStoreBlobCall(ctx wasmlib.ScHostContext) *StoreBlobCall {
+func NewStoreBlobCall(ctx wasmlib.ScFuncCallContext) *StoreBlobCall {
 	f := &StoreBlobCall{Func: wasmlib.NewScFunc(HScName, HFuncStoreBlob)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
@@ -27,14 +27,10 @@ type GetBlobFieldCall struct {
 	Results ImmutableGetBlobFieldResults
 }
 
-func NewGetBlobFieldCall(ctx wasmlib.ScHostContext) *GetBlobFieldCall {
+func NewGetBlobFieldCall(ctx wasmlib.ScViewCallContext) *GetBlobFieldCall {
 	f := &GetBlobFieldCall{Func: wasmlib.NewScView(HScName, HViewGetBlobField)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetBlobFieldCallFromView(ctx wasmlib.ScViewContext) *GetBlobFieldCall {
-	return NewGetBlobFieldCall(wasmlib.ScFuncContext{})
 }
 
 type GetBlobInfoCall struct {
@@ -43,14 +39,10 @@ type GetBlobInfoCall struct {
 	Results ImmutableGetBlobInfoResults
 }
 
-func NewGetBlobInfoCall(ctx wasmlib.ScHostContext) *GetBlobInfoCall {
+func NewGetBlobInfoCall(ctx wasmlib.ScViewCallContext) *GetBlobInfoCall {
 	f := &GetBlobInfoCall{Func: wasmlib.NewScView(HScName, HViewGetBlobInfo)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetBlobInfoCallFromView(ctx wasmlib.ScViewContext) *GetBlobInfoCall {
-	return NewGetBlobInfoCall(wasmlib.ScFuncContext{})
 }
 
 type ListBlobsCall struct {
@@ -58,12 +50,8 @@ type ListBlobsCall struct {
 	Results ImmutableListBlobsResults
 }
 
-func NewListBlobsCall(ctx wasmlib.ScHostContext) *ListBlobsCall {
+func NewListBlobsCall(ctx wasmlib.ScViewCallContext) *ListBlobsCall {
 	f := &ListBlobsCall{Func: wasmlib.NewScView(HScName, HViewListBlobs)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewListBlobsCallFromView(ctx wasmlib.ScViewContext) *ListBlobsCall {
-	return NewListBlobsCall(wasmlib.ScFuncContext{})
 }

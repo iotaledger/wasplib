@@ -12,6 +12,14 @@ use crate::host::*;
 use crate::keys::*;
 use crate::mutable::*;
 
+pub trait ScFuncCallContext {
+    fn can_call_func(&self);
+}
+
+pub trait ScViewCallContext {
+    fn can_call_view(&self);
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Clone, Copy)]

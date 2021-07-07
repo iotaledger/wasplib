@@ -14,7 +14,7 @@ type DonateCall struct {
 	Params MutableDonateParams
 }
 
-func NewDonateCall(ctx wasmlib.ScHostContext) *DonateCall {
+func NewDonateCall(ctx wasmlib.ScFuncCallContext) *DonateCall {
 	f := &DonateCall{Func: wasmlib.NewScFunc(HScName, HFuncDonate)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -25,7 +25,7 @@ type WithdrawCall struct {
 	Params MutableWithdrawParams
 }
 
-func NewWithdrawCall(ctx wasmlib.ScHostContext) *WithdrawCall {
+func NewWithdrawCall(ctx wasmlib.ScFuncCallContext) *WithdrawCall {
 	f := &WithdrawCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdraw)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -37,14 +37,10 @@ type DonationCall struct {
 	Results ImmutableDonationResults
 }
 
-func NewDonationCall(ctx wasmlib.ScHostContext) *DonationCall {
+func NewDonationCall(ctx wasmlib.ScViewCallContext) *DonationCall {
 	f := &DonationCall{Func: wasmlib.NewScView(HScName, HViewDonation)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewDonationCallFromView(ctx wasmlib.ScViewContext) *DonationCall {
-	return NewDonationCall(wasmlib.ScFuncContext{})
 }
 
 type DonationInfoCall struct {
@@ -52,12 +48,8 @@ type DonationInfoCall struct {
 	Results ImmutableDonationInfoResults
 }
 
-func NewDonationInfoCall(ctx wasmlib.ScHostContext) *DonationInfoCall {
+func NewDonationInfoCall(ctx wasmlib.ScViewCallContext) *DonationInfoCall {
 	f := &DonationInfoCall{Func: wasmlib.NewScView(HScName, HViewDonationInfo)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewDonationInfoCallFromView(ctx wasmlib.ScViewContext) *DonationInfoCall {
-	return NewDonationInfoCall(wasmlib.ScFuncContext{})
 }

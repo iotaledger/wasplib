@@ -23,7 +23,7 @@ pub struct FinalizeAuctionCall {
 }
 
 impl FinalizeAuctionCall {
-    pub fn new(_ctx: &ScFuncContext) -> FinalizeAuctionCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> FinalizeAuctionCall {
         let mut f = FinalizeAuctionCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_FINALIZE_AUCTION),
             params: MutableFinalizeAuctionParams { id: 0 },
@@ -39,7 +39,7 @@ pub struct PlaceBidCall {
 }
 
 impl PlaceBidCall {
-    pub fn new(_ctx: &ScFuncContext) -> PlaceBidCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlaceBidCall {
         let mut f = PlaceBidCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BID),
             params: MutablePlaceBidParams { id: 0 },
@@ -55,7 +55,7 @@ pub struct SetOwnerMarginCall {
 }
 
 impl SetOwnerMarginCall {
-    pub fn new(_ctx: &ScFuncContext) -> SetOwnerMarginCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> SetOwnerMarginCall {
         let mut f = SetOwnerMarginCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER_MARGIN),
             params: MutableSetOwnerMarginParams { id: 0 },
@@ -71,7 +71,7 @@ pub struct StartAuctionCall {
 }
 
 impl StartAuctionCall {
-    pub fn new(_ctx: &ScFuncContext) -> StartAuctionCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> StartAuctionCall {
         let mut f = StartAuctionCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_START_AUCTION),
             params: MutableStartAuctionParams { id: 0 },
@@ -88,7 +88,7 @@ pub struct GetInfoCall {
 }
 
 impl GetInfoCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetInfoCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetInfoCall {
         let mut f = GetInfoCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_INFO),
             params:  MutableGetInfoParams { id: 0 },
@@ -96,10 +96,6 @@ impl GetInfoCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
-        GetInfoCall::new(&ScFuncContext {})
     }
 }
 

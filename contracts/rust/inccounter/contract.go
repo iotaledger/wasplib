@@ -13,7 +13,7 @@ type CallIncrementCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewCallIncrementCall(ctx wasmlib.ScHostContext) *CallIncrementCall {
+func NewCallIncrementCall(ctx wasmlib.ScFuncCallContext) *CallIncrementCall {
 	return &CallIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrement)}
 }
 
@@ -21,7 +21,7 @@ type CallIncrementRecurse5xCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewCallIncrementRecurse5xCall(ctx wasmlib.ScHostContext) *CallIncrementRecurse5xCall {
+func NewCallIncrementRecurse5xCall(ctx wasmlib.ScFuncCallContext) *CallIncrementRecurse5xCall {
 	return &CallIncrementRecurse5xCall{Func: wasmlib.NewScFunc(HScName, HFuncCallIncrementRecurse5x)}
 }
 
@@ -29,7 +29,7 @@ type EndlessLoopCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewEndlessLoopCall(ctx wasmlib.ScHostContext) *EndlessLoopCall {
+func NewEndlessLoopCall(ctx wasmlib.ScFuncCallContext) *EndlessLoopCall {
 	return &EndlessLoopCall{Func: wasmlib.NewScFunc(HScName, HFuncEndlessLoop)}
 }
 
@@ -37,7 +37,7 @@ type IncrementCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewIncrementCall(ctx wasmlib.ScHostContext) *IncrementCall {
+func NewIncrementCall(ctx wasmlib.ScFuncCallContext) *IncrementCall {
 	return &IncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncIncrement)}
 }
 
@@ -46,7 +46,7 @@ type InitCall struct {
 	Params MutableInitParams
 }
 
-func NewInitCall(ctx wasmlib.ScHostContext) *InitCall {
+func NewInitCall(ctx wasmlib.ScFuncCallContext) *InitCall {
 	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -56,7 +56,7 @@ type LocalStateInternalCallCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewLocalStateInternalCallCall(ctx wasmlib.ScHostContext) *LocalStateInternalCallCall {
+func NewLocalStateInternalCallCall(ctx wasmlib.ScFuncCallContext) *LocalStateInternalCallCall {
 	return &LocalStateInternalCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateInternalCall)}
 }
 
@@ -64,7 +64,7 @@ type LocalStatePostCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewLocalStatePostCall(ctx wasmlib.ScHostContext) *LocalStatePostCall {
+func NewLocalStatePostCall(ctx wasmlib.ScFuncCallContext) *LocalStatePostCall {
 	return &LocalStatePostCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStatePost)}
 }
 
@@ -72,7 +72,7 @@ type LocalStateSandboxCallCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewLocalStateSandboxCallCall(ctx wasmlib.ScHostContext) *LocalStateSandboxCallCall {
+func NewLocalStateSandboxCallCall(ctx wasmlib.ScFuncCallContext) *LocalStateSandboxCallCall {
 	return &LocalStateSandboxCallCall{Func: wasmlib.NewScFunc(HScName, HFuncLocalStateSandboxCall)}
 }
 
@@ -80,7 +80,7 @@ type PostIncrementCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewPostIncrementCall(ctx wasmlib.ScHostContext) *PostIncrementCall {
+func NewPostIncrementCall(ctx wasmlib.ScFuncCallContext) *PostIncrementCall {
 	return &PostIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncPostIncrement)}
 }
 
@@ -89,7 +89,7 @@ type RepeatManyCall struct {
 	Params MutableRepeatManyParams
 }
 
-func NewRepeatManyCall(ctx wasmlib.ScHostContext) *RepeatManyCall {
+func NewRepeatManyCall(ctx wasmlib.ScFuncCallContext) *RepeatManyCall {
 	f := &RepeatManyCall{Func: wasmlib.NewScFunc(HScName, HFuncRepeatMany)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -99,7 +99,7 @@ type TestLeb128Call struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewTestLeb128Call(ctx wasmlib.ScHostContext) *TestLeb128Call {
+func NewTestLeb128Call(ctx wasmlib.ScFuncCallContext) *TestLeb128Call {
 	return &TestLeb128Call{Func: wasmlib.NewScFunc(HScName, HFuncTestLeb128)}
 }
 
@@ -108,7 +108,7 @@ type WhenMustIncrementCall struct {
 	Params MutableWhenMustIncrementParams
 }
 
-func NewWhenMustIncrementCall(ctx wasmlib.ScHostContext) *WhenMustIncrementCall {
+func NewWhenMustIncrementCall(ctx wasmlib.ScFuncCallContext) *WhenMustIncrementCall {
 	f := &WhenMustIncrementCall{Func: wasmlib.NewScFunc(HScName, HFuncWhenMustIncrement)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -119,12 +119,8 @@ type GetCounterCall struct {
 	Results ImmutableGetCounterResults
 }
 
-func NewGetCounterCall(ctx wasmlib.ScHostContext) *GetCounterCall {
+func NewGetCounterCall(ctx wasmlib.ScViewCallContext) *GetCounterCall {
 	f := &GetCounterCall{Func: wasmlib.NewScView(HScName, HViewGetCounter)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewGetCounterCallFromView(ctx wasmlib.ScViewContext) *GetCounterCall {
-	return NewGetCounterCall(wasmlib.ScFuncContext{})
 }

@@ -21,7 +21,7 @@ pub struct StoreBlobCall {
 }
 
 impl StoreBlobCall {
-    pub fn new(_ctx: &ScFuncContext) -> StoreBlobCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> StoreBlobCall {
         let mut f = StoreBlobCall {
             func:    ScFunc::new(HSC_NAME, HFUNC_STORE_BLOB),
             params:  MutableStoreBlobParams { id: 0 },
@@ -39,7 +39,7 @@ pub struct GetBlobFieldCall {
 }
 
 impl GetBlobFieldCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetBlobFieldCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetBlobFieldCall {
         let mut f = GetBlobFieldCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_BLOB_FIELD),
             params:  MutableGetBlobFieldParams { id: 0 },
@@ -47,10 +47,6 @@ impl GetBlobFieldCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobFieldCall {
-        GetBlobFieldCall::new(&ScFuncContext {})
     }
 }
 
@@ -61,7 +57,7 @@ pub struct GetBlobInfoCall {
 }
 
 impl GetBlobInfoCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetBlobInfoCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetBlobInfoCall {
         let mut f = GetBlobInfoCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_BLOB_INFO),
             params:  MutableGetBlobInfoParams { id: 0 },
@@ -69,10 +65,6 @@ impl GetBlobInfoCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetBlobInfoCall {
-        GetBlobInfoCall::new(&ScFuncContext {})
     }
 }
 
@@ -82,17 +74,13 @@ pub struct ListBlobsCall {
 }
 
 impl ListBlobsCall {
-    pub fn new(_ctx: &ScFuncContext) -> ListBlobsCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> ListBlobsCall {
         let mut f = ListBlobsCall {
             func:    ScView::new(HSC_NAME, HVIEW_LIST_BLOBS),
             results: ImmutableListBlobsResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> ListBlobsCall {
-        ListBlobsCall::new(&ScFuncContext {})
     }
 }
 

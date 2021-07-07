@@ -14,7 +14,7 @@ type FinalizeAuctionCall struct {
 	Params MutableFinalizeAuctionParams
 }
 
-func NewFinalizeAuctionCall(ctx wasmlib.ScHostContext) *FinalizeAuctionCall {
+func NewFinalizeAuctionCall(ctx wasmlib.ScFuncCallContext) *FinalizeAuctionCall {
 	f := &FinalizeAuctionCall{Func: wasmlib.NewScFunc(HScName, HFuncFinalizeAuction)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -25,7 +25,7 @@ type PlaceBidCall struct {
 	Params MutablePlaceBidParams
 }
 
-func NewPlaceBidCall(ctx wasmlib.ScHostContext) *PlaceBidCall {
+func NewPlaceBidCall(ctx wasmlib.ScFuncCallContext) *PlaceBidCall {
 	f := &PlaceBidCall{Func: wasmlib.NewScFunc(HScName, HFuncPlaceBid)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -36,7 +36,7 @@ type SetOwnerMarginCall struct {
 	Params MutableSetOwnerMarginParams
 }
 
-func NewSetOwnerMarginCall(ctx wasmlib.ScHostContext) *SetOwnerMarginCall {
+func NewSetOwnerMarginCall(ctx wasmlib.ScFuncCallContext) *SetOwnerMarginCall {
 	f := &SetOwnerMarginCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwnerMargin)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -47,7 +47,7 @@ type StartAuctionCall struct {
 	Params MutableStartAuctionParams
 }
 
-func NewStartAuctionCall(ctx wasmlib.ScHostContext) *StartAuctionCall {
+func NewStartAuctionCall(ctx wasmlib.ScFuncCallContext) *StartAuctionCall {
 	f := &StartAuctionCall{Func: wasmlib.NewScFunc(HScName, HFuncStartAuction)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -59,12 +59,8 @@ type GetInfoCall struct {
 	Results ImmutableGetInfoResults
 }
 
-func NewGetInfoCall(ctx wasmlib.ScHostContext) *GetInfoCall {
+func NewGetInfoCall(ctx wasmlib.ScViewCallContext) *GetInfoCall {
 	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetInfoCallFromView(ctx wasmlib.ScViewContext) *GetInfoCall {
-	return NewGetInfoCall(wasmlib.ScFuncContext{})
 }

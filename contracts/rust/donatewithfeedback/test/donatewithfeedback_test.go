@@ -14,19 +14,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupTest(t *testing.T) *solo.Chain {
-	return common.StartChainAndDeployWasmContractByName(t, donatewithfeedback.ScName)
+func setupTest(t *testing.T) *common.SoloContext {
+	chain := common.StartChainAndDeployWasmContractByName(t, donatewithfeedback.ScName)
+	return common.NewSoloContext(donatewithfeedback.ScName, donatewithfeedback.OnLoad, chain)
 }
 
 func TestDeploy(t *testing.T) {
-	chain := setupTest(t)
-	_, err := chain.FindContract(donatewithfeedback.ScName)
+	ctx := setupTest(t)
+	_, err := ctx.Chain.FindContract(donatewithfeedback.ScName)
 	require.NoError(t, err)
 }
 
 func TestStateAfterDeploy(t *testing.T) {
-	chain := setupTest(t)
-	ctx := common.NewSoloContext(donatewithfeedback.ScName, donatewithfeedback.OnLoad, chain, nil)
+	ctx := setupTest(t)
 
 	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx)
 	donationInfo.Func.Call()
@@ -37,11 +37,10 @@ func TestStateAfterDeploy(t *testing.T) {
 }
 
 func TestDonateOnce(t *testing.T) {
-	chain := setupTest(t)
+	ctx := setupTest(t)
 
-	donator1, donator1Addr := chain.Env.NewKeyPairWithFunds()
-	ctx := common.NewSoloContext(donatewithfeedback.ScName, donatewithfeedback.OnLoad, chain, donator1)
-	donate := donatewithfeedback.NewDonateCall(ctx)
+	donator1, donator1Addr := ctx.Chain.Env.NewKeyPairWithFunds()
+	donate := donatewithfeedback.NewDonateCall(ctx.SignWith(donator1))
 	donate.Params.Feedback().SetValue("Nice work!")
 	donate.Func.TransferIotas(42).Post()
 	require.NoError(t, ctx.Err)
@@ -54,32 +53,30 @@ func TestDonateOnce(t *testing.T) {
 	require.EqualValues(t, 42, donationInfo.Results.TotalDonation().Value())
 
 	// 42 iota transferred from wallet to contract
-	chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
+	ctx.Chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
 	// 42 iota transferred to contract
-	chain.AssertAccountBalance(chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42)
+	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42)
 	// returned 1 used for transaction to wallet account
 	account1 := coretypes.NewAgentID(donator1Addr, 0)
-	chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
+	ctx.Chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
 }
 
 func TestDonateTwice(t *testing.T) {
-	chain := setupTest(t)
+	ctx := setupTest(t)
 
-	donator1, donator1Addr := chain.Env.NewKeyPairWithFunds()
-	ctx1 := common.NewSoloContext(donatewithfeedback.ScName, donatewithfeedback.OnLoad, chain, donator1)
-	donate1 := donatewithfeedback.NewDonateCall(ctx1)
+	donator1, donator1Addr := ctx.Chain.Env.NewKeyPairWithFunds()
+	donate1 := donatewithfeedback.NewDonateCall(ctx.SignWith(donator1))
 	donate1.Params.Feedback().SetValue("Nice work!")
 	donate1.Func.TransferIotas(42).Post()
-	require.NoError(t, ctx1.Err)
+	require.NoError(t, ctx.Err)
 
-	donator2, donator2Addr := chain.Env.NewKeyPairWithFunds()
-	ctx2 := common.NewSoloContext(donatewithfeedback.ScName, donatewithfeedback.OnLoad, chain, donator2)
-	donate2 := donatewithfeedback.NewDonateCall(ctx2)
+	donator2, donator2Addr := ctx.Chain.Env.NewKeyPairWithFunds()
+	donate2 := donatewithfeedback.NewDonateCall(ctx.SignWith(donator2))
 	donate2.Params.Feedback().SetValue("Exactly what I needed!")
 	donate2.Func.TransferIotas(69).Post()
-	require.NoError(t, ctx2.Err)
+	require.NoError(t, ctx.Err)
 
-	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx1)
+	donationInfo := donatewithfeedback.NewDonationInfoCall(ctx)
 	donationInfo.Func.Call()
 
 	require.EqualValues(t, 2, donationInfo.Results.Count().Value())
@@ -87,14 +84,14 @@ func TestDonateTwice(t *testing.T) {
 	require.EqualValues(t, 42+69, donationInfo.Results.TotalDonation().Value())
 
 	// 42 iota transferred from wallet to contract plus 1 used for transaction
-	chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
+	ctx.Chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
 	// 69 iota transferred from wallet to contract plus 1 used for transaction
-	chain.Env.AssertAddressBalance(donator2Addr, ledgerstate.ColorIOTA, solo.Saldo-69)
+	ctx.Chain.Env.AssertAddressBalance(donator2Addr, ledgerstate.ColorIOTA, solo.Saldo-69)
 	// 42+69 iota transferred to contract
-	chain.AssertAccountBalance(chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42+69)
+	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42+69)
 	// returned 1 used for transaction to wallet accounts
 	account1 := coretypes.NewAgentID(donator1Addr, 0)
-	chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
+	ctx.Chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
 	account2 := coretypes.NewAgentID(donator2Addr, 0)
-	chain.AssertAccountBalance(account2, ledgerstate.ColorIOTA, 0)
+	ctx.Chain.AssertAccountBalance(account2, ledgerstate.ColorIOTA, 0)
 }

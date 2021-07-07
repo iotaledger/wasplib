@@ -291,12 +291,6 @@ func (s *Schema) generateRustContract() error {
 
 		fmt.Fprintf(file, "\nimpl %sCall {\n", f.Type)
 		s.generateRustContractFunc(file, f)
-		if f.Kind == KindView {
-			fmt.Fprintf(file, "\n    pub fn new_from_view(_ctx: &ScViewContext) -> %sCall {\n", f.Type)
-			fmt.Fprintf(file, "        %sCall::new(&ScFuncContext {})\n", f.Type)
-			fmt.Fprintf(file, "    }\n")
-		}
-
 		fmt.Fprintf(file, "}\n")
 	}
 
@@ -311,7 +305,7 @@ func (s *Schema) generateRustContractFunc(file *os.File, f *FuncDef) {
 	if len(f.Params) != 0 || len(f.Results) != 0 {
 		letMut = "let mut f = "
 	}
-	fmt.Fprintf(file, "    pub fn new(_ctx: &ScFuncContext) -> %sCall {\n", f.Type)
+	fmt.Fprintf(file, "    pub fn new(_ctx: & dyn Sc%sCallContext) -> %sCall {\n", f.Kind, f.Type)
 	fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
 	fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
 	paramsID := "ptr::null_mut()"

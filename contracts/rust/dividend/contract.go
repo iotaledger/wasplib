@@ -13,7 +13,7 @@ type DivideCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewDivideCall(ctx wasmlib.ScHostContext) *DivideCall {
+func NewDivideCall(ctx wasmlib.ScFuncCallContext) *DivideCall {
 	return &DivideCall{Func: wasmlib.NewScFunc(HScName, HFuncDivide)}
 }
 
@@ -22,7 +22,7 @@ type InitCall struct {
 	Params MutableInitParams
 }
 
-func NewInitCall(ctx wasmlib.ScHostContext) *InitCall {
+func NewInitCall(ctx wasmlib.ScFuncCallContext) *InitCall {
 	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -33,7 +33,7 @@ type MemberCall struct {
 	Params MutableMemberParams
 }
 
-func NewMemberCall(ctx wasmlib.ScHostContext) *MemberCall {
+func NewMemberCall(ctx wasmlib.ScFuncCallContext) *MemberCall {
 	f := &MemberCall{Func: wasmlib.NewScFunc(HScName, HFuncMember)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -44,7 +44,7 @@ type SetOwnerCall struct {
 	Params MutableSetOwnerParams
 }
 
-func NewSetOwnerCall(ctx wasmlib.ScHostContext) *SetOwnerCall {
+func NewSetOwnerCall(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
 	f := &SetOwnerCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwner)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -56,12 +56,8 @@ type GetFactorCall struct {
 	Results ImmutableGetFactorResults
 }
 
-func NewGetFactorCall(ctx wasmlib.ScHostContext) *GetFactorCall {
+func NewGetFactorCall(ctx wasmlib.ScViewCallContext) *GetFactorCall {
 	f := &GetFactorCall{Func: wasmlib.NewScView(HScName, HViewGetFactor)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetFactorCallFromView(ctx wasmlib.ScViewContext) *GetFactorCall {
-	return NewGetFactorCall(wasmlib.ScFuncContext{})
 }

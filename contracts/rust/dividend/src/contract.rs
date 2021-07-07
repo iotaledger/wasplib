@@ -22,7 +22,7 @@ pub struct DivideCall {
 }
 
 impl DivideCall {
-    pub fn new(_ctx: &ScFuncContext) -> DivideCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> DivideCall {
         DivideCall {
             func: ScFunc::new(HSC_NAME, HFUNC_DIVIDE),
         }
@@ -35,7 +35,7 @@ pub struct InitCall {
 }
 
 impl InitCall {
-    pub fn new(_ctx: &ScFuncContext) -> InitCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> InitCall {
         let mut f = InitCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
             params: MutableInitParams { id: 0 },
@@ -51,7 +51,7 @@ pub struct MemberCall {
 }
 
 impl MemberCall {
-    pub fn new(_ctx: &ScFuncContext) -> MemberCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> MemberCall {
         let mut f = MemberCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_MEMBER),
             params: MutableMemberParams { id: 0 },
@@ -67,7 +67,7 @@ pub struct SetOwnerCall {
 }
 
 impl SetOwnerCall {
-    pub fn new(_ctx: &ScFuncContext) -> SetOwnerCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> SetOwnerCall {
         let mut f = SetOwnerCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_SET_OWNER),
             params: MutableSetOwnerParams { id: 0 },
@@ -84,7 +84,7 @@ pub struct GetFactorCall {
 }
 
 impl GetFactorCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetFactorCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetFactorCall {
         let mut f = GetFactorCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_FACTOR),
             params:  MutableGetFactorParams { id: 0 },
@@ -92,10 +92,6 @@ impl GetFactorCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetFactorCall {
-        GetFactorCall::new(&ScFuncContext {})
     }
 }
 

@@ -23,7 +23,7 @@ pub struct MintSupplyCall {
 }
 
 impl MintSupplyCall {
-    pub fn new(_ctx: &ScFuncContext) -> MintSupplyCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> MintSupplyCall {
         let mut f = MintSupplyCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_MINT_SUPPLY),
             params: MutableMintSupplyParams { id: 0 },
@@ -39,7 +39,7 @@ pub struct TransferOwnershipCall {
 }
 
 impl TransferOwnershipCall {
-    pub fn new(_ctx: &ScFuncContext) -> TransferOwnershipCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> TransferOwnershipCall {
         let mut f = TransferOwnershipCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_TRANSFER_OWNERSHIP),
             params: MutableTransferOwnershipParams { id: 0 },
@@ -55,7 +55,7 @@ pub struct UpdateMetadataCall {
 }
 
 impl UpdateMetadataCall {
-    pub fn new(_ctx: &ScFuncContext) -> UpdateMetadataCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> UpdateMetadataCall {
         let mut f = UpdateMetadataCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_UPDATE_METADATA),
             params: MutableUpdateMetadataParams { id: 0 },
@@ -71,17 +71,13 @@ pub struct GetInfoCall {
 }
 
 impl GetInfoCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetInfoCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetInfoCall {
         let mut f = GetInfoCall {
             func:   ScView::new(HSC_NAME, HVIEW_GET_INFO),
             params: MutableGetInfoParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetInfoCall {
-        GetInfoCall::new(&ScFuncContext {})
     }
 }
 

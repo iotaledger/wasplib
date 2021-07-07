@@ -14,7 +14,7 @@ type DepositCall struct {
 	Params MutableDepositParams
 }
 
-func NewDepositCall(ctx wasmlib.ScHostContext) *DepositCall {
+func NewDepositCall(ctx wasmlib.ScFuncCallContext) *DepositCall {
 	f := &DepositCall{Func: wasmlib.NewScFunc(HScName, HFuncDeposit)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -24,7 +24,7 @@ type WithdrawCall struct {
 	Func *wasmlib.ScFunc
 }
 
-func NewWithdrawCall(ctx wasmlib.ScHostContext) *WithdrawCall {
+func NewWithdrawCall(ctx wasmlib.ScFuncCallContext) *WithdrawCall {
 	return &WithdrawCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdraw)}
 }
 
@@ -33,14 +33,10 @@ type AccountsCall struct {
 	Results ImmutableAccountsResults
 }
 
-func NewAccountsCall(ctx wasmlib.ScHostContext) *AccountsCall {
+func NewAccountsCall(ctx wasmlib.ScViewCallContext) *AccountsCall {
 	f := &AccountsCall{Func: wasmlib.NewScView(HScName, HViewAccounts)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewAccountsCallFromView(ctx wasmlib.ScViewContext) *AccountsCall {
-	return NewAccountsCall(wasmlib.ScFuncContext{})
 }
 
 type BalanceCall struct {
@@ -49,14 +45,10 @@ type BalanceCall struct {
 	Results ImmutableBalanceResults
 }
 
-func NewBalanceCall(ctx wasmlib.ScHostContext) *BalanceCall {
+func NewBalanceCall(ctx wasmlib.ScViewCallContext) *BalanceCall {
 	f := &BalanceCall{Func: wasmlib.NewScView(HScName, HViewBalance)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewBalanceCallFromView(ctx wasmlib.ScViewContext) *BalanceCall {
-	return NewBalanceCall(wasmlib.ScFuncContext{})
 }
 
 type TotalAssetsCall struct {
@@ -64,12 +56,8 @@ type TotalAssetsCall struct {
 	Results ImmutableTotalAssetsResults
 }
 
-func NewTotalAssetsCall(ctx wasmlib.ScHostContext) *TotalAssetsCall {
+func NewTotalAssetsCall(ctx wasmlib.ScViewCallContext) *TotalAssetsCall {
 	f := &TotalAssetsCall{Func: wasmlib.NewScView(HScName, HViewTotalAssets)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewTotalAssetsCallFromView(ctx wasmlib.ScViewContext) *TotalAssetsCall {
-	return NewTotalAssetsCall(wasmlib.ScFuncContext{})
 }

@@ -14,7 +14,7 @@ type ApproveCall struct {
 	Params MutableApproveParams
 }
 
-func NewApproveCall(ctx wasmlib.ScHostContext) *ApproveCall {
+func NewApproveCall(ctx wasmlib.ScFuncCallContext) *ApproveCall {
 	f := &ApproveCall{Func: wasmlib.NewScFunc(HScName, HFuncApprove)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -25,7 +25,7 @@ type InitCall struct {
 	Params MutableInitParams
 }
 
-func NewInitCall(ctx wasmlib.ScHostContext) *InitCall {
+func NewInitCall(ctx wasmlib.ScFuncCallContext) *InitCall {
 	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -36,7 +36,7 @@ type TransferCall struct {
 	Params MutableTransferParams
 }
 
-func NewTransferCall(ctx wasmlib.ScHostContext) *TransferCall {
+func NewTransferCall(ctx wasmlib.ScFuncCallContext) *TransferCall {
 	f := &TransferCall{Func: wasmlib.NewScFunc(HScName, HFuncTransfer)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -47,7 +47,7 @@ type TransferFromCall struct {
 	Params MutableTransferFromParams
 }
 
-func NewTransferFromCall(ctx wasmlib.ScHostContext) *TransferFromCall {
+func NewTransferFromCall(ctx wasmlib.ScFuncCallContext) *TransferFromCall {
 	f := &TransferFromCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferFrom)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -59,14 +59,10 @@ type AllowanceCall struct {
 	Results ImmutableAllowanceResults
 }
 
-func NewAllowanceCall(ctx wasmlib.ScHostContext) *AllowanceCall {
+func NewAllowanceCall(ctx wasmlib.ScViewCallContext) *AllowanceCall {
 	f := &AllowanceCall{Func: wasmlib.NewScView(HScName, HViewAllowance)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewAllowanceCallFromView(ctx wasmlib.ScViewContext) *AllowanceCall {
-	return NewAllowanceCall(wasmlib.ScFuncContext{})
 }
 
 type BalanceOfCall struct {
@@ -75,14 +71,10 @@ type BalanceOfCall struct {
 	Results ImmutableBalanceOfResults
 }
 
-func NewBalanceOfCall(ctx wasmlib.ScHostContext) *BalanceOfCall {
+func NewBalanceOfCall(ctx wasmlib.ScViewCallContext) *BalanceOfCall {
 	f := &BalanceOfCall{Func: wasmlib.NewScView(HScName, HViewBalanceOf)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewBalanceOfCallFromView(ctx wasmlib.ScViewContext) *BalanceOfCall {
-	return NewBalanceOfCall(wasmlib.ScFuncContext{})
 }
 
 type TotalSupplyCall struct {
@@ -90,12 +82,8 @@ type TotalSupplyCall struct {
 	Results ImmutableTotalSupplyResults
 }
 
-func NewTotalSupplyCall(ctx wasmlib.ScHostContext) *TotalSupplyCall {
+func NewTotalSupplyCall(ctx wasmlib.ScViewCallContext) *TotalSupplyCall {
 	f := &TotalSupplyCall{Func: wasmlib.NewScView(HScName, HViewTotalSupply)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
-}
-
-func NewTotalSupplyCallFromView(ctx wasmlib.ScViewContext) *TotalSupplyCall {
-	return NewTotalSupplyCall(wasmlib.ScFuncContext{})
 }

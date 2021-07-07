@@ -54,7 +54,7 @@ func funcParamTypes(ctx wasmlib.ScFuncContext, f *ParamTypesContext) {
 }
 
 func viewBlockRecord(ctx wasmlib.ScViewContext, f *BlockRecordContext) {
-	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
+	records := coreblocklog.NewGetRequestLogRecordsForBlockCall(ctx)
 	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
 	records.Func.Call()
 	recordIndex := f.Params.RecordIndex().Value()
@@ -63,7 +63,7 @@ func viewBlockRecord(ctx wasmlib.ScViewContext, f *BlockRecordContext) {
 }
 
 func viewBlockRecords(ctx wasmlib.ScViewContext, f *BlockRecordsContext) {
-	records := coreblocklog.NewGetRequestLogRecordsForBlockCallFromView(ctx)
+	records := coreblocklog.NewGetRequestLogRecordsForBlockCall(ctx)
 	records.Params.BlockIndex().SetValue(f.Params.BlockIndex().Value())
 	records.Func.Call()
 	f.Results.Count().SetValue(records.Results.RequestRecord().Length())

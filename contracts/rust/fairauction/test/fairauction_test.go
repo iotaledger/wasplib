@@ -34,10 +34,10 @@ func setupTest(t *testing.T) *common.SoloContext {
 	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-10)
 	chain.Env.AssertAddressBalance(auctioneerAddr, tokenColor, 10)
 
-	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, auctioneer)
+	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain)
 	auctionColor := ctx.ScColor(tokenColor)
 
-	startAuction := fairauction.NewStartAuctionCall(ctx)
+	startAuction := fairauction.NewStartAuctionCall(ctx.SignWith(auctioneer))
 	startAuction.Params.Color().SetValue(auctionColor)
 	startAuction.Params.MinimumBid().SetValue(500)
 	startAuction.Params.Description().SetValue("Cool tokens for sale!")
@@ -110,9 +110,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 	chain := ctx.Chain
 
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
-	ctx = common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, bidder)
-
-	placeBid := fairauction.NewPlaceBidCall(ctx)
+	placeBid := fairauction.NewPlaceBidCall(ctx.SignWith(bidder))
 	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	placeBid.Func.TransferIotas(100).Post()
 	require.Error(t, ctx.Err)
@@ -135,9 +133,7 @@ func TestFaOneBid(t *testing.T) {
 	chain := ctx.Chain
 
 	bidder, _ := chain.Env.NewKeyPairWithFunds()
-	ctx = common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain, bidder)
-
-	placeBid := fairauction.NewPlaceBidCall(ctx)
+	placeBid := fairauction.NewPlaceBidCall(ctx.SignWith(bidder))
 	placeBid.Params.Color().SetValue(ctx.ScColor(tokenColor))
 	placeBid.Func.TransferIotas(500).Post()
 	require.NoError(t, ctx.Err)

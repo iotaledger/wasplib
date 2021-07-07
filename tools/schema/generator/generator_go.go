@@ -223,11 +223,6 @@ func (s *Schema) generateGoContract() error {
 		fmt.Fprintf(file, "}\n")
 
 		s.generateGoContractFunc(file, f)
-		if f.Kind == KindView {
-			fmt.Fprintf(file, "\nfunc New%sCallFromView(ctx wasmlib.ScViewContext) *%sCall {\n", f.Type, f.Type)
-			fmt.Fprintf(file, "\treturn New%sCall(wasmlib.ScFuncContext{})\n", f.Type)
-			fmt.Fprintf(file, "}\n")
-		}
 	}
 
 	return nil
@@ -245,7 +240,7 @@ func (s *Schema) generateGoContractFunc(file *os.File, f *FuncDef) {
 		assign = "f :="
 		resultsID = "&f.Results.id"
 	}
-	fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.ScHostContext) *%sCall {\n", f.Type, f.Type)
+	fmt.Fprintf(file, "\nfunc New%sCall(ctx wasmlib.Sc%sCallContext) *%sCall {\n", f.Type, f.Kind, f.Type)
 	fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
 	if len(f.Params) != 0 || len(f.Results) != 0 {
 		fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsID, resultsID)

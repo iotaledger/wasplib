@@ -14,7 +14,7 @@ type MintSupplyCall struct {
 	Params MutableMintSupplyParams
 }
 
-func NewMintSupplyCall(ctx wasmlib.ScHostContext) *MintSupplyCall {
+func NewMintSupplyCall(ctx wasmlib.ScFuncCallContext) *MintSupplyCall {
 	f := &MintSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncMintSupply)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -25,7 +25,7 @@ type TransferOwnershipCall struct {
 	Params MutableTransferOwnershipParams
 }
 
-func NewTransferOwnershipCall(ctx wasmlib.ScHostContext) *TransferOwnershipCall {
+func NewTransferOwnershipCall(ctx wasmlib.ScFuncCallContext) *TransferOwnershipCall {
 	f := &TransferOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferOwnership)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -36,7 +36,7 @@ type UpdateMetadataCall struct {
 	Params MutableUpdateMetadataParams
 }
 
-func NewUpdateMetadataCall(ctx wasmlib.ScHostContext) *UpdateMetadataCall {
+func NewUpdateMetadataCall(ctx wasmlib.ScFuncCallContext) *UpdateMetadataCall {
 	f := &UpdateMetadataCall{Func: wasmlib.NewScFunc(HScName, HFuncUpdateMetadata)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
@@ -47,12 +47,8 @@ type GetInfoCall struct {
 	Params MutableGetInfoParams
 }
 
-func NewGetInfoCall(ctx wasmlib.ScHostContext) *GetInfoCall {
+func NewGetInfoCall(ctx wasmlib.ScViewCallContext) *GetInfoCall {
 	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
-}
-
-func NewGetInfoCallFromView(ctx wasmlib.ScViewContext) *GetInfoCall {
-	return NewGetInfoCall(wasmlib.ScFuncContext{})
 }

@@ -1,5 +1,13 @@
 package wasmlib
 
+type ScFuncCallContext interface {
+	CanCallFunc()
+}
+
+type ScViewCallContext interface {
+	CanCallView()
+}
+
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 type ScView struct {

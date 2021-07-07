@@ -166,7 +166,7 @@ func viewFibonacci(ctx wasmlib.ScViewContext, f *FibonacciContext) {
 		return
 	}
 
-	fib := NewFibonacciCallFromView(ctx)
+	fib := NewFibonacciCall(ctx)
 	fib.Params.IntValue().SetValue(n - 1)
 	fib.Func.Call()
 	n1 := fib.Results.IntValue().Value()
@@ -207,7 +207,7 @@ func viewPassTypesView(ctx wasmlib.ScViewContext, f *PassTypesViewContext) {
 
 //nolint:unparam
 func viewTestCallPanicViewEPFromView(ctx wasmlib.ScViewContext, f *TestCallPanicViewEPFromViewContext) {
-	NewTestPanicViewEPCallFromView(ctx).Func.Call()
+	NewTestPanicViewEPCall(ctx).Func.Call()
 }
 
 func viewTestChainOwnerIDView(ctx wasmlib.ScViewContext, f *TestChainOwnerIDViewContext) {
@@ -220,7 +220,7 @@ func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *TestPanicViewEPContext) {
 }
 
 func viewTestSandboxCall(ctx wasmlib.ScViewContext, f *TestSandboxCallContext) {
-	getChainInfo := coreroot.NewGetChainInfoCallFromView(ctx)
+	getChainInfo := coreroot.NewGetChainInfoCall(ctx)
 	getChainInfo.Func.Call()
 	f.Results.SandboxCall().SetValue(getChainInfo.Results.Description().Value())
 }

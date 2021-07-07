@@ -22,7 +22,7 @@ pub struct LockBetsCall {
 }
 
 impl LockBetsCall {
-    pub fn new(_ctx: &ScFuncContext) -> LockBetsCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> LockBetsCall {
         LockBetsCall {
             func: ScFunc::new(HSC_NAME, HFUNC_LOCK_BETS),
         }
@@ -34,7 +34,7 @@ pub struct PayWinnersCall {
 }
 
 impl PayWinnersCall {
-    pub fn new(_ctx: &ScFuncContext) -> PayWinnersCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> PayWinnersCall {
         PayWinnersCall {
             func: ScFunc::new(HSC_NAME, HFUNC_PAY_WINNERS),
         }
@@ -47,7 +47,7 @@ pub struct PlaceBetCall {
 }
 
 impl PlaceBetCall {
-    pub fn new(_ctx: &ScFuncContext) -> PlaceBetCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlaceBetCall {
         let mut f = PlaceBetCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_PLACE_BET),
             params: MutablePlaceBetParams { id: 0 },
@@ -63,7 +63,7 @@ pub struct PlayPeriodCall {
 }
 
 impl PlayPeriodCall {
-    pub fn new(_ctx: &ScFuncContext) -> PlayPeriodCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> PlayPeriodCall {
         let mut f = PlayPeriodCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_PLAY_PERIOD),
             params: MutablePlayPeriodParams { id: 0 },
@@ -79,17 +79,13 @@ pub struct LastWinningNumberCall {
 }
 
 impl LastWinningNumberCall {
-    pub fn new(_ctx: &ScFuncContext) -> LastWinningNumberCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> LastWinningNumberCall {
         let mut f = LastWinningNumberCall {
             func:    ScView::new(HSC_NAME, HVIEW_LAST_WINNING_NUMBER),
             results: ImmutableLastWinningNumberResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> LastWinningNumberCall {
-        LastWinningNumberCall::new(&ScFuncContext {})
     }
 }
 

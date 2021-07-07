@@ -22,14 +22,14 @@ type SoloContext struct {
 	wasmHost wasmhost.WasmHost
 }
 
-// implements wasmlib.ScFuncContext interface
 var (
-	_        wasmlib.ScHostContext = &SoloContext{}
+	_        wasmlib.ScFuncCallContext = &SoloContext{}
+	_        wasmlib.ScViewCallContext = &SoloContext{}
 	soloHost wasmlib.ScHost
 )
 
-func NewSoloContext(contract string, onLoad func(), chain *solo.Chain, keyPair *ed25519.KeyPair) *SoloContext {
-	ctx := &SoloContext{contract: contract, Chain: chain, keyPair: keyPair}
+func NewSoloContext(contract string, onLoad func(), chain *solo.Chain) *SoloContext {
+	ctx := &SoloContext{contract: contract, Chain: chain}
 	ctx.wasmHost.Init(chain.Log)
 	ctx.wasmHost.TrackObject(wasmproc.NewNullObject(&ctx.wasmHost.KvStoreHost))
 	ctx.wasmHost.TrackObject(NewSoloScContext(ctx))
@@ -46,6 +46,14 @@ func (s *SoloContext) Address() wasmlib.ScAddress {
 		return s.ScAddress(s.Chain.OriginatorAddress)
 	}
 	return s.ScAddress(ledgerstate.NewED25519Address(s.keyPair.PublicKey))
+}
+
+func (s *SoloContext) CanCallFunc() {
+	panic("CanCallFunc")
+}
+
+func (s *SoloContext) CanCallView() {
+	panic("CanCallView")
 }
 
 func (s *SoloContext) Host() wasmlib.ScHost {
@@ -78,6 +86,11 @@ func (s *SoloContext) ScHname(hname coretypes.Hname) wasmlib.ScHname {
 
 func (s *SoloContext) ScRequestID(requestID coretypes.RequestID) wasmlib.ScRequestID {
 	return wasmlib.NewScRequestIDFromBytes(requestID.Bytes())
+}
+
+func (s *SoloContext) SignWith(keyPair *ed25519.KeyPair) *SoloContext {
+	s.keyPair = keyPair
+	return s
 }
 
 func (s *SoloContext) Transfer() wasmlib.ScTransfers {

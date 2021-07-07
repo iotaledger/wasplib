@@ -15,14 +15,10 @@ type GetNumRecordsCall struct {
 	Results ImmutableGetNumRecordsResults
 }
 
-func NewGetNumRecordsCall(ctx wasmlib.ScHostContext) *GetNumRecordsCall {
+func NewGetNumRecordsCall(ctx wasmlib.ScViewCallContext) *GetNumRecordsCall {
 	f := &GetNumRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetNumRecords)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetNumRecordsCallFromView(ctx wasmlib.ScViewContext) *GetNumRecordsCall {
-	return NewGetNumRecordsCall(wasmlib.ScFuncContext{})
 }
 
 type GetRecordsCall struct {
@@ -31,12 +27,8 @@ type GetRecordsCall struct {
 	Results ImmutableGetRecordsResults
 }
 
-func NewGetRecordsCall(ctx wasmlib.ScHostContext) *GetRecordsCall {
+func NewGetRecordsCall(ctx wasmlib.ScViewCallContext) *GetRecordsCall {
 	f := &GetRecordsCall{Func: wasmlib.NewScView(HScName, HViewGetRecords)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
-}
-
-func NewGetRecordsCallFromView(ctx wasmlib.ScViewContext) *GetRecordsCall {
-	return NewGetRecordsCall(wasmlib.ScFuncContext{})
 }

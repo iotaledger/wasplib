@@ -16,7 +16,7 @@ import (
 
 func setupTest(t *testing.T) *common.SoloContext {
 	chain := common.StartChainAndDeployWasmContractByName(t, inccounter.ScName)
-	return common.NewSoloContext(inccounter.ScName, inccounter.OnLoad, chain, nil)
+	return common.NewSoloContext(inccounter.ScName, inccounter.OnLoad, chain)
 }
 
 func TestDeploy(t *testing.T) {
@@ -34,8 +34,7 @@ func TestStateAfterDeploy(t *testing.T) {
 func TestIncrementOnce(t *testing.T) {
 	ctx := setupTest(t)
 
-	increment := inccounter.NewIncrementCall(ctx)
-	increment.Func.TransferIotas(1).Post()
+	inccounter.NewIncrementCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	checkStateCounter(t, ctx, 1)
@@ -69,8 +68,7 @@ func TestIncrementRepeatThrice(t *testing.T) {
 func TestIncrementCallIncrement(t *testing.T) {
 	ctx := setupTest(t)
 
-	callIncrement := inccounter.NewCallIncrementCall(ctx)
-	callIncrement.Func.TransferIotas(1).Post()
+	inccounter.NewCallIncrementCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	checkStateCounter(t, ctx, 2)
@@ -79,8 +77,7 @@ func TestIncrementCallIncrement(t *testing.T) {
 func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 	ctx := setupTest(t)
 
-	callIncrementRecurse5x := inccounter.NewCallIncrementRecurse5xCall(ctx)
-	callIncrementRecurse5x.Func.TransferIotas(1).Post()
+	inccounter.NewCallIncrementRecurse5xCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	checkStateCounter(t, ctx, 6)
@@ -89,8 +86,7 @@ func TestIncrementCallIncrementRecurse5x(t *testing.T) {
 func TestIncrementPostIncrement(t *testing.T) {
 	ctx := setupTest(t)
 
-	postIncrement := inccounter.NewPostIncrementCall(ctx)
-	postIncrement.Func.TransferIotas(1).Post()
+	inccounter.NewPostIncrementCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	require.True(t, ctx.WaitForRequestsThrough(5))
@@ -101,8 +97,7 @@ func TestIncrementPostIncrement(t *testing.T) {
 func TestIncrementLocalStateInternalCall(t *testing.T) {
 	ctx := setupTest(t)
 
-	localStateInternalCall := inccounter.NewLocalStateInternalCallCall(ctx)
-	localStateInternalCall.Func.TransferIotas(1).Post()
+	inccounter.NewLocalStateInternalCallCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	checkStateCounter(t, ctx, 2)
@@ -111,8 +106,7 @@ func TestIncrementLocalStateInternalCall(t *testing.T) {
 func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	ctx := setupTest(t)
 
-	localStateSandbox := inccounter.NewLocalStateSandboxCallCall(ctx)
-	localStateSandbox.Func.TransferIotas(1).Post()
+	inccounter.NewLocalStateSandboxCallCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	if common.WasmRunner == 0 {
@@ -127,8 +121,7 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 func TestIncrementLocalStatePost(t *testing.T) {
 	ctx := setupTest(t)
 
-	localStatePost := inccounter.NewLocalStatePostCall(ctx)
-	localStatePost.Func.TransferIotas(3).Post()
+	inccounter.NewLocalStatePostCall(ctx).Func.TransferIotas(3).Post()
 	require.NoError(t, ctx.Err)
 
 	require.True(t, ctx.WaitForRequestsThrough(7))
@@ -147,8 +140,7 @@ func TestIncrementLocalStatePost(t *testing.T) {
 func TestLeb128(t *testing.T) {
 	ctx := setupTest(t)
 
-	testLeb128 := inccounter.NewTestLeb128Call(ctx)
-	testLeb128.Func.TransferIotas(1).Post()
+	inccounter.NewTestLeb128Call(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	//res, err := chain.CallView(
@@ -175,14 +167,12 @@ func TestLoop(t *testing.T) {
 	ctx := setupTest(t)
 
 	wasmhost.WasmTimeout = 1 * time.Second
-	endlessLoop := inccounter.NewEndlessLoopCall(ctx)
-	endlessLoop.Func.TransferIotas(1).Post()
+	inccounter.NewEndlessLoopCall(ctx).Func.TransferIotas(1).Post()
 	require.Error(t, ctx.Err)
 	errText := ctx.Err.Error()
 	require.True(t, strings.Contains(errText, "interrupt"))
 
-	increment := inccounter.NewIncrementCall(ctx)
-	increment.Func.TransferIotas(1).Post()
+	inccounter.NewIncrementCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
 	checkStateCounter(t, ctx, 1)

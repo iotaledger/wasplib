@@ -44,10 +44,6 @@ type ScHost interface {
 	SetBytes(objID, keyID, typeID int32, value []byte)
 }
 
-type ScHostContext interface {
-	Host() ScHost
-}
-
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 var host ScHost
 

@@ -154,7 +154,7 @@ pub fn view_fibonacci(ctx: &ScViewContext, f: &FibonacciContext) {
         return;
     }
 
-    let fib = FibonacciCall::new_from_view(ctx);
+    let fib = FibonacciCall::new(ctx);
     fib.params.int_value().set_value(n - 1);
     fib.func.call();
     let n1 = fib.results.int_value().value();
@@ -193,7 +193,7 @@ pub fn view_pass_types_view(ctx: &ScViewContext, f: &PassTypesViewContext) {
 }
 
 pub fn view_test_call_panic_view_ep_from_view(ctx: &ScViewContext, _f: &TestCallPanicViewEPFromViewContext) {
-    TestPanicViewEPCall::new_from_view(ctx).func.call();
+    TestPanicViewEPCall::new(ctx).func.call();
 }
 
 pub fn view_test_chain_owner_id_view(ctx: &ScViewContext, f: &TestChainOwnerIDViewContext) {
@@ -205,7 +205,7 @@ pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &TestPanicViewEPContext)
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &TestSandboxCallContext) {
-    let get_chain_info = corecontracts::coreroot::GetChainInfoCall::new_from_view(ctx);
+    let get_chain_info = corecontracts::coreroot::GetChainInfoCall::new(ctx);
     get_chain_info.func.call();
     f.results.sandbox_call().set_value(&get_chain_info.results.description().value());
 }

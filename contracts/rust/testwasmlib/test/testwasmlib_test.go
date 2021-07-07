@@ -11,6 +11,7 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
+	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/stretchr/testify/require"
 )
 
@@ -53,12 +54,12 @@ var (
 )
 
 func setupTest(t *testing.T) *solo.Chain {
-	return common.StartChainAndDeployWasmContractByName(t, ScName)
+	return common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, ScName)
-	_, err := chain.FindContract(ScName)
+	chain := setupTest(t)
+	_, err := chain.FindContract(testwasmlib.ScName)
 	require.NoError(t, err)
 }
 

@@ -20,7 +20,7 @@ pub struct DepositCall {
 }
 
 impl DepositCall {
-    pub fn new(_ctx: &ScFuncContext) -> DepositCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> DepositCall {
         let mut f = DepositCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_DEPOSIT),
             params: MutableDepositParams { id: 0 },
@@ -35,7 +35,7 @@ pub struct WithdrawCall {
 }
 
 impl WithdrawCall {
-    pub fn new(_ctx: &ScFuncContext) -> WithdrawCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> WithdrawCall {
         WithdrawCall {
             func: ScFunc::new(HSC_NAME, HFUNC_WITHDRAW),
         }
@@ -48,17 +48,13 @@ pub struct AccountsCall {
 }
 
 impl AccountsCall {
-    pub fn new(_ctx: &ScFuncContext) -> AccountsCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> AccountsCall {
         let mut f = AccountsCall {
             func:    ScView::new(HSC_NAME, HVIEW_ACCOUNTS),
             results: ImmutableAccountsResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> AccountsCall {
-        AccountsCall::new(&ScFuncContext {})
     }
 }
 
@@ -69,7 +65,7 @@ pub struct BalanceCall {
 }
 
 impl BalanceCall {
-    pub fn new(_ctx: &ScFuncContext) -> BalanceCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> BalanceCall {
         let mut f = BalanceCall {
             func:    ScView::new(HSC_NAME, HVIEW_BALANCE),
             params:  MutableBalanceParams { id: 0 },
@@ -77,10 +73,6 @@ impl BalanceCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> BalanceCall {
-        BalanceCall::new(&ScFuncContext {})
     }
 }
 
@@ -90,17 +82,13 @@ pub struct TotalAssetsCall {
 }
 
 impl TotalAssetsCall {
-    pub fn new(_ctx: &ScFuncContext) -> TotalAssetsCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> TotalAssetsCall {
         let mut f = TotalAssetsCall {
             func:    ScView::new(HSC_NAME, HVIEW_TOTAL_ASSETS),
             results: ImmutableTotalAssetsResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> TotalAssetsCall {
-        TotalAssetsCall::new(&ScFuncContext {})
     }
 }
 

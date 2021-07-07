@@ -23,7 +23,7 @@ pub struct ParamTypesCall {
 }
 
 impl ParamTypesCall {
-    pub fn new(_ctx: &ScFuncContext) -> ParamTypesCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> ParamTypesCall {
         let mut f = ParamTypesCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_PARAM_TYPES),
             params: MutableParamTypesParams { id: 0 },
@@ -40,7 +40,7 @@ pub struct BlockRecordCall {
 }
 
 impl BlockRecordCall {
-    pub fn new(_ctx: &ScFuncContext) -> BlockRecordCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> BlockRecordCall {
         let mut f = BlockRecordCall {
             func:    ScView::new(HSC_NAME, HVIEW_BLOCK_RECORD),
             params:  MutableBlockRecordParams { id: 0 },
@@ -48,10 +48,6 @@ impl BlockRecordCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordCall {
-        BlockRecordCall::new(&ScFuncContext {})
     }
 }
 
@@ -62,7 +58,7 @@ pub struct BlockRecordsCall {
 }
 
 impl BlockRecordsCall {
-    pub fn new(_ctx: &ScFuncContext) -> BlockRecordsCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> BlockRecordsCall {
         let mut f = BlockRecordsCall {
             func:    ScView::new(HSC_NAME, HVIEW_BLOCK_RECORDS),
             params:  MutableBlockRecordsParams { id: 0 },
@@ -70,10 +66,6 @@ impl BlockRecordsCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> BlockRecordsCall {
-        BlockRecordsCall::new(&ScFuncContext {})
     }
 }
 

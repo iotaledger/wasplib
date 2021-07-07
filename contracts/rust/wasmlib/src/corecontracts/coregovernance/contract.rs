@@ -20,7 +20,7 @@ pub struct AddAllowedStateControllerAddressCall {
 }
 
 impl AddAllowedStateControllerAddressCall {
-    pub fn new(_ctx: &ScFuncContext) -> AddAllowedStateControllerAddressCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> AddAllowedStateControllerAddressCall {
         let mut f = AddAllowedStateControllerAddressCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_ADD_ALLOWED_STATE_CONTROLLER_ADDRESS),
             params: MutableAddAllowedStateControllerAddressParams { id: 0 },
@@ -36,7 +36,7 @@ pub struct RemoveAllowedStateControllerAddressCall {
 }
 
 impl RemoveAllowedStateControllerAddressCall {
-    pub fn new(_ctx: &ScFuncContext) -> RemoveAllowedStateControllerAddressCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> RemoveAllowedStateControllerAddressCall {
         let mut f = RemoveAllowedStateControllerAddressCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_REMOVE_ALLOWED_STATE_CONTROLLER_ADDRESS),
             params: MutableRemoveAllowedStateControllerAddressParams { id: 0 },
@@ -52,7 +52,7 @@ pub struct RotateStateControllerCall {
 }
 
 impl RotateStateControllerCall {
-    pub fn new(_ctx: &ScFuncContext) -> RotateStateControllerCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> RotateStateControllerCall {
         let mut f = RotateStateControllerCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_ROTATE_STATE_CONTROLLER),
             params: MutableRotateStateControllerParams { id: 0 },
@@ -68,17 +68,13 @@ pub struct GetAllowedStateControllerAddressesCall {
 }
 
 impl GetAllowedStateControllerAddressesCall {
-    pub fn new(_ctx: &ScFuncContext) -> GetAllowedStateControllerAddressesCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> GetAllowedStateControllerAddressesCall {
         let mut f = GetAllowedStateControllerAddressesCall {
             func:    ScView::new(HSC_NAME, HVIEW_GET_ALLOWED_STATE_CONTROLLER_ADDRESSES),
             results: ImmutableGetAllowedStateControllerAddressesResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> GetAllowedStateControllerAddressesCall {
-        GetAllowedStateControllerAddressesCall::new(&ScFuncContext {})
     }
 }
 

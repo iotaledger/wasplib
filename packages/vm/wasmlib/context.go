@@ -239,8 +239,10 @@ type ScFuncContext struct {
 	ScBaseContext
 }
 
-// implements wasmlib.ScFuncContext interface
-var _ ScHostContext = &ScFuncContext{}
+var (
+	_ ScViewCallContext = &ScViewContext{}
+	_ ScFuncCallContext = &ScFuncContext{}
+)
 
 // calls a smart contract function
 func (ctx ScFuncContext) Call(hContract, hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
@@ -269,6 +271,14 @@ func (ctx ScFuncContext) Caller() ScAgentID {
 // calls a smart contract function on the current contract
 func (ctx ScFuncContext) CallSelf(hFunction ScHname, params *ScMutableMap, transfer *ScTransfers) ScImmutableMap {
 	return ctx.Call(ctx.Contract(), hFunction, params, transfer)
+}
+
+func (ctx ScFuncContext) CanCallFunc() {
+	panic("CanCallFunc")
+}
+
+func (ctx ScFuncContext) CanCallView() {
+	panic("CanCallView")
 }
 
 // deploys a smart contract
@@ -349,6 +359,8 @@ type ScViewContext struct {
 	ScBaseContext
 }
 
+var _ ScViewCallContext = &ScViewContext{}
+
 // calls a smart contract function
 func (ctx ScViewContext) Call(contract, function ScHname, params *ScMutableMap) ScImmutableMap {
 	encode := NewBytesEncoder()
@@ -367,6 +379,10 @@ func (ctx ScViewContext) Call(contract, function ScHname, params *ScMutableMap) 
 // calls a smart contract function on the current contract
 func (ctx ScViewContext) CallSelf(function ScHname, params *ScMutableMap) ScImmutableMap {
 	return ctx.Call(ctx.Contract(), function, params)
+}
+
+func (ctx ScViewContext) CanCallView() {
+	panic("CanCallView")
 }
 
 // access to immutable state storage

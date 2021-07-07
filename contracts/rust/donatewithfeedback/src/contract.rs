@@ -23,7 +23,7 @@ pub struct DonateCall {
 }
 
 impl DonateCall {
-    pub fn new(_ctx: &ScFuncContext) -> DonateCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> DonateCall {
         let mut f = DonateCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_DONATE),
             params: MutableDonateParams { id: 0 },
@@ -39,7 +39,7 @@ pub struct WithdrawCall {
 }
 
 impl WithdrawCall {
-    pub fn new(_ctx: &ScFuncContext) -> WithdrawCall {
+    pub fn new(_ctx: & dyn ScFuncCallContext) -> WithdrawCall {
         let mut f = WithdrawCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_WITHDRAW),
             params: MutableWithdrawParams { id: 0 },
@@ -56,7 +56,7 @@ pub struct DonationCall {
 }
 
 impl DonationCall {
-    pub fn new(_ctx: &ScFuncContext) -> DonationCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> DonationCall {
         let mut f = DonationCall {
             func:    ScView::new(HSC_NAME, HVIEW_DONATION),
             params:  MutableDonationParams { id: 0 },
@@ -64,10 +64,6 @@ impl DonationCall {
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> DonationCall {
-        DonationCall::new(&ScFuncContext {})
     }
 }
 
@@ -77,17 +73,13 @@ pub struct DonationInfoCall {
 }
 
 impl DonationInfoCall {
-    pub fn new(_ctx: &ScFuncContext) -> DonationInfoCall {
+    pub fn new(_ctx: & dyn ScViewCallContext) -> DonationInfoCall {
         let mut f = DonationInfoCall {
             func:    ScView::new(HSC_NAME, HVIEW_DONATION_INFO),
             results: ImmutableDonationInfoResults { id: 0 },
         };
         f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
-    }
-
-    pub fn new_from_view(_ctx: &ScViewContext) -> DonationInfoCall {
-        DonationInfoCall::new(&ScFuncContext {})
     }
 }
 
