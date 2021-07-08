@@ -5,7 +5,6 @@
 // >>>> DO NOT CHANGE THIS FILE! <<<<
 // Change the json schema instead
 
-
 package fairroulette
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"

@@ -18,15 +18,15 @@ type GetHelloWorldCall struct {
 	Results ImmutableGetHelloWorldResults
 }
 
-type helloworldFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs helloworldFuncs
+var ScFuncs Funcs
 
-func (sc helloworldFuncs) HelloWorld(ctx wasmlib.ScFuncCallContext) *HelloWorldCall {
+func (sc Funcs) HelloWorld(ctx wasmlib.ScFuncCallContext) *HelloWorldCall {
 	return &HelloWorldCall{Func: wasmlib.NewScFunc(HScName, HFuncHelloWorld)}
 }
 
-func (sc helloworldFuncs) GetHelloWorld(ctx wasmlib.ScViewCallContext) *GetHelloWorldCall {
+func (sc Funcs) GetHelloWorld(ctx wasmlib.ScViewCallContext) *GetHelloWorldCall {
 	f := &GetHelloWorldCall{Func: wasmlib.NewScView(HScName, HViewGetHelloWorld)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

@@ -29,29 +29,29 @@ type GetAllowedStateControllerAddressesCall struct {
 	Results ImmutableGetAllowedStateControllerAddressesResults
 }
 
-type coregovernanceFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs coregovernanceFuncs
+var ScFuncs Funcs
 
-func (sc coregovernanceFuncs) AddAllowedStateControllerAddress(ctx wasmlib.ScFuncCallContext) *AddAllowedStateControllerAddressCall {
+func (sc Funcs) AddAllowedStateControllerAddress(ctx wasmlib.ScFuncCallContext) *AddAllowedStateControllerAddressCall {
 	f := &AddAllowedStateControllerAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncAddAllowedStateControllerAddress)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc coregovernanceFuncs) RemoveAllowedStateControllerAddress(ctx wasmlib.ScFuncCallContext) *RemoveAllowedStateControllerAddressCall {
+func (sc Funcs) RemoveAllowedStateControllerAddress(ctx wasmlib.ScFuncCallContext) *RemoveAllowedStateControllerAddressCall {
 	f := &RemoveAllowedStateControllerAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncRemoveAllowedStateControllerAddress)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc coregovernanceFuncs) RotateStateController(ctx wasmlib.ScFuncCallContext) *RotateStateControllerCall {
+func (sc Funcs) RotateStateController(ctx wasmlib.ScFuncCallContext) *RotateStateControllerCall {
 	f := &RotateStateControllerCall{Func: wasmlib.NewScFunc(HScName, HFuncRotateStateController)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc coregovernanceFuncs) GetAllowedStateControllerAddresses(ctx wasmlib.ScViewCallContext) *GetAllowedStateControllerAddressesCall {
+func (sc Funcs) GetAllowedStateControllerAddresses(ctx wasmlib.ScViewCallContext) *GetAllowedStateControllerAddressesCall {
 	f := &GetAllowedStateControllerAddressesCall{Func: wasmlib.NewScView(HScName, HViewGetAllowedStateControllerAddresses)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

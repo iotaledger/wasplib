@@ -34,33 +34,33 @@ type GetFactorCall struct {
 	Results ImmutableGetFactorResults
 }
 
-type dividendFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs dividendFuncs
+var ScFuncs Funcs
 
-func (sc dividendFuncs) Divide(ctx wasmlib.ScFuncCallContext) *DivideCall {
+func (sc Funcs) Divide(ctx wasmlib.ScFuncCallContext) *DivideCall {
 	return &DivideCall{Func: wasmlib.NewScFunc(HScName, HFuncDivide)}
 }
 
-func (sc dividendFuncs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
+func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
 	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc dividendFuncs) Member(ctx wasmlib.ScFuncCallContext) *MemberCall {
+func (sc Funcs) Member(ctx wasmlib.ScFuncCallContext) *MemberCall {
 	f := &MemberCall{Func: wasmlib.NewScFunc(HScName, HFuncMember)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc dividendFuncs) SetOwner(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
+func (sc Funcs) SetOwner(ctx wasmlib.ScFuncCallContext) *SetOwnerCall {
 	f := &SetOwnerCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwner)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc dividendFuncs) GetFactor(ctx wasmlib.ScViewCallContext) *GetFactorCall {
+func (sc Funcs) GetFactor(ctx wasmlib.ScViewCallContext) *GetFactorCall {
 	f := &GetFactorCall{Func: wasmlib.NewScView(HScName, HViewGetFactor)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

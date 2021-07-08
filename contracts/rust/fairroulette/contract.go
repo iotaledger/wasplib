@@ -32,31 +32,31 @@ type LastWinningNumberCall struct {
 	Results ImmutableLastWinningNumberResults
 }
 
-type fairrouletteFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs fairrouletteFuncs
+var ScFuncs Funcs
 
-func (sc fairrouletteFuncs) LockBets(ctx wasmlib.ScFuncCallContext) *LockBetsCall {
+func (sc Funcs) LockBets(ctx wasmlib.ScFuncCallContext) *LockBetsCall {
 	return &LockBetsCall{Func: wasmlib.NewScFunc(HScName, HFuncLockBets)}
 }
 
-func (sc fairrouletteFuncs) PayWinners(ctx wasmlib.ScFuncCallContext) *PayWinnersCall {
+func (sc Funcs) PayWinners(ctx wasmlib.ScFuncCallContext) *PayWinnersCall {
 	return &PayWinnersCall{Func: wasmlib.NewScFunc(HScName, HFuncPayWinners)}
 }
 
-func (sc fairrouletteFuncs) PlaceBet(ctx wasmlib.ScFuncCallContext) *PlaceBetCall {
+func (sc Funcs) PlaceBet(ctx wasmlib.ScFuncCallContext) *PlaceBetCall {
 	f := &PlaceBetCall{Func: wasmlib.NewScFunc(HScName, HFuncPlaceBet)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairrouletteFuncs) PlayPeriod(ctx wasmlib.ScFuncCallContext) *PlayPeriodCall {
+func (sc Funcs) PlayPeriod(ctx wasmlib.ScFuncCallContext) *PlayPeriodCall {
 	f := &PlayPeriodCall{Func: wasmlib.NewScFunc(HScName, HFuncPlayPeriod)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairrouletteFuncs) LastWinningNumber(ctx wasmlib.ScViewCallContext) *LastWinningNumberCall {
+func (sc Funcs) LastWinningNumber(ctx wasmlib.ScViewCallContext) *LastWinningNumberCall {
 	f := &LastWinningNumberCall{Func: wasmlib.NewScView(HScName, HViewLastWinningNumber)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

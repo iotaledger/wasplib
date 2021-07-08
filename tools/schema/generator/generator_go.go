@@ -228,9 +228,8 @@ func (s *Schema) generateGoContract() error {
 }
 
 func (s *Schema) generateGoContractFuncs(file *os.File) {
-	fmt.Fprintf(file, "\ntype %sFuncs struct {\n", s.Name)
-	fmt.Fprint(file, "}\n")
-	fmt.Fprintf(file, "\nvar ScFuncs %sFuncs\n", s.Name)
+	fmt.Fprint(file, "\ntype Funcs struct{}\n")
+	fmt.Fprint(file, "\nvar ScFuncs Funcs\n")
 	for _, f := range s.Funcs {
 		assign := "return"
 		paramsID := "nil"
@@ -243,7 +242,7 @@ func (s *Schema) generateGoContractFuncs(file *os.File) {
 			assign = "f :="
 			resultsID = "&f.Results.id"
 		}
-		fmt.Fprintf(file, "\nfunc (sc %sFuncs) %s(ctx wasmlib.Sc%sCallContext) *%sCall {\n", s.Name, f.Type, f.Kind, f.Type)
+		fmt.Fprintf(file, "\nfunc (sc Funcs) %s(ctx wasmlib.Sc%sCallContext) *%sCall {\n", f.Type, f.Kind, f.Type)
 		fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
 		if len(f.Params) != 0 || len(f.Results) != 0 {
 			fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsID, resultsID)

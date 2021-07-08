@@ -35,35 +35,35 @@ type GetInfoCall struct {
 	Results ImmutableGetInfoResults
 }
 
-type fairauctionFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs fairauctionFuncs
+var ScFuncs Funcs
 
-func (sc fairauctionFuncs) FinalizeAuction(ctx wasmlib.ScFuncCallContext) *FinalizeAuctionCall {
+func (sc Funcs) FinalizeAuction(ctx wasmlib.ScFuncCallContext) *FinalizeAuctionCall {
 	f := &FinalizeAuctionCall{Func: wasmlib.NewScFunc(HScName, HFuncFinalizeAuction)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairauctionFuncs) PlaceBid(ctx wasmlib.ScFuncCallContext) *PlaceBidCall {
+func (sc Funcs) PlaceBid(ctx wasmlib.ScFuncCallContext) *PlaceBidCall {
 	f := &PlaceBidCall{Func: wasmlib.NewScFunc(HScName, HFuncPlaceBid)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairauctionFuncs) SetOwnerMargin(ctx wasmlib.ScFuncCallContext) *SetOwnerMarginCall {
+func (sc Funcs) SetOwnerMargin(ctx wasmlib.ScFuncCallContext) *SetOwnerMarginCall {
 	f := &SetOwnerMarginCall{Func: wasmlib.NewScFunc(HScName, HFuncSetOwnerMargin)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairauctionFuncs) StartAuction(ctx wasmlib.ScFuncCallContext) *StartAuctionCall {
+func (sc Funcs) StartAuction(ctx wasmlib.ScFuncCallContext) *StartAuctionCall {
 	f := &StartAuctionCall{Func: wasmlib.NewScFunc(HScName, HFuncStartAuction)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc fairauctionFuncs) GetInfo(ctx wasmlib.ScViewCallContext) *GetInfoCall {
+func (sc Funcs) GetInfo(ctx wasmlib.ScViewCallContext) *GetInfoCall {
 	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

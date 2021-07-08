@@ -29,29 +29,29 @@ type GetInfoCall struct {
 	Params MutableGetInfoParams
 }
 
-type tokenregistryFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs tokenregistryFuncs
+var ScFuncs Funcs
 
-func (sc tokenregistryFuncs) MintSupply(ctx wasmlib.ScFuncCallContext) *MintSupplyCall {
+func (sc Funcs) MintSupply(ctx wasmlib.ScFuncCallContext) *MintSupplyCall {
 	f := &MintSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncMintSupply)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc tokenregistryFuncs) TransferOwnership(ctx wasmlib.ScFuncCallContext) *TransferOwnershipCall {
+func (sc Funcs) TransferOwnership(ctx wasmlib.ScFuncCallContext) *TransferOwnershipCall {
 	f := &TransferOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncTransferOwnership)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc tokenregistryFuncs) UpdateMetadata(ctx wasmlib.ScFuncCallContext) *UpdateMetadataCall {
+func (sc Funcs) UpdateMetadata(ctx wasmlib.ScFuncCallContext) *UpdateMetadataCall {
 	f := &UpdateMetadataCall{Func: wasmlib.NewScFunc(HScName, HFuncUpdateMetadata)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc tokenregistryFuncs) GetInfo(ctx wasmlib.ScViewCallContext) *GetInfoCall {
+func (sc Funcs) GetInfo(ctx wasmlib.ScViewCallContext) *GetInfoCall {
 	f := &GetInfoCall{Func: wasmlib.NewScView(HScName, HViewGetInfo)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f

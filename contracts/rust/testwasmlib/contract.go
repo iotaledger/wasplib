@@ -26,23 +26,23 @@ type BlockRecordsCall struct {
 	Results ImmutableBlockRecordsResults
 }
 
-type testwasmlibFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs testwasmlibFuncs
+var ScFuncs Funcs
 
-func (sc testwasmlibFuncs) ParamTypes(ctx wasmlib.ScFuncCallContext) *ParamTypesCall {
+func (sc Funcs) ParamTypes(ctx wasmlib.ScFuncCallContext) *ParamTypesCall {
 	f := &ParamTypesCall{Func: wasmlib.NewScFunc(HScName, HFuncParamTypes)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testwasmlibFuncs) BlockRecord(ctx wasmlib.ScViewCallContext) *BlockRecordCall {
+func (sc Funcs) BlockRecord(ctx wasmlib.ScViewCallContext) *BlockRecordCall {
 	f := &BlockRecordCall{Func: wasmlib.NewScView(HScName, HViewBlockRecord)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc testwasmlibFuncs) BlockRecords(ctx wasmlib.ScViewCallContext) *BlockRecordsCall {
+func (sc Funcs) BlockRecords(ctx wasmlib.ScViewCallContext) *BlockRecordsCall {
 	f := &BlockRecordsCall{Func: wasmlib.NewScView(HScName, HViewBlockRecords)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f

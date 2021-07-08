@@ -142,151 +142,151 @@ type TestSandboxCallCall struct {
 	Results ImmutableTestSandboxCallResults
 }
 
-type testcoreFuncs struct{}
+type Funcs struct{}
 
-var ScFuncs testcoreFuncs
+var ScFuncs Funcs
 
-func (sc testcoreFuncs) CallOnChain(ctx wasmlib.ScFuncCallContext) *CallOnChainCall {
+func (sc Funcs) CallOnChain(ctx wasmlib.ScFuncCallContext) *CallOnChainCall {
 	f := &CallOnChainCall{Func: wasmlib.NewScFunc(HScName, HFuncCallOnChain)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) CheckContextFromFullEP(ctx wasmlib.ScFuncCallContext) *CheckContextFromFullEPCall {
+func (sc Funcs) CheckContextFromFullEP(ctx wasmlib.ScFuncCallContext) *CheckContextFromFullEPCall {
 	f := &CheckContextFromFullEPCall{Func: wasmlib.NewScFunc(HScName, HFuncCheckContextFromFullEP)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) DoNothing(ctx wasmlib.ScFuncCallContext) *DoNothingCall {
+func (sc Funcs) DoNothing(ctx wasmlib.ScFuncCallContext) *DoNothingCall {
 	return &DoNothingCall{Func: wasmlib.NewScFunc(HScName, HFuncDoNothing)}
 }
 
-func (sc testcoreFuncs) GetMintedSupply(ctx wasmlib.ScFuncCallContext) *GetMintedSupplyCall {
+func (sc Funcs) GetMintedSupply(ctx wasmlib.ScFuncCallContext) *GetMintedSupplyCall {
 	f := &GetMintedSupplyCall{Func: wasmlib.NewScFunc(HScName, HFuncGetMintedSupply)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) IncCounter(ctx wasmlib.ScFuncCallContext) *IncCounterCall {
+func (sc Funcs) IncCounter(ctx wasmlib.ScFuncCallContext) *IncCounterCall {
 	return &IncCounterCall{Func: wasmlib.NewScFunc(HScName, HFuncIncCounter)}
 }
 
-func (sc testcoreFuncs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
+func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
 	return &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
 }
 
-func (sc testcoreFuncs) PassTypesFull(ctx wasmlib.ScFuncCallContext) *PassTypesFullCall {
+func (sc Funcs) PassTypesFull(ctx wasmlib.ScFuncCallContext) *PassTypesFullCall {
 	f := &PassTypesFullCall{Func: wasmlib.NewScFunc(HScName, HFuncPassTypesFull)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) RunRecursion(ctx wasmlib.ScFuncCallContext) *RunRecursionCall {
+func (sc Funcs) RunRecursion(ctx wasmlib.ScFuncCallContext) *RunRecursionCall {
 	f := &RunRecursionCall{Func: wasmlib.NewScFunc(HScName, HFuncRunRecursion)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) SendToAddress(ctx wasmlib.ScFuncCallContext) *SendToAddressCall {
+func (sc Funcs) SendToAddress(ctx wasmlib.ScFuncCallContext) *SendToAddressCall {
 	f := &SendToAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncSendToAddress)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) SetInt(ctx wasmlib.ScFuncCallContext) *SetIntCall {
+func (sc Funcs) SetInt(ctx wasmlib.ScFuncCallContext) *SetIntCall {
 	f := &SetIntCall{Func: wasmlib.NewScFunc(HScName, HFuncSetInt)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) TestCallPanicFullEP(ctx wasmlib.ScFuncCallContext) *TestCallPanicFullEPCall {
+func (sc Funcs) TestCallPanicFullEP(ctx wasmlib.ScFuncCallContext) *TestCallPanicFullEPCall {
 	return &TestCallPanicFullEPCall{Func: wasmlib.NewScFunc(HScName, HFuncTestCallPanicFullEP)}
 }
 
-func (sc testcoreFuncs) TestCallPanicViewEPFromFull(ctx wasmlib.ScFuncCallContext) *TestCallPanicViewEPFromFullCall {
+func (sc Funcs) TestCallPanicViewEPFromFull(ctx wasmlib.ScFuncCallContext) *TestCallPanicViewEPFromFullCall {
 	return &TestCallPanicViewEPFromFullCall{Func: wasmlib.NewScFunc(HScName, HFuncTestCallPanicViewEPFromFull)}
 }
 
-func (sc testcoreFuncs) TestChainOwnerIDFull(ctx wasmlib.ScFuncCallContext) *TestChainOwnerIDFullCall {
+func (sc Funcs) TestChainOwnerIDFull(ctx wasmlib.ScFuncCallContext) *TestChainOwnerIDFullCall {
 	f := &TestChainOwnerIDFullCall{Func: wasmlib.NewScFunc(HScName, HFuncTestChainOwnerIDFull)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) TestEventLogDeploy(ctx wasmlib.ScFuncCallContext) *TestEventLogDeployCall {
+func (sc Funcs) TestEventLogDeploy(ctx wasmlib.ScFuncCallContext) *TestEventLogDeployCall {
 	return &TestEventLogDeployCall{Func: wasmlib.NewScFunc(HScName, HFuncTestEventLogDeploy)}
 }
 
-func (sc testcoreFuncs) TestEventLogEventData(ctx wasmlib.ScFuncCallContext) *TestEventLogEventDataCall {
+func (sc Funcs) TestEventLogEventData(ctx wasmlib.ScFuncCallContext) *TestEventLogEventDataCall {
 	return &TestEventLogEventDataCall{Func: wasmlib.NewScFunc(HScName, HFuncTestEventLogEventData)}
 }
 
-func (sc testcoreFuncs) TestEventLogGenericData(ctx wasmlib.ScFuncCallContext) *TestEventLogGenericDataCall {
+func (sc Funcs) TestEventLogGenericData(ctx wasmlib.ScFuncCallContext) *TestEventLogGenericDataCall {
 	f := &TestEventLogGenericDataCall{Func: wasmlib.NewScFunc(HScName, HFuncTestEventLogGenericData)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) TestPanicFullEP(ctx wasmlib.ScFuncCallContext) *TestPanicFullEPCall {
+func (sc Funcs) TestPanicFullEP(ctx wasmlib.ScFuncCallContext) *TestPanicFullEPCall {
 	return &TestPanicFullEPCall{Func: wasmlib.NewScFunc(HScName, HFuncTestPanicFullEP)}
 }
 
-func (sc testcoreFuncs) WithdrawToChain(ctx wasmlib.ScFuncCallContext) *WithdrawToChainCall {
+func (sc Funcs) WithdrawToChain(ctx wasmlib.ScFuncCallContext) *WithdrawToChainCall {
 	f := &WithdrawToChainCall{Func: wasmlib.NewScFunc(HScName, HFuncWithdrawToChain)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) CheckContextFromViewEP(ctx wasmlib.ScViewCallContext) *CheckContextFromViewEPCall {
+func (sc Funcs) CheckContextFromViewEP(ctx wasmlib.ScViewCallContext) *CheckContextFromViewEPCall {
 	f := &CheckContextFromViewEPCall{Func: wasmlib.NewScView(HScName, HViewCheckContextFromViewEP)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) Fibonacci(ctx wasmlib.ScViewCallContext) *FibonacciCall {
+func (sc Funcs) Fibonacci(ctx wasmlib.ScViewCallContext) *FibonacciCall {
 	f := &FibonacciCall{Func: wasmlib.NewScView(HScName, HViewFibonacci)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) GetCounter(ctx wasmlib.ScViewCallContext) *GetCounterCall {
+func (sc Funcs) GetCounter(ctx wasmlib.ScViewCallContext) *GetCounterCall {
 	f := &GetCounterCall{Func: wasmlib.NewScView(HScName, HViewGetCounter)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) GetInt(ctx wasmlib.ScViewCallContext) *GetIntCall {
+func (sc Funcs) GetInt(ctx wasmlib.ScViewCallContext) *GetIntCall {
 	f := &GetIntCall{Func: wasmlib.NewScView(HScName, HViewGetInt)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) JustView(ctx wasmlib.ScViewCallContext) *JustViewCall {
+func (sc Funcs) JustView(ctx wasmlib.ScViewCallContext) *JustViewCall {
 	return &JustViewCall{Func: wasmlib.NewScView(HScName, HViewJustView)}
 }
 
-func (sc testcoreFuncs) PassTypesView(ctx wasmlib.ScViewCallContext) *PassTypesViewCall {
+func (sc Funcs) PassTypesView(ctx wasmlib.ScViewCallContext) *PassTypesViewCall {
 	f := &PassTypesViewCall{Func: wasmlib.NewScView(HScName, HViewPassTypesView)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
 
-func (sc testcoreFuncs) TestCallPanicViewEPFromView(ctx wasmlib.ScViewCallContext) *TestCallPanicViewEPFromViewCall {
+func (sc Funcs) TestCallPanicViewEPFromView(ctx wasmlib.ScViewCallContext) *TestCallPanicViewEPFromViewCall {
 	return &TestCallPanicViewEPFromViewCall{Func: wasmlib.NewScView(HScName, HViewTestCallPanicViewEPFromView)}
 }
 
-func (sc testcoreFuncs) TestChainOwnerIDView(ctx wasmlib.ScViewCallContext) *TestChainOwnerIDViewCall {
+func (sc Funcs) TestChainOwnerIDView(ctx wasmlib.ScViewCallContext) *TestChainOwnerIDViewCall {
 	f := &TestChainOwnerIDViewCall{Func: wasmlib.NewScView(HScName, HViewTestChainOwnerIDView)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
 
-func (sc testcoreFuncs) TestPanicViewEP(ctx wasmlib.ScViewCallContext) *TestPanicViewEPCall {
+func (sc Funcs) TestPanicViewEP(ctx wasmlib.ScViewCallContext) *TestPanicViewEPCall {
 	return &TestPanicViewEPCall{Func: wasmlib.NewScView(HScName, HViewTestPanicViewEP)}
 }
 
-func (sc testcoreFuncs) TestSandboxCall(ctx wasmlib.ScViewCallContext) *TestSandboxCallCall {
+func (sc Funcs) TestSandboxCall(ctx wasmlib.ScViewCallContext) *TestSandboxCallCall {
 	f := &TestSandboxCallCall{Func: wasmlib.NewScView(HScName, HViewTestSandboxCall)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f

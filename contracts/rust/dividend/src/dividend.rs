@@ -6,9 +6,10 @@
 // of member addresses according to predefined division factors. The intent is
 // to showcase basic functionality of WasmLib through a minimal implementation
 // and not to come up with a complete robust real-world solution.
-// Note that we have drawn out constructs that could have been done in a single
-// line over multiple statements to be able to properly document step by step
-// what is happening in the code.
+// Note that we have drawn sometimes out constructs that could have been done
+// in a single line over multiple statements to be able to properly document
+// step by step what is happening in the code. We also unnecessarily annotate
+// all 'let' statements with their assignment type to improve understanding.
 
 use wasmlib::*;
 
@@ -22,6 +23,8 @@ use crate::*;
 // - 'owner', which is the agent id of the entity owning the contract.
 // When this parameter is omitted the owner will default to the contract creator.
 pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
+    // The schema tool has already created a proper InitContext for this function that
+    // allows us to access call parameters and state storage in a type-safe manner.
 
     // First we set up a default value for the owner in case the optional
     // 'owner' parameter was omitted.
@@ -35,14 +38,10 @@ pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
     }
 
     // Now that we have sorted out which agent will be the owner of this contract
-    // we will save this value in the state storage on the host. First we create
-    // an ScMutableMap proxy that refers to the state storage map on the host.
-
-    // Then we create an ScMutableAgentID proxy to an 'owner' variable in state storage.
-    let state_owner: ScMutableAgentID = f.state.owner();
-
-    // And then we save the owner value in the 'owner' variable in state storage.
-    state_owner.set_value(&owner);
+    // we will save this value in the 'owner' variable in state storage on the host.
+    // Read the documentation on schema.json to understand why this state variable is
+    // supported at compile-time by code generated from schema.json by the schema tool.
+    f.state.owner().set_value(&owner);
 }
 
 // 'member' is a function that can be used only by the entity that owns the
@@ -53,10 +52,13 @@ pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
 // - 'address', which is an Address to use as member in the group, and
 // - 'factor',  which is an Int64 relative dispersal factor associated with
 //              that address
-// The 'member' function will save the address/factor combination in its state
-// storage and also calculate and store a running sum of all factors so that the
-// 'divide' function can simply start using these precalculated values
+// The 'member' function will save the address/factor combination in state storage
+// and also calculate and store a running sum of all factors so that the 'divide'
+// function can simply start using these precalculated values when called.
 pub fn func_member(ctx: &ScFuncContext, f: &MemberContext) {
+    // Note that the schema tool has already dealt with making sure that this function
+    // can only be called by the owner and that the required parameters are present.
+    // So once we get to this point in the code we can take that as a given.
 
     // Since we are sure that the 'factor' parameter actually exists we can
     // retrieve its actual value into an i64. Note that we use Rust's built-in
@@ -65,56 +67,57 @@ pub fn func_member(ctx: &ScFuncContext, f: &MemberContext) {
 
     // As an extra requirement we check that the 'factor' parameter value is not
     // negative. If it is, we panic out with an error message.
-    // Note how we use an if expression here. We could have achieved the same in a
-    // single line by using the require() method instead:
-    // ctx.require(factor >= 0, "negative factor");
-    // Using the require() method reduces typing and enhances readability.
-    if factor < 0 {
-        ctx.panic("negative factor");
-    }
+    // Note how we avoid an if expression like this one here:
+    // if factor < 0 {
+    //     ctx.panic("negative factor");
+    // }
+    // Using the require() method instead reduces typing and enhances readability.
+    ctx.require(factor >= 0, "negative factor");
 
     // Since we are sure that the 'address' parameter actually exists we can
     // retrieve its actual value into an ScAddress value type.
     let address: ScAddress = f.params.address().value();
 
-    // Create an ScMutableMap proxy to the state storage map on the host.
-
-    // We will store the address/factor combinations in a key/value sub-map inside
-    // the state map. We tell the state map proxy to create an ScMutableMap proxy
-    // to a map named 'members' in the state storage. If there is no 'members' map
-    // present yet this will automatically create an empty map on the host.
+    // We will store the address/factor combinations in a key/value sub-map of the
+    // state storage named 'members'. The schema tool has generated an appropriately
+    // type-checked proxy map for us from the schema.json state storage definition.
+    // If there is no 'members' map present yet in state storage an empty map will
+    // automatically be created on the host.
     let members: MapAddressToMutableInt64 = f.state.members();
 
     // Now we create an ScMutableInt64 proxy for the value stored in the 'members'
     // map under the key defined by the 'address' parameter we retrieved earlier.
     let current_factor: ScMutableInt64 = members.get_int64(&address);
 
-    // Check to see if this key/value combination exists in the 'members' map
+    // We check to see if this key/value combination exists in the 'members' map.
     if !current_factor.exists() {
         // If it does not exist yet then we have to add this new address to the
-        // 'memberList' array. We tell the state map proxy to create an
-        // ScMutableAddressArray proxy to an Address array named 'memberList' in
-        // the state storage. Again, if the array was not present yet it will
-        // automatically be created.
+        // 'memberList' array that keeps track of all address keys used in the
+        // 'members' map. The schema tool has again created the appropriate type
+        // for us already. Here too, if the address array was not present yet it
+        // will automatically be created on the host.
         let member_list: ArrayOfMutableAddress = f.state.member_list();
 
         // Now we will append the new address to the memberList array.
         // First we determine the current length of the array.
         let length: i32 = member_list.length();
 
-        // Next we create an ScMutableAddress proxy to the Address value that lives
+        // Next we create an ScMutableAddress proxy to the address value that lives
         // at that index in the memberList array (no value, since we're appending).
         let new_address: ScMutableAddress = member_list.get_address(length);
 
         // And finally we append the new address to the array by telling the proxy
-        // to update the value it refers with the 'address' parameter.
+        // to update the value it refers to with the 'address' parameter.
         new_address.set_value(&address);
+
+        // Note that we could have achieved the last 3 lines of code in a single line:
+        // member_list.get_address(member_list.length()).set_value(&address);
     }
 
     // Create an ScMutableInt64 proxy named 'totalFactor' for an Int64 value in
     // state storage. Note that we don't care whether this value exists or not,
     // because WasmLib will treat it as if it has the default value of zero.
-    let total_factor = f.state.total_factor();
+    let total_factor: ScMutableInt64 = f.state.total_factor();
 
     // Now we calculate the new running total sum of factors by first getting the
     // current value of 'totalFactor' from the state storage, then subtracting the
@@ -124,11 +127,11 @@ pub fn func_member(ctx: &ScFuncContext, f: &MemberContext) {
     // resulting in the new totalFactor.
     let new_total_factor: i64 = total_factor.value() - current_factor.value() + factor;
 
-    // Now we store the new totalFactor in the state storage
+    // Now we store the new totalFactor in the state storage.
     total_factor.set_value(new_total_factor);
 
     // And we also store the factor from the parameters under the address from the
-    // parameters in the state storage that the proxy refers to
+    // parameters in the state storage that the proxy refers to.
     current_factor.set_value(factor);
 }
 
@@ -136,34 +139,31 @@ pub fn func_member(ctx: &ScFuncContext, f: &MemberContext) {
 // disperse them to the addresses in the member list according to the dispersion
 // factors associated with these addresses.
 // Anyone can send iota tokens to this function and they will automatically be
-// passed on to the member list. Note that this function does not deal with
+// divided over the member list. Note that this function does not deal with
 // fractions. It simply truncates the calculated amount to the nearest lower
 // integer and keeps any remaining iotas in its own account. They will be added
 // to any next round of tokens received prior to calculation of the new
-// dispersion amounts.
+// dividend amounts.
 pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
 
-    // Create an ScBalances map proxy to the total account balances for this
-    // smart contract. Note that ScBalances wraps an ScImmutableMap of token
-    // color/amount combinations in a simpler to use interface.
+    // Create an ScBalances map proxy to the account balances for this
+    // smart contract. Note that ScBalances wraps an ScImmutableMap of
+    // token color/amount combinations in a simpler to use interface.
     let balances: ScBalances = ctx.balances();
 
-    // Retrieve the amount of plain iota tokens from the account balance
+    // Retrieve the amount of plain iota tokens from the account balance.
     let amount: i64 = balances.balance(&ScColor::IOTA);
 
-    // Create an ScMutableMap proxy to the state storage map on the host.
-
-    // retrieve the pre-calculated totalFactor value from the state storage
-    // through an ScmutableInt64 proxy
+    // Retrieve the pre-calculated totalFactor value from the state storage.
     let total_factor: i64 = f.state.total_factor().value();
 
-    // note that it is useless to try to divide less than totalFactor iotas
-    // because every member would receive zero iotas
+    // Note that it is useless to try to divide less than totalFactor iotas
+    // because every member would receive zero iotas.
     if amount < total_factor {
-        // log the fact that we have nothing to do in the host log
+        // Log the fact that we have nothing to do in the host log.
         ctx.log("dividend.divide: nothing to divide");
 
-        // And exit the function. Note that we could not have used a require()
+        // And exit the function. Note that we could NOT have used a require()
         // statement here, because that would have indicated an error and caused
         // a panic out of the function, returning any amount of tokens that was
         // intended to be dispersed to the members. Returning normally will keep
@@ -171,31 +171,28 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
         return;
     }
 
-    // Create an ScMutableMap proxy to the 'members' map in the state storage.
+    // Get the proxy to the 'members' map in the state storage.
     let members: MapAddressToMutableInt64 = f.state.members();
 
-    // Create an ScMutableAddressArray proxy to the 'memberList' Address array
-    // in the state storage.
+    // Get the proxy to the 'memberList' array in the state storage.
     let member_list: ArrayOfMutableAddress = f.state.member_list();
 
     // Determine the current length of the memberList array.
     let size: i32 = member_list.length();
 
-    // loop through all indexes of the memberList array
+    // Loop through all indexes of the memberList array.
     for i in 0..size {
-        // Retrieve the next address from the memberList array through an
-        // ScMutableAddress proxy that references the value at the required index.
+        // Retrieve the next indexed address from the memberList array.
         let address: ScAddress = member_list.get_address(i).value();
 
-        // Retrieve the factor associated with the address from the members map
-        // through an ScMutableInt64 proxy referencing the value in the map.
+        // Retrieve the factor associated with the address from the members map.
         let factor: i64 = members.get_int64(&address).value();
 
-        // calculate the fair share of iotas to disperse to this member based on the
+        // Calculate the fair share of iotas to disperse to this member based on the
         // factor we just retrieved. Note that the result will been truncated.
         let share: i64 = amount * factor / total_factor;
 
-        // is there anything to disperse to this member?
+        // Is there anything to disperse to this member?
         if share > 0 {
             // Yes, so let's set up an ScTransfers map proxy that transfers the
             // calculated amount of iotas. Note that ScTransfers wraps an
@@ -220,12 +217,12 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
 // - 'owner', which is the agent id of the entity that will own the contract.
 // Only the current owner can change the owner.
 pub fn func_set_owner(_ctx: &ScFuncContext, f: &SetOwnerContext) {
-
-    // Get a proxy to the 'owner' variable in state storage.
-    let state_owner: ScMutableAgentID = f.state.owner();
+    // Note that the schema tool has already dealt with making sure that this function
+    // can only be called by the owner and that the required parameter is present.
+    // So once we get to this point in the code we can take that as a given.
 
     // Save the new owner parameter value in the 'owner' variable in state storage.
-    state_owner.set_value(&f.params.owner().value());
+    f.state.owner().set_value(&f.params.owner().value());
 }
 
 // 'getFactor' is a simple View function. It will retrieve the factor
@@ -236,25 +233,15 @@ pub fn view_get_factor(_ctx: &ScViewContext, f: &GetFactorContext) {
     // retrieve its actual value into an ScAddress value type.
     let address: ScAddress = f.params.address().value();
 
-    // Now that we have sorted out the parameter we will access the state
-    // storage on the host. First we create an ScImmutableMap proxy to the state
-    // storage map on the host. Note that this is an *immutable* map, as opposed
-    // to the *mutable* map we get when we call the state() method on an
-    // ScFuncContext.
-
     // Create an ScImmutableMap proxy to the 'members' map in the state storage.
-    // Note that again, this is an *immutable* map as opposed to the *mutable*
-    // map we get from the *mutable* state map we get through ScFuncContext.
+    // Note that for views this is an *immutable* map as opposed to the *mutable*
+    // map we can access from the *mutable* state that gets passed to funcs.
     let members: MapAddressToImmutableInt64 = f.state.members();
 
-    // Retrieve the factor associated with the address parameter through
-    // an ScImmutableInt64 proxy to the value stored in the 'members' map.
+    // Retrieve the factor associated with the address parameter.
     let factor: i64 = members.get_int64(&address).value();
 
-    // Create an ScMutableMap proxy to the map on the host that will store
-    // the key/value pairs that we want to return from this View function.
-
-    // Set the value associated with the 'factor' key to the factor we got from
-    // the members map through an ScMutableInt64 proxy to the results map.
+    // Set the factor in the results map of the function context.
+    // The contents of this results map is returned to the caller of the function.
     f.results.factor().set_value(factor);
 }
