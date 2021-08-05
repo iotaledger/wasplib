@@ -7,12 +7,12 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName        = "helloworld"
 	ScDescription = "The ubiquitous hello world demo"
-	HScName       = coretypes.Hname(0x0683223c)
+	HScName       = iscp.Hname(0x0683223c)
 )
 
 const ResultHelloWorld = "helloWorld"
@@ -23,6 +23,6 @@ const (
 )
 
 const (
-	HFuncHelloWorld    = coretypes.Hname(0x9d042e65)
-	HViewGetHelloWorld = coretypes.Hname(0x210439ce)
+	HFuncHelloWorld    = iscp.Hname(0x9d042e65)
+	HViewGetHelloWorld = iscp.Hname(0x210439ce)
 )

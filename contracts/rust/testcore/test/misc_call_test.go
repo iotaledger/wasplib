@@ -13,7 +13,7 @@ func testChainOwnerIDView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncChainOwnerIDView)
+	ret, err := chain.CallView(ScName, sbtestsc.FuncChainOwnerIDView.Name)
 	require.NoError(t, err)
 
 	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
@@ -26,7 +26,7 @@ func testChainOwnerIDFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncChainOwnerIDFull).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncChainOwnerIDFull.Name).WithIotas(1)
 	ret, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
 
@@ -39,7 +39,7 @@ func testSandboxCall(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncSandboxCall)
+	ret, err := chain.CallView(ScName, sbtestsc.FuncSandboxCall.Name)
 	require.NoError(t, err)
 
 	d := ret.MustGet(sbtestsc.VarSandboxCall)

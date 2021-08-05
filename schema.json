@@ -1,5 +1,5 @@
 {
-  "types": {
+  "structs": {
     "Int64": "64 bit integer",
     "String": "Arbitrary length UTF-8 encoded text",
     "Bytes": "Arbitrary length data bytes",

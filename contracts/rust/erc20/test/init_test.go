@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/stretchr/testify/require"
@@ -12,7 +12,7 @@ import (
 func TestDeployErc20(t *testing.T) {
 	chain := common.StartChain(t, ScName)
 	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
-	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
+	creatorAgentID = iscp.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, 1000000,
 		ParamCreator, creatorAgentID,
@@ -55,7 +55,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 func TestDeployErc20Fail3(t *testing.T) {
 	chain := common.StartChain(t, ScName)
 	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
-	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
+	creatorAgentID = iscp.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,
 	)
@@ -67,7 +67,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 func TestDeployErc20Fail3Repeat(t *testing.T) {
 	chain := common.StartChain(t, ScName)
 	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
-	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
+	creatorAgentID = iscp.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamCreator, creatorAgentID,
 	)

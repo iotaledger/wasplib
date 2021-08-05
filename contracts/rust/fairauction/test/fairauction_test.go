@@ -9,7 +9,8 @@ import (
 
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
+	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/fairauction"
@@ -20,7 +21,7 @@ import (
 var (
 	auctioneer     *ed25519.KeyPair
 	auctioneerAddr ledgerstate.Address
-	tokenColor     ledgerstate.Color
+	tokenColor     colored.Color
 )
 
 func setupTest(t *testing.T) *common.SoloContext {
@@ -31,7 +32,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 	newColor, err := chain.Env.MintTokens(auctioneer, 10)
 	require.NoError(t, err)
 	tokenColor = newColor
-	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-10)
+	chain.Env.AssertAddressBalance(auctioneerAddr, colored.IOTA, solo.Saldo-10)
 	chain.Env.AssertAddressBalance(auctioneerAddr, tokenColor, 10)
 
 	ctx := common.NewSoloContext(fairauction.ScName, fairauction.OnLoad, chain)
@@ -60,14 +61,14 @@ func TestFaStartAuction(t *testing.T) {
 	chain := ctx.Chain
 
 	// note 1 iota should be stuck in the delayed finalize_auction
-	chain.AssertAccountBalance(chain.ContractAgentID(fairauction.ScName), ledgerstate.ColorIOTA, 25-1)
+	chain.AssertAccountBalance(chain.ContractAgentID(fairauction.ScName), colored.IOTA, 25-1)
 	chain.AssertAccountBalance(chain.ContractAgentID(fairauction.ScName), tokenColor, 10)
 
 	// auctioneer sent 25 deposit + 10 tokenColor + used 1 for request
-	chain.Env.AssertAddressBalance(auctioneerAddr, ledgerstate.ColorIOTA, solo.Saldo-35)
+	chain.Env.AssertAddressBalance(auctioneerAddr, colored.IOTA, solo.Saldo-35)
 	// 1 used for request was sent back to auctioneer's account on chain
-	account := coretypes.NewAgentID(auctioneerAddr, 0)
-	chain.AssertAccountBalance(account, ledgerstate.ColorIOTA, 0)
+	account := iscp.NewAgentID(auctioneerAddr, 0)
+	chain.AssertAccountBalance(account, colored.IOTA, 0)
 
 	// remove delayed finalize_auction from backlog
 	chain.Env.AdvanceClockBy(61 * time.Minute)

@@ -1,5 +1,5 @@
 {
-  "types": {
+  "structs": {
     "AuctionInfo": [
       {"field": "color", "type": "Color"},
       {"field": "creator", "type": "Agent"},

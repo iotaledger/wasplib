@@ -31,8 +31,8 @@ type FuncDescMap map[string]*FuncDesc
 type JSONSchema struct {
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
-	Types       StringMapMap `json:"types"`
-	Subtypes    StringMap    `json:"subtypes"`
+	Structs     StringMapMap `json:"structs"`
+	Typedefs    StringMap    `json:"typedefs"`
 	State       StringMap    `json:"state"`
 	Funcs       FuncDescMap  `json:"funcs"`
 	Views       FuncDescMap  `json:"views"`
@@ -72,8 +72,8 @@ type Schema struct {
 	Params        []*Field
 	Results       []*Field
 	StateVars     []*Field
-	Subtypes      []*Field
-	Types         []*TypeDef
+	Structs       []*Struct
+	Typedefs      []*Field
 	Views         []*FuncDef
 }
 
@@ -217,8 +217,8 @@ func (s *Schema) compileStateVars(jsonSchema *JSONSchema) error {
 func (s *Schema) compileSubtypes(jsonSchema *JSONSchema) error {
 	varNames := make(StringMap)
 	varAliases := make(StringMap)
-	for _, varName := range sortedKeys(jsonSchema.Subtypes) {
-		varType := jsonSchema.Subtypes[varName]
+	for _, varName := range sortedKeys(jsonSchema.Typedefs) {
+		varType := jsonSchema.Typedefs[varName]
 		varDef, err := s.CompileField(varName, varType)
 		if err != nil {
 			return err
@@ -231,15 +231,15 @@ func (s *Schema) compileSubtypes(jsonSchema *JSONSchema) error {
 			return fmt.Errorf("duplicate subtype alias")
 		}
 		varAliases[varDef.Alias] = varDef.Alias
-		s.Subtypes = append(s.Subtypes, varDef)
+		s.Typedefs = append(s.Typedefs, varDef)
 	}
 	return nil
 }
 
 func (s *Schema) compileTypes(jsonSchema *JSONSchema) error {
-	for _, typeName := range sortedMaps(jsonSchema.Types) {
-		fieldMap := jsonSchema.Types[typeName]
-		typeDef := &TypeDef{}
+	for _, typeName := range sortedMaps(jsonSchema.Structs) {
+		fieldMap := jsonSchema.Structs[typeName]
+		typeDef := &Struct{}
 		typeDef.Name = typeName
 		fieldNames := make(StringMap)
 		fieldAliases := make(StringMap)
@@ -262,7 +262,7 @@ func (s *Schema) compileTypes(jsonSchema *JSONSchema) error {
 			fieldAliases[field.Alias] = field.Alias
 			typeDef.Fields = append(typeDef.Fields, field)
 		}
-		s.Types = append(s.Types, typeDef)
+		s.Structs = append(s.Structs, typeDef)
 	}
 	return nil
 }

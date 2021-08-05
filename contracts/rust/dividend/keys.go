@@ -14,21 +14,19 @@ const (
 	IdxParamFactor      = 1
 	IdxParamOwner       = 2
 	IdxResultFactor     = 3
-	IdxStateFactor      = 4
-	IdxStateMemberList  = 5
-	IdxStateMembers     = 6
-	IdxStateOwner       = 7
-	IdxStateTotalFactor = 8
+	IdxStateMemberList  = 4
+	IdxStateMembers     = 5
+	IdxStateOwner       = 6
+	IdxStateTotalFactor = 7
 )
 
-const keyMapLen = 9
+const keyMapLen = 8
 
 var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
 	ParamFactor,
 	ParamOwner,
 	ResultFactor,
-	StateFactor,
 	StateMemberList,
 	StateMembers,
 	StateOwner,

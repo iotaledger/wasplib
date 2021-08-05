@@ -92,12 +92,12 @@ func (f *Field) Compile(schema *Schema, fldName, fldType string) error {
 		f.TypeID = typeID
 		return nil
 	}
-	for _, typeDef := range schema.Types {
+	for _, typeDef := range schema.Structs {
 		if f.Type == typeDef.Name {
 			return nil
 		}
 	}
-	for _, subtype := range schema.Subtypes {
+	for _, subtype := range schema.Typedefs {
 		if f.Type == subtype.Name {
 			return nil
 		}

@@ -1,6 +1,6 @@
 {
   "name": "FairAuction",
-  "types": {
+  "structs": {
     "Auction": {
       "color": "Color // color of tokens for sale",
       "creator": "AgentID // issuer of start_auction transaction",
@@ -20,7 +20,7 @@
       "timestamp": "Int64 // timestamp of most recent bid"
     }
   },
-  "subtypes": {
+  "typedefs": {
     "BidderList": "[]AgentID",
     "Bids": "[AgentID]Bid"
   },

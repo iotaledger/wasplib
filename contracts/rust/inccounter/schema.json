@@ -1,6 +1,6 @@
 {
   "name": "IncCounter",
-  "types": {
+  "structs": {
   },
   "state": {
     "counter": "Int64",

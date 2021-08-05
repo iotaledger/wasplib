@@ -33,10 +33,6 @@ type ImmutableDividendState struct {
 	id int32
 }
 
-func (s ImmutableDividendState) Factor() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxStateFactor])
-}
-
 func (s ImmutableDividendState) MemberList() ArrayOfImmutableAddress {
 	arrID := wasmlib.GetObjectID(s.id, idxMap[IdxStateMemberList], wasmlib.TYPE_ARRAY|wasmlib.TYPE_ADDRESS)
 	return ArrayOfImmutableAddress{objID: arrID}
@@ -85,10 +81,6 @@ func (m MapAddressToMutableInt64) GetInt64(key wasmlib.ScAddress) wasmlib.ScMuta
 
 type MutableDividendState struct {
 	id int32
-}
-
-func (s MutableDividendState) Factor() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxStateFactor])
 }
 
 func (s MutableDividendState) MemberList() ArrayOfMutableAddress {

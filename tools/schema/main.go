@@ -109,8 +109,8 @@ func generateSchemaNew() error {
 	jsonSchema := &generator.JSONSchema{}
 	jsonSchema.Name = *flagInit
 	jsonSchema.Description = *flagInit + " description"
-	jsonSchema.Types = make(generator.StringMapMap)
-	jsonSchema.Subtypes = make(generator.StringMap)
+	jsonSchema.Structs = make(generator.StringMapMap)
+	jsonSchema.Typedefs = make(generator.StringMap)
 	jsonSchema.State = make(generator.StringMap)
 	jsonSchema.Funcs = make(generator.FuncDescMap)
 	jsonSchema.Views = make(generator.FuncDescMap)

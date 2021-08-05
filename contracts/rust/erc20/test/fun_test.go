@@ -5,7 +5,7 @@ import (
 
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core"
@@ -16,13 +16,13 @@ import (
 var (
 	creator        *ed25519.KeyPair
 	creatorAddr    ledgerstate.Address
-	creatorAgentID *coretypes.AgentID
+	creatorAgentID *iscp.AgentID
 )
 
 func deployErc20(t *testing.T) *solo.Chain {
 	chain := common.StartChain(t, ScName)
 	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
-	creatorAgentID = coretypes.NewAgentID(creatorAddr, 0)
+	creatorAgentID = iscp.NewAgentID(creatorAddr, 0)
 	err := common.DeployWasmContractByName(chain, ScName,
 		ParamSupply, solo.Saldo,
 		ParamCreator, creatorAgentID,
@@ -42,7 +42,7 @@ func deployErc20(t *testing.T) *solo.Chain {
 	return chain
 }
 
-func checkErc20Balance(e *solo.Chain, account *coretypes.AgentID, amount uint64) {
+func checkErc20Balance(e *solo.Chain, account *iscp.AgentID, amount uint64) {
 	res, err := e.CallView(ScName, ViewBalanceOf,
 		ParamAccount, account,
 	)
@@ -53,7 +53,7 @@ func checkErc20Balance(e *solo.Chain, account *coretypes.AgentID, amount uint64)
 	require.EqualValues(e.Env.T, sup, amount)
 }
 
-func checkErc20Allowance(e *solo.Chain, account, delegation *coretypes.AgentID, amount int64) {
+func checkErc20Allowance(e *solo.Chain, account, delegation *iscp.AgentID, amount int64) {
 	res, err := e.CallView(ScName, ViewAllowance,
 		ParamAccount, account,
 		ParamDelegation, delegation,
@@ -73,7 +73,7 @@ func TestTransferOk1(t *testing.T) {
 	chain := deployErc20(t)
 
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 	amount := uint64(42)
 
 	req := solo.NewCallParams(ScName, FuncTransfer,
@@ -91,7 +91,7 @@ func TestTransferOk2(t *testing.T) {
 	chain := deployErc20(t)
 
 	user, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 	amount := uint64(42)
 
 	req := solo.NewCallParams(ScName, FuncTransfer,
@@ -119,7 +119,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 	chain := deployErc20(t)
 
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 	amount := int64(solo.Saldo + 1)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -140,7 +140,7 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 	chain := deployErc20(t)
 
 	user, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 	amount := int64(1338)
 
 	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
@@ -160,14 +160,14 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 func TestNoAllowance(t *testing.T) {
 	chain := deployErc20(t)
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
 }
 
 func TestApprove(t *testing.T) {
 	chain := deployErc20(t)
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
@@ -184,7 +184,7 @@ func TestApprove(t *testing.T) {
 func TestTransferFromOk1(t *testing.T) {
 	chain := deployErc20(t)
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
@@ -213,7 +213,7 @@ func TestTransferFromOk1(t *testing.T) {
 func TestTransferFromOk2(t *testing.T) {
 	chain := deployErc20(t)
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,
@@ -242,7 +242,7 @@ func TestTransferFromOk2(t *testing.T) {
 func TestTransferFromFail(t *testing.T) {
 	chain := deployErc20(t)
 	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := coretypes.NewAgentID(userAddr, 0)
+	userAgentID := iscp.NewAgentID(userAddr, 0)
 
 	req := solo.NewCallParams(ScName, FuncApprove,
 		ParamDelegation, userAgentID,

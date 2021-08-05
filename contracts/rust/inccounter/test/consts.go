@@ -7,11 +7,11 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName  = "inccounter"
-	HScName = coretypes.Hname(0xaf2438e9)
+	HScName = iscp.Hname(0xaf2438e9)
 )
 
 const (
@@ -44,17 +44,17 @@ const (
 )
 
 const (
-	HFuncCallIncrement          = coretypes.Hname(0xeb5dcacd)
-	HFuncCallIncrementRecurse5x = coretypes.Hname(0x8749fbff)
-	HFuncEndlessLoop            = coretypes.Hname(0x365f0929)
-	HFuncIncrement              = coretypes.Hname(0xd351bd12)
-	HFuncInit                   = coretypes.Hname(0x1f44d644)
-	HFuncLocalStateInternalCall = coretypes.Hname(0xecfc5d33)
-	HFuncLocalStatePost         = coretypes.Hname(0x3fd54d13)
-	HFuncLocalStateSandboxCall  = coretypes.Hname(0x7bd22c53)
-	HFuncPostIncrement          = coretypes.Hname(0x81c772f5)
-	HFuncRepeatMany             = coretypes.Hname(0x4ff450d3)
-	HFuncTestLeb128             = coretypes.Hname(0xd8364cb9)
-	HFuncWhenMustIncrement      = coretypes.Hname(0xb4c3e7a6)
-	HViewGetCounter             = coretypes.Hname(0xb423e607)
+	HFuncCallIncrement          = iscp.Hname(0xeb5dcacd)
+	HFuncCallIncrementRecurse5x = iscp.Hname(0x8749fbff)
+	HFuncEndlessLoop            = iscp.Hname(0x365f0929)
+	HFuncIncrement              = iscp.Hname(0xd351bd12)
+	HFuncInit                   = iscp.Hname(0x1f44d644)
+	HFuncLocalStateInternalCall = iscp.Hname(0xecfc5d33)
+	HFuncLocalStatePost         = iscp.Hname(0x3fd54d13)
+	HFuncLocalStateSandboxCall  = iscp.Hname(0x7bd22c53)
+	HFuncPostIncrement          = iscp.Hname(0x81c772f5)
+	HFuncRepeatMany             = iscp.Hname(0x4ff450d3)
+	HFuncTestLeb128             = iscp.Hname(0xd8364cb9)
+	HFuncWhenMustIncrement      = iscp.Hname(0xb4c3e7a6)
+	HViewGetCounter             = iscp.Hname(0xb423e607)
 )

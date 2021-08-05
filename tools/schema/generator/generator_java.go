@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 )
 
 var javaFuncRegexp = regexp.MustCompile(`public static void (\w+).+$`)
@@ -244,7 +244,7 @@ func (s *Schema) GenerateJavaConsts() error {
 	if s.Description != "" {
 		fmt.Fprintf(file, "    public static final String ScDescription = \"%s\";\n", s.Description)
 	}
-	hName := coretypes.Hn(s.Name)
+	hName := iscp.Hn(s.Name)
 	fmt.Fprintf(file, "    public static final ScHname HScName = new ScHname(0x%s);\n", hName.String())
 
 	if len(s.Params) != 0 {
@@ -273,7 +273,7 @@ func (s *Schema) GenerateJavaConsts() error {
 		fmt.Fprintln(file)
 		for _, f := range s.Funcs {
 			name := capitalize(f.FuncName)
-			hName = coretypes.Hn(f.String)
+			hName = iscp.Hn(f.String)
 			fmt.Fprintf(file, "    public static final ScHname H%s = new ScHname(0x%s);\n", name, hName.String())
 		}
 	}
@@ -365,7 +365,7 @@ func (s *Schema) generateJavaThunkAccessCheck(file *os.File, f *FuncDef) {
 }
 
 func (s *Schema) GenerateJavaTypes() error {
-	if len(s.Types) == 0 {
+	if len(s.Structs) == 0 {
 		return nil
 	}
 
@@ -375,7 +375,7 @@ func (s *Schema) GenerateJavaTypes() error {
 	}
 
 	// write structs
-	for _, typeDef := range s.Types {
+	for _, typeDef := range s.Structs {
 		err = typeDef.GenerateJavaType(s.Name)
 		if err != nil {
 			return err

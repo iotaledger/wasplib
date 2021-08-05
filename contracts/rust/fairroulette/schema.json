@@ -1,6 +1,6 @@
 {
   "name": "FairRoulette",
-  "types": {
+  "structs": {
     "Bet": {
       "amount": "Int64",
       "better": "AgentID",

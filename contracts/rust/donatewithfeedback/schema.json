@@ -1,6 +1,6 @@
 {
   "name": "DonateWithFeedback",
-  "types": {
+  "structs": {
     "Donation": {
       "amount": "Int64 // amount donated",
       "donator": "AgentID // who donated",

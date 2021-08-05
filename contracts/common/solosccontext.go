@@ -1,9 +1,8 @@
 package common
 
 import (
-	"github.com/iotaledger/goshimmer/packages/ledgerstate"
-	"github.com/iotaledger/wasp/packages/coretypes"
-	"github.com/iotaledger/wasp/packages/coretypes/chainid"
+	"github.com/iotaledger/wasp/packages/iscp"
+	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/kv"
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/kv/dict"
@@ -66,11 +65,11 @@ func (o *SoloScContext) SetBytes(keyID, typeID int32, bytes []byte) {
 
 func (o *SoloScContext) processCall(bytes []byte) {
 	decode := wasmproc.NewBytesDecoder(bytes)
-	contract, err := coretypes.HnameFromBytes(decode.Bytes())
+	contract, err := iscp.HnameFromBytes(decode.Bytes())
 	if err != nil {
 		o.Panic(err.Error())
 	}
-	function, err := coretypes.HnameFromBytes(decode.Bytes())
+	function, err := iscp.HnameFromBytes(decode.Bytes())
 	if err != nil {
 		o.Panic(err.Error())
 	}
@@ -100,18 +99,18 @@ func (o *SoloScContext) processCall(bytes []byte) {
 
 func (o *SoloScContext) processPost(bytes []byte) {
 	decode := wasmproc.NewBytesDecoder(bytes)
-	chainID, err := chainid.ChainIDFromBytes(decode.Bytes())
+	chainID, err := iscp.ChainIDFromBytes(decode.Bytes())
 	if err != nil {
 		o.Panic(err.Error())
 	}
 	if !chainID.Equals(&o.ctx.Chain.ChainID) {
 		o.Panic("invalid chainID")
 	}
-	contract, err := coretypes.HnameFromBytes(decode.Bytes())
+	contract, err := iscp.HnameFromBytes(decode.Bytes())
 	if err != nil {
 		o.Panic(err.Error())
 	}
-	function, err := coretypes.HnameFromBytes(decode.Bytes())
+	function, err := iscp.HnameFromBytes(decode.Bytes())
 	if err != nil {
 		o.Panic(err.Error())
 	}
@@ -119,7 +118,7 @@ func (o *SoloScContext) processPost(bytes []byte) {
 	transferID := decode.Int32()
 	delay := decode.Int32()
 	o.postSync(contract, function, paramsID, transferID, delay)
-	//metadata := &coretypes.SendMetadata{
+	//metadata := &iscp.SendMetadata{
 	//	TargetContract: contract,
 	//	EntryPoint:     function,
 	//	Args:           params,
@@ -138,7 +137,7 @@ func (o *SoloScContext) processPost(bytes []byte) {
 	//
 	//timeLock := time.Unix(0, o.vm.ctx.GetTimestamp())
 	//timeLock = timeLock.Add(time.Duration(delay) * time.Second)
-	//options := coretypes.SendOptions{
+	//options := iscp.SendOptions{
 	//	TimeLock: uint32(timeLock.Unix()),
 	//}
 	//if !o.vm.ctx.Send(chainID.AsAddress(), transfer, metadata, options) {
@@ -158,11 +157,11 @@ func (o *SoloScContext) getParams(paramsID int32) dict.Dict {
 	return params
 }
 
-func (o *SoloScContext) getTransfer(transferID int32) *ledgerstate.ColoredBalances {
+func (o *SoloScContext) getTransfer(transferID int32) colored.Balances {
 	if transferID == 0 {
-		return ledgerstate.NewColoredBalances(map[ledgerstate.Color]uint64{})
+		return colored.NewBalances()
 	}
-	transfer := make(map[ledgerstate.Color]uint64)
+	transfer := make(map[colored.Color]uint64)
 	transferDict := o.ctx.wasmHost.FindObject(transferID).(*wasmproc.ScDict).KvStore()
 	transferDict.MustIterate("", func(key kv.Key, value []byte) bool {
 		color, _, err := codec.DecodeColor([]byte(key))
@@ -177,14 +176,14 @@ func (o *SoloScContext) getTransfer(transferID int32) *ledgerstate.ColoredBalanc
 		transfer[color] = amount
 		return true
 	})
-	return ledgerstate.NewColoredBalances(transfer)
+	return colored.NewBalances(transfer)
 }
 
-func (o *SoloScContext) postSync(contract, function coretypes.Hname, paramsID, transferID, delay int32) {
+func (o *SoloScContext) postSync(contract, function iscp.Hname, paramsID, transferID, delay int32) {
 	if delay != 0 {
 		o.Panic("unsupported nonzero delay for SoloContext")
 	}
-	if contract != coretypes.Hn(o.ctx.contract) {
+	if contract != iscp.Hn(o.ctx.contract) {
 		o.Panic("invalid contract")
 	}
 	funcName := o.ctx.wasmHost.FunctionFromCode(uint32(function))
@@ -196,7 +195,7 @@ func (o *SoloScContext) postSync(contract, function coretypes.Hname, paramsID, t
 	req := solo.NewCallParamsFromDic(o.ctx.contract, funcName, params)
 	if transferID != 0 {
 		transfer := o.getTransfer(transferID)
-		req.WithTransfers(transfer.Map())
+		req.WithTransfers(transfer)
 	}
 	_ = wasmlib.ConnectHost(soloHost)
 	res, err := o.ctx.Chain.PostRequestSync(req, o.ctx.keyPair)

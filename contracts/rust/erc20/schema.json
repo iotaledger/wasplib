@@ -1,9 +1,9 @@
 {
   "name": "Erc20",
   "description": "ERC-20 PoC for IOTA Smart Contracts",
-  "types": {
+  "structs": {
   },
-  "subtypes": {
+  "typedefs": {
     "AllowancesForAgent": "[AgentID]Int64"
   },
   "state": {

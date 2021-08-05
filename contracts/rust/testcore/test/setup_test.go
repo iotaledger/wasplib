@@ -6,7 +6,7 @@ import (
 
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/core"
@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// nolint:revive
+//nolint:revive
 const (
 	DEBUG        = false
 	ERC20_NAME   = "erc20"
@@ -66,21 +66,21 @@ func setupChain(t *testing.T, keyPairOriginator *ed25519.KeyPair) (*solo.Solo, *
 	wasmhost.HostTracing = DEBUG
 	wasmhost.ExtendedHostTracing = DEBUG
 	core.PrintWellKnownHnames()
-	env := solo.New(t, DEBUG, false).WithNativeContract(sbtestsc.Interface)
+	env := solo.New(t, DEBUG, false).WithNativeContract(sbtestsc.Processor)
 	chain := env.NewChain(keyPairOriginator, "ch1")
 	return env, chain
 }
 
-func setupDeployer(t *testing.T, chain *solo.Chain) (*ed25519.KeyPair, ledgerstate.Address, *coretypes.AgentID) {
+func setupDeployer(t *testing.T, chain *solo.Chain) (*ed25519.KeyPair, ledgerstate.Address, *iscp.AgentID) {
 	user, userAddr := chain.Env.NewKeyPairWithFunds()
 	chain.Env.AssertAddressIotas(userAddr, solo.Saldo)
 
-	req := solo.NewCallParams(root.Interface.Name, root.FuncGrantDeployPermission,
-		root.ParamDeployer, coretypes.NewAgentID(userAddr, 0),
+	req := solo.NewCallParams(root.Contract.Name, root.FuncGrantDeployPermission.Name,
+		root.ParamDeployer, iscp.NewAgentID(userAddr, 0),
 	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)
-	return user, userAddr, coretypes.NewAgentID(userAddr, 0)
+	return user, userAddr, iscp.NewAgentID(userAddr, 0)
 }
 
 func run2(t *testing.T, test func(*testing.T, bool), skipWasm ...bool) {
@@ -96,38 +96,38 @@ func run2(t *testing.T, test func(*testing.T, bool), skipWasm ...bool) {
 	}
 }
 
-func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) (*coretypes.AgentID, uint64) {
+func setupTestSandboxSC(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) (*iscp.AgentID, uint64) {
 	var err error
 	var extraToken uint64
 	if runWasm {
 		err = DeployGoContract(chain, user, ScName, ScName)
 		extraToken = 1
 	} else {
-		err = chain.DeployContract(user, ScName, sbtestsc.Interface.ProgramHash)
+		err = chain.DeployContract(user, ScName, sbtestsc.Contract.ProgramHash)
 		extraToken = 0
 	}
 	require.NoError(t, err)
 
-	deployed := coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName)
-	req := solo.NewCallParams(ScName, sbtestsc.FuncDoNothing).WithIotas(1)
+	deployed := iscp.NewAgentID(chain.ChainID.AsAddress(), HScName)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncDoNothing.Name).WithIotas(1)
 	_, err = chain.PostRequestSync(req, user)
 	require.NoError(t, err)
 	t.Logf("deployed test_sandbox'%s': %s", ScName, HScName)
 	return deployed, extraToken
 }
 
-func setupERC20(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) *coretypes.AgentID {
+func setupERC20(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm bool) *iscp.AgentID {
 	var err error
 	if !runWasm {
 		t.Logf("skipped %s. Only for Wasm tests, always loads %s", t.Name(), ERC20_NAME)
 		return nil
 	}
-	var userAgentID *coretypes.AgentID
+	var userAgentID *iscp.AgentID
 	if user == nil {
 		userAgentID = &chain.OriginatorAgentID
 	} else {
 		userAddr := ledgerstate.NewED25519Address(user.PublicKey)
-		userAgentID = coretypes.NewAgentID(userAddr, 0)
+		userAgentID = iscp.NewAgentID(userAddr, 0)
 	}
 	err = DeployGoContract(chain, user, ERC20_NAME, ERC20_NAME,
 		PARAM_SUPPLY, 1000000,
@@ -135,8 +135,8 @@ func setupERC20(t *testing.T, chain *solo.Chain, user *ed25519.KeyPair, runWasm 
 	)
 	require.NoError(t, err)
 
-	deployed := coretypes.NewAgentID(chain.ChainID.AsAddress(), HScName)
-	t.Logf("deployed erc20'%s': %s --  %s", ERC20_NAME, coretypes.Hn(ERC20_NAME), deployed)
+	deployed := iscp.NewAgentID(chain.ChainID.AsAddress(), HScName)
+	t.Logf("deployed erc20'%s': %s --  %s", ERC20_NAME, iscp.Hn(ERC20_NAME), deployed)
 	return deployed
 }
 

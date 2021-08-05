@@ -14,12 +14,12 @@ func testPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncPanicFullEP).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncPanicFullEP.Name).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 
-	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0
@@ -35,11 +35,11 @@ func testPanicViewCall(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(ScName, sbtestsc.FuncPanicViewEP)
+	_, err := chain.CallView(ScName, sbtestsc.FuncPanicViewEP.Name)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 
-	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0
@@ -55,12 +55,12 @@ func testCallPanicFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicFullEP).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicFullEP.Name).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
 
-	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0
@@ -76,12 +76,12 @@ func testCallPanicViewFromFull(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicViewEPFromFull).WithIotas(1)
+	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicViewEPFromFull.Name).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 
-	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0
@@ -97,11 +97,11 @@ func testCallPanicViewFromView(t *testing.T, w bool) {
 	_, chain := setupChain(t, nil)
 	setupTestSandboxSC(t, chain, nil, w)
 
-	_, err := chain.CallView(ScName, sbtestsc.FuncCallPanicViewEPFromView)
+	_, err := chain.CallView(ScName, sbtestsc.FuncCallPanicViewEPFromView.Name)
 	require.Error(t, err)
 	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
 
-	recStr := chain.GetLogRecordsForBlockRangeAsStrings(0, 0)
+	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0

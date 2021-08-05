@@ -7,12 +7,12 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName        = "testwasmlib"
 	ScDescription = "Exercise all aspects of WasmLib"
-	HScName       = coretypes.Hname(0x89703a45)
+	HScName       = iscp.Hname(0x89703a45)
 )
 
 const (
@@ -44,7 +44,7 @@ const (
 )
 
 const (
-	HFuncParamTypes   = coretypes.Hname(0x6921c4cd)
-	HViewBlockRecord  = coretypes.Hname(0xad13b2f8)
-	HViewBlockRecords = coretypes.Hname(0x16e249ea)
+	HFuncParamTypes   = iscp.Hname(0x6921c4cd)
+	HViewBlockRecord  = iscp.Hname(0xad13b2f8)
+	HViewBlockRecords = iscp.Hname(0x16e249ea)
 )

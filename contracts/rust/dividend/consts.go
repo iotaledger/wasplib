@@ -24,7 +24,6 @@ const (
 const ResultFactor = wasmlib.Key("factor")
 
 const (
-	StateFactor      = wasmlib.Key("factor")
 	StateMemberList  = wasmlib.Key("memberList")
 	StateMembers     = wasmlib.Key("members")
 	StateOwner       = wasmlib.Key("owner")

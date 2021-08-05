@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 )
 
-const importCoreTypes = `import "github.com/iotaledger/wasp/packages/coretypes"
+const importCoreTypes = `import "github.com/iotaledger/wasp/packages/iscp"
 `
 
 const importWasmLib = `import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
@@ -151,10 +151,10 @@ func (s *Schema) generateGoConsts(test bool) error {
 	if s.Description != "" {
 		s.appendConst("ScDescription", "\""+s.Description+"\"")
 	}
-	hName := coretypes.Hn(scName)
+	hName := iscp.Hn(scName)
 	hNameType := "wasmlib.ScHname"
 	if test {
-		hNameType = "coretypes.Hname"
+		hNameType = "iscp.Hname"
 	}
 	s.appendConst("HScName", hNameType+"(0x"+hName.String()+")")
 	s.flushGoConsts(file)
@@ -172,7 +172,7 @@ func (s *Schema) generateGoConsts(test bool) error {
 
 		for _, f := range s.Funcs {
 			constHname := "H" + capitalize(f.FuncName)
-			hName = coretypes.Hn(f.String)
+			hName = iscp.Hn(f.String)
 			s.appendConst(constHname, hNameType+"(0x"+hName.String()+")")
 		}
 		s.flushGoConsts(file)
@@ -452,7 +452,7 @@ func (s *Schema) generateGoProxyArray(file *os.File, field *Field, mutability st
 }
 
 func (s *Schema) generateGoProxyArrayNewType(file *os.File, field *Field, proxyType, arrayType string) {
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		if subtype.Name != field.Type {
 			continue
 		}
@@ -513,7 +513,7 @@ func (s *Schema) generateGoProxyMap(file *os.File, field *Field, mutability stri
 }
 
 func (s *Schema) generateGoProxyMapNewType(file *os.File, field *Field, proxyType, mapType, keyType, keyValue string) {
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		if subtype.Name != field.Type {
 			continue
 		}
@@ -669,7 +669,7 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability, ty
 }
 
 func (s *Schema) generateGoSubtypes() error {
-	if len(s.Subtypes) == 0 {
+	if len(s.Typedefs) == 0 {
 		return nil
 	}
 
@@ -683,7 +683,7 @@ func (s *Schema) generateGoSubtypes() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprint(file, importWasmLib)
 
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		s.generateGoProxy(file, subtype, PropImmutable)
 		s.generateGoProxy(file, subtype, PropMutable)
 	}
@@ -785,7 +785,7 @@ func (s *Schema) generateGoThunkAccessCheck(file *os.File, f *FuncDef) {
 }
 
 func (s *Schema) generateGoTypes() error {
-	if len(s.Types) == 0 {
+	if len(s.Structs) == 0 {
 		return nil
 	}
 
@@ -799,14 +799,14 @@ func (s *Schema) generateGoTypes() error {
 	fmt.Fprintf(file, "package %s\n\n", s.Name)
 	fmt.Fprint(file, importWasmLib)
 
-	for _, typeDef := range s.Types {
+	for _, typeDef := range s.Structs {
 		s.generateGoType(file, typeDef)
 	}
 
 	return nil
 }
 
-func (s *Schema) generateGoType(file *os.File, typeDef *TypeDef) {
+func (s *Schema) generateGoType(file *os.File, typeDef *Struct) {
 	nameLen, typeLen := calculatePadding(typeDef.Fields, goTypes, false)
 
 	fmt.Fprintf(file, "\ntype %s struct {\n", typeDef.Name)
@@ -843,7 +843,7 @@ func (s *Schema) generateGoType(file *os.File, typeDef *TypeDef) {
 	s.generateGoTypeProxy(file, typeDef, true)
 }
 
-func (s *Schema) generateGoTypeProxy(file *os.File, typeDef *TypeDef, mutable bool) {
+func (s *Schema) generateGoTypeProxy(file *os.File, typeDef *Struct, mutable bool) {
 	typeName := PropImmutable + typeDef.Name
 	if mutable {
 		typeName = PropMutable + typeDef.Name

@@ -128,6 +128,8 @@ github.com/btcsuite/goleveldb v0.0.0-20160330041536-7834afc9e8cd/go.mod h1:F+uVa
 github.com/btcsuite/snappy-go v0.0.0-20151229074030-0bdef8d06723/go.mod h1:8woku9dyThutzjeg+3xrA5iCpBRH8XEEg3lh6TiUghc=
 github.com/btcsuite/websocket v0.0.0-20150119174127-31079b680792/go.mod h1:ghJtEyQwv5/p4Mg4C0fgbePVuGr935/5ddU9Z3TmDRY=
 github.com/btcsuite/winsvc v1.0.0/go.mod h1:jsenWakMcC0zFBFurPLEAyrnc/teJEM1O46fmI40EZs=
+github.com/bygui86/multi-profile/v2 v2.1.0 h1:x/jPqeL/6hJqLXoDI/H5zLPsSFbDR6IEbrBbFpkWQdw=
+github.com/bygui86/multi-profile/v2 v2.1.0/go.mod h1:f4qCZiQo1nnJdwbPoADUtdDXg3hhnpfgZ9iq3/kW4BA=
 github.com/bytecodealliance/wasmtime-go v0.21.0 h1:8C6fNmpfzF6QQ9h0PCvGaYORhtgMvANCumafDPDmBSU=
 github.com/bytecodealliance/wasmtime-go v0.21.0/go.mod h1:q320gUxqyI8yB+ZqRuaJOEnGkAnHh6WtJjMaT2CW4wI=
 github.com/c-bata/go-prompt v0.2.2/go.mod h1:VzqtzE2ksDBcdln8G7mk2RX9QyGjH+OVqOCSiVIqS34=
@@ -506,6 +508,8 @@ github.com/iotaledger/goshimmer v0.6.5-0.20210607123300-2b57453f8501 h1:pa+XG55T
 github.com/iotaledger/goshimmer v0.6.5-0.20210607123300-2b57453f8501/go.mod h1:H2jZCsMIQtDoywaa1m417mdog5E5pdFQTx+ScVGiFVI=
 github.com/iotaledger/goshimmer v0.7.2-0.20210628074845-4f90850164d1 h1:OG0yQCHXXir+tAYyEp7PfeIWJMJ363deque3xX2cYfE=
 github.com/iotaledger/goshimmer v0.7.2-0.20210628074845-4f90850164d1/go.mod h1:XyRq96m+OwfGS3K8V8ywiTV6f8MSBkOISHPm/diIPmY=
+github.com/iotaledger/goshimmer v0.7.4 h1:66vsU+Da4M+wX4XFVh6TasvTIIY4iWCVGd9zqrm7KOc=
+github.com/iotaledger/goshimmer v0.7.4/go.mod h1:Fg3n+lbFYWx8X/+acnGIB2uncsVj1F7ItL/ChkflRa0=
 github.com/iotaledger/hive.go v0.0.0-20210317185122-1ac328c4054f h1:+hbQVRGodH7rBJS/cPG9qgdz37L54WRshFZYf6Cdv2o=
 github.com/iotaledger/hive.go v0.0.0-20210317185122-1ac328c4054f/go.mod h1:K/0FfpFpR4elUAvRFMn8UNfmiQmKD7EcZdWngRLi2hw=
 github.com/iotaledger/hive.go v0.0.0-20210406075748-aa0aa533e376 h1:ylpE2ptyNvmB756kFnt2KA3pGu9DzUJAQkTlv4DBwdE=
@@ -524,6 +528,8 @@ github.com/iotaledger/hive.go v0.0.0-20210602094236-4305b15fac6e h1:2nu01B+wfBdU
 github.com/iotaledger/hive.go v0.0.0-20210602094236-4305b15fac6e/go.mod h1:NyBg/Ny7FFAdDs59zdwTVoysU2ZbJVQnRwyLIDFKJYA=
 github.com/iotaledger/hive.go v0.0.0-20210623095912-c1c6f098a6db h1:qXA5CyDaVBF5c/DncHYcEFHOo8jdyFZ4a24VdGn+rRA=
 github.com/iotaledger/hive.go v0.0.0-20210623095912-c1c6f098a6db/go.mod h1:NyBg/Ny7FFAdDs59zdwTVoysU2ZbJVQnRwyLIDFKJYA=
+github.com/iotaledger/hive.go v0.0.0-20210625103722-68b2cf52ef4e h1:jUHV5HGa/1o9qoPPr8ms3dMueSVUb1ZB2Z1XyJ79qfU=
+github.com/iotaledger/hive.go v0.0.0-20210625103722-68b2cf52ef4e/go.mod h1:NyBg/Ny7FFAdDs59zdwTVoysU2ZbJVQnRwyLIDFKJYA=
 github.com/iotaledger/wart v0.2.2 h1:kb1VQ4YGSZPxOEsFcbrIzun/8cpNxtwjlySFpDPtz/Q=
 github.com/iotaledger/wart v0.2.2/go.mod h1:lF3LWGTHCfWWb7mPSMeUfhpIpf3bs/Pd90QByUqWPzg=
 github.com/iotaledger/wasp v0.1.1-0.20210327192041-89c8d9eccf9c h1:16ndeEO3V3PMGZY8MKhOwfKNeFIO7Ghf+PS6AGdzCZQ=
@@ -576,6 +582,8 @@ github.com/iotaledger/wasp v0.1.1-0.20210528174831-76a718fd5717 h1:NIRfm5iWPrbZJ
 github.com/iotaledger/wasp v0.1.1-0.20210528174831-76a718fd5717/go.mod h1:/AD0BRooMFQqIXHSiwTpKmLenA2GOt6w4eRM2iUYI9s=
 github.com/iotaledger/wasp v0.1.1-0.20210605012910-e6693717c832 h1:6KXDMYH8PTtyX4Ejm3lUiJi888faTNmZEHEHOxWTVEk=
 github.com/iotaledger/wasp v0.1.1-0.20210605012910-e6693717c832/go.mod h1:iZe0v/GXLQ4CQq2Zf35XPp/619a27Ijl+4wvsyNEdG4=
+github.com/iotaledger/wasp v0.1.1-0.20210715163523-9f621a2149c9 h1:BbT+IPq1e99OfNvZ5uksKfteCRtquCqqOBeBLt3RRJo=
+github.com/iotaledger/wasp v0.1.1-0.20210715163523-9f621a2149c9/go.mod h1:LL+LceuVKYe83ZWUtIlapgwMoHUfG4FwSQGR7mYfV/8=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.2/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-cid v0.0.3/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
@@ -1451,6 +1459,8 @@ golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44 h1:Bli41pIlzTzf3KEY06n+xnzK/
 golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210420205809-ac73e9fd8988 h1:EjgCl+fVlIaPJSori0ikSz3uV0DOHKWOJFpv1sAAhBM=
 golang.org/x/sys v0.0.0-20210420205809-ac73e9fd8988/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c h1:F1jZWGFhYfh0Ci55sIpILtKKK8p3i2/krTr0H1rg74I=
+golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201117132131-f5c789dd3221/go.mod h1:Nr5EML6q2oocZ2LXRh80K7BxOlk5/8JxuGnuhpl+muw=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

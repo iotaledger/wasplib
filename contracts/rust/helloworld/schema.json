@@ -1,7 +1,7 @@
 {
   "name": "HelloWorld",
   "description": "The ubiquitous hello world demo",
-  "types": {
+  "structs": {
   },
   "state": {
   },

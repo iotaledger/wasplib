@@ -5,12 +5,12 @@ import (
 	"os"
 )
 
-type TypeDef struct {
+type Struct struct {
 	Name   string
 	Fields []*Field
 }
 
-func (td *TypeDef) GenerateJavaType(contract string) error {
+func (td *Struct) GenerateJavaType(contract string) error {
 	file, err := os.Create("types/" + td.Name + ".java")
 	if err != nil {
 		return err

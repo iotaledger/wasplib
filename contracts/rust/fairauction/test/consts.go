@@ -7,11 +7,11 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName  = "fairauction"
-	HScName = coretypes.Hname(0x1b5c43b1)
+	HScName = iscp.Hname(0x1b5c43b1)
 )
 
 const (
@@ -53,9 +53,9 @@ const (
 )
 
 const (
-	HFuncFinalizeAuction = coretypes.Hname(0x8d534ddc)
-	HFuncPlaceBid        = coretypes.Hname(0x9bd72fa9)
-	HFuncSetOwnerMargin  = coretypes.Hname(0x1774461a)
-	HFuncStartAuction    = coretypes.Hname(0xd5b7bacb)
-	HViewGetInfo         = coretypes.Hname(0xcfedba5f)
+	HFuncFinalizeAuction = iscp.Hname(0x8d534ddc)
+	HFuncPlaceBid        = iscp.Hname(0x9bd72fa9)
+	HFuncSetOwnerMargin  = iscp.Hname(0x1774461a)
+	HFuncStartAuction    = iscp.Hname(0xd5b7bacb)
+	HViewGetInfo         = iscp.Hname(0xcfedba5f)
 )

@@ -5,9 +5,9 @@ import (
 
 	"github.com/iotaledger/goshimmer/packages/ledgerstate"
 	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/coretypes"
-	"github.com/iotaledger/wasp/packages/coretypes/chainid"
 	"github.com/iotaledger/wasp/packages/hashing"
+	"github.com/iotaledger/wasp/packages/iscp"
+	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
@@ -64,15 +64,15 @@ func (s *SoloContext) ScAddress(address ledgerstate.Address) wasmlib.ScAddress {
 	return wasmlib.NewScAddressFromBytes(address.Bytes())
 }
 
-func (s *SoloContext) ScAgentID(agentID coretypes.AgentID) wasmlib.ScAgentID {
+func (s *SoloContext) ScAgentID(agentID iscp.AgentID) wasmlib.ScAgentID {
 	return wasmlib.NewScAgentIDFromBytes(agentID.Bytes())
 }
 
-func (s *SoloContext) ScColor(color ledgerstate.Color) wasmlib.ScColor {
+func (s *SoloContext) ScColor(color colored.Color) wasmlib.ScColor {
 	return wasmlib.NewScColorFromBytes(color.Bytes())
 }
 
-func (s *SoloContext) ScChainID(chainID chainid.ChainID) wasmlib.ScChainID {
+func (s *SoloContext) ScChainID(chainID iscp.ChainID) wasmlib.ScChainID {
 	return wasmlib.NewScChainIDFromBytes(chainID.Bytes())
 }
 
@@ -80,11 +80,11 @@ func (s *SoloContext) ScHash(hash hashing.HashValue) wasmlib.ScHash {
 	return wasmlib.NewScHashFromBytes(hash.Bytes())
 }
 
-func (s *SoloContext) ScHname(hname coretypes.Hname) wasmlib.ScHname {
+func (s *SoloContext) ScHname(hname iscp.Hname) wasmlib.ScHname {
 	return wasmlib.NewScHnameFromBytes(hname.Bytes())
 }
 
-func (s *SoloContext) ScRequestID(requestID coretypes.RequestID) wasmlib.ScRequestID {
+func (s *SoloContext) ScRequestID(requestID iscp.RequestID) wasmlib.ScRequestID {
 	return wasmlib.NewScRequestIDFromBytes(requestID.Bytes())
 }
 

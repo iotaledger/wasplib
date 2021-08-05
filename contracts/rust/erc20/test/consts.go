@@ -7,12 +7,12 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName        = "erc20"
 	ScDescription = "ERC-20 PoC for IOTA Smart Contracts"
-	HScName       = coretypes.Hname(0x200e3733)
+	HScName       = iscp.Hname(0x200e3733)
 )
 
 const (
@@ -46,11 +46,11 @@ const (
 )
 
 const (
-	HFuncApprove      = coretypes.Hname(0xa0661268)
-	HFuncInit         = coretypes.Hname(0x1f44d644)
-	HFuncTransfer     = coretypes.Hname(0xa15da184)
-	HFuncTransferFrom = coretypes.Hname(0xd5e0a602)
-	HViewAllowance    = coretypes.Hname(0x5e16006a)
-	HViewBalanceOf    = coretypes.Hname(0x67ef8df4)
-	HViewTotalSupply  = coretypes.Hname(0x9505e6ca)
+	HFuncApprove      = iscp.Hname(0xa0661268)
+	HFuncInit         = iscp.Hname(0x1f44d644)
+	HFuncTransfer     = iscp.Hname(0xa15da184)
+	HFuncTransferFrom = iscp.Hname(0xd5e0a602)
+	HViewAllowance    = iscp.Hname(0x5e16006a)
+	HViewBalanceOf    = iscp.Hname(0x67ef8df4)
+	HViewTotalSupply  = iscp.Hname(0x9505e6ca)
 )

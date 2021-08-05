@@ -1,5 +1,5 @@
 {
-  "types": {
+  "structs": {
     "TokenInfo": [
       {"field": "supply", "type": "Int64"},
       {"field": "minted_by", "type": "Agent"},

@@ -1,7 +1,7 @@
 {
   "name": "TestWasmLib",
   "description": "Exercise all aspects of WasmLib",
-  "types": {
+  "structs": {
   },
   "state": {
   },

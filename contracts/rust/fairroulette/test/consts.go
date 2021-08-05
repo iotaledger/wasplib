@@ -7,11 +7,11 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName  = "fairroulette"
-	HScName = coretypes.Hname(0xdf79d138)
+	HScName = iscp.Hname(0xdf79d138)
 )
 
 const (
@@ -37,9 +37,9 @@ const (
 )
 
 const (
-	HFuncLockBets          = coretypes.Hname(0xe163b43c)
-	HFuncPayWinners        = coretypes.Hname(0xfb2b0144)
-	HFuncPlaceBet          = coretypes.Hname(0xdfba7d1b)
-	HFuncPlayPeriod        = coretypes.Hname(0xcb94b293)
-	HViewLastWinningNumber = coretypes.Hname(0x2f5f09fe)
+	HFuncLockBets          = iscp.Hname(0xe163b43c)
+	HFuncPayWinners        = iscp.Hname(0xfb2b0144)
+	HFuncPlaceBet          = iscp.Hname(0xdfba7d1b)
+	HFuncPlayPeriod        = iscp.Hname(0xcb94b293)
+	HViewLastWinningNumber = iscp.Hname(0x2f5f09fe)
 )

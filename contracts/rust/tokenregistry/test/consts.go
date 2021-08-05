@@ -7,11 +7,11 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName  = "tokenregistry"
-	HScName = coretypes.Hname(0xe1ba0c78)
+	HScName = iscp.Hname(0xe1ba0c78)
 )
 
 const (
@@ -33,8 +33,8 @@ const (
 )
 
 const (
-	HFuncMintSupply        = coretypes.Hname(0x564349a7)
-	HFuncTransferOwnership = coretypes.Hname(0xbb9eb5af)
-	HFuncUpdateMetadata    = coretypes.Hname(0xa26b23b6)
-	HViewGetInfo           = coretypes.Hname(0xcfedba5f)
+	HFuncMintSupply        = iscp.Hname(0x564349a7)
+	HFuncTransferOwnership = iscp.Hname(0xbb9eb5af)
+	HFuncUpdateMetadata    = iscp.Hname(0xa26b23b6)
+	HViewGetInfo           = iscp.Hname(0xcfedba5f)
 )

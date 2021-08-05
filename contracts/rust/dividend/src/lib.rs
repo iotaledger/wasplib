@@ -86,7 +86,7 @@ pub struct MemberContext {
 
 fn func_member_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcMember");
-    // only defined owner can add members
+    // only defined owner of contract can add members
     let access = ctx.state().get_agent_id("owner");
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");
@@ -112,7 +112,7 @@ pub struct SetOwnerContext {
 
 fn func_set_owner_thunk(ctx: &ScFuncContext) {
     ctx.log("dividend.funcSetOwner");
-    // only defined owner can change owner
+    // only defined owner of contract can change owner
     let access = ctx.state().get_agent_id("owner");
     ctx.require(access.exists(), "access not set: owner");
     ctx.require(ctx.caller() == access.value(), "no permission");

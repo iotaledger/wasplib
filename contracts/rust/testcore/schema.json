@@ -1,7 +1,7 @@
 {
   "name": "TestCore",
   "description": "Core test for ISCP wasmlib Rust/Wasm library",
-  "types": {
+  "structs": {
   },
   "state": {
     "ints": "[String]Int64",

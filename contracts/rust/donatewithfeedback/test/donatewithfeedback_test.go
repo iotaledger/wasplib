@@ -6,8 +6,8 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/goshimmer/packages/ledgerstate"
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
+	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/donatewithfeedback"
@@ -53,12 +53,12 @@ func TestDonateOnce(t *testing.T) {
 	require.EqualValues(t, 42, donationInfo.Results.TotalDonation().Value())
 
 	// 42 iota transferred from wallet to contract
-	ctx.Chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
+	ctx.Chain.Env.AssertAddressBalance(donator1Addr, colored.IOTA, solo.Saldo-42)
 	// 42 iota transferred to contract
-	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42)
+	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), colored.IOTA, 42)
 	// returned 1 used for transaction to wallet account
-	account1 := coretypes.NewAgentID(donator1Addr, 0)
-	ctx.Chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
+	account1 := iscp.NewAgentID(donator1Addr, 0)
+	ctx.Chain.AssertAccountBalance(account1, colored.IOTA, 0)
 }
 
 func TestDonateTwice(t *testing.T) {
@@ -84,14 +84,14 @@ func TestDonateTwice(t *testing.T) {
 	require.EqualValues(t, 42+69, donationInfo.Results.TotalDonation().Value())
 
 	// 42 iota transferred from wallet to contract plus 1 used for transaction
-	ctx.Chain.Env.AssertAddressBalance(donator1Addr, ledgerstate.ColorIOTA, solo.Saldo-42)
+	ctx.Chain.Env.AssertAddressBalance(donator1Addr, colored.IOTA, solo.Saldo-42)
 	// 69 iota transferred from wallet to contract plus 1 used for transaction
-	ctx.Chain.Env.AssertAddressBalance(donator2Addr, ledgerstate.ColorIOTA, solo.Saldo-69)
+	ctx.Chain.Env.AssertAddressBalance(donator2Addr, colored.IOTA, solo.Saldo-69)
 	// 42+69 iota transferred to contract
-	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), ledgerstate.ColorIOTA, 42+69)
+	ctx.Chain.AssertAccountBalance(ctx.Chain.ContractAgentID(donatewithfeedback.ScName), colored.IOTA, 42+69)
 	// returned 1 used for transaction to wallet accounts
-	account1 := coretypes.NewAgentID(donator1Addr, 0)
-	ctx.Chain.AssertAccountBalance(account1, ledgerstate.ColorIOTA, 0)
-	account2 := coretypes.NewAgentID(donator2Addr, 0)
-	ctx.Chain.AssertAccountBalance(account2, ledgerstate.ColorIOTA, 0)
+	account1 := iscp.NewAgentID(donator1Addr, 0)
+	ctx.Chain.AssertAccountBalance(account1, colored.IOTA, 0)
+	account2 := iscp.NewAgentID(donator2Addr, 0)
+	ctx.Chain.AssertAccountBalance(account2, colored.IOTA, 0)
 }

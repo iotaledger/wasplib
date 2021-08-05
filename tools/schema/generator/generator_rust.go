@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/iotaledger/wasp/packages/coretypes"
+	"github.com/iotaledger/wasp/packages/iscp"
 )
 
 const (
@@ -217,7 +217,7 @@ func (s *Schema) generateRustConsts() error {
 	if s.Description != "" {
 		s.appendConst("SC_DESCRIPTION", "&str = \""+s.Description+"\"")
 	}
-	hName := coretypes.Hn(scName)
+	hName := iscp.Hn(scName)
 	s.appendConst("HSC_NAME", "ScHname = ScHname(0x"+hName.String()+")")
 	s.flushRustConsts(file)
 
@@ -234,7 +234,7 @@ func (s *Schema) generateRustConsts() error {
 
 		for _, f := range s.Funcs {
 			constHname := "H" + upper(snake(f.FuncName))
-			hName = coretypes.Hn(f.String)
+			hName = iscp.Hn(f.String)
 			s.appendConst(constHname, "ScHname = ScHname(0x"+hName.String()+")")
 		}
 		s.flushRustConsts(file)
@@ -392,10 +392,10 @@ func (s *Schema) generateRustFuncsNew(scFileName string) error {
 	fmt.Fprintln(file, useWasmLib)
 
 	fmt.Fprint(file, useCrate)
-	if len(s.Subtypes) != 0 {
+	if len(s.Typedefs) != 0 {
 		fmt.Fprint(file, useSubtypes)
 	}
-	if len(s.Types) != 0 {
+	if len(s.Structs) != 0 {
 		fmt.Fprint(file, useTypes)
 	}
 
@@ -496,10 +496,10 @@ func (s *Schema) generateRustLib() error {
 	fmt.Fprintf(file, "mod params;\n")
 	fmt.Fprintf(file, "mod results;\n")
 	fmt.Fprintf(file, "mod state;\n")
-	if len(s.Subtypes) != 0 {
+	if len(s.Typedefs) != 0 {
 		fmt.Fprintf(file, "mod subtypes;\n")
 	}
-	if len(s.Types) != 0 {
+	if len(s.Structs) != 0 {
 		fmt.Fprintf(file, "mod types;\n")
 	}
 	fmt.Fprintf(file, "mod %s;\n", s.Name)
@@ -583,7 +583,7 @@ func (s *Schema) generateRustProxyArray(file *os.File, field *Field, mutability 
 }
 
 func (s *Schema) generateRustProxyArrayNewType(file *os.File, field *Field, proxyType string) {
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		if subtype.Name != field.Type {
 			continue
 		}
@@ -647,7 +647,7 @@ func (s *Schema) generateRustProxyMap(file *os.File, field *Field, mutability st
 }
 
 func (s *Schema) generateRustProxyMapNewType(file *os.File, field *Field, proxyType, keyType, keyValue string) {
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		if subtype.Name != field.Type {
 			continue
 		}
@@ -686,10 +686,10 @@ func (s *Schema) generateRustState() error {
 	fmt.Fprintln(file, useWasmLibHost)
 	fmt.Fprint(file, useCrate)
 	fmt.Fprint(file, useKeys)
-	if len(s.Subtypes) != 0 {
+	if len(s.Typedefs) != 0 {
 		fmt.Fprint(file, useSubtypes)
 	}
-	if len(s.Types) != 0 {
+	if len(s.Structs) != 0 {
 		fmt.Fprint(file, useTypes)
 	}
 
@@ -813,7 +813,7 @@ func (s *Schema) generateRustStruct(file *os.File, fields []*Field, mutability, 
 }
 
 func (s *Schema) generateRustSubtypes() error {
-	if len(s.Subtypes) == 0 {
+	if len(s.Typedefs) == 0 {
 		return nil
 	}
 
@@ -828,11 +828,11 @@ func (s *Schema) generateRustSubtypes() error {
 	fmt.Fprintln(file, allowDeadCode)
 	fmt.Fprint(file, useWasmLib)
 	fmt.Fprint(file, useWasmLibHost)
-	if len(s.Types) != 0 {
+	if len(s.Structs) != 0 {
 		fmt.Fprint(file, "\n", useTypes)
 	}
 
-	for _, subtype := range s.Subtypes {
+	for _, subtype := range s.Typedefs {
 		s.generateRustProxy(file, subtype, PropImmutable)
 		s.generateRustProxy(file, subtype, PropMutable)
 	}
@@ -919,7 +919,7 @@ func (s *Schema) generateRustThunkAccessCheck(file *os.File, f *FuncDef) {
 }
 
 func (s *Schema) generateRustTypes() error {
-	if len(s.Types) == 0 {
+	if len(s.Structs) == 0 {
 		return nil
 	}
 
@@ -937,7 +937,7 @@ func (s *Schema) generateRustTypes() error {
 	fmt.Fprint(file, useWasmLibHost)
 
 	// write structs
-	for _, typeDef := range s.Types {
+	for _, typeDef := range s.Structs {
 		s.generateRustType(file, typeDef)
 	}
 
@@ -945,7 +945,7 @@ func (s *Schema) generateRustTypes() error {
 	return nil
 }
 
-func (s *Schema) generateRustType(file *os.File, typeDef *TypeDef) {
+func (s *Schema) generateRustType(file *os.File, typeDef *Struct) {
 	nameLen, typeLen := calculatePadding(typeDef.Fields, rustTypes, true)
 
 	fmt.Fprintf(file, "\npub struct %s {\n", typeDef.Name)
@@ -990,7 +990,7 @@ func (s *Schema) generateRustType(file *os.File, typeDef *TypeDef) {
 	s.generateRustTypeProxy(file, typeDef, true)
 }
 
-func (s *Schema) generateRustTypeProxy(file *os.File, typeDef *TypeDef, mutable bool) {
+func (s *Schema) generateRustTypeProxy(file *os.File, typeDef *Struct, mutable bool) {
 	typeName := PropImmutable + typeDef.Name
 	if mutable {
 		typeName = PropMutable + typeDef.Name

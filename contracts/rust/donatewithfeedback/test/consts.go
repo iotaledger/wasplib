@@ -7,11 +7,11 @@
 
 package test
 
-import "github.com/iotaledger/wasp/packages/coretypes"
+import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
 	ScName  = "donatewithfeedback"
-	HScName = coretypes.Hname(0x696d7f66)
+	HScName = iscp.Hname(0x696d7f66)
 )
 
 const (
@@ -45,8 +45,8 @@ const (
 )
 
 const (
-	HFuncDonate       = coretypes.Hname(0xdc9b133a)
-	HFuncWithdraw     = coretypes.Hname(0x9dcc0f41)
-	HViewDonation     = coretypes.Hname(0xbdb245ba)
-	HViewDonationInfo = coretypes.Hname(0xc8f7c726)
+	HFuncDonate       = iscp.Hname(0xdc9b133a)
+	HFuncWithdraw     = iscp.Hname(0x9dcc0f41)
+	HViewDonation     = iscp.Hname(0xbdb245ba)
+	HViewDonationInfo = iscp.Hname(0xc8f7c726)
 )

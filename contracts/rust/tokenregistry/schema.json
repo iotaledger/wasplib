@@ -1,6 +1,6 @@
 {
   "name": "TokenRegistry",
-  "types": {
+  "structs": {
     "Token": {
       "created": "Int64 // creation timestamp",
       "description": "String // description what minted token represents",

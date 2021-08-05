@@ -21,7 +21,6 @@ pub const PARAM_OWNER:   &str = "owner";
 
 pub const RESULT_FACTOR: &str = "factor";
 
-pub const STATE_FACTOR:       &str = "factor";
 pub const STATE_MEMBER_LIST:  &str = "memberList";
 pub const STATE_MEMBERS:      &str = "members";
 pub const STATE_OWNER:        &str = "owner";
