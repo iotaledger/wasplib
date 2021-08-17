@@ -19,7 +19,7 @@ import (
 const MaxNumber = 5
 
 // The default playing period of one betting round in seconds.
-const DefaultPlayPeriod = 120
+const DefaultPlayPeriod = 1200
 
 // 'placeBet' is used by betters to place a bet on a number from 1 to MAX_NUMBER. The first
 // incoming bet triggers a betting round of configurable duration. After the playing period

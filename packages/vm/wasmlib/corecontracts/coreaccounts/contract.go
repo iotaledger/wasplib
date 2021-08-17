@@ -14,6 +14,11 @@ type DepositCall struct {
 	Params MutableDepositParams
 }
 
+type HarvestCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableHarvestParams
+}
+
 type WithdrawCall struct {
 	Func *wasmlib.ScFunc
 }
@@ -40,6 +45,12 @@ var ScFuncs Funcs
 
 func (sc Funcs) Deposit(ctx wasmlib.ScFuncCallContext) *DepositCall {
 	f := &DepositCall{Func: wasmlib.NewScFunc(HScName, HFuncDeposit)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) Harvest(ctx wasmlib.ScFuncCallContext) *HarvestCall {
+	f := &HarvestCall{Func: wasmlib.NewScFunc(HScName, HFuncHarvest)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }

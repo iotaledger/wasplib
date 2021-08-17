@@ -16,13 +16,17 @@ const (
 )
 
 const (
-	ParamBlockIndex = wasmlib.Key("n")
-	ParamRequestID  = wasmlib.Key("u")
+	ParamBlockIndex    = wasmlib.Key("n")
+	ParamContractHname = wasmlib.Key("h")
+	ParamFromBlock     = wasmlib.Key("f")
+	ParamRequestID     = wasmlib.Key("u")
+	ParamToBlock       = wasmlib.Key("t")
 )
 
 const (
 	ResultBlockIndex             = wasmlib.Key("n")
 	ResultBlockInfo              = wasmlib.Key("i")
+	ResultEvent                  = wasmlib.Key("e")
 	ResultGoverningAddress       = wasmlib.Key("g")
 	ResultRequestID              = wasmlib.Key("u")
 	ResultRequestIndex           = wasmlib.Key("r")
@@ -32,21 +36,27 @@ const (
 )
 
 const (
-	ViewControlAddresses             = "controlAddresses"
-	ViewGetBlockInfo                 = "getBlockInfo"
-	ViewGetLatestBlockInfo           = "getLatestBlockInfo"
-	ViewGetRequestIDsForBlock        = "getRequestIDsForBlock"
-	ViewGetRequestLogRecord          = "getRequestLogRecord"
-	ViewGetRequestLogRecordsForBlock = "getRequestLogRecordsForBlock"
-	ViewIsRequestProcessed           = "isRequestProcessed"
+	ViewControlAddresses           = "controlAddresses"
+	ViewGetBlockInfo               = "getBlockInfo"
+	ViewGetEventsForBlock          = "getEventsForBlock"
+	ViewGetEventsForContract       = "getEventsForContract"
+	ViewGetEventsForRequest        = "getEventsForRequest"
+	ViewGetLatestBlockInfo         = "getLatestBlockInfo"
+	ViewGetRequestIDsForBlock      = "getRequestIDsForBlock"
+	ViewGetRequestReceipt          = "getRequestReceipt"
+	ViewGetRequestReceiptsForBlock = "getRequestReceiptsForBlock"
+	ViewIsRequestProcessed         = "isRequestProcessed"
 )
 
 const (
-	HViewControlAddresses             = wasmlib.ScHname(0x796bd223)
-	HViewGetBlockInfo                 = wasmlib.ScHname(0xbe89f9b3)
-	HViewGetLatestBlockInfo           = wasmlib.ScHname(0x084a1760)
-	HViewGetRequestIDsForBlock        = wasmlib.ScHname(0x5a20327a)
-	HViewGetRequestLogRecord          = wasmlib.ScHname(0x31e07e48)
-	HViewGetRequestLogRecordsForBlock = wasmlib.ScHname(0x7210e621)
-	HViewIsRequestProcessed           = wasmlib.ScHname(0xd57d50a9)
+	HViewControlAddresses           = wasmlib.ScHname(0x796bd223)
+	HViewGetBlockInfo               = wasmlib.ScHname(0xbe89f9b3)
+	HViewGetEventsForBlock          = wasmlib.ScHname(0x36232798)
+	HViewGetEventsForContract       = wasmlib.ScHname(0x682a1922)
+	HViewGetEventsForRequest        = wasmlib.ScHname(0x4f8d68e4)
+	HViewGetLatestBlockInfo         = wasmlib.ScHname(0x084a1760)
+	HViewGetRequestIDsForBlock      = wasmlib.ScHname(0x5a20327a)
+	HViewGetRequestReceipt          = wasmlib.ScHname(0xb7f9534f)
+	HViewGetRequestReceiptsForBlock = wasmlib.ScHname(0x77e3beef)
+	HViewIsRequestProcessed         = wasmlib.ScHname(0xd57d50a9)
 )

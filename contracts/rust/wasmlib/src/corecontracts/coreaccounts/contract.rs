@@ -19,6 +19,11 @@ pub struct DepositCall {
     pub params: MutableDepositParams,
 }
 
+pub struct HarvestCall {
+    pub func:   ScFunc,
+    pub params: MutableHarvestParams,
+}
+
 pub struct WithdrawCall {
     pub func: ScFunc,
 }
@@ -47,6 +52,14 @@ impl ScFuncs {
         let mut f = DepositCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_DEPOSIT),
             params: MutableDepositParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn harvest(_ctx: & dyn ScFuncCallContext) -> HarvestCall {
+        let mut f = HarvestCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_HARVEST),
+            params: MutableHarvestParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f

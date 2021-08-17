@@ -15,10 +15,15 @@ const (
 	HScName       = wasmlib.ScHname(0x3c4b5e02)
 )
 
-const ParamAgentID = wasmlib.Key("a")
+const (
+	ParamAgentID        = wasmlib.Key("a")
+	ParamWithdrawAmount = wasmlib.Key("m")
+	ParamWithdrawColor  = wasmlib.Key("c")
+)
 
 const (
 	FuncDeposit     = "deposit"
+	FuncHarvest     = "harvest"
 	FuncWithdraw    = "withdraw"
 	ViewAccounts    = "accounts"
 	ViewBalance     = "balance"
@@ -27,6 +32,7 @@ const (
 
 const (
 	HFuncDeposit     = wasmlib.ScHname(0xbdc9102d)
+	HFuncHarvest     = wasmlib.ScHname(0x7b40efbd)
 	HFuncWithdraw    = wasmlib.ScHname(0x9dcc0f41)
 	HViewAccounts    = wasmlib.ScHname(0x3c4b5e02)
 	HViewBalance     = wasmlib.ScHname(0x84168cb4)

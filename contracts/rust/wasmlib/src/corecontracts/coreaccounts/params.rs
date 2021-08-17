@@ -35,6 +35,36 @@ impl MutableDepositParams {
 }
 
 #[derive(Clone, Copy)]
+pub struct ImmutableHarvestParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableHarvestParams {
+    pub fn withdraw_amount(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, PARAM_WITHDRAW_AMOUNT.get_key_id())
+    }
+
+    pub fn withdraw_color(&self) -> ScImmutableColor {
+        ScImmutableColor::new(self.id, PARAM_WITHDRAW_COLOR.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableHarvestParams {
+    pub(crate) id: i32,
+}
+
+impl MutableHarvestParams {
+    pub fn withdraw_amount(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, PARAM_WITHDRAW_AMOUNT.get_key_id())
+    }
+
+    pub fn withdraw_color(&self) -> ScMutableColor {
+        ScMutableColor::new(self.id, PARAM_WITHDRAW_COLOR.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableBalanceParams {
     pub(crate) id: i32,
 }

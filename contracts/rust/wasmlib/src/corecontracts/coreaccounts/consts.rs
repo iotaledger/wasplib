@@ -15,15 +15,19 @@ pub const SC_NAME:        &str = "accounts";
 pub const SC_DESCRIPTION: &str = "Core chain account ledger contract";
 pub const HSC_NAME:       ScHname = ScHname(0x3c4b5e02);
 
-pub const PARAM_AGENT_ID: &str = "a";
+pub const PARAM_AGENT_ID:        &str = "a";
+pub const PARAM_WITHDRAW_AMOUNT: &str = "m";
+pub const PARAM_WITHDRAW_COLOR:  &str = "c";
 
 pub const FUNC_DEPOSIT:      &str = "deposit";
+pub const FUNC_HARVEST:      &str = "harvest";
 pub const FUNC_WITHDRAW:     &str = "withdraw";
 pub const VIEW_ACCOUNTS:     &str = "accounts";
 pub const VIEW_BALANCE:      &str = "balance";
 pub const VIEW_TOTAL_ASSETS: &str = "totalAssets";
 
 pub const HFUNC_DEPOSIT:      ScHname = ScHname(0xbdc9102d);
+pub const HFUNC_HARVEST:      ScHname = ScHname(0x7b40efbd);
 pub const HFUNC_WITHDRAW:     ScHname = ScHname(0x9dcc0f41);
 pub const HVIEW_ACCOUNTS:     ScHname = ScHname(0x3c4b5e02);
 pub const HVIEW_BALANCE:      ScHname = ScHname(0x84168cb4);

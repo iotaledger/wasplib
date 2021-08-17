@@ -25,6 +25,30 @@ func (s MutableDepositParams) AgentID() wasmlib.ScMutableAgentID {
 	return wasmlib.NewScMutableAgentID(s.id, ParamAgentID.KeyID())
 }
 
+type ImmutableHarvestParams struct {
+	id int32
+}
+
+func (s ImmutableHarvestParams) WithdrawAmount() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, ParamWithdrawAmount.KeyID())
+}
+
+func (s ImmutableHarvestParams) WithdrawColor() wasmlib.ScImmutableColor {
+	return wasmlib.NewScImmutableColor(s.id, ParamWithdrawColor.KeyID())
+}
+
+type MutableHarvestParams struct {
+	id int32
+}
+
+func (s MutableHarvestParams) WithdrawAmount() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, ParamWithdrawAmount.KeyID())
+}
+
+func (s MutableHarvestParams) WithdrawColor() wasmlib.ScMutableColor {
+	return wasmlib.NewScMutableColor(s.id, ParamWithdrawColor.KeyID())
+}
+
 type ImmutableBalanceParams struct {
 	id int32
 }

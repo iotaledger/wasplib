@@ -20,6 +20,24 @@ type GetBlockInfoCall struct {
 	Results ImmutableGetBlockInfoResults
 }
 
+type GetEventsForBlockCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableGetEventsForBlockParams
+	Results ImmutableGetEventsForBlockResults
+}
+
+type GetEventsForContractCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableGetEventsForContractParams
+	Results ImmutableGetEventsForContractResults
+}
+
+type GetEventsForRequestCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableGetEventsForRequestParams
+	Results ImmutableGetEventsForRequestResults
+}
+
 type GetLatestBlockInfoCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableGetLatestBlockInfoResults
@@ -31,16 +49,16 @@ type GetRequestIDsForBlockCall struct {
 	Results ImmutableGetRequestIDsForBlockResults
 }
 
-type GetRequestLogRecordCall struct {
+type GetRequestReceiptCall struct {
 	Func    *wasmlib.ScView
-	Params  MutableGetRequestLogRecordParams
-	Results ImmutableGetRequestLogRecordResults
+	Params  MutableGetRequestReceiptParams
+	Results ImmutableGetRequestReceiptResults
 }
 
-type GetRequestLogRecordsForBlockCall struct {
+type GetRequestReceiptsForBlockCall struct {
 	Func    *wasmlib.ScView
-	Params  MutableGetRequestLogRecordsForBlockParams
-	Results ImmutableGetRequestLogRecordsForBlockResults
+	Params  MutableGetRequestReceiptsForBlockParams
+	Results ImmutableGetRequestReceiptsForBlockResults
 }
 
 type IsRequestProcessedCall struct {
@@ -65,6 +83,24 @@ func (sc Funcs) GetBlockInfo(ctx wasmlib.ScViewCallContext) *GetBlockInfoCall {
 	return f
 }
 
+func (sc Funcs) GetEventsForBlock(ctx wasmlib.ScViewCallContext) *GetEventsForBlockCall {
+	f := &GetEventsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetEventsForBlock)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetEventsForContract(ctx wasmlib.ScViewCallContext) *GetEventsForContractCall {
+	f := &GetEventsForContractCall{Func: wasmlib.NewScView(HScName, HViewGetEventsForContract)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetEventsForRequest(ctx wasmlib.ScViewCallContext) *GetEventsForRequestCall {
+	f := &GetEventsForRequestCall{Func: wasmlib.NewScView(HScName, HViewGetEventsForRequest)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
 func (sc Funcs) GetLatestBlockInfo(ctx wasmlib.ScViewCallContext) *GetLatestBlockInfoCall {
 	f := &GetLatestBlockInfoCall{Func: wasmlib.NewScView(HScName, HViewGetLatestBlockInfo)}
 	f.Func.SetPtrs(nil, &f.Results.id)
@@ -77,14 +113,14 @@ func (sc Funcs) GetRequestIDsForBlock(ctx wasmlib.ScViewCallContext) *GetRequest
 	return f
 }
 
-func (sc Funcs) GetRequestLogRecord(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordCall {
-	f := &GetRequestLogRecordCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecord)}
+func (sc Funcs) GetRequestReceipt(ctx wasmlib.ScViewCallContext) *GetRequestReceiptCall {
+	f := &GetRequestReceiptCall{Func: wasmlib.NewScView(HScName, HViewGetRequestReceipt)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 
-func (sc Funcs) GetRequestLogRecordsForBlock(ctx wasmlib.ScViewCallContext) *GetRequestLogRecordsForBlockCall {
-	f := &GetRequestLogRecordsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestLogRecordsForBlock)}
+func (sc Funcs) GetRequestReceiptsForBlock(ctx wasmlib.ScViewCallContext) *GetRequestReceiptsForBlockCall {
+	f := &GetRequestReceiptsForBlockCall{Func: wasmlib.NewScView(HScName, HViewGetRequestReceiptsForBlock)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }

@@ -4,6 +4,13 @@
   "funcs": {
   },
   "views": {
+    "controlAddresses": {
+      "results": {
+        "stateControllerAddress=s": "Address",
+        "governingAddress=g": "Address",
+        "blockIndex=n": "Int32"
+      }
+    },
     "getBlockInfo": {
       "params": {
         "blockIndex=n": "Int32"
@@ -14,10 +21,19 @@
     },
     "getLatestBlockInfo": {
       "results": {
+        "blockIndex=n": "Int32",
         "blockInfo=i": "Bytes"
       }
     },
-    "getRequestLogRecord": {
+    "getRequestIDsForBlock": {
+      "params": {
+        "blockIndex=n": "Int32"
+      },
+      "results": {
+        "requestID=u": "[]RequestID //TODO Array16"
+      }
+    },
+    "getRequestReceipt": {
       "params": {
         "requestID=u": "RequestID"
       },
@@ -27,20 +43,12 @@
         "requestIndex=r": "Int16"
       }
     },
-    "getRequestLogRecordsForBlock": {
+    "getRequestReceiptsForBlock": {
       "params": {
         "blockIndex=n": "Int32"
       },
       "results": {
         "requestRecord=d": "[]Bytes //TODO Array16"
-      }
-    },
-    "getRequestIDsForBlock": {
-      "params": {
-        "blockIndex=n": "Int32"
-      },
-      "results": {
-        "requestID=u": "[]Bytes //TODO Array16"
       }
     },
     "isRequestProcessed": {
@@ -51,11 +59,30 @@
         "requestProcessed=p": "String"
       }
     },
-    "controlAddresses": {
+    "getEventsForRequest": {
+      "params": {
+        "requestID=u": "RequestID"
+      },
       "results": {
-        "stateControllerAddress=s": "Address",
-        "governingAddress=g": "Address",
+        "event=e": "[]Bytes //TODO Array16"
+      }
+    },
+    "getEventsForBlock": {
+      "params": {
         "blockIndex=n": "Int32"
+      },
+      "results": {
+        "event=e": "[]Bytes //TODO Array16"
+      }
+    },
+    "getEventsForContract": {
+      "params": {
+        "contractHname=h": "Hname",
+        "fromBlock=f": "?Int32",
+        "toBlock=t": "?Int32"
+      },
+      "results": {
+        "event=e": "[]Bytes //TODO Array16"
       }
     }
   }

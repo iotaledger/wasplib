@@ -7,6 +7,12 @@
         "agentID=a": "?AgentID // default is caller"
       }
     },
+    "harvest": {
+      "params": {
+        "withdrawAmount=m": "?Int64 // default (zero) means all",
+        "withdrawColor=c": "?Color // defaults to colored.IOTA"
+      }
+    },
     "withdraw": {
     }
   },

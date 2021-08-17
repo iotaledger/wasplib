@@ -25,6 +25,70 @@ func (s MutableGetBlockInfoParams) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyID())
 }
 
+type ImmutableGetEventsForBlockParams struct {
+	id int32
+}
+
+func (s ImmutableGetEventsForBlockParams) BlockIndex() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamBlockIndex.KeyID())
+}
+
+type MutableGetEventsForBlockParams struct {
+	id int32
+}
+
+func (s MutableGetEventsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyID())
+}
+
+type ImmutableGetEventsForContractParams struct {
+	id int32
+}
+
+func (s ImmutableGetEventsForContractParams) ContractHname() wasmlib.ScImmutableHname {
+	return wasmlib.NewScImmutableHname(s.id, ParamContractHname.KeyID())
+}
+
+func (s ImmutableGetEventsForContractParams) FromBlock() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamFromBlock.KeyID())
+}
+
+func (s ImmutableGetEventsForContractParams) ToBlock() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, ParamToBlock.KeyID())
+}
+
+type MutableGetEventsForContractParams struct {
+	id int32
+}
+
+func (s MutableGetEventsForContractParams) ContractHname() wasmlib.ScMutableHname {
+	return wasmlib.NewScMutableHname(s.id, ParamContractHname.KeyID())
+}
+
+func (s MutableGetEventsForContractParams) FromBlock() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamFromBlock.KeyID())
+}
+
+func (s MutableGetEventsForContractParams) ToBlock() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, ParamToBlock.KeyID())
+}
+
+type ImmutableGetEventsForRequestParams struct {
+	id int32
+}
+
+func (s ImmutableGetEventsForRequestParams) RequestID() wasmlib.ScImmutableRequestID {
+	return wasmlib.NewScImmutableRequestID(s.id, ParamRequestID.KeyID())
+}
+
+type MutableGetEventsForRequestParams struct {
+	id int32
+}
+
+func (s MutableGetEventsForRequestParams) RequestID() wasmlib.ScMutableRequestID {
+	return wasmlib.NewScMutableRequestID(s.id, ParamRequestID.KeyID())
+}
+
 type ImmutableGetRequestIDsForBlockParams struct {
 	id int32
 }
@@ -41,35 +105,35 @@ func (s MutableGetRequestIDsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 
 	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyID())
 }
 
-type ImmutableGetRequestLogRecordParams struct {
+type ImmutableGetRequestReceiptParams struct {
 	id int32
 }
 
-func (s ImmutableGetRequestLogRecordParams) RequestID() wasmlib.ScImmutableRequestID {
+func (s ImmutableGetRequestReceiptParams) RequestID() wasmlib.ScImmutableRequestID {
 	return wasmlib.NewScImmutableRequestID(s.id, ParamRequestID.KeyID())
 }
 
-type MutableGetRequestLogRecordParams struct {
+type MutableGetRequestReceiptParams struct {
 	id int32
 }
 
-func (s MutableGetRequestLogRecordParams) RequestID() wasmlib.ScMutableRequestID {
+func (s MutableGetRequestReceiptParams) RequestID() wasmlib.ScMutableRequestID {
 	return wasmlib.NewScMutableRequestID(s.id, ParamRequestID.KeyID())
 }
 
-type ImmutableGetRequestLogRecordsForBlockParams struct {
+type ImmutableGetRequestReceiptsForBlockParams struct {
 	id int32
 }
 
-func (s ImmutableGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScImmutableInt32 {
+func (s ImmutableGetRequestReceiptsForBlockParams) BlockIndex() wasmlib.ScImmutableInt32 {
 	return wasmlib.NewScImmutableInt32(s.id, ParamBlockIndex.KeyID())
 }
 
-type MutableGetRequestLogRecordsForBlockParams struct {
+type MutableGetRequestReceiptsForBlockParams struct {
 	id int32
 }
 
-func (s MutableGetRequestLogRecordsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 {
+func (s MutableGetRequestReceiptsForBlockParams) BlockIndex() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, ParamBlockIndex.KeyID())
 }
 

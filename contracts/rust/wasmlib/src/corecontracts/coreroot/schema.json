@@ -2,51 +2,68 @@
   "name": "CoreRoot",
   "description": "Core root contract",
   "funcs": {
+    "init": {
+      "params": {
+        "chainID=ci": "ChainID",
+        "description=ds": "?String // default 'N/A'",
+        "feeColor=fc": "?Color // default colored.IOTA"
+      }
+    },
     "claimChainOwnership": {
     },
     "delegateChainOwnership": {
       "params": {
-        "chainOwner=$$owner$$": "AgentID"
+        "chainOwner=oi": "AgentID"
       }
     },
     "deployContract": {
       "params": {
-        "programHash=$$proghash$$": "Hash //TODO variable init params for deployed contract",
-        "name=$$name$$": "String",
-        "description=$$description$$": "?String // default 'N/A'"
+        "programHash=ph": "Hash //TODO variable init params for deployed contract",
+        "name=nm": "String",
+        "description=ds": "?String // default 'N/A'"
       }
     },
     "grantDeployPermission": {
       "params": {
-        "deployer=$$deployer$$": "AgentID"
+        "deployer=dp": "AgentID"
       }
     },
     "revokeDeployPermission": {
       "params": {
-        "deployer=$$deployer$$": "AgentID"
+        "deployer=dp": "AgentID"
+      }
+    },
+    "setChainInfo": {
+      "params": {
+        "maxBlobSize=bs": "?Int32 // default no change",
+        "maxEventSize=es": "?Int16 // default no change",
+        "maxEventsPerReq=ne": "?Int16 // default no change",
+        "ownerFee=of": "?Int64 // default no change",
+        "validatorFee=vf": "?Int64 // default no change"
       }
     },
     "setContractFee": {
       "params": {
-        "hname=$$hname$$": "Hname // contract id",
-        "ownerFee=$$ownerfee$$": "?Int64 // default 0 (no fee)",
-        "validatorFee=$$validatorfee$$": "?Int64 // default 0 (no fee)"
+        "maxBlobSize=bs": "Hname // contract id",
+        "ownerFee=of": "?Int64 // default 0 (no fee)",
+        "validatorFee=vf": "?Int64 // default 0 (no fee)"
       }
     },
     "setDefaultFee": {
       "params": {
-        "ownerFee=$$ownerfee$$": "?Int64 // default -1 (not set)",
-        "validatorFee=$$validatorfee$$": "?Int64 // default -1 (not set)"
+        "ownerFee=of": "?Int64 // default -1 (not set)",
+        "validatorFee=vf": "?Int64 // default -1 (not set)"
       }
     }
   },
   "views": {
     "findContract": {
       "params": {
-        "hname=$$hname$$": "Hname"
+        "hname=hn": "Hname"
       },
       "results": {
-        "data=dt": "Bytes // encoded contract record"
+        "contractFound=cf": "Bytes // encoded contract record",
+        "contractRecData=dt": "Bytes // encoded contract record"
       }
     },
     "getChainInfo": {
@@ -57,12 +74,20 @@
         "feeColor=f": "Color",
         "defaultOwnerFee=do": "Int64",
         "defaultValidatorFee=dv": "Int64",
+        "maxBlobSize=mb": "Int32",
+        "maxEventSize=me": "Int16",
+        "maxEventsPerReq=mr": "Int16",
         "contractRegistry=r": "[Hname]Bytes // contract records"
+      }
+    },
+    "getMaxBlobSize": {
+      "results": {
+        "maxBlobSize=mb": "Int32"
       }
     },
     "getFeeInfo": {
       "params": {
-        "hname=$$hname$$": "Hname"
+        "hname=hn": "Hname"
       },
       "results": {
         "feeColor=f": "Color",
