@@ -24,27 +24,44 @@ const (
 	ParamColor       = "color"
 	ParamHash        = "hash"
 	ParamHname       = "hname"
+	ParamIndex       = "index"
 	ParamInt16       = "int16"
 	ParamInt32       = "int32"
 	ParamInt64       = "int64"
+	ParamName        = "name"
 	ParamRecordIndex = "recordIndex"
 	ParamRequestID   = "requestID"
 	ParamString      = "string"
+	ParamValue       = "value"
 )
 
 const (
 	ResultCount  = "count"
+	ResultLength = "length"
 	ResultRecord = "record"
+	ResultValue  = "value"
 )
 
+const StateArrays = "arrays"
+
 const (
+	FuncArrayClear   = "arrayClear"
+	FuncArrayCreate  = "arrayCreate"
+	FuncArraySet     = "arraySet"
 	FuncParamTypes   = "paramTypes"
+	ViewArrayLength  = "arrayLength"
+	ViewArrayValue   = "arrayValue"
 	ViewBlockRecord  = "blockRecord"
 	ViewBlockRecords = "blockRecords"
 )
 
 const (
+	HFuncArrayClear   = iscp.Hname(0x88021821)
+	HFuncArrayCreate  = iscp.Hname(0x1ed5b23b)
+	HFuncArraySet     = iscp.Hname(0x2c4150b3)
 	HFuncParamTypes   = iscp.Hname(0x6921c4cd)
+	HViewArrayLength  = iscp.Hname(0x3a831021)
+	HViewArrayValue   = iscp.Hname(0x662dbd81)
 	HViewBlockRecord  = iscp.Hname(0xad13b2f8)
 	HViewBlockRecords = iscp.Hname(0x16e249ea)
 )

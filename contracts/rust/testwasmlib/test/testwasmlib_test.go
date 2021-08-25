@@ -181,3 +181,65 @@ func TestViewBlockRecords(t *testing.T) {
 	require.True(t, exist)
 	require.EqualValues(t, 1, count)
 }
+
+func TestClearArray(t *testing.T) {
+	chain := testValidParams(t)
+
+	req := solo.NewCallParams(ScName, FuncArraySet,
+		ParamName, "bands",
+		ParamIndex, int32(0),
+		ParamValue, "Simple Minds",
+	).WithIotas(1)
+	_, err := chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+
+	req = solo.NewCallParams(ScName, FuncArraySet,
+		ParamName, "bands",
+		ParamIndex, int32(1),
+		ParamValue, "Dire Straits",
+	).WithIotas(1)
+	_, err = chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+
+	req = solo.NewCallParams(ScName, FuncArraySet,
+		ParamName, "bands",
+		ParamIndex, int32(2),
+		ParamValue, "ELO",
+	).WithIotas(1)
+	_, err = chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+
+	res, err := chain.CallView(ScName, ViewArrayLength,
+		ParamName, "bands")
+	require.NoError(t, err)
+	length, exist, err := codec.DecodeInt32(res.MustGet(ResultLength))
+	require.NoError(t, err)
+	require.True(t, exist)
+	require.EqualValues(t, 3, length)
+
+	res, err = chain.CallView(ScName, ViewArrayValue,
+		ParamName, "bands",
+		ParamIndex, int32(1))
+	require.NoError(t, err)
+	value, exist, err := codec.DecodeString(res.MustGet(ResultValue))
+	require.NoError(t, err)
+	require.True(t, exist)
+	require.EqualValues(t, "Dire Straits", value)
+
+	req = solo.NewCallParams(ScName, FuncArrayClear,
+		ParamName, "bands",
+	).WithIotas(1)
+	_, err = chain.PostRequestSync(req, nil)
+	require.NoError(t, err)
+
+	res, err = chain.CallView(ScName, ViewArrayLength,
+		ParamName, "bands")
+	require.NoError(t, err)
+	length, exist, err = codec.DecodeInt32(res.MustGet(ResultLength))
+	require.NoError(t, err)
+	require.True(t, exist)
+	require.EqualValues(t, 0, length)
+
+	_, err = chain.CallView(ScName, ViewArrayValue, ParamName, "bands", ParamIndex, int32(0))
+	require.Error(t, err)
+}

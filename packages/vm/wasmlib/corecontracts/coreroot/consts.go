@@ -16,51 +16,34 @@ const (
 )
 
 const (
-	ParamChainOwner   = wasmlib.Key("$$owner$$")
-	ParamDeployer     = wasmlib.Key("$$deployer$$")
-	ParamDescription  = wasmlib.Key("$$description$$")
-	ParamHname        = wasmlib.Key("$$hname$$")
-	ParamName         = wasmlib.Key("$$name$$")
-	ParamOwnerFee     = wasmlib.Key("$$ownerfee$$")
-	ParamProgramHash  = wasmlib.Key("$$proghash$$")
-	ParamValidatorFee = wasmlib.Key("$$validatorfee$$")
+	ParamChainID     = wasmlib.Key("ci")
+	ParamDeployer    = wasmlib.Key("dp")
+	ParamDescription = wasmlib.Key("ds")
+	ParamHname       = wasmlib.Key("hn")
+	ParamName        = wasmlib.Key("nm")
+	ParamProgramHash = wasmlib.Key("ph")
 )
 
 const (
-	ResultChainID             = wasmlib.Key("c")
-	ResultChainOwnerID        = wasmlib.Key("o")
-	ResultContractRegistry    = wasmlib.Key("r")
-	ResultData                = wasmlib.Key("dt")
-	ResultDefaultOwnerFee     = wasmlib.Key("do")
-	ResultDefaultValidatorFee = wasmlib.Key("dv")
-	ResultDescription         = wasmlib.Key("d")
-	ResultFeeColor            = wasmlib.Key("f")
-	ResultOwnerFee            = wasmlib.Key("of")
-	ResultValidatorFee        = wasmlib.Key("vf")
+	ResultContractFound    = wasmlib.Key("cf")
+	ResultContractRecData  = wasmlib.Key("dt")
+	ResultContractRegistry = wasmlib.Key("r")
 )
 
 const (
-	FuncClaimChainOwnership    = "claimChainOwnership"
-	FuncDelegateChainOwnership = "delegateChainOwnership"
 	FuncDeployContract         = "deployContract"
 	FuncGrantDeployPermission  = "grantDeployPermission"
+	FuncInit                   = "init"
 	FuncRevokeDeployPermission = "revokeDeployPermission"
-	FuncSetContractFee         = "setContractFee"
-	FuncSetDefaultFee          = "setDefaultFee"
 	ViewFindContract           = "findContract"
-	ViewGetChainInfo           = "getChainInfo"
-	ViewGetFeeInfo             = "getFeeInfo"
+	ViewGetContractRecords     = "getContractRecords"
 )
 
 const (
-	HFuncClaimChainOwnership    = wasmlib.ScHname(0x03ff0fc0)
-	HFuncDelegateChainOwnership = wasmlib.ScHname(0x93ecb6ad)
 	HFuncDeployContract         = wasmlib.ScHname(0x28232c27)
 	HFuncGrantDeployPermission  = wasmlib.ScHname(0xf440263a)
+	HFuncInit                   = wasmlib.ScHname(0x1f44d644)
 	HFuncRevokeDeployPermission = wasmlib.ScHname(0x850744f1)
-	HFuncSetContractFee         = wasmlib.ScHname(0x8421a42b)
-	HFuncSetDefaultFee          = wasmlib.ScHname(0x3310ecd0)
 	HViewFindContract           = wasmlib.ScHname(0xc145ca00)
-	HViewGetChainInfo           = wasmlib.ScHname(0x434477e2)
-	HViewGetFeeInfo             = wasmlib.ScHname(0x9fe54b48)
+	HViewGetContractRecords     = wasmlib.ScHname(0x078b3ef3)
 )

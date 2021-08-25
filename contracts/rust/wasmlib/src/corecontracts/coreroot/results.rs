@@ -18,8 +18,12 @@ pub struct ImmutableFindContractResults {
 }
 
 impl ImmutableFindContractResults {
-    pub fn data(&self) -> ScImmutableBytes {
-        ScImmutableBytes::new(self.id, RESULT_DATA.get_key_id())
+    pub fn contract_found(&self) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.id, RESULT_CONTRACT_FOUND.get_key_id())
+    }
+
+    pub fn contract_rec_data(&self) -> ScImmutableBytes {
+        ScImmutableBytes::new(self.id, RESULT_CONTRACT_REC_DATA.get_key_id())
     }
 }
 
@@ -29,8 +33,12 @@ pub struct MutableFindContractResults {
 }
 
 impl MutableFindContractResults {
-    pub fn data(&self) -> ScMutableBytes {
-        ScMutableBytes::new(self.id, RESULT_DATA.get_key_id())
+    pub fn contract_found(&self) -> ScMutableBytes {
+        ScMutableBytes::new(self.id, RESULT_CONTRACT_FOUND.get_key_id())
+    }
+
+    pub fn contract_rec_data(&self) -> ScMutableBytes {
+        ScMutableBytes::new(self.id, RESULT_CONTRACT_REC_DATA.get_key_id())
     }
 }
 
@@ -45,38 +53,14 @@ impl MapHnameToImmutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableGetChainInfoResults {
+pub struct ImmutableGetContractRecordsResults {
     pub(crate) id: i32,
 }
 
-impl ImmutableGetChainInfoResults {
-    pub fn chain_id(&self) -> ScImmutableChainID {
-        ScImmutableChainID::new(self.id, RESULT_CHAIN_ID.get_key_id())
-    }
-
-    pub fn chain_owner_id(&self) -> ScImmutableAgentID {
-        ScImmutableAgentID::new(self.id, RESULT_CHAIN_OWNER_ID.get_key_id())
-    }
-
+impl ImmutableGetContractRecordsResults {
     pub fn contract_registry(&self) -> MapHnameToImmutableBytes {
         let map_id = get_object_id(self.id, RESULT_CONTRACT_REGISTRY.get_key_id(), TYPE_MAP);
         MapHnameToImmutableBytes { obj_id: map_id }
-    }
-
-    pub fn default_owner_fee(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_DEFAULT_OWNER_FEE.get_key_id())
-    }
-
-    pub fn default_validator_fee(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_DEFAULT_VALIDATOR_FEE.get_key_id())
-    }
-
-    pub fn description(&self) -> ScImmutableString {
-        ScImmutableString::new(self.id, RESULT_DESCRIPTION.get_key_id())
-    }
-
-    pub fn fee_color(&self) -> ScImmutableColor {
-        ScImmutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
     }
 }
 
@@ -95,75 +79,13 @@ impl MapHnameToMutableBytes {
 }
 
 #[derive(Clone, Copy)]
-pub struct MutableGetChainInfoResults {
+pub struct MutableGetContractRecordsResults {
     pub(crate) id: i32,
 }
 
-impl MutableGetChainInfoResults {
-    pub fn chain_id(&self) -> ScMutableChainID {
-        ScMutableChainID::new(self.id, RESULT_CHAIN_ID.get_key_id())
-    }
-
-    pub fn chain_owner_id(&self) -> ScMutableAgentID {
-        ScMutableAgentID::new(self.id, RESULT_CHAIN_OWNER_ID.get_key_id())
-    }
-
+impl MutableGetContractRecordsResults {
     pub fn contract_registry(&self) -> MapHnameToMutableBytes {
         let map_id = get_object_id(self.id, RESULT_CONTRACT_REGISTRY.get_key_id(), TYPE_MAP);
         MapHnameToMutableBytes { obj_id: map_id }
-    }
-
-    pub fn default_owner_fee(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_DEFAULT_OWNER_FEE.get_key_id())
-    }
-
-    pub fn default_validator_fee(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_DEFAULT_VALIDATOR_FEE.get_key_id())
-    }
-
-    pub fn description(&self) -> ScMutableString {
-        ScMutableString::new(self.id, RESULT_DESCRIPTION.get_key_id())
-    }
-
-    pub fn fee_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ImmutableGetFeeInfoResults {
-    pub(crate) id: i32,
-}
-
-impl ImmutableGetFeeInfoResults {
-    pub fn fee_color(&self) -> ScImmutableColor {
-        ScImmutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
-    }
-
-    pub fn owner_fee(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_OWNER_FEE.get_key_id())
-    }
-
-    pub fn validator_fee(&self) -> ScImmutableInt64 {
-        ScImmutableInt64::new(self.id, RESULT_VALIDATOR_FEE.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableGetFeeInfoResults {
-    pub(crate) id: i32,
-}
-
-impl MutableGetFeeInfoResults {
-    pub fn fee_color(&self) -> ScMutableColor {
-        ScMutableColor::new(self.id, RESULT_FEE_COLOR.get_key_id())
-    }
-
-    pub fn owner_fee(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_OWNER_FEE.get_key_id())
-    }
-
-    pub fn validator_fee(&self) -> ScMutableInt64 {
-        ScMutableInt64::new(self.id, RESULT_VALIDATOR_FEE.get_key_id())
     }
 }

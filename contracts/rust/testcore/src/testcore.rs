@@ -205,7 +205,7 @@ pub fn view_test_panic_view_ep(ctx: &ScViewContext, _f: &TestPanicViewEPContext)
 }
 
 pub fn view_test_sandbox_call(ctx: &ScViewContext, f: &TestSandboxCallContext) {
-    let get_chain_info = corecontracts::coreroot::ScFuncs::get_chain_info(ctx);
+    let get_chain_info = corecontracts::coregovernance::ScFuncs::get_chain_info(ctx);
     get_chain_info.func.call();
     f.results.sandbox_call().set_value(&get_chain_info.results.description().value());
 }

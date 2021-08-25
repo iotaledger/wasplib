@@ -9,22 +9,6 @@ package coreroot
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
-type ImmutableDelegateChainOwnershipParams struct {
-	id int32
-}
-
-func (s ImmutableDelegateChainOwnershipParams) ChainOwner() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, ParamChainOwner.KeyID())
-}
-
-type MutableDelegateChainOwnershipParams struct {
-	id int32
-}
-
-func (s MutableDelegateChainOwnershipParams) ChainOwner() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, ParamChainOwner.KeyID())
-}
-
 type ImmutableDeployContractParams struct {
 	id int32
 }
@@ -73,6 +57,30 @@ func (s MutableGrantDeployPermissionParams) Deployer() wasmlib.ScMutableAgentID 
 	return wasmlib.NewScMutableAgentID(s.id, ParamDeployer.KeyID())
 }
 
+type ImmutableInitParams struct {
+	id int32
+}
+
+func (s ImmutableInitParams) ChainID() wasmlib.ScImmutableChainID {
+	return wasmlib.NewScImmutableChainID(s.id, ParamChainID.KeyID())
+}
+
+func (s ImmutableInitParams) Description() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, ParamDescription.KeyID())
+}
+
+type MutableInitParams struct {
+	id int32
+}
+
+func (s MutableInitParams) ChainID() wasmlib.ScMutableChainID {
+	return wasmlib.NewScMutableChainID(s.id, ParamChainID.KeyID())
+}
+
+func (s MutableInitParams) Description() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, ParamDescription.KeyID())
+}
+
 type ImmutableRevokeDeployPermissionParams struct {
 	id int32
 }
@@ -89,62 +97,6 @@ func (s MutableRevokeDeployPermissionParams) Deployer() wasmlib.ScMutableAgentID
 	return wasmlib.NewScMutableAgentID(s.id, ParamDeployer.KeyID())
 }
 
-type ImmutableSetContractFeeParams struct {
-	id int32
-}
-
-func (s ImmutableSetContractFeeParams) Hname() wasmlib.ScImmutableHname {
-	return wasmlib.NewScImmutableHname(s.id, ParamHname.KeyID())
-}
-
-func (s ImmutableSetContractFeeParams) OwnerFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamOwnerFee.KeyID())
-}
-
-func (s ImmutableSetContractFeeParams) ValidatorFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamValidatorFee.KeyID())
-}
-
-type MutableSetContractFeeParams struct {
-	id int32
-}
-
-func (s MutableSetContractFeeParams) Hname() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, ParamHname.KeyID())
-}
-
-func (s MutableSetContractFeeParams) OwnerFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamOwnerFee.KeyID())
-}
-
-func (s MutableSetContractFeeParams) ValidatorFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamValidatorFee.KeyID())
-}
-
-type ImmutableSetDefaultFeeParams struct {
-	id int32
-}
-
-func (s ImmutableSetDefaultFeeParams) OwnerFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamOwnerFee.KeyID())
-}
-
-func (s ImmutableSetDefaultFeeParams) ValidatorFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ParamValidatorFee.KeyID())
-}
-
-type MutableSetDefaultFeeParams struct {
-	id int32
-}
-
-func (s MutableSetDefaultFeeParams) OwnerFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamOwnerFee.KeyID())
-}
-
-func (s MutableSetDefaultFeeParams) ValidatorFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ParamValidatorFee.KeyID())
-}
-
 type ImmutableFindContractParams struct {
 	id int32
 }
@@ -158,21 +110,5 @@ type MutableFindContractParams struct {
 }
 
 func (s MutableFindContractParams) Hname() wasmlib.ScMutableHname {
-	return wasmlib.NewScMutableHname(s.id, ParamHname.KeyID())
-}
-
-type ImmutableGetFeeInfoParams struct {
-	id int32
-}
-
-func (s ImmutableGetFeeInfoParams) Hname() wasmlib.ScImmutableHname {
-	return wasmlib.NewScImmutableHname(s.id, ParamHname.KeyID())
-}
-
-type MutableGetFeeInfoParams struct {
-	id int32
-}
-
-func (s MutableGetFeeInfoParams) Hname() wasmlib.ScMutableHname {
 	return wasmlib.NewScMutableHname(s.id, ParamHname.KeyID())
 }

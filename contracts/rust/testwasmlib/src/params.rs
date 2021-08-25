@@ -15,6 +15,88 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
+pub struct ImmutableArrayClearParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayClearParams {
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayClearParams {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayClearParams {
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableArrayCreateParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayCreateParams {
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayCreateParams {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayCreateParams {
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableArraySetParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArraySetParams {
+    pub fn index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_INDEX))
+    }
+
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+
+    pub fn value(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArraySetParams {
+    pub(crate) id: i32,
+}
+
+impl MutableArraySetParams {
+    pub fn index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_INDEX))
+    }
+
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+
+    pub fn value(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableParamTypesParams {
     pub(crate) id: i32,
 }
@@ -121,6 +203,58 @@ impl MutableParamTypesParams {
 
     pub fn string(&self) -> ScMutableString {
         ScMutableString::new(self.id, idx_map(IDX_PARAM_STRING))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableArrayLengthParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayLengthParams {
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayLengthParams {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayLengthParams {
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableArrayValueParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayValueParams {
+    pub fn index(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_PARAM_INDEX))
+    }
+
+    pub fn name(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_PARAM_NAME))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayValueParams {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayValueParams {
+    pub fn index(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_PARAM_INDEX))
+    }
+
+    pub fn name(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_PARAM_NAME))
     }
 }
 

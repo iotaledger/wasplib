@@ -34,6 +34,12 @@ type BalanceCall struct {
 	Results ImmutableBalanceResults
 }
 
+type GetAccountNonceCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableGetAccountNonceParams
+	Results ImmutableGetAccountNonceResults
+}
+
 type TotalAssetsCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableTotalAssetsResults
@@ -67,6 +73,12 @@ func (sc Funcs) Accounts(ctx wasmlib.ScViewCallContext) *AccountsCall {
 
 func (sc Funcs) Balance(ctx wasmlib.ScViewCallContext) *BalanceCall {
 	f := &BalanceCall{Func: wasmlib.NewScView(HScName, HViewBalance)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetAccountNonce(ctx wasmlib.ScViewCallContext) *GetAccountNonceCall {
+	f := &GetAccountNonceCall{Func: wasmlib.NewScView(HScName, HViewGetAccountNonce)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }

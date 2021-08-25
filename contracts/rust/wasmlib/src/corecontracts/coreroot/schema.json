@@ -5,15 +5,7 @@
     "init": {
       "params": {
         "chainID=ci": "ChainID",
-        "description=ds": "?String // default 'N/A'",
-        "feeColor=fc": "?Color // default colored.IOTA"
-      }
-    },
-    "claimChainOwnership": {
-    },
-    "delegateChainOwnership": {
-      "params": {
-        "chainOwner=oi": "AgentID"
+        "description=ds": "?String // default 'N/A'"
       }
     },
     "deployContract": {
@@ -32,28 +24,6 @@
       "params": {
         "deployer=dp": "AgentID"
       }
-    },
-    "setChainInfo": {
-      "params": {
-        "maxBlobSize=bs": "?Int32 // default no change",
-        "maxEventSize=es": "?Int16 // default no change",
-        "maxEventsPerReq=ne": "?Int16 // default no change",
-        "ownerFee=of": "?Int64 // default no change",
-        "validatorFee=vf": "?Int64 // default no change"
-      }
-    },
-    "setContractFee": {
-      "params": {
-        "maxBlobSize=bs": "Hname // contract id",
-        "ownerFee=of": "?Int64 // default 0 (no fee)",
-        "validatorFee=vf": "?Int64 // default 0 (no fee)"
-      }
-    },
-    "setDefaultFee": {
-      "params": {
-        "ownerFee=of": "?Int64 // default -1 (not set)",
-        "validatorFee=vf": "?Int64 // default -1 (not set)"
-      }
     }
   },
   "views": {
@@ -66,33 +36,9 @@
         "contractRecData=dt": "Bytes // encoded contract record"
       }
     },
-    "getChainInfo": {
+    "getContractRecords": {
       "results": {
-        "chainID=c": "ChainID",
-        "chainOwnerID=o": "AgentID",
-        "description=d": "String",
-        "feeColor=f": "Color",
-        "defaultOwnerFee=do": "Int64",
-        "defaultValidatorFee=dv": "Int64",
-        "maxBlobSize=mb": "Int32",
-        "maxEventSize=me": "Int16",
-        "maxEventsPerReq=mr": "Int16",
         "contractRegistry=r": "[Hname]Bytes // contract records"
-      }
-    },
-    "getMaxBlobSize": {
-      "results": {
-        "maxBlobSize=mb": "Int32"
-      }
-    },
-    "getFeeInfo": {
-      "params": {
-        "hname=hn": "Hname"
-      },
-      "results": {
-        "feeColor=f": "Color",
-        "ownerFee=of": "Int64",
-        "validatorFee=vf": "Int64"
       }
     }
   }

@@ -9,9 +9,36 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type ArrayClearCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableArrayClearParams
+}
+
+type ArrayCreateCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableArrayCreateParams
+}
+
+type ArraySetCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableArraySetParams
+}
+
 type ParamTypesCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableParamTypesParams
+}
+
+type ArrayLengthCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableArrayLengthParams
+	Results ImmutableArrayLengthResults
+}
+
+type ArrayValueCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableArrayValueParams
+	Results ImmutableArrayValueResults
 }
 
 type BlockRecordCall struct {
@@ -30,9 +57,39 @@ type Funcs struct{}
 
 var ScFuncs Funcs
 
+func (sc Funcs) ArrayClear(ctx wasmlib.ScFuncCallContext) *ArrayClearCall {
+	f := &ArrayClearCall{Func: wasmlib.NewScFunc(HScName, HFuncArrayClear)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) ArrayCreate(ctx wasmlib.ScFuncCallContext) *ArrayCreateCall {
+	f := &ArrayCreateCall{Func: wasmlib.NewScFunc(HScName, HFuncArrayCreate)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) ArraySet(ctx wasmlib.ScFuncCallContext) *ArraySetCall {
+	f := &ArraySetCall{Func: wasmlib.NewScFunc(HScName, HFuncArraySet)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
 func (sc Funcs) ParamTypes(ctx wasmlib.ScFuncCallContext) *ParamTypesCall {
 	f := &ParamTypesCall{Func: wasmlib.NewScFunc(HScName, HFuncParamTypes)}
 	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) ArrayLength(ctx wasmlib.ScViewCallContext) *ArrayLengthCall {
+	f := &ArrayLengthCall{Func: wasmlib.NewScView(HScName, HViewArrayLength)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) ArrayValue(ctx wasmlib.ScViewCallContext) *ArrayValueCall {
+	f := &ArrayValueCall{Func: wasmlib.NewScView(HScName, HViewArrayValue)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
 

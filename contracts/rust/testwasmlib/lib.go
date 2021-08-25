@@ -11,13 +11,80 @@ import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 func OnLoad() {
 	exports := wasmlib.NewScExports()
+	exports.AddFunc(FuncArrayClear, funcArrayClearThunk)
+	exports.AddFunc(FuncArrayCreate, funcArrayCreateThunk)
+	exports.AddFunc(FuncArraySet, funcArraySetThunk)
 	exports.AddFunc(FuncParamTypes, funcParamTypesThunk)
+	exports.AddView(ViewArrayLength, viewArrayLengthThunk)
+	exports.AddView(ViewArrayValue, viewArrayValueThunk)
 	exports.AddView(ViewBlockRecord, viewBlockRecordThunk)
 	exports.AddView(ViewBlockRecords, viewBlockRecordsThunk)
 
 	for i, key := range keyMap {
 		idxMap[i] = key.KeyID()
 	}
+}
+
+type ArrayClearContext struct {
+	Params ImmutableArrayClearParams
+	State  MutableTestWasmLibState
+}
+
+func funcArrayClearThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("testwasmlib.funcArrayClear")
+	f := &ArrayClearContext{
+		Params: ImmutableArrayClearParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		State: MutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
+	funcArrayClear(ctx, f)
+	ctx.Log("testwasmlib.funcArrayClear ok")
+}
+
+type ArrayCreateContext struct {
+	Params ImmutableArrayCreateParams
+	State  MutableTestWasmLibState
+}
+
+func funcArrayCreateThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("testwasmlib.funcArrayCreate")
+	f := &ArrayCreateContext{
+		Params: ImmutableArrayCreateParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		State: MutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
+	funcArrayCreate(ctx, f)
+	ctx.Log("testwasmlib.funcArrayCreate ok")
+}
+
+type ArraySetContext struct {
+	Params ImmutableArraySetParams
+	State  MutableTestWasmLibState
+}
+
+func funcArraySetThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("testwasmlib.funcArraySet")
+	f := &ArraySetContext{
+		Params: ImmutableArraySetParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		State: MutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.Index().Exists(), "missing mandatory index")
+	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
+	ctx.Require(f.Params.Value().Exists(), "missing mandatory value")
+	funcArraySet(ctx, f)
+	ctx.Log("testwasmlib.funcArraySet ok")
 }
 
 type ParamTypesContext struct {
@@ -37,6 +104,55 @@ func funcParamTypesThunk(ctx wasmlib.ScFuncContext) {
 	}
 	funcParamTypes(ctx, f)
 	ctx.Log("testwasmlib.funcParamTypes ok")
+}
+
+type ArrayLengthContext struct {
+	Params  ImmutableArrayLengthParams
+	Results MutableArrayLengthResults
+	State   ImmutableTestWasmLibState
+}
+
+func viewArrayLengthThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("testwasmlib.viewArrayLength")
+	f := &ArrayLengthContext{
+		Params: ImmutableArrayLengthParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		Results: MutableArrayLengthResults{
+			id: wasmlib.OBJ_ID_RESULTS,
+		},
+		State: ImmutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
+	viewArrayLength(ctx, f)
+	ctx.Log("testwasmlib.viewArrayLength ok")
+}
+
+type ArrayValueContext struct {
+	Params  ImmutableArrayValueParams
+	Results MutableArrayValueResults
+	State   ImmutableTestWasmLibState
+}
+
+func viewArrayValueThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("testwasmlib.viewArrayValue")
+	f := &ArrayValueContext{
+		Params: ImmutableArrayValueParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		Results: MutableArrayValueResults{
+			id: wasmlib.OBJ_ID_RESULTS,
+		},
+		State: ImmutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.Index().Exists(), "missing mandatory index")
+	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
+	viewArrayValue(ctx, f)
+	ctx.Log("testwasmlib.viewArrayValue ok")
 }
 
 type BlockRecordContext struct {

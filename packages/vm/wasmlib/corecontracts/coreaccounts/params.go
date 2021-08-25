@@ -64,3 +64,19 @@ type MutableBalanceParams struct {
 func (s MutableBalanceParams) AgentID() wasmlib.ScMutableAgentID {
 	return wasmlib.NewScMutableAgentID(s.id, ParamAgentID.KeyID())
 }
+
+type ImmutableGetAccountNonceParams struct {
+	id int32
+}
+
+func (s ImmutableGetAccountNonceParams) AgentID() wasmlib.ScImmutableAgentID {
+	return wasmlib.NewScImmutableAgentID(s.id, ParamAgentID.KeyID())
+}
+
+type MutableGetAccountNonceParams struct {
+	id int32
+}
+
+func (s MutableGetAccountNonceParams) AgentID() wasmlib.ScMutableAgentID {
+	return wasmlib.NewScMutableAgentID(s.id, ParamAgentID.KeyID())
+}

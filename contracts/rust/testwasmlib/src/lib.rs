@@ -27,12 +27,18 @@ mod keys;
 mod params;
 mod results;
 mod state;
+mod subtypes;
 mod testwasmlib;
 
 #[no_mangle]
 fn on_load() {
     let exports = ScExports::new();
+    exports.add_func(FUNC_ARRAY_CLEAR, func_array_clear_thunk);
+    exports.add_func(FUNC_ARRAY_CREATE, func_array_create_thunk);
+    exports.add_func(FUNC_ARRAY_SET, func_array_set_thunk);
     exports.add_func(FUNC_PARAM_TYPES, func_param_types_thunk);
+    exports.add_view(VIEW_ARRAY_LENGTH, view_array_length_thunk);
+    exports.add_view(VIEW_ARRAY_VALUE, view_array_value_thunk);
     exports.add_view(VIEW_BLOCK_RECORD, view_block_record_thunk);
     exports.add_view(VIEW_BLOCK_RECORDS, view_block_records_thunk);
 
@@ -41,6 +47,68 @@ fn on_load() {
             IDX_MAP[i] = get_key_id_from_string(KEY_MAP[i]);
         }
     }
+}
+
+pub struct ArrayClearContext {
+    params: ImmutableArrayClearParams,
+    state:  MutableTestWasmLibState,
+}
+
+fn func_array_clear_thunk(ctx: &ScFuncContext) {
+    ctx.log("testwasmlib.funcArrayClear");
+    let f = ArrayClearContext {
+        params: ImmutableArrayClearParams {
+            id: OBJ_ID_PARAMS,
+        },
+        state: MutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.name().exists(), "missing mandatory name");
+    func_array_clear(ctx, &f);
+    ctx.log("testwasmlib.funcArrayClear ok");
+}
+
+pub struct ArrayCreateContext {
+    params: ImmutableArrayCreateParams,
+    state:  MutableTestWasmLibState,
+}
+
+fn func_array_create_thunk(ctx: &ScFuncContext) {
+    ctx.log("testwasmlib.funcArrayCreate");
+    let f = ArrayCreateContext {
+        params: ImmutableArrayCreateParams {
+            id: OBJ_ID_PARAMS,
+        },
+        state: MutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.name().exists(), "missing mandatory name");
+    func_array_create(ctx, &f);
+    ctx.log("testwasmlib.funcArrayCreate ok");
+}
+
+pub struct ArraySetContext {
+    params: ImmutableArraySetParams,
+    state:  MutableTestWasmLibState,
+}
+
+fn func_array_set_thunk(ctx: &ScFuncContext) {
+    ctx.log("testwasmlib.funcArraySet");
+    let f = ArraySetContext {
+        params: ImmutableArraySetParams {
+            id: OBJ_ID_PARAMS,
+        },
+        state: MutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.index().exists(), "missing mandatory index");
+    ctx.require(f.params.name().exists(), "missing mandatory name");
+    ctx.require(f.params.value().exists(), "missing mandatory value");
+    func_array_set(ctx, &f);
+    ctx.log("testwasmlib.funcArraySet ok");
 }
 
 pub struct ParamTypesContext {
@@ -60,6 +128,55 @@ fn func_param_types_thunk(ctx: &ScFuncContext) {
     };
     func_param_types(ctx, &f);
     ctx.log("testwasmlib.funcParamTypes ok");
+}
+
+pub struct ArrayLengthContext {
+    params:  ImmutableArrayLengthParams,
+    results: MutableArrayLengthResults,
+    state:   ImmutableTestWasmLibState,
+}
+
+fn view_array_length_thunk(ctx: &ScViewContext) {
+    ctx.log("testwasmlib.viewArrayLength");
+    let f = ArrayLengthContext {
+        params: ImmutableArrayLengthParams {
+            id: OBJ_ID_PARAMS,
+        },
+        results: MutableArrayLengthResults {
+            id: OBJ_ID_RESULTS,
+        },
+        state: ImmutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.name().exists(), "missing mandatory name");
+    view_array_length(ctx, &f);
+    ctx.log("testwasmlib.viewArrayLength ok");
+}
+
+pub struct ArrayValueContext {
+    params:  ImmutableArrayValueParams,
+    results: MutableArrayValueResults,
+    state:   ImmutableTestWasmLibState,
+}
+
+fn view_array_value_thunk(ctx: &ScViewContext) {
+    ctx.log("testwasmlib.viewArrayValue");
+    let f = ArrayValueContext {
+        params: ImmutableArrayValueParams {
+            id: OBJ_ID_PARAMS,
+        },
+        results: MutableArrayValueResults {
+            id: OBJ_ID_RESULTS,
+        },
+        state: ImmutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.index().exists(), "missing mandatory index");
+    ctx.require(f.params.name().exists(), "missing mandatory name");
+    view_array_value(ctx, &f);
+    ctx.log("testwasmlib.viewArrayValue ok");
 }
 
 pub struct BlockRecordContext {

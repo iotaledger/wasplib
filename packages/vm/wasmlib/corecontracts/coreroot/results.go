@@ -13,16 +13,24 @@ type ImmutableFindContractResults struct {
 	id int32
 }
 
-func (s ImmutableFindContractResults) Data() wasmlib.ScImmutableBytes {
-	return wasmlib.NewScImmutableBytes(s.id, ResultData.KeyID())
+func (s ImmutableFindContractResults) ContractFound() wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(s.id, ResultContractFound.KeyID())
+}
+
+func (s ImmutableFindContractResults) ContractRecData() wasmlib.ScImmutableBytes {
+	return wasmlib.NewScImmutableBytes(s.id, ResultContractRecData.KeyID())
 }
 
 type MutableFindContractResults struct {
 	id int32
 }
 
-func (s MutableFindContractResults) Data() wasmlib.ScMutableBytes {
-	return wasmlib.NewScMutableBytes(s.id, ResultData.KeyID())
+func (s MutableFindContractResults) ContractFound() wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(s.id, ResultContractFound.KeyID())
+}
+
+func (s MutableFindContractResults) ContractRecData() wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(s.id, ResultContractRecData.KeyID())
 }
 
 type MapHnameToImmutableBytes struct {
@@ -33,37 +41,13 @@ func (m MapHnameToImmutableBytes) GetBytes(key wasmlib.ScHname) wasmlib.ScImmuta
 	return wasmlib.NewScImmutableBytes(m.objID, key.KeyID())
 }
 
-type ImmutableGetChainInfoResults struct {
+type ImmutableGetContractRecordsResults struct {
 	id int32
 }
 
-func (s ImmutableGetChainInfoResults) ChainID() wasmlib.ScImmutableChainID {
-	return wasmlib.NewScImmutableChainID(s.id, ResultChainID.KeyID())
-}
-
-func (s ImmutableGetChainInfoResults) ChainOwnerID() wasmlib.ScImmutableAgentID {
-	return wasmlib.NewScImmutableAgentID(s.id, ResultChainOwnerID.KeyID())
-}
-
-func (s ImmutableGetChainInfoResults) ContractRegistry() MapHnameToImmutableBytes {
+func (s ImmutableGetContractRecordsResults) ContractRegistry() MapHnameToImmutableBytes {
 	mapID := wasmlib.GetObjectID(s.id, ResultContractRegistry.KeyID(), wasmlib.TYPE_MAP)
 	return MapHnameToImmutableBytes{objID: mapID}
-}
-
-func (s ImmutableGetChainInfoResults) DefaultOwnerFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ResultDefaultOwnerFee.KeyID())
-}
-
-func (s ImmutableGetChainInfoResults) DefaultValidatorFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ResultDefaultValidatorFee.KeyID())
-}
-
-func (s ImmutableGetChainInfoResults) Description() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, ResultDescription.KeyID())
-}
-
-func (s ImmutableGetChainInfoResults) FeeColor() wasmlib.ScImmutableColor {
-	return wasmlib.NewScImmutableColor(s.id, ResultFeeColor.KeyID())
 }
 
 type MapHnameToMutableBytes struct {
@@ -78,67 +62,11 @@ func (m MapHnameToMutableBytes) GetBytes(key wasmlib.ScHname) wasmlib.ScMutableB
 	return wasmlib.NewScMutableBytes(m.objID, key.KeyID())
 }
 
-type MutableGetChainInfoResults struct {
+type MutableGetContractRecordsResults struct {
 	id int32
 }
 
-func (s MutableGetChainInfoResults) ChainID() wasmlib.ScMutableChainID {
-	return wasmlib.NewScMutableChainID(s.id, ResultChainID.KeyID())
-}
-
-func (s MutableGetChainInfoResults) ChainOwnerID() wasmlib.ScMutableAgentID {
-	return wasmlib.NewScMutableAgentID(s.id, ResultChainOwnerID.KeyID())
-}
-
-func (s MutableGetChainInfoResults) ContractRegistry() MapHnameToMutableBytes {
+func (s MutableGetContractRecordsResults) ContractRegistry() MapHnameToMutableBytes {
 	mapID := wasmlib.GetObjectID(s.id, ResultContractRegistry.KeyID(), wasmlib.TYPE_MAP)
 	return MapHnameToMutableBytes{objID: mapID}
-}
-
-func (s MutableGetChainInfoResults) DefaultOwnerFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ResultDefaultOwnerFee.KeyID())
-}
-
-func (s MutableGetChainInfoResults) DefaultValidatorFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ResultDefaultValidatorFee.KeyID())
-}
-
-func (s MutableGetChainInfoResults) Description() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, ResultDescription.KeyID())
-}
-
-func (s MutableGetChainInfoResults) FeeColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.id, ResultFeeColor.KeyID())
-}
-
-type ImmutableGetFeeInfoResults struct {
-	id int32
-}
-
-func (s ImmutableGetFeeInfoResults) FeeColor() wasmlib.ScImmutableColor {
-	return wasmlib.NewScImmutableColor(s.id, ResultFeeColor.KeyID())
-}
-
-func (s ImmutableGetFeeInfoResults) OwnerFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ResultOwnerFee.KeyID())
-}
-
-func (s ImmutableGetFeeInfoResults) ValidatorFee() wasmlib.ScImmutableInt64 {
-	return wasmlib.NewScImmutableInt64(s.id, ResultValidatorFee.KeyID())
-}
-
-type MutableGetFeeInfoResults struct {
-	id int32
-}
-
-func (s MutableGetFeeInfoResults) FeeColor() wasmlib.ScMutableColor {
-	return wasmlib.NewScMutableColor(s.id, ResultFeeColor.KeyID())
-}
-
-func (s MutableGetFeeInfoResults) OwnerFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ResultOwnerFee.KeyID())
-}
-
-func (s MutableGetFeeInfoResults) ValidatorFee() wasmlib.ScMutableInt64 {
-	return wasmlib.NewScMutableInt64(s.id, ResultValidatorFee.KeyID())
 }

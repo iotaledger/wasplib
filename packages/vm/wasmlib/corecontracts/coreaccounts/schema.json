@@ -13,8 +13,7 @@
         "withdrawColor=c": "?Color // defaults to colored.IOTA"
       }
     },
-    "withdraw": {
-    }
+    "withdraw": {}
   },
   "views": {
     "accounts": {
@@ -33,6 +32,14 @@
     "totalAssets": {
       "results": {
         "balances=this": "[Color]Int64"
+      }
+    },
+    "getAccountNonce": {
+      "params": {
+        "agentID=a": "AgentID"
+      },
+      "results": {
+        "accountNonce=n": "Int64 // TODO should be Uint64"
       }
     }
   }

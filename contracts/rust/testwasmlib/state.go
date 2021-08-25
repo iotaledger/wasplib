@@ -7,10 +7,44 @@
 
 package testwasmlib
 
+import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
+
+type MapStringToImmutableStringArray struct {
+	objID int32
+}
+
+func (m MapStringToImmutableStringArray) GetStringArray(key string) ImmutableStringArray {
+	subID := wasmlib.GetObjectID(m.objID, wasmlib.Key(key).KeyID(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_STRING)
+	return ImmutableStringArray{objID: subID}
+}
+
 type ImmutableTestWasmLibState struct {
 	id int32
 }
 
+func (s ImmutableTestWasmLibState) Arrays() MapStringToImmutableStringArray {
+	mapID := wasmlib.GetObjectID(s.id, idxMap[IdxStateArrays], wasmlib.TYPE_MAP)
+	return MapStringToImmutableStringArray{objID: mapID}
+}
+
+type MapStringToMutableStringArray struct {
+	objID int32
+}
+
+func (m MapStringToMutableStringArray) Clear() {
+	wasmlib.Clear(m.objID)
+}
+
+func (m MapStringToMutableStringArray) GetStringArray(key string) MutableStringArray {
+	subID := wasmlib.GetObjectID(m.objID, wasmlib.Key(key).KeyID(), wasmlib.TYPE_ARRAY|wasmlib.TYPE_STRING)
+	return MutableStringArray{objID: subID}
+}
+
 type MutableTestWasmLibState struct {
 	id int32
+}
+
+func (s MutableTestWasmLibState) Arrays() MapStringToMutableStringArray {
+	mapID := wasmlib.GetObjectID(s.id, idxMap[IdxStateArrays], wasmlib.TYPE_MAP)
+	return MapStringToMutableStringArray{objID: mapID}
 }

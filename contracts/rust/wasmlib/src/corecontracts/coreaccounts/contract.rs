@@ -39,6 +39,12 @@ pub struct BalanceCall {
     pub results: ImmutableBalanceResults,
 }
 
+pub struct GetAccountNonceCall {
+    pub func:    ScView,
+    pub params:  MutableGetAccountNonceParams,
+    pub results: ImmutableGetAccountNonceResults,
+}
+
 pub struct TotalAssetsCall {
     pub func:    ScView,
     pub results: ImmutableTotalAssetsResults,
@@ -82,6 +88,15 @@ impl ScFuncs {
             func:    ScView::new(HSC_NAME, HVIEW_BALANCE),
             params:  MutableBalanceParams { id: 0 },
             results: ImmutableBalanceResults { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
+        f
+    }
+    pub fn get_account_nonce(_ctx: & dyn ScViewCallContext) -> GetAccountNonceCall {
+        let mut f = GetAccountNonceCall {
+            func:    ScView::new(HSC_NAME, HVIEW_GET_ACCOUNT_NONCE),
+            params:  MutableGetAccountNonceParams { id: 0 },
+            results: ImmutableGetAccountNonceResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
         f

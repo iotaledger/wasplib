@@ -58,6 +58,7 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 
 	// wasmproc.GoWasmVM = NewWasmTimeJavaVM()
 	// wasmproc.GoWasmVM = NewWartVM()
+	// wasmproc.GoWasmVM = NewWasmerVM()
 	wasmFile := scName + "_bg.wasm"
 	exists, _ := util.ExistsFilePath("../pkg/" + wasmFile)
 	if exists {

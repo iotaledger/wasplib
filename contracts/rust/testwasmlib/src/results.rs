@@ -15,6 +15,50 @@ use crate::*;
 use crate::keys::*;
 
 #[derive(Clone, Copy)]
+pub struct ImmutableArrayLengthResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayLengthResults {
+    pub fn length(&self) -> ScImmutableInt32 {
+        ScImmutableInt32::new(self.id, idx_map(IDX_RESULT_LENGTH))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayLengthResults {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayLengthResults {
+    pub fn length(&self) -> ScMutableInt32 {
+        ScMutableInt32::new(self.id, idx_map(IDX_RESULT_LENGTH))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ImmutableArrayValueResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableArrayValueResults {
+    pub fn value(&self) -> ScImmutableString {
+        ScImmutableString::new(self.id, idx_map(IDX_RESULT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableArrayValueResults {
+    pub(crate) id: i32,
+}
+
+impl MutableArrayValueResults {
+    pub fn value(&self) -> ScMutableString {
+        ScMutableString::new(self.id, idx_map(IDX_RESULT_VALUE))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableBlockRecordResults {
     pub(crate) id: i32,
 }

@@ -81,6 +81,22 @@ func (s MutableBalanceResults) Balances() MapColorToMutableInt64 {
 	return MapColorToMutableInt64{objID: s.id}
 }
 
+type ImmutableGetAccountNonceResults struct {
+	id int32
+}
+
+func (s ImmutableGetAccountNonceResults) AccountNonce() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, ResultAccountNonce.KeyID())
+}
+
+type MutableGetAccountNonceResults struct {
+	id int32
+}
+
+func (s MutableGetAccountNonceResults) AccountNonce() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, ResultAccountNonce.KeyID())
+}
+
 type ImmutableTotalAssetsResults struct {
 	id int32
 }

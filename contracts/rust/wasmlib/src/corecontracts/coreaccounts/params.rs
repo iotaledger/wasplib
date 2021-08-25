@@ -85,3 +85,25 @@ impl MutableBalanceParams {
         ScMutableAgentID::new(self.id, PARAM_AGENT_ID.get_key_id())
     }
 }
+
+#[derive(Clone, Copy)]
+pub struct ImmutableGetAccountNonceParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableGetAccountNonceParams {
+    pub fn agent_id(&self) -> ScImmutableAgentID {
+        ScImmutableAgentID::new(self.id, PARAM_AGENT_ID.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableGetAccountNonceParams {
+    pub(crate) id: i32,
+}
+
+impl MutableGetAccountNonceParams {
+    pub fn agent_id(&self) -> ScMutableAgentID {
+        ScMutableAgentID::new(self.id, PARAM_AGENT_ID.get_key_id())
+    }
+}

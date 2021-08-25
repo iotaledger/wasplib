@@ -14,6 +14,15 @@ type AddAllowedStateControllerAddressCall struct {
 	Params MutableAddAllowedStateControllerAddressParams
 }
 
+type ClaimChainOwnershipCall struct {
+	Func *wasmlib.ScFunc
+}
+
+type DelegateChainOwnershipCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableDelegateChainOwnershipParams
+}
+
 type RemoveAllowedStateControllerAddressCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableRemoveAllowedStateControllerAddressParams
@@ -24,9 +33,40 @@ type RotateStateControllerCall struct {
 	Params MutableRotateStateControllerParams
 }
 
+type SetChainInfoCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableSetChainInfoParams
+}
+
+type SetContractFeeCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableSetContractFeeParams
+}
+
+type SetDefaultFeeCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableSetDefaultFeeParams
+}
+
 type GetAllowedStateControllerAddressesCall struct {
 	Func    *wasmlib.ScView
 	Results ImmutableGetAllowedStateControllerAddressesResults
+}
+
+type GetChainInfoCall struct {
+	Func    *wasmlib.ScView
+	Results ImmutableGetChainInfoResults
+}
+
+type GetFeeInfoCall struct {
+	Func    *wasmlib.ScView
+	Params  MutableGetFeeInfoParams
+	Results ImmutableGetFeeInfoResults
+}
+
+type GetMaxBlobSizeCall struct {
+	Func    *wasmlib.ScView
+	Results ImmutableGetMaxBlobSizeResults
 }
 
 type Funcs struct{}
@@ -35,6 +75,16 @@ var ScFuncs Funcs
 
 func (sc Funcs) AddAllowedStateControllerAddress(ctx wasmlib.ScFuncCallContext) *AddAllowedStateControllerAddressCall {
 	f := &AddAllowedStateControllerAddressCall{Func: wasmlib.NewScFunc(HScName, HFuncAddAllowedStateControllerAddress)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) ClaimChainOwnership(ctx wasmlib.ScFuncCallContext) *ClaimChainOwnershipCall {
+	return &ClaimChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncClaimChainOwnership)}
+}
+
+func (sc Funcs) DelegateChainOwnership(ctx wasmlib.ScFuncCallContext) *DelegateChainOwnershipCall {
+	f := &DelegateChainOwnershipCall{Func: wasmlib.NewScFunc(HScName, HFuncDelegateChainOwnership)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }
@@ -51,8 +101,44 @@ func (sc Funcs) RotateStateController(ctx wasmlib.ScFuncCallContext) *RotateStat
 	return f
 }
 
+func (sc Funcs) SetChainInfo(ctx wasmlib.ScFuncCallContext) *SetChainInfoCall {
+	f := &SetChainInfoCall{Func: wasmlib.NewScFunc(HScName, HFuncSetChainInfo)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) SetContractFee(ctx wasmlib.ScFuncCallContext) *SetContractFeeCall {
+	f := &SetContractFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetContractFee)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) SetDefaultFee(ctx wasmlib.ScFuncCallContext) *SetDefaultFeeCall {
+	f := &SetDefaultFeeCall{Func: wasmlib.NewScFunc(HScName, HFuncSetDefaultFee)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
 func (sc Funcs) GetAllowedStateControllerAddresses(ctx wasmlib.ScViewCallContext) *GetAllowedStateControllerAddressesCall {
 	f := &GetAllowedStateControllerAddressesCall{Func: wasmlib.NewScView(HScName, HViewGetAllowedStateControllerAddresses)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetChainInfo(ctx wasmlib.ScViewCallContext) *GetChainInfoCall {
+	f := &GetChainInfoCall{Func: wasmlib.NewScView(HScName, HViewGetChainInfo)}
+	f.Func.SetPtrs(nil, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetFeeInfo(ctx wasmlib.ScViewCallContext) *GetFeeInfoCall {
+	f := &GetFeeInfoCall{Func: wasmlib.NewScView(HScName, HViewGetFeeInfo)}
+	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) GetMaxBlobSize(ctx wasmlib.ScViewCallContext) *GetMaxBlobSizeCall {
+	f := &GetMaxBlobSizeCall{Func: wasmlib.NewScView(HScName, HViewGetMaxBlobSize)}
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }

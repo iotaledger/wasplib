@@ -9,6 +9,70 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type ImmutableArrayClearParams struct {
+	id int32
+}
+
+func (s ImmutableArrayClearParams) Name() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
+}
+
+type MutableArrayClearParams struct {
+	id int32
+}
+
+func (s MutableArrayClearParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+}
+
+type ImmutableArrayCreateParams struct {
+	id int32
+}
+
+func (s ImmutableArrayCreateParams) Name() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
+}
+
+type MutableArrayCreateParams struct {
+	id int32
+}
+
+func (s MutableArrayCreateParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+}
+
+type ImmutableArraySetParams struct {
+	id int32
+}
+
+func (s ImmutableArraySetParams) Index() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamIndex])
+}
+
+func (s ImmutableArraySetParams) Name() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
+}
+
+func (s ImmutableArraySetParams) Value() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamValue])
+}
+
+type MutableArraySetParams struct {
+	id int32
+}
+
+func (s MutableArraySetParams) Index() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamIndex])
+}
+
+func (s MutableArraySetParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+}
+
+func (s MutableArraySetParams) Value() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamValue])
+}
+
 type ImmutableParamTypesParams struct {
 	id int32
 }
@@ -111,6 +175,46 @@ func (s MutableParamTypesParams) RequestID() wasmlib.ScMutableRequestID {
 
 func (s MutableParamTypesParams) String() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamString])
+}
+
+type ImmutableArrayLengthParams struct {
+	id int32
+}
+
+func (s ImmutableArrayLengthParams) Name() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
+}
+
+type MutableArrayLengthParams struct {
+	id int32
+}
+
+func (s MutableArrayLengthParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
+}
+
+type ImmutableArrayValueParams struct {
+	id int32
+}
+
+func (s ImmutableArrayValueParams) Index() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxParamIndex])
+}
+
+func (s ImmutableArrayValueParams) Name() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxParamName])
+}
+
+type MutableArrayValueParams struct {
+	id int32
+}
+
+func (s MutableArrayValueParams) Index() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxParamIndex])
+}
+
+func (s MutableArrayValueParams) Name() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
 }
 
 type ImmutableBlockRecordParams struct {

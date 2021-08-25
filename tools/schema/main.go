@@ -15,12 +15,13 @@ import (
 
 var flagCore = flag.Bool("core", false, "generate core contract interface")
 
-var flagInit = flag.String("init", "", "generate new schema")
+var flagInit = flag.String("init", "", "generate new schema.json for smart contract named <string>")
 
 var (
-	flagGo   = flag.Bool("go", false, "generate Go code")
-	flagJava = flag.Bool("java", false, "generate Java code")
-	flagRust = flag.Bool("rust", false, "generate Rust code")
+	disabledFlag = false
+	flagGo       = flag.Bool("go", false, "generate Go code")
+	flagJava     = &disabledFlag // flag.Bool("java", false, "generate Java code <outdated>")
+	flagRust     = flag.Bool("rust", false, "generate Rust code <default>")
 )
 
 func main() {
@@ -38,6 +39,10 @@ func main() {
 	file, err := os.Open("schema.json")
 	if err == nil {
 		defer file.Close()
+		if *flagInit != "" {
+			fmt.Println("schema.json already exists")
+			return
+		}
 		err = generateSchema(file)
 		if err != nil {
 			fmt.Println(err)

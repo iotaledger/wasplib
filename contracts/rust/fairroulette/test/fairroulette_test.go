@@ -35,7 +35,6 @@ func TestBets(t *testing.T) {
 		_, err := chain.PostRequestSync(req, better[i])
 		require.NoError(t, err)
 	}
-	require.True(t, chain.WaitForRequestsThrough(15))
 	chain.Env.AdvanceClockBy(1201 * time.Second)
-	// require.True(t, chain.WaitForRequestsThrough(1))
+	require.True(t, chain.WaitForRequestsThrough(15))
 }

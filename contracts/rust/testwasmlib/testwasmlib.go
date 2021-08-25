@@ -68,3 +68,38 @@ func viewBlockRecords(ctx wasmlib.ScViewContext, f *BlockRecordsContext) {
 	records.Func.Call()
 	f.Results.Count().SetValue(records.Results.RequestRecord().Length())
 }
+
+func funcArrayClear(ctx wasmlib.ScFuncContext, f *ArrayClearContext) {
+	name := f.Params.Name().Value()
+	array := f.State.Arrays().GetStringArray(name)
+	array.Clear()
+}
+
+func funcArrayCreate(ctx wasmlib.ScFuncContext, f *ArrayCreateContext) {
+	name := f.Params.Name().Value()
+	array := f.State.Arrays().GetStringArray(name)
+	array.Clear()
+}
+
+func funcArraySet(ctx wasmlib.ScFuncContext, f *ArraySetContext) {
+	name := f.Params.Name().Value()
+	array := f.State.Arrays().GetStringArray(name)
+	index := f.Params.Index().Value()
+	value := f.Params.Value().Value()
+	array.GetString(index).SetValue(value)
+}
+
+func viewArrayLength(ctx wasmlib.ScViewContext, f *ArrayLengthContext) {
+	name := f.Params.Name().Value()
+	array := f.State.Arrays().GetStringArray(name)
+	length := array.Length()
+	f.Results.Length().SetValue(length)
+}
+
+func viewArrayValue(ctx wasmlib.ScViewContext, f *ArrayValueContext) {
+	name := f.Params.Name().Value()
+	array := f.State.Arrays().GetStringArray(name)
+	index := f.Params.Index().Value()
+	value := array.GetString(index).Value()
+	f.Results.Value().SetValue(value)
+}

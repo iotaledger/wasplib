@@ -15,20 +15,59 @@ const (
 	HScName       = wasmlib.ScHname(0x17cf909f)
 )
 
-const ParamStateControllerAddress = wasmlib.Key("S")
+const (
+	ParamChainOwner             = wasmlib.Key("oi")
+	ParamFeeColor               = wasmlib.Key("fc")
+	ParamHname                  = wasmlib.Key("hn")
+	ParamMaxBlobSize            = wasmlib.Key("bs")
+	ParamMaxEventSize           = wasmlib.Key("es")
+	ParamMaxEventsPerReq        = wasmlib.Key("ne")
+	ParamOwnerFee               = wasmlib.Key("of")
+	ParamStateControllerAddress = wasmlib.Key("S")
+	ParamValidatorFee           = wasmlib.Key("vf")
+)
 
-const ResultAllowedStateControllerAddresses = wasmlib.Key("a")
+const (
+	ResultAllowedStateControllerAddresses = wasmlib.Key("a")
+	ResultChainID                         = wasmlib.Key("c")
+	ResultChainOwnerID                    = wasmlib.Key("o")
+	ResultDefaultOwnerFee                 = wasmlib.Key("do")
+	ResultDefaultValidatorFee             = wasmlib.Key("dv")
+	ResultDescription                     = wasmlib.Key("d")
+	ResultFeeColor                        = wasmlib.Key("f")
+	ResultMaxBlobSize                     = wasmlib.Key("mb")
+	ResultMaxEventSize                    = wasmlib.Key("me")
+	ResultMaxEventsPerReq                 = wasmlib.Key("mr")
+	ResultOwnerFee                        = wasmlib.Key("of")
+	ResultValidatorFee                    = wasmlib.Key("vf")
+)
 
 const (
 	FuncAddAllowedStateControllerAddress    = "addAllowedStateControllerAddress"
+	FuncClaimChainOwnership                 = "claimChainOwnership"
+	FuncDelegateChainOwnership              = "delegateChainOwnership"
 	FuncRemoveAllowedStateControllerAddress = "removeAllowedStateControllerAddress"
 	FuncRotateStateController               = "rotateStateController"
+	FuncSetChainInfo                        = "setChainInfo"
+	FuncSetContractFee                      = "setContractFee"
+	FuncSetDefaultFee                       = "setDefaultFee"
 	ViewGetAllowedStateControllerAddresses  = "getAllowedStateControllerAddresses"
+	ViewGetChainInfo                        = "getChainInfo"
+	ViewGetFeeInfo                          = "getFeeInfo"
+	ViewGetMaxBlobSize                      = "getMaxBlobSize"
 )
 
 const (
 	HFuncAddAllowedStateControllerAddress    = wasmlib.ScHname(0x9469d567)
+	HFuncClaimChainOwnership                 = wasmlib.ScHname(0x03ff0fc0)
+	HFuncDelegateChainOwnership              = wasmlib.ScHname(0x93ecb6ad)
 	HFuncRemoveAllowedStateControllerAddress = wasmlib.ScHname(0x31f69447)
 	HFuncRotateStateController               = wasmlib.ScHname(0x244d1038)
+	HFuncSetChainInfo                        = wasmlib.ScHname(0x702f5d2b)
+	HFuncSetContractFee                      = wasmlib.ScHname(0x8421a42b)
+	HFuncSetDefaultFee                       = wasmlib.ScHname(0x3310ecd0)
 	HViewGetAllowedStateControllerAddresses  = wasmlib.ScHname(0xf3505183)
+	HViewGetChainInfo                        = wasmlib.ScHname(0x434477e2)
+	HViewGetFeeInfo                          = wasmlib.ScHname(0x9fe54b48)
+	HViewGetMaxBlobSize                      = wasmlib.ScHname(0xe1db3d28)
 )

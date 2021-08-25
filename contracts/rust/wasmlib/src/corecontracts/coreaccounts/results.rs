@@ -105,6 +105,28 @@ impl MutableBalanceResults {
 }
 
 #[derive(Clone, Copy)]
+pub struct ImmutableGetAccountNonceResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableGetAccountNonceResults {
+    pub fn account_nonce(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, RESULT_ACCOUNT_NONCE.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableGetAccountNonceResults {
+    pub(crate) id: i32,
+}
+
+impl MutableGetAccountNonceResults {
+    pub fn account_nonce(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, RESULT_ACCOUNT_NONCE.get_key_id())
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableTotalAssetsResults {
     pub(crate) id: i32,
 }

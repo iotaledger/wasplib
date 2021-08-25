@@ -9,6 +9,38 @@ package testwasmlib
 
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
+type ImmutableArrayLengthResults struct {
+	id int32
+}
+
+func (s ImmutableArrayLengthResults) Length() wasmlib.ScImmutableInt32 {
+	return wasmlib.NewScImmutableInt32(s.id, idxMap[IdxResultLength])
+}
+
+type MutableArrayLengthResults struct {
+	id int32
+}
+
+func (s MutableArrayLengthResults) Length() wasmlib.ScMutableInt32 {
+	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxResultLength])
+}
+
+type ImmutableArrayValueResults struct {
+	id int32
+}
+
+func (s ImmutableArrayValueResults) Value() wasmlib.ScImmutableString {
+	return wasmlib.NewScImmutableString(s.id, idxMap[IdxResultValue])
+}
+
+type MutableArrayValueResults struct {
+	id int32
+}
+
+func (s MutableArrayValueResults) Value() wasmlib.ScMutableString {
+	return wasmlib.NewScMutableString(s.id, idxMap[IdxResultValue])
+}
+
 type ImmutableBlockRecordResults struct {
 	id int32
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
-	"github.com/iotaledger/wasp/packages/vm/core/root"
+	"github.com/iotaledger/wasp/packages/vm/core/governance"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/stretchr/testify/require"
 )
@@ -166,9 +166,9 @@ func testDoPanicUserFee(t *testing.T, w bool) {
 	env.AssertAddressIotas(chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-4-extraToken)
 	env.AssertAddressIotas(userAddress, solo.Saldo)
 
-	req := solo.NewCallParams(root.Contract.Name, root.FuncSetContractFee.Name,
-		root.ParamHname, cAID.Hname(),
-		root.ParamOwnerFee, 10,
+	req := solo.NewCallParams(governance.Contract.Name, governance.FuncSetContractFee.Name,
+		governance.ParamHname, cAID.Hname(),
+		governance.ParamOwnerFee, 10,
 	).WithIotas(1)
 	_, err := chain.PostRequestSync(req, nil)
 	require.NoError(t, err)

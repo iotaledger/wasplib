@@ -7,7 +7,7 @@ package testcore
 import (
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreaccounts"
-	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreroot"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coregovernance"
 )
 
 const (
@@ -220,7 +220,7 @@ func viewTestPanicViewEP(ctx wasmlib.ScViewContext, f *TestPanicViewEPContext) {
 }
 
 func viewTestSandboxCall(ctx wasmlib.ScViewContext, f *TestSandboxCallContext) {
-	getChainInfo := coreroot.ScFuncs.GetChainInfo(ctx)
+	getChainInfo := coregovernance.ScFuncs.GetChainInfo(ctx)
 	getChainInfo.Func.Call()
 	f.Results.SandboxCall().SetValue(getChainInfo.Results.Description().Value())
 }
