@@ -68,10 +68,10 @@ pub fn func_init(ctx: &ScFuncContext) {
 We define an owner variable and allow it to be something other than the default
 value of contract creator. It is always a good idea to be flexible enough to be
 able to transfer ownership to another entity if necessary. Remember that once a
-smart contract is deployed it is no longer possible to change it. Therefore, it
-is good practice thinking through those situations that could require change in
-advance and allow the contract itself to handle such changes through its state
-by providing a proper function interface.
+smart contract has been deployed it is no longer possible to change this.
+Therefore, it is good practice thinking through those situations that could
+require change in advance and allow the contract itself to handle such changes
+through its state by providing a proper function interface.
 
 We only define a single owner here. Proper fall-back could require multiple
 owners in case the owner entity could disappear, which would allow others to
@@ -97,8 +97,8 @@ of a smart contract before deployment.
 }
 ```
 
-In the next sections we will go deeper into explaining how function parameters
-are passed to a smart contract function and how to interact with the state
-storage.
+In the next sections we will go deeper into explaining how to access function
+parameters that were passed to a smart contract function and how to interact
+with the state storage.
 
 Next: [Function Parameters](Params.md)

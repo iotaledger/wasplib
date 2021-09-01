@@ -44,7 +44,7 @@ pub fn func_init(ctx: &ScFuncContext, f: &InitContext) {
     f.state.owner().set_value(&owner);
 }
 
-// 'member' is a function that can be used only by the entity that owns the
+// 'member' is a function that can only be used by the entity that owns the
 // 'dividend' smart contract. It can be used to define the group of member
 // addresses and dispersal factors one by one prior to sending tokens to the
 // smart contract's 'divide' function. The 'member' function takes 2 parameters,
@@ -189,7 +189,7 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
         let factor: i64 = members.get_int64(&address).value();
 
         // Calculate the fair share of iotas to disperse to this member based on the
-        // factor we just retrieved. Note that the result will been truncated.
+        // factor we just retrieved. Note that the result will be truncated.
         let share: i64 = amount * factor / total_factor;
 
         // Is there anything to disperse to this member?

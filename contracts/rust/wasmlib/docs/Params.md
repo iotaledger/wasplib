@@ -2,7 +2,9 @@
 
 Smart contract functions can be invoked in two ways:
 
-- Externally, by sending a smart contract request message via the Tangle.
+- Externally, by sending an on-Tangle smart contract request message via the
+  Tangle, or by sending an off-Tangle smart contract request directly to an
+  access node.
 - Internally, by using the call() or post() methods of the function context.
 
 In both cases it is possible to pass parameters to the smart contract function

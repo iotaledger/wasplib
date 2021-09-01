@@ -6,17 +6,17 @@ access any memory outside its own memory space. Therefore, any data that is
 governed by the ISCP sandbox has to be copied in and out of that memory space
 through well-defined protected channels in the Wasm runtime. To make this whole
 process as seamless as possible the WasmLib interface provides a number of proxy
-objects to hide the underlying data transfers between the separate systems.
+objects that hide the underlying data transfers between the separate systems.
 Proxies are like references. Proxies refer to the actual objects or values
 stored on the ISCP host and know how to manipulate them.
 
 The most basic proxies are value proxies. They refer to a single value instance
-stored on the ISCP host. Since all values are stored in the form of a key/value
-in container objects on the ISCP host these proxies refer to their values
-through the object id and key id that uniquely defines the value's location.
+stored on the ISCP host. All values are stored as key/value pairs in container
+objects on the ISCP host. Value proxies refer to their values through an object
+id and key id combination that uniquely defines the value's location.
 
-The other type of proxies are container proxies. To keep things as simple and
-understandable as possible these are limited to only two different kinds. Arrays
+Another type of proxies are container proxies. To keep things as simple and
+understandable as possible these are limited to only two different kinds. Array
 proxies and map proxies. These are enough to be able to define quite complex
 data structures, because we allow nesting of container objects. The underlying
 ISCP sandbox provides access to its data in the form of simple key/value stores
@@ -25,28 +25,36 @@ abstraction on top of this one-dimensional storage system that allows nesting of
 maps and arrays very similar to the way objects in JSON can be nested.
 
 A map is a key/value store where the key is one of our supported value types.
-The value associated with a key can again be one of our supported value types,
-but it can also be a container object (map or array).
+The value associated with a key can be:
 
-An array can be seen as a special kind of key/value store, where the key is an
-integer value with the property that keys form a sequence from 0 to N-1 for an
+* one of our supported value types, or
+* a user-defined data type, or
+* another container object (map or array).
+
+An array can be seen as a special kind of key/value store. Its key is an integer
+value with the property that keys always form a sequence from 0 to N-1 for an
 array with N elements. Arrays always store elements of the same data type, which
-can be one of the value types, or a map. We do not support arrays of arrays at
-this moment.
+can be one of the value types, a user-defined type, or a map. We do not support
+arrays of arrays at this moment.
 
-Here is an example of how proxies are used in WasmLib:
+Here is an example that shows the use of proxies in WasmLib:
 
 ![Proxies image](Proxies.png)
 
 In this example we have a single map in ISCP state storage that contains a
-number of key/value combinations (Key 1 thru Key 4). One of them (Key 4) refers
-to an array, which in turn contains indexed values stored at indexes 0 thru N.
-Notice how the WasmLib proxies mirror these exactly. There is a proxy for every
-container, and also for every value stored. Each container proxy can uniquely
-identify the container it references through the container's id. Each value
-proxy uniquely identifies the value it references through the container id of
-the container it is in, and the key id (or index) that correlates to its
+number of key/value combinations (Key 1 through Key 4). One of them (Key 4)
+refers to an array, which in turn contains indexed values stored at indexes 0
+through N. Notice how the WasmLib proxies mirror these exactly. There is a proxy
+for every container, and also for every value stored. Each container proxy can
+uniquely identify the container it references through the container's id. Each
+value proxy uniquely identifies the value it references through the container id
+of the container it is in, and the key id (or index) that correlates to its
 position in the container.
+
+Note that despite the one-to-one correspondence in the example it is not 
+necessary for a smart contract function to define a proxy for every value or 
+container in ISCP state storage. In practice a function will only define 
+proxies to data that it actually needs to access.
 
 In the next section we will go into more detail about the supported data types.
 

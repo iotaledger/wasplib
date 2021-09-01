@@ -1,95 +1,87 @@
 ## Smart Contract State
 
-The smart contract state storage on the host is similar to the parameter storage
-in that it uses a key/value map using raw data bytes. The only difference is
-that the state map is mutable as opposed to the immutable params map. So we will
-use the proxy objects in the exact same way as we did with the params map with
-only two differences. The main difference is that we can actually modify the
-data stored in the state map. Another difference is that because all data in
-state storage was put there by us, we can be sure that the raw data bytes
-represent the value types we stored correctly. So as long as we access the data
-in the same way as we stored it we will always get valid data back. To help with
-this WasmLib will at runtime verify that the data is accessed using the same
-type that was used to stored it, and panic if this was not the case. This will
-prevent any data type interpretation errors to propagate in our code or state
-storage.
+The smart contract state storage on the host uses a key/value map. Both key and
+value are raw data bytes. As long as we access the data in the same way we used
+to store it we will always get valid data back. The schema tool will create a
+type-safe access layer to make sure that data storage and retrieval always uses
+the expected data type.
 
-Let's look at how the 'member' function of the 'dividend' smart contract goes
-about accessing its state:
+The `state` section in schema.json consists of a number of field definitions
+that together define the variables that are stored in the state storage. Each
+field definition uses a JSON key/value pair to define the name and data type of
+the field. The JSON key defines the field name. The JSON value (a string)
+defines the field's data type, and can be followed by an optional comment that
+describes the field.
 
-```rust
-// Now that we have sorted out the parameters we will start using the state
-// storage on the host. First we create an ScMutableMap proxy that refers to
-// the state storage map on the host.
-let state: ScMutableMap = ctx.state();
+The schema tool will use this information to generate the specific code that
+accesses the state variables in a type-safe way. Let's examine the
+`state` section of the `dividend` example in more detail:
 
-// We will store the address/factor combinations in a key/value sub-map inside
-// the state map. We tell the state map proxy to create an ScMutableMap proxy
-// to a map named 'members' in the state storage. If there is no 'members' map
-// present yet this will automatically create an empty map on the host.
-let members: ScMutableMap = state.get_map(VAR_MEMBERS);
-
-// Now we create an ScMutableInt64 proxy for the value stored in the 'members'
-// map under the key defined by the 'address' parameter we retrieved earlier.
-let current_factor: ScMutableInt64 = members.get_int64( & address);
-
-// Check to see if this key/value combination exists in the 'members' map
-if ! current_factor.exists() {
-    // If it does not exist yet then we have to add this new address to the
-    // 'memberList' array. We tell the state map proxy to create an
-    // ScMutableAddressArray proxy to an Address array named 'memberList' in
-    // the state storage. Again, if the array was not present yet it will
-    // automatically be created.
-    let member_list: ScMutableAddressArray = state.get_address_array(VAR_MEMBER_LIST);
-    
-    // Now we will append the new address to the memberList array.
-    // First we determine the current length of the array.
-    let length: i32 = member_list.length();
-    
-    // Next we create an ScMutableAddress proxy to the Address value that lives
-    // at that index in the memberList array (no value, since we're appending).
-    let new_address: ScMutableAddress = member_list.get_address(length);
-    
-    // And finally we append the new address to the array by telling the proxy
-    // to update the value it refers with the 'address' parameter.
-    new_address.set_value( &address);
+```json
+{
+  "state": {
+    "memberList": "[]Address // array with all the recipients of this dividend",
+    "members": "[Address]Int64 // map with all the recipient factors of this dividend",
+    "owner": "AgentID // owner of contract, the only one who can call 'member' func",
+    "totalFactor": "Int64 // sum of all recipient factors"
+  }
 }
 ```
 
-Note how we simply define a nested structure of containers within the state map
-by using them as if they already existed. The same thing goes for values in the
-containers. You can immediately start using them, and they will default to
-all-zero values for fixed size value types, and to zero-length values for
-variable sized value types. You will see default values in action in the
-fragment below.
+Let's start with the simplest state variables. `totalFactor` is an Int64,
+and `owner` is an AgentID. Both are predefined value types that were described
+in [WasmLib Data Types](Types.md).
+
+Then we have the `memberList` variable. The empty brackets `[]` indicate that
+this is an array. The brackets are immediately followed by the homogenous type
+of the elements in the array, which in this case is the predefined Address type.
+
+Finally, we have the `member` variable. The non-empty brackets `[]` indicate
+that this is a map. Between the brackets is the homogenous type of the keys,
+which in this case are of the predefined Address type. The brackets are
+immediately followed by the homogenous type of the values in the map, which in
+this case are of the predefined Int64 type.
+
+Here is the Rust code that the schema tool has generated for the corresponding
+MutableDividendState struct:
 
 ```rust
-// Create an ScMutableInt64 proxy named 'totalFactor' for an Int64 value in
-// state storage. Note that we don't care whether this value exists or not,
-// because WasmLib will treat it as if it has the default value of zero.
-let total_factor: ScMutableInt64 = state.get_int64(VAR_TOTAL_FACTOR);
+#[derive(Clone, Copy)]
+pub struct MutableDividendState {
+    pub(crate) id: i32,
+}
 
-// Now we calculate the new running total sum of factors by first getting the
-// current value of 'totalFactor' from the state storage, then subtracting the
-// current value of the factor associated with the 'address' parameter, if any
-// exists. Again, if the associated value doesn't exist, WasmLib will assume it
-// to be zero. Finally we add the factor retrieved from the parameters,
-// resulting in the new totalFactor.
-let new_total_factor: i64 = total_factor.value() - current_factor.value() + factor;
+impl MutableDividendState {
+    pub fn member_list(&self) -> ArrayOfMutableAddress {
+        let arr_id = get_object_id(self.id, idx_map(IDX_STATE_MEMBER_LIST), TYPE_ARRAY | TYPE_ADDRESS);
+        ArrayOfMutableAddress { obj_id: arr_id }
+    }
 
-// Now we store the new totalFactor in the state storage
-total_factor.set_value(new_total_factor);
+    pub fn members(&self) -> MapAddressToMutableInt64 {
+        let map_id = get_object_id(self.id, idx_map(IDX_STATE_MEMBERS), TYPE_MAP);
+        MapAddressToMutableInt64 { obj_id: map_id }
+    }
 
-// And we also store the factor from the parameters under the address from the
-// parameters in the state storage that the proxy refers to
-current_factor.set_value(factor);
+    pub fn owner(&self) -> ScMutableAgentID {
+        ScMutableAgentID::new(self.id, idx_map(IDX_STATE_OWNER))
+    }
 
-// Log successful completion of the 'member' Func in the host log.
-ctx.log("dividend.member ok");
+    pub fn total_factor(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_STATE_TOTAL_FACTOR))
+    }
+}
 ```
 
-This completes the logic for the 'member' function. In the next section we will
-look at how to detect incoming token transfers and how to send tokens to Tangle
-addresses.
+As you can see the schema tool generates a proxy interface for the `dividend`
+state called `MutableDividendState`. It has a 1-to-1 correspondence to
+the `state` section in schema.json. Each member function accesses a type-safe
+proxy object for the corresponding variable. In addition, the schema tool
+generates any necessary intermediate map and array proxy types that force the
+usage of their respective homogenous types. In the above example
+both `ArrayOfMutableAddress` and `MapAddressToMutableInt64`
+are examples of such automatically generated proxy types.
 
-Next: [Token Transfers](Transfers.md)
+In the next section we will examine the things the schema tool does behind the
+scenes to reduce tedious repetitive coding.
+
+Next: [Function Definitions](FuncDefs.md)

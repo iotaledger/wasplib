@@ -2,26 +2,26 @@
 
 The Iota Smart Contracts Protocol (ISCP) provides us with a very flexible way of
 programming smart contracts. It does this by providing an API to a sandboxed
-environment that allows you to interact with the ISCP in a deterministic way
-without any security risks. The API provides a generic way to store, access, and
-modify the state of the smart contract. The API can be used by any kind of
-Virtual Machine (VM) to implement a system to program, load, and run smart
-contracts on top of the ISCP. The actual implementation of such VMs is left to
-whomever wants to create one.
+environment that allows you to interact with the ISCP deterministically without
+any security risks. The API provides a generic way to store, access, and modify
+the state of the smart contract. The API can be used by any kind of Virtual
+Machine (VM) to implement a system to program, load, and run smart contracts on
+top of the ISCP. The actual VMs can be implemented by whomever wants to create
+them.
 
 ![Wasp node image](wasmlib/docs/IscpHost.png)
 
 Of course, we are providing an example implementation of such a VM to allow
 anyone to get a taste of what it is like to program a smart contract for the
 ISCP. Our VM implementation uses [WebAssembly](https://webassembly.org/) (Wasm)
-code as an intermediate compilation target. The Wasm VM implementation uses the
-open source [Wasmtime](https://wasmtime.dev/) runtime environment to be able to
-dynamically load and run the Wasm code.
+code as an intermediate compilation target. The implementation of the Wasm VM
+currently uses the open source [Wasmtime](https://wasmtime.dev/) runtime 
+environment. This enables dynamically loading and running of the Wasm code.
 
-Our choice of Wasm was guided by the desire to be able to program smart
-contracts from any language. Since more and more languages are becoming capable
-of generating the intermediate Wasm code this will eventually allow developers
-to choose a language they are familiar with.
+We chose Wasm to be able to program smart contracts from any language. Since
+more and more languages are becoming capable of generating the intermediate Wasm
+code this will eventually allow developers to choose a language they are
+familiar with.
 
 Because each Wasm code unit runs in its own memory space and cannot access
 anything outside that memory by design, Wasm code is ideally suited for secure
@@ -41,6 +41,8 @@ functionality to its corresponding smart contract and knows how to access the
 underlying smart contract state storage through the VM runtime. This makes ISCP
 API access seamless to the smart contract by hiding the details of bridging the
 gap between the smart contract's memory space, and the ISCP host's memory space.
+It also prevents the smart contract from accessing and/or modifying the ISCP
+host's memory space.
 
 The ISCP sandbox environment enables the following functionality:
 
@@ -54,19 +56,28 @@ The ISCP sandbox environment enables the following functionality:
 - Access to a number of utility functions provided by the host
 
 Our initial implementation of WasmLib has been created for the Rust programming
-language, because this language had the most advanced and stable support for
-generating Wasm code at the time when we started implementing our Wasm VM
-environment.
+language. Rust had the most advanced and stable support for generating Wasm code
+at the time when we started implementing our Wasm VM environment. In the 
+meantime, we also have implemented a fully functional TinyGo version, which 
+supports a reasonable subset of the Go language.
 
 Here is a list of the topics this tutorial will cover:
 
 * [WasmLib Overview](wasmlib/docs/Overview.md)
 * [WasmLib Data Types](wasmlib/docs/Types.md)
 * [Function Call Context](wasmlib/docs/Context.md)
-* [Smart Contract Initialization](wasmlib/docs/Init.md)
-* [Function Parameters](wasmlib/docs/Params.md)
+* [Smart Contract Schema](wasmlib/docs/Schema.md) 
 * [Smart Contract State](wasmlib/docs/State.md)
+* [Function Definitions](wasmlib/docs/FuncDefs.md)
+* [Function Wrappers](wasmlib/docs/Wrappers.md)
+* [Dividend Code](wasmlib/docs/Dividend.md)
 * [Token Transfers](wasmlib/docs/Transfers.md)
 * [View-Only Functions](wasmlib/docs/Views.md)
 * [Limiting Access](wasmlib/docs/Access.md)
 * [Calling Functions](wasmlib/docs/Calls.md)
+
+// TODO 
+
+* [Smart Contract Initialization](wasmlib/docs/Init.md)
+* [Function Parameters](wasmlib/docs/Params.md)
+
