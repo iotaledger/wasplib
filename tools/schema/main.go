@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/iotaledger/wasplib/tools/schema/generator"
 )
@@ -104,7 +105,19 @@ func generateSchema(file *os.File) error {
 }
 
 func generateSchemaNew() error {
-	fmt.Println("generating schema.json")
+	name := *flagInit
+	fmt.Println("initializing " + name)
+
+	subfolder := strings.ToLower(name)
+	err := os.Mkdir(subfolder, 0755)
+	if err != nil {
+		return err
+	}
+	err = os.Chdir(subfolder)
+	if err != nil {
+		return err
+	}
+
 	file, err := os.Create("schema.json")
 	if err != nil {
 		return err
@@ -112,18 +125,30 @@ func generateSchemaNew() error {
 	defer file.Close()
 
 	jsonSchema := &generator.JSONSchema{}
-	jsonSchema.Name = *flagInit
-	jsonSchema.Description = *flagInit + " description"
+	jsonSchema.Name = name
+	jsonSchema.Description = name + " description"
 	jsonSchema.Structs = make(generator.StringMapMap)
 	jsonSchema.Typedefs = make(generator.StringMap)
 	jsonSchema.State = make(generator.StringMap)
+	jsonSchema.State["owner"] = "AgentID // current owner of this smart contract"
 	jsonSchema.Funcs = make(generator.FuncDescMap)
 	jsonSchema.Views = make(generator.FuncDescMap)
+
 	funcInit := &generator.FuncDesc{}
 	funcInit.Params = make(generator.StringMap)
-	funcInit.Results = make(generator.StringMap)
 	funcInit.Params["owner"] = "?AgentID // optional owner of this smart contract"
 	jsonSchema.Funcs["init"] = funcInit
+
+	funcSetOwner := &generator.FuncDesc{}
+	funcSetOwner.Access = "owner // current owner of this smart contract"
+	funcSetOwner.Params = make(generator.StringMap)
+	funcSetOwner.Params["owner"] = "AgentID // new owner of this smart contract"
+	jsonSchema.Funcs["setOwner"] = funcSetOwner
+
+	viewGetOwner := &generator.FuncDesc{}
+	viewGetOwner.Results = make(generator.StringMap)
+	viewGetOwner.Results["owner"] = "AgentID // current owner of this smart contract"
+	jsonSchema.Views["getOwner"] = viewGetOwner
 
 	b, err := json.Marshal(jsonSchema)
 	if err != nil {

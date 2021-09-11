@@ -376,7 +376,23 @@ func (s *Schema) generateRustFuncs() error {
 }
 
 func (s *Schema) generateRustFuncSignature(file *os.File, f *FuncDef) {
-	fmt.Fprintf(file, "\npub fn %s(_ctx: &Sc%sContext, _f: &%sContext) {\n", snake(f.FuncName), f.Kind, capitalize(f.Type))
+	switch f.FuncName {
+	case "funcInit":
+		fmt.Fprintf(file, "\npub fn %s(ctx: &Sc%sContext, f: &%sContext) {\n", snake(f.FuncName), f.Kind, capitalize(f.Type))
+		fmt.Fprintf(file, "    if f.params.owner().exists() {\n")
+		fmt.Fprintf(file, "        f.state.owner().set_value(&f.params.owner().value());\n")
+		fmt.Fprintf(file, "        return;\n")
+		fmt.Fprintf(file, "    }\n")
+		fmt.Fprintf(file, "    f.state.owner().set_value(&ctx.contract_creator());\n")
+	case "funcSetOwner":
+		fmt.Fprintf(file, "\npub fn %s(_ctx: &Sc%sContext, f: &%sContext) {\n", snake(f.FuncName), f.Kind, capitalize(f.Type))
+		fmt.Fprintf(file, "    f.state.owner().set_value(&f.params.owner().value());\n")
+	case "viewGetOwner":
+		fmt.Fprintf(file, "\npub fn %s(_ctx: &Sc%sContext, f: &%sContext) {\n", snake(f.FuncName), f.Kind, capitalize(f.Type))
+		fmt.Fprintf(file, "    f.results.owner().set_value(&f.state.owner().value());\n")
+	default:
+		fmt.Fprintf(file, "\npub fn %s(_ctx: &Sc%sContext, _f: &%sContext) {\n", snake(f.FuncName), f.Kind, capitalize(f.Type))
+	}
 	fmt.Fprintf(file, "}\n")
 }
 

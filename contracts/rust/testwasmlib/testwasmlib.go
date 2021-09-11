@@ -103,3 +103,7 @@ func viewArrayValue(ctx wasmlib.ScViewContext, f *ArrayValueContext) {
 	value := array.GetString(index).Value()
 	f.Results.Value().SetValue(value)
 }
+
+func viewIotaBalance(ctx wasmlib.ScViewContext, f *IotaBalanceContext) {
+	f.Results.Iotas().SetValue(ctx.Balances().Balance(wasmlib.IOTA))
+}

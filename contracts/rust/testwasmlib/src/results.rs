@@ -101,3 +101,25 @@ impl MutableBlockRecordsResults {
         ScMutableInt32::new(self.id, idx_map(IDX_RESULT_COUNT))
     }
 }
+
+#[derive(Clone, Copy)]
+pub struct ImmutableIotaBalanceResults {
+    pub(crate) id: i32,
+}
+
+impl ImmutableIotaBalanceResults {
+    pub fn iotas(&self) -> ScImmutableInt64 {
+        ScImmutableInt64::new(self.id, idx_map(IDX_RESULT_IOTAS))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableIotaBalanceResults {
+    pub(crate) id: i32,
+}
+
+impl MutableIotaBalanceResults {
+    pub fn iotas(&self) -> ScMutableInt64 {
+        ScMutableInt64::new(self.id, idx_map(IDX_RESULT_IOTAS))
+    }
+}

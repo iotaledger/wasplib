@@ -161,7 +161,7 @@ func (o *SoloScContext) getTransfer(transferID int32) colored.Balances {
 	if transferID == 0 {
 		return colored.NewBalances()
 	}
-	transfer := make(map[colored.Color]uint64)
+	transfer := colored.NewBalances()
 	transferDict := o.ctx.wasmHost.FindObject(transferID).(*wasmproc.ScDict).KvStore()
 	transferDict.MustIterate("", func(key kv.Key, value []byte) bool {
 		color, _, err := codec.DecodeColor([]byte(key))
@@ -176,7 +176,7 @@ func (o *SoloScContext) getTransfer(transferID int32) colored.Balances {
 		transfer[color] = amount
 		return true
 	})
-	return colored.NewBalances(transfer)
+	return transfer
 }
 
 func (o *SoloScContext) postSync(contract, function iscp.Hname, paramsID, transferID, delay int32) {

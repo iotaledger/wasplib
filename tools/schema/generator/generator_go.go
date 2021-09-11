@@ -296,6 +296,19 @@ func (s *Schema) generateGoFuncs() error {
 
 func (s *Schema) generateGoFuncSignature(file *os.File, f *FuncDef) {
 	fmt.Fprintf(file, "\nfunc %s(ctx wasmlib.Sc%sContext, f *%sContext) {\n", f.FuncName, f.Kind, f.Type)
+	switch f.FuncName {
+	case "funcInit":
+		fmt.Fprintf(file, "    if f.Params.Owner().Exists() {\n")
+		fmt.Fprintf(file, "        f.State.Owner().SetValue(f.Params.Owner().Value())\n")
+		fmt.Fprintf(file, "        return\n")
+		fmt.Fprintf(file, "    }\n")
+		fmt.Fprintf(file, "    f.State.Owner().SetValue(ctx.ContractCreator())\n")
+	case "funcSetOwner":
+		fmt.Fprintf(file, "    f.State.Owner().SetValue(f.Params.Owner().Value())\n")
+	case "viewGetOwner":
+		fmt.Fprintf(file, "    f.Results.Owner().SetValue(f.State.Owner().Value())\n")
+	default:
+	}
 	fmt.Fprintf(file, "}\n")
 }
 
@@ -875,7 +888,7 @@ func (s *Schema) generateGoWasmMain() error {
 		return err
 	}
 
-	file, err := os.Create("wasmmain/" + s.Name + ".go")
+	file, err := os.Create("wasmmain/main.go")
 	if err != nil {
 		return err
 	}

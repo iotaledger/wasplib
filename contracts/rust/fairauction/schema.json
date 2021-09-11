@@ -1,5 +1,6 @@
 {
   "name": "FairAuction",
+  "description": "Decentralized auction to securely sell tokens to the highest bidder",
   "structs": {
     "Auction": {
       "color": "Color // color of tokens for sale",

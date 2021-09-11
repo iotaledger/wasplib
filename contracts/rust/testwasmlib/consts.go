@@ -37,6 +37,7 @@ const (
 
 const (
 	ResultCount  = wasmlib.Key("count")
+	ResultIotas  = wasmlib.Key("iotas")
 	ResultLength = wasmlib.Key("length")
 	ResultRecord = wasmlib.Key("record")
 	ResultValue  = wasmlib.Key("value")
@@ -53,6 +54,7 @@ const (
 	ViewArrayValue   = "arrayValue"
 	ViewBlockRecord  = "blockRecord"
 	ViewBlockRecords = "blockRecords"
+	ViewIotaBalance  = "iotaBalance"
 )
 
 const (
@@ -64,4 +66,5 @@ const (
 	HViewArrayValue   = wasmlib.ScHname(0x662dbd81)
 	HViewBlockRecord  = wasmlib.ScHname(0xad13b2f8)
 	HViewBlockRecords = wasmlib.ScHname(0x16e249ea)
+	HViewIotaBalance  = wasmlib.ScHname(0x9d3920bd)
 )

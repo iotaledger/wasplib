@@ -72,3 +72,19 @@ type MutableBlockRecordsResults struct {
 func (s MutableBlockRecordsResults) Count() wasmlib.ScMutableInt32 {
 	return wasmlib.NewScMutableInt32(s.id, idxMap[IdxResultCount])
 }
+
+type ImmutableIotaBalanceResults struct {
+	id int32
+}
+
+func (s ImmutableIotaBalanceResults) Iotas() wasmlib.ScImmutableInt64 {
+	return wasmlib.NewScImmutableInt64(s.id, idxMap[IdxResultIotas])
+}
+
+type MutableIotaBalanceResults struct {
+	id int32
+}
+
+func (s MutableIotaBalanceResults) Iotas() wasmlib.ScMutableInt64 {
+	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxResultIotas])
+}

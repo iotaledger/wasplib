@@ -31,12 +31,13 @@ pub const IDX_PARAM_REQUEST_ID:   usize = 14;
 pub const IDX_PARAM_STRING:       usize = 15;
 pub const IDX_PARAM_VALUE:        usize = 16;
 pub const IDX_RESULT_COUNT:       usize = 17;
-pub const IDX_RESULT_LENGTH:      usize = 18;
-pub const IDX_RESULT_RECORD:      usize = 19;
-pub const IDX_RESULT_VALUE:       usize = 20;
-pub const IDX_STATE_ARRAYS:       usize = 21;
+pub const IDX_RESULT_IOTAS:       usize = 18;
+pub const IDX_RESULT_LENGTH:      usize = 19;
+pub const IDX_RESULT_RECORD:      usize = 20;
+pub const IDX_RESULT_VALUE:       usize = 21;
+pub const IDX_STATE_ARRAYS:       usize = 22;
 
-pub const KEY_MAP_LEN: usize = 22;
+pub const KEY_MAP_LEN: usize = 23;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_ADDRESS,
@@ -57,6 +58,7 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_STRING,
     PARAM_VALUE,
     RESULT_COUNT,
+    RESULT_IOTAS,
     RESULT_LENGTH,
     RESULT_RECORD,
     RESULT_VALUE,

@@ -1,0 +1,39 @@
+{
+  "name": "Betting",
+  "description": "Betting description",
+  "structs": {
+    "Bet": {
+      "amount": "Int64 // bet amount",
+      "time": "Int64 // timestamp of this bet",
+      "number": "Int32 // number of item we bet on",
+      "better": "AgentID // Who placed this bet"
+    }
+  },
+  "typedefs": {
+    "BettingRound": "[]Bet // one round of bets"
+  },
+  "state": {
+    "rounds": "[]BettingRound // keep track of all betting rounds",
+    "owner": "AgentID // current owner of this smart contract"
+  },
+  "funcs": {
+    "init": {
+      "params": {
+        "owner": "?AgentID // optional owner of this smart contract"
+      }
+    },
+    "setOwner": {
+      "access": "owner // current owner of this smart contract",
+      "params": {
+        "owner": "AgentID // new owner of this smart contract"
+      }
+    }
+  },
+  "views": {
+    "getOwner": {
+      "results": {
+        "owner": "AgentID // current owner of this smart contract"
+      }
+    }
+  }
+}

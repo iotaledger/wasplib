@@ -41,6 +41,7 @@ fn on_load() {
     exports.add_view(VIEW_ARRAY_VALUE, view_array_value_thunk);
     exports.add_view(VIEW_BLOCK_RECORD, view_block_record_thunk);
     exports.add_view(VIEW_BLOCK_RECORDS, view_block_records_thunk);
+    exports.add_view(VIEW_IOTA_BALANCE, view_iota_balance_thunk);
 
     unsafe {
         for i in 0..KEY_MAP_LEN {
@@ -226,6 +227,25 @@ fn view_block_records_thunk(ctx: &ScViewContext) {
     ctx.require(f.params.block_index().exists(), "missing mandatory blockIndex");
     view_block_records(ctx, &f);
     ctx.log("testwasmlib.viewBlockRecords ok");
+}
+
+pub struct IotaBalanceContext {
+    results: MutableIotaBalanceResults,
+    state:   ImmutableTestWasmLibState,
+}
+
+fn view_iota_balance_thunk(ctx: &ScViewContext) {
+    ctx.log("testwasmlib.viewIotaBalance");
+    let f = IotaBalanceContext {
+        results: MutableIotaBalanceResults {
+            id: OBJ_ID_RESULTS,
+        },
+        state: ImmutableTestWasmLibState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    view_iota_balance(ctx, &f);
+    ctx.log("testwasmlib.viewIotaBalance ok");
 }
 
 // @formatter:on

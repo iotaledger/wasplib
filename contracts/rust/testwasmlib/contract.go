@@ -53,6 +53,11 @@ type BlockRecordsCall struct {
 	Results ImmutableBlockRecordsResults
 }
 
+type IotaBalanceCall struct {
+	Func    *wasmlib.ScView
+	Results ImmutableIotaBalanceResults
+}
+
 type Funcs struct{}
 
 var ScFuncs Funcs
@@ -102,5 +107,11 @@ func (sc Funcs) BlockRecord(ctx wasmlib.ScViewCallContext) *BlockRecordCall {
 func (sc Funcs) BlockRecords(ctx wasmlib.ScViewCallContext) *BlockRecordsCall {
 	f := &BlockRecordsCall{Func: wasmlib.NewScView(HScName, HViewBlockRecords)}
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
+	return f
+}
+
+func (sc Funcs) IotaBalance(ctx wasmlib.ScViewCallContext) *IotaBalanceCall {
+	f := &IotaBalanceCall{Func: wasmlib.NewScView(HScName, HViewIotaBalance)}
+	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }

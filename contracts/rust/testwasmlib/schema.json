@@ -78,6 +78,11 @@
       "results": {
         "value": "String"
       }
+    },
+    "iotaBalance": {
+      "results": {
+        "iotas": "Int64"
+      }
     }
   }
 }

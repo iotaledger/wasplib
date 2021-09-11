@@ -23,8 +23,8 @@ type (
 
 type FuncDesc struct {
 	Access  string    `json:"access,omitempty"`
-	Params  StringMap `json:"params"`
-	Results StringMap `json:"results"`
+	Params  StringMap `json:"params,omitempty"`
+	Results StringMap `json:"results,omitempty"`
 }
 type FuncDescMap map[string]*FuncDesc
 

@@ -19,6 +19,7 @@ func OnLoad() {
 	exports.AddView(ViewArrayValue, viewArrayValueThunk)
 	exports.AddView(ViewBlockRecord, viewBlockRecordThunk)
 	exports.AddView(ViewBlockRecords, viewBlockRecordsThunk)
+	exports.AddView(ViewIotaBalance, viewIotaBalanceThunk)
 
 	for i, key := range keyMap {
 		idxMap[i] = key.KeyID()
@@ -202,4 +203,23 @@ func viewBlockRecordsThunk(ctx wasmlib.ScViewContext) {
 	ctx.Require(f.Params.BlockIndex().Exists(), "missing mandatory blockIndex")
 	viewBlockRecords(ctx, f)
 	ctx.Log("testwasmlib.viewBlockRecords ok")
+}
+
+type IotaBalanceContext struct {
+	Results MutableIotaBalanceResults
+	State   ImmutableTestWasmLibState
+}
+
+func viewIotaBalanceThunk(ctx wasmlib.ScViewContext) {
+	ctx.Log("testwasmlib.viewIotaBalance")
+	f := &IotaBalanceContext{
+		Results: MutableIotaBalanceResults{
+			id: wasmlib.OBJ_ID_RESULTS,
+		},
+		State: ImmutableTestWasmLibState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	viewIotaBalance(ctx, f)
+	ctx.Log("testwasmlib.viewIotaBalance ok")
 }

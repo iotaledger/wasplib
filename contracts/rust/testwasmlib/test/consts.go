@@ -37,6 +37,7 @@ const (
 
 const (
 	ResultCount  = "count"
+	ResultIotas  = "iotas"
 	ResultLength = "length"
 	ResultRecord = "record"
 	ResultValue  = "value"
@@ -53,6 +54,7 @@ const (
 	ViewArrayValue   = "arrayValue"
 	ViewBlockRecord  = "blockRecord"
 	ViewBlockRecords = "blockRecords"
+	ViewIotaBalance  = "iotaBalance"
 )
 
 const (
@@ -64,4 +66,5 @@ const (
 	HViewArrayValue   = iscp.Hname(0x662dbd81)
 	HViewBlockRecord  = iscp.Hname(0xad13b2f8)
 	HViewBlockRecords = iscp.Hname(0x16e249ea)
+	HViewIotaBalance  = iscp.Hname(0x9d3920bd)
 )

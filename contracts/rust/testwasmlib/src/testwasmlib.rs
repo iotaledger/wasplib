@@ -98,3 +98,7 @@ pub fn view_array_value(_ctx: &ScViewContext, f: &ArrayValueContext) {
     let value = array.get_string(index).value();
     f.results.value().set_value(&value);
 }
+
+pub fn view_iota_balance(ctx: &ScViewContext, f: &IotaBalanceContext) {
+    f.results.iotas().set_value(ctx.balances().balance(&ScColor::IOTA));
+}

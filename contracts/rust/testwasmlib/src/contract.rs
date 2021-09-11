@@ -61,6 +61,11 @@ pub struct BlockRecordsCall {
     pub results: ImmutableBlockRecordsResults,
 }
 
+pub struct IotaBalanceCall {
+    pub func:    ScView,
+    pub results: ImmutableIotaBalanceResults,
+}
+
 pub struct ScFuncs {
 }
 
@@ -131,6 +136,14 @@ impl ScFuncs {
             results: ImmutableBlockRecordsResults { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, &mut f.results.id);
+        f
+    }
+    pub fn iota_balance(_ctx: & dyn ScViewCallContext) -> IotaBalanceCall {
+        let mut f = IotaBalanceCall {
+            func:    ScView::new(HSC_NAME, HVIEW_IOTA_BALANCE),
+            results: ImmutableIotaBalanceResults { id: 0 },
+        };
+        f.func.set_ptrs(ptr::null_mut(), &mut f.results.id);
         f
     }
 }
