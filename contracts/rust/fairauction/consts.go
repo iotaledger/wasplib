@@ -10,8 +10,9 @@ package fairauction
 import "github.com/iotaledger/wasplib/packages/vm/wasmlib"
 
 const (
-	ScName  = "fairauction"
-	HScName = wasmlib.ScHname(0x1b5c43b1)
+	ScName        = "fairauction"
+	ScDescription = "Decentralized auction to securely sell tokens to the highest bidder"
+	HScName       = wasmlib.ScHname(0x1b5c43b1)
 )
 
 const (

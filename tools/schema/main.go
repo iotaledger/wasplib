@@ -63,21 +63,33 @@ func main() {
 }
 
 func generateSchema(file *os.File) error {
+	info, err := file.Stat()
+	if err != nil {
+		return err
+	}
+	schemaTime := info.ModTime()
+
 	schema, err := loadSchema(file)
 	if err != nil {
 		return err
 	}
+
 	schema.CoreContracts = *flagCore
 	if *flagGo {
-		fmt.Println("generating Go code")
-		err = schema.GenerateGo()
-		if err != nil {
-			return err
-		}
-		if !schema.CoreContracts {
-			err = schema.GenerateGoTests()
+		info, err := os.Stat("consts.go")
+		if err == nil && info.ModTime().After(schemaTime) {
+			fmt.Println("skipping Go code generation")
+		} else {
+			fmt.Println("generating Go code")
+			err = schema.GenerateGo()
 			if err != nil {
 				return err
+			}
+			if !schema.CoreContracts {
+				err = schema.GenerateGoTests()
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -89,15 +101,20 @@ func generateSchema(file *os.File) error {
 		}
 	}
 	if *flagRust {
-		fmt.Println("generating Rust code")
-		err = schema.GenerateRust()
-		if err != nil {
-			return err
-		}
-		if !schema.CoreContracts {
-			err = schema.GenerateGoTests()
+		info, err := os.Stat("src/consts.rs")
+		if err == nil && info.ModTime().After(schemaTime) {
+			fmt.Println("skipping Rust code generation")
+		} else {
+			fmt.Println("generating Rust code")
+			err = schema.GenerateRust()
 			if err != nil {
 				return err
+			}
+			if !schema.CoreContracts {
+				err = schema.GenerateGoTests()
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

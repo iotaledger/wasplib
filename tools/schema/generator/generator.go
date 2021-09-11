@@ -12,7 +12,6 @@ import (
 	"strings"
 )
 
-// TODO generate initial folders and schema.json
 // TODO generate initial tests
 
 const (

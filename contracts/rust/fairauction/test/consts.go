@@ -10,8 +10,9 @@ package test
 import "github.com/iotaledger/wasp/packages/iscp"
 
 const (
-	ScName  = "fairauction"
-	HScName = iscp.Hname(0x1b5c43b1)
+	ScName        = "fairauction"
+	ScDescription = "Decentralized auction to securely sell tokens to the highest bidder"
+	HScName       = iscp.Hname(0x1b5c43b1)
 )
 
 const (

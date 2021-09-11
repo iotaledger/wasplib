@@ -478,7 +478,7 @@ func (s *Schema) generateGoProxyArrayNewType(file *os.File, field *Field, proxyT
 			varType = "wasmlib.TYPE_ARRAY|" + varType
 		}
 		fmt.Fprintf(file, "\nfunc (a %s) Get%s(index int32) %s {\n", arrayType, field.Type, proxyType)
-		fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(m.objID, wasmlib.Key32(index), %s)\n", varType)
+		fmt.Fprintf(file, "\tsubID := wasmlib.GetObjectID(a.objID, wasmlib.Key32(index), %s)\n", varType)
 		fmt.Fprintf(file, "\treturn %s{objID: subID}\n", proxyType)
 		fmt.Fprintf(file, "}\n")
 		return

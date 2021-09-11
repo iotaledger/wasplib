@@ -11,8 +11,9 @@
 
 use wasmlib::*;
 
-pub const SC_NAME:  &str = "fairauction";
-pub const HSC_NAME: ScHname = ScHname(0x1b5c43b1);
+pub const SC_NAME:        &str = "fairauction";
+pub const SC_DESCRIPTION: &str = "Decentralized auction to securely sell tokens to the highest bidder";
+pub const HSC_NAME:       ScHname = ScHname(0x1b5c43b1);
 
 pub const PARAM_COLOR:        &str = "color";
 pub const PARAM_DESCRIPTION:  &str = "description";
