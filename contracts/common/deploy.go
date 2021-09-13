@@ -67,11 +67,11 @@ func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interf
 	return chain.DeployWasmContract(nil, scName, wasmFile, params...)
 }
 
-func StartChain(t *testing.T, scName string) *solo.Chain {
+func StartChain(t *testing.T, chainName string) *solo.Chain {
 	wasmhost.HostTracing = TraceHost
 	// wasmhost.ExtendedHostTracing = TraceHost
 	env := solo.New(t, Debug, StackTrace)
-	return env.NewChain(nil, "chain1")
+	return env.NewChain(nil, chainName)
 }
 
 func StartChainAndDeployWasmContractByName(t *testing.T, scName string, params ...interface{}) *solo.Chain {

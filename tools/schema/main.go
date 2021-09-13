@@ -14,13 +14,12 @@ import (
 	"github.com/iotaledger/wasplib/tools/schema/generator"
 )
 
-var flagCore = flag.Bool("core", false, "generate core contract interface")
-
-var flagInit = flag.String("init", "", "generate new schema.json for smart contract named <string>")
-
 var (
 	disabledFlag = false
+	flagCore     = flag.Bool("core", false, "generate core contract interface")
+	flagForce    = flag.Bool("force", false, "force code generation")
 	flagGo       = flag.Bool("go", false, "generate Go code")
+	flagInit     = flag.String("init", "", "generate new schema.json for smart contract named <string>")
 	flagJava     = &disabledFlag // flag.Bool("java", false, "generate Java code <outdated>")
 	flagRust     = flag.Bool("rust", false, "generate Rust code <default>")
 )
@@ -77,7 +76,7 @@ func generateSchema(file *os.File) error {
 	schema.CoreContracts = *flagCore
 	if *flagGo {
 		info, err := os.Stat("consts.go")
-		if err == nil && info.ModTime().After(schemaTime) {
+		if err == nil && info.ModTime().After(schemaTime) && !*flagForce {
 			fmt.Println("skipping Go code generation")
 		} else {
 			fmt.Println("generating Go code")
@@ -102,7 +101,7 @@ func generateSchema(file *os.File) error {
 	}
 	if *flagRust {
 		info, err := os.Stat("src/consts.rs")
-		if err == nil && info.ModTime().After(schemaTime) {
+		if err == nil && info.ModTime().After(schemaTime) && !*flagForce {
 			fmt.Println("skipping Rust code generation")
 		} else {
 			fmt.Println("generating Rust code")

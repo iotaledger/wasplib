@@ -3,267 +3,208 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/goshimmer/packages/ledgerstate"
-	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/iscp"
-	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasplib/contracts/common"
+	"github.com/iotaledger/wasplib/contracts/rust/erc20"
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	creator        *ed25519.KeyPair
-	creatorAddr    ledgerstate.Address
-	creatorAgentID *iscp.AgentID
+	chain   *solo.Chain
+	creator *common.SoloAgent
 )
 
-func deployErc20(t *testing.T) *solo.Chain {
-	chain := common.StartChain(t, ScName)
-	creator, creatorAddr = chain.Env.NewKeyPairWithFunds()
-	creatorAgentID = iscp.NewAgentID(creatorAddr, 0)
-	err := common.DeployWasmContractByName(chain, ScName,
+func setupTest(t *testing.T) {
+	chain = common.StartChain(t, "chain1")
+	creator = common.NewSoloAgentForChain(chain)
+}
+
+func setupErc20(t *testing.T) *common.SoloContext {
+	setupTest(t)
+	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad,
 		ParamSupply, solo.Saldo,
-		ParamCreator, creatorAgentID,
+		ParamCreator, creator.ScAgentID().Bytes(),
 	)
-	require.NoError(t, err)
+	require.NoError(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
 
-	res, err := chain.CallView(ScName, ViewTotalSupply)
-	require.NoError(t, err)
-	sup, ok, err := codec.DecodeInt64(res.MustGet(ParamSupply))
-	require.NoError(t, err)
-	require.True(t, ok)
-	require.EqualValues(t, sup, solo.Saldo)
+	totalSupply := erc20.ScFuncs.TotalSupply(ctx)
+	totalSupply.Func.Call()
+	require.NoError(t, ctx.Err)
+	supply := totalSupply.Results.Supply()
+	require.True(t, supply.Exists())
+	require.EqualValues(t, solo.Saldo, supply.Value())
 
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	return chain
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	return ctx
 }
 
-func checkErc20Balance(e *solo.Chain, account *iscp.AgentID, amount uint64) {
-	res, err := e.CallView(ScName, ViewBalanceOf,
-		ParamAccount, account,
-	)
-	require.NoError(e.Env.T, err)
-	sup, ok, err := codec.DecodeInt64(res.MustGet(ParamAmount))
-	require.NoError(e.Env.T, err)
-	require.True(e.Env.T, ok)
-	require.EqualValues(e.Env.T, sup, amount)
+func checkErc20Balance(ctx *common.SoloContext, account *common.SoloAgent, amount uint64) {
+	t := chain.Env.T
+	balanceOf := erc20.ScFuncs.BalanceOf(ctx)
+	balanceOf.Params.Account().SetValue(account.ScAgentID())
+	balanceOf.Func.Call()
+	require.NoError(t, ctx.Err)
+	balance := balanceOf.Results.Amount()
+	require.True(t, balance.Exists())
+	require.EqualValues(t, amount, balance.Value())
 }
 
-func checkErc20Allowance(e *solo.Chain, account, delegation *iscp.AgentID, amount int64) {
-	res, err := e.CallView(ScName, ViewAllowance,
-		ParamAccount, account,
-		ParamDelegation, delegation,
-	)
-	require.NoError(e.Env.T, err)
-	del, ok, err := codec.DecodeInt64(res.MustGet(ParamAmount))
-	require.NoError(e.Env.T, err)
-	require.True(e.Env.T, ok)
-	require.EqualValues(e.Env.T, del, amount)
+func checkErc20Allowance(ctx *common.SoloContext, account, delegation *common.SoloAgent, amount uint64) {
+	t := chain.Env.T
+	allowance := erc20.ScFuncs.Allowance(ctx)
+	allowance.Params.Account().SetValue(account.ScAgentID())
+	allowance.Params.Delegation().SetValue(delegation.ScAgentID())
+	allowance.Func.Call()
+	require.NoError(t, ctx.Err)
+	balance := allowance.Results.Amount()
+	require.True(t, balance.Exists())
+	require.EqualValues(t, amount, balance.Value())
+}
+
+func approve(ctx *common.SoloContext, from, to *common.SoloAgent, amount uint64) error {
+	appr := erc20.ScFuncs.Approve(ctx.Sign(from))
+	appr.Params.Delegation().SetValue(to.ScAgentID())
+	appr.Params.Amount().SetValue(int64(amount))
+	appr.Func.TransferIotas(1).Post()
+	return ctx.Err
+}
+
+func transfer(ctx *common.SoloContext, from, to *common.SoloAgent, amount uint64) error {
+	tx := erc20.ScFuncs.Transfer(ctx.Sign(from))
+	tx.Params.Account().SetValue(to.ScAgentID())
+	tx.Params.Amount().SetValue(int64(amount))
+	tx.Func.TransferIotas(1).Post()
+	return ctx.Err
+}
+
+func transferFrom(ctx *common.SoloContext, from, to *common.SoloAgent, amount uint64) error {
+	tx := erc20.ScFuncs.TransferFrom(ctx.Sign(from))
+	tx.Params.Account().SetValue(from.ScAgentID())
+	tx.Params.Recipient().SetValue(to.ScAgentID())
+	tx.Params.Amount().SetValue(int64(amount))
+	tx.Func.TransferIotas(1).Post()
+	return ctx.Err
 }
 
 func TestInitial(t *testing.T) {
-	_ = deployErc20(t)
+	_ = setupErc20(t)
 }
 
 func TestTransferOk1(t *testing.T) {
-	chain := deployErc20(t)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
-	amount := uint64(42)
-
-	req := solo.NewCallParams(ScName, FuncTransfer,
-		ParamAccount, userAgentID,
-		ParamAmount, amount,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
-
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo-amount)
-	checkErc20Balance(chain, userAgentID, amount)
+	require.NoError(t, transfer(ctx, creator, user, 42))
+	checkErc20Balance(ctx, creator, solo.Saldo-42)
+	checkErc20Balance(ctx, user, 42)
 }
 
 func TestTransferOk2(t *testing.T) {
-	chain := deployErc20(t)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	user, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
-	amount := uint64(42)
+	require.NoError(t, transfer(ctx, creator, user, 42))
+	checkErc20Balance(ctx, creator, solo.Saldo-42)
+	checkErc20Balance(ctx, user, 42)
 
-	req := solo.NewCallParams(ScName, FuncTransfer,
-		ParamAccount, userAgentID,
-		ParamAmount, amount,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
-
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo-amount)
-	checkErc20Balance(chain, userAgentID, amount)
-
-	req = solo.NewCallParams(ScName, FuncTransfer,
-		ParamAccount, creatorAgentID,
-		ParamAmount, amount,
-	).WithIotas(1)
-	_, err = chain.PostRequestSync(req, user)
-	require.NoError(t, err)
-
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	require.NoError(t, transfer(ctx, user, creator, 42))
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 }
 
 func TestTransferNotEnoughFunds1(t *testing.T) {
-	chain := deployErc20(t)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
-	amount := int64(solo.Saldo + 1)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	require.Error(t, transfer(ctx, creator, user, solo.Saldo+1))
 
-	req := solo.NewCallParams(ScName, FuncTransfer,
-		ParamAccount, userAgentID,
-		ParamAmount, amount,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.Error(t, err)
-
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 }
 
 func TestTransferNotEnoughFunds2(t *testing.T) {
-	chain := deployErc20(t)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	user, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
-	amount := int64(1338)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	require.Error(t, transfer(ctx, user, creator, 1))
 
-	req := solo.NewCallParams(ScName, FuncTransfer,
-		ParamAccount, creatorAgentID,
-		ParamAmount, amount,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, user)
-	require.Error(t, err)
-
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 }
 
 func TestNoAllowance(t *testing.T) {
-	chain := deployErc20(t)
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
+	checkErc20Allowance(ctx, creator, user, 0)
 }
 
 func TestApprove(t *testing.T) {
-	chain := deployErc20(t)
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	req := solo.NewCallParams(ScName, FuncApprove,
-		ParamDelegation, userAgentID,
-		ParamAmount, 100,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, approve(ctx, creator, user, 100))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Allowance(ctx, creator, user, 100)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 }
 
 func TestTransferFromOk1(t *testing.T) {
-	chain := deployErc20(t)
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	req := solo.NewCallParams(ScName, FuncApprove,
-		ParamDelegation, userAgentID,
-		ParamAmount, 100,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, approve(ctx, creator, user, 100))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Allowance(ctx, creator, user, 100)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 
-	req = solo.NewCallParams(ScName, FuncTransferFrom,
-		ParamAccount, creatorAgentID,
-		ParamRecipient, userAgentID,
-		ParamAmount, 50,
-	).WithIotas(1)
-	_, err = chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, transferFrom(ctx, creator, user, 50))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 50)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo-50)
-	checkErc20Balance(chain, userAgentID, 50)
+	checkErc20Allowance(ctx, creator, user, 50)
+	checkErc20Balance(ctx, creator, solo.Saldo-50)
+	checkErc20Balance(ctx, user, 50)
 }
 
 func TestTransferFromOk2(t *testing.T) {
-	chain := deployErc20(t)
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	req := solo.NewCallParams(ScName, FuncApprove,
-		ParamDelegation, userAgentID,
-		ParamAmount, 100,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, approve(ctx, creator, user, 100))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Allowance(ctx, creator, user, 100)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 
-	req = solo.NewCallParams(ScName, FuncTransferFrom,
-		ParamAccount, creatorAgentID,
-		ParamRecipient, userAgentID,
-		ParamAmount, 100,
-	).WithIotas(1)
-	_, err = chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, transferFrom(ctx, creator, user, 100))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 0)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo-100)
-	checkErc20Balance(chain, userAgentID, 100)
+	checkErc20Allowance(ctx, creator, user, 0)
+	checkErc20Balance(ctx, creator, solo.Saldo-100)
+	checkErc20Balance(ctx, user, 100)
 }
 
 func TestTransferFromFail(t *testing.T) {
-	chain := deployErc20(t)
-	_, userAddr := chain.Env.NewKeyPairWithFunds()
-	userAgentID := iscp.NewAgentID(userAddr, 0)
+	ctx := setupErc20(t)
+	user := common.NewSoloAgent(ctx)
 
-	req := solo.NewCallParams(ScName, FuncApprove,
-		ParamDelegation, userAgentID,
-		ParamAmount, 100,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, creator)
-	require.NoError(t, err)
+	require.NoError(t, approve(ctx, creator, user, 100))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Allowance(ctx, creator, user, 100)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 
-	req = solo.NewCallParams(ScName, FuncTransferFrom,
-		ParamAccount, creatorAgentID,
-		ParamRecipient, userAgentID,
-		ParamAmount, 101,
-	).WithIotas(1)
-	_, err = chain.PostRequestSync(req, creator)
-	require.Error(t, err)
+	require.Error(t, transferFrom(ctx, creator, user, 101))
 
-	checkErc20Allowance(chain, creatorAgentID, userAgentID, 100)
-	checkErc20Balance(chain, creatorAgentID, solo.Saldo)
-	checkErc20Balance(chain, userAgentID, 0)
+	checkErc20Allowance(ctx, creator, user, 100)
+	checkErc20Balance(ctx, creator, solo.Saldo)
+	checkErc20Balance(ctx, user, 0)
 }

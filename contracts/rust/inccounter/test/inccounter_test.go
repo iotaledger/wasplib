@@ -15,8 +15,7 @@ import (
 )
 
 func setupTest(t *testing.T) *common.SoloContext {
-	chain := common.StartChainAndDeployWasmContractByName(t, inccounter.ScName)
-	return common.NewSoloContext(inccounter.ScName, inccounter.OnLoad, chain)
+	return common.NewSoloContract(t, inccounter.ScName, inccounter.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -169,8 +168,7 @@ func TestLoop(t *testing.T) {
 	wasmhost.WasmTimeout = 1 * time.Second
 	inccounter.ScFuncs.EndlessLoop(ctx).Func.TransferIotas(1).Post()
 	require.Error(t, ctx.Err)
-	errText := ctx.Err.Error()
-	require.True(t, strings.Contains(errText, "interrupt"))
+	require.True(t, strings.Contains(ctx.Err.Error(), "interrupt"))
 
 	inccounter.ScFuncs.Increment(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)

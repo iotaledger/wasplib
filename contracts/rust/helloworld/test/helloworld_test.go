@@ -12,8 +12,7 @@ import (
 )
 
 func setupTest(t *testing.T) *common.SoloContext {
-	chain := common.StartChainAndDeployWasmContractByName(t, helloworld.ScName)
-	return common.NewSoloContext(helloworld.ScName, helloworld.OnLoad, chain)
+	return common.NewSoloContract(t, helloworld.ScName, helloworld.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {

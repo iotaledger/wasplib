@@ -91,7 +91,8 @@ func (o *SoloScContext) processCall(bytes []byte) {
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err
 	if err != nil {
-		o.Panic("failed to invoke call: " + err.Error())
+		// o.Panic("failed to invoke call: " + err.Error())
+		return
 	}
 	returnID := o.GetObjectID(int32(wasmlib.KeyReturn), wasmlib.TYPE_MAP)
 	o.ctx.wasmHost.FindObject(returnID).(*wasmproc.ScDict).SetKvStore(res)

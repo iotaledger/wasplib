@@ -5,44 +5,41 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/hashing"
-	"github.com/iotaledger/wasp/packages/iscp"
-	"github.com/iotaledger/wasp/packages/iscp/colored"
-	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	allParams = []string{
-		ParamAddress,
-		ParamAgentID,
-		ParamChainID,
-		ParamColor,
-		ParamHash,
-		ParamHname,
-		ParamInt16,
-		ParamInt32,
-		ParamInt64,
-		ParamRequestID,
+	allParams = []wasmlib.Key{
+		testwasmlib.ParamAddress,
+		testwasmlib.ParamAgentID,
+		testwasmlib.ParamChainID,
+		testwasmlib.ParamColor,
+		testwasmlib.ParamHash,
+		testwasmlib.ParamHname,
+		testwasmlib.ParamInt16,
+		testwasmlib.ParamInt32,
+		testwasmlib.ParamInt64,
+		testwasmlib.ParamRequestID,
 	}
 	allLengths    = []int{33, 37, 33, 32, 32, 4, 2, 4, 8, 34}
-	invalidValues = map[string][][]byte{
-		ParamAddress: {
+	invalidValues = map[wasmlib.Key][][]byte{
+		testwasmlib.ParamAddress: {
 			append([]byte{3}, zeroHash...),
 			append([]byte{4}, zeroHash...),
 			append([]byte{255}, zeroHash...),
 		},
-		ParamChainID: {
+		testwasmlib.ParamChainID: {
 			append([]byte{0}, zeroHash...),
 			append([]byte{1}, zeroHash...),
 			append([]byte{3}, zeroHash...),
 			append([]byte{4}, zeroHash...),
 			append([]byte{255}, zeroHash...),
 		},
-		ParamRequestID: {
+		testwasmlib.ParamRequestID: {
 			append(zeroHash, []byte{128, 0}...),
 			append(zeroHash, []byte{127, 1}...),
 			append(zeroHash, []byte{0, 1}...),
@@ -54,8 +51,7 @@ var (
 )
 
 func setupTest(t *testing.T) *common.SoloContext {
-	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
-	return common.NewSoloContext(testwasmlib.ScName, testwasmlib.OnLoad, chain)
+	return common.NewSoloContract(t, testwasmlib.ScName, testwasmlib.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -79,45 +75,36 @@ func TestValidParams(t *testing.T) {
 func testValidParams(t *testing.T) *common.SoloContext {
 	ctx := setupTest(t)
 
-	chainID := ctx.Chain.ChainID
-	address := chainID.AsAddress()
-	hname := HScName
-	agentID := iscp.NewAgentID(address, hname)
-	color, err := colored.ColorFromBytes([]byte("RedGreenBlueYellowCyanBlackWhite"))
-	require.NoError(t, err)
-	hash, err := hashing.HashValueFromBytes([]byte("0123456789abcdeffedcba9876543210"))
-	require.NoError(t, err)
-	requestID, err := iscp.RequestIDFromBytes([]byte("abcdefghijklmnopqrstuvwxyz123456\x00\x00"))
-	require.NoError(t, err)
-	req := solo.NewCallParams(ScName, FuncParamTypes,
-		ParamAddress, address,
-		ParamAgentID, agentID,
-		ParamBytes, []byte("these are bytes"),
-		ParamChainID, chainID,
-		ParamColor, color,
-		ParamHash, hash,
-		ParamHname, hname,
-		ParamInt16, int16(12345),
-		ParamInt32, int32(1234567890),
-		ParamInt64, int64(1234567890123456789),
-		ParamRequestID, requestID,
-		ParamString, "this is a string",
-	).WithIotas(1)
-	_, err = ctx.Chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	scChainID := ctx.ScChainID(ctx.Chain.ChainID)
+
+	pt := testwasmlib.ScFuncs.ParamTypes(ctx)
+	pt.Params.Address().SetValue(scChainID.Address())
+	pt.Params.AgentID().SetValue(wasmlib.NewScAgentID(scChainID, testwasmlib.HScName))
+	pt.Params.Bytes().SetValue([]byte("these are bytes"))
+	pt.Params.ChainID().SetValue(scChainID)
+	pt.Params.Color().SetValue(wasmlib.NewScColorFromBytes([]byte("RedGreenBlueYellowCyanBlackWhite")))
+	pt.Params.Hash().SetValue(wasmlib.NewScHashFromBytes([]byte("0123456789abcdeffedcba9876543210")))
+	pt.Params.Hname().SetValue(testwasmlib.HScName)
+	pt.Params.Int16().SetValue(12345)
+	pt.Params.Int32().SetValue(1234567890)
+	pt.Params.Int64().SetValue(1234567890123456789)
+	pt.Params.RequestID().SetValue(wasmlib.NewScRequestIDFromBytes([]byte("abcdefghijklmnopqrstuvwxyz123456\x00\x00")))
+	pt.Params.String().SetValue("this is a string")
+	pt.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 	return ctx
 }
 
 func TestValidSizeParams(t *testing.T) {
-	ctx := setupTest(t)
+	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
 	for index, param := range allParams {
-		t.Run("ValidSize "+param, func(t *testing.T) {
-			req := solo.NewCallParams(ScName, FuncParamTypes,
-				param, make([]byte, allLengths[index]),
+		t.Run("ValidSize "+string(param), func(t *testing.T) {
+			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+				string(param), make([]byte, allLengths[index]),
 			).WithIotas(1)
-			_, err := ctx.Chain.PostRequestSync(req, nil)
+			_, err := chain.PostRequestSync(req, nil)
 			require.Error(t, err)
-			if param == ParamChainID {
+			if string(param) == string(testwasmlib.ParamChainID) {
 				require.True(t, strings.Contains(err.Error(), "invalid "))
 			} else {
 				require.True(t, strings.Contains(err.Error(), "mismatch: "))
@@ -127,27 +114,27 @@ func TestValidSizeParams(t *testing.T) {
 }
 
 func TestInvalidSizeParams(t *testing.T) {
-	ctx := setupTest(t)
+	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
 	for index, param := range allParams {
-		t.Run("InvalidSize "+param, func(t *testing.T) {
-			req := solo.NewCallParams(ScName, FuncParamTypes,
-				param, make([]byte, 0),
+		t.Run("InvalidSize "+string(param), func(t *testing.T) {
+			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+				string(param), make([]byte, 0),
 			).WithIotas(1)
-			_, err := ctx.Chain.PostRequestSync(req, nil)
+			_, err := chain.PostRequestSync(req, nil)
 			require.Error(t, err)
 			require.True(t, strings.HasSuffix(err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(ScName, FuncParamTypes,
-				param, make([]byte, allLengths[index]-1),
+			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+				string(param), make([]byte, allLengths[index]-1),
 			).WithIotas(1)
-			_, err = ctx.Chain.PostRequestSync(req, nil)
+			_, err = chain.PostRequestSync(req, nil)
 			require.Error(t, err)
 			require.True(t, strings.Contains(err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(ScName, FuncParamTypes,
-				param, make([]byte, allLengths[index]+1),
+			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+				string(param), make([]byte, allLengths[index]+1),
 			).WithIotas(1)
-			_, err = ctx.Chain.PostRequestSync(req, nil)
+			_, err = chain.PostRequestSync(req, nil)
 			require.Error(t, err)
 			require.True(t, strings.Contains(err.Error(), "invalid type size"))
 		})
@@ -158,9 +145,9 @@ func TestInvalidTypeParams(t *testing.T) {
 	ctx := setupTest(t)
 	for param, values := range invalidValues {
 		for index, value := range values {
-			t.Run("InvalidType "+param+" "+strconv.Itoa(index), func(t *testing.T) {
-				req := solo.NewCallParams(ScName, FuncParamTypes,
-					param, value,
+			t.Run("InvalidType "+string(param)+" "+strconv.Itoa(index), func(t *testing.T) {
+				req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
+					string(param), value,
 				).WithIotas(1)
 				_, err := ctx.Chain.PostRequestSync(req, nil)
 				require.Error(t, err)
@@ -174,74 +161,74 @@ func TestViewBlockRecords(t *testing.T) {
 	t.SkipNow()
 	ctx := testValidParams(t)
 
-	res, err := ctx.Chain.CallView(ScName, ViewBlockRecords, ParamBlockIndex, int32(1))
-	require.NoError(t, err)
-	count, exist, err := codec.DecodeInt32(res.MustGet(ResultCount))
-	require.NoError(t, err)
-	require.True(t, exist)
-	require.EqualValues(t, 1, count)
+	br := testwasmlib.ScFuncs.BlockRecords(ctx)
+	br.Params.BlockIndex().SetValue(1)
+	br.Func.Call()
+	require.NoError(t, ctx.Err)
+	count := br.Results.Count()
+	require.True(t, count.Exists())
+	require.EqualValues(t, 1, count.Value())
 }
 
 func TestClearArray(t *testing.T) {
-	ctx := testValidParams(t)
+	ctx := setupTest(t)
 
-	req := solo.NewCallParams(ScName, FuncArraySet,
-		ParamName, "bands",
-		ParamIndex, int32(0),
-		ParamValue, "Simple Minds",
-	).WithIotas(1)
-	_, err := ctx.Chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	as := testwasmlib.ScFuncs.ArraySet(ctx)
+	as.Params.Name().SetValue("bands")
+	as.Params.Index().SetValue(0)
+	as.Params.Value().SetValue("Simple Minds")
+	as.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	req = solo.NewCallParams(ScName, FuncArraySet,
-		ParamName, "bands",
-		ParamIndex, int32(1),
-		ParamValue, "Dire Straits",
-	).WithIotas(1)
-	_, err = ctx.Chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	as = testwasmlib.ScFuncs.ArraySet(ctx)
+	as.Params.Name().SetValue("bands")
+	as.Params.Index().SetValue(1)
+	as.Params.Value().SetValue("Dire Straits")
+	as.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	req = solo.NewCallParams(ScName, FuncArraySet,
-		ParamName, "bands",
-		ParamIndex, int32(2),
-		ParamValue, "ELO",
-	).WithIotas(1)
-	_, err = ctx.Chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	as = testwasmlib.ScFuncs.ArraySet(ctx)
+	as.Params.Name().SetValue("bands")
+	as.Params.Index().SetValue(2)
+	as.Params.Value().SetValue("ELO")
+	as.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	res, err := ctx.Chain.CallView(ScName, ViewArrayLength,
-		ParamName, "bands")
-	require.NoError(t, err)
-	length, exist, err := codec.DecodeInt32(res.MustGet(ResultLength))
-	require.NoError(t, err)
-	require.True(t, exist)
-	require.EqualValues(t, 3, length)
+	al := testwasmlib.ScFuncs.ArrayLength(ctx)
+	al.Params.Name().SetValue("bands")
+	al.Func.Call()
+	require.NoError(t, ctx.Err)
+	length := al.Results.Length()
+	require.True(t, length.Exists())
+	require.EqualValues(t, 3, length.Value())
 
-	res, err = ctx.Chain.CallView(ScName, ViewArrayValue,
-		ParamName, "bands",
-		ParamIndex, int32(1))
-	require.NoError(t, err)
-	value, exist, err := codec.DecodeString(res.MustGet(ResultValue))
-	require.NoError(t, err)
-	require.True(t, exist)
-	require.EqualValues(t, "Dire Straits", value)
+	av := testwasmlib.ScFuncs.ArrayValue(ctx)
+	av.Params.Name().SetValue("bands")
+	av.Params.Index().SetValue(1)
+	av.Func.Call()
+	require.NoError(t, ctx.Err)
+	value := av.Results.Value()
+	require.True(t, value.Exists())
+	require.EqualValues(t, "Dire Straits", value.Value())
 
-	req = solo.NewCallParams(ScName, FuncArrayClear,
-		ParamName, "bands",
-	).WithIotas(1)
-	_, err = ctx.Chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	ac := testwasmlib.ScFuncs.ArrayClear(ctx)
+	ac.Params.Name().SetValue("bands")
+	ac.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	res, err = ctx.Chain.CallView(ScName, ViewArrayLength,
-		ParamName, "bands")
-	require.NoError(t, err)
-	length, exist, err = codec.DecodeInt32(res.MustGet(ResultLength))
-	require.NoError(t, err)
-	require.True(t, exist)
-	require.EqualValues(t, 0, length)
+	al = testwasmlib.ScFuncs.ArrayLength(ctx)
+	al.Params.Name().SetValue("bands")
+	al.Func.Call()
+	require.NoError(t, ctx.Err)
+	length = al.Results.Length()
+	require.True(t, length.Exists())
+	require.EqualValues(t, 0, length.Value())
 
-	_, err = ctx.Chain.CallView(ScName, ViewArrayValue, ParamName, "bands", ParamIndex, int32(0))
-	require.Error(t, err)
+	av = testwasmlib.ScFuncs.ArrayValue(ctx)
+	av.Params.Name().SetValue("bands")
+	av.Params.Index().SetValue(0)
+	av.Func.Call()
+	require.Error(t, ctx.Err)
 }
 
 func TestViewBalance(t *testing.T) {

@@ -76,7 +76,7 @@ func (s *Schema) GenerateJava() error {
 	// if err != nil {
 	// 	return err
 	// }
-	return s.GenerateJavaTests()
+	return nil
 }
 
 func (s *Schema) GenerateJavaFunc(file *os.File, f *FuncDef) error {
@@ -279,11 +279,6 @@ func (s *Schema) GenerateJavaConsts() error {
 	}
 
 	fmt.Fprintf(file, "}\n")
-	return nil
-}
-
-func (s *Schema) GenerateJavaTests() error {
-	// TODO
 	return nil
 }
 

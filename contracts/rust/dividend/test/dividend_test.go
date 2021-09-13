@@ -13,8 +13,7 @@ import (
 )
 
 func setupTest(t *testing.T) *common.SoloContext {
-	chain := common.StartChainAndDeployWasmContractByName(t, dividend.ScName)
-	return common.NewSoloContext(dividend.ScName, dividend.OnLoad, chain)
+	return common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -25,10 +24,11 @@ func TestDeploy(t *testing.T) {
 
 func TestAddMemberOk(t *testing.T) {
 	ctx := setupTest(t)
-	_, memberAddr := ctx.Chain.Env.NewKeyPair()
+
+	member1 := common.NewSoloAgent(ctx)
 
 	member := dividend.ScFuncs.Member(ctx)
-	member.Params.Address().SetValue(ctx.ScAddress(memberAddr))
+	member.Params.Address().SetValue(member1.ScAddress())
 	member.Params.Factor().SetValue(100)
 	member.Func.TransferIotas(1).Post()
 
@@ -48,10 +48,11 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 
 func TestAddMemberFailMissingFactor(t *testing.T) {
 	ctx := setupTest(t)
-	_, memberAddr := ctx.Chain.Env.NewKeyPair()
+
+	member1 := common.NewSoloAgent(ctx)
 
 	member := dividend.ScFuncs.Member(ctx)
-	member.Params.Address().SetValue(ctx.ScAddress(memberAddr))
+	member.Params.Address().SetValue(member1.ScAddress())
 	member.Func.TransferIotas(1).Post()
 
 	require.Error(t, ctx.Err)

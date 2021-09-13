@@ -135,7 +135,10 @@ maintain the smart contract owner that will suffice for most cases.
 For a smooth building experience it is a good idea to set up a build rule in your build
 environment that runs the schema tool with the required parameters whenever the
 schema.json file changes. That way regeneration of files is automatic and you no longer
-have to start the schema tool manually after changing schema.json.
+have to start the schema tool manually after changing schema.json. Note that the 
+schema tool will only regenerate the code when it finds that schema.json has been 
+modified since the last time it generated the code. You can force the schema tool to 
+regenerate code by adding the `-force` flag to its command line parameter.
 
 In the next section we will look at how a smart contract uses state storage.
 

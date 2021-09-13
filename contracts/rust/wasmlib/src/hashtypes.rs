@@ -119,6 +119,13 @@ impl ScChainID {
         ScChainID { id: bytes.try_into().expect("invalid chain id length") }
     }
 
+    // gets Tangle address from chain id
+    pub fn address(&self) -> ScAddress {
+        let mut address = ScAddress { id: [0; 33] };
+        address.id[..33].copy_from_slice(&self.id[..33]);
+        address
+    }
+
     // convert to byte array representation
     pub fn to_bytes(&self) -> &[u8] {
         &self.id

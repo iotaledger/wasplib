@@ -717,7 +717,7 @@ func (s *Schema) GenerateGoTests() error {
 		_ = os.Chdir("..")
 	}()
 	// TODO <scname>_test.go
-	return s.generateGoConsts(true)
+	return nil // s.generateGoConsts(true)
 }
 
 func (s *Schema) generateGoThunk(file *os.File, f *FuncDef) {

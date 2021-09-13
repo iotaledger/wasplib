@@ -105,6 +105,12 @@ func NewScChainIDFromBytes(bytes []byte) ScChainID {
 	return o
 }
 
+func (o ScChainID) Address() ScAddress {
+	a := ScAddress{}
+	copy(a.id[:], o.id[:])
+	return a
+}
+
 func (o ScChainID) Bytes() []byte {
 	return o.id[:]
 }
