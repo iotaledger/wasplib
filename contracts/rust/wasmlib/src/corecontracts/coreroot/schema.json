@@ -2,12 +2,6 @@
   "name": "CoreRoot",
   "description": "Core root contract",
   "funcs": {
-    "init": {
-      "params": {
-        "chainID=ci": "ChainID",
-        "description=ds": "?String // default 'N/A'"
-      }
-    },
     "deployContract": {
       "params": {
         "programHash=ph": "Hash //TODO variable init params for deployed contract",

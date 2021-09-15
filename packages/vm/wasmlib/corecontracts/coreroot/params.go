@@ -57,30 +57,6 @@ func (s MutableGrantDeployPermissionParams) Deployer() wasmlib.ScMutableAgentID 
 	return wasmlib.NewScMutableAgentID(s.id, ParamDeployer.KeyID())
 }
 
-type ImmutableInitParams struct {
-	id int32
-}
-
-func (s ImmutableInitParams) ChainID() wasmlib.ScImmutableChainID {
-	return wasmlib.NewScImmutableChainID(s.id, ParamChainID.KeyID())
-}
-
-func (s ImmutableInitParams) Description() wasmlib.ScImmutableString {
-	return wasmlib.NewScImmutableString(s.id, ParamDescription.KeyID())
-}
-
-type MutableInitParams struct {
-	id int32
-}
-
-func (s MutableInitParams) ChainID() wasmlib.ScMutableChainID {
-	return wasmlib.NewScMutableChainID(s.id, ParamChainID.KeyID())
-}
-
-func (s MutableInitParams) Description() wasmlib.ScMutableString {
-	return wasmlib.NewScMutableString(s.id, ParamDescription.KeyID())
-}
-
 type ImmutableRevokeDeployPermissionParams struct {
 	id int32
 }

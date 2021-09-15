@@ -73,36 +73,6 @@ impl MutableGrantDeployPermissionParams {
 }
 
 #[derive(Clone, Copy)]
-pub struct ImmutableInitParams {
-    pub(crate) id: i32,
-}
-
-impl ImmutableInitParams {
-    pub fn chain_id(&self) -> ScImmutableChainID {
-        ScImmutableChainID::new(self.id, PARAM_CHAIN_ID.get_key_id())
-    }
-
-    pub fn description(&self) -> ScImmutableString {
-        ScImmutableString::new(self.id, PARAM_DESCRIPTION.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct MutableInitParams {
-    pub(crate) id: i32,
-}
-
-impl MutableInitParams {
-    pub fn chain_id(&self) -> ScMutableChainID {
-        ScMutableChainID::new(self.id, PARAM_CHAIN_ID.get_key_id())
-    }
-
-    pub fn description(&self) -> ScMutableString {
-        ScMutableString::new(self.id, PARAM_DESCRIPTION.get_key_id())
-    }
-}
-
-#[derive(Clone, Copy)]
 pub struct ImmutableRevokeDeployPermissionParams {
     pub(crate) id: i32,
 }

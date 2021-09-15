@@ -15,7 +15,6 @@ pub const SC_NAME:        &str = "root";
 pub const SC_DESCRIPTION: &str = "Core root contract";
 pub const HSC_NAME:       ScHname = ScHname(0xcebf5908);
 
-pub const PARAM_CHAIN_ID:     &str = "ci";
 pub const PARAM_DEPLOYER:     &str = "dp";
 pub const PARAM_DESCRIPTION:  &str = "ds";
 pub const PARAM_HNAME:        &str = "hn";
@@ -28,14 +27,12 @@ pub const RESULT_CONTRACT_REGISTRY: &str = "r";
 
 pub const FUNC_DEPLOY_CONTRACT:          &str = "deployContract";
 pub const FUNC_GRANT_DEPLOY_PERMISSION:  &str = "grantDeployPermission";
-pub const FUNC_INIT:                     &str = "init";
 pub const FUNC_REVOKE_DEPLOY_PERMISSION: &str = "revokeDeployPermission";
 pub const VIEW_FIND_CONTRACT:            &str = "findContract";
 pub const VIEW_GET_CONTRACT_RECORDS:     &str = "getContractRecords";
 
 pub const HFUNC_DEPLOY_CONTRACT:          ScHname = ScHname(0x28232c27);
 pub const HFUNC_GRANT_DEPLOY_PERMISSION:  ScHname = ScHname(0xf440263a);
-pub const HFUNC_INIT:                     ScHname = ScHname(0x1f44d644);
 pub const HFUNC_REVOKE_DEPLOY_PERMISSION: ScHname = ScHname(0x850744f1);
 pub const HVIEW_FIND_CONTRACT:            ScHname = ScHname(0xc145ca00);
 pub const HVIEW_GET_CONTRACT_RECORDS:     ScHname = ScHname(0x078b3ef3);

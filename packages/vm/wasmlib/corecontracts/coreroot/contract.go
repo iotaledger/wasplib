@@ -19,11 +19,6 @@ type GrantDeployPermissionCall struct {
 	Params MutableGrantDeployPermissionParams
 }
 
-type InitCall struct {
-	Func   *wasmlib.ScInitFunc
-	Params MutableInitParams
-}
-
 type RevokeDeployPermissionCall struct {
 	Func   *wasmlib.ScFunc
 	Params MutableRevokeDeployPermissionParams
@@ -52,12 +47,6 @@ func (sc Funcs) DeployContract(ctx wasmlib.ScFuncCallContext) *DeployContractCal
 
 func (sc Funcs) GrantDeployPermission(ctx wasmlib.ScFuncCallContext) *GrantDeployPermissionCall {
 	f := &GrantDeployPermissionCall{Func: wasmlib.NewScFunc(HScName, HFuncGrantDeployPermission)}
-	f.Func.SetPtrs(&f.Params.id, nil)
-	return f
-}
-
-func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
-	f := &InitCall{Func: wasmlib.NewScInitFunc(HScName, HFuncInit, ctx, keyMap[:], idxMap[:])}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }

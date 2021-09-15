@@ -24,11 +24,6 @@ pub struct GrantDeployPermissionCall {
     pub params: MutableGrantDeployPermissionParams,
 }
 
-pub struct InitCall {
-    pub func:   ScInitFunc,
-    pub params: MutableInitParams,
-}
-
 pub struct RevokeDeployPermissionCall {
     pub func:   ScFunc,
     pub params: MutableRevokeDeployPermissionParams,
@@ -61,14 +56,6 @@ impl ScFuncs {
         let mut f = GrantDeployPermissionCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_GRANT_DEPLOY_PERMISSION),
             params: MutableGrantDeployPermissionParams { id: 0 },
-        };
-        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
-        f
-    }
-    pub fn init(_ctx: & dyn ScFuncCallContext) -> InitCall {
-        let mut f = InitCall {
-            func:   ScInitFunc::new(HSC_NAME, HFUNC_INIT),
-            params: MutableInitParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f

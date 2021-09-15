@@ -16,7 +16,6 @@ const (
 )
 
 const (
-	ParamChainID     = wasmlib.Key("ci")
 	ParamDeployer    = wasmlib.Key("dp")
 	ParamDescription = wasmlib.Key("ds")
 	ParamHname       = wasmlib.Key("hn")
@@ -33,7 +32,6 @@ const (
 const (
 	FuncDeployContract         = "deployContract"
 	FuncGrantDeployPermission  = "grantDeployPermission"
-	FuncInit                   = "init"
 	FuncRevokeDeployPermission = "revokeDeployPermission"
 	ViewFindContract           = "findContract"
 	ViewGetContractRecords     = "getContractRecords"
@@ -42,7 +40,6 @@ const (
 const (
 	HFuncDeployContract         = wasmlib.ScHname(0x28232c27)
 	HFuncGrantDeployPermission  = wasmlib.ScHname(0xf440263a)
-	HFuncInit                   = wasmlib.ScHname(0x1f44d644)
 	HFuncRevokeDeployPermission = wasmlib.ScHname(0x850744f1)
 	HViewFindContract           = wasmlib.ScHname(0xc145ca00)
 	HViewGetContractRecords     = wasmlib.ScHname(0x078b3ef3)
