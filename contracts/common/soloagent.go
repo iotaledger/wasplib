@@ -15,12 +15,8 @@ type SoloAgent struct {
 	address ledgerstate.Address
 }
 
-func NewSoloAgent(ctx *SoloContext) *SoloAgent {
-	return NewSoloAgentForChain(ctx.Chain)
-}
-
-func NewSoloAgentForChain(chain *solo.Chain) *SoloAgent {
-	agent := &SoloAgent{env: chain.Env}
+func NewSoloAgent(env *solo.Solo) *SoloAgent {
+	agent := &SoloAgent{env: env}
 	agent.pair, agent.address = agent.env.NewKeyPairWithFunds()
 	return agent
 }

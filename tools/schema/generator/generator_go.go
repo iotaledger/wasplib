@@ -212,8 +212,12 @@ func (s *Schema) generateGoContract() error {
 
 	for _, f := range s.Funcs {
 		nameLen := f.nameLen(4)
+		kind := f.Kind
+		if f.Type == InitFunc {
+			kind = f.Type + f.Kind
+		}
 		fmt.Fprintf(file, "\ntype %sCall struct {\n", f.Type)
-		fmt.Fprintf(file, "\t%s *wasmlib.Sc%s\n", pad(KindFunc, nameLen), f.Kind)
+		fmt.Fprintf(file, "\t%s *wasmlib.Sc%s\n", pad(KindFunc, nameLen), kind)
 		if len(f.Params) != 0 {
 			fmt.Fprintf(file, "\t%s Mutable%sParams\n", pad("Params", nameLen), f.Type)
 		}
@@ -242,8 +246,14 @@ func (s *Schema) generateGoContractFuncs(file *os.File) {
 			assign = "f :="
 			resultsID = "&f.Results.id"
 		}
+		kind := f.Kind
+		keyMap := ""
+		if f.Type == InitFunc {
+			kind = f.Type + f.Kind
+			keyMap = ", ctx, keyMap[:], idxMap[:]"
+		}
 		fmt.Fprintf(file, "\nfunc (sc Funcs) %s(ctx wasmlib.Sc%sCallContext) *%sCall {\n", f.Type, f.Kind, f.Type)
-		fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s)}\n", assign, f.Type, f.Kind, f.Kind, f.Type)
+		fmt.Fprintf(file, "\t%s &%sCall{Func: wasmlib.NewSc%s(HScName, H%s%s%s)}\n", assign, f.Type, kind, f.Kind, f.Type, keyMap)
 		if len(f.Params) != 0 || len(f.Results) != 0 {
 			fmt.Fprintf(file, "\tf.Func.SetPtrs(%s, %s)\n", paramsID, resultsID)
 			fmt.Fprintf(file, "\treturn f\n")

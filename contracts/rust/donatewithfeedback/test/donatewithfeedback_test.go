@@ -36,7 +36,7 @@ func TestStateAfterDeploy(t *testing.T) {
 func TestDonateOnce(t *testing.T) {
 	ctx := setupTest(t)
 
-	donator1 := common.NewSoloAgent(ctx)
+	donator1 := ctx.NewSoloAgent()
 	donate := donatewithfeedback.ScFuncs.Donate(ctx.Sign(donator1))
 	donate.Params.Feedback().SetValue("Nice work!")
 	donate.Func.TransferIotas(42).Post()
@@ -57,13 +57,13 @@ func TestDonateOnce(t *testing.T) {
 func TestDonateTwice(t *testing.T) {
 	ctx := setupTest(t)
 
-	donator1 := common.NewSoloAgent(ctx)
+	donator1 := ctx.NewSoloAgent()
 	donate1 := donatewithfeedback.ScFuncs.Donate(ctx.Sign(donator1))
 	donate1.Params.Feedback().SetValue("Nice work!")
 	donate1.Func.TransferIotas(42).Post()
 	require.NoError(t, ctx.Err)
 
-	donator2 := common.NewSoloAgent(ctx)
+	donator2 := ctx.NewSoloAgent()
 	donate2 := donatewithfeedback.ScFuncs.Donate(ctx.Sign(donator2))
 	donate2.Params.Feedback().SetValue("Exactly what I needed!")
 	donate2.Func.TransferIotas(69).Post()

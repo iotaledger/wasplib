@@ -17,15 +17,15 @@ var (
 
 func setupTest(t *testing.T) {
 	chain = common.StartChain(t, "chain1")
-	creator = common.NewSoloAgentForChain(chain)
+	creator = common.NewSoloAgent(chain.Env)
 }
 
 func setupErc20(t *testing.T) *common.SoloContext {
 	setupTest(t)
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad,
-		ParamSupply, solo.Saldo,
-		ParamCreator, creator.ScAgentID().Bytes(),
-	)
+	init := erc20.ScFuncs.Init(nil)
+	init.Params.Supply().SetValue(solo.Saldo)
+	init.Params.Creator().SetValue(creator.ScAgentID())
+	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.NoError(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
@@ -95,7 +95,7 @@ func TestInitial(t *testing.T) {
 
 func TestTransferOk1(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, transfer(ctx, creator, user, 42))
 	checkErc20Balance(ctx, creator, solo.Saldo-42)
@@ -104,7 +104,7 @@ func TestTransferOk1(t *testing.T) {
 
 func TestTransferOk2(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, transfer(ctx, creator, user, 42))
 	checkErc20Balance(ctx, creator, solo.Saldo-42)
@@ -117,7 +117,7 @@ func TestTransferOk2(t *testing.T) {
 
 func TestTransferNotEnoughFunds1(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	checkErc20Balance(ctx, creator, solo.Saldo)
 	checkErc20Balance(ctx, user, 0)
@@ -130,7 +130,7 @@ func TestTransferNotEnoughFunds1(t *testing.T) {
 
 func TestTransferNotEnoughFunds2(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	checkErc20Balance(ctx, creator, solo.Saldo)
 	checkErc20Balance(ctx, user, 0)
@@ -143,13 +143,13 @@ func TestTransferNotEnoughFunds2(t *testing.T) {
 
 func TestNoAllowance(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 	checkErc20Allowance(ctx, creator, user, 0)
 }
 
 func TestApprove(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, approve(ctx, creator, user, 100))
 
@@ -160,7 +160,7 @@ func TestApprove(t *testing.T) {
 
 func TestTransferFromOk1(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, approve(ctx, creator, user, 100))
 
@@ -177,7 +177,7 @@ func TestTransferFromOk1(t *testing.T) {
 
 func TestTransferFromOk2(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, approve(ctx, creator, user, 100))
 
@@ -194,7 +194,7 @@ func TestTransferFromOk2(t *testing.T) {
 
 func TestTransferFromFail(t *testing.T) {
 	ctx := setupErc20(t)
-	user := common.NewSoloAgent(ctx)
+	user := ctx.NewSoloAgent()
 
 	require.NoError(t, approve(ctx, creator, user, 100))
 

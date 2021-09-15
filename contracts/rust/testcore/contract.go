@@ -34,7 +34,7 @@ type IncCounterCall struct {
 }
 
 type InitCall struct {
-	Func *wasmlib.ScFunc
+	Func *wasmlib.ScInitFunc
 }
 
 type PassTypesFullCall struct {
@@ -173,7 +173,7 @@ func (sc Funcs) IncCounter(ctx wasmlib.ScFuncCallContext) *IncCounterCall {
 }
 
 func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
-	return &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
+	return &InitCall{Func: wasmlib.NewScInitFunc(HScName, HFuncInit, ctx, keyMap[:], idxMap[:])}
 }
 
 func (sc Funcs) PassTypesFull(ctx wasmlib.ScFuncCallContext) *PassTypesFullCall {

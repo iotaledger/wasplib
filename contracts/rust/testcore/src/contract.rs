@@ -42,7 +42,7 @@ pub struct IncCounterCall {
 }
 
 pub struct InitCall {
-    pub func: ScFunc,
+    pub func: ScInitFunc,
 }
 
 pub struct PassTypesFullCall {
@@ -191,7 +191,7 @@ impl ScFuncs {
     }
     pub fn init(_ctx: & dyn ScFuncCallContext) -> InitCall {
         InitCall {
-            func: ScFunc::new(HSC_NAME, HFUNC_INIT),
+            func: ScInitFunc::new(HSC_NAME, HFUNC_INIT),
         }
     }
     pub fn pass_types_full(_ctx: & dyn ScFuncCallContext) -> PassTypesFullCall {

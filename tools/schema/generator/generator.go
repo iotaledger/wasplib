@@ -19,6 +19,7 @@ const (
 	AccessCreator = "creator"
 	AccessSelf    = "self"
 	AliasThis     = "this"
+	InitFunc      = "Init"
 	KindFunc      = "Func"
 	KindView      = "View"
 	PropImmutable = "Immutable"

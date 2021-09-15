@@ -25,7 +25,7 @@ func TestDeploy(t *testing.T) {
 func TestAddMemberOk(t *testing.T) {
 	ctx := setupTest(t)
 
-	member1 := common.NewSoloAgent(ctx)
+	member1 := ctx.NewSoloAgent()
 
 	member := dividend.ScFuncs.Member(ctx)
 	member.Params.Address().SetValue(member1.ScAddress())
@@ -49,7 +49,7 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 func TestAddMemberFailMissingFactor(t *testing.T) {
 	ctx := setupTest(t)
 
-	member1 := common.NewSoloAgent(ctx)
+	member1 := ctx.NewSoloAgent()
 
 	member := dividend.ScFuncs.Member(ctx)
 	member.Params.Address().SetValue(member1.ScAddress())

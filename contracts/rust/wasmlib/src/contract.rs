@@ -89,6 +89,35 @@ impl ScView {
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
 #[derive(Clone, Copy)]
+pub struct ScInitFunc {
+    view: ScView,
+}
+
+impl ScInitFunc {
+    pub fn new(h_contract: ScHname, h_function: ScHname) -> ScInitFunc {
+        ScInitFunc {
+            view: ScView::new(h_contract, h_function),
+        }
+    }
+
+    pub fn set_ptrs(&mut self, params_id: *mut i32, results_id: *mut i32) {
+        self.view.set_ptrs(params_id, results_id);
+    }
+
+    pub fn call(&self) {
+        panic("cannot call init")
+    }
+
+    pub fn of_contract(&self, h_contract: ScHname) -> ScInitFunc {
+        let mut ret = self.clone();
+        ret.view.h_contract = h_contract;
+        ret
+    }
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
+#[derive(Clone, Copy)]
 pub struct ScFunc {
     view: ScView,
     delay: i32,
@@ -109,6 +138,9 @@ impl ScFunc {
     }
 
     pub fn call(&self) {
+        if self.delay != 0 {
+            panic("cannot delay a call")
+        }
         self.view.call_with_transfer(self.transfer_id);
     }
 

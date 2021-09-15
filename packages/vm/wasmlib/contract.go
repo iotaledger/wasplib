@@ -59,6 +59,56 @@ func paramsID(id *int32) int32 {
 
 // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
 
+type ScInitFunc struct {
+	ScView
+	keys       []Key
+	indexes    []Key32
+	oldIndexes []Key32
+	host       ScHost
+}
+
+func NewScInitFunc(hContract, hFunction ScHname, ctx ScFuncCallContext, keys []Key, indexes []Key32) *ScInitFunc {
+	f := &ScInitFunc{}
+	f.hContract = hContract
+	f.hFunction = hFunction
+	if ctx == nil {
+		f.keys = keys
+		f.oldIndexes = append(f.oldIndexes, indexes...)
+		f.indexes = indexes
+		for i := 0; i < len(indexes); i++ {
+			indexes[i] = Key32(i)
+		}
+		f.host = ConnectHost(NewInitHost())
+	}
+	return f
+}
+
+func (f *ScInitFunc) Call() {
+	Panic("cannot call init")
+}
+
+func (f *ScInitFunc) OfContract(hContract ScHname) *ScInitFunc {
+	f.hContract = hContract
+	return f
+}
+
+func (f *ScInitFunc) Params() []interface{} {
+	if f.keys == nil {
+		Panic("cannot call params")
+	}
+
+	var params []interface{}
+	for k, v := range host.(*InitHost).params {
+		params = append(params, string(f.keys[k]))
+		params = append(params, v)
+	}
+	copy(f.indexes, f.oldIndexes)
+	ConnectHost(f.host)
+	return params
+}
+
+// \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\ // \\
+
 type ScFunc struct {
 	ScView
 	delay      int32
@@ -78,6 +128,11 @@ func (f *ScFunc) Call() {
 
 func (f *ScFunc) Delay(seconds int32) *ScFunc {
 	f.delay = seconds
+	return f
+}
+
+func (f *ScFunc) OfContract(hContract ScHname) *ScFunc {
+	f.hContract = hContract
 	return f
 }
 

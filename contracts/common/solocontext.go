@@ -31,13 +31,12 @@ var (
 	soloHost wasmlib.ScHost
 )
 
-// TODO how to pass InitParams to init
-func NewSoloContext(t *testing.T, chain *solo.Chain, contract string, onLoad func(), params ...interface{}) *SoloContext {
+func NewSoloContext(t *testing.T, chain *solo.Chain, contract string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
 	if chain == nil {
 		chain = common.StartChain(t, "chain1")
 	}
 	ctx := &SoloContext{contract: contract, Chain: chain}
-	ctx.Err = DeployWasmContractByName(chain, contract, params...)
+	ctx.Err = deploy(chain, contract, init...)
 	if ctx.Err != nil {
 		return ctx
 	}
@@ -52,97 +51,109 @@ func NewSoloContext(t *testing.T, chain *solo.Chain, contract string, onLoad fun
 	return ctx
 }
 
-func NewSoloContract(t *testing.T, contract string, onLoad func(), params ...interface{}) *SoloContext {
-	ctx := NewSoloContext(t, nil, contract, onLoad, params...)
+func NewSoloContract(t *testing.T, contract string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
+	ctx := NewSoloContext(t, nil, contract, onLoad, init...)
 	require.NoError(t, ctx.Err)
 	return ctx
 }
 
-func (s *SoloContext) Address() wasmlib.ScAddress {
-	if s.keyPair == nil {
-		return s.ScAddress(s.Chain.OriginatorAddress)
+func deploy(chain *solo.Chain, contract string, init ...*wasmlib.ScInitFunc) error {
+	if len(init) == 0 {
+		return DeployWasmContractByName(chain, contract)
 	}
-	return s.ScAddress(ledgerstate.NewED25519Address(s.keyPair.PublicKey))
+	initFunc := init[0]
+	return DeployWasmContractByName(chain, contract, initFunc.Params()...)
 }
 
-func (s *SoloContext) Balance(agent *SoloAgent, color ...wasmlib.ScColor) int64 {
+func (ctx *SoloContext) Address() wasmlib.ScAddress {
+	if ctx.keyPair == nil {
+		return ctx.ScAddress(ctx.Chain.OriginatorAddress)
+	}
+	return ctx.ScAddress(ledgerstate.NewED25519Address(ctx.keyPair.PublicKey))
+}
+
+func (ctx *SoloContext) Balance(agent *SoloAgent, color ...wasmlib.ScColor) int64 {
 	var account *iscp.AgentID
 	if agent == nil {
-		account = iscp.NewAgentID(s.Chain.ChainID.AsAddress(), iscp.Hn(s.contract))
+		account = iscp.NewAgentID(ctx.Chain.ChainID.AsAddress(), iscp.Hn(ctx.contract))
 	} else {
 		account = iscp.NewAgentID(agent.address, 0)
 	}
-	balances := s.Chain.GetAccountBalance(account)
+	balances := ctx.Chain.GetAccountBalance(account)
 	switch len(color) {
 	case 0:
 		return int64(balances.Get(colored.IOTA))
 	case 1:
 		col, err := colored.ColorFromBytes(color[0].Bytes())
-		require.NoError(s.Chain.Env.T, err)
+		require.NoError(ctx.Chain.Env.T, err)
 		return int64(balances.Get(col))
 	default:
-		require.Fail(s.Chain.Env.T, "too many color arguments")
+		require.Fail(ctx.Chain.Env.T, "too many color arguments")
 		return 0
 	}
 }
 
-func (s *SoloContext) CanCallFunc() {
+func (ctx *SoloContext) CanCallFunc() {
 	panic("CanCallFunc")
 }
 
-func (s *SoloContext) CanCallView() {
+func (ctx *SoloContext) CanCallView() {
 	panic("CanCallView")
 }
 
-func (s *SoloContext) Host() wasmlib.ScHost {
+func (ctx *SoloContext) Host() wasmlib.ScHost {
 	return nil
 }
 
-func (s *SoloContext) ScAddress(address ledgerstate.Address) wasmlib.ScAddress {
+func (ctx *SoloContext) NewSoloAgent() *SoloAgent {
+	return NewSoloAgent(ctx.Chain.Env)
+}
+
+func (ctx *SoloContext) ScAddress(address ledgerstate.Address) wasmlib.ScAddress {
 	return wasmlib.NewScAddressFromBytes(address.Bytes())
 }
 
-func (s *SoloContext) ScAgentID(agentID iscp.AgentID) wasmlib.ScAgentID {
+func (ctx *SoloContext) ScAgentID(agentID iscp.AgentID) wasmlib.ScAgentID {
 	return wasmlib.NewScAgentIDFromBytes(agentID.Bytes())
 }
 
-func (s *SoloContext) ScColor(color colored.Color) wasmlib.ScColor {
+func (ctx *SoloContext) ScColor(color colored.Color) wasmlib.ScColor {
 	return wasmlib.NewScColorFromBytes(color.Bytes())
 }
 
-func (s *SoloContext) ScChainID(chainID iscp.ChainID) wasmlib.ScChainID {
+func (ctx *SoloContext) ScChainID(chainID iscp.ChainID) wasmlib.ScChainID {
 	return wasmlib.NewScChainIDFromBytes(chainID.Bytes())
 }
 
-func (s *SoloContext) ScHash(hash hashing.HashValue) wasmlib.ScHash {
+func (ctx *SoloContext) ScHash(hash hashing.HashValue) wasmlib.ScHash {
 	return wasmlib.NewScHashFromBytes(hash.Bytes())
 }
 
-func (s *SoloContext) ScHname(hname iscp.Hname) wasmlib.ScHname {
+func (ctx *SoloContext) ScHname(hname iscp.Hname) wasmlib.ScHname {
 	return wasmlib.NewScHnameFromBytes(hname.Bytes())
 }
 
-func (s *SoloContext) ScRequestID(requestID iscp.RequestID) wasmlib.ScRequestID {
+func (ctx *SoloContext) ScRequestID(requestID iscp.RequestID) wasmlib.ScRequestID {
 	return wasmlib.NewScRequestIDFromBytes(requestID.Bytes())
 }
 
-func (s *SoloContext) Sign(agent *SoloAgent) *SoloContext {
-	s.keyPair = agent.pair
-	return s
+func (ctx *SoloContext) Sign(agent *SoloAgent) *SoloContext {
+	ctx.keyPair = agent.pair
+	return ctx
 }
 
-func (s *SoloContext) SignWith(keyPair *ed25519.KeyPair) *SoloContext {
-	s.keyPair = keyPair
-	return s
+func (ctx *SoloContext) SignWith(keyPair *ed25519.KeyPair) *SoloContext {
+	ctx.keyPair = keyPair
+	return ctx
 }
 
-func (s *SoloContext) Transfer() wasmlib.ScTransfers {
+func (ctx *SoloContext) Transfer() wasmlib.ScTransfers {
 	return wasmlib.NewScTransfers()
 }
 
-func (s *SoloContext) WaitForRequestsThrough(numReq int, maxWait ...time.Duration) bool {
+func (ctx *SoloContext) WaitForRequestsThrough(numReq int, maxWait ...time.Duration) bool {
 	_ = wasmlib.ConnectHost(soloHost)
-	result := s.Chain.WaitForRequestsThrough(numReq, maxWait...)
-	_ = wasmlib.ConnectHost(&s.wasmHost)
+	result := ctx.Chain.WaitForRequestsThrough(numReq, maxWait...)
+	_ = wasmlib.ConnectHost(&ctx.wasmHost)
 	return result
 }

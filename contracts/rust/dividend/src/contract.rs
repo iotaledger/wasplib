@@ -22,7 +22,7 @@ pub struct DivideCall {
 }
 
 pub struct InitCall {
-    pub func:   ScFunc,
+    pub func:   ScInitFunc,
     pub params: MutableInitParams,
 }
 
@@ -53,7 +53,7 @@ impl ScFuncs {
     }
     pub fn init(_ctx: & dyn ScFuncCallContext) -> InitCall {
         let mut f = InitCall {
-            func:   ScFunc::new(HSC_NAME, HFUNC_INIT),
+            func:   ScInitFunc::new(HSC_NAME, HFUNC_INIT),
             params: MutableInitParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());

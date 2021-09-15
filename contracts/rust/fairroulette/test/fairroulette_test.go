@@ -26,7 +26,7 @@ func TestBets(t *testing.T) {
 	ctx := setupTest(t)
 	var better [10]*common.SoloAgent
 	for i := 0; i < 10; i++ {
-		better[i] = common.NewSoloAgent(ctx)
+		better[i] = ctx.NewSoloAgent()
 		placeBet := fairroulette.ScFuncs.PlaceBet(ctx)
 		placeBet.Params.Number().SetValue(3)
 		placeBet.Func.TransferIotas(25).Post()

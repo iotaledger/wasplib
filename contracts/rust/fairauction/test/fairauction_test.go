@@ -23,7 +23,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 	ctx := common.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
 
 	// set up auctioneer account and mint some tokens to auction off
-	auctioneer = common.NewSoloAgent(ctx)
+	auctioneer = ctx.NewSoloAgent()
 	tokenColor, ctx.Err = auctioneer.Mint(10)
 	require.NoError(t, ctx.Err)
 	require.EqualValues(t, solo.Saldo-10, auctioneer.Balance())
@@ -98,7 +98,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 	ctx := setupTest(t)
 	chain := ctx.Chain
 
-	bidder := common.NewSoloAgent(ctx)
+	bidder := ctx.NewSoloAgent()
 	placeBid := fairauction.ScFuncs.PlaceBid(ctx.Sign(bidder))
 	placeBid.Params.Color().SetValue(tokenColor)
 	placeBid.Func.TransferIotas(100).Post()
@@ -121,7 +121,7 @@ func TestFaOneBid(t *testing.T) {
 	ctx := setupTest(t)
 	chain := ctx.Chain
 
-	bidder := common.NewSoloAgent(ctx)
+	bidder := ctx.NewSoloAgent()
 	placeBid := fairauction.ScFuncs.PlaceBid(ctx.Sign(bidder))
 	placeBid.Params.Color().SetValue(tokenColor)
 	placeBid.Func.TransferIotas(500).Post()

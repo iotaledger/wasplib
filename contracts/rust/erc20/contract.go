@@ -15,7 +15,7 @@ type ApproveCall struct {
 }
 
 type InitCall struct {
-	Func   *wasmlib.ScFunc
+	Func   *wasmlib.ScInitFunc
 	Params MutableInitParams
 }
 
@@ -57,7 +57,7 @@ func (sc Funcs) Approve(ctx wasmlib.ScFuncCallContext) *ApproveCall {
 }
 
 func (sc Funcs) Init(ctx wasmlib.ScFuncCallContext) *InitCall {
-	f := &InitCall{Func: wasmlib.NewScFunc(HScName, HFuncInit)}
+	f := &InitCall{Func: wasmlib.NewScInitFunc(HScName, HFuncInit, ctx, keyMap[:], idxMap[:])}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }

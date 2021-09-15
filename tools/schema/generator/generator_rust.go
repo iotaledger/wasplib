@@ -279,8 +279,12 @@ func (s *Schema) generateRustContract() error {
 
 	for _, f := range s.Funcs {
 		nameLen := f.nameLen(4) + 1
+		kind := f.Kind
+		if f.Type == InitFunc {
+			kind = f.Type + f.Kind
+		}
 		fmt.Fprintf(file, "\npub struct %sCall {\n", f.Type)
-		fmt.Fprintf(file, "    pub %s Sc%s,\n", pad("func:", nameLen), f.Kind)
+		fmt.Fprintf(file, "    pub %s Sc%s,\n", pad("func:", nameLen), kind)
 		if len(f.Params) != 0 {
 			fmt.Fprintf(file, "    pub %s Mutable%sParams,\n", pad("params:", nameLen), f.Type)
 		}
@@ -308,9 +312,13 @@ func (s *Schema) generateRustContractFuncs(file *os.File) {
 		if len(f.Params) != 0 || len(f.Results) != 0 {
 			letMut = "let mut f = "
 		}
+		kind := f.Kind
+		if f.Type == InitFunc {
+			kind = f.Type + f.Kind
+		}
 		fmt.Fprintf(file, "    pub fn %s(_ctx: & dyn Sc%sCallContext) -> %sCall {\n", funcName[5:], f.Kind, f.Type)
 		fmt.Fprintf(file, "        %s%sCall {\n", letMut, f.Type)
-		fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), f.Kind, constName)
+		fmt.Fprintf(file, "            %s Sc%s::new(HSC_NAME, H%s),\n", pad("func:", nameLen), kind, constName)
 		paramsID := "ptr::null_mut()"
 		if len(f.Params) != 0 {
 			paramsID = "&mut f.params.id"
