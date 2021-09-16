@@ -88,4 +88,4 @@ Again, consistency in naming makes them easy to remember.
 
 In the next section we will show how the WasmLib types can be used in smart contract code.
 
-Next: [Function Call Context](Context.md)
+Next: [Function Call Context](context.md)

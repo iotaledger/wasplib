@@ -181,4 +181,4 @@ along the way only allows you to take the path laid out which is checked at comp
 In the next section we will explore how the schema tool helps to simplify function
 definitions.
 
-Next: [Function Definitions](Funcs.md)
+Next: [Function Definitions](funcs.md)

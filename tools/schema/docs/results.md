@@ -2,7 +2,7 @@
 
 The optional `results` subsection contains field definitions for each of the results a
 function produces. The layout of the field definitions is identical to that of
-the [state](State.md) field definitions.
+the [state](state.md) field definitions.
 
 The schema tool will automatically generate a mutable structure with member variables for
 proxies to each result variable in the results map. The user will be able to set the

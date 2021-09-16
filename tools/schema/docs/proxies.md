@@ -59,4 +59,4 @@ access.
 
 In the next section we will go into more detail about the supported data types.
 
-Next: [WasmLib Data Types](Types.md)
+Next: [WasmLib Data Types](types.md)

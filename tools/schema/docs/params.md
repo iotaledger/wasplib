@@ -2,7 +2,7 @@
 
 The optional `params` subsection contains field definitions for each of the parameters
 that a function takes. The layout of the field definitions is identical to that of
-the [state](State.md) field definitions, with one addition. The field type can be prefixed
+the [state](state.md) field definitions, with one addition. The field type can be prefixed
 with a question mark, which indicates that that parameter is optional.
 
 The schema tool will automatically generate an immutable structure with member variables

@@ -29,7 +29,7 @@ example in more detail:
 
 Let's start with the simplest state variables. `totalFactor` is an Int64, and `owner` is
 an AgentID. Both are predefined value types that were described
-in [WasmLib Data Types](Types.md).
+in [WasmLib Data Types](types.md).
 
 Then we have the `memberList` variable. The empty brackets `[]` indicate that this is an
 array. The brackets are immediately followed by the homogenous type of the elements in the
