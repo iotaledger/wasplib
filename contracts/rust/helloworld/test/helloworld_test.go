@@ -17,8 +17,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 
 func TestDeploy(t *testing.T) {
 	ctx := setupTest(t)
-	_, err := ctx.Chain.FindContract(helloworld.ScName)
-	require.NoError(t, err)
+	require.NoError(t, ctx.ContractExists(helloworld.ScName))
 }
 
 func TestFuncHelloWorld(t *testing.T) {

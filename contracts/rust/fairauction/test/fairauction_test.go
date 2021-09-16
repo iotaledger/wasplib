@@ -42,9 +42,8 @@ func setupTest(t *testing.T) *common.SoloContext {
 }
 
 func TestDeploy(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, fairauction.ScName)
-	_, err := chain.FindContract(fairauction.ScName)
-	require.NoError(t, err)
+	ctx := common.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
+	require.NoError(t, ctx.ContractExists(fairauction.ScName))
 }
 
 func TestFaStartAuction(t *testing.T) {
@@ -59,7 +58,7 @@ func TestFaStartAuction(t *testing.T) {
 	require.EqualValues(t, 0, ctx.Balance(auctioneer))
 
 	// remove delayed finalize_auction from backlog
-	ctx.Chain.Env.AdvanceClockBy(61 * time.Minute)
+	ctx.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(5))
 }
 
@@ -75,7 +74,7 @@ func TestFaAuctionInfo(t *testing.T) {
 	require.EqualValues(t, 0, getInfo.Results.Bidders().Value())
 
 	// remove delayed finalize_auction from backlog
-	ctx.Chain.Env.AdvanceClockBy(61 * time.Minute)
+	ctx.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(5))
 }
 
@@ -83,7 +82,7 @@ func TestFaNoBids(t *testing.T) {
 	ctx := setupTest(t)
 
 	// wait for finalize_auction
-	ctx.Chain.Env.AdvanceClockBy(61 * time.Minute)
+	ctx.AdvanceClockBy(61 * time.Minute)
 	require.True(t, ctx.WaitForRequestsThrough(5))
 
 	getInfo := fairauction.ScFuncs.GetInfo(ctx)

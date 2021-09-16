@@ -55,63 +55,44 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
     // Retrieve the pre-calculated totalFactor value from the state storage.
     let total_factor: i64 = f.state.total_factor().value();
 
-    // Note that it is useless to try to divide less than totalFactor iotas
-    // because every member would receive zero iotas.
-    if amount < total_factor {
-        // Log the fact that we have nothing to do in the host log.
-        ctx.log("dividend.divide: nothing to divide");
+    // Get the proxy to the 'members' map in the state storage.
+    let members: MapAddressToMutableInt64 = f.state.members();
 
-        // And exit the function. Note that we could NOT have used a require()
-        // statement here, because that would have indicated an error and caused
-        // a panic out of the function, returning any amount of tokens that was
-        // intended to be dispersed to the members. Returning normally will keep
-        // these tokens in our account ready for dispersal in a next round.
-        return;
+    // Get the proxy to the 'memberList' array in the state storage.
+    let member_list: ArrayOfMutableAddress = f.state.member_list();
+
+    // Determine the current length of the memberList array.
+    let size: i32 = member_list.length();
+
+    // Loop through all indexes of the memberList array.
+    for i in 0..size {
+        // Retrieve the next indexed address from the memberList array.
+        let address: ScAddress = member_list.get_address(i).value();
+
+        // Retrieve the factor associated with the address from the members map.
+        let factor: i64 = members.get_int64(&address).value();
+
+        // Calculate the fair share of iotas to disperse to this member based on the
+        // factor we just retrieved. Note that the result will be truncated.
+        let share: i64 = amount * factor / total_factor;
+
+        // Is there anything to disperse to this member?
+        if share > 0 {
+            // Yes, so let's set up an ScTransfers map proxy that transfers the
+            // calculated amount of iotas. Note that ScTransfers wraps an
+            // ScMutableMap of token color/amount combinations in a simpler to use
+            // interface. The constructor we use here creates and initializes a
+            // single token color transfer in a single statement. The actual color
+            // and amount values passed in will be stored in a new map on the host.
+            let transfers: ScTransfers = ScTransfers::iotas(share);
+
+            // Perform the actual transfer of tokens from the smart contract to the
+            // member address. The transfer_to_address() method receives the address
+            // value and the proxy to the new transfers map on the host, and will
+            // call the corresponding host sandbox function with these values.
+            ctx.transfer_to_address(&address, transfers);
+        }
     }
-```
-
-Now that we know we have determined that we have a non-zero amount of iota tokens
-available to send to the members we can start transferring them:
-
-```rust
-     // Get the proxy to the 'members' map in the state storage.
-     let members: MapAddressToMutableInt64 = f.state.members();
-     
-     // Get the proxy to the 'memberList' array in the state storage.
-     let member_list: ArrayOfMutableAddress = f.state.member_list();
-     
-     // Determine the current length of the memberList array.
-     let size: i32 = member_list.length();
-     
-     // Loop through all indexes of the memberList array.
-     for i in 0..size {
-          // Retrieve the next indexed address from the memberList array.
-          let address: ScAddress = member_list.get_address(i).value();
-          
-          // Retrieve the factor associated with the address from the members map.
-          let factor: i64 = members.get_int64( & address).value();
-          
-          // Calculate the fair share of iotas to disperse to this member based on the
-          // factor we just retrieved. Note that the result will be truncated.
-          let share: i64 = amount * factor / total_factor;
-          
-          // Is there anything to disperse to this member?
-          if share > 0 {
-               // Yes, so let's set up an ScTransfers map proxy that transfers the
-               // calculated amount of iotas. Note that ScTransfers wraps an
-               // ScMutableMap of token color/amount combinations in a simpler to use
-               // interface. The constructor we use here creates and initializes a
-               // single token color transfer in a single statement. The actual color
-               // and amount values passed in will be stored in a new map on the host.
-               let transfers: ScTransfers = ScTransfers::iotas(share);
-               
-               // Perform the actual transfer of tokens from the smart contract to the
-               // member address. The transfer_to_address() method receives the address
-               // value and the proxy to the new transfers map on the host, and will
-               // call the corresponding host sandbox function with these values.
-               ctx.transfer_to_address( & address, transfers);
-          }
-     }
 }
 ```
 

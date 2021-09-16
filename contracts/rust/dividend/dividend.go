@@ -159,20 +159,6 @@ func funcDivide(ctx wasmlib.ScFuncContext, f *DivideContext) {
 	// Retrieve the pre-calculated totalFactor value from the state storage.
 	var totalFactor int64 = f.State.TotalFactor().Value()
 
-	// Note that it is useless to try to divide less than totalFactor iotas
-	// because every member would receive zero iotas.
-	if amount < totalFactor {
-		// Log the fact that we have nothing to do in the host log.
-		ctx.Log("dividend.divide: nothing to divide")
-
-		// And exit the function. Note that we could NOT have used a require()
-		// statement here, because that would have indicated an error and caused
-		// a panic out of the function, returning any amount of tokens that was
-		// intended to be dispersed to the members. Returning normally will keep
-		// these tokens in our account ready for dispersal in a next round.
-		return
-	}
-
 	// Get the proxy to the 'members' map in the state storage.
 	var members MapAddressToMutableInt64 = f.State.Members()
 

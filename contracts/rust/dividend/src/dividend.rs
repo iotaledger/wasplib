@@ -157,20 +157,6 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
     // Retrieve the pre-calculated totalFactor value from the state storage.
     let total_factor: i64 = f.state.total_factor().value();
 
-    // Note that it is useless to try to divide less than totalFactor iotas
-    // because every member would receive zero iotas.
-    if amount < total_factor {
-        // Log the fact that we have nothing to do in the host log.
-        ctx.log("dividend.divide: nothing to divide");
-
-        // And exit the function. Note that we could NOT have used a require()
-        // statement here, because that would have indicated an error and caused
-        // a panic out of the function, returning any amount of tokens that was
-        // intended to be dispersed to the members. Returning normally will keep
-        // these tokens in our account ready for dispersal in a next round.
-        return;
-    }
-
     // Get the proxy to the 'members' map in the state storage.
     let members: MapAddressToMutableInt64 = f.state.members();
 

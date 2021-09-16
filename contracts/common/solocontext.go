@@ -68,6 +68,10 @@ func deploy(chain *solo.Chain, contract string, init ...*wasmlib.ScInitFunc) err
 	return DeployWasmContractByName(chain, contract, initFunc.Params()...)
 }
 
+func (ctx *SoloContext) AdvanceClockBy(step time.Duration) {
+	ctx.Chain.Env.AdvanceClockBy(step)
+}
+
 func (ctx *SoloContext) Address() wasmlib.ScAddress {
 	if ctx.keyPair == nil {
 		return ctx.ScAddress(ctx.Chain.OriginatorAddress)
@@ -106,6 +110,11 @@ func (ctx *SoloContext) CanCallView() {
 
 func (ctx *SoloContext) Host() wasmlib.ScHost {
 	return nil
+}
+
+func (ctx *SoloContext) ContractExists(scName string) error {
+	_, err := ctx.Chain.FindContract(scName)
+	return err
 }
 
 func (ctx *SoloContext) NewSoloAgent() *SoloAgent {
@@ -154,6 +163,7 @@ func (ctx *SoloContext) Transfer() wasmlib.ScTransfers {
 	return wasmlib.NewScTransfers()
 }
 
+// TODO request counter in state so that we have sensible numReq per contract
 func (ctx *SoloContext) WaitForRequestsThrough(numReq int, maxWait ...time.Duration) bool {
 	_ = wasmlib.ConnectHost(soloHost)
 	result := ctx.Chain.WaitForRequestsThrough(numReq, maxWait...)

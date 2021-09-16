@@ -1,36 +1,33 @@
 ## Token Transfers
 
-There are two methods in the ISCP function context that deal with token
-balances. The first one is the `balances()` method, which can be used to
-determine the current total balance per token color that is governed by the
-smart contract. The second one is the `incoming()` method, which can be used to
-determine the amounts of incoming tokens per token color that were sent with the
-request to call the smart contract function.
+There are two methods in the ISCP function context that deal with token balances. The
+first one is the `balances()` method, which can be used to determine the current total
+balance per token color that is governed by the smart contract. The second one is
+the `incoming()` method, which can be used to determine the amounts of incoming tokens per
+token color that were sent with the request to call the smart contract function.
 
-Both methods provide access to zero or more balances of tokens, each for a
-different token color, through a special `ScBalances` map proxy. Note that the
-incoming balances are provided to the smart contract function as if they have
-already been deposited in the smart contract's account, but if any error occurs
-which causes the function to panic these incoming tokens will be returned to
-where they came from, and it will be as if they were never sent to the smart
-contract.
+Both methods provide access to zero or more balances of tokens, each for a different token
+color, through a special `ScBalances` map proxy. Note that the incoming balances are
+provided to the smart contract function as if they have already been deposited in the
+smart contract's account, but if any error occurs which causes the function to panic these
+incoming tokens will be returned to where they came from, and it will be as if they were
+never sent to the smart contract.
 
-There's also a `transfer_to_address()` method in the ISCP function context that
-can transfer tokens from the smart contract account to any Tangle address. The
-tokens to be transferred are provided to the method through a special
-`ScTransfers` map proxy. We will be using the transfer_to_address() method in
-the dividend example to disperse the incoming tokens to the member addresses.
+There's also a `transfer_to_address()` method in the ISCP function context that can
+transfer tokens from the smart contract account to any Tangle address. The tokens to be
+transferred are provided to the method through a special
+`ScTransfers` map proxy. We will be using the transfer_to_address() method in the dividend
+example to disperse the incoming tokens to the member addresses.
 
-The idea behind the dividend smart contract is that once we have set up the list
-of members, consisting of address/factor pairs, and knowing the total sum of the
-factors, we can automatically pay out a dividend to each of the members in the
-list according to the factors involved. Whatever amount of tokens gets sent to
-the 'divide' function will be divided over the members in proportion based on
-their respective factors. For example, you could set it up that address A has a
-factor 50, B has 30, and C has 20, for a total of 100. Then whenever an amount
-of tokens gets sent to the 'divide' function, address A will receive 50/100th,
-address B will receive 30/100th, and address C will receive 20/100th of that
-amount.
+The idea behind the dividend smart contract is that once we have set up the list of
+members, consisting of address/factor pairs, and knowing the total sum of the factors, we
+can automatically pay out a dividend to each of the members in the list according to the
+factors involved. Whatever amount of tokens gets sent to the 'divide' function will be
+divided over the members in proportion based on their respective factors. For example, you
+could set it up that address A has a factor 50, B has 30, and C has 20, for a total of
+100. Then whenever an amount of tokens gets sent to the 'divide' function, address A will
+receive 50/100th, address B will receive 30/100th, and address C will receive 20/100th of
+that amount.
 
 Here is how the 'divide' function starts:
 
@@ -57,25 +54,6 @@ pub fn func_divide(ctx: &ScFuncContext, f: &DivideContext) {
     // Retrieve the pre-calculated totalFactor value from the state storage.
     let total_factor: i64 = f.state.total_factor().value();
 
-    // Note that it is useless to try to divide less than totalFactor iotas
-    // because every member would receive zero iotas.
-    if amount < total_factor {
-        // Log the fact that we have nothing to do in the host log.
-        ctx.log("dividend.divide: nothing to divide");
-
-        // And exit the function. Note that we could NOT have used a require()
-        // statement here, because that would have indicated an error and caused
-        // a panic out of the function, returning any amount of tokens that was
-        // intended to be dispersed to the members. Returning normally will keep
-        // these tokens in our account ready for dispersal in a next round.
-        return;
-    }
-```
-
-Now that we know we have determined that we have a non-zero amount of iota
-tokens available to send to the members we can start transferring them:
-
-```rust
     // Get the proxy to the 'members' map in the state storage.
     let members: MapAddressToMutableInt64 = f.state.members();
 
@@ -117,7 +95,7 @@ tokens available to send to the members we can start transferring them:
 }
 ```
 
-This completes the logic for the 'divide' function. In the next section we will
-look at View-only functions.
+This completes the logic for the 'divide' function. In the next section we will look at
+View-only functions.
 
 Next: [View-Only Functions](Views.md)

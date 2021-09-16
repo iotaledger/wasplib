@@ -12,6 +12,7 @@ import (
 
 func TestDeployErc20(t *testing.T) {
 	setupTest(t)
+
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
 	init.Params.Creator().SetValue(creator.ScAgentID())
@@ -20,8 +21,7 @@ func TestDeployErc20(t *testing.T) {
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
 
-	_, err := chain.FindContract(erc20.ScName)
-	require.NoError(t, err)
+	require.NoError(t, ctx.ContractExists(erc20.ScName))
 
 	// deploy second time
 	init = erc20.ScFuncs.Init(nil)
@@ -69,9 +69,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	require.Error(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
-
-	_, err := chain.FindContract(erc20.ScName)
-	require.Error(t, err)
+	require.Error(t, ctx.ContractExists(erc20.ScName))
 
 	// repeat after failure
 	init = erc20.ScFuncs.Init(nil)
@@ -81,7 +79,5 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	require.NoError(t, ctx.Err)
 	_, _, rec = chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
-
-	_, err = chain.FindContract(erc20.ScName)
-	require.NoError(t, err)
+	require.NoError(t, ctx.ContractExists(erc20.ScName))
 }

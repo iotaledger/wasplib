@@ -18,8 +18,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 
 func TestDeploy(t *testing.T) {
 	ctx := setupTest(t)
-	_, err := ctx.Chain.FindContract(fairroulette.ScName)
-	require.NoError(t, err)
+	require.NoError(t, ctx.ContractExists(fairroulette.ScName))
 }
 
 func TestBets(t *testing.T) {
@@ -32,6 +31,6 @@ func TestBets(t *testing.T) {
 		placeBet.Func.TransferIotas(25).Post()
 		require.NoError(t, ctx.Err)
 	}
-	ctx.Chain.Env.AdvanceClockBy(1201 * time.Second)
+	ctx.AdvanceClockBy(1201 * time.Second)
 	require.True(t, ctx.WaitForRequestsThrough(15))
 }
