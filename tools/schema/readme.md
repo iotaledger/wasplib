@@ -85,7 +85,12 @@ Here is a list of the topics this tutorial will cover:
 * [Calling Functions](docs/call.md)
 * [Posting Asynchronous Requests](docs/post.md)
 * [Testing Smart Contracts](docs/test.md)
+* [Example Tests](docs/examples.md)
+* [Time Locks and Tagged Tokens](docs/timelock.md)
 
-// TODO 
+Let's start by diving deeper into a concept that is central to WasmLib smart contract 
+programming: proxyobjects.
+
+Next: [Data Access Proxies](docs/proxies.md)
 
 

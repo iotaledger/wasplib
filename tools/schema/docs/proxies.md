@@ -40,7 +40,7 @@ moment.
 
 Here is an example that shows the use of proxies in WasmLib:
 
-![Proxies image](Img/Proxies.png)
+![Proxies image](img/Proxies.png)
 
 In this example we have a single map in ISCP state storage that contains a number of
 key/value combinations (Key 1 through Key 4). One of them (Key 4)
