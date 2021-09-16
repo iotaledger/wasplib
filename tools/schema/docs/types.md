@@ -9,6 +9,7 @@ direct support for the following value data types:
 - `Bytes` - An arbitrary-length byte array.
 - `String` - An UTF-8 encoded string value.
 
+&nbsp;
 
 - `Address` - A 33-byte Tangle address.
 - `AgentID` - A 37-byte ISCP Agent ID.

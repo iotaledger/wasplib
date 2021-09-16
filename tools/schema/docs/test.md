@@ -6,10 +6,10 @@ having to start nodes, set up a committee, and send transactions over the Tangle
 we can use Go's built-in test environment in combination with Solo to deploy chains and
 smart contracts and simulate transactions.
 
-Solo directly interacts with the ISCP code and uses all the data types that are defined in
-the ISCP code directly. But our Wasm smart contracts cannot access these types directly
+Solo directly interacts with the ISCP code and uses all the data types that are 
+[defined in the ISCP code](https://github.com/iotaledger/wasp/blob/develop/documentation/docs/misc/coretypes.md) directly. But our Wasm smart contracts cannot access these types directly
 because they run in a sandboxed environment. Therefore, WasmLib implements its
-[own versions of these data types](types.md) and the VM layer acts as a data type
+[own versions](types.md) of these data types and the VM layer acts as a data type
 translator between both systems.
 
 The impact of this type transformation used to be that to be able to write tests in the
