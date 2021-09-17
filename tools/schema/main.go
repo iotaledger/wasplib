@@ -26,10 +26,6 @@ var (
 
 func main() {
 	flag.Parse()
-	if !(*flagGo || *flagJava) {
-		*flagRust = true
-	}
-
 	err := generator.FindModulePath()
 	if err != nil {
 		fmt.Println(err)
@@ -75,7 +71,7 @@ func generateSchema(file *os.File) error {
 
 	schema.CoreContracts = *flagCore
 	if *flagGo {
-		info, err := os.Stat("consts.go")
+		info, err = os.Stat("consts.go")
 		if err == nil && info.ModTime().After(schemaTime) && !*flagForce {
 			fmt.Println("skipping Go code generation")
 		} else {
@@ -92,6 +88,7 @@ func generateSchema(file *os.File) error {
 			}
 		}
 	}
+
 	if *flagJava {
 		fmt.Println("generating Java code")
 		err = schema.GenerateJava()
@@ -99,8 +96,9 @@ func generateSchema(file *os.File) error {
 			return err
 		}
 	}
+
 	if *flagRust {
-		info, err := os.Stat("src/consts.rs")
+		info, err = os.Stat("src/consts.rs")
 		if err == nil && info.ModTime().After(schemaTime) && !*flagForce {
 			fmt.Println("skipping Rust code generation")
 		} else {

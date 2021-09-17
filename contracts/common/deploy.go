@@ -29,7 +29,7 @@ const (
 	TraceHost  = false
 
 	// WasmRunner set to 1 to run/debug go code directly instead of running Rust or TinyGo Wasm code
-	WasmRunner = 1
+	WasmRunner = 0
 )
 
 // TODO update contracts/readme

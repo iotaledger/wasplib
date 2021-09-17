@@ -27,7 +27,7 @@ mod keys;
 mod params;
 mod results;
 mod state;
-mod subtypes;
+mod typedefs;
 mod types;
 mod fairauction;
 

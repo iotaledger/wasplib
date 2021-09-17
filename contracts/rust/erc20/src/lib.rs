@@ -27,7 +27,7 @@ mod keys;
 mod params;
 mod results;
 mod state;
-mod subtypes;
+mod typedefs;
 mod erc20;
 
 #[no_mangle]

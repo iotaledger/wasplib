@@ -696,7 +696,7 @@ func (s *Schema) generateGoSubtypes() error {
 		return nil
 	}
 
-	file, err := os.Create("subtypes.go")
+	file, err := os.Create("typedefs.go")
 	if err != nil {
 		return err
 	}

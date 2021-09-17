@@ -13,7 +13,7 @@ use wasmlib::host::*;
 
 use crate::*;
 use crate::keys::*;
-use crate::subtypes::*;
+use crate::typedefs::*;
 
 pub struct MapStringToImmutableStringArray {
     pub(crate) obj_id: i32,

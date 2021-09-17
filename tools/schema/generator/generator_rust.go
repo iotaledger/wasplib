@@ -23,7 +23,7 @@ const (
 	useResults         = "use crate::results::*;\n"
 	useState           = "use crate::state::*;\n"
 	useStdPtr          = "use std::ptr;\n"
-	useSubtypes        = "use crate::subtypes::*;\n"
+	useSubtypes        = "use crate::typedefs::*;\n"
 	useTypes           = "use crate::types::*;\n"
 	useWasmLib         = "use wasmlib::*;\n"
 	useWasmLibHost     = "use wasmlib::host::*;\n"
@@ -521,7 +521,7 @@ func (s *Schema) generateRustLib() error {
 	fmt.Fprintf(file, "mod results;\n")
 	fmt.Fprintf(file, "mod state;\n")
 	if len(s.Typedefs) != 0 {
-		fmt.Fprintf(file, "mod subtypes;\n")
+		fmt.Fprintf(file, "mod typedefs;\n")
 	}
 	if len(s.Structs) != 0 {
 		fmt.Fprintf(file, "mod types;\n")
@@ -841,7 +841,7 @@ func (s *Schema) generateRustSubtypes() error {
 		return nil
 	}
 
-	file, err := os.Create("subtypes.rs")
+	file, err := os.Create("typedefs.rs")
 	if err != nil {
 		return err
 	}
