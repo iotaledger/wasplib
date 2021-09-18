@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package generator
+package convertor
 
 import (
 	"bufio"
@@ -36,6 +36,11 @@ var (
 )
 
 var lastInit string
+
+// capitalize first letter
+func capitalize(name string) string {
+	return strings.ToUpper(name[:1]) + name[1:]
+}
 
 func replaceConst(m string) string {
 	// "[^a-zA-Z_][A-Z][A-Z_]+"

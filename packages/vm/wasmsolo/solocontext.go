@@ -19,6 +19,7 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmvm"
 	"github.com/stretchr/testify/require"
 )
 
@@ -100,7 +101,7 @@ func deploy(chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.Sc
 		return DeployWasmContractByName(chain, scName, params...)
 	}
 
-	wasmproc.GoWasmVM = NewWasmGoVM(scName, onLoad)
+	wasmproc.GoWasmVM = wasmvm.NewWasmGoVM(scName, onLoad)
 	hprog, err := chain.UploadWasm(nil, []byte("go:"+scName))
 	if err != nil {
 		return err

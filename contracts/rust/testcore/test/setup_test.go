@@ -17,6 +17,7 @@ import (
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/packages/vm/wasmvm"
 	"github.com/stretchr/testify/require"
 )
 
@@ -39,7 +40,7 @@ var (
 // deploy the specified contract on the chain
 func DeployGoContract(chain *solo.Chain, keyPair *ed25519.KeyPair, name, scName string, params ...interface{}) error {
 	if *wasmsolo.GoDebug {
-		wasmproc.GoWasmVM = wasmsolo.NewWasmGoVM(scName, testcore.OnLoad)
+		wasmproc.GoWasmVM = wasmvm.NewWasmGoVM(scName, testcore.OnLoad)
 		hprog, err := chain.UploadWasm(keyPair, []byte("go:"+scName))
 		if err != nil {
 			return err
@@ -47,7 +48,7 @@ func DeployGoContract(chain *solo.Chain, keyPair *ed25519.KeyPair, name, scName 
 		return chain.DeployContract(keyPair, name, hprog, filterKeys(params...)...)
 	}
 
-	wasmproc.GoWasmVM = wasmsolo.NewWasmTimeJavaVM()
+	wasmproc.GoWasmVM = wasmvm.NewWasmTimeJavaVM()
 	wasmFile := scName + "_bg.wasm"
 	wasmFile = util.LocateFile(wasmFile, scName+"/pkg")
 	return chain.DeployWasmContract(keyPair, name, wasmFile, filterKeys(params...)...)

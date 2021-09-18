@@ -1,2 +1,2 @@
-## Time Locks and Tagged Tokens
+## Time Locks and Colored Tokens
 

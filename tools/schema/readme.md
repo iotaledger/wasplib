@@ -12,10 +12,10 @@ implemented by whomever wants to create them.
 
 Of course, we are providing an example implementation of such a VM to allow anyone to get
 a taste of what it is like to program a smart contract for the ISCP. Our VM implementation
-uses [WebAssembly](https://webassembly.org/) (Wasm)
-code as an intermediate compilation target. The implementation of the Wasm VM currently
-uses the open source [Wasmtime](https://wasmtime.dev/) runtime environment. This enables
-dynamically loading and running of the Wasm code.
+uses [WebAssembly](https://webassembly.org/) (Wasm) code as an intermediate compilation
+target. The implementation of the Wasm VM currently uses the open
+source [Wasmtime](https://wasmtime.dev/) runtime environment. This enables dynamically
+loading and running of the Wasm code.
 
 We chose Wasm to be able to program smart contracts from any language. Since more and more
 languages are becoming capable of generating the intermediate Wasm code this will
@@ -86,9 +86,9 @@ Here is a list of the topics this tutorial will cover:
 * [Posting Asynchronous Requests](docs/post.md)
 * [Testing Smart Contracts](docs/test.md)
 * [Example Tests](docs/examples.md)
-* [Time Locks and Tagged Tokens](docs/timelock.md)
+* [Time Locks and Colored Tokens](docs/timelock.md)
 
-Let's start by diving deeper into a concept that is central to WasmLib smart contract 
+Let's start by diving deeper into a concept that is central to WasmLib smart contract
 programming: proxyobjects.
 
 Next: [Data Access Proxies](docs/proxies.md)
