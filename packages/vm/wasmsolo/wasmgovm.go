@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package common
+package wasmsolo
 
 import (
 	"errors"
@@ -13,14 +13,15 @@ import (
 
 type WasmGoVM struct {
 	wasmhost.WasmVMBase
-	contract string
-	onLoad   map[string]func()
+	scName string
+	onLoad func()
 }
 
 var _ wasmhost.WasmVM = &WasmGoVM{}
 
-func NewWasmGoVM(onLoad map[string]func()) *WasmGoVM {
+func NewWasmGoVM(scName string, onLoad func()) *WasmGoVM {
 	vm := &WasmGoVM{}
+	vm.scName = scName
 	vm.onLoad = onLoad
 	return vm
 }
@@ -37,16 +38,14 @@ func (vm *WasmGoVM) LinkHost(impl wasmhost.WasmVM, host *wasmhost.WasmHost) erro
 }
 
 func (vm *WasmGoVM) LoadWasm(wasmData []byte) error {
-	contract := string(wasmData)
-	if !strings.HasPrefix(contract, "go:") {
-		return errors.New("WasmGoVM: not a Go contract: " + contract)
+	scName := string(wasmData)
+	if !strings.HasPrefix(scName, "go:") {
+		return errors.New("WasmGoVM: not a Go contract: " + scName)
 	}
-	vm.contract = contract[3:]
-	onLoad, ok := vm.onLoad[vm.contract]
-	if !ok {
-		return errors.New("WasmGoVM: unknown contract: " + vm.contract)
+	if scName[3:] != vm.scName {
+		return errors.New("WasmGoVM: unknown contract: " + scName)
 	}
-	onLoad()
+	vm.onLoad()
 	return nil
 }
 

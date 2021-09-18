@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
@@ -50,8 +50,8 @@ var (
 	zeroHash = make([]byte, 32)
 )
 
-func setupTest(t *testing.T) *common.SoloContext {
-	return common.NewSoloContract(t, testwasmlib.ScName, testwasmlib.OnLoad)
+func setupTest(t *testing.T) *wasmsolo.SoloContext {
+	return wasmsolo.NewSoloContract(t, testwasmlib.ScName, testwasmlib.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -71,7 +71,7 @@ func TestValidParams(t *testing.T) {
 	_ = testValidParams(t)
 }
 
-func testValidParams(t *testing.T) *common.SoloContext {
+func testValidParams(t *testing.T) *wasmsolo.SoloContext {
 	ctx := setupTest(t)
 
 	scChainID := ctx.ScChainID(ctx.Chain.ChainID)
@@ -94,8 +94,15 @@ func testValidParams(t *testing.T) *common.SoloContext {
 	return ctx
 }
 
+func startChainAndDeployWasmContractByName(t *testing.T, scName string, params ...interface{}) *solo.Chain {
+	chain := wasmsolo.StartChain(t, scName)
+	err := wasmsolo.DeployWasmContractByName(chain, scName, params...)
+	require.NoError(t, err)
+	return chain
+}
+
 func TestValidSizeParams(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
+	chain := startChainAndDeployWasmContractByName(t, testwasmlib.ScName)
 	for index, param := range allParams {
 		t.Run("ValidSize "+string(param), func(t *testing.T) {
 			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
@@ -113,7 +120,7 @@ func TestValidSizeParams(t *testing.T) {
 }
 
 func TestInvalidSizeParams(t *testing.T) {
-	chain := common.StartChainAndDeployWasmContractByName(t, testwasmlib.ScName)
+	chain := startChainAndDeployWasmContractByName(t, testwasmlib.ScName)
 	for index, param := range allParams {
 		t.Run("InvalidSize "+string(param), func(t *testing.T) {
 			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,

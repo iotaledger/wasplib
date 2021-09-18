@@ -58,6 +58,10 @@ functions that allow you to maintain the ownership of the smart contract. Now th
 schema.json exists it is up to you to modify it further to reflect the requirements of
 your smart contract.
 
+We use camel case naming convention throughout schema.json when naming items. Function and
+variable names always start with a lower case character, and type names always start with
+an upper case character.
+
 The first thing you may want to do before you do anything else is to modify the
 `description` field to something more sensible. And if you already know how to use the
 schema tool then now is the moment to fill out some sections with the definitions you know

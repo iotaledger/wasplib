@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
-	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/inccounter"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
-func setupTest(t *testing.T) *common.SoloContext {
-	return common.NewSoloContract(t, inccounter.ScName, inccounter.OnLoad)
+func setupTest(t *testing.T) *wasmsolo.SoloContext {
+	return wasmsolo.NewSoloContract(t, inccounter.ScName, inccounter.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -107,13 +107,15 @@ func TestIncrementLocalStateSandboxCall(t *testing.T) {
 	inccounter.ScFuncs.LocalStateSandboxCall(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
-	if common.WasmRunner == 0 {
-		// global var in wasm execution has no effect
-		checkStateCounter(t, ctx, nil)
+	if *wasmsolo.GoDebug {
+		// when using WasmGoVM the 3 posts are run only after
+		// the LocalStateMustIncrement has been set to true
+		checkStateCounter(t, ctx, 2)
 		return
 	}
 
-	checkStateCounter(t, ctx, 2)
+	// global var in wasm execution has no effect
+	checkStateCounter(t, ctx, nil)
 }
 
 func TestIncrementLocalStatePost(t *testing.T) {
@@ -124,15 +126,15 @@ func TestIncrementLocalStatePost(t *testing.T) {
 
 	require.True(t, ctx.WaitForRequestsThrough(7))
 
-	if common.WasmRunner == 0 {
-		// global var in wasm execution has no effect
-		checkStateCounter(t, ctx, nil)
+	if *wasmsolo.GoDebug {
+		// when using WasmGoVM the 3 posts are run only after
+		// the LocalStateMustIncrement has been set to true
+		checkStateCounter(t, ctx, 3)
 		return
 	}
 
-	// when using WasmGoVM the 3 posts are run only after
-	// the LocalStateMustIncrement has been set to true
-	checkStateCounter(t, ctx, 3)
+	// global var in wasm execution has no effect
+	checkStateCounter(t, ctx, nil)
 }
 
 func TestLeb128(t *testing.T) {
@@ -156,7 +158,7 @@ func TestLeb128(t *testing.T) {
 }
 
 func TestLoop(t *testing.T) {
-	if common.WasmRunner != 0 {
+	if *wasmsolo.GoDebug {
 		// no timeout possible with WasmGoVM
 		// because goroutines cannot be killed
 		t.SkipNow()
@@ -175,7 +177,7 @@ func TestLoop(t *testing.T) {
 	checkStateCounter(t, ctx, 1)
 }
 
-func checkStateCounter(t *testing.T, ctx *common.SoloContext, expected interface{}) {
+func checkStateCounter(t *testing.T, ctx *wasmsolo.SoloContext, expected interface{}) {
 	getCounter := inccounter.ScFuncs.GetCounter(ctx)
 	getCounter.Func.Call()
 	require.NoError(t, ctx.Err)

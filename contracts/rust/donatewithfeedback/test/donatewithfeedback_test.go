@@ -7,13 +7,13 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/donatewithfeedback"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
-func setupTest(t *testing.T) *common.SoloContext {
-	return common.NewSoloContract(t, donatewithfeedback.ScName, donatewithfeedback.OnLoad)
+func setupTest(t *testing.T) *wasmsolo.SoloContext {
+	return wasmsolo.NewSoloContract(t, donatewithfeedback.ScName, donatewithfeedback.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {

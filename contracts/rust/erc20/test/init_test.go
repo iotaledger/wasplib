@@ -5,8 +5,8 @@ import (
 
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core"
-	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/erc20"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,7 +16,7 @@ func TestDeployErc20(t *testing.T) {
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.NoError(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
@@ -27,7 +27,7 @@ func TestDeployErc20(t *testing.T) {
 	init = erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx = common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx = wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.Error(t, ctx.Err)
 	_, _, rec = chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
@@ -35,7 +35,7 @@ func TestDeployErc20(t *testing.T) {
 
 func TestDeployErc20Fail1(t *testing.T) {
 	setupTest(t)
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad)
+	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad)
 	require.Error(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
@@ -45,7 +45,7 @@ func TestDeployErc20Fail2(t *testing.T) {
 	setupTest(t)
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.Error(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
@@ -55,7 +55,7 @@ func TestDeployErc20Fail3(t *testing.T) {
 	setupTest(t)
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.Error(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
@@ -65,7 +65,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	setupTest(t)
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx := common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.Error(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
@@ -75,7 +75,7 @@ func TestDeployErc20Fail3Repeat(t *testing.T) {
 	init = erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx = common.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx = wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.NoError(t, ctx.Err)
 	_, _, rec = chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))

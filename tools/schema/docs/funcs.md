@@ -51,18 +51,18 @@ to explain the layout of these sections once.
 
 As you can see each of the `funcs` and `views` sections defines their functions in the
 same way. The only resulting difference is in the way the schema tool generates code for
-them. Funcs will be able to modify the smart contract state, while views can only retrieve
-it.
+them. The code generated for Funcs will be able to inspect and modify the smart contract
+state, whereas the code generated for Views will only be able to inspect the state.
 
-Functions are defined as named subsections, with the name tag being the name of the
-function. Under each function subsection in turn there can be 3 optional subsections.
+Functions are defined as named subsections in schema.json. The name of the subsection will
+become the name of the function. Under each function subsection in turn there can be 3
+optional subsections.
 
 * `access` indicates who is allowed to access the function.
 * `params` holds the field definitions that describe the function parameters.
 * `results` holds the field definitions that describe the function results.
 
-We will now examine each subsection in more detail.
-
-In the next section we will look at the `access` subsection.
+We will now examine each subsection in more detail. In the next section we will first look
+at the `access` subsection.
 
 Next: [Limiting Access](access.md)

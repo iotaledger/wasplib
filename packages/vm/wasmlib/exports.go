@@ -29,6 +29,8 @@ type ScExports struct {
 }
 
 func NewScExports() ScExports {
+	funcs = nil
+	views = nil
 	exports := Root.GetStringArray(KeyExports)
 	// tell host what our highest predefined key is
 	// this helps detect missing or extra keys

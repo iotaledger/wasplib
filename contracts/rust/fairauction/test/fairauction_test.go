@@ -8,19 +8,19 @@ import (
 	"time"
 
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasplib/contracts/common"
 	"github.com/iotaledger/wasplib/contracts/rust/fairauction"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
+	common2 "github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
 var (
-	auctioneer *common.SoloAgent
+	auctioneer *common2.SoloAgent
 	tokenColor wasmlib.ScColor
 )
 
-func setupTest(t *testing.T) *common.SoloContext {
-	ctx := common.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
+func setupTest(t *testing.T) *common2.SoloContext {
+	ctx := common2.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
 
 	// set up auctioneer account and mint some tokens to auction off
 	auctioneer = ctx.NewSoloAgent()
@@ -42,7 +42,7 @@ func setupTest(t *testing.T) *common.SoloContext {
 }
 
 func TestDeploy(t *testing.T) {
-	ctx := common.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
+	ctx := common2.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
 	require.NoError(t, ctx.ContractExists(fairauction.ScName))
 }
 

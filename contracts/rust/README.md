@@ -47,7 +47,11 @@ Sample smart contracts:
 
 - testcore
 
-  Helper smart contract to test the core functionality.
+  Helper smart contract to test the ISCP core functionality.
+
+- testwasmlib
+
+  Helper smart contract to test the WasmLib functionality.
 
 - tokenregistry
 

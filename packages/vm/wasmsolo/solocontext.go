@@ -1,9 +1,10 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package common
+package wasmsolo
 
 import (
+	"flag"
 	"testing"
 	"time"
 
@@ -14,17 +15,24 @@ import (
 	"github.com/iotaledger/wasp/packages/iscp"
 	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/solo"
+	"github.com/iotaledger/wasp/packages/util"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	Debug      = true
+	StackTrace = false
+	TraceHost  = false
+)
+
 type SoloContext struct {
 	Chain    *solo.Chain
-	contract string
 	Err      error
 	keyPair  *ed25519.KeyPair
+	scName   string
 	wasmHost wasmhost.WasmHost
 }
 
@@ -32,14 +40,15 @@ var (
 	_        wasmlib.ScFuncCallContext = &SoloContext{}
 	_        wasmlib.ScViewCallContext = &SoloContext{}
 	soloHost wasmlib.ScHost
+	GoDebug  = flag.Bool("godebug", false, "debug go smart contract code")
 )
 
-func NewSoloContext(t *testing.T, chain *solo.Chain, contract string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
+func NewSoloContext(t *testing.T, chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
 	if chain == nil {
 		chain = common.StartChain(t, "chain1")
 	}
-	ctx := &SoloContext{contract: contract, Chain: chain}
-	ctx.Err = deploy(chain, contract, init...)
+	ctx := &SoloContext{scName: scName, Chain: chain}
+	ctx.Err = deploy(chain, scName, onLoad, init...)
 	if ctx.Err != nil {
 		return ctx
 	}
@@ -54,18 +63,49 @@ func NewSoloContext(t *testing.T, chain *solo.Chain, contract string, onLoad fun
 	return ctx
 }
 
-func NewSoloContract(t *testing.T, contract string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
-	ctx := NewSoloContext(t, nil, contract, onLoad, init...)
+func NewSoloContract(t *testing.T, scName string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
+	ctx := NewSoloContext(t, nil, scName, onLoad, init...)
 	require.NoError(t, ctx.Err)
 	return ctx
 }
 
-func deploy(chain *solo.Chain, contract string, init ...*wasmlib.ScInitFunc) error {
-	if len(init) == 0 {
-		return DeployWasmContractByName(chain, contract)
+func StartChain(t *testing.T, chainName string) *solo.Chain {
+	wasmhost.HostTracing = TraceHost
+	// wasmhost.ExtendedHostTracing = TraceHost
+	env := solo.New(t, Debug, StackTrace)
+	return env.NewChain(nil, chainName)
+}
+
+func DeployWasmContractByName(chain *solo.Chain, scName string, params ...interface{}) error {
+	// wasmproc.GoWasmVM = NewWasmTimeJavaVM()
+	// wasmproc.GoWasmVM = NewWartVM()
+	// wasmproc.GoWasmVM = NewWasmerVM()
+	wasmFile := scName + "_bg.wasm"
+	exists, _ := util.ExistsFilePath("../pkg/" + wasmFile)
+	if exists {
+		wasmFile = "../pkg/" + wasmFile
 	}
-	initFunc := init[0]
-	return DeployWasmContractByName(chain, contract, initFunc.Params()...)
+	return chain.DeployWasmContract(nil, scName, wasmFile, params...)
+}
+
+func deploy(chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.ScInitFunc) error {
+	soloHost = nil
+
+	var params []interface{}
+	if len(init) != 0 {
+		params = init[0].Params()
+	}
+
+	if !*GoDebug {
+		return DeployWasmContractByName(chain, scName, params...)
+	}
+
+	wasmproc.GoWasmVM = NewWasmGoVM(scName, onLoad)
+	hprog, err := chain.UploadWasm(nil, []byte("go:"+scName))
+	if err != nil {
+		return err
+	}
+	return chain.DeployContract(nil, scName, hprog, params...)
 }
 
 func (ctx *SoloContext) AdvanceClockBy(step time.Duration) {
@@ -82,7 +122,7 @@ func (ctx *SoloContext) Address() wasmlib.ScAddress {
 func (ctx *SoloContext) Balance(agent *SoloAgent, color ...wasmlib.ScColor) int64 {
 	var account *iscp.AgentID
 	if agent == nil {
-		account = iscp.NewAgentID(ctx.Chain.ChainID.AsAddress(), iscp.Hn(ctx.contract))
+		account = iscp.NewAgentID(ctx.Chain.ChainID.AsAddress(), iscp.Hn(ctx.scName))
 	} else {
 		account = iscp.NewAgentID(agent.address, 0)
 	}

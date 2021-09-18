@@ -1,7 +1,7 @@
 // Copyright 2020 IOTA Stiftung
 // SPDX-License-Identifier: Apache-2.0
 
-package common
+package wasmsolo
 
 import (
 	"github.com/iotaledger/wasp/packages/iscp"
@@ -87,10 +87,10 @@ func (o *SoloScContext) processCall(bytes []byte) {
 	if funcName == "" {
 		o.Panic("unknown function")
 	}
-	o.Tracef("CALL %s.%s", o.ctx.contract, funcName)
+	o.Tracef("CALL %s.%s", o.ctx.scName, funcName)
 	params := o.getParams(paramsID)
 	_ = wasmlib.ConnectHost(soloHost)
-	res, err := o.ctx.Chain.CallView(o.ctx.contract, funcName, params)
+	res, err := o.ctx.Chain.CallView(o.ctx.scName, funcName, params)
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err
 	if err != nil {
@@ -187,16 +187,16 @@ func (o *SoloScContext) postSync(contract, function iscp.Hname, paramsID, transf
 	if delay != 0 {
 		o.Panic("unsupported nonzero delay for SoloContext")
 	}
-	if contract != iscp.Hn(o.ctx.contract) {
+	if contract != iscp.Hn(o.ctx.scName) {
 		o.Panic("invalid contract")
 	}
 	funcName := o.ctx.wasmHost.FunctionFromCode(uint32(function))
 	if funcName == "" {
 		o.Panic("unknown function")
 	}
-	o.Tracef("POST %s.%s", o.ctx.contract, funcName)
+	o.Tracef("POST %s.%s", o.ctx.scName, funcName)
 	params := o.getParams(paramsID)
-	req := solo.NewCallParamsFromDic(o.ctx.contract, funcName, params)
+	req := solo.NewCallParamsFromDic(o.ctx.scName, funcName, params)
 	if transferID != 0 {
 		transfer := o.getTransfer(transferID)
 		req.WithTransfers(transfer)
