@@ -9,23 +9,23 @@ import (
 
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasplib/contracts/rust/dividend"
-	common2 "github.com/iotaledger/wasplib/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
-func dividendMember(ctx *common2.SoloContext, agent *common2.SoloAgent, factor int64) {
+func dividendMember(ctx *wasmsolo.SoloContext, agent *wasmsolo.SoloAgent, factor int64) {
 	member := dividend.ScFuncs.Member(ctx)
 	member.Params.Address().SetValue(agent.ScAddress())
 	member.Params.Factor().SetValue(factor)
 	member.Func.TransferIotas(1).Post()
 }
 
-func dividendDivide(ctx *common2.SoloContext, amount int64) {
+func dividendDivide(ctx *wasmsolo.SoloContext, amount int64) {
 	divide := dividend.ScFuncs.Divide(ctx)
 	divide.Func.TransferIotas(amount).Post()
 }
 
-func dividendGetFactor(ctx *common2.SoloContext, member3 *common2.SoloAgent) int64 {
+func dividendGetFactor(ctx *wasmsolo.SoloContext, member3 *wasmsolo.SoloAgent) int64 {
 	getFactor := dividend.ScFuncs.GetFactor(ctx)
 	getFactor.Params.Address().SetValue(member3.ScAddress())
 	getFactor.Func.Call()
@@ -34,12 +34,12 @@ func dividendGetFactor(ctx *common2.SoloContext, member3 *common2.SoloAgent) int
 }
 
 func TestDeploy(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 	require.NoError(t, ctx.ContractExists(dividend.ScName))
 }
 
 func TestAddMemberOk(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	dividendMember(ctx, member1, 100)
@@ -47,7 +47,7 @@ func TestAddMemberOk(t *testing.T) {
 }
 
 func TestAddMemberFailMissingAddress(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member := dividend.ScFuncs.Member(ctx)
 	member.Params.Factor().SetValue(100)
@@ -57,7 +57,7 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 }
 
 func TestAddMemberFailMissingFactor(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	member := dividend.ScFuncs.Member(ctx)
@@ -68,7 +68,7 @@ func TestAddMemberFailMissingFactor(t *testing.T) {
 }
 
 func TestDivide1Member(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	dividendMember(ctx, member1, 100)
@@ -85,7 +85,7 @@ func TestDivide1Member(t *testing.T) {
 }
 
 func TestDivide2Members(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	dividendMember(ctx, member1, 25)
@@ -107,7 +107,7 @@ func TestDivide2Members(t *testing.T) {
 }
 
 func TestDivide3Members(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	dividendMember(ctx, member1, 25)
@@ -155,7 +155,7 @@ func TestDivide3Members(t *testing.T) {
 }
 
 func TestGetFactor(t *testing.T) {
-	ctx := common2.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+	ctx := wasmsolo.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
 
 	member1 := ctx.NewSoloAgent()
 	dividendMember(ctx, member1, 25)

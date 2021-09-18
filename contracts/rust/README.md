@@ -66,7 +66,7 @@ Prerequisites:
 * When installing under Windows the Rust installation program may tell you that
   you need the Visual Studio C++ Build Tools, which you can
   [download here](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-  Note that you only need to install the C++ build tools, which is the top left
+  Note that you only need to install the C++ build tools, which is the top-left
   selection.
 * install Wasm-pack, which can be
   [downloaded here](https://rustwasm.github.io/wasm-pack/).
