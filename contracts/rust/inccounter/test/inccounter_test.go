@@ -58,7 +58,7 @@ func TestIncrementRepeatThrice(t *testing.T) {
 	repeatMany.Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
-	require.True(t, ctx.WaitForRequestsThrough(7))
+	require.True(t, ctx.WaitForPendingRequests(3))
 
 	checkStateCounter(t, ctx, 4)
 }
@@ -87,7 +87,7 @@ func TestIncrementPostIncrement(t *testing.T) {
 	inccounter.ScFuncs.PostIncrement(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)
 
-	require.True(t, ctx.WaitForRequestsThrough(5))
+	require.True(t, ctx.WaitForPendingRequests(1))
 
 	checkStateCounter(t, ctx, 2)
 }
@@ -124,7 +124,7 @@ func TestIncrementLocalStatePost(t *testing.T) {
 	inccounter.ScFuncs.LocalStatePost(ctx).Func.TransferIotas(3).Post()
 	require.NoError(t, ctx.Err)
 
-	require.True(t, ctx.WaitForRequestsThrough(7))
+	require.True(t, ctx.WaitForPendingRequests(3))
 
 	if *wasmsolo.GoDebug {
 		// when using WasmGoVM the 3 posts are run only after

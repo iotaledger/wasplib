@@ -32,5 +32,5 @@ func TestBets(t *testing.T) {
 		require.NoError(t, ctx.Err)
 	}
 	ctx.AdvanceClockBy(1201 * time.Second)
-	require.True(t, ctx.WaitForRequestsThrough(15))
+	require.True(t, ctx.WaitForPendingRequests(2))
 }

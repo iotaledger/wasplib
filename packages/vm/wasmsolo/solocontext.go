@@ -204,10 +204,10 @@ func (ctx *SoloContext) Transfer() wasmlib.ScTransfers {
 	return wasmlib.NewScTransfers()
 }
 
-// TODO request counter in state so that we have sensible numReq per contract
-func (ctx *SoloContext) WaitForRequestsThrough(numReq int, maxWait ...time.Duration) bool {
+func (ctx *SoloContext) WaitForPendingRequests(expectedRequests int, maxWait ...time.Duration) bool {
 	_ = wasmlib.ConnectHost(soloHost)
-	result := ctx.Chain.WaitForRequestsThrough(numReq, maxWait...)
+	info := ctx.Chain.MempoolInfo()
+	result := ctx.Chain.WaitForRequestsThrough(expectedRequests+info.OutPoolCounter, maxWait...)
 	_ = wasmlib.ConnectHost(&ctx.wasmHost)
 	return result
 }

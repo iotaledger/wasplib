@@ -29,14 +29,15 @@ func startAuction(t *testing.T) *wasmsolo.SoloContext {
 	require.EqualValues(t, solo.Saldo-10, auctioneer.Balance())
 	require.EqualValues(t, 10, auctioneer.Balance(tokenColor))
 
-	startAuction := fairauction.ScFuncs.StartAuction(ctx.Sign(auctioneer))
-	startAuction.Params.Color().SetValue(tokenColor)
-	startAuction.Params.MinimumBid().SetValue(500)
-	startAuction.Params.Description().SetValue("Cool tokens for sale!")
+	// start the auction
+	sa := fairauction.ScFuncs.StartAuction(ctx.Sign(auctioneer))
+	sa.Params.Color().SetValue(tokenColor)
+	sa.Params.MinimumBid().SetValue(500)
+	sa.Params.Description().SetValue("Cool tokens for sale!")
 	transfer := ctx.Transfer()
 	transfer.Set(wasmlib.IOTA, 25) // deposit, must be >=minimum*margin
 	transfer.Set(tokenColor, 10)   // the tokens to auction
-	startAuction.Func.Transfer(transfer).Post()
+	sa.Func.Transfer(transfer).Post()
 	require.NoError(t, ctx.Err)
 	return ctx
 }
@@ -58,9 +59,9 @@ func TestFaStartAuction(t *testing.T) {
 	require.EqualValues(t, 0, auctioneer.Balance(tokenColor))
 	require.EqualValues(t, 0, ctx.Balance(auctioneer))
 
-	// remove delayed finalize_auction from backlog
+	// remove pending finalize_auction from backlog
 	ctx.AdvanceClockBy(61 * time.Minute)
-	require.True(t, ctx.WaitForRequestsThrough(5))
+	require.True(t, ctx.WaitForPendingRequests(1))
 }
 
 func TestFaAuctionInfo(t *testing.T) {
@@ -74,9 +75,9 @@ func TestFaAuctionInfo(t *testing.T) {
 	require.EqualValues(t, auctioneer.ScAgentID(), getInfo.Results.Creator().Value())
 	require.EqualValues(t, 0, getInfo.Results.Bidders().Value())
 
-	// remove delayed finalize_auction from backlog
+	// remove pending finalize_auction from backlog
 	ctx.AdvanceClockBy(61 * time.Minute)
-	require.True(t, ctx.WaitForRequestsThrough(5))
+	require.True(t, ctx.WaitForPendingRequests(1))
 }
 
 func TestFaNoBids(t *testing.T) {
@@ -84,7 +85,7 @@ func TestFaNoBids(t *testing.T) {
 
 	// wait for finalize_auction
 	ctx.AdvanceClockBy(61 * time.Minute)
-	require.True(t, ctx.WaitForRequestsThrough(5))
+	require.True(t, ctx.WaitForPendingRequests(1))
 
 	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(tokenColor)
@@ -106,7 +107,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	require.True(t, ctx.WaitForRequestsThrough(6))
+	require.True(t, ctx.WaitForPendingRequests(1))
 
 	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(tokenColor)
@@ -129,7 +130,7 @@ func TestFaOneBid(t *testing.T) {
 
 	// wait for finalize_auction
 	chain.Env.AdvanceClockBy(61 * time.Minute)
-	require.True(t, ctx.WaitForRequestsThrough(6))
+	require.True(t, ctx.WaitForPendingRequests(1))
 
 	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(tokenColor)
