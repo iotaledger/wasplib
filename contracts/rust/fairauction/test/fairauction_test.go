@@ -19,7 +19,7 @@ var (
 	tokenColor wasmlib.ScColor
 )
 
-func setupTest(t *testing.T) *wasmsolo.SoloContext {
+func startAuction(t *testing.T) *wasmsolo.SoloContext {
 	ctx := wasmsolo.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
 
 	// set up auctioneer account and mint some tokens to auction off
@@ -47,14 +47,15 @@ func TestDeploy(t *testing.T) {
 }
 
 func TestFaStartAuction(t *testing.T) {
-	ctx := setupTest(t)
+	ctx := startAuction(t)
 
 	// note 1 iota should be stuck in the delayed finalize_auction
 	require.EqualValues(t, 25-1, ctx.Balance(nil))
 	require.EqualValues(t, 10, ctx.Balance(nil, tokenColor))
 
 	// auctioneer sent 25 deposit + 10 tokenColor
-	require.EqualValues(t, solo.Saldo-35, auctioneer.Balance())
+	require.EqualValues(t, solo.Saldo-25-10, auctioneer.Balance())
+	require.EqualValues(t, 0, auctioneer.Balance(tokenColor))
 	require.EqualValues(t, 0, ctx.Balance(auctioneer))
 
 	// remove delayed finalize_auction from backlog
@@ -63,7 +64,7 @@ func TestFaStartAuction(t *testing.T) {
 }
 
 func TestFaAuctionInfo(t *testing.T) {
-	ctx := setupTest(t)
+	ctx := startAuction(t)
 
 	getInfo := fairauction.ScFuncs.GetInfo(ctx)
 	getInfo.Params.Color().SetValue(tokenColor)
@@ -79,7 +80,7 @@ func TestFaAuctionInfo(t *testing.T) {
 }
 
 func TestFaNoBids(t *testing.T) {
-	ctx := setupTest(t)
+	ctx := startAuction(t)
 
 	// wait for finalize_auction
 	ctx.AdvanceClockBy(61 * time.Minute)
@@ -94,7 +95,7 @@ func TestFaNoBids(t *testing.T) {
 }
 
 func TestFaOneBidTooLow(t *testing.T) {
-	ctx := setupTest(t)
+	ctx := startAuction(t)
 	chain := ctx.Chain
 
 	bidder := ctx.NewSoloAgent()
@@ -117,7 +118,7 @@ func TestFaOneBidTooLow(t *testing.T) {
 }
 
 func TestFaOneBid(t *testing.T) {
-	ctx := setupTest(t)
+	ctx := startAuction(t)
 	chain := ctx.Chain
 
 	bidder := ctx.NewSoloAgent()
