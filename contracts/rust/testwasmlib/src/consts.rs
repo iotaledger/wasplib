@@ -28,6 +28,7 @@ pub const PARAM_INT16:        &str = "int16";
 pub const PARAM_INT32:        &str = "int32";
 pub const PARAM_INT64:        &str = "int64";
 pub const PARAM_NAME:         &str = "name";
+pub const PARAM_PARAM:        &str = "@";
 pub const PARAM_RECORD_INDEX: &str = "recordIndex";
 pub const PARAM_REQUEST_ID:   &str = "requestID";
 pub const PARAM_STRING:       &str = "string";

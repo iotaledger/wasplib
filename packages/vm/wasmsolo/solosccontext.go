@@ -89,7 +89,7 @@ func (o *SoloScContext) processCall(bytes []byte) {
 	}
 	o.Tracef("CALL %s.%s", o.ctx.scName, funcName)
 	params := o.getParams(paramsID)
-	_ = wasmlib.ConnectHost(soloHost)
+	_ = wasmlib.ConnectHost(SoloHost)
 	res, err := o.ctx.Chain.CallView(o.ctx.scName, funcName, params)
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err
@@ -201,7 +201,7 @@ func (o *SoloScContext) postSync(contract, function iscp.Hname, paramsID, transf
 		transfer := o.getTransfer(transferID)
 		req.WithTransfers(transfer)
 	}
-	_ = wasmlib.ConnectHost(soloHost)
+	_ = wasmlib.ConnectHost(SoloHost)
 	res, err := o.ctx.Chain.PostRequestSync(req, o.ctx.keyPair)
 	_ = wasmlib.ConnectHost(&o.ctx.wasmHost)
 	o.ctx.Err = err

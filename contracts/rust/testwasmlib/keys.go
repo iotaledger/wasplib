@@ -23,19 +23,20 @@ const (
 	IdxParamInt32       = 10
 	IdxParamInt64       = 11
 	IdxParamName        = 12
-	IdxParamRecordIndex = 13
-	IdxParamRequestID   = 14
-	IdxParamString      = 15
-	IdxParamValue       = 16
-	IdxResultCount      = 17
-	IdxResultIotas      = 18
-	IdxResultLength     = 19
-	IdxResultRecord     = 20
-	IdxResultValue      = 21
-	IdxStateArrays      = 22
+	IdxParamParam       = 13
+	IdxParamRecordIndex = 14
+	IdxParamRequestID   = 15
+	IdxParamString      = 16
+	IdxParamValue       = 17
+	IdxResultCount      = 18
+	IdxResultIotas      = 19
+	IdxResultLength     = 20
+	IdxResultRecord     = 21
+	IdxResultValue      = 22
+	IdxStateArrays      = 23
 )
 
-const keyMapLen = 23
+const keyMapLen = 24
 
 var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
@@ -51,6 +52,7 @@ var keyMap = [keyMapLen]wasmlib.Key{
 	ParamInt32,
 	ParamInt64,
 	ParamName,
+	ParamParam,
 	ParamRecordIndex,
 	ParamRequestID,
 	ParamString,

@@ -51,7 +51,7 @@ var (
 )
 
 func setupTest(t *testing.T) *wasmsolo.SoloContext {
-	return wasmsolo.NewSoloContract(t, testwasmlib.ScName, testwasmlib.OnLoad)
+	return wasmsolo.NewSoloContext(t, testwasmlib.ScName, testwasmlib.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {
@@ -74,7 +74,7 @@ func TestValidParams(t *testing.T) {
 func testValidParams(t *testing.T) *wasmsolo.SoloContext {
 	ctx := setupTest(t)
 
-	scChainID := ctx.ScChainID(ctx.Chain.ChainID)
+	scChainID := ctx.Convertor.ScChainID(ctx.Chain.ChainID)
 
 	pt := testwasmlib.ScFuncs.ParamTypes(ctx)
 	pt.Params.Address().SetValue(scChainID.Address())
@@ -94,55 +94,44 @@ func testValidParams(t *testing.T) *wasmsolo.SoloContext {
 	return ctx
 }
 
-func startChainAndDeployWasmContractByName(t *testing.T, scName string, params ...interface{}) *solo.Chain {
-	chain := wasmsolo.StartChain(t, scName)
-	err := wasmsolo.DeployWasmContractByName(chain, scName, params...)
-	require.NoError(t, err)
-	return chain
-}
-
 func TestValidSizeParams(t *testing.T) {
-	chain := startChainAndDeployWasmContractByName(t, testwasmlib.ScName)
+	ctx := setupTest(t)
 	for index, param := range allParams {
 		t.Run("ValidSize "+string(param), func(t *testing.T) {
-			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				string(param), make([]byte, allLengths[index]),
-			).WithIotas(1)
-			_, err := chain.PostRequestSync(req, nil)
-			require.Error(t, err)
+			pt := testwasmlib.ScFuncs.ParamTypes(ctx)
+			pt.Params.Param(param).SetValue(make([]byte, allLengths[index]))
+			pt.Func.TransferIotas(1).Post()
+			require.Error(t, ctx.Err)
 			if string(param) == string(testwasmlib.ParamChainID) {
-				require.True(t, strings.Contains(err.Error(), "invalid "))
+				require.True(t, strings.Contains(ctx.Err.Error(), "invalid "))
 			} else {
-				require.True(t, strings.Contains(err.Error(), "mismatch: "))
+				require.True(t, strings.Contains(ctx.Err.Error(), "mismatch: "))
 			}
 		})
 	}
 }
 
 func TestInvalidSizeParams(t *testing.T) {
-	chain := startChainAndDeployWasmContractByName(t, testwasmlib.ScName)
+	ctx := setupTest(t)
 	for index, param := range allParams {
 		t.Run("InvalidSize "+string(param), func(t *testing.T) {
-			req := solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				string(param), make([]byte, 0),
-			).WithIotas(1)
-			_, err := chain.PostRequestSync(req, nil)
-			require.Error(t, err)
-			require.True(t, strings.HasSuffix(err.Error(), "invalid type size"))
+			pt := testwasmlib.ScFuncs.ParamTypes(ctx)
+			pt.Params.Param(param).SetValue(make([]byte, 0))
+			pt.Func.TransferIotas(1).Post()
+			require.Error(t, ctx.Err)
+			require.True(t, strings.HasSuffix(ctx.Err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				string(param), make([]byte, allLengths[index]-1),
-			).WithIotas(1)
-			_, err = chain.PostRequestSync(req, nil)
-			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "invalid type size"))
+			pt = testwasmlib.ScFuncs.ParamTypes(ctx)
+			pt.Params.Param(param).SetValue(make([]byte, allLengths[index]-1))
+			pt.Func.TransferIotas(1).Post()
+			require.Error(t, ctx.Err)
+			require.True(t, strings.HasSuffix(ctx.Err.Error(), "invalid type size"))
 
-			req = solo.NewCallParams(testwasmlib.ScName, testwasmlib.FuncParamTypes,
-				string(param), make([]byte, allLengths[index]+1),
-			).WithIotas(1)
-			_, err = chain.PostRequestSync(req, nil)
-			require.Error(t, err)
-			require.True(t, strings.Contains(err.Error(), "invalid type size"))
+			pt = testwasmlib.ScFuncs.ParamTypes(ctx)
+			pt.Params.Param(param).SetValue(make([]byte, allLengths[index]+1))
+			pt.Func.TransferIotas(1).Post()
+			require.Error(t, ctx.Err)
+			require.True(t, strings.HasSuffix(ctx.Err.Error(), "invalid type size"))
 		})
 	}
 }

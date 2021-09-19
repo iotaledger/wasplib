@@ -169,6 +169,10 @@ func (s MutableParamTypesParams) Int64() wasmlib.ScMutableInt64 {
 	return wasmlib.NewScMutableInt64(s.id, idxMap[IdxParamInt64])
 }
 
+func (s MutableParamTypesParams) Param(key wasmlib.Key) wasmlib.ScMutableBytes {
+	return wasmlib.NewScMutableBytes(s.id, key.KeyID())
+}
+
 func (s MutableParamTypesParams) RequestID() wasmlib.ScMutableRequestID {
 	return wasmlib.NewScMutableRequestID(s.id, idxMap[IdxParamRequestID])
 }

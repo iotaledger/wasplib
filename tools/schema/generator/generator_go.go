@@ -590,19 +590,25 @@ func (s *Schema) generateGoParams() error {
 	fmt.Fprintln(file, copyright(true))
 	fmt.Fprintf(file, "package %s\n", s.Name)
 
-	params := 0
+	totalParams := 0
 	for _, f := range s.Funcs {
-		params += len(f.Params)
+		totalParams += len(f.Params)
 	}
-	if params != 0 {
+	if totalParams != 0 {
 		fmt.Fprintf(file, "\n"+importWasmLib)
 	}
 
 	for _, f := range s.Funcs {
+		params := make([]*Field, 0, len(f.Params))
+		for _, param := range f.Params {
+			if param.Alias != "@" {
+				params = append(params, param)
+			}
+		}
 		if len(f.Params) == 0 {
 			continue
 		}
-		s.generateGoStruct(file, f.Params, PropImmutable, f.Type, "Params")
+		s.generateGoStruct(file, params, PropImmutable, f.Type, "Params")
 		s.generateGoStruct(file, f.Params, PropMutable, f.Type, "Params")
 	}
 
@@ -685,6 +691,13 @@ func (s *Schema) generateGoStruct(file *os.File, fields []*Field, mutability, ty
 		}
 
 		proxyType := mutability + field.Type
+		if field.Alias == "@" {
+			fmt.Fprintf(file, "\nfunc (s %s) %s(key wasmlib.Key) wasmlib.Sc%s {\n", typeName, varName, proxyType)
+			fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(s.id, key.KeyID())\n", proxyType)
+			fmt.Fprintf(file, "}\n")
+			continue
+		}
+
 		fmt.Fprintf(file, "\nfunc (s %s) %s() wasmlib.Sc%s {\n", typeName, varName, proxyType)
 		fmt.Fprintf(file, "\treturn wasmlib.NewSc%s(s.id, %s)\n", proxyType, varID)
 		fmt.Fprintf(file, "}\n")

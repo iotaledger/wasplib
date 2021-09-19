@@ -20,7 +20,7 @@ var (
 )
 
 func startAuction(t *testing.T) *wasmsolo.SoloContext {
-	ctx := wasmsolo.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
+	ctx := wasmsolo.NewSoloContext(t, fairauction.ScName, fairauction.OnLoad)
 
 	// set up auctioneer account and mint some tokens to auction off
 	auctioneer = ctx.NewSoloAgent()
@@ -43,7 +43,7 @@ func startAuction(t *testing.T) *wasmsolo.SoloContext {
 }
 
 func TestDeploy(t *testing.T) {
-	ctx := wasmsolo.NewSoloContract(t, fairauction.ScName, fairauction.OnLoad)
+	ctx := wasmsolo.NewSoloContext(t, fairauction.ScName, fairauction.OnLoad)
 	require.NoError(t, ctx.ContractExists(fairauction.ScName))
 }
 
@@ -139,5 +139,5 @@ func TestFaOneBid(t *testing.T) {
 	require.NoError(t, ctx.Err)
 	require.EqualValues(t, 1, getInfo.Results.Bidders().Value())
 	require.EqualValues(t, 500, getInfo.Results.HighestBid().Value())
-	require.Equal(t, ctx.Address().AsAgentID(), getInfo.Results.HighestBidder().Value())
+	require.Equal(t, bidder.ScAddress().AsAgentID(), getInfo.Results.HighestBidder().Value())
 }

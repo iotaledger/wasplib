@@ -13,7 +13,7 @@ import (
 )
 
 func setupTest(t *testing.T) *wasmsolo.SoloContext {
-	return wasmsolo.NewSoloContract(t, donatewithfeedback.ScName, donatewithfeedback.OnLoad)
+	return wasmsolo.NewSoloContext(t, donatewithfeedback.ScName, donatewithfeedback.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {

@@ -13,7 +13,7 @@ import (
 )
 
 func setupTest(t *testing.T) *wasmsolo.SoloContext {
-	return wasmsolo.NewSoloContract(t, fairroulette.ScName, fairroulette.OnLoad)
+	return wasmsolo.NewSoloContext(t, fairroulette.ScName, fairroulette.OnLoad)
 }
 
 func TestDeploy(t *testing.T) {

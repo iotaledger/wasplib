@@ -26,18 +26,19 @@ pub const IDX_PARAM_INT16:        usize = 9;
 pub const IDX_PARAM_INT32:        usize = 10;
 pub const IDX_PARAM_INT64:        usize = 11;
 pub const IDX_PARAM_NAME:         usize = 12;
-pub const IDX_PARAM_RECORD_INDEX: usize = 13;
-pub const IDX_PARAM_REQUEST_ID:   usize = 14;
-pub const IDX_PARAM_STRING:       usize = 15;
-pub const IDX_PARAM_VALUE:        usize = 16;
-pub const IDX_RESULT_COUNT:       usize = 17;
-pub const IDX_RESULT_IOTAS:       usize = 18;
-pub const IDX_RESULT_LENGTH:      usize = 19;
-pub const IDX_RESULT_RECORD:      usize = 20;
-pub const IDX_RESULT_VALUE:       usize = 21;
-pub const IDX_STATE_ARRAYS:       usize = 22;
+pub const IDX_PARAM_PARAM:        usize = 13;
+pub const IDX_PARAM_RECORD_INDEX: usize = 14;
+pub const IDX_PARAM_REQUEST_ID:   usize = 15;
+pub const IDX_PARAM_STRING:       usize = 16;
+pub const IDX_PARAM_VALUE:        usize = 17;
+pub const IDX_RESULT_COUNT:       usize = 18;
+pub const IDX_RESULT_IOTAS:       usize = 19;
+pub const IDX_RESULT_LENGTH:      usize = 20;
+pub const IDX_RESULT_RECORD:      usize = 21;
+pub const IDX_RESULT_VALUE:       usize = 22;
+pub const IDX_STATE_ARRAYS:       usize = 23;
 
-pub const KEY_MAP_LEN: usize = 23;
+pub const KEY_MAP_LEN: usize = 24;
 
 pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_ADDRESS,
@@ -53,6 +54,7 @@ pub const KEY_MAP: [&str; KEY_MAP_LEN] = [
     PARAM_INT32,
     PARAM_INT64,
     PARAM_NAME,
+    PARAM_PARAM,
     PARAM_RECORD_INDEX,
     PARAM_REQUEST_ID,
     PARAM_STRING,

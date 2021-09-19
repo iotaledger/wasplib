@@ -12,6 +12,7 @@
   "funcs": {
     "paramTypes": {
       "params": {
+        "param=@": "?Bytes // special hook to be able to pass key/values as raw bytes",
         "address": "?Address",
         "agentID": "?AgentID",
         "bytes": "?Bytes",

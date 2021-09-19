@@ -25,7 +25,7 @@ func setupErc20(t *testing.T) *wasmsolo.SoloContext {
 	init := erc20.ScFuncs.Init(nil)
 	init.Params.Supply().SetValue(solo.Saldo)
 	init.Params.Creator().SetValue(creator.ScAgentID())
-	ctx := wasmsolo.NewSoloContext(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
+	ctx := wasmsolo.NewSoloContextForChain(t, chain, erc20.ScName, erc20.OnLoad, init.Func)
 	require.NoError(t, ctx.Err)
 	_, _, rec := chain.GetInfo()
 	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))

@@ -740,11 +740,17 @@ func (s *Schema) generateRustParams() error {
 	}
 
 	for _, f := range s.Funcs {
-		if len(f.Params) == 0 {
+		params := make([]*Field, 0, len(f.Params))
+		for _, param := range f.Params {
+			if param.Alias != "@" {
+				params = append(params, param)
+			}
+		}
+		if len(params) == 0 {
 			continue
 		}
-		s.generateRustStruct(file, f.Params, PropImmutable, f.Type, "Params")
-		s.generateRustStruct(file, f.Params, PropMutable, f.Type, "Params")
+		s.generateRustStruct(file, params, PropImmutable, f.Type, "Params")
+		s.generateRustStruct(file, params, PropMutable, f.Type, "Params")
 	}
 	return nil
 }
