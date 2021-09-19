@@ -228,6 +228,16 @@ func (s *Schema) generateGoContract() error {
 	}
 
 	s.generateGoContractFuncs(file)
+
+	if s.CoreContracts {
+		fmt.Fprintf(file, "\nfunc OnLoad() {\n")
+		fmt.Fprintf(file, "\texports := wasmlib.NewScExports()\n")
+		for _, f := range s.Funcs {
+			constName := capitalize(f.FuncName)
+			fmt.Fprintf(file, "\texports.Add%s(%s, nil)\n", f.Kind, constName)
+		}
+		fmt.Fprintf(file, "}\n")
+	}
 	return nil
 }
 

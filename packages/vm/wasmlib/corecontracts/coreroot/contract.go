@@ -68,3 +68,12 @@ func (sc Funcs) GetContractRecords(ctx wasmlib.ScViewCallContext) *GetContractRe
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
+
+func OnLoad() {
+	exports := wasmlib.NewScExports()
+	exports.AddFunc(FuncDeployContract, nil)
+	exports.AddFunc(FuncGrantDeployPermission, nil)
+	exports.AddFunc(FuncRevokeDeployPermission, nil)
+	exports.AddView(ViewFindContract, nil)
+	exports.AddView(ViewGetContractRecords, nil)
+}

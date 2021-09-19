@@ -130,3 +130,17 @@ func (sc Funcs) IsRequestProcessed(ctx wasmlib.ScViewCallContext) *IsRequestProc
 	f.Func.SetPtrs(&f.Params.id, &f.Results.id)
 	return f
 }
+
+func OnLoad() {
+	exports := wasmlib.NewScExports()
+	exports.AddView(ViewControlAddresses, nil)
+	exports.AddView(ViewGetBlockInfo, nil)
+	exports.AddView(ViewGetEventsForBlock, nil)
+	exports.AddView(ViewGetEventsForContract, nil)
+	exports.AddView(ViewGetEventsForRequest, nil)
+	exports.AddView(ViewGetLatestBlockInfo, nil)
+	exports.AddView(ViewGetRequestIDsForBlock, nil)
+	exports.AddView(ViewGetRequestReceipt, nil)
+	exports.AddView(ViewGetRequestReceiptsForBlock, nil)
+	exports.AddView(ViewIsRequestProcessed, nil)
+}

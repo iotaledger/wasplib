@@ -142,3 +142,19 @@ func (sc Funcs) GetMaxBlobSize(ctx wasmlib.ScViewCallContext) *GetMaxBlobSizeCal
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
+
+func OnLoad() {
+	exports := wasmlib.NewScExports()
+	exports.AddFunc(FuncAddAllowedStateControllerAddress, nil)
+	exports.AddFunc(FuncClaimChainOwnership, nil)
+	exports.AddFunc(FuncDelegateChainOwnership, nil)
+	exports.AddFunc(FuncRemoveAllowedStateControllerAddress, nil)
+	exports.AddFunc(FuncRotateStateController, nil)
+	exports.AddFunc(FuncSetChainInfo, nil)
+	exports.AddFunc(FuncSetContractFee, nil)
+	exports.AddFunc(FuncSetDefaultFee, nil)
+	exports.AddView(ViewGetAllowedStateControllerAddresses, nil)
+	exports.AddView(ViewGetChainInfo, nil)
+	exports.AddView(ViewGetFeeInfo, nil)
+	exports.AddView(ViewGetMaxBlobSize, nil)
+}

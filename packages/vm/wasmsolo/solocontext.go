@@ -71,16 +71,16 @@ func NewSoloContextForChain(t *testing.T, chain *solo.Chain, scName string, onLo
 	if ctx.Err != nil {
 		return ctx
 	}
+	return ctx.init(onLoad)
+}
 
-	ctx.wasmHost.Init(chain.Log)
-	ctx.wasmHost.TrackObject(wasmproc.NewNullObject(&ctx.wasmHost.KvStoreHost))
-	ctx.wasmHost.TrackObject(NewSoloScContext(ctx))
-	if SoloHost == nil {
-		SoloHost = wasmlib.ConnectHost(&ctx.wasmHost)
+func NewSoloContextForRoot(t *testing.T, chain *solo.Chain, scName string, onLoad func()) *SoloContext {
+	if chain == nil {
+		chain = StartChain(t, "chain1")
 	}
-	_ = wasmlib.ConnectHost(&ctx.wasmHost)
-	onLoad()
-	return ctx
+
+	ctx := &SoloContext{scName: scName, Chain: chain}
+	return ctx.init(onLoad)
 }
 
 func deploy(chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.ScInitFunc) error {
@@ -185,14 +185,39 @@ func (ctx *SoloContext) Host() wasmlib.ScHost {
 	return nil
 }
 
+// init further initializes the SoloContext.
+func (ctx *SoloContext) init(onLoad func()) *SoloContext {
+	ctx.wasmHost.Init(ctx.Chain.Log)
+	ctx.wasmHost.TrackObject(wasmproc.NewNullObject(&ctx.wasmHost.KvStoreHost))
+	ctx.wasmHost.TrackObject(NewSoloScContext(ctx))
+	if SoloHost == nil {
+		SoloHost = wasmlib.ConnectHost(&ctx.wasmHost)
+	}
+	_ = wasmlib.ConnectHost(&ctx.wasmHost)
+	onLoad()
+	return ctx
+}
+
 // NewSoloAgent creates a new SoloAgent with solo.Saldo tokens in its address
 func (ctx *SoloContext) NewSoloAgent() *SoloAgent {
 	return NewSoloAgent(ctx.Chain.Env)
 }
 
+// Originator returns a SoloAgent representing the chain originator
+func (ctx *SoloContext) Originator() *SoloAgent {
+	c := ctx.Chain
+	return &SoloAgent{env: c.Env, pair: c.OriginatorKeyPair, address: c.OriginatorAddress}
+}
+
 // Sign is used to force a different agent for signing a Post() request
 func (ctx *SoloContext) Sign(agent *SoloAgent) *SoloContext {
 	ctx.keyPair = agent.pair
+	return ctx
+}
+
+// Sign is used to force a different agent for signing a Post() request
+func (ctx *SoloContext) Switch() *SoloContext {
+	_ = wasmlib.ConnectHost(&ctx.wasmHost)
 	return ctx
 }
 

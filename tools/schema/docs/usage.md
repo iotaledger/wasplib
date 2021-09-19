@@ -85,7 +85,7 @@ this:
 
 The schema tool will generate a complete set of source files for the desired language(s).
 After generating the Rust code for the first time you should modify the Cargo.toml file to
-your likings, and potentially add the new project to a Rust workspace. Corgo.toml will not
+your likings, and potentially add the new project to a Rust workspace. Cargo.toml will not
 be regenerated once it already exists. The generated files together readily compile into a
 Wasm file by using the appropriate command:
 

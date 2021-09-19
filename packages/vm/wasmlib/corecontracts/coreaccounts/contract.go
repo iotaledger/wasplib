@@ -88,3 +88,14 @@ func (sc Funcs) TotalAssets(ctx wasmlib.ScViewCallContext) *TotalAssetsCall {
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
+
+func OnLoad() {
+	exports := wasmlib.NewScExports()
+	exports.AddFunc(FuncDeposit, nil)
+	exports.AddFunc(FuncHarvest, nil)
+	exports.AddFunc(FuncWithdraw, nil)
+	exports.AddView(ViewAccounts, nil)
+	exports.AddView(ViewBalance, nil)
+	exports.AddView(ViewGetAccountNonce, nil)
+	exports.AddView(ViewTotalAssets, nil)
+}

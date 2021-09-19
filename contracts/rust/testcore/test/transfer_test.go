@@ -8,77 +8,104 @@ import (
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
 	"github.com/iotaledger/wasp/packages/vm/core/governance"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
+	"github.com/iotaledger/wasplib/packages/vm/wasmlib/corecontracts/coreroot"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
+func chainAccountBalances(ctx *wasmsolo.SoloContext, w bool, balance, total uint64) {
+	if w {
+		// wasm setup takes 1 more iota than core setup
+		balance++
+		total++
+	}
+	ctx.Chain.AssertCommonAccountIotas(balance)
+	ctx.Chain.AssertTotalIotas(total)
+}
+
+func originatorBalanceReducedBy(ctx *wasmsolo.SoloContext, w bool, minus uint64) {
+	if w {
+		// wasm setup takes 1 more iota than core setup
+		minus++
+	}
+	ctx.Chain.Env.AssertAddressIotas(ctx.Chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-2-minus)
+}
+
 func TestDoNothing(t *testing.T) { run2(t, testDoNothing) }
 func testDoNothing(t *testing.T, w bool) {
-	env, chain := setupChain(t, nil)
-	cAID, extraToken := setupTestSandboxSC(t, chain, nil, w)
-	req := solo.NewCallParams(ScName, sbtestsc.FuncDoNothing.Name).WithIotas(42)
-	_, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	ctx := setupTest(t, w)
 
-	t.Logf("dump accounts:\n%s", chain.DumpAccounts())
-	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertIotas(cAID, 43)
-	chain.AssertCommonAccountIotas(2 + extraToken)
-	env.AssertAddressIotas(chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-2-1-42-extraToken)
+	nop := testcore.ScFuncs.DoNothing(ctx)
+	nop.Func.TransferIotas(42).Post()
+	require.NoError(t, ctx.Err)
+
+	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
+	require.EqualValues(t, 42, ctx.Balance(nil))
+	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
+	originatorBalanceReducedBy(ctx, w, 42)
+	chainAccountBalances(ctx, w, 2, 44)
 }
 
 func TestDoNothingUser(t *testing.T) { run2(t, testDoNothingUser) }
 func testDoNothingUser(t *testing.T, w bool) {
-	env, chain := setupChain(t, nil)
-	cAID, extraToken := setupTestSandboxSC(t, chain, nil, w)
-	user, userAddr, userAgentID := setupDeployer(t, chain)
-	req := solo.NewCallParams(ScName, sbtestsc.FuncDoNothing.Name).WithIotas(42)
-	_, err := chain.PostRequestSync(req, user)
-	require.NoError(t, err)
+	ctx := setupTest(t, w)
 
-	t.Logf("dump accounts:\n%s", chain.DumpAccounts())
-	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertIotas(userAgentID, 0)
-	chain.AssertIotas(cAID, 43)
-	env.AssertAddressIotas(userAddr, solo.Saldo-42)
-	env.AssertAddressIotas(chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-4-extraToken)
-	chain.AssertCommonAccountIotas(3 + extraToken)
+	user := ctx.NewSoloAgent()
+	nop := testcore.ScFuncs.DoNothing(ctx.Sign(user))
+	nop.Func.TransferIotas(42).Post()
+	require.NoError(t, ctx.Err)
+
+	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
+	require.EqualValues(t, solo.Saldo-42, user.Balance())
+	require.EqualValues(t, 42, ctx.Balance(nil))
+
+	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
+	require.EqualValues(t, 0, ctx.Balance(user))
+	originatorBalanceReducedBy(ctx, w, 0)
+	chainAccountBalances(ctx, w, 2, 44)
 }
 
 func TestWithdrawToAddress(t *testing.T) { run2(t, testWithdrawToAddress) }
 func testWithdrawToAddress(t *testing.T, w bool) {
-	env, chain := setupChain(t, nil)
-	cAID, extraToken := setupTestSandboxSC(t, chain, nil, w)
-	user, userAddress, userAgentID := setupDeployer(t, chain)
-	t.Logf("contract agentID: %s", cAID)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncDoNothing.Name).WithIotas(42)
-	_, err := chain.PostRequestSync(req, user)
-	require.NoError(t, err)
+	user := ctx.NewSoloAgent()
 
-	t.Logf("dump accounts 1:\n%s", chain.DumpAccounts())
-	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertIotas(userAgentID, 0)
-	chain.AssertIotas(cAID, 43)
-	chain.AssertCommonAccountIotas(3 + extraToken)
-	chain.AssertTotalIotas(46 + extraToken)
-	env.AssertAddressIotas(chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-4-extraToken)
-	env.AssertAddressIotas(userAddress, solo.Saldo-42)
+	ctxRoot := wasmsolo.NewSoloContextForRoot(t, ctx.Chain, coreroot.ScName, coreroot.OnLoad)
+	grant := coreroot.ScFuncs.GrantDeployPermission(ctxRoot)
+	grant.Params.Deployer().SetValue(user.ScAgentID())
+	grant.Func.TransferIotas(1).Post()
+	require.NoError(t, ctxRoot.Err)
 
-	t.Logf("-------- send to address %s", userAddress.Base58())
-	req = solo.NewCallParams(ScName, sbtestsc.FuncSendToAddress.Name,
-		sbtestsc.ParamAddress, userAddress,
-	).WithIotas(1)
-	_, err = chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	nop := testcore.ScFuncs.DoNothing(ctx.Switch().Sign(user))
+	nop.Func.TransferIotas(42).Post()
+	require.NoError(t, ctx.Err)
 
-	t.Logf("dump accounts 2:\n%s", chain.DumpAccounts())
-	chain.AssertIotas(&chain.OriginatorAgentID, 0)
-	chain.AssertIotas(userAgentID, 0)
-	chain.AssertIotas(cAID, 0)
-	chain.AssertCommonAccountIotas(3 + extraToken)
-	chain.AssertTotalIotas(3 + extraToken)
-	env.AssertAddressIotas(chain.OriginatorAddress, solo.Saldo-solo.ChainDustThreshold-5-extraToken)
-	env.AssertAddressIotas(userAddress, solo.Saldo+2)
+	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
+	require.EqualValues(t, solo.Saldo-42, user.Balance())
+	require.EqualValues(t, 42, ctx.Balance(nil))
+
+	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
+	require.EqualValues(t, 0, ctx.Balance(user))
+	originatorBalanceReducedBy(ctx, w, 1)
+	chainAccountBalances(ctx, w, 3, 45)
+
+	// send entire contract balance back to user
+	// note that that includes the token that we transfer here
+	xfer := testcore.ScFuncs.SendToAddress(ctx.Sign(ctx.Originator()))
+	xfer.Params.Address().SetValue(user.ScAddress())
+	xfer.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
+
+	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
+	require.EqualValues(t, solo.Saldo-42+42+1, user.Balance())
+	require.EqualValues(t, 0, ctx.Balance(nil))
+
+	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
+	require.EqualValues(t, 0, ctx.Balance(user))
+	originatorBalanceReducedBy(ctx, w, 1+1)
+	chainAccountBalances(ctx, w, 3, 3)
 }
 
 func TestDoPanicUser(t *testing.T) { run2(t, testDoPanicUser) }

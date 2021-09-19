@@ -59,3 +59,11 @@ func (sc Funcs) ListBlobs(ctx wasmlib.ScViewCallContext) *ListBlobsCall {
 	f.Func.SetPtrs(nil, &f.Results.id)
 	return f
 }
+
+func OnLoad() {
+	exports := wasmlib.NewScExports()
+	exports.AddFunc(FuncStoreBlob, nil)
+	exports.AddView(ViewGetBlobField, nil)
+	exports.AddView(ViewGetBlobInfo, nil)
+	exports.AddView(ViewListBlobs, nil)
+}
