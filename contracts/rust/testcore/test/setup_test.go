@@ -64,6 +64,17 @@ func filterKeys(params ...interface{}) []interface{} {
 	return params
 }
 
+func setupTest(t *testing.T, runWasm bool) *wasmsolo.SoloContext {
+	chain := wasmsolo.StartChain(t, "chain1")
+	if !runWasm {
+		chain.Env.WithNativeContract(sbtestsc.Processor)
+		err := chain.DeployContract(nil, testcore.ScName, sbtestsc.Contract.ProgramHash)
+		require.NoError(t, err)
+	}
+	ctx := wasmsolo.NewSoloContextForChain(t, chain, testcore.ScName, testcore.OnLoad)
+	return ctx
+}
+
 func setupChain(t *testing.T, keyPairOriginator *ed25519.KeyPair) (*solo.Solo, *solo.Chain) {
 	wasmhost.HostTracing = DEBUG
 	wasmhost.ExtendedHostTracing = DEBUG

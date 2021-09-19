@@ -10,7 +10,7 @@ new member/factor combination to the member group.
 
 ```golang
 func TestAddMemberOk(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member1 := ctx.NewSoloAgent()
     dividendMember(ctx, member1, 100)
@@ -40,7 +40,7 @@ error message text is checked to contain the correct error message.
 
 ```golang
 func TestAddMemberFailMissingAddress(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member := dividend.ScFuncs.Member(ctx)
     member.Params.Factor().SetValue(100)
@@ -50,7 +50,7 @@ func TestAddMemberFailMissingAddress(t *testing.T) {
 }
 
 func TestAddMemberFailMissingFactor(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member1 := ctx.NewSoloAgent()
     member := dividend.ScFuncs.Member(ctx)
@@ -72,7 +72,7 @@ Now let's see a more complex example:
 
 ```golang
 func TestDivide1Member(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member1 := ctx.NewSoloAgent()
     dividendMember(ctx, member1, 100)
@@ -105,7 +105,7 @@ Now let's skip to the most complex test of all:
 
 ```golang
 func TestDivide3Members(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member1 := ctx.NewSoloAgent()
     dividendMember(ctx, member1, 25)
@@ -181,7 +181,7 @@ test for certain result values
 
 ```golang
 func TestGetFactor(t *testing.T) {
-    ctx := common.NewSoloContract(t, dividend.ScName, dividend.OnLoad)
+    ctx := wasmsolo.NewSoloContext(t, dividend.ScName, dividend.OnLoad)
     
     member1 := ctx.NewSoloAgent()
     dividendMember(ctx, member1, 25)

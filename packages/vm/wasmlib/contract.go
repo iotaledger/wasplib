@@ -152,6 +152,9 @@ func (f *ScFunc) PostToChain(chainID ScChainID) {
 	encode.Int32(f.transferID)
 	encode.Int32(f.delay)
 	Root.GetBytes(KeyPost).SetValue(encode.Data())
+	if f.resultsID != nil {
+		*f.resultsID = GetObjectID(OBJ_ID_ROOT, KeyReturn, TYPE_MAP)
+	}
 }
 
 func (f *ScFunc) Transfer(transfer ScTransfers) *ScFunc {

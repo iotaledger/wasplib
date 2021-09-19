@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/contracts/common"
 	"github.com/iotaledger/wasp/packages/iscp"
 	"github.com/iotaledger/wasp/packages/iscp/colored"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/util"
+	"github.com/iotaledger/wasp/packages/vm/core/root"
 	"github.com/iotaledger/wasp/packages/vm/wasmhost"
 	"github.com/iotaledger/wasp/packages/vm/wasmproc"
 	"github.com/iotaledger/wasplib/packages/vm/wasmlib"
@@ -63,7 +63,7 @@ func NewSoloContext(t *testing.T, scName string, onLoad func(), init ...*wasmlib
 // You can check for any error that occurred by checking the ctx.Err member.
 func NewSoloContextForChain(t *testing.T, chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.ScInitFunc) *SoloContext {
 	if chain == nil {
-		chain = common.StartChain(t, "chain1")
+		chain = StartChain(t, "chain1")
 	}
 
 	ctx := &SoloContext{scName: scName, Chain: chain}
@@ -89,6 +89,21 @@ func deploy(chain *solo.Chain, scName string, onLoad func(), init ...*wasmlib.Sc
 	var params []interface{}
 	if len(init) != 0 {
 		params = init[0].Params()
+	}
+
+	retDict, err := chain.CallView(root.Contract.Name, root.FuncFindContract.Name,
+		root.ParamHname, iscp.Hn(scName),
+	)
+	if err != nil {
+		return err
+	}
+	retBin, err := retDict.Get(root.ParamContractFound)
+	if err != nil {
+		return err
+	}
+	if len(retBin) == 1 && retBin[0] == 0xff {
+		// a contract with that name already exists: probably native code
+		return nil
 	}
 
 	if *GoDebug {

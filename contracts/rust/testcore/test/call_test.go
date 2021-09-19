@@ -6,6 +6,7 @@ import (
 	"github.com/iotaledger/wasp/packages/kv/codec"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
@@ -64,41 +65,32 @@ func fibo(n int64) int64 {
 
 func TestCallFibonacci(t *testing.T) { run2(t, testCallFibonacci) }
 func testCallFibonacci(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncGetFibonacci.Name,
-		sbtestsc.ParamIntParamValue, n,
-	)
-	require.NoError(t, err)
-	val, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.ParamIntParamValue))
-	require.NoError(t, err)
-	require.True(t, exists)
-	require.EqualValues(t, fibo(n), val)
+	fib := testcore.ScFuncs.Fibonacci(ctx)
+	fib.Params.IntValue().SetValue(n)
+	fib.Func.Call()
+	require.NoError(t, ctx.Err)
+	require.True(t, fib.Results.IntValue().Exists())
+	require.EqualValues(t, fibo(n), fib.Results.IntValue().Value())
 }
 
 func TestCallFibonacciIndirect(t *testing.T) { run2(t, testCallFibonacciIndirect) }
 func testCallFibonacciIndirect(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallOnChain.Name,
-		sbtestsc.ParamIntParamValue, n,
-		sbtestsc.ParamHnameContract, cID.Hname(),
-		sbtestsc.ParamHnameEP, sbtestsc.FuncGetFibonacci.Hname(),
-	).WithIotas(1)
-	ret, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
-	r, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.ParamIntParamValue))
-	require.NoError(t, err)
-	require.True(t, exists)
-	require.EqualValues(t, fibo(n), r)
+	fib := testcore.ScFuncs.CallOnChain(ctx)
+	fib.Params.IntValue().SetValue(n)
+	fib.Params.HnameContract().SetValue(testcore.HScName)
+	fib.Params.HnameEP().SetValue(testcore.HViewFibonacci)
+	fib.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
+	require.True(t, fib.Results.IntValue().Exists())
+	require.EqualValues(t, fibo(n), fib.Results.IntValue().Value())
 
-	ret, err = chain.CallView(ScName, sbtestsc.FuncGetCounter.Name)
-	require.NoError(t, err)
-
-	r, exists, err = codec.DecodeInt64(ret.MustGet(sbtestsc.VarCounter))
-	require.NoError(t, err)
-	require.True(t, exists)
-	require.EqualValues(t, 1, r)
+	gc := testcore.ScFuncs.GetCounter(ctx)
+	gc.Func.Call()
+	require.NoError(t, ctx.Err)
+	require.True(t, gc.Results.Counter().Exists())
+	require.EqualValues(t, 1, gc.Results.Counter().Value())
 }
