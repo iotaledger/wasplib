@@ -4,7 +4,6 @@
 package test
 
 import (
-	"strings"
 	"testing"
 	"time"
 
@@ -169,7 +168,7 @@ func TestLoop(t *testing.T) {
 	wasmhost.WasmTimeout = 1 * time.Second
 	inccounter.ScFuncs.EndlessLoop(ctx).Func.TransferIotas(1).Post()
 	require.Error(t, ctx.Err)
-	require.True(t, strings.Contains(ctx.Err.Error(), "interrupt"))
+	require.Contains(t, ctx.Err.Error(), "interrupt")
 
 	inccounter.ScFuncs.Increment(ctx).Func.TransferIotas(1).Post()
 	require.NoError(t, ctx.Err)

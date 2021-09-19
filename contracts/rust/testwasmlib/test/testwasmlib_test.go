@@ -103,9 +103,9 @@ func TestValidSizeParams(t *testing.T) {
 			pt.Func.TransferIotas(1).Post()
 			require.Error(t, ctx.Err)
 			if string(param) == string(testwasmlib.ParamChainID) {
-				require.True(t, strings.Contains(ctx.Err.Error(), "invalid "))
+				require.Contains(t, ctx.Err.Error(), "invalid ")
 			} else {
-				require.True(t, strings.Contains(ctx.Err.Error(), "mismatch: "))
+				require.Contains(t, ctx.Err.Error(), "mismatch: ")
 			}
 		})
 	}
@@ -131,7 +131,7 @@ func TestInvalidSizeParams(t *testing.T) {
 			pt.Params.Param(param).SetValue(make([]byte, allLengths[index]+1))
 			pt.Func.TransferIotas(1).Post()
 			require.Error(t, ctx.Err)
-			require.True(t, strings.HasSuffix(ctx.Err.Error(), "invalid type size"))
+			require.Contains(t, ctx.Err.Error(), "invalid type size")
 		})
 	}
 }
@@ -146,7 +146,7 @@ func TestInvalidTypeParams(t *testing.T) {
 				).WithIotas(1)
 				_, err := ctx.Chain.PostRequestSync(req, nil)
 				require.Error(t, err)
-				require.True(t, strings.Contains(err.Error(), "invalid "))
+				require.Contains(t, err.Error(), "invalid ")
 			})
 		}
 	}

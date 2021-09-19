@@ -71,6 +71,7 @@ func setupTest(t *testing.T, runWasm bool) *wasmsolo.SoloContext {
 		err := chain.DeployContract(nil, testcore.ScName, sbtestsc.Contract.ProgramHash)
 		require.NoError(t, err)
 	}
+	wasmsolo.SoloHost = nil
 	ctx := wasmsolo.NewSoloContextForChain(t, chain, testcore.ScName, testcore.OnLoad)
 	return ctx
 }

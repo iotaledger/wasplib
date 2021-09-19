@@ -3,55 +3,45 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/kv/codec"
-	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetSet(t *testing.T) { run2(t, testGetSet) }
 func testGetSet(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncSetInt.Name,
-		sbtestsc.ParamIntParamName, "ppp",
-		sbtestsc.ParamIntParamValue, 314,
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	si := testcore.ScFuncs.SetInt(ctx)
+	si.Params.Name().SetValue("ppp")
+	si.Params.IntValue().SetValue(314)
+	si.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncGetInt.Name,
-		sbtestsc.ParamIntParamName, "ppp")
-	require.NoError(t, err)
-
-	retInt, exists, err := codec.DecodeInt64(ret.MustGet("ppp"))
-	require.NoError(t, err)
-	require.True(t, exists)
-	require.EqualValues(t, 314, retInt)
+	gi := testcore.ScFuncs.GetInt(ctx)
+	gi.Params.Name().SetValue("ppp")
+	gi.Func.Call()
+	require.NoError(t, ctx.Err)
+	ppp := gi.Results.Values().GetInt64("ppp")
+	require.True(t, ppp.Exists())
+	require.EqualValues(t, 314, ppp.Value())
 }
 
 func TestCallRecursive(t *testing.T) { run2(t, testCallRecursive) }
 func testCallRecursive(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	cID, _ := setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallOnChain.Name,
-		sbtestsc.ParamIntParamValue, 31,
-		sbtestsc.ParamHnameContract, cID.Hname(),
-		sbtestsc.ParamHnameEP, sbtestsc.FuncRunRecursion.Hname(),
-	).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
+	coc := testcore.ScFuncs.CallOnChain(ctx)
+	coc.Params.IntValue().SetValue(31)
+	coc.Params.HnameContract().SetValue(testcore.HScName)
+	coc.Params.HnameEP().SetValue(testcore.HFuncRunRecursion)
+	coc.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter.Name)
-	require.NoError(t, err)
-
-	r, exists, err := codec.DecodeInt64(ret.MustGet(sbtestsc.VarCounter))
-	require.NoError(t, err)
-	require.True(t, exists)
-	require.EqualValues(t, 32, r)
+	gc := testcore.ScFuncs.GetCounter(ctx)
+	gc.Func.Call()
+	require.NoError(t, ctx.Err)
+	require.True(t, gc.Results.Counter().Exists())
+	require.EqualValues(t, 32, gc.Results.Counter().Value())
 }
 
 const n = 10

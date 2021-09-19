@@ -3,45 +3,38 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
 func TestChainOwnerIDView(t *testing.T) { run2(t, testChainOwnerIDView) }
 func testChainOwnerIDView(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncChainOwnerIDView.Name)
-	require.NoError(t, err)
-
-	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
-
-	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
+	f := testcore.ScFuncs.TestChainOwnerIDView(ctx)
+	f.Func.Call()
+	require.NoError(t, ctx.Err)
+	originator := ctx.Convertor.ScAgentID(ctx.Chain.OriginatorAgentID)
+	require.EqualValues(t, originator, f.Results.ChainOwnerID().Value())
 }
 
 func TestChainOwnerIDFull(t *testing.T) { run2(t, testChainOwnerIDFull) }
 func testChainOwnerIDFull(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncChainOwnerIDFull.Name).WithIotas(1)
-	ret, err := chain.PostRequestSync(req, nil)
-	require.NoError(t, err)
-
-	c := ret.MustGet(sbtestsc.ParamChainOwnerID)
-	require.EqualValues(t, chain.OriginatorAgentID.Bytes(), c)
+	f := testcore.ScFuncs.TestChainOwnerIDFull(ctx)
+	f.Func.TransferIotas(1).Post()
+	require.NoError(t, ctx.Err)
+	originator := ctx.Convertor.ScAgentID(ctx.Chain.OriginatorAgentID)
+	require.EqualValues(t, originator, f.Results.ChainOwnerID().Value())
 }
 
 func TestSandboxCall(t *testing.T) { run2(t, testSandboxCall) }
 func testSandboxCall(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	ret, err := chain.CallView(ScName, sbtestsc.FuncSandboxCall.Name)
-	require.NoError(t, err)
-
-	d := ret.MustGet(sbtestsc.VarSandboxCall)
-	require.EqualValues(t, "'solo' testing chain", string(d))
+	f := testcore.ScFuncs.TestSandboxCall(ctx)
+	f.Func.Call()
+	require.NoError(t, ctx.Err)
+	require.EqualValues(t, "'solo' testing chain", f.Results.SandboxCall().Value())
 }

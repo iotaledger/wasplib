@@ -4,110 +4,80 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
+	"github.com/iotaledger/wasplib/packages/vm/wasmsolo"
 	"github.com/stretchr/testify/require"
 )
 
-func TestPanicFull(t *testing.T) { run2(t, testPanicFull) }
-func testPanicFull(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
-
-	req := solo.NewCallParams(ScName, sbtestsc.FuncPanicFullEP.Name).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
-
-	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
+func verifyReceipts(t *testing.T, w bool, ctx *wasmsolo.SoloContext, requests, panics int) {
+	recStr := ctx.Chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
 	str := strings.Join(recStr, "\n")
 	t.Logf("\n%s", str)
 	extra := 0
 	if w {
 		extra = 1
 	}
-	require.EqualValues(t, 4+extra, strings.Count(str, "req/tx"))
-	require.EqualValues(t, 1, strings.Count(str, "panic in VM"))
+	require.EqualValues(t, requests+extra, strings.Count(str, "req/tx"))
+	require.EqualValues(t, panics, strings.Count(str, "panic in VM"))
+}
+
+func TestPanicFull(t *testing.T) { run2(t, testPanicFull) }
+func testPanicFull(t *testing.T, w bool) {
+	ctx := setupTest(t, w)
+
+	f := testcore.ScFuncs.TestPanicFullEP(ctx)
+	f.Func.TransferIotas(1).Post()
+	require.Error(t, ctx.Err)
+	require.Contains(t, ctx.Err.Error(), sbtestsc.MsgFullPanic)
+
+	verifyReceipts(t, w, ctx, 3, 1)
 }
 
 func TestPanicViewCall(t *testing.T) { run2(t, testPanicViewCall) }
 func testPanicViewCall(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	_, err := chain.CallView(ScName, sbtestsc.FuncPanicViewEP.Name)
-	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
+	f := testcore.ScFuncs.TestPanicViewEP(ctx)
+	f.Func.Call()
+	require.Error(t, ctx.Err)
+	require.Contains(t, ctx.Err.Error(), sbtestsc.MsgViewPanic)
 
-	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
-	str := strings.Join(recStr, "\n")
-	t.Logf("\n%s", str)
-	extra := 0
-	if w {
-		extra = 1
-	}
-	require.EqualValues(t, 3+extra, strings.Count(str, "req/tx"))
-	require.EqualValues(t, 0, strings.Count(str, "panic in VM"))
+	verifyReceipts(t, w, ctx, 2, 0)
 }
 
 func TestCallPanicFull(t *testing.T) { run2(t, testCallPanicFull) }
 func testCallPanicFull(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicFullEP.Name).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgFullPanic))
+	f := testcore.ScFuncs.TestCallPanicFullEP(ctx)
+	f.Func.TransferIotas(1).Post()
+	require.Error(t, ctx.Err)
+	require.Contains(t, ctx.Err.Error(), sbtestsc.MsgFullPanic)
 
-	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
-	str := strings.Join(recStr, "\n")
-	t.Logf("\n%s", str)
-	extra := 0
-	if w {
-		extra = 1
-	}
-	require.EqualValues(t, 4+extra, strings.Count(str, "req/tx"))
-	require.EqualValues(t, 1, strings.Count(str, "panic in VM"))
+	verifyReceipts(t, w, ctx, 3, 1)
 }
 
 func TestCallPanicViewFromFull(t *testing.T) { run2(t, testCallPanicViewFromFull) }
 func testCallPanicViewFromFull(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	req := solo.NewCallParams(ScName, sbtestsc.FuncCallPanicViewEPFromFull.Name).WithIotas(1)
-	_, err := chain.PostRequestSync(req, nil)
-	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
+	f := testcore.ScFuncs.TestCallPanicViewEPFromFull(ctx)
+	f.Func.TransferIotas(1).Post()
+	require.Error(t, ctx.Err)
+	require.Contains(t, ctx.Err.Error(), sbtestsc.MsgViewPanic)
 
-	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
-	str := strings.Join(recStr, "\n")
-	t.Logf("\n%s", str)
-	extra := 0
-	if w {
-		extra = 1
-	}
-	require.EqualValues(t, 4+extra, strings.Count(str, "req/tx"))
-	require.EqualValues(t, 1, strings.Count(str, "panic in VM"))
+	verifyReceipts(t, w, ctx, 3, 1)
 }
 
 func TestCallPanicViewFromView(t *testing.T) { run2(t, testCallPanicViewFromView) }
 func testCallPanicViewFromView(t *testing.T, w bool) {
-	_, chain := setupChain(t, nil)
-	setupTestSandboxSC(t, chain, nil, w)
+	ctx := setupTest(t, w)
 
-	_, err := chain.CallView(ScName, sbtestsc.FuncCallPanicViewEPFromView.Name)
-	require.Error(t, err)
-	require.EqualValues(t, 1, strings.Count(err.Error(), sbtestsc.MsgViewPanic))
+	f := testcore.ScFuncs.TestCallPanicViewEPFromView(ctx)
+	f.Func.Call()
+	require.Error(t, ctx.Err)
+	require.Contains(t, ctx.Err.Error(), sbtestsc.MsgViewPanic)
 
-	recStr := chain.GetRequestReceiptsForBlockRangeAsStrings(0, 0)
-	str := strings.Join(recStr, "\n")
-	t.Logf("\n%s", str)
-	extra := 0
-	if w {
-		extra = 1
-	}
-	require.EqualValues(t, 3+extra, strings.Count(str, "req/tx"))
-	require.EqualValues(t, 0, strings.Count(str, "panic in VM"))
+	verifyReceipts(t, w, ctx, 2, 0)
 }
