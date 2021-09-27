@@ -1,0 +1,19 @@
+{
+  "name": "HelloWorld",
+  "description": "The ubiquitous hello world demo",
+  "structs": {
+  },
+  "state": {
+  },
+  "funcs": {
+    "helloWorld": {
+    }
+  },
+  "views": {
+    "getHelloWorld": {
+      "results": {
+        "helloWorld": "String"
+      }
+    }
+  }
+}

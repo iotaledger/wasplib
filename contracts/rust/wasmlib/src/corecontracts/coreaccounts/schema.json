@@ -1,0 +1,46 @@
+{
+  "name": "CoreAccounts",
+  "description": "Core chain account ledger contract",
+  "funcs": {
+    "deposit": {
+      "params": {
+        "agentID=a": "?AgentID // default is caller"
+      }
+    },
+    "harvest": {
+      "params": {
+        "withdrawAmount=m": "?Int64 // default (zero) means all",
+        "withdrawColor=c": "?Color // defaults to colored.IOTA"
+      }
+    },
+    "withdraw": {}
+  },
+  "views": {
+    "accounts": {
+      "results": {
+        "agents=this": "[AgentID]Bytes // bytes are always empty"
+      }
+    },
+    "balance": {
+      "params": {
+        "agentID=a": "AgentID"
+      },
+      "results": {
+        "balances=this": "[Color]Int64"
+      }
+    },
+    "totalAssets": {
+      "results": {
+        "balances=this": "[Color]Int64"
+      }
+    },
+    "getAccountNonce": {
+      "params": {
+        "agentID=a": "AgentID"
+      },
+      "results": {
+        "accountNonce=n": "Int64 // TODO should be Uint64"
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "FairRoulette",
+  "structs": {
+    "Bet": {
+      "amount": "Int64",
+      "better": "AgentID",
+      "number": "Int64"
+    }
+  },
+  "state": {
+    "bets": "[]Bet",
+    "lastWinningNumber": "Int64",
+    "playPeriod": "Int32",
+    "roundStatus": "Int16",
+    "roundNumber": "Int64",
+    "roundStartedAt": "Int32"
+  },
+  "funcs": {
+    "placeBet": {
+      "params": {
+        "number": "Int64 // the number a better bets on"
+      }
+    },
+    "payWinners": {
+      "access": "self // only SC itself can invoke this function"
+    },
+    "playPeriod": {
+      "access": "creator // only SC creator can update the play period",
+      "params": {
+        "playPeriod": "Int32 // number of minutes in one playing round"
+      }
+    }
+  },
+  "views": {
+    "lastWinningNumber": {
+      "results": {
+        "lastWinningNumber": "Int64"
+      }
+    },
+    "roundStatus": {
+      "results": {
+        "roundStatus": "Int16"
+      }
+    },
+    "roundNumber": {
+      "results": {
+        "roundNumber": "Int64"
+      }
+    },
+    "roundStartedAt": {
+      "results": {
+        "roundStartedAt": "Int32"
+      }
+    }
+  }
+}

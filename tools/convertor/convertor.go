@@ -106,7 +106,7 @@ func walker(convertLine func(string, string) string, outPath, path string, info 
 	defer file.Close()
 	outFile := strings.ReplaceAll(outPath, "$c", contract)
 	outFile = strings.ReplaceAll(outFile, "$C", capitalize(contract))
-	_ = os.MkdirAll(outFile[:strings.LastIndex(outFile, "/")], 0755)
+	_ = os.MkdirAll(outFile[:strings.LastIndex(outFile, "/")], 0o755)
 	out, err := os.Create(outFile)
 	if err != nil {
 		return err

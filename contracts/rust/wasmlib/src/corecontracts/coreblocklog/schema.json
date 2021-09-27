@@ -1,0 +1,89 @@
+{
+  "name": "CoreBlockLog",
+  "description": "Core block log contract",
+  "funcs": {
+  },
+  "views": {
+    "controlAddresses": {
+      "results": {
+        "stateControllerAddress=s": "Address",
+        "governingAddress=g": "Address",
+        "blockIndex=n": "Int32"
+      }
+    },
+    "getBlockInfo": {
+      "params": {
+        "blockIndex=n": "Int32"
+      },
+      "results": {
+        "blockInfo=i": "Bytes"
+      }
+    },
+    "getLatestBlockInfo": {
+      "results": {
+        "blockIndex=n": "Int32",
+        "blockInfo=i": "Bytes"
+      }
+    },
+    "getRequestIDsForBlock": {
+      "params": {
+        "blockIndex=n": "Int32"
+      },
+      "results": {
+        "requestID=u": "[]RequestID //TODO Array16"
+      }
+    },
+    "getRequestReceipt": {
+      "params": {
+        "requestID=u": "RequestID"
+      },
+      "results": {
+        "requestRecord=d": "Bytes",
+        "blockIndex=n": "Int32",
+        "requestIndex=r": "Int16"
+      }
+    },
+    "getRequestReceiptsForBlock": {
+      "params": {
+        "blockIndex=n": "Int32"
+      },
+      "results": {
+        "requestRecord=d": "[]Bytes //TODO Array16"
+      }
+    },
+    "isRequestProcessed": {
+      "params": {
+        "requestID=u": "RequestID"
+      },
+      "results": {
+        "requestProcessed=p": "String"
+      }
+    },
+    "getEventsForRequest": {
+      "params": {
+        "requestID=u": "RequestID"
+      },
+      "results": {
+        "event=e": "[]Bytes //TODO Array16"
+      }
+    },
+    "getEventsForBlock": {
+      "params": {
+        "blockIndex=n": "Int32"
+      },
+      "results": {
+        "event=e": "[]Bytes //TODO Array16"
+      }
+    },
+    "getEventsForContract": {
+      "params": {
+        "contractHname=h": "Hname",
+        "fromBlock=f": "?Int32",
+        "toBlock=t": "?Int32"
+      },
+      "results": {
+        "event=e": "[]Bytes //TODO Array16"
+      }
+    }
+  }
+}

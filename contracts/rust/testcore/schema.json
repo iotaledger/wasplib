@@ -1,0 +1,183 @@
+{
+  "name": "TestCore",
+  "description": "Core test for ISCP wasmlib Rust/Wasm library",
+  "structs": {
+  },
+  "state": {
+    "ints": "[String]Int64",
+    "counter": "Int64",
+    "hnameEP": "Hname",
+    "mintedColor": "Color",
+    "mintedSupply": "Int64"
+  },
+  "funcs": {
+    "callOnChain": {
+      "params": {
+        "intValue=intParamValue": "Int64",
+        "hnameContract": "?Hname",
+        "hnameEP": "?Hname"
+      },
+      "results": {
+        "intValue=intParamValue": "Int64"
+      }
+    },
+    "checkContextFromFullEP": {
+      "params": {
+        "agentID": "AgentID",
+        "caller": "AgentID",
+        "chainID": "ChainID",
+        "chainOwnerID": "AgentID",
+        "contractCreator": "AgentID"
+      }
+    },
+    "doNothing": {
+    },
+    "getMintedSupply": {
+      "results": {
+        "mintedColor": "Color",
+        "mintedSupply": "Int64"
+      }
+    },
+    "incCounter": {
+    },
+    "init": {
+      "params": {
+        "fail=initFailParam": "?Int64"
+      }
+    },
+    "passTypesFull": {
+      "params": {
+        "int64": "Int64",
+        "int64Zero=int64-0": "Int64",
+        "string": "String",
+        "stringZero=string-0": "String",
+        "hash=Hash": "Hash",
+        "hname=Hname": "Hname",
+        "hnameZero=Hname-0": "Hname",
+        "contractID": "AgentID",
+        "chainID": "ChainID",
+        "address": "Address",
+        "agentID": "AgentID"
+      }
+    },
+    "runRecursion": {
+      "params": {
+        "intValue=intParamValue": "Int64"
+      },
+      "results": {
+        "intValue=intParamValue": "Int64"
+      }
+    },
+    "sendToAddress": {
+      "access": "creator",
+      "params": {
+        "address": "Address"
+      }
+    },
+    "setInt": {
+      "params": {
+        "name=intParamName": "String",
+        "intValue=intParamValue": "Int64"
+      }
+    },
+    "testCallPanicFullEP": {
+    },
+    "testCallPanicViewEPFromFull": {
+    },
+    "testChainOwnerIDFull": {
+      "results": {
+        "chainOwnerID=chainOwnerID": "AgentID"
+      }
+    },
+    "testEventLogDeploy": {
+    },
+    "testEventLogEventData": {
+    },
+    "testEventLogGenericData": {
+      "params": {
+        "counter": "Int64"
+      }
+    },
+    "testPanicFullEP": {
+    },
+    "withdrawToChain": {
+      "params": {
+        "chainID=chainID": "ChainID"
+      }
+    },
+    "testBlockContext1": {
+    },
+    "testBlockContext2": {
+    }
+  },
+  "views": {
+    "checkContextFromViewEP": {
+      "params": {
+        "agentID": "AgentID",
+        "chainID": "ChainID",
+        "chainOwnerID": "AgentID",
+        "contractCreator": "AgentID"
+      }
+    },
+    "fibonacci": {
+      "params": {
+        "intValue=intParamValue": "Int64"
+      },
+      "results": {
+        "intValue=intParamValue": "Int64"
+      }
+    },
+    "getCounter": {
+      "results": {
+        "counter": "Int64"
+      }
+    },
+    "getInt": {
+      "params": {
+        "name=intParamName": "String"
+      },
+      "results": {
+        "values=this": "[String]Int64"
+      }
+    },
+    "justView": {
+    },
+    "passTypesView": {
+      "params": {
+        "int64": "Int64",
+        "int64Zero=int64-0": "Int64",
+        "string": "String",
+        "stringZero=string-0": "String",
+        "hash=Hash": "Hash",
+        "hname=Hname": "Hname",
+        "hnameZero=Hname-0": "Hname",
+        "contractID": "AgentID",
+        "chainID": "ChainID",
+        "address": "Address",
+        "agentID": "AgentID"
+      }
+    },
+    "testCallPanicViewEPFromView": {
+    },
+    "testChainOwnerIDView": {
+      "results": {
+        "chainOwnerID": "AgentID"
+      }
+    },
+    "testPanicViewEP": {
+    },
+    "testSandboxCall": {
+      "results": {
+        "sandboxCall": "String"
+      }
+    },
+    "getStringValue": {
+      "params": {
+        "varName": "String"
+      },
+      "results": {
+        "vars=this": "[String]String"
+      }
+    }
+  }
+}

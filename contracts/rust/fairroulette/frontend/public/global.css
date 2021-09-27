@@ -1,0 +1,24 @@
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	color: #333;
+	background-color: #1e2439;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+input, button, select, textarea {
+	font-family: inherit;
+	font-size: inherit;
+
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+}

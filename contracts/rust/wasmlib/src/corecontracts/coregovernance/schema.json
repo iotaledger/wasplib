@@ -1,0 +1,86 @@
+{
+  "name": "CoreGovernance",
+  "description": "Core governance contract",
+  "funcs": {
+    "addAllowedStateControllerAddress": {
+      "params": {
+        "stateControllerAddress=S": "Address",
+        "chainOwner=oi": "AgentID",
+        "feeColor=fc": "?Color // default colored.IOTA"
+      }
+    },
+    "removeAllowedStateControllerAddress": {
+      "params": {
+        "stateControllerAddress=S": "Address"
+      }
+    },
+    "rotateStateController": {
+      "params": {
+        "stateControllerAddress=S": "Address"
+      }
+    },
+    "claimChainOwnership": {},
+    "delegateChainOwnership": {
+      "params": {
+        "chainOwner=oi": "AgentID"
+      }
+    },
+    "setChainInfo": {
+      "params": {
+        "maxBlobSize=bs": "?Int32 // default no change",
+        "maxEventSize=es": "?Int16 // default no change",
+        "maxEventsPerReq=ne": "?Int16 // default no change",
+        "ownerFee=of": "?Int64 // default no change",
+        "validatorFee=vf": "?Int64 // default no change"
+      }
+    },
+    "setContractFee": {
+      "params": {
+        "hname=hn": "Hname // contract id",
+        "ownerFee=of": "?Int64 // default 0 (no fee)",
+        "validatorFee=vf": "?Int64 // default 0 (no fee)"
+      }
+    },
+    "setDefaultFee": {
+      "params": {
+        "ownerFee=of": "?Int64 // default -1 (not set)",
+        "validatorFee=vf": "?Int64 // default -1 (not set)"
+      }
+    }
+  },
+  "views": {
+    "getAllowedStateControllerAddresses": {
+      "results": {
+        "allowedStateControllerAddresses=a": "[]Bytes //TODO Array16"
+      }
+    },
+    "getChainInfo": {
+      "results": {
+        "chainID=c": "ChainID",
+        "chainOwnerID=o": "AgentID",
+        "description=d": "String",
+        "feeColor=f": "Color",
+        "defaultOwnerFee=do": "Int64",
+        "defaultValidatorFee=dv": "Int64",
+        "maxBlobSize=mb": "Int32",
+        "maxEventSize=me": "Int16",
+        "maxEventsPerReq=mr": "Int16"
+      }
+    },
+    "getMaxBlobSize": {
+      "results": {
+        "maxBlobSize=mb": "Int32"
+      }
+    },
+    "getFeeInfo": {
+      "params": {
+        "hname=hn": "Hname"
+      },
+      "results": {
+        "feeColor=f": "Color",
+        "ownerFee=of": "Int64",
+        "validatorFee=vf": "Int64"
+      }
+    }
+  }
+}

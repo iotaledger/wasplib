@@ -1,0 +1,38 @@
+{
+  "name": "CoreBlob",
+  "description": "Core blob contract",
+  "funcs": {
+    "storeBlob": {
+      "params": {
+        "blobs=this": "[String]Bytes // set of named blobs"
+      },
+      "results": {
+        "hash": "Hash // calculated hash of blob set"
+      }
+    }
+  },
+  "views": {
+    "getBlobField": {
+      "params": {
+        "hash": "Hash // blob set",
+        "field": "String // blob name"
+      },
+      "results": {
+        "bytes": "Bytes // blob data"
+      }
+    },
+    "getBlobInfo": {
+      "params": {
+        "hash": "Hash // blob set"
+      },
+      "results": {
+        "blobSizes=this": "[String]Int32 // size for each named blob"
+      }
+    },
+    "listBlobs": {
+      "results": {
+        "blobSizes=this": "[Hash]Int32 // total size for each blob set"
+      }
+    }
+  }
+}

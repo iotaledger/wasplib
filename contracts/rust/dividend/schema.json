@@ -1,0 +1,47 @@
+{
+  "name": "Dividend",
+  "description": "Simple dividend smart contract",
+  "state": {
+    "memberList": "[]Address // array with all the recipients of this dividend",
+    "members": "[Address]Int64 // map with all the recipient factors of this dividend",
+    "owner": "AgentID // owner of contract, the only one who can call 'member' func",
+    "totalFactor": "Int64 // sum of all recipient factors"
+  },
+  "funcs": {
+    "init": {
+      "params": {
+        "owner": "?AgentID // optional owner of contract, defaults to contract creator"
+      }
+    },
+    "member": {
+      "access": "owner // only defined owner of contract can add members",
+      "params": {
+        "address": "Address // address of dividend recipient",
+        "factor": "Int64 // relative division factor"
+      }
+    },
+    "divide": {
+    },
+    "setOwner": {
+      "access": "owner // only defined owner of contract can change owner",
+      "params": {
+        "owner": "AgentID // new owner of smart contract"
+      }
+    }
+  },
+  "views": {
+    "getFactor": {
+      "params": {
+        "address": "Address // address of dividend recipient"
+      },
+      "results": {
+        "factor": "Int64 // relative division factor"
+      }
+    },
+    "getOwner": {
+      "results": {
+        "owner": "AgentID // current owner of this smart contract"
+      }
+    }
+  }
+}
