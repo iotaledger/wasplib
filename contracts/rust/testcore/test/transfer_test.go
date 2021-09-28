@@ -4,12 +4,12 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/testcore"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/accounts"
 	"github.com/iotaledger/wasp/packages/vm/core/governance"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
@@ -44,7 +44,7 @@ func testDoNothing(t *testing.T, w bool) {
 	require.NoError(t, ctx.Err)
 
 	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
-	require.EqualValues(t, 42, ctx.Balance(nil))
+	require.EqualValues(t, 42, ctx.Balance(ctx.Agent()))
 	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
 	originatorBalanceReducedBy(ctx, w, 2+42)
 	chainAccountBalances(ctx, w, 2, 2+42)
@@ -61,7 +61,7 @@ func testDoNothingUser(t *testing.T, w bool) {
 
 	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
 	require.EqualValues(t, solo.Saldo-42, user.Balance())
-	require.EqualValues(t, 42, ctx.Balance(nil))
+	require.EqualValues(t, 42, ctx.Balance(ctx.Agent()))
 
 	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
 	require.EqualValues(t, 0, ctx.Balance(user))
@@ -80,7 +80,7 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 
 	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
 	require.EqualValues(t, solo.Saldo-42, user.Balance())
-	require.EqualValues(t, 42, ctx.Balance(nil))
+	require.EqualValues(t, 42, ctx.Balance(ctx.Agent()))
 
 	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
 	require.EqualValues(t, 0, ctx.Balance(user))
@@ -96,7 +96,7 @@ func testWithdrawToAddress(t *testing.T, w bool) {
 
 	t.Logf("dump accounts:\n%s", ctx.Chain.DumpAccounts())
 	require.EqualValues(t, solo.Saldo-42+42+1, user.Balance())
-	require.EqualValues(t, 0, ctx.Balance(nil))
+	require.EqualValues(t, 0, ctx.Balance(ctx.Agent()))
 
 	require.EqualValues(t, 0, ctx.Balance(ctx.Originator()))
 	require.EqualValues(t, 0, ctx.Balance(user))

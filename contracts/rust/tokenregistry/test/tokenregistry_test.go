@@ -6,8 +6,8 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/tokenregistry"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/tokenregistry"
 	"github.com/stretchr/testify/require"
 )
 

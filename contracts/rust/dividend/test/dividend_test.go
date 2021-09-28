@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/dividend"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/dividend"
 	"github.com/stretchr/testify/require"
 )
 
@@ -74,14 +74,14 @@ func TestDivide1Member(t *testing.T) {
 	dividendMember(ctx, member1, 100)
 	require.NoError(t, ctx.Err)
 
-	require.EqualValues(t, 1, ctx.Balance(nil))
+	require.EqualValues(t, 1, ctx.Balance(ctx.Agent()))
 
 	dividendDivide(ctx, 99)
 	require.NoError(t, ctx.Err)
 
 	// 99 from divide() + 1 from the member() call
 	require.EqualValues(t, solo.Saldo+100, member1.Balance())
-	require.EqualValues(t, 0, ctx.Balance(nil))
+	require.EqualValues(t, 0, ctx.Balance(ctx.Agent()))
 }
 
 func TestDivide2Members(t *testing.T) {
@@ -95,7 +95,7 @@ func TestDivide2Members(t *testing.T) {
 	dividendMember(ctx, member2, 75)
 	require.NoError(t, ctx.Err)
 
-	require.EqualValues(t, 2, ctx.Balance(nil))
+	require.EqualValues(t, 2, ctx.Balance(ctx.Agent()))
 
 	dividendDivide(ctx, 98)
 	require.NoError(t, ctx.Err)
@@ -103,7 +103,7 @@ func TestDivide2Members(t *testing.T) {
 	// 98 from divide() + 2 from the member() calls
 	require.EqualValues(t, solo.Saldo+25, member1.Balance())
 	require.EqualValues(t, solo.Saldo+75, member2.Balance())
-	require.EqualValues(t, 0, ctx.Balance(nil))
+	require.EqualValues(t, 0, ctx.Balance(ctx.Agent()))
 }
 
 func TestDivide3Members(t *testing.T) {
@@ -121,7 +121,7 @@ func TestDivide3Members(t *testing.T) {
 	dividendMember(ctx, member3, 75)
 	require.NoError(t, ctx.Err)
 
-	require.EqualValues(t, 3, ctx.Balance(nil))
+	require.EqualValues(t, 3, ctx.Balance(ctx.Agent()))
 
 	dividendDivide(ctx, 97)
 	require.NoError(t, ctx.Err)
@@ -131,7 +131,7 @@ func TestDivide3Members(t *testing.T) {
 	require.EqualValues(t, solo.Saldo+33, member2.Balance())
 	require.EqualValues(t, solo.Saldo+50, member3.Balance())
 	// 1 remaining due to fractions
-	require.EqualValues(t, 1, ctx.Balance(nil))
+	require.EqualValues(t, 1, ctx.Balance(ctx.Agent()))
 
 	dividendDivide(ctx, 100)
 	require.NoError(t, ctx.Err)
@@ -141,7 +141,7 @@ func TestDivide3Members(t *testing.T) {
 	require.EqualValues(t, solo.Saldo+33+33, member2.Balance())
 	require.EqualValues(t, solo.Saldo+50+50, member3.Balance())
 	// now we have 2 remaining due to fractions
-	require.EqualValues(t, 2, ctx.Balance(nil))
+	require.EqualValues(t, 2, ctx.Balance(ctx.Agent()))
 
 	dividendDivide(ctx, 100)
 	require.NoError(t, ctx.Err)
@@ -151,7 +151,7 @@ func TestDivide3Members(t *testing.T) {
 	require.EqualValues(t, solo.Saldo+33+33+34, member2.Balance())
 	require.EqualValues(t, solo.Saldo+50+50+51, member3.Balance())
 	// managed to give every one an exact integer amount, so no remainder
-	require.EqualValues(t, 0, ctx.Balance(nil))
+	require.EqualValues(t, 0, ctx.Balance(ctx.Agent()))
 }
 
 func TestGetFactor(t *testing.T) {
@@ -169,7 +169,7 @@ func TestGetFactor(t *testing.T) {
 	dividendMember(ctx, member3, 75)
 	require.NoError(t, ctx.Err)
 
-	require.EqualValues(t, 3, ctx.Balance(nil))
+	require.EqualValues(t, 3, ctx.Balance(ctx.Agent()))
 
 	value := dividendGetFactor(ctx, member3)
 	require.NoError(t, ctx.Err)

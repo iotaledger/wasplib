@@ -10,7 +10,7 @@
 package main
 
 import "github.com/iotaledger/wasp/packages/vm/wasmclient"
-import "github.com/iotaledger/wasp/contracts/rust/inccounter"
+import "github.com/iotaledger/wasplib/contracts/rust/inccounter"
 
 func main() {
 }

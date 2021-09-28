@@ -7,9 +7,6 @@
 // The intent is to showcase basic functionality of WasmLib and timed calling of functions
 // through a minimal implementation and not to come up with a complete real-world solution.
 
-use std::time::{SystemTime, UNIX_EPOCH};
-use std::time::Instant;
-
 use wasmlib::*;
 
 use crate::*;

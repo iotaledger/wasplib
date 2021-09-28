@@ -6,9 +6,9 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/donatewithfeedback"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/donatewithfeedback"
 	"github.com/stretchr/testify/require"
 )
 
@@ -50,7 +50,7 @@ func TestDonateOnce(t *testing.T) {
 
 	// 42 iota transferred from wallet to contract
 	require.EqualValues(t, solo.Saldo-42, donator1.Balance())
-	require.EqualValues(t, 42, ctx.Balance(nil))
+	require.EqualValues(t, 42, ctx.Balance(ctx.Agent()))
 }
 
 func TestDonateTwice(t *testing.T) {
@@ -77,5 +77,5 @@ func TestDonateTwice(t *testing.T) {
 
 	require.EqualValues(t, solo.Saldo-42, donator1.Balance())
 	require.EqualValues(t, solo.Saldo-69, donator2.Balance())
-	require.EqualValues(t, 42+69, ctx.Balance(nil))
+	require.EqualValues(t, 42+69, ctx.Balance(ctx.Agent()))
 }

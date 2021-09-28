@@ -6,8 +6,8 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/helloworld"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/helloworld"
 	"github.com/stretchr/testify/require"
 )
 

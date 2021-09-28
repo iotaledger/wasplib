@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/iotaledger/wasp/contracts/rust/fairauction"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/fairauction"
 	"github.com/stretchr/testify/require"
 )
 
@@ -51,8 +51,8 @@ func TestFaStartAuction(t *testing.T) {
 	ctx := startAuction(t)
 
 	// note 1 iota should be stuck in the delayed finalize_auction
-	require.EqualValues(t, 25-1, ctx.Balance(nil))
-	require.EqualValues(t, 10, ctx.Balance(nil, tokenColor))
+	require.EqualValues(t, 25-1, ctx.Balance(ctx.Agent()))
+	require.EqualValues(t, 10, ctx.Balance(ctx.Agent(), tokenColor))
 
 	// auctioneer sent 25 deposit + 10 tokenColor
 	require.EqualValues(t, solo.Saldo-25-10, auctioneer.Balance())

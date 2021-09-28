@@ -3,9 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/testcore"
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,9 +14,8 @@ func testMainCallsFromFullEP(t *testing.T, w bool) {
 	user := ctx.ContractCreator()
 
 	f := testcore.ScFuncs.CheckContextFromFullEP(ctx.Sign(user))
-	chainID := ctx.Convertor.ScChainID(ctx.Chain.ChainID)
-	f.Params.ChainID().SetValue(chainID)
-	f.Params.AgentID().SetValue(wasmlib.NewScAgentID(chainID, testcore.HScName))
+	f.Params.ChainID().SetValue(ctx.ChainID())
+	f.Params.AgentID().SetValue(ctx.AccountID())
 	f.Params.Caller().SetValue(user.ScAgentID())
 	f.Params.ChainOwnerID().SetValue(ctx.Originator().ScAgentID())
 	f.Params.ContractCreator().SetValue(user.ScAgentID())
@@ -31,9 +29,8 @@ func testMainCallsFromViewEP(t *testing.T, w bool) {
 	user := ctx.ContractCreator()
 
 	f := testcore.ScFuncs.CheckContextFromViewEP(ctx)
-	chainID := ctx.Convertor.ScChainID(ctx.Chain.ChainID)
-	f.Params.ChainID().SetValue(chainID)
-	f.Params.AgentID().SetValue(wasmlib.NewScAgentID(chainID, testcore.HScName))
+	f.Params.ChainID().SetValue(ctx.ChainID())
+	f.Params.AgentID().SetValue(ctx.AccountID())
 	f.Params.ChainOwnerID().SetValue(ctx.Originator().ScAgentID())
 	f.Params.ContractCreator().SetValue(user.ScAgentID())
 	f.Func.Call()

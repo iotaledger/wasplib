@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/testcore"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 

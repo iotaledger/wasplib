@@ -3,10 +3,10 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/erc20"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/erc20"
 	"github.com/stretchr/testify/require"
 )
 

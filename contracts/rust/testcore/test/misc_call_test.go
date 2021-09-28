@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/testcore"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 

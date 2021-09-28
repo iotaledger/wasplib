@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/iotaledger/wasp/contracts/rust/testwasmlib"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
+	"github.com/iotaledger/wasplib/contracts/rust/testwasmlib"
 	"github.com/stretchr/testify/require"
 )
 
@@ -74,13 +74,11 @@ func TestValidParams(t *testing.T) {
 func testValidParams(t *testing.T) *wasmsolo.SoloContext {
 	ctx := setupTest(t)
 
-	scChainID := ctx.Convertor.ScChainID(ctx.Chain.ChainID)
-
 	pt := testwasmlib.ScFuncs.ParamTypes(ctx)
-	pt.Params.Address().SetValue(scChainID.Address())
-	pt.Params.AgentID().SetValue(wasmlib.NewScAgentID(scChainID, testwasmlib.HScName))
+	pt.Params.Address().SetValue(ctx.ChainID().Address())
+	pt.Params.AgentID().SetValue(ctx.AccountID())
 	pt.Params.Bytes().SetValue([]byte("these are bytes"))
-	pt.Params.ChainID().SetValue(scChainID)
+	pt.Params.ChainID().SetValue(ctx.ChainID())
 	pt.Params.Color().SetValue(wasmlib.NewScColorFromBytes([]byte("RedGreenBlueYellowCyanBlackWhite")))
 	pt.Params.Hash().SetValue(wasmlib.NewScHashFromBytes([]byte("0123456789abcdeffedcba9876543210")))
 	pt.Params.Hname().SetValue(testwasmlib.HScName)
