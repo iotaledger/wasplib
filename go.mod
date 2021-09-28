@@ -7,8 +7,8 @@ require (
 	github.com/iotaledger/goshimmer v0.7.5-0.20210811162925-25c827e8326a
 	github.com/iotaledger/hive.go v0.0.0-20210625103722-68b2cf52ef4e
 	github.com/iotaledger/wart v0.2.3-0.20210824144406-382ad0e0d608
-	github.com/iotaledger/wasp v0.1.1-0.20210927200900-ba5f54d8c74a
+	github.com/iotaledger/wasp v0.1.1-0.20210928025619-183b33c85d26
 	github.com/stretchr/testify v1.7.0
 )
 
-replace github.com/iotaledger/wasp v0.1.1-0.20210927200900-ba5f54d8c74a => ../wasp
+replace github.com/iotaledger/wasp v0.1.1-0.20210928025619-183b33c85d26 => ../wasp

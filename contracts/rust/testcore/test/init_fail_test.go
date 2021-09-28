@@ -8,10 +8,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestInitSuccess(t *testing.T) { run2(t, testInitSuccess) }
-func testInitSuccess(t *testing.T, w bool) {
-	ctx := setupTest(t, w)
-	require.NoError(t, ctx.Err)
+func TestInitSuccess(t *testing.T) {
+	run2(t, func(t *testing.T, w bool) {
+		ctx := setupTest(t, w)
+		require.NoError(t, ctx.Err)
+	})
 }
 
 //func TestInitFail(t *testing.T) { run2(t, testInitFail) }
