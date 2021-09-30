@@ -59,6 +59,11 @@ type SetIntCall struct {
 	Params MutableSetIntParams
 }
 
+type SpawnCall struct {
+	Func   *wasmlib.ScFunc
+	Params MutableSpawnParams
+}
+
 type TestBlockContext1Call struct {
 	Func *wasmlib.ScFunc
 }
@@ -213,6 +218,12 @@ func (sc Funcs) SendToAddress(ctx wasmlib.ScFuncCallContext) *SendToAddressCall 
 
 func (sc Funcs) SetInt(ctx wasmlib.ScFuncCallContext) *SetIntCall {
 	f := &SetIntCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncSetInt)}
+	f.Func.SetPtrs(&f.Params.id, nil)
+	return f
+}
+
+func (sc Funcs) Spawn(ctx wasmlib.ScFuncCallContext) *SpawnCall {
+	f := &SpawnCall{Func: wasmlib.NewScFunc(ctx, HScName, HFuncSpawn)}
 	f.Func.SetPtrs(&f.Params.id, nil)
 	return f
 }

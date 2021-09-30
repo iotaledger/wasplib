@@ -28,23 +28,24 @@ const (
 	IdxParamInt64Zero       = 15
 	IdxParamIntValue        = 16
 	IdxParamName            = 17
-	IdxParamString          = 18
-	IdxParamStringZero      = 19
-	IdxParamVarName         = 20
-	IdxResultChainOwnerID   = 21
-	IdxResultCounter        = 22
-	IdxResultIntValue       = 23
-	IdxResultMintedColor    = 24
-	IdxResultMintedSupply   = 25
-	IdxResultSandboxCall    = 26
-	IdxStateCounter         = 27
-	IdxStateHnameEP         = 28
-	IdxStateInts            = 29
-	IdxStateMintedColor     = 30
-	IdxStateMintedSupply    = 31
+	IdxParamProgHash        = 18
+	IdxParamString          = 19
+	IdxParamStringZero      = 20
+	IdxParamVarName         = 21
+	IdxResultChainOwnerID   = 22
+	IdxResultCounter        = 23
+	IdxResultIntValue       = 24
+	IdxResultMintedColor    = 25
+	IdxResultMintedSupply   = 26
+	IdxResultSandboxCall    = 27
+	IdxStateCounter         = 28
+	IdxStateHnameEP         = 29
+	IdxStateInts            = 30
+	IdxStateMintedColor     = 31
+	IdxStateMintedSupply    = 32
 )
 
-const keyMapLen = 32
+const keyMapLen = 33
 
 var keyMap = [keyMapLen]wasmlib.Key{
 	ParamAddress,
@@ -65,6 +66,7 @@ var keyMap = [keyMapLen]wasmlib.Key{
 	ParamInt64Zero,
 	ParamIntValue,
 	ParamName,
+	ParamProgHash,
 	ParamString,
 	ParamStringZero,
 	ParamVarName,

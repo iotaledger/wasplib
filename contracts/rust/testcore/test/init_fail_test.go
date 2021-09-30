@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/vm/core"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,32 +15,29 @@ func TestInitSuccess(t *testing.T) {
 	})
 }
 
-//func TestInitFail(t *testing.T) { run2(t, testInitFail) }
-//func testInitFail(t *testing.T, w bool) {
-//	init := testcore.ScFuncs.Init(nil)
-//	init.Params.Fail().SetValue(1)
-//	ctx := setupTestInit(t, w, init.Func)
-//	require.Error(t, ctx.Err)
-//}
-
 func TestInitFail(t *testing.T) {
-	_, chain := setupChain(t, nil)
-	err := chain.DeployContract(nil, ScName, sbtestsc.Contract.ProgramHash,
-		sbtestsc.ParamFail, 1)
-	require.Error(t, err)
+	run2(t, func(t *testing.T, w bool) {
+		init := testcore.ScFuncs.Init(nil)
+		init.Params.Fail().SetValue(1)
+		ctx := setupTestForChain(t, w, nil, nil, init.Func)
+		require.Error(t, ctx.Err)
+	})
 }
 
 func TestInitFailRepeat(t *testing.T) {
-	_, chain := setupChain(t, nil)
-	err := chain.DeployContract(nil, ScName, sbtestsc.Contract.ProgramHash,
-		sbtestsc.ParamFail, 1)
-	require.Error(t, err)
-	_, _, rec := chain.GetInfo()
-	require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
+	run2(t, func(t *testing.T, w bool) {
+		init := testcore.ScFuncs.Init(nil)
+		init.Params.Fail().SetValue(1)
+		ctx := setupTestForChain(t, w, nil, nil, init.Func)
+		require.Error(t, ctx.Err)
 
-	// repeat must succeed
-	err = chain.DeployContract(nil, ScName, sbtestsc.Contract.ProgramHash)
-	require.NoError(t, err)
-	_, _, rec = chain.GetInfo()
-	require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
+		_, _, rec := ctx.Chain.GetInfo()
+		require.EqualValues(t, len(core.AllCoreContractsByHash), len(rec))
+
+		ctxRetry := setupTestForChain(t, w, ctx.Chain, nil)
+		require.NoError(t, ctxRetry.Err)
+
+		_, _, rec = ctxRetry.Chain.GetInfo()
+		require.EqualValues(t, len(core.AllCoreContractsByHash)+1, len(rec))
+	})
 }

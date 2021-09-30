@@ -2,14 +2,10 @@ package test
 
 import (
 	"testing"
-	"time"
 
-	"github.com/iotaledger/goshimmer/packages/ledgerstate"
-	"github.com/iotaledger/hive.go/crypto/ed25519"
-	"github.com/iotaledger/wasp/packages/iscp"
-	"github.com/iotaledger/wasp/packages/kv/kvdecoder"
 	"github.com/iotaledger/wasp/packages/solo"
 	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
@@ -34,98 +30,90 @@ func TestCounter(t *testing.T) {
 
 func TestConcurrency(t *testing.T) {
 	run2(t, func(t *testing.T, w bool) {
-		_, chain := setupChain(t, nil)
-		setupTestSandboxSC(t, chain, nil, w)
+		ctx := setupTest(t, w)
 
-		extra := 0
-		if w {
-			extra = 1
-		}
-		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).WithIotas(1)
+		// note that because SoloContext is not thread-safe we cannot use
+		// testcore.ScFuncs.IncCounter(ctx)
+
+		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).
+			WithIotas(1)
 
 		repeats := []int{300, 100, 100, 100, 200, 100, 100}
 		sum := 0
 		for _, i := range repeats {
 			sum += i
 		}
+
+		chain := ctx.Chain
 		for r, n := range repeats {
 			go func(_, n int) {
 				for i := 0; i < n; i++ {
+					// f := testcore.ScFuncs.IncCounter(ctx)
+					// f.Func.TransferIotas(1)
+					// ctx.EnqueueRequest()
+					// f.Func.Post()
+					// require.NoError(t, ctx.Err)
 					tx, _, err := chain.RequestFromParamsToLedger(req, nil)
 					require.NoError(t, err)
 					chain.Env.EnqueueRequests(tx)
 				}
 			}(r, n)
 		}
-		require.True(t, chain.WaitForRequestsThrough(sum+3+extra, 20*time.Second))
+		require.True(t, ctx.WaitForPendingRequests(sum))
 
-		ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter.Name)
-		require.NoError(t, err)
+		v := testcore.ScFuncs.GetCounter(ctx)
+		v.Func.Call()
+		require.NoError(t, ctx.Err)
+		require.EqualValues(t, sum, v.Results.Counter().Value())
 
-		deco := kvdecoder.New(ret, chain.Log)
-		res := deco.MustGetInt64(sbtestsc.VarCounter)
-		require.EqualValues(t, sum, res)
-
-		extraIota := uint64(0)
-		if w {
-			extraIota = 1
-		}
-		chain.AssertIotas(&chain.OriginatorAgentID, 0)
-		chain.AssertCommonAccountIotas(extraIota + 2)
-		agentID := iscp.NewAgentID(chain.ChainID.AsAddress(), HScName)
-		chain.AssertIotas(agentID, uint64(sum)+1)
+		require.EqualValues(t, sum, ctx.Balance(ctx.Agent()))
+		chainAccountBalances(ctx, w, 2, uint64(2+sum))
 	})
 }
 
 func TestConcurrency2(t *testing.T) {
 	run2(t, func(t *testing.T, w bool) {
-		_, chain := setupChain(t, nil)
-		setupTestSandboxSC(t, chain, nil, w)
+		ctx := setupTest(t, w)
 
-		extra := 0
-		if w {
-			extra = 1
-		}
-		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).WithIotas(1)
+		// note that because SoloContext is not thread-safe we cannot use
+		// testcore.ScFuncs.IncCounter(ctx)
+
+		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).
+			WithIotas(1)
 
 		repeats := []int{300, 100, 100, 100, 200, 100, 100}
-		users := make([]*ed25519.KeyPair, len(repeats))
-		userAddr := make([]ledgerstate.Address, len(repeats))
 		sum := 0
 		for _, i := range repeats {
 			sum += i
 		}
+
+		chain := ctx.Chain
+		users := make([]*wasmsolo.SoloAgent, len(repeats))
 		for r, n := range repeats {
 			go func(r, n int) {
-				users[r], userAddr[r] = chain.Env.NewKeyPairWithFunds()
+				users[r] = ctx.NewSoloAgent()
 				for i := 0; i < n; i++ {
-					tx, _, err := chain.RequestFromParamsToLedger(req, users[r])
+					tx, _, err := chain.RequestFromParamsToLedger(req, users[r].Pair)
 					require.NoError(t, err)
 					chain.Env.EnqueueRequests(tx)
 				}
 			}(r, n)
 		}
 
-		require.True(t, chain.WaitForRequestsThrough(sum+3+extra, 20*time.Second))
+		require.True(t, ctx.WaitForPendingRequests(sum))
 
-		ret, err := chain.CallView(ScName, sbtestsc.FuncGetCounter.Name)
-		require.NoError(t, err)
+		v := testcore.ScFuncs.GetCounter(ctx)
+		v.Func.Call()
+		require.NoError(t, ctx.Err)
+		require.EqualValues(t, sum, v.Results.Counter().Value())
 
-		deco := kvdecoder.New(ret, chain.Log)
-		res := deco.MustGetInt64(sbtestsc.VarCounter)
-		require.EqualValues(t, sum, res)
-
-		for i := range users {
-			chain.AssertIotas(iscp.NewAgentID(userAddr[i], 0), 0)
-			chain.Env.AssertAddressIotas(userAddr[i], solo.Saldo-uint64(repeats[i]))
+		for i, user := range users {
+			require.EqualValues(t, solo.Saldo-repeats[i], user.Balance())
+			require.EqualValues(t, 0, ctx.Balance(user))
 		}
-		extraIota := uint64(0)
-		if w {
-			extraIota = 1
-		}
-		chain.AssertIotas(&chain.OriginatorAgentID, 0)
-		chain.AssertCommonAccountIotas(extraIota + 2)
-		agentID := iscp.NewAgentID(chain.ChainID.AsAddress(), HScName)
-		chain.AssertIotas(agentID, uint64(sum)+1)
+
+		require.EqualValues(t, sum, ctx.Balance(ctx.Agent()))
+		require.EqualValues(t, sum, ctx.Balance(ctx.Agent()))
+		chainAccountBalances(ctx, w, 2, uint64(2+sum))
 	})
 }

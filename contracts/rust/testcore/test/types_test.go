@@ -4,64 +4,49 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/hashing"
-	"github.com/iotaledger/wasp/packages/iscp"
-	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
+	"github.com/iotaledger/wasp/packages/vm/wasmlib"
+	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
 )
 
 func TestTypesFull(t *testing.T) {
 	run2(t, func(t *testing.T, w bool) {
-		//ctx := setupTest(t, w)
-		//
-		//f := testcore.ScFuncs.PassTypesFull(ctx)
-		//f.Params.Hash().SetValue(ctx.Convertor.ScHash(hashing.HashStrings("Hash")))
-		//f.Params.Hname().SetValue(wasmlib.NewScHname("Hname"))
-		//f.Params.HnameZero().SetValue(wasmlib.ScHname(0))
-		//f.Params.Int64().SetValue(42)
-		//f.Params.Int64Zero().SetValue(0)
-		//f.Params.String().SetValue("string")
-		//f.Params.StringZero().SetValue("")
-		//
-		_, chain := setupChain(t, nil)
-		cID, _ := setupTestSandboxSC(t, chain, nil, w)
+		ctx := setupTest(t, w)
 
-		req := solo.NewCallParams(ScName, sbtestsc.FuncPassTypesFull.Name,
-			"string", "string",
-			"string-0", "",
-			"int64", 42,
-			"int64-0", 0,
-			"Hash", hashing.HashStrings("Hash"),
-			"Hname", iscp.Hn("Hname"),
-			"Hname-0", iscp.Hname(0),
-			"contractID", cID,
-			"chainID", chain.ChainID,
-			"address", chain.ChainID.AsAddress(),
-			"agentID", chain.OriginatorAgentID,
-		).WithIotas(1)
-		_, err := chain.PostRequestSync(req, nil)
-		require.NoError(t, err)
+		f := testcore.ScFuncs.PassTypesFull(ctx)
+		f.Params.Address().SetValue(ctx.ChainID().Address())
+		f.Params.AgentID().SetValue(ctx.Originator().ScAgentID())
+		f.Params.ChainID().SetValue(ctx.ChainID())
+		f.Params.ContractID().SetValue(ctx.AccountID())
+		f.Params.Hash().SetValue(ctx.Convertor.ScHash(hashing.HashStrings("Hash")))
+		f.Params.Hname().SetValue(wasmlib.NewScHname("Hname"))
+		f.Params.HnameZero().SetValue(wasmlib.ScHname(0))
+		f.Params.Int64().SetValue(42)
+		f.Params.Int64Zero().SetValue(0)
+		f.Params.String().SetValue("string")
+		f.Params.StringZero().SetValue("")
+		f.Func.TransferIotas(1).Post()
+		require.NoError(t, ctx.Err)
 	})
 }
 
 func TestTypesView(t *testing.T) {
 	run2(t, func(t *testing.T, w bool) {
-		_, chain := setupChain(t, nil)
-		cID, _ := setupTestSandboxSC(t, chain, nil, w)
+		ctx := setupTest(t, w)
 
-		_, err := chain.CallView(ScName, sbtestsc.FuncPassTypesView.Name,
-			"string", "string",
-			"string-0", "",
-			"int64", 42,
-			"int64-0", 0,
-			"Hash", hashing.HashStrings("Hash"),
-			"Hname", iscp.Hn("Hname"),
-			"Hname-0", iscp.Hname(0),
-			"contractID", cID,
-			"chainID", chain.ChainID,
-			"address", chain.ChainID.AsAddress(),
-			"agentID", chain.OriginatorAgentID,
-		)
-		require.NoError(t, err)
+		v := testcore.ScFuncs.PassTypesView(ctx)
+		v.Params.Address().SetValue(ctx.ChainID().Address())
+		v.Params.AgentID().SetValue(ctx.Originator().ScAgentID())
+		v.Params.ChainID().SetValue(ctx.ChainID())
+		v.Params.ContractID().SetValue(ctx.AccountID())
+		v.Params.Hash().SetValue(ctx.Convertor.ScHash(hashing.HashStrings("Hash")))
+		v.Params.Hname().SetValue(wasmlib.NewScHname("Hname"))
+		v.Params.HnameZero().SetValue(wasmlib.ScHname(0))
+		v.Params.Int64().SetValue(42)
+		v.Params.Int64Zero().SetValue(0)
+		v.Params.String().SetValue("string")
+		v.Params.StringZero().SetValue("")
+		v.Func.Call()
+		require.NoError(t, ctx.Err)
 	})
 }

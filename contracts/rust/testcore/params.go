@@ -257,6 +257,22 @@ func (s MutableSetIntParams) Name() wasmlib.ScMutableString {
 	return wasmlib.NewScMutableString(s.id, idxMap[IdxParamName])
 }
 
+type ImmutableSpawnParams struct {
+	id int32
+}
+
+func (s ImmutableSpawnParams) ProgHash() wasmlib.ScImmutableHash {
+	return wasmlib.NewScImmutableHash(s.id, idxMap[IdxParamProgHash])
+}
+
+type MutableSpawnParams struct {
+	id int32
+}
+
+func (s MutableSpawnParams) ProgHash() wasmlib.ScMutableHash {
+	return wasmlib.NewScMutableHash(s.id, idxMap[IdxParamProgHash])
+}
+
 type ImmutableTestEventLogGenericDataParams struct {
 	id int32
 }

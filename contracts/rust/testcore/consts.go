@@ -34,6 +34,7 @@ const (
 	ParamInt64Zero       = wasmlib.Key("int64-0")
 	ParamIntValue        = wasmlib.Key("intParamValue")
 	ParamName            = wasmlib.Key("intParamName")
+	ParamProgHash        = wasmlib.Key("progHash")
 	ParamString          = wasmlib.Key("string")
 	ParamStringZero      = wasmlib.Key("string-0")
 	ParamVarName         = wasmlib.Key("varName")
@@ -67,6 +68,7 @@ const (
 	FuncRunRecursion                = "runRecursion"
 	FuncSendToAddress               = "sendToAddress"
 	FuncSetInt                      = "setInt"
+	FuncSpawn                       = "spawn"
 	FuncTestBlockContext1           = "testBlockContext1"
 	FuncTestBlockContext2           = "testBlockContext2"
 	FuncTestCallPanicFullEP         = "testCallPanicFullEP"
@@ -101,6 +103,7 @@ const (
 	HFuncRunRecursion                = wasmlib.ScHname(0x833425fd)
 	HFuncSendToAddress               = wasmlib.ScHname(0x63ce4634)
 	HFuncSetInt                      = wasmlib.ScHname(0x62056f74)
+	HFuncSpawn                       = wasmlib.ScHname(0xec929d12)
 	HFuncTestBlockContext1           = wasmlib.ScHname(0x796d4136)
 	HFuncTestBlockContext2           = wasmlib.ScHname(0x758b0452)
 	HFuncTestCallPanicFullEP         = wasmlib.ScHname(0x4c878834)

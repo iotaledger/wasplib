@@ -224,3 +224,14 @@ pub fn func_test_block_context2(ctx: &ScFuncContext, _f: &TestBlockContext2Conte
 pub fn view_get_string_value(ctx: &ScViewContext, _f: &GetStringValueContext) {
     ctx.panic(MSG_CORE_ONLY_PANIC);
 }
+
+pub fn func_spawn(ctx: &ScFuncContext, f: &SpawnContext) {
+    let spawn_name = SC_NAME.to_string() + "_spawned";
+    let spawn_descr = "spawned contract description";
+    ctx.deploy(&f.params.prog_hash().value(), &spawn_name, spawn_descr, None);
+
+    let spawn_hname = ScHname::new(&spawn_name);
+    for _i in 0..5 {
+        ctx.call(spawn_hname, HFUNC_INC_COUNTER, None, None);
+    }
+}

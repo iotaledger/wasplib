@@ -67,6 +67,11 @@ pub struct SetIntCall {
     pub params: MutableSetIntParams,
 }
 
+pub struct SpawnCall {
+    pub func:   ScFunc,
+    pub params: MutableSpawnParams,
+}
+
 pub struct TestBlockContext1Call {
     pub func: ScFunc,
 }
@@ -241,6 +246,14 @@ impl ScFuncs {
         let mut f = SetIntCall {
             func:   ScFunc::new(HSC_NAME, HFUNC_SET_INT),
             params: MutableSetIntParams { id: 0 },
+        };
+        f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
+        f
+    }
+    pub fn spawn(_ctx: & dyn ScFuncCallContext) -> SpawnCall {
+        let mut f = SpawnCall {
+            func:   ScFunc::new(HSC_NAME, HFUNC_SPAWN),
+            params: MutableSpawnParams { id: 0 },
         };
         f.func.set_ptrs(&mut f.params.id, ptr::null_mut());
         f

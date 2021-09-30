@@ -22,6 +22,7 @@ func OnLoad() {
 	exports.AddFunc(FuncRunRecursion, funcRunRecursionThunk)
 	exports.AddFunc(FuncSendToAddress, funcSendToAddressThunk)
 	exports.AddFunc(FuncSetInt, funcSetIntThunk)
+	exports.AddFunc(FuncSpawn, funcSpawnThunk)
 	exports.AddFunc(FuncTestBlockContext1, funcTestBlockContext1Thunk)
 	exports.AddFunc(FuncTestBlockContext2, funcTestBlockContext2Thunk)
 	exports.AddFunc(FuncTestCallPanicFullEP, funcTestCallPanicFullEPThunk)
@@ -260,6 +261,26 @@ func funcSetIntThunk(ctx wasmlib.ScFuncContext) {
 	ctx.Require(f.Params.Name().Exists(), "missing mandatory name")
 	funcSetInt(ctx, f)
 	ctx.Log("testcore.funcSetInt ok")
+}
+
+type SpawnContext struct {
+	Params ImmutableSpawnParams
+	State  MutableTestCoreState
+}
+
+func funcSpawnThunk(ctx wasmlib.ScFuncContext) {
+	ctx.Log("testcore.funcSpawn")
+	f := &SpawnContext{
+		Params: ImmutableSpawnParams{
+			id: wasmlib.OBJ_ID_PARAMS,
+		},
+		State: MutableTestCoreState{
+			id: wasmlib.OBJ_ID_STATE,
+		},
+	}
+	ctx.Require(f.Params.ProgHash().Exists(), "missing mandatory progHash")
+	funcSpawn(ctx, f)
+	ctx.Log("testcore.funcSpawn ok")
 }
 
 type TestBlockContext1Context struct {

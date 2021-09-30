@@ -10,8 +10,6 @@
 package fairroulette
 
 import (
-	"fmt"
-
 	"github.com/iotaledger/wasp/packages/vm/wasmlib"
 )
 
@@ -95,17 +93,13 @@ func funcPlaceBet(ctx wasmlib.ScFuncContext, f *PlaceBetContext) {
 			timestamp := int32(ctx.Timestamp() / NanoTimeDivider)
 			f.State.RoundStartedAt().SetValue(timestamp)
 
-			ctx.Event(fmt.Sprintf("fairroulette.round.state %d %d",
-				f.State.RoundStatus().Value(),
-				timestamp,
-			))
+			ctx.Event("fairroulette.round.state " + f.State.RoundStatus().String() +
+				" " + ctx.Utility().String(int64(timestamp)))
 
 			roundNumber := f.State.RoundNumber()
 			roundNumber.SetValue(roundNumber.Value() + 1)
 
-			ctx.Event(fmt.Sprintf("fairroulette.round.number %d",
-				roundNumber.Value(),
-			))
+			ctx.Event("fairroulette.round.number " + roundNumber.String())
 
 			// And now for our next trick we post a delayed request to ourselves on the Tangle.
 			// We are requesting to call the 'payWinners' function, but delay it for the playPeriod
@@ -172,7 +166,7 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 	// so that the 'bets' array becomes available for when the next betting round ends.
 	bets.Clear()
 
-	ctx.Event(fmt.Sprintf("fairroulette.round.winning_number %d", winningNumber))
+	ctx.Event("fairroulette.round.winning_number " + ctx.Utility().String(winningNumber))
 
 	// Did we have any winners at all?
 	if len(winners) == 0 {
@@ -215,7 +209,7 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 		}
 
 		// Announce who got sent what as event.
-		ctx.Event(fmt.Sprintf("fairroulette.payout %s %d", bet.Better.String(), payout))
+		ctx.Event("fairroulette.payout " + bet.Better.String() + " " + ctx.Utility().String(payout))
 	}
 
 	// This is where we transfer the remainder after payout to the creator of the smart contract.
@@ -231,7 +225,7 @@ func funcPayWinners(ctx wasmlib.ScFuncContext, f *PayWinnersContext) {
 
 	// Set round status to 0, send out event to notify that the round has ended
 	f.State.RoundStatus().SetValue(0)
-	ctx.Event(fmt.Sprintf("fairroulette.round.state %d", f.State.RoundStatus().Value()))
+	ctx.Event("fairroulette.round.state " + f.State.RoundStatus().String())
 }
 
 // 'playPeriod' can be used by the contract creator to set the length of a betting round

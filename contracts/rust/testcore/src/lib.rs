@@ -42,6 +42,7 @@ fn on_load() {
     exports.add_func(FUNC_RUN_RECURSION, func_run_recursion_thunk);
     exports.add_func(FUNC_SEND_TO_ADDRESS, func_send_to_address_thunk);
     exports.add_func(FUNC_SET_INT, func_set_int_thunk);
+    exports.add_func(FUNC_SPAWN, func_spawn_thunk);
     exports.add_func(FUNC_TEST_BLOCK_CONTEXT1, func_test_block_context1_thunk);
     exports.add_func(FUNC_TEST_BLOCK_CONTEXT2, func_test_block_context2_thunk);
     exports.add_func(FUNC_TEST_CALL_PANIC_FULL_EP, func_test_call_panic_full_ep_thunk);
@@ -282,6 +283,26 @@ fn func_set_int_thunk(ctx: &ScFuncContext) {
     ctx.require(f.params.name().exists(), "missing mandatory name");
     func_set_int(ctx, &f);
     ctx.log("testcore.funcSetInt ok");
+}
+
+pub struct SpawnContext {
+    params: ImmutableSpawnParams,
+    state:  MutableTestCoreState,
+}
+
+fn func_spawn_thunk(ctx: &ScFuncContext) {
+    ctx.log("testcore.funcSpawn");
+    let f = SpawnContext {
+        params: ImmutableSpawnParams {
+            id: OBJ_ID_PARAMS,
+        },
+        state: MutableTestCoreState {
+            id: OBJ_ID_STATE,
+        },
+    };
+    ctx.require(f.params.prog_hash().exists(), "missing mandatory progHash");
+    func_spawn(ctx, &f);
+    ctx.log("testcore.funcSpawn ok");
 }
 
 pub struct TestBlockContext1Context {

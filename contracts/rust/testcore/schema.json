@@ -105,6 +105,11 @@
         "chainID=chainID": "ChainID"
       }
     },
+    "spawn": {
+      "params": {
+        "progHash": "Hash"
+      }
+    },
     "testBlockContext1": {
     },
     "testBlockContext2": {

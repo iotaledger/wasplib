@@ -305,6 +305,28 @@ impl MutableSetIntParams {
 }
 
 #[derive(Clone, Copy)]
+pub struct ImmutableSpawnParams {
+    pub(crate) id: i32,
+}
+
+impl ImmutableSpawnParams {
+    pub fn prog_hash(&self) -> ScImmutableHash {
+        ScImmutableHash::new(self.id, idx_map(IDX_PARAM_PROG_HASH))
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct MutableSpawnParams {
+    pub(crate) id: i32,
+}
+
+impl MutableSpawnParams {
+    pub fn prog_hash(&self) -> ScMutableHash {
+        ScMutableHash::new(self.id, idx_map(IDX_PARAM_PROG_HASH))
+    }
+}
+
+#[derive(Clone, Copy)]
 pub struct ImmutableTestEventLogGenericDataParams {
     pub(crate) id: i32,
 }

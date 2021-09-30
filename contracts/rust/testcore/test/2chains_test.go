@@ -24,7 +24,9 @@ func Test2Chains(t *testing.T) {
 		require.EqualValues(t, solo.Saldo, user.Balance())
 
 		ctx1 := setupTestForChain(t, w, chain1, nil)
+		require.NoError(t, ctx1.Err)
 		ctx2 := setupTestForChain(t, w, chain2, nil)
+		require.NoError(t, ctx2.Err)
 
 		require.EqualValues(t, 0, ctx1.Balance(user))
 		require.EqualValues(t, 0, ctx1.Balance(ctx1.Agent()))

@@ -241,3 +241,14 @@ func funcTestBlockContext2(ctx wasmlib.ScFuncContext, f *TestBlockContext2Contex
 func viewGetStringValue(ctx wasmlib.ScViewContext, f *GetStringValueContext) {
 	ctx.Panic(MsgCoreOnlyPanic)
 }
+
+func funcSpawn(ctx wasmlib.ScFuncContext, f *SpawnContext) {
+	spawnName := ScName + "_spawned"
+	spawnDescr := "spawned contract description"
+	ctx.Deploy(f.Params.ProgHash().Value(), spawnName, spawnDescr, nil)
+
+	spawnHname := wasmlib.NewScHname(spawnName)
+	for i := 0; i < 5; i++ {
+		ctx.Call(spawnHname, HFuncIncCounter, nil, nil)
+	}
+}
