@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
 	"github.com/stretchr/testify/require"
@@ -35,7 +34,7 @@ func TestConcurrency(t *testing.T) {
 		// note that because SoloContext is not thread-safe we cannot use
 		// testcore.ScFuncs.IncCounter(ctx)
 
-		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).
+		req := solo.NewCallParams(testcore.ScName, testcore.FuncIncCounter).
 			WithIotas(1)
 
 		repeats := []int{300, 100, 100, 100, 200, 100, 100}
@@ -78,7 +77,7 @@ func TestConcurrency2(t *testing.T) {
 		// note that because SoloContext is not thread-safe we cannot use
 		// testcore.ScFuncs.IncCounter(ctx)
 
-		req := solo.NewCallParams(ScName, sbtestsc.FuncIncCounter.Name).
+		req := solo.NewCallParams(testcore.ScName, testcore.FuncIncCounter).
 			WithIotas(1)
 
 		repeats := []int{300, 100, 100, 100, 200, 100, 100}

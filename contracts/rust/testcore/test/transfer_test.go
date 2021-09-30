@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/iotaledger/wasp/packages/solo"
-	"github.com/iotaledger/wasp/packages/vm/core/testcore/sbtests/sbtestsc"
 	"github.com/iotaledger/wasp/packages/vm/wasmlib/corecontracts/coreaccounts"
 	"github.com/iotaledger/wasp/packages/vm/wasmsolo"
 	"github.com/iotaledger/wasplib/contracts/rust/testcore"
@@ -226,7 +225,7 @@ func TestRequestToView(t *testing.T) {
 
 		// sending request to the view entry point should
 		// return an error and invoke fallback for tokens
-		req := solo.NewCallParams(ScName, sbtestsc.FuncJustView.Name)
+		req := solo.NewCallParams(testcore.ScName, testcore.ViewJustView)
 		_, ctx.Err = ctx.Chain.PostRequestSync(req.WithIotas(42), user.Pair)
 		require.Error(t, ctx.Err)
 
